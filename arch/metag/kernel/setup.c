@@ -37,6 +37,7 @@
 #include <asm/hwthread.h>
 #include <asm/mmzone.h>
 #include <asm/l2cache.h>
+#include <asm/da.h>
 #include <asm/prom.h>
 #include <asm/mach/arch.h>
 #include <asm/core_reg.h>
@@ -181,6 +182,8 @@ void __init setup_arch(char **cmdline_p)
 	PTBI _pTBI;
 	PTBISEG p_heap;
 	int heap_id, i;
+
+	metag_da_probe();
 
 	/* try interpreting the argument as a device tree */
 	machine_desc = setup_machine_fdt(original_cmd_line);

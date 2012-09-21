@@ -1,0 +1,24 @@
+/*
+ * Meta DA JTAG debugger control.
+ *
+ * Copyright 2012 Imagination Technologies Ltd.
+ */
+
+
+#include <linux/io.h>
+#include <linux/kernel.h>
+#include <asm/da.h>
+#define METAG_TRIG_VALUES
+#include <asm/tbx/machine.inc>
+
+bool _metag_da_present;
+
+int __init metag_da_probe(void)
+{
+	_metag_da_present = (readl(T0VECINT_BHALT) == 1);
+	if (_metag_da_present)
+		pr_info("DA present\n");
+	else
+		pr_info("DA not present\n");
+	return 0;
+}
