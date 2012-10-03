@@ -13,13 +13,6 @@
  */
 
 /* Include the proper base SPR definition file. */
-#ifdef __tilegx__
-#include <arch/spr_def_64.h>
-#else
-#include <arch/spr_def_32.h>
-#endif
-
-#ifdef __KERNEL__
 
 /*
  * In addition to including the proper base SPR definition file, depending
@@ -110,4 +103,3 @@
 #define INT_INTCTRL_K \
 	_concat4(INT_INTCTRL_, CONFIG_KERNEL_PL,,)
 
-#endif /* __KERNEL__ */
