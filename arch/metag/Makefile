@@ -22,6 +22,8 @@ CHECKFLAGS	+= -D__metag__ $(CHECKFLAGS-y)
 
 KBUILD_DEFCONFIG := meta2_defconfig
 
+core-y += arch/metag/boot/dtb/
+
 sflags-$(CONFIG_META12) += -mmetac=1.2
 
 ifeq ($(CONFIG_META12),y)
@@ -75,6 +77,12 @@ all: vmlinux.bin
 $(BOOT_TARGETS): vmlinux
 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
 
+%.dtb %.dtb.S %.dtb.o:
+	$(Q)$(MAKE) $(build)=$(boot)/dtb $(boot)/dtb/$@
+
+dtbs:
+	$(Q)$(MAKE) $(build)=$(boot)/dtb $(boot)/dtb/$@
+
 archclean:
 	$(Q)$(MAKE) $(clean)=$(boot)
 
@@ -87,4 +95,5 @@ define archhelp
   @echo '  uImage.lzma	- Kernel-only image for U-Boot (lzma)'
   @echo '  uImage.xz	- Kernel-only image for U-Boot (xz)'
   @echo '  uImage.lzo	- Kernel-only image for U-Boot (lzo)'
+  @echo '  dtbs		- Build device tree blobs for enabled boards'
 endef
