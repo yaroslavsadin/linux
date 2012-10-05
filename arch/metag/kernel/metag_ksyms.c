@@ -76,6 +76,5 @@ EXPORT_SYMBOL(memset);
 EXPORT_SYMBOL(memmove);
 
 #ifdef CONFIG_FUNCTION_TRACER
-EXPORT_SYMBOL(mcount);
 EXPORT_SYMBOL(mcount_wrapper);
 #endif
