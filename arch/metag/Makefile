@@ -53,6 +53,8 @@ endif
 libs-y 					+= arch/metag/lib/ \
 					   arch/metag/tbx/
 
+drivers-$(CONFIG_OPROFILE)      	+= arch/metag/oprofile/
+
 cflags-$(CONFIG_META_FUNCTION_TRACE) +=  -mhwtrace-leaf -mhwtrace-retpc
 
 cflags-$(CONFIG_META21) += -mextensions=bex
