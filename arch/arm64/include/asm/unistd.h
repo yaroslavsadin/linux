@@ -13,13 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-#ifndef __SYSCALL_COMPAT
-#include <asm-generic/unistd.h>
-#endif
-
-#ifdef __KERNEL__
 #ifdef CONFIG_COMPAT
 #include <asm/unistd32.h>
 #endif
-#endif
+#include <uapi/asm/unistd.h>
