@@ -66,6 +66,10 @@ DECLARE_EXPORT(__umodsi3);
 DECLARE_EXPORT(__modsi3);
 DECLARE_EXPORT(__muldi3);
 
+/* Maths functions */
+EXPORT_SYMBOL(div_u64);
+EXPORT_SYMBOL(div_s64);
+
 /* String functions */
 EXPORT_SYMBOL(memcpy);
 EXPORT_SYMBOL(memset);
