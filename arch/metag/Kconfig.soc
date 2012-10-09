@@ -1,0 +1,58 @@
+choice
+	prompt "SoC Type"
+	default META21_FPGA
+
+config META12_FPGA
+	bool "Meta 1.2 FPGA"
+	select META12
+	---help---
+	  This is a Meta 1.2 FPGA bitstream, just a bare CPU.
+
+config META21_FPGA
+	bool "Meta 2.1 FPGA"
+	select META21
+	---help---
+	  This is a Meta 2.1 FPGA bitstream, just a bare CPU.
+
+endchoice
+
+menu "SoC configuration"
+
+if META21
+
+# Meta 2.x specific options
+
+config META21_MMU
+	bool "Meta 2.x MMU mode"
+	depends on META21
+	default y
+	help
+	  Use the Meta 2.x MMU in extended mode.
+
+config META21_UNALIGNED
+	bool "Meta 2.x unaligned access checking"
+	depends on META21
+	default y
+	help
+	  All memory accesses will be checked for alignment and an exception
+	  raised on unaligned accesses. This feature does cost performance
+	  but without it there will be no notification of this type of error.
+
+config META_USER_TCM
+	bool "Meta on-chip memory support for userland"
+	depends on META21
+	select GENERIC_ALLOCATOR
+	default y
+	help
+	  Allow the on-chip memories of Meta SoCs to be used by user
+	  applications.
+
+endif
+
+config META_HALT_ON_PANIC
+	bool "Halt the core on panic"
+	help
+	  Halt the core when a panic occurs. This is useful when running
+	  pre-production silicon or in an FPGA environment.
+
+endmenu
