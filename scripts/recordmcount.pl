@@ -306,6 +306,18 @@ if ($arch eq "x86_64") {
     $ld .= " -m elf64_sparc";
     $cc .= " -m64";
     $objcopy .= " -O elf64-sparc";
+
+} elsif ($arch eq "metag") {
+    $function_regex = "^([0-9a-fA-F]+)\\s+<([^\$].*?)>:";
+    $mcount_regex = "^\\s*([0-9a-fA-F]+): R_METAG_HIADDR16\\s+_mcount_wrapper";
+    $alignment = 2;
+
+    # force flags for this arch
+    $ld .= " -m elf32metag";
+    $objdump .= " -M metag";
+    $objcopy .= " -O elf32-metag";
+    $cc .= " -m32";
+
 } elsif ($arch eq "mips") {
     # To enable module support, we need to enable the -mlong-calls option
     # of gcc for module, after using this option, we can not get the real
