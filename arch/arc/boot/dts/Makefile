@@ -1,7 +1,7 @@
 ifeq ($(CONFIG_OF),y)
 
 # Built-in dtb
-builtindtb-y		:= skeleton
+builtindtb-y		:= angel4
 
 ifneq ($(CONFIG_ARC_BUILTIN_DTB_NAME),"")
 	builtindtb-y	:= $(CONFIG_ARC_BUILTIN_DTB_NAME)
