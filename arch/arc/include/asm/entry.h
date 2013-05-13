@@ -40,6 +40,10 @@
 #include <asm/thread_info.h>	/* For THREAD_SIZE */
 #include <asm/mmu.h>
 
+#ifdef CONFIG_ISA_ARCV2
+#include <asm/entry-arcv2.h>
+#endif
+
 /* Note on the LD/ST addr modes with addr reg wback
  *
  * LD.a same as LD.aw
@@ -359,6 +363,7 @@
 	ld  \reg, [\reg, THREAD_INFO_FLAGS]
 .endm
 
+#ifdef CONFIG_ISA_ARCOMPACT
 /*--------------------------------------------------------------
  * For early Exception Prologue, a core reg is temporarily needed to
  * code the rest of prolog (stack switching). This is done by stashing
@@ -404,6 +409,7 @@
 	/* save the regfile */
 	SAVE_ALL_SYS
 .endm
+#endif
 
 /*--------------------------------------------------------------
  * Save all registers used by Exceptions (TLB Miss, Prot-V, Mem err etc)
@@ -571,8 +577,13 @@
 /* Get CPU-ID of this core */
 .macro  GET_CPU_ID  reg
 	lr  \reg, [identity]
+#ifdef CONFIG_ISA_ARCOMPACT
 	lsr \reg, \reg, 8
 	bmsk \reg, \reg, 7
+#else
+	xbfu \reg, \reg, 0xE8	/* 00111    01000 */
+				/* M = 8-1  N = 8 */
+#endif
 .endm
 
 #ifdef CONFIG_SMP

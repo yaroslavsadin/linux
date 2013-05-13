@@ -151,6 +151,15 @@ static void show_ecr_verbose(struct pt_regs *regs)
 				((cause_code == 0x02) ? "Write" : "EX"));
 	} else if (vec == ECR_V_INSN_ERR) {
 		pr_cont("Illegal Insn\n");
+#ifdef CONFIG_ISA_ARCV2
+	} else if (vec == ECR_V_MEM_ERR) {
+		if (cause_code == 0x00)
+			pr_cont("Bus Error from Insn Mem\n");
+		else if (cause_code == 0x10)
+			pr_cont("Bus Error from Data Mem\n");
+		else
+			pr_cont("Bus Error, check PRM\n");
+#endif
 	} else {
 		pr_cont("Check Programmer's Manual\n");
 	}
@@ -184,12 +193,13 @@ void show_regs(struct pt_regs *regs)
 
 	pr_info("[STAT32]: 0x%08lx", regs->status32);
 
+#ifdef CONFIG_ISA_ARCOMPACT
 #define STS_BIT(r, bit)	r->status32 & STATUS_##bit##_MASK ? #bit : ""
 	if (!user_mode(regs))
 		pr_cont(" : %2s %2s %2s %2s %2s\n",
 			STS_BIT(regs, AE), STS_BIT(regs, A2), STS_BIT(regs, A1),
 			STS_BIT(regs, E2), STS_BIT(regs, E1));
-
+#endif
 	pr_info("BTA: 0x%08lx\t SP: 0x%08lx\t FP: 0x%08lx\n",
 		regs->bta, regs->sp, regs->fp);
 	pr_info("LPS: 0x%08lx\tLPE: 0x%08lx\tLPC: 0x%08lx\n",

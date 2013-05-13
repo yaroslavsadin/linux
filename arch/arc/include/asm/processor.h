@@ -126,6 +126,15 @@ extern unsigned int get_wchan(struct task_struct *p);
  */
 #define TASK_UNMAPPED_BASE      (TASK_SIZE / 3)
 
+#define ARCH_HAS_PREFETCH
+#define prefetch(ptr)	do { } while (0)
+
+#define ARCH_HAS_PREFETCHW
+#define prefetchw(ptr)	prefetch(ptr)
+
+#define ARCH_HAS_SPINLOCK_PREFETCH
+#define spin_lock_prefetch(x) do { } while (0)
+
 #endif /* __KERNEL__ */
 
 #endif /* __ASM_ARC_PROCESSOR_H */

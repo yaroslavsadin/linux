@@ -31,6 +31,7 @@
 #define ARC_REG_MIXMAX_BCR	0x7e
 #define ARC_REG_BARREL_BCR	0x7f
 #define ARC_REG_D_UNCACH_BCR	0x6A
+#define ARC_REG_ISA_CFG		0xc1
 
 /* status32 Bits Positions */
 #define STATUS_AE_BIT		5	/* Exception active */
@@ -50,6 +51,7 @@
  * [15: 8] = Exception Cause Code
  * [ 7: 0] = Exception Parameters (for certain types only)
  */
+#ifdef CONFIG_ISA_ARCOMPACT
 #define ECR_V_MEM_ERR			0x01
 #define ECR_V_INSN_ERR			0x02
 #define ECR_V_MACH_CHK			0x20
@@ -57,6 +59,15 @@
 #define ECR_V_DTLB_MISS			0x22
 #define ECR_V_PROTV			0x23
 #define ECR_V_TRAP			0x25
+#else
+#define ECR_V_MEM_ERR			0x01
+#define ECR_V_INSN_ERR			0x02
+#define ECR_V_MACH_CHK			0x03
+#define ECR_V_ITLB_MISS			0x04
+#define ECR_V_DTLB_MISS			0x05
+#define ECR_V_PROTV			0x06
+#define ECR_V_TRAP			0x09
+#endif
 
 /* DTLB Miss and Protection Violation Cause Codes */
 
@@ -174,7 +185,7 @@
 {							\
 	unsigned int tmp;				\
 	if (sizeof(tmp) == sizeof(into)) {		\
-		tmp = (*(unsigned int *)(into));	\
+		tmp = (*(unsigned int *)&(into));	\
 		write_aux_reg(reg, tmp);		\
 	} else  {					\
 		extern void bogus_undefined(void);	\
@@ -206,6 +217,14 @@ struct bcr_identity {
 	unsigned int chip_id:16, cpu_id:8, family:8;
 #else
 	unsigned int family:8, cpu_id:8, chip_id:16;
+#endif
+};
+
+struct bcr_isa {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+	unsigned int pad2:8, ldd:1, unalign:1, atomic:1, be:1, pad1:12, ver:8;
+#else
+	unsigned int ver:8, pad1:12, be:1, atomic:1, unalign:1, ldd:1, pad2:8;
 #endif
 };
 
@@ -304,6 +323,7 @@ struct cpuinfo_arc {
 	struct cpuinfo_arc_cache icache, dcache;
 	struct cpuinfo_arc_mmu mmu;
 	struct bcr_identity core;
+	struct bcr_isa isa;
 	unsigned int timers;
 	unsigned int vec_base;
 	unsigned int uncached_base;
@@ -315,6 +335,22 @@ struct cpuinfo_arc {
 };
 
 extern struct cpuinfo_arc cpuinfo_arc700[];
+
+static inline int is_isa_arcv2(void)
+{
+	return IS_ENABLED(CONFIG_ISA_ARCV2);
+}
+
+static inline int is_isa_arcompact(void)
+{
+	return IS_ENABLED(CONFIG_ISA_ARCOMPACT);
+}
+
+#if defined(CONFIG_ISA_ARCOMPACT) && !defined(__ARC700__)
+#error "Toolchain not configured for ARCompact builds"
+#elif defined(CONFIG_ISA_ARCV2) && !defined(__HS__)
+#error "Toolchain not configured for ARCv2 builds"
+#endif
 
 #endif /* __ASEMBLY__ */
 

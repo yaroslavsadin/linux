@@ -46,6 +46,7 @@ static void read_arc_build_cfg_regs(void)
 	FIX_PTR(cpu);
 
 	READ_BCR(AUX_IDENTITY, cpu->core);
+	READ_BCR(ARC_REG_ISA_CFG, cpu->isa)
 
 	cpu->timers = read_aux_reg(ARC_REG_TIMERS_BCR);
 	cpu->vec_base = read_aux_reg(AUX_INTR_VEC_BASE);
@@ -100,10 +101,11 @@ static void read_arc_build_cfg_regs(void)
 }
 
 static const struct cpuinfo_data arc_cpu_tbl[] = {
-	{ {0x10, "ARCTangent A5"}, 0x1F},
 	{ {0x20, "ARC 600"      }, 0x2F},
 	{ {0x30, "ARC 700"      }, 0x33},
 	{ {0x34, "ARC 700 R4.10"}, 0x34},
+	{ {0x35, "ARC 700 R4.11"}, 0x35},
+	{ {0x50, "ARC HS38"	}, 0x51},
 	{ {0x00, NULL		} }
 };
 
@@ -113,10 +115,9 @@ static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 	struct cpuinfo_arc *cpu = &cpuinfo_arc700[cpu_id];
 	struct bcr_identity *core = &cpu->core;
 	const struct cpuinfo_data *tbl;
-	int be = 0;
-#ifdef CONFIG_CPU_BIG_ENDIAN
-	be = 1;
-#endif
+	char *isa = cpu->isa.ver > 1 ? "ARCv2":"ARCompact";
+	int be = cpu->isa.ver ? cpu->isa.be : IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
+
 	FIX_PTR(cpu);
 
 	n += scnprintf(buf + n, len - n,
@@ -129,8 +130,9 @@ static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 		if ((core->family >= tbl->info.id) &&
 		    (core->family <= tbl->up_range)) {
 			n += scnprintf(buf + n, len - n,
-				       "processor\t: %s %s\n",
+				       "processor\t: %s %s ISA %s\n",
 				       tbl->info.str,
+				       isa,
 				       be ? "[Big Endian]" : "");
 			break;
 		}
@@ -191,6 +193,9 @@ static char *arc_extn_mumbojumbo(int cpu_id, char *buf, int len)
 		       IS_AVAIL1(cpu->extn.crc, "crc,"),
 		       IS_AVAIL2(cpu->extn.ext_arith, "ext-arith"));
 
+	if (cpu->isa.ver > 1) {
+
+	} else {
 	n += scnprintf(buf + n, len - n, "Extn [700-MPY]\t: %s",
 		       mul_type_nm[cpu->extn.mul].str);
 
@@ -203,6 +208,7 @@ static char *arc_extn_mumbojumbo(int cpu_id, char *buf, int len)
 			       IS_USED(CONFIG_ARC_HAS_LLSC),
 			       IS_USED(CONFIG_ARC_HAS_SWAPE),
 			       IS_USED(CONFIG_ARC_HAS_RTSC));
+	}
 	}
 
 	n += scnprintf(buf + n, len - n, "Extn [CCM]\t: %s",

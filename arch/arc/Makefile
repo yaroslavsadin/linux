@@ -14,7 +14,10 @@ endif
 
 KBUILD_DEFCONFIG := fpga_defconfig
 
-cflags-y	+= -mA7 -fno-common -pipe -fno-builtin -D__linux__
+cflags-${CONFIG_ISA_ARCOMPACT}	+= -mA7
+cflags-${CONFIG_ISA_ARCV2}	+= -mcpu=ARCv2HS -mdiv-rem
+
+cflags-y	+= -fno-common -pipe -fno-builtin -D__linux__
 
 ifdef CONFIG_ARC_CURR_IN_REG
 # For a global register defintion, make sure it gets passed to every file
@@ -35,6 +38,8 @@ cflags-$(atleast_gcc44)			+= -fsection-anchors
 cflags-$(CONFIG_ARC_HAS_LLSC)		+= -mlock
 cflags-$(CONFIG_ARC_HAS_SWAPE)		+= -mswape
 cflags-$(CONFIG_ARC_HAS_RTSC)		+= -mrtsc
+cflags-$(CONFIG_ARC_HAS_LL64)		+= -mll64
+
 cflags-$(CONFIG_ARC_DW2_UNWIND)		+= -fasynchronous-unwind-tables
 
 # By default gcc 4.8 generates dwarf4 which kernel unwinder can't grok
