@@ -43,8 +43,12 @@ SYSCALL_DEFINE0(arc_gettls)
 
 void arch_cpu_idle(void)
 {
+#ifndef CONFIG_ARC_DISABLE_SLEEP_ISN
 	/* sleep, but enable all interrupts before committing */
 	__asm__("sleep 0x3");
+#else
+	local_irq_enable();
+#endif
 }
 
 asmlinkage void ret_from_fork(void);
