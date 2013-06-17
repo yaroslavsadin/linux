@@ -116,17 +116,34 @@ void read_decode_cache_bcr(void)
 	p_ic = &cpuinfo_arc700[cpu].icache;
 	READ_BCR(ARC_REG_IC_BCR, ibcr);
 
-	BUG_ON(ibcr.config != 3);
-	p_ic->assoc = 2;		/* Fixed to 2w set assoc */
+	if (!ibcr.ver)
+		goto dc_chk;
+
+	if (ibcr.ver <= 3) {
+		BUG_ON(ibcr.config != 3);
+		p_ic->assoc = 2;		/* Fixed to 2w set assoc */
+	} else if (ibcr.ver >= 4) {
+		p_ic->assoc = 1 << ibcr.config;	/* 1,2,4,8 */
+	}
+
 	p_ic->line_len = 8 << ibcr.line_len;
 	p_ic->sz = 0x200 << ibcr.sz;
 	p_ic->ver = ibcr.ver;
 
+dc_chk:
 	p_dc = &cpuinfo_arc700[cpu].dcache;
 	READ_BCR(ARC_REG_DC_BCR, dbcr);
 
-	BUG_ON(dbcr.config != 2);
-	p_dc->assoc = 4;		/* Fixed to 4w set assoc */
+	if (!dbcr.ver)
+		return;
+
+	if (dbcr.ver == 3) {
+		BUG_ON(dbcr.config != 2);
+		p_dc->assoc = 4;		/* Fixed to 4w set assoc */
+	} else if (dbcr.ver >= 4) {
+		p_dc->assoc = 1 << dbcr.config;	/* 1,2,4,8 */
+	}
+
 	p_dc->line_len = 16 << dbcr.line_len;
 	p_dc->sz = 0x200 << dbcr.sz;
 	p_dc->ver = dbcr.ver;
