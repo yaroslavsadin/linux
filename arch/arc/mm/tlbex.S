@@ -43,6 +43,7 @@
 #include <asm/cache.h>
 #include <asm/processor.h>
 #include <asm/tlb-mmu1.h>
+#include <asm/event-log-asm.h>
 
 #ifdef CONFIG_ISA_ARCOMPACT
 ;-----------------------------------------------------------------
@@ -389,6 +390,8 @@ do_slow_path_pf:
 	; Slow path TLB Miss handled as a regular ARC Exception
 	; (stack switching / save the complete reg-file).
 	EXCEPTION_PROLOGUE
+
+	TAKE_SNAP_C_FROM_ASM SNAP_DO_PF_ENTER
 
 	; ------- setup args for Linux Page fault Hanlder ---------
 	mov_s r1, sp

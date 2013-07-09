@@ -14,6 +14,7 @@
 #include <linux/ptrace.h>
 #include <asm/hardirq.h>
 #include <asm/page.h>
+#include <asm/event-log.h>
 
 int main(void)
 {
@@ -59,5 +60,21 @@ int main(void)
 
 	DEFINE(SZ_CALLEE_REGS, sizeof(struct callee_regs));
 	DEFINE(SZ_PT_REGS, sizeof(struct pt_regs));
+
+#ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
+	BLANK();
+	DEFINE(EVLOG_FIELD_EXTRA, offsetof(timeline_log_t, extra));
+	DEFINE(EVLOG_FIELD_EFA, offsetof(timeline_log_t, fault_addr));
+	DEFINE(EVLOG_FIELD_CAUSE, offsetof(timeline_log_t, cause));
+	DEFINE(EVLOG_FIELD_TASK, offsetof(timeline_log_t, task));
+	DEFINE(EVLOG_FIELD_TIME, offsetof(timeline_log_t, time));
+	DEFINE(EVLOG_FIELD_EVENT_ID, offsetof(timeline_log_t, event));
+	DEFINE(EVLOG_FIELD_SP, offsetof(timeline_log_t, sp));
+	DEFINE(EVLOG_RECORD_SZ, sizeof(timeline_log_t));
+	DEFINE(EVLOG_FIELD_EXTRA2, offsetof(timeline_log_t, extra2));
+	DEFINE(EVLOG_FIELD_EXTRA3, offsetof(timeline_log_t, extra3));
+	DEFINE(PT_ret, offsetof(struct pt_regs, ret));
+#endif
+
 	return 0;
 }

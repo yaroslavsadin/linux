@@ -13,6 +13,7 @@
 #include <asm/errno.h>
 #include <asm/arcregs.h>
 #include <asm/irqflags.h>
+#include <asm/event-log-asm.h>
 
 	.cpu HS
 
@@ -62,6 +63,8 @@ ARC_ENTRY handle_interrupt
 
 	ISR_PROLOGUE
 	clri		; To make status32.IE agree with CPU internal state
+
+	TAKE_SNAP_C_FROM_ASM  SNAP_INTR_IN
 
 	lr  r0, [ICAUSE]
 
@@ -307,6 +310,20 @@ ARC_ENTRY EV_Trap
 
 	EXCEPTION_PROLOGUE
 
+	TAKE_SNAP_C_FROM_ASM SNAP_TRAP_IN
+#ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
+	ld  r0, [sp, PT_r0]
+	ld  r1, [sp, PT_r1]
+	ld  r2, [sp, PT_r2]
+	ld  r3, [sp, PT_r3]
+	ld  r4, [sp, PT_r4]
+	ld  r5, [sp, PT_r5]
+	ld  r6, [sp, PT_r6]
+	ld  r7, [sp, PT_r7]
+	ld  r8, [sp, PT_r7 + 4]
+	; XXX restore r9 as well
+#endif
+
 	; EXCEPTION_PROLOGUE has ECR in r9 already
 	bmsk.f	0, r9, 7
 	bnz	trap_with_param
@@ -456,11 +473,15 @@ restore_regs:
 	bset.nz	r11, r11, STATUS_IE_BIT
 	sr	r11, [AUX_IRQ_ACT]
 
+	TAKE_SNAP_C_FROM_ASM SNAP_INTR_OUT
+
 debug_marker_l1:
 	ISR_EPILOGUE
 	rtie
 
 1:
+	TAKE_SNAP_C_FROM_ASM SNAP_EXCP_OUT
+
 debug_marker_syscall:
 	EXCEPTION_EPILOGUE
 	rtie
