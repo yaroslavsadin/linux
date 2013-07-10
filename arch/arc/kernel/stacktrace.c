@@ -95,7 +95,7 @@ static void seed_unwind_frame_info(struct task_struct *tsk,
 
 #endif
 
-static noinline unsigned int
+notrace noinline unsigned int
 arc_unwind_core(struct task_struct *tsk, struct pt_regs *regs,
 		int (*consumer_fn) (unsigned int, void *), void *arg)
 {
