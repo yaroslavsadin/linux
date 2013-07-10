@@ -141,10 +141,12 @@ void arch_do_IRQ(unsigned int irq, struct pt_regs *regs)
 {
 	struct pt_regs *old_regs = set_irq_regs(regs);
 
+	trace_hardirqs_off();
 	irq_enter();
 	generic_handle_irq(irq);
 	irq_exit();
 	set_irq_regs(old_regs);
+	trace_hardirqs_on();
 }
 
 int __init get_hw_config_num_irq(void)
