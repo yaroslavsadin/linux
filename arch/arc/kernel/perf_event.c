@@ -36,6 +36,12 @@ perf_callchain_kernel(struct perf_callchain_entry *entry, struct pt_regs *regs)
 	arc_unwind_core(NULL, regs, callchain_trace, entry, false);
 }
 
+void
+perf_callchain_user(struct perf_callchain_entry *entry, struct pt_regs *regs)
+{
+	arc_unwind_core(NULL, regs, callchain_trace, entry, true);
+}
+
 struct arc_pmu {
 	struct pmu	pmu;
 	int		counter_size;	/* in bits */
