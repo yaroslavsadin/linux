@@ -33,7 +33,7 @@ static int callchain_trace(unsigned int addr, void *data)
 void
 perf_callchain_kernel(struct perf_callchain_entry *entry, struct pt_regs *regs)
 {
-	arc_unwind_core(NULL, regs, callchain_trace, entry);
+	arc_unwind_core(NULL, regs, callchain_trace, entry, false);
 }
 
 struct arc_pmu {

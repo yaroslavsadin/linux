@@ -97,7 +97,8 @@ static void seed_unwind_frame_info(struct task_struct *tsk,
 
 notrace noinline unsigned int
 arc_unwind_core(struct task_struct *tsk, struct pt_regs *regs,
-		int (*consumer_fn) (unsigned int, void *), void *arg)
+		int (*consumer_fn) (unsigned int, void *), void *arg,
+		bool user_ok)
 {
 #ifdef CONFIG_ARC_DW2_UNWIND
 	int ret = 0;
@@ -109,7 +110,7 @@ arc_unwind_core(struct task_struct *tsk, struct pt_regs *regs,
 	while (1) {
 		address = UNW_PC(&frame_info);
 
-		if (address && __kernel_text_address(address)) {
+		if (address && (user_ok || __kernel_text_address(address))) {
 			if (consumer_fn(address, arg) == -1)
 				break;
 		}
@@ -210,7 +211,7 @@ static int __get_first_nonsched(unsigned int address, void *unused)
 noinline void show_stacktrace(struct task_struct *tsk, struct pt_regs *regs)
 {
 	pr_info("\nStack Trace:\n");
-	arc_unwind_core(tsk, regs, __print_sym, NULL);
+	arc_unwind_core(tsk, regs, __print_sym, NULL, false);
 }
 EXPORT_SYMBOL(show_stacktrace);
 
@@ -226,7 +227,7 @@ void show_stack(struct task_struct *tsk, unsigned long *sp)
  */
 unsigned int get_wchan(struct task_struct *tsk)
 {
-	return arc_unwind_core(tsk, NULL, __get_first_nonsched, NULL);
+	return arc_unwind_core(tsk, NULL, __get_first_nonsched, NULL, false);
 }
 
 #ifdef CONFIG_STACKTRACE
@@ -237,11 +238,11 @@ unsigned int get_wchan(struct task_struct *tsk)
  */
 void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
 {
-	arc_unwind_core(tsk, NULL, __collect_all_but_sched, trace);
+	arc_unwind_core(tsk, NULL, __collect_all_but_sched, trace, false);
 }
 
 void save_stack_trace(struct stack_trace *trace)
 {
-	arc_unwind_core(current, NULL, __collect_all, trace);
+	arc_unwind_core(current, NULL, __collect_all, trace, false);
 }
 #endif
