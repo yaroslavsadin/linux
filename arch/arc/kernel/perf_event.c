@@ -20,7 +20,21 @@
 #include <linux/perf_event.h>
 #include <linux/platform_device.h>
 #include <asm/arcregs.h>
+#include <asm/stacktrace.h>
 #define DEBUG
+
+static int callchain_trace(unsigned int addr, void *data)
+{
+	struct perf_callchain_entry *entry = data;
+	perf_callchain_store(entry, addr);
+	return 0;
+}
+
+void
+perf_callchain_kernel(struct perf_callchain_entry *entry, struct pt_regs *regs)
+{
+	arc_unwind_core(NULL, regs, callchain_trace, entry);
+}
 
 struct arc_pmu {
 	struct pmu	pmu;
