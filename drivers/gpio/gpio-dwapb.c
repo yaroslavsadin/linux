@@ -36,12 +36,15 @@ struct dwapb_gpio_bank {
 
 struct dwapb_gpio {
 	struct device_node	*of_node;
-	struct	device		*dev;
+	struct device		*dev;
 	void __iomem		*regs;
 	struct dwapb_gpio_bank	*banks;
 	unsigned int		nr_banks;
 	struct irq_chip_generic	*irq_gc;
+	struct irq_domain	*domain;
 	unsigned long		toggle_edge;
+	unsigned int		first_irq_pin;
+	unsigned int		last_irq_pin;
 };
 
 static unsigned int dwapb_gpio_nr_banks(struct device_node *of_node)
@@ -62,7 +65,7 @@ static int dwapb_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
 						    dwapb_gpio_bank, bgc);
 	struct dwapb_gpio *gpio = bank->gpio;
 
-	return irq_domain_to_irq(&gpio->irq_gc->domain, offset);
+	return irq_find_mapping(gpio->domain, offset - gpio->first_irq_pin);
 }
 
 static void dwapb_toggle_trigger(struct dwapb_gpio *gpio, unsigned int offs)
@@ -82,9 +85,14 @@ static void dwapb_irq_handler(u32 irq, struct irq_desc *desc)
 	struct dwapb_gpio *gpio = irq_get_handler_data(irq);
 	u32 irq_status = readl(gpio->regs + INT_STATUS_REG_OFFS);
 
+	/* mask out bits that don't belong to us */
+	irq_status &= IRQ_MSK((gpio->last_irq_pin -
+			       gpio->first_irq_pin) + 1) << gpio->first_irq_pin;
+
 	while (irq_status) {
 		int irqoffset = fls(irq_status) - 1;
-		int irq = irq_domain_to_irq(&gpio->irq_gc->domain, irqoffset);
+		int irq = irq_find_mapping(gpio->domain,
+					   irqoffset - gpio->first_irq_pin);
 
 		generic_handle_irq(irq);
 		irq_status &= ~(1 << irqoffset);
@@ -94,31 +102,33 @@ static void dwapb_irq_handler(u32 irq, struct irq_desc *desc)
 	}
 }
 
-static void dwapb_irq_enable(struct irq_data *d)
-{
-	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
-	struct dwapb_gpio *gpio = gc->private;
-
-	u32 val = readl(gpio->regs + INT_EN_REG_OFFS);
-	val |= 1 << d->hwirq;
-	writel(val, gpio->regs + INT_EN_REG_OFFS);
-}
-
 static void dwapb_irq_disable(struct irq_data *d)
 {
 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
 	struct dwapb_gpio *gpio = gc->private;
+	int bit = d->hwirq + gpio->first_irq_pin;
 
-	u32 val = readl(gpio->regs + INT_EN_REG_OFFS);
-	val &= ~(1 << d->hwirq);
-	writel(val, gpio->regs + INT_EN_REG_OFFS);
+	u32 val = readl(gpio->regs + INT_MASK_REG_OFFS);
+	val |= 1 << bit;
+	writel(val, gpio->regs + INT_MASK_REG_OFFS);
+}
+
+static void dwapb_irq_enable(struct irq_data *d)
+{
+	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
+	struct dwapb_gpio *gpio = gc->private;
+	int bit = d->hwirq + gpio->first_irq_pin;
+
+	u32 val = readl(gpio->regs + INT_MASK_REG_OFFS);
+	val &= ~(1 << bit);
+	writel(val, gpio->regs + INT_MASK_REG_OFFS);
 }
 
 static int dwapb_irq_set_type(struct irq_data *d, u32 type)
 {
 	struct irq_chip_generic *gc = irq_data_get_irq_chip_data(d);
 	struct dwapb_gpio *gpio = gc->private;
-	int bit = d->hwirq;
+	int bit = d->hwirq + gpio->first_irq_pin;
 	unsigned long level, polarity;
 
 	if (type & ~(IRQ_TYPE_EDGE_RISING | IRQ_TYPE_EDGE_FALLING |
@@ -164,30 +174,45 @@ static int dwapb_create_irqchip(struct dwapb_gpio *gpio,
 	if (!gpio->irq_gc)
 		return -EIO;
 
-	gpio->irq_gc->domain.of_node = of_node_get(bank->bgc.gc.of_node);
 	gpio->irq_gc->private = gpio;
 	ct = gpio->irq_gc->chip_types;
 	ct->chip.irq_ack = irq_gc_ack_set_bit;
-	ct->chip.irq_mask = irq_gc_mask_set_bit;
-	ct->chip.irq_unmask = irq_gc_mask_clr_bit;
+	ct->chip.irq_mask = dwapb_irq_disable;
+	ct->chip.irq_unmask = dwapb_irq_enable;
 	ct->chip.irq_set_type = dwapb_irq_set_type;
 	ct->chip.irq_enable = dwapb_irq_enable;
 	ct->chip.irq_disable = dwapb_irq_disable;
 	ct->regs.ack = EOI_REG_OFFS;
 	ct->regs.mask = INT_MASK_REG_OFFS;
-	irq_setup_generic_chip(gpio->irq_gc, IRQ_MSK(bank->bgc.gc.ngpio),
-			       IRQ_GC_INIT_NESTED_LOCK, IRQ_NOREQUEST, 0);
+	irq_setup_generic_chip(gpio->irq_gc,
+		IRQ_MSK((gpio->last_irq_pin - gpio->first_irq_pin) + 1),
+		IRQ_GC_INIT_NESTED_LOCK, IRQ_NOREQUEST, IRQ_LEVEL);
 
+	gpio->domain = irq_domain_add_simple(of_node_get(bank->bgc.gc.of_node),
+					     bank->bgc.gc.ngpio, irq_base,
+					     &irq_domain_simple_ops, gpio);
 	return 0;
 }
 
 static int dwapb_configure_irqs(struct dwapb_gpio *gpio,
 				struct dwapb_gpio_bank *bank)
 {
-	unsigned int m, irq, ngpio = bank->bgc.gc.ngpio;
+	unsigned int m, irq, nirq, ngpio = bank->bgc.gc.ngpio;
 	int irq_base;
 
-	for (m = 0; m < ngpio; ++m) {
+	/* mask all IRQs */
+	writel(0xffffffff, gpio->regs + INT_MASK_REG_OFFS);
+
+	gpio->first_irq_pin = 0;
+	gpio->last_irq_pin = ngpio - 1;
+	of_property_read_u32(bank->bgc.gc.of_node, "first-irq-pin",
+			     &gpio->first_irq_pin);
+	of_property_read_u32(bank->bgc.gc.of_node, "last-irq-pin",
+			     &gpio->last_irq_pin);
+
+	nirq = gpio->last_irq_pin - gpio->first_irq_pin + 1;
+
+	for (m = 0; m < nirq; ++m) {
 		irq = irq_of_parse_and_map(bank->bgc.gc.of_node, m);
 		if (!irq && m == 0) {
 			dev_warn(gpio->dev, "no irq for bank %s\n",
@@ -197,12 +222,12 @@ static int dwapb_configure_irqs(struct dwapb_gpio *gpio,
 			break;
 		}
 
-		irq_set_chained_handler(irq, dwapb_irq_handler);
 		irq_set_handler_data(irq, gpio);
+		irq_set_chained_handler(irq, dwapb_irq_handler);
 	}
 	bank->bgc.gc.to_irq = dwapb_gpio_to_irq;
 
-	irq_base = irq_alloc_descs(-1, 0, ngpio, NUMA_NO_NODE);
+	irq_base = irq_alloc_descs(-1, 0, nirq, NUMA_NO_NODE);
 	if (irq_base < 0)
 		return irq_base;
 
@@ -212,7 +237,7 @@ static int dwapb_configure_irqs(struct dwapb_gpio *gpio,
 	return 0;
 
 out_free_descs:
-	irq_free_descs(irq_base, ngpio);
+	irq_free_descs(irq_base, nirq);
 
 	return -EIO;
 }
@@ -225,7 +250,7 @@ static int dwapb_gpio_add_bank(struct dwapb_gpio *gpio,
 	u32 bank_idx, ngpio;
 	int err;
 
-	if (of_property_read_u32(bank_np, "reg", &bank_idx)) {
+	if (of_property_read_u32(bank_np, "bank-idx", &bank_idx)) {
 		dev_err(gpio->dev, "invalid bank index for %s\n",
 			bank_np->full_name);
 		return -EINVAL;
