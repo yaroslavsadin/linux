@@ -70,20 +70,20 @@ static int dwapb_gpio_to_irq(struct gpio_chip *gc, unsigned offset)
 
 static void dwapb_toggle_trigger(struct dwapb_gpio *gpio, unsigned int offs)
 {
-	u32 v = readl(gpio->regs + INT_TYPE_REG_OFFS);
+	u32 v = ioread32(gpio->regs + INT_TYPE_REG_OFFS);
 
 	if (gpio_get_value(gpio->banks[0].bgc.gc.base + offs))
 		v &= ~BIT(offs);
 	else
 		v |= BIT(offs);
 
-	writel(v, gpio->regs + INT_TYPE_REG_OFFS);
+	iowrite32(v, gpio->regs + INT_TYPE_REG_OFFS);
 }
 
 static void dwapb_irq_handler(u32 irq, struct irq_desc *desc)
 {
 	struct dwapb_gpio *gpio = irq_get_handler_data(irq);
-	u32 irq_status = readl(gpio->regs + INT_STATUS_REG_OFFS);
+	u32 irq_status = ioread32(gpio->regs + INT_STATUS_REG_OFFS);
 
 	/* mask out bits that don't belong to us */
 	irq_status &= IRQ_MSK((gpio->last_irq_pin -
@@ -108,9 +108,9 @@ static void dwapb_irq_disable(struct irq_data *d)
 	struct dwapb_gpio *gpio = gc->private;
 	int bit = d->hwirq + gpio->first_irq_pin;
 
-	u32 val = readl(gpio->regs + INT_MASK_REG_OFFS);
+	u32 val = ioread32(gpio->regs + INT_MASK_REG_OFFS);
 	val |= 1 << bit;
-	writel(val, gpio->regs + INT_MASK_REG_OFFS);
+	iowrite32(val, gpio->regs + INT_MASK_REG_OFFS);
 }
 
 static void dwapb_irq_enable(struct irq_data *d)
@@ -119,9 +119,9 @@ static void dwapb_irq_enable(struct irq_data *d)
 	struct dwapb_gpio *gpio = gc->private;
 	int bit = d->hwirq + gpio->first_irq_pin;
 
-	u32 val = readl(gpio->regs + INT_MASK_REG_OFFS);
+	u32 val = ioread32(gpio->regs + INT_MASK_REG_OFFS);
 	val &= ~(1 << bit);
-	writel(val, gpio->regs + INT_MASK_REG_OFFS);
+	iowrite32(val, gpio->regs + INT_MASK_REG_OFFS);
 }
 
 static int dwapb_irq_set_type(struct irq_data *d, u32 type)
@@ -135,8 +135,8 @@ static int dwapb_irq_set_type(struct irq_data *d, u32 type)
 		     IRQ_TYPE_LEVEL_HIGH | IRQ_TYPE_LEVEL_LOW))
 		return -EINVAL;
 
-	level = readl(gpio->regs + INT_TYPE_REG_OFFS);
-	polarity = readl(gpio->regs + INT_POLARITY_REG_OFFS);
+	level = ioread32(gpio->regs + INT_TYPE_REG_OFFS);
+	polarity = ioread32(gpio->regs + INT_POLARITY_REG_OFFS);
 
 	gpio->toggle_edge &= ~BIT(bit);
 	if (type & IRQ_TYPE_EDGE_BOTH) {
@@ -157,8 +157,8 @@ static int dwapb_irq_set_type(struct irq_data *d, u32 type)
 		polarity &= ~(1 << bit);
 	}
 
-	writel(level, gpio->regs + INT_TYPE_REG_OFFS);
-	writel(polarity, gpio->regs + INT_POLARITY_REG_OFFS);
+	iowrite32(level, gpio->regs + INT_TYPE_REG_OFFS);
+	iowrite32(polarity, gpio->regs + INT_POLARITY_REG_OFFS);
 
 	return 0;
 }
@@ -168,6 +168,7 @@ static int dwapb_create_irqchip(struct dwapb_gpio *gpio,
 				unsigned int irq_base)
 {
 	struct irq_chip_type *ct;
+	int nirq;
 
 	gpio->irq_gc = irq_alloc_generic_chip("gpio-dwapb", 1, irq_base,
 					      gpio->regs, handle_level_irq);
@@ -184,12 +185,13 @@ static int dwapb_create_irqchip(struct dwapb_gpio *gpio,
 	ct->chip.irq_disable = dwapb_irq_disable;
 	ct->regs.ack = EOI_REG_OFFS;
 	ct->regs.mask = INT_MASK_REG_OFFS;
-	irq_setup_generic_chip(gpio->irq_gc,
-		IRQ_MSK((gpio->last_irq_pin - gpio->first_irq_pin) + 1),
-		IRQ_GC_INIT_NESTED_LOCK, IRQ_NOREQUEST, IRQ_LEVEL);
+	nirq = gpio->last_irq_pin - gpio->first_irq_pin + 1;
+	irq_setup_generic_chip(gpio->irq_gc, IRQ_MSK(nirq),
+			       IRQ_GC_INIT_NESTED_LOCK, IRQ_NOREQUEST,
+			       IRQ_LEVEL);
 
 	gpio->domain = irq_domain_add_simple(of_node_get(bank->bgc.gc.of_node),
-					     bank->bgc.gc.ngpio, irq_base,
+					     nirq, irq_base,
 					     &irq_domain_simple_ops, gpio);
 	return 0;
 }
@@ -200,9 +202,6 @@ static int dwapb_configure_irqs(struct dwapb_gpio *gpio,
 	unsigned int m, irq, nirq, ngpio = bank->bgc.gc.ngpio;
 	int irq_base;
 
-	/* mask all IRQs */
-	writel(0xffffffff, gpio->regs + INT_MASK_REG_OFFS);
-
 	gpio->first_irq_pin = 0;
 	gpio->last_irq_pin = ngpio - 1;
 	of_property_read_u32(bank->bgc.gc.of_node, "first-irq-pin",
@@ -211,6 +210,10 @@ static int dwapb_configure_irqs(struct dwapb_gpio *gpio,
 			     &gpio->last_irq_pin);
 
 	nirq = gpio->last_irq_pin - gpio->first_irq_pin + 1;
+
+	/* mask all IRQs */
+	iowrite32(IRQ_MSK(nirq) << gpio->first_irq_pin,
+		  gpio->regs + INT_MASK_REG_OFFS);
 
 	for (m = 0; m < nirq; ++m) {
 		irq = irq_of_parse_and_map(bank->bgc.gc.of_node, m);
