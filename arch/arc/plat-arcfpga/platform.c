@@ -231,13 +231,15 @@ MACHINE_START(ML509, "ml509")
 #endif
 MACHINE_END
 
-static const char *nsimosci_compat[] __initdata = {
+static const char *generic_fpga_compat[] __initdata = {
+	"snps,genericfpga",
 	"snps,nsimosci",
+	"snps,haps51",
 	NULL,
 };
 
-MACHINE_START(NSIMOSCI, "nsimosci")
-	.dt_compat	= nsimosci_compat,
+MACHINE_START(GENERIC_FPGA, "generic_fpga")
+	.dt_compat	= generic_fpga_compat,
 	.init_early	= NULL,
 	.init_machine	= plat_fpga_populate_dev,
 	.init_irq	= NULL,
