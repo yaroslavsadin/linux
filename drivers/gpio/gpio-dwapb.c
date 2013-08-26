@@ -19,7 +19,7 @@
 #include <linux/of_irq.h>
 #include <linux/platform_device.h>
 
-#define INT_EN_REG_OFFS		0x30
+#define INT_ENABLE_REG_OFFS	0x30
 #define INT_MASK_REG_OFFS	0x34
 #define INT_TYPE_REG_OFFS	0x38
 #define INT_POLARITY_REG_OFFS	0x3c
@@ -196,6 +196,31 @@ static int dwapb_create_irqchip(struct dwapb_gpio *gpio,
 	return 0;
 }
 
+static void dwapb_init_irqs(struct dwapb_gpio *gpio, int nirq)
+{
+	uint32_t i;
+
+	/* mask all IRQs */
+	i = ioread32(gpio->regs + INT_MASK_REG_OFFS);
+	iowrite32(i | (IRQ_MSK(nirq) << gpio->first_irq_pin),
+		  gpio->regs + INT_MASK_REG_OFFS);
+
+	/* enable all IRQs */
+	i = ioread32(gpio->regs + INT_ENABLE_REG_OFFS);
+	iowrite32(i | (IRQ_MSK(nirq) << gpio->first_irq_pin),
+		  gpio->regs + INT_ENABLE_REG_OFFS);
+
+	/* level IRQs by default */
+	i = ioread32(gpio->regs + INT_TYPE_REG_OFFS);
+	iowrite32(i &~ (IRQ_MSK(nirq) << gpio->first_irq_pin),
+		  gpio->regs + INT_TYPE_REG_OFFS);
+
+	/* active high by default */
+	i = ioread32(gpio->regs + INT_POLARITY_REG_OFFS);
+	iowrite32(i | (IRQ_MSK(nirq) << gpio->first_irq_pin),
+		  gpio->regs + INT_POLARITY_REG_OFFS);
+}
+
 static int dwapb_configure_irqs(struct dwapb_gpio *gpio,
 				struct dwapb_gpio_bank *bank)
 {
@@ -211,9 +236,7 @@ static int dwapb_configure_irqs(struct dwapb_gpio *gpio,
 
 	nirq = gpio->last_irq_pin - gpio->first_irq_pin + 1;
 
-	/* mask all IRQs */
-	iowrite32(IRQ_MSK(nirq) << gpio->first_irq_pin,
-		  gpio->regs + INT_MASK_REG_OFFS);
+	dwapb_init_irqs(gpio, nirq);
 
 	for (m = 0; m < nirq; ++m) {
 		irq = irq_of_parse_and_map(bank->bgc.gc.of_node, m);
