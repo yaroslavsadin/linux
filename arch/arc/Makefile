@@ -98,6 +98,7 @@ core-y		+= arch/arc/boot/dts/
 
 core-$(CONFIG_ARC_PLAT_FPGA_LEGACY)	+= arch/arc/plat-arcfpga/
 core-$(CONFIG_ARC_PLAT_TB10X)		+= arch/arc/plat-tb10x/
+core-$(CONFIG_ARC_PLAT_XPLORER)		+= arch/arc/plat-xplorer/
 
 drivers-$(CONFIG_OPROFILE)	+= arch/arc/oprofile/
 
