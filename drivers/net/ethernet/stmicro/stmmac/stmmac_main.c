@@ -286,7 +286,8 @@ bool stmmac_eee_init(struct stmmac_priv *priv)
 	/* MAC core supports the EEE feature. */
 	if (priv->dma_cap.eee) {
 		/* Check if the PHY supports EEE */
-		if (phy_init_eee(priv->phydev, 1))
+		/* Keeps RXC running in LPI mode to avoid stability issue */
+		if (phy_init_eee(priv->phydev, 0))
 			goto out;
 
 		if (!priv->eee_active) {
@@ -731,7 +732,8 @@ static void stmmac_adjust_link(struct net_device *dev)
 	/* At this stage, it could be needed to setup the EEE or adjust some
 	 * MAC related HW registers.
 	 */
-	priv->eee_enabled = stmmac_eee_init(priv);
+	if (new_state)
+		priv->eee_enabled = stmmac_eee_init(priv);
 
 	spin_unlock_irqrestore(&priv->lock, flags);
 }
