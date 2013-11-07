@@ -145,9 +145,10 @@ static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 		       (unsigned int)(arc_get_core_freq() / 1000000),
 		       (unsigned int)(arc_get_core_freq() / 10000) % 100);
 
-	n += scnprintf(buf + n, len - n, "Timers\t\t: %s %s\n",
-		       (cpu->timers & 0x200) ? "TIMER1" : "",
-		       (cpu->timers & 0x100) ? "TIMER0" : "");
+	n += scnprintf(buf + n, len - n, "Timers\t\t: %s %s %s\n",
+		       (cpu->timers & 0x100) ? "Timer0," : "",
+		       (cpu->timers & 0x200) ? "Timer1," : "",
+		       (cpu->timers & 0x400) ? "64-bit RTC" : "");
 
 	n += scnprintf(buf + n, len - n, "Vect Tbl Base\t: %#x\n",
 		       cpu->vec_base);

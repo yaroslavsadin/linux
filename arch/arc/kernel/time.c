@@ -61,8 +61,14 @@
 
 #ifdef CONFIG_ARC_HAS_RTSC
 
+#define AUX_RTC_CTRL	0x103
+#define AUX_RTC_LOW	0x104
+#define AUX_RTC_HIGH	0x105
+
 int arc_counter_setup(void)
 {
+	write_aux_reg(AUX_RTC_CTRL, 1);
+
 	/*
 	 * For SMP this needs to be 0. However Kconfig glue doesn't
 	 * enable this option for SMP configs
@@ -72,7 +78,7 @@ int arc_counter_setup(void)
 
 static cycle_t arc_counter_read(struct clocksource *cs)
 {
-	unsigned long flags;
+	unsigned long status;
 	union {
 #ifdef CONFIG_CPU_BIG_ENDIAN
 		struct { u32 high, low; };
@@ -82,24 +88,23 @@ static cycle_t arc_counter_read(struct clocksource *cs)
 		cycle_t  full;
 	} stamp;
 
-	flags = arch_local_irq_save();
 
 	__asm__ __volatile(
-	"	.extCoreRegister tsch, 58,  r, cannot_shortcut	\n"
-	"	rtsc %0, 0	\n"
-	"	mov  %1, 0	\n"
-	: "=r" (stamp.low), "=r" (stamp.high));
-
-	arch_local_irq_restore(flags);
+	"1:						\n"
+	"	lr		%0, [AUX_RTC_LOW]	\n"
+	"	lr		%1, [AUX_RTC_HIGH]	\n"
+	"	lr		%2, [AUX_RTC_CTRL]	\n"
+	"	bbit0.nt	%2, 31, 1b		\n"
+	: "=r" (stamp.low), "=r" (stamp.high), "=r" (status));
 
 	return stamp.full;
 }
 
 static struct clocksource arc_counter = {
-	.name   = "ARC RTSC",
-	.rating = 300,
+	.name   = "ARCv2 RTSC",
+	.rating = 350,
 	.read   = arc_counter_read,
-	.mask   = CLOCKSOURCE_MASK(32),
+	.mask   = CLOCKSOURCE_MASK(64),
 	.flags  = CLOCK_SOURCE_IS_CONTINUOUS,
 };
 
