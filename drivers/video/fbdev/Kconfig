@@ -444,18 +444,41 @@ config FB_ARC
 	  GPIO IO address to be used for setting control and data.
 
 config FB_ARCPGU
-	bool "ARC PGU Framebuffer device for nSIM OSCI"
+	bool "Use Synopsys ARC Pixel Graphics Unit"
 	depends on FB && ARC
 	default y
 	select FB_CFB_FILLRECT
 	select FB_CFB_COPYAREA
 	select FB_CFB_IMAGEBLIT
 	help
-	  Adds support for the System C frame buffer device in the nSIM
-	  OSCI model. The System C frame buffer device is a simplified
-	  version of the DesignWare PGU 2; it does not support double
+	  Adds support for the Synopsys ARC frame buffer device that is
+	  featured in the nSIM OSCI model System C model and the ARC Xplorer
+	  System. Note that he System C frame buffer device is a simplified
+	  version of the actual hardware; it does not support double
 	  and/or triple buffering yet for instance.
-	  It supports just one mode right now: 640x480x24.
+
+	  The video mode is hard-coded at compile time, but can be configured
+	  using the ARCPGU_DISPTYPE kernel configuration option.
+
+config ARCPGU_RGBBUFS
+	int "Number of RGB Buffers for ARCPGU"
+	default 1
+	depends on FB_ARCPGU
+	help
+	  Use this option to select the number of RGB buffers; this can be
+	  used to enable double or triple buffering.
+
+	  Note that the nSIM OSCI model does not support this feature yet.
+
+config ARCPGU_DISPTYPE
+	int "Select display mode for ARCPGU"
+	default 2
+	depends on FB_ARCPGU
+	help
+	  Use this option to select the hard-coded video mode for the ARC
+	  PGU. Currently, there are three modes that can be selected:
+	  0: 640x480 @ 60 Hz (4:3), 1: 1024x576 @ 60 Hz (16:9 PAL),
+	  2: 1280x720 @ 60 Hz (16:9 720p HDTV)
 
 config FB_ATARI
 	bool "Atari native chipset support"
