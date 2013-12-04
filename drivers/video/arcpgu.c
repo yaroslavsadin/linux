@@ -2,11 +2,12 @@
  * Copyright (C) 2013 Synopsys, Inc. (www.synopsys.com)
  *
  *   Mischa Jonker <mjonker@synopsys.com>
+ *   Wayne Ren <wren@synopsys.com>
  *
  *   arcpgu.c
  *
- *  Simple fb driver with hardcoded 640x480x24 resolution
- *  can be used with nSIM OSCI model
+ *  Frame buffer driver for the ARC pixel graphics unit, featured in
+ *  the nSIM OSCI model and the ARC Xplorer System.
  *
  *  based on: linux/drivers/video/skeletonfb.c
  *
@@ -28,46 +29,119 @@
 #include <linux/dma-mapping.h>
 #include <linux/of.h>
 
-struct arcpgu_regs {
-	uint32_t	ctrl;
-	uint32_t	stat;
-	uint32_t	padding1[2];
-	uint32_t	fmt;
-	uint32_t	hsync;
-	uint32_t	vsync;
-	uint32_t	frame;
-	uint32_t	padding2[8];
-	uint32_t	base0;
-	uint32_t	base1;
-	uint32_t	base2;
-	uint32_t	padding3[1];
-	uint32_t	stride;
+
+/* Register definitions */
+
+#define PGU_CTRL_CONT_MASK      (0x1)
+#define PGU_CTRL_ENABLE_MASK    (0x2)
+#define PGU_CTRL_FORMAT_MASK    (0x4)
+
+#define PGU_STAT_BUSY_MASK	(0x2)
+
+#define CLK_CFG_REG_CLK_HIGH_MASK 0xff0000
+#define GET_CLK_CFG_REG_CLK_HIGH_VAL(x) ((x & CLK_CFG_REG_CLK_HIGH_MASK) >> 16)
+#define SET_CLK_CFG_REG_CLK_HIGH_VAL(x, y) ((x & !CLK_CFG_REG_CLK_HIGH_MASK) |\
+		((y << 16) & CLK_CFG_REG_CLK_HIGH_MASK))
+
+#define ENCODE_PGU_XY(x, y)	((((x) - 1) << 16) | ((y) - 1))
+
+/*---------------------------------------------------------------------------*/
+/* arc_pgu regs*/
+struct arc_pgu_regs {
+	uint32_t  ctrl;
+	uint32_t  stat;
+	uint32_t  padding1[2];
+	uint32_t  fmt;
+	uint32_t  hsync;
+	uint32_t  vsync;
+	uint32_t  frame;
+	uint32_t  padding2[8];
+	uint32_t  base0;
+	uint32_t  base1;
+	uint32_t  base2;
+	uint32_t  padding3[1];
+	uint32_t  stride;
+	uint32_t  padding4[11];
+	uint32_t  start_clr;
+	uint32_t  start_set;
+	uint32_t  padding5[206];
+	uint32_t  int_en_clr;
+	uint32_t  int_en_set;
+	uint32_t  int_en;
+	uint32_t  padding6[5];
+	uint32_t  int_stat_clr;
+	uint32_t  int_stat_set;
+	uint32_t  int_stat;
+	uint32_t  padding7[4];
+	uint32_t  module_id;
 };
 
+/* display information */
+struct known_displays {
+	unsigned char	display_name[256];
+	unsigned	hres, hsync_start, hsync_end, htotal;
+	unsigned	vres, vsync_start, vsync_end, vtotal;
+	bool		hsync_polarity, vsync_polarity;
+	int		div;
+};
+
+/* parameters for arc pgu */
 struct arcpgu_par {
-	struct arcpgu_regs	__iomem *regs;
-	void			*fb;
-	dma_addr_t		fb_phys;
-	unsigned long		fb_size;
+	struct arc_pgu_regs __iomem *regs;
+	void *fb;		/* frame buffer's virtual  address */
+	dma_addr_t fb_phys;	/* frame buffer's physical address */
+	uint32_t fb_size;	/* frame buffer's size */
+	struct known_displays *display;	/* current display info */
+/* the following comes from arc_pgu2_par */
+	int line_length;
+	int cmap_len;
+	uint32_t main_mode;
+	uint32_t overlay_mode;
+	int num_rgbbufs;
+	int rgb_bufno;
+	int main_is_fb;
 };
 
-static struct fb_var_screeninfo arcpgufb_var __initdata = {
-	.xres =			640,
-	.yres =			480,
+
+/* screen information */
+struct known_displays dw_displays[] = {
+	{
+		"ADV7511 HDMI Transmitter 640x480@60, pixclk 25",
+		640, 656, 720, 816, 480, 481, 484, 516, false, true, 6
+	},
+	{
+		"ADV7511 HDMI Transmitter 1024x576@60, pixclk 50",
+		1024, 1064, 1176, 1360, 576, 577, 580, 617, false, true, 3
+	},
+	{
+		"ADV7511 HDMI Transmitter 1280x720@30, pixclk 75",
+		1280, 1288, 1416, 1600, 720, 721, 724, 760, false, true, 2
+	},
+};
+
+/* the screen parameters that can be modified by the user */
+static struct fb_var_screeninfo arcpgufb_var = {
+	.xres =			1280,
+	.yres =			720,
 	.xoffset =		0,
 	.yoffset =		0,
-	.xres_virtual =		640,
-	.yres_virtual =		480,
+	.xres_virtual =		1280,
+	.yres_virtual =		720,
+/* RGB888 */
+/*
 	.bits_per_pixel =	24,
 	.red =			{.offset = 16, .length = 8},
 	.green =		{.offset = 8, .length = 8},
 	.blue =			{.offset = 0, .length = 8},
-/*	.bits_per_pixel =	16,
+*/
+/* RGB565 */
+	.bits_per_pixel =	16,
 	.red =			{.offset = 11, .length = 5},
 	.green =		{.offset = 5, .length = 6},
-	.blue =			{.offset = 0, .length = 5},*/
+	.blue =			{.offset = 0, .length = 5},
 };
 
+/* the screen parameters that is fixed */
 static struct fb_fix_screeninfo arcpgufb_fix = {
 	.id =		"arcpgufb",
 	.type =		FB_TYPE_PACKED_PIXELS,
@@ -75,8 +149,37 @@ static struct fb_fix_screeninfo arcpgufb_fix = {
 	.xpanstep =	0,
 	.ypanstep =	0,
 	.ywrapstep =	0,
-	.accel =	FB_ACCEL_NONE,
+	.accel =	FB_ACCEL_NONE,	/* no hardware acceleration */
 };
+
+
+static void arcpgufb_disable(struct fb_info *info)
+{
+	unsigned int val;
+	struct arcpgu_par *par = info->par;
+
+	val = ioread32(&par->regs->ctrl);
+	val &= ~PGU_CTRL_ENABLE_MASK;
+	iowrite32(val, &par->regs->ctrl);
+
+	while (ioread32(&par->regs->stat) & PGU_STAT_BUSY_MASK)
+		;
+}
+
+static void arcpgufb_enable(struct fb_info *info)
+{
+	unsigned int val;
+	struct arcpgu_par *par = info->par;
+
+	val = ioread32(&par->regs->ctrl);
+	val |= PGU_CTRL_ENABLE_MASK;
+
+	iowrite32(val, &par->regs->ctrl);
+
+	while (ioread32(&par->regs->stat) & PGU_STAT_BUSY_MASK)
+		;
+}
+
 
 static int arcpgufb_check_var(struct fb_var_screeninfo *var,
 			      struct fb_info *info)
@@ -88,10 +191,55 @@ static int arcpgufb_check_var(struct fb_var_screeninfo *var,
 
 static int arcpgufb_set_par(struct fb_info *info)
 {
+
+	int i;
+	uint32_t xfmt, yfmt, act, deact;
+
 	struct arcpgu_par *par = info->par;
 
-	/* initialize HW here */
+	arcpgufb_disable(info);
+	dev_dbg(info->dev, "display name %s, %dx%d\n",
+		par->display->display_name,
+		par->display->hres, par->display->vres);
+
+	iowrite32(ENCODE_PGU_XY(par->display->htotal, par->display->vtotal),
+		  &par->regs->fmt);
+	dev_dbg(info->dev, "FORMAT:%x\n", ioread32(&par->regs->fmt));
+
+	iowrite32(ENCODE_PGU_XY(par->display->hsync_start - par->display->hres,
+				par->display->hsync_end - par->display->hres),
+		  &par->regs->hsync);
+	dev_dbg(info->dev, "HSYNC:%x\n", ioread32(&par->regs->hsync));
+
+	iowrite32(ENCODE_PGU_XY(par->display->vsync_start - par->display->vres,
+				par->display->vsync_end - par->display->vres),
+		  &par->regs->vsync);
+	dev_dbg(info->dev, "VSYNC:%x\n", ioread32(&par->regs->hsync));
+
+	iowrite32(ENCODE_PGU_XY(par->display->htotal - par->display->hres,
+				par->display->vtotal - par->display->vres),
+		  &par->regs->frame);
+	dev_dbg(info->dev, "FRAME:%x\n", ioread32(&par->regs->frame));
+
 	iowrite32(par->fb_phys, &par->regs->base0);
+
+	if (par->num_rgbbufs > 1) {
+		iowrite32(par->fb_phys + (par->fb_size / par->num_rgbbufs),
+		&par->regs->base1); /* base1, double buffer */
+	}
+	if (par->num_rgbbufs > 2) {
+		iowrite32(par->fb_phys + 2 * (par->fb_size / par->num_rgbbufs),
+		&par->regs->base2); /* base2, tripple buffer */
+	}
+
+	iowrite32(0, &par->regs->stride);	/* stride */
+
+	/* RGB:555, continuous mode */
+	iowrite32((par->display->div - 1) << 24 | 0x63, &par->regs->ctrl);
+
+	/* start dma transfer for frame buffer 0  */
+	iowrite32(1, &par->regs->start_set);
+	dev_dbg(info->dev, "CTRL:%x", ioread32(&par->regs->ctrl));
 	return 0;
 }
 
@@ -105,6 +253,7 @@ static int arcpgufb_setcolreg(unsigned regno, unsigned red, unsigned green,
 	if (regno >= 16)
 		return -EINVAL;
 
+	/* rgb 565 */
 	red = red	>> (16 - info->var.red.length);
 	green = green	>> (16 - info->var.green.length);
 	blue = blue	>> (16 - info->var.blue.length);
@@ -152,22 +301,31 @@ static int arcpgufb_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 
-	info->fbops = &arcpgufb_ops;
-	info->fix = arcpgufb_fix;
-	info->flags = FBINFO_DEFAULT;
-
-	if (fb_alloc_cmap(&info->cmap, 256, 0)) {
-		dev_err(device, "could not allocate cmap\n");
-		return -ENOMEM;
-	}
-
-	info->var = arcpgufb_var;
-
 	par = info->par;
+/*	get config display info, here use retval as index */
+	retval = CONFIG_ARCPGU_DISPTYPE;
+/* check retval ?*/
+	par->display = &dw_displays[retval];
+
+	/* var setting according to display */
+	/* only works for 8/16 bpp */
+	par->num_rgbbufs = CONFIG_ARCPGU_RGBBUFS;
+	par->line_length = par->display->hres * 16 / 8;
+	par->main_mode = 1;
+	par->overlay_mode = 1;
+	par->rgb_bufno = 0;
+	par->main_is_fb = 1;
+	par->cmap_len = 16;
 
 	par->regs = devm_request_and_ioremap(device, res);
-	par->fb_size = info->var.xres * info->var.yres *
-		       ((info->var.bits_per_pixel + 7) >> 3);
+
+	dev_info(device, "arc_pgu ID# 0x%x, using the: %s\n",
+		ioread32(&par->regs->module_id), par->display->display_name);
+
+	par->fb_size = CONFIG_ARCPGU_RGBBUFS * par->display->hres *
+		       par->display->vres *
+		       ((arcpgufb_var.bits_per_pixel + 7) >> 3);
+	dev_dbg(device, "fb size:%x\n", par->fb_size);
 	par->fb = dma_alloc_coherent(device, PAGE_ALIGN(par->fb_size),
 				     &par->fb_phys, GFP_KERNEL);
 	if (!par->fb) {
@@ -175,20 +333,45 @@ static int arcpgufb_probe(struct platform_device *pdev)
 		goto out2;
 	}
 
+	dev_dbg(device, "framebuffer at: 0x%x (logical), 0x%x (physical)\n",
+		par->fb, par->fb_phys);
+
+	arcpgufb_var.xres = par->display->hres;
+	arcpgufb_var.yres = par->display->vres;
+	arcpgufb_var.xres_virtual = par->display->hres;
+	arcpgufb_var.yres_virtual = par->display->vres;
+
+	/* encode_fix */
+	arcpgufb_fix.smem_start = par->fb_phys;
+	arcpgufb_fix.smem_len = par->fb_size;
+	arcpgufb_fix.mmio_start = (uint32_t)par->regs;
+	arcpgufb_fix.mmio_len = sizeof(struct arc_pgu_regs);
+	arcpgufb_fix.visual = (arcpgufb_var.bits_per_pixel == 8) ?
+		FB_VISUAL_PSEUDOCOLOR : FB_VISUAL_TRUECOLOR;
+	arcpgufb_fix.line_length = par->line_length;
+
+/* info setting */
 	info->pseudo_palette = devm_kzalloc(device, sizeof(uint32_t) * 16,
 					    GFP_KERNEL);
 	if (!info->pseudo_palette) {
 		retval = -ENOMEM;
 		goto out;
 	}
+	memset(info->pseudo_palette, 0, sizeof(uint32_t) * 16);
+
+	info->fbops = &arcpgufb_ops;
+	info->flags = FBINFO_DEFAULT;
+
+	if (fb_alloc_cmap(&info->cmap, 256, 0)) {
+		dev_err(device, "could not allocate cmap\n");
+		retval = -ENOMEM;
+		goto out;
+	}
 
 	info->screen_base = par->fb;
-	info->fix.line_length = info->var.xres *
-				((info->var.bits_per_pixel + 7) >> 3);
-	info->fix.mmio_start = (unsigned long) par->regs;
-	info->fix.mmio_len = sizeof(struct arcpgu_regs);
-	info->fix.smem_start = par->fb_phys;
-	info->fix.smem_len = par->fb_size;
+
+	info->fix = arcpgufb_fix;
+	info->var = arcpgufb_var;
 
 	if (register_framebuffer(info) < 0) {
 		retval = -EINVAL;
@@ -197,6 +380,7 @@ static int arcpgufb_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, info);
 	return 0;
+
 out:
 	dma_free_coherent(device, PAGE_ALIGN(par->fb_size),
 			  par->fb, par->fb_size);
@@ -204,6 +388,7 @@ out2:
 	fb_dealloc_cmap(&info->cmap);
 	return retval;
 }
+
 
 static int arcpgufb_remove(struct platform_device *pdev)
 {
