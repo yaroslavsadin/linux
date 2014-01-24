@@ -1,0 +1,35 @@
+Synopsys DesignWare APB GPIO controller used as interrupt controller
+(dw_apb_gpio_intc)
+
+Synopsys DesignWare provides a GPIO controller IP for APB, that has one bank
+that can be configured to be used as an interrupt controller.
+
+Note that for every input interrupt, there is also an output interrupt. SoC
+designers may choose to logically OR the outcoming interrupts before they
+enter the parent interrupt controller, but this is not required. To keep
+things simple, the driver checks all pending interrupts for each different
+interrupt at the parent (i.e. behaviour is the same, no matter what parent
+interrupt is triggered).
+
+Required properties:
+- compatible: shall be "snps,dw-apb-gpio-intc"
+- reg: base address of interrupt registers
+- interrupt-controller: identifies the node as an interrupt controller
+- #interrupt-cells: number of cells to encode an interrupt source, shall be 1
+- interrupts: interrupts that reference to the primary interrupt controller
+- interrupt-parent: (optional) reference specific primary interrupt controller
+
+The interrupt sources map to the corresponding bits in the interrupt
+registers, i.e.
+- 0 maps to bit 0 of interrupts,
+- 1 maps to bit 1 of interrupts, etc.
+
+Example:
+	gpio_intc: interrupt-controller@3000 {
+		compatible = "snps,dw-apb-gpio-intc";
+		reg = <0x3000 0x80>;
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		interrupt-parent = <&cpu_intc>;
+		interrupts = <5 6 7 8 9>;
+	};
