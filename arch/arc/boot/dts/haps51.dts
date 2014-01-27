@@ -1,0 +1,75 @@
+/*
+ * Copyright (C) 2013 Synopsys, Inc. (www.synopsys.com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+/dts-v1/;
+
+/include/ "skeleton.dtsi"
+
+/ {
+	compatible = "snps,haps51";
+	clock-frequency = <100000000>;	/* 100 MHZ */
+	#address-cells = <1>;
+	#size-cells = <1>;
+	interrupt-parent = <&cpu_intc>;
+
+	chosen {
+		bootargs = "console=ttyS0,115200n8";
+	};
+
+
+	cpu_tile {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		ranges;
+
+		cpu_intc: interrupt-controller@cpu {
+			compatible = "snps,arc700-intc";
+			interrupt-controller;
+			#interrupt-cells = <1>;
+		};
+
+		uart0: dw-apb-uart@0xc0000000 {
+			compatible = "snps,dw-apb-uart";
+			reg = <0xc0000000 0x100>;
+			clock-frequency = <12500000>;
+			interrupts = <11>;
+			baud = <115200>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+		};
+
+		ethernet@0xe2010000 {
+			#interrupt-cells = <1>;
+			compatible = "snps,dwmac";
+			reg = < 0xe2010000 0x4000 >;
+			interrupts = < 17 >;
+			interrupt-names = "macirq";
+			phy-mode = "mii";
+			snps,phy-addr = < 1 >;
+			snps,pbl = < 32 >;
+		};
+
+		mmc@0xc6000000 {
+			compatible = "snps,dw-mshc";
+			reg = < 0xc6000000 0x400 >;
+			num-slots = < 1 >;
+			fifo-depth = < 16 >;
+			card-detect-delay = < 200 >;
+			clock-frequency = < 50000000 >;
+			interrupts = < 9 >;
+			bus-width = < 1 >;
+		};
+
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x80000000 0x10000000>;	/* 256M */
+	};
+};
