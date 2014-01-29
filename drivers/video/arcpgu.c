@@ -127,18 +127,19 @@ static struct fb_var_screeninfo arcpgufb_var = {
 	.yoffset =		0,
 	.xres_virtual =		1280,
 	.yres_virtual =		720,
+#ifdef CONFIG_ARCPGU_RGB888
 /* RGB888 */
-/*
 	.bits_per_pixel =	24,
 	.red =			{.offset = 16, .length = 8},
 	.green =		{.offset = 8, .length = 8},
 	.blue =			{.offset = 0, .length = 8},
-*/
+#else
 /* RGB565 */
 	.bits_per_pixel =	16,
 	.red =			{.offset = 11, .length = 5},
 	.green =		{.offset = 5, .length = 6},
 	.blue =			{.offset = 0, .length = 5},
+#endif
 };
 
 /* the screen parameters that is fixed */
@@ -234,8 +235,13 @@ static int arcpgufb_set_par(struct fb_info *info)
 
 	iowrite32(0, &par->regs->stride);	/* stride */
 
-	/* RGB:555, continuous mode */
-	iowrite32((par->display->div - 1) << 24 | 0x63, &par->regs->ctrl);
+	iowrite32((par->display->div - 1) << 24 |
+#ifdef CONFIG_ARCPGU_RGB888
+		  0x67,
+#else
+		  0x63,
+#endif
+		  &par->regs->ctrl);
 
 	/* start dma transfer for frame buffer 0  */
 	iowrite32(1, &par->regs->start_set);
@@ -310,7 +316,8 @@ static int arcpgufb_probe(struct platform_device *pdev)
 	/* var setting according to display */
 	/* only works for 8/16 bpp */
 	par->num_rgbbufs = CONFIG_ARCPGU_RGBBUFS;
-	par->line_length = par->display->hres * 16 / 8;
+	par->line_length = par->display->hres *
+		       ((arcpgufb_var.bits_per_pixel + 7) >> 3);
 	par->main_mode = 1;
 	par->overlay_mode = 1;
 	par->rgb_bufno = 0;
