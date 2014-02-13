@@ -46,23 +46,20 @@ static void read_arc_build_cfg_regs(void)
 	FIX_PTR(cpu);
 
 	READ_BCR(AUX_IDENTITY, cpu->core);
-	READ_BCR(ARC_REG_ISA_CFG, cpu->isa)
+	READ_BCR(ARC_REG_ISA_CFG, cpu->isa);
 
-	cpu->timers = read_aux_reg(ARC_REG_TIMERS_BCR);
+	READ_BCR(ARC_REG_TIMERS_BCR, cpu->timers);
 	cpu->vec_base = read_aux_reg(AUX_INTR_VEC_BASE);
 
 	READ_BCR(ARC_REG_D_UNCACH_BCR, uncached_space);
 	cpu->uncached_base = uncached_space.start << 24;
 
-	cpu->extn.mul = read_aux_reg(ARC_REG_MUL_BCR);
-	cpu->extn.swap = read_aux_reg(ARC_REG_SWAP_BCR);
-	cpu->extn.norm = read_aux_reg(ARC_REG_NORM_BCR);
-	cpu->extn.minmax = read_aux_reg(ARC_REG_MIXMAX_BCR);
-	cpu->extn.barrel = read_aux_reg(ARC_REG_BARREL_BCR);
-	READ_BCR(ARC_REG_MAC_BCR, cpu->extn_mac_mul);
+	READ_BCR(ARC_REG_MUL_BCR, cpu->extn_mpy);
 
-	cpu->extn.ext_arith = read_aux_reg(ARC_REG_EXTARITH_BCR);
-	cpu->extn.crc = read_aux_reg(ARC_REG_CRC_BCR);
+	cpu->extn.swap = read_aux_reg(ARC_REG_SWAP_BCR) ? 1: 0;	/* 1, 3 */
+	cpu->extn.norm = read_aux_reg(ARC_REG_NORM_BCR) > 1 ? 1 : 0; /* 2, 3 */
+	cpu->extn.minmax = read_aux_reg(ARC_REG_MIXMAX_BCR) > 1 ? 1 : 0; /* 2 */
+	cpu->extn.barrel = read_aux_reg(ARC_REG_BARREL_BCR) > 1 ? 1 : 0; /* 2, 3 */
 
 	/* Note that we read the CCM BCRs independent of kernel config
 	 * This is to catch the cases where user doesn't know that
@@ -113,27 +110,27 @@ static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 {
 	int n = 0;
 	struct cpuinfo_arc *cpu = &cpuinfo_arc700[cpu_id];
-	struct bcr_identity *core = &cpu->core;
 	const struct cpuinfo_data *tbl;
-	char *isa = cpu->isa.ver > 1 ? "ARCv2":"ARCompact";
+	char *isa_nm = cpu->isa.ver > 1 ? "ARCv2":"ARCompact";
 	int be = cpu->isa.ver ? cpu->isa.be : IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
 
 	FIX_PTR(cpu);
 
+#define IS_AVAIL1(var, str)	((var) ? str : "")
+#define IS_USED(cfg)		(IS_ENABLED(cfg) ? "" : "(not used) ")
+#define IS_AVAIL_USED(var, cfg)	(IS_AVAIL1(var, IS_USED(cfg)))
+
 	n += scnprintf(buf + n, len - n,
-		       "\nARC IDENTITY\t: Family [%#02x]"
-		       " Cpu-id [%#02x] Chip-id [%#4x]\n",
-		       core->family, core->cpu_id,
-		       core->chip_id);
+		       "\nIDENTITY\t: ARCVER [%#02x] ARCNUM [%#02x] CHIPID [%#4x]\n",
+		       cpu->core.family, cpu->core.cpu_id, cpu->core.chip_id);
 
 	for (tbl = &arc_cpu_tbl[0]; tbl->info.id != 0; tbl++) {
-		if ((core->family >= tbl->info.id) &&
-		    (core->family <= tbl->up_range)) {
+		if ((cpu->core.family >= tbl->info.id) &&
+		    (cpu->core.family <= tbl->up_range)) {
 			n += scnprintf(buf + n, len - n,
-				       "processor\t: %s %s ISA %s\n",
-				       tbl->info.str,
-				       isa,
-				       be ? "[Big Endian]" : "");
+				       "processor [%d]\t: %s (%s ISA) %s\n",
+				       cpu_id, tbl->info.str, isa_nm,
+				       IS_AVAIL1(be, "[Big-Endian]"));
 			break;
 		}
 	}
@@ -145,35 +142,56 @@ static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 		       (unsigned int)(arc_get_core_freq() / 1000000),
 		       (unsigned int)(arc_get_core_freq() / 10000) % 100);
 
-	n += scnprintf(buf + n, len - n, "Timers\t\t: %s %s %s\n",
-		       (cpu->timers & 0x100) ? "Timer0," : "",
-		       (cpu->timers & 0x200) ? "Timer1," : "",
-		       (cpu->timers & 0x400) ? "64-bit RTC" : "");
+	n += scnprintf(buf + n, len - n, "Timers\t\t: %s%s%s%s\n",
+		       IS_AVAIL1(cpu->timers.t0, "Timer0 "),
+		       IS_AVAIL1(cpu->timers.t1, "Timer1 "),
+		       IS_AVAIL1(cpu->timers.rtc, "64-bit RTC "),
+		       IS_AVAIL_USED(cpu->timers.rtc, CONFIG_ARC_HAS_RTSC));
 
-	n += scnprintf(buf + n, len - n, "Vect Tbl Base\t: %#x\n",
+	n += scnprintf(buf + n, len - n, "ISA Extn\t: ");
+
+	if (cpu->isa.ver > 1) {
+		int i;
+
+		n += i = scnprintf(buf + n, len - n, "%s%s%s%s%s",
+			       IS_AVAIL1(cpu->isa.atomic, "atomic "),
+			       IS_AVAIL_USED(cpu->isa.atomic, CONFIG_ARC_HAS_LLSC),
+			       IS_AVAIL1(cpu->isa.ldd, "ll64 "),
+			       IS_AVAIL_USED(cpu->isa.ldd, CONFIG_ARC_HAS_LL64),
+			       IS_AVAIL1(cpu->isa.unalign, "unalign "));
+
+		if (i)
+			n += scnprintf(buf + n, len - n, "\n\t\t: ");
+
+	} else {
+		n += scnprintf(buf + n, len - n, "atomic%s swape%s\n\t\t: ",
+			        IS_USED(CONFIG_ARC_HAS_LLSC),
+			        IS_USED(CONFIG_ARC_HAS_SWAPE));
+	}
+
+	n += scnprintf(buf + n, len - n, "%s%s",
+		       IS_AVAIL1(cpu->isa.div_rem, "div_rem "),
+		       IS_AVAIL1(cpu->extn_mpy.ver, "mpy "));
+
+	/* Only valid for ARCv2 */
+	if (cpu->extn_mpy.dsp)
+		n += scnprintf(buf + n, len - n, "(opt %d) ",
+					cpu->extn_mpy.dsp + 6);
+
+	n += scnprintf(buf + n, len - n, "%s%s%s%s\n",
+		       IS_AVAIL1(cpu->extn.norm, "norm "),
+		       IS_AVAIL1(cpu->extn.barrel, "shift "),
+		       IS_AVAIL1(cpu->extn.swap, "swap "),
+		       IS_AVAIL1(cpu->extn.minmax, "minmax "));
+
+	n += scnprintf(buf + n, len - n, "Vector Table\t: %#x\n",
 		       cpu->vec_base);
 
-	n += scnprintf(buf + n, len - n, "UNCACHED Base\t: %#x\n",
+	n += scnprintf(buf + n, len - n, "Uncached Base\t: %#x\n",
 		       cpu->uncached_base);
 
 	return buf;
 }
-
-static const struct id_to_str mul_type_nm[] = {
-	{ 0x0, "N/A"},
-	{ 0x1, "32x32 (spl Result Reg)" },
-	{ 0x2, "32x32 (ANY Result Reg)" }
-};
-
-static const struct id_to_str mac_mul_nm[] = {
-	{0x0, "N/A"},
-	{0x1, "N/A"},
-	{0x2, "Dual 16 x 16"},
-	{0x3, "N/A"},
-	{0x4, "32x16"},
-	{0x5, "N/A"},
-	{0x6, "Dual 16x16 and 32x16"}
-};
 
 static char *arc_extn_mumbojumbo(int cpu_id, char *buf, int len)
 {
@@ -181,36 +199,6 @@ static char *arc_extn_mumbojumbo(int cpu_id, char *buf, int len)
 	struct cpuinfo_arc *cpu = &cpuinfo_arc700[cpu_id];
 
 	FIX_PTR(cpu);
-#define IS_AVAIL1(var, str)	((var) ? str : "")
-#define IS_AVAIL2(var, str)	((var == 0x2) ? str : "")
-#define IS_USED(cfg)		(IS_ENABLED(cfg) ? "(in-use)" : "(not used)")
-
-	n += scnprintf(buf + n, len - n,
-		       "Extn [700-Base]\t: %s %s %s %s %s %s\n",
-		       IS_AVAIL2(cpu->extn.norm, "norm,"),
-		       IS_AVAIL2(cpu->extn.barrel, "barrel-shift,"),
-		       IS_AVAIL1(cpu->extn.swap, "swap,"),
-		       IS_AVAIL2(cpu->extn.minmax, "minmax,"),
-		       IS_AVAIL1(cpu->extn.crc, "crc,"),
-		       IS_AVAIL2(cpu->extn.ext_arith, "ext-arith"));
-
-	if (cpu->isa.ver > 1) {
-
-	} else {
-	n += scnprintf(buf + n, len - n, "Extn [700-MPY]\t: %s",
-		       mul_type_nm[cpu->extn.mul].str);
-
-	n += scnprintf(buf + n, len - n, "   MAC MPY: %s\n",
-		       mac_mul_nm[cpu->extn_mac_mul.type].str);
-
-	if (cpu->core.family == 0x34) {
-		n += scnprintf(buf + n, len - n,
-		"Extn [700-4.10]\t: LLOCK/SCOND %s, SWAPE %s, RTSC %s\n",
-			       IS_USED(CONFIG_ARC_HAS_LLSC),
-			       IS_USED(CONFIG_ARC_HAS_SWAPE),
-			       IS_USED(CONFIG_ARC_HAS_RTSC));
-	}
-	}
 
 	n += scnprintf(buf + n, len - n, "Extn [CCM]\t: %s",
 		       !(cpu->dccm.sz || cpu->iccm.sz) ? "N/A" : "");
@@ -266,6 +254,22 @@ static void arc_chk_ccms(void)
 #endif
 }
 
+static void arc_chk_timers(void)
+{
+	struct cpuinfo_arc *cpu = &cpuinfo_arc700[smp_processor_id()];
+
+	if (!cpu->timers.t0)
+		panic("TIMER0 is not present!\n");
+
+	if (!cpu->timers.t1)
+		panic("TIMER1 is not present!\n");
+
+#ifdef CONFIG_ARC_HAS_RTSC
+	if (!cpu->timers.rtc)
+		panic("RTC is not enabled\n");
+#endif
+}
+
 /*
  * Ensure that FP hardware and kernel config match
  * -If hardware contains DPFP, kernel needs to save/restore FPU state
@@ -308,6 +312,7 @@ void setup_processor(void)
 
 	printk(arc_cpu_mumbojumbo(cpu_id, str, sizeof(str)));
 
+	arc_chk_timers();
 	arc_mmu_init();
 	arc_cache_init();
 	arc_chk_ccms();
@@ -426,7 +431,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
 
 	seq_printf(m, arc_cpu_mumbojumbo(cpu_id, str, PAGE_SIZE));
 
-	seq_printf(m, "Bogo MIPS : \t%lu.%02lu\n",
+	seq_printf(m, "Bogo MIPS\t: %lu.%02lu\n",
 		   loops_per_jiffy / (500000 / HZ),
 		   (loops_per_jiffy / (5000 / HZ)) % 100);
 

@@ -77,21 +77,19 @@ char *arc_cache_mumbojumbo(int c, char *buf, int len)
 {
 	int n = 0;
 
-#define PR_CACHE(p, enb, str)						\
-{									\
+#define PR_CACHE(p, cfg, str)						\
 	if (!(p)->ver)							\
 		n += scnprintf(buf + n, len - n, str"\t\t: N/A\n");	\
 	else								\
 		n += scnprintf(buf + n, len - n,			\
-			str"\t\t: (%uK) VIPT, %dway set-asc, %ub Line %s\n", \
-			TO_KB((p)->sz), (p)->assoc, (p)->line_len,	\
-			enb ?  "" : "DISABLED (kernel-build)");		\
-}
+			str"\t\t: %uK, %dway/set, %uB Line, %s%s%s\n",	\
+			(p)->sz_k, (p)->assoc, (p)->line_len,		\
+			(p)->vipt ? "VIPT" : "PIPT",			\
+			(p)->alias ? " aliasing" : "",			\
+			IS_ENABLED(cfg) ? "" : " (not used)");
 
-	PR_CACHE(&cpuinfo_arc700[c].icache, IS_ENABLED(CONFIG_ARC_HAS_ICACHE),
-			"I-Cache");
-	PR_CACHE(&cpuinfo_arc700[c].dcache, IS_ENABLED(CONFIG_ARC_HAS_DCACHE),
-			"D-Cache");
+	PR_CACHE(&cpuinfo_arc700[c].icache, CONFIG_ARC_HAS_ICACHE, "I-Cache");
+	PR_CACHE(&cpuinfo_arc700[c].dcache, CONFIG_ARC_HAS_DCACHE, "D-Cache");
 
 	return buf;
 }
@@ -127,8 +125,10 @@ void read_decode_cache_bcr(void)
 	}
 
 	p_ic->line_len = 8 << ibcr.line_len;
-	p_ic->sz = 0x200 << ibcr.sz;
+	p_ic->sz_k = 1 << (ibcr.sz - 1);
 	p_ic->ver = ibcr.ver;
+	p_ic->vipt = 1;
+	p_ic->alias = p_ic->sz_k/p_ic->assoc/TO_KB(PAGE_SIZE) > 1;
 
 dc_chk:
 	p_dc = &cpuinfo_arc700[cpu].dcache;
@@ -137,16 +137,20 @@ dc_chk:
 	if (!dbcr.ver)
 		return;
 
-	if (dbcr.ver == 3) {
+	p_dc->line_len = 16 << dbcr.line_len;
+	p_dc->sz_k = 1 << (dbcr.sz - 1);
+	p_dc->ver = dbcr.ver;
+
+	if (dbcr.ver <= 3) {
 		BUG_ON(dbcr.config != 2);
 		p_dc->assoc = 4;		/* Fixed to 4w set assoc */
+		p_dc->vipt = 1;
+		p_dc->alias = p_dc->sz_k/p_dc->assoc/TO_KB(PAGE_SIZE) > 1;
 	} else if (dbcr.ver >= 4) {
 		p_dc->assoc = 1 << dbcr.config;	/* 1,2,4,8 */
+		p_dc->vipt = 0;
+		p_dc->alias = 0;	/* PIPT so can't VIPT alias */
 	}
-
-	p_dc->line_len = 16 << dbcr.line_len;
-	p_dc->sz = 0x200 << dbcr.sz;
-	p_dc->ver = dbcr.ver;
 }
 
 /*
@@ -189,13 +193,15 @@ void arc_cache_init(void)
 			panic("DCache line [%d] != kernel Config [%d]",
 			      dc->line_len, L1_CACHE_BYTES);
 
-		/* check for D-Cache aliasing */
-		dcache_does_alias = (dc->sz / dc->assoc) > PAGE_SIZE;
+		/* check for D-Cache aliasing on ARCompact: ARCv2 dcache is PIPT */
+		if (is_isa_arcompact()) {
+			int handled = IS_ENABLED(CONFIG_ARC_CACHE_VIPT_ALIASING);
 
-		if (dcache_does_alias && !cache_is_vipt_aliasing())
-			panic("Enable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
-		else if (!dcache_does_alias && cache_is_vipt_aliasing())
-			panic("Don't need CONFIG_ARC_CACHE_VIPT_ALIASING\n");
+			if (dc->alias && !handled)
+				panic("Enable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
+			else if (!dc->alias && handled)
+				panic("Disable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
+		}
 	}
 }
 

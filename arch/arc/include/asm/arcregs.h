@@ -13,9 +13,6 @@
 
 /* Build Configuration Registers */
 #define ARC_REG_DCCMBASE_BCR	0x61	/* DCCM Base Addr */
-#define ARC_REG_CRC_BCR		0x62
-#define ARC_REG_DVFB_BCR	0x64
-#define ARC_REG_EXTARITH_BCR	0x65
 #define ARC_REG_VECBASE_BCR	0x68
 #define ARC_REG_PERIBASE_BCR	0x69
 #define ARC_REG_FP_BCR		0x6B	/* Single-Precision FPU */
@@ -212,43 +209,31 @@ struct arc_fpu {
  ***************************************************************
  * Build Configuration Registers, with encoded hardware config
  */
-struct bcr_identity {
+union bcr_identity {
+	struct {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int chip_id:16, cpu_id:8, family:8;
+		unsigned int chip_id:16, cpu_id:8, family:8;
 #else
-	unsigned int family:8, cpu_id:8, chip_id:16;
+		unsigned int family:8, cpu_id:8, chip_id:16;
 #endif
+	};
+	unsigned int id;
 };
 
+/* Only present in ARCv2 onwards */
 struct bcr_isa {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int pad2:8, ldd:1, unalign:1, atomic:1, be:1, pad1:12, ver:8;
+	unsigned int div_rem:4, pad2:4, ldd:1, unalign:1, atomic:1, be:1, pad1:12, ver:8;
 #else
-	unsigned int ver:8, pad1:12, be:1, atomic:1, unalign:1, ldd:1, pad2:8;
+	unsigned int ver:8, pad1:12, be:1, atomic:1, unalign:1, ldd:1, pad2:4, div_rem:4;
 #endif
 };
 
-#define EXTN_SWAP_VALID     0x1
-#define EXTN_NORM_VALID     0x2
-#define EXTN_MINMAX_VALID   0x2
-#define EXTN_BARREL_VALID   0x2
-
-struct bcr_extn {
+struct bcr_mpy {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int pad:20, crc:1, ext_arith:2, mul:2, barrel:2, minmax:2,
-		     norm:2, swap:1;
+	unsigned int pad:8, x1616:8, dsp:4, cycles:2, type:2, ver:8;
 #else
-	unsigned int swap:1, norm:2, minmax:2, barrel:2, mul:2, ext_arith:2,
-		     crc:1, pad:20;
-#endif
-};
-
-/* DSP Options Ref Manual */
-struct bcr_extn_mac_mul {
-#ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int pad:16, type:8, ver:8;
-#else
-	unsigned int ver:8, type:8, pad:16;
+	unsigned int ver:8, type:2, cycles:2, dsp:4, x1616:8, pad:8;
 #endif
 };
 
@@ -302,6 +287,14 @@ struct bcr_fp {
 #endif
 };
 
+struct bcr_timer {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+	unsigned int res:21, rtc:1, t1:1, t0:1, ver:8;
+#else
+	unsigned int ver:8, t0:1, t1:1, rtc:1, res:21;
+#endif
+};
+
 /*
  *******************************************************************
  * Generic structures to hold build configuration used at runtime
@@ -312,7 +305,8 @@ struct cpuinfo_arc_mmu {
 };
 
 struct cpuinfo_arc_cache {
-	unsigned int sz, line_len, assoc, ver;
+	unsigned int sz_k:8, line_len:8, assoc:4, ver:4, alias:1, vipt:1,
+		     pad:6;
 };
 
 struct cpuinfo_arc_ccm {
@@ -322,15 +316,18 @@ struct cpuinfo_arc_ccm {
 struct cpuinfo_arc {
 	struct cpuinfo_arc_cache icache, dcache;
 	struct cpuinfo_arc_mmu mmu;
-	struct bcr_identity core;
+	union bcr_identity core;
 	struct bcr_isa isa;
-	unsigned int timers;
+	struct bcr_timer timers;
 	unsigned int vec_base;
 	unsigned int uncached_base;
 	struct cpuinfo_arc_ccm iccm, dccm;
-	struct bcr_extn extn;
+	struct {
+		unsigned int swap:1, norm:1, minmax:1, barrel:1, ext_arith:1,
+			     crc:1, pad:22;
+	} extn;
+	struct bcr_mpy extn_mpy;
 	struct bcr_extn_xymem extn_xymem;
-	struct bcr_extn_mac_mul extn_mac_mul;
 	struct bcr_fp fp, dpfp;
 };
 
