@@ -167,6 +167,7 @@ static void arcpgufb_disable(struct fb_info *info)
 		;
 }
 
+#if 0
 static void arcpgufb_enable(struct fb_info *info)
 {
 	unsigned int val;
@@ -180,7 +181,7 @@ static void arcpgufb_enable(struct fb_info *info)
 	while (ioread32(&par->regs->stat) & PGU_STAT_BUSY_MASK)
 		;
 }
-
+#endif
 
 static int arcpgufb_check_var(struct fb_var_screeninfo *var,
 			      struct fb_info *info)
@@ -192,10 +193,6 @@ static int arcpgufb_check_var(struct fb_var_screeninfo *var,
 
 static int arcpgufb_set_par(struct fb_info *info)
 {
-
-	int i;
-	uint32_t xfmt, yfmt, act, deact;
-
 	struct arcpgu_par *par = info->par;
 
 	arcpgufb_disable(info);
@@ -340,7 +337,7 @@ static int arcpgufb_probe(struct platform_device *pdev)
 		goto out2;
 	}
 
-	dev_dbg(device, "framebuffer at: 0x%x (logical), 0x%x (physical)\n",
+	dev_dbg(device, "framebuffer at: 0x%p (logical), 0x%x (physical)\n",
 		par->fb, par->fb_phys);
 
 	arcpgufb_var.xres = par->display->hres;
