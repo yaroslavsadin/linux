@@ -156,21 +156,6 @@ MACHINE_START(ANGEL4, "angel4")
 #endif
 MACHINE_END
 
-static const char *ml509_compat[] __initconst = {
-	"snps,arc-ml509",
-	NULL,
-};
-
-MACHINE_START(ML509, "ml509")
-	.dt_compat	= ml509_compat,
-	.init_early	= plat_fpga_early_init,
-	.init_machine	= plat_fpga_populate_dev,
-	.init_irq	= plat_fpga_init_IRQ,
-#ifdef CONFIG_SMP
-	.init_smp	= iss_model_init_smp,
-#endif
-MACHINE_END
-
 static const char *generic_fpga_compat[] __initconst = {
 	"snps,genericfpga",
 	"snps,nsimosci",
