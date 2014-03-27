@@ -204,6 +204,7 @@ void arc_cache_init(void)
 #define OP_FLUSH_N_INV	0x3
 #define OP_INV_IC	0x4
 
+#if (CONFIG_ARC_MMU_VER < 4)
 /*
  * Common Helper for Line Operations on {I,D}-Cache
  */
@@ -267,6 +268,54 @@ static inline void __cache_line_loop(unsigned long paddr, unsigned long vaddr,
 #endif
 	}
 }
+
+#else
+
+/*
+ * In HSx38 (MMU v4), although icache is VIPT, we only need paddr for cache
+ * maintenance ops, as long as icache doesn't alias.
+ * e.g. for 8k page, 4way/set, upto 32k works well with this scheme
+ *
+ * For Aliasing icache, PTAG reg would take vaddr.
+ *
+ * This is unlike ARC700 (MMU v3) where, PTAG is always used
+ */
+static inline void __cache_line_loop(unsigned long paddr, unsigned long vaddr,
+				     unsigned long sz, const int cacheop)
+{
+	unsigned int aux_cmd;
+	int num_lines;
+	const int full_page_op = __builtin_constant_p(sz) && sz == PAGE_SIZE;
+
+	if (cacheop == OP_INV_IC) {
+		aux_cmd = ARC_REG_IC_IVIL;
+	}
+	else {
+		/* d$ cmd: INV (discard or wback-n-discard) OR FLUSH (wback) */
+		aux_cmd = cacheop & OP_INV ? ARC_REG_DC_IVDL : ARC_REG_DC_FLDL;
+	}
+
+	/* Ensure we properly floor/ceil the non-line aligned/sized requests
+	 * and have @paddr - aligned to cache line and integral @num_lines.
+	 * This however can be avoided for page sized since:
+	 *  -@paddr will be cache-line aligned already (being page aligned)
+	 *  -@sz will be integral multiple of line size (being page sized).
+	 */
+	if (!full_page_op) {
+		sz += paddr & ~CACHE_LINE_MASK;
+		paddr &= CACHE_LINE_MASK;
+	}
+
+	num_lines = DIV_ROUND_UP(sz, L1_CACHE_BYTES);
+
+	while (num_lines-- > 0) {
+		write_aux_reg(aux_cmd, paddr);
+		paddr += L1_CACHE_BYTES;
+	}
+}
+
+#endif
+
 
 #ifdef CONFIG_ARC_HAS_DCACHE
 
