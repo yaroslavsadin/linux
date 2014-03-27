@@ -173,7 +173,7 @@
 	}						\
 }
 
-#define WRITE_BCR(reg, into)				\
+#define WRITE_AUX(reg, into)				\
 {							\
 	unsigned int tmp;				\
 	if (sizeof(tmp) == sizeof(into)) {		\
