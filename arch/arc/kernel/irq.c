@@ -77,8 +77,18 @@ static struct irq_chip onchip_intc = {
 };
 
 static int arc_intc_domain_map(struct irq_domain *d, unsigned int irq,
-				irq_hw_number_t hw)
+			       irq_hw_number_t hw)
 {
+	/* For percpu devices, more efficient handler can be used */
+	//desc = irq_to_desc(irq);
+	//if (irqd_is_per_cpu(&desc->irq_data) &&
+
+	/*
+	 * XXX: the IPI IRQ needs to be handled like TIMER too. However ARC core
+	 *      code doesn't own it (like TIMER0). ISS IDU / ezchip define it
+	 *      in platform header which can't be included here as it goes
+	 *      against multi-platform image philisophy
+	 */
 	if (irq == TIMER0_IRQ)
 		irq_set_chip_and_handler(irq, &onchip_intc, handle_percpu_irq);
 	else
@@ -148,6 +158,26 @@ void arch_do_IRQ(unsigned int irq, struct pt_regs *regs)
 	generic_handle_irq(irq);
 	irq_exit();
 	set_irq_regs(old_regs);
+}
+
+void arc_request_percpu_irq(int irq, int cpu,
+                            irqreturn_t (*isr)(int irq, void *dev),
+                            const char *irq_nm,
+                            void *percpu_dev)
+{
+	if (!cpu) {
+		int rc;
+
+		/* These 2 calls are essential to making percpu IRQ APIs work */
+		irq_set_percpu_devid(irq);
+		irq_modify_status(irq, IRQ_NOAUTOEN, 0);  /* @irq, @clr, @set */
+
+		rc = request_percpu_irq(irq, isr, irq_nm, percpu_dev);
+		if (rc)
+			panic("Percpu IRQ request failed for %d\n", irq);
+	}
+
+	enable_percpu_irq(irq, 0);
 }
 
 /*
