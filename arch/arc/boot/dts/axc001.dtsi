@@ -30,15 +30,17 @@
 			#interrupt-cells = <1>;
 		};
 
-		/* this GPIO block serves as an interrupt controller and
-		   uses multiple interrupts on the ARC700 */
+		/* this GPIO intc simply acts as a "wire" for connecting
+		   ARC700 core intc (IRQ 7) to main board intc (mb_intc in
+		   axs101_mb.dtsi) which in turn connects to most of mb
+		   peripherals (ethernet, UART, ...) */
 		gpio_intc: dw-apb-gpio-intc@0x3000 {
 			compatible = "snps,dw-apb-gpio-intc";
 			interrupt-controller;
 			reg = < 0x3000 0x80 >;
 			#interrupt-cells = <1>;
 			interrupt-parent = <&cpu_intc>;
-			interrupts = < 5 6 7 8 9 >;
+			interrupts = < 7 >;
 		};
 
 		/* this GPIO block serves as an interrupt controller and
