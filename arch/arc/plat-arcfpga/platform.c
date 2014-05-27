@@ -203,6 +203,7 @@ static void __init plat_fpga_populate_dev(void)
 
 static const char *aa4_compat[] __initconst = {
 	"snps,arc-angel4",
+	"snps,arc-ml509",
 	NULL,
 };
 
