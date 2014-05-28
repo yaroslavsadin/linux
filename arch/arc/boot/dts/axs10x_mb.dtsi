@@ -139,6 +139,29 @@
 			clocks = <&i2cclk>;
 			interrupts = <16>;
 
+			adv7511@0x39 {
+				compatible = "adi,adv7511";
+				reg = <0x39>;
+				interrupts = <23>;
+/*
+ * Note: for reverse-bitorder and tmds-clock-inversion, of_property_read_bool
+ * is used. This function returns true if the property is defined, even if
+ * the value is 0!! Therefore, we do not add them here.
+ * adi,reverse-bitorder = <0x00>;
+ * adi,tdms-clock-inversion = <0x00>;
+ */
+				adi,input-id = <0x00>;
+				adi,input-style = <0x00>;
+				adi,bit-justification = <0x00>;
+				adi,input-color-depth = <0x3>;
+				adi,sync-pulse = <0x00>;
+				adi,up-conversion = <0x00>;
+				adi,timing-generation-sequence = <0x00>;
+				adi,vsync-polarity = <0x02>;
+				adi,hsync-polarity = <0x02>;
+				adi,clock-delay = <0x03>;
+			};
+
 			rtc@0x6F {
 				compatible = "microchip,mcp7941x";
 				reg = <0x6F>;
@@ -217,6 +240,13 @@
 				nr-gpio = <8>;
 				bank-idx = <2>;
 			};
+		};
+
+		pgu@0x17000 {
+			compatible = "snps,arcpgufb";
+			reg = <0x17000 0x400>;
+			clock-frequency = <51000000>; /* PGU'clock is initated in init function */
+			interrupts = <5>;
 		};
 	};
 };
