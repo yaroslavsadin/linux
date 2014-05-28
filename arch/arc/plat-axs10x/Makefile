@@ -7,3 +7,4 @@
 #
 
 obj-$(CONFIG_AXS101) += axs101.o
+obj-$(CONFIG_AXS_ADV7511) += adv7511_core.o
