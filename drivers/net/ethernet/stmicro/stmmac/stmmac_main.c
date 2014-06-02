@@ -1567,7 +1567,8 @@ static int stmmac_init_dma_engine(struct stmmac_priv *priv)
 
 	return priv->hw->dma->init(priv->ioaddr, pbl, fixed_burst, mixed_burst,
 				   burst_len, priv->dma_tx_phy,
-				   priv->dma_rx_phy, atds);
+				   priv->dma_rx_phy, atds,
+				   priv->plat->dma_cfg->init_delay);
 }
 
 /**

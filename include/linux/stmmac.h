@@ -91,6 +91,7 @@ struct stmmac_dma_cfg {
 	int fixed_burst;
 	int mixed_burst;
 	int burst_len;
+	int init_delay;
 };
 
 struct plat_stmmacenet_data {

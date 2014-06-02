@@ -294,6 +294,8 @@ struct dma_features {
 
 #define JUMBO_LEN		9000
 
+#define DMA_INIT_DELAY	100
+
 struct stmmac_desc_ops {
 	/* DMA RX descriptor ring initialization */
 	void (*init_rx_desc) (struct dma_desc *p, int disable_rx_ic, int mode,
@@ -344,7 +346,8 @@ struct stmmac_desc_ops {
 struct stmmac_dma_ops {
 	/* DMA core initialization */
 	int (*init) (void __iomem *ioaddr, int pbl, int fb, int mb,
-		     int burst_len, u32 dma_tx, u32 dma_rx, int atds);
+		     int burst_len, u32 dma_tx, u32 dma_rx, int atds,
+		     int init_delay);
 	/* Dump DMA registers */
 	void (*dump_regs) (void __iomem *ioaddr);
 	/* Set tx/rx threshold in the csr6 register

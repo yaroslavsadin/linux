@@ -153,6 +153,14 @@ static int stmmac_probe_config_dt(struct platform_device *pdev,
 			of_property_read_bool(np, "snps,fixed-burst");
 		dma_cfg->mixed_burst =
 			of_property_read_bool(np, "snps,mixed-burst");
+
+		if (of_property_read_u32(np, "dma-init-delay",
+					 &dma_cfg->init_delay))
+			dma_cfg->init_delay = DMA_INIT_DELAY;
+		dma_cfg->init_delay /= 10;
+		if (!dma_cfg->init_delay)
+			dma_cfg->init_delay = 1;
+
 	}
 	plat->force_thresh_dma_mode = of_property_read_bool(np, "snps,force_thresh_dma_mode");
 	if (plat->force_thresh_dma_mode) {

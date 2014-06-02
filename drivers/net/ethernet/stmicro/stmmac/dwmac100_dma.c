@@ -33,15 +33,14 @@
 #include "dwmac_dma.h"
 
 static int dwmac100_dma_init(void __iomem *ioaddr, int pbl, int fb, int mb,
-			     int burst_len, u32 dma_tx, u32 dma_rx, int atds)
+			     int burst_len, u32 dma_tx, u32 dma_rx, int atds,
+			     int limit)
 {
 	u32 value = readl(ioaddr + DMA_BUS_MODE);
-	int limit;
 
 	/* DMA SW reset */
 	value |= DMA_BUS_MODE_SFT_RESET;
 	writel(value, ioaddr + DMA_BUS_MODE);
-	limit = 10;
 	while (limit--) {
 		if (!(readl(ioaddr + DMA_BUS_MODE) & DMA_BUS_MODE_SFT_RESET))
 			break;
