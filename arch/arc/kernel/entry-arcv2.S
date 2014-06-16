@@ -59,7 +59,7 @@ VECTOR	handle_interrupt	; (23) End of fixed IRQs
 	.section .text, "ax",@progbits
 
 res_service:		; processor restart
-	flag    0x1     ; not implemented
+	j stext
 	nop
 	nop
 
