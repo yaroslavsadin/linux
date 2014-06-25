@@ -151,7 +151,6 @@ MACHINE_START(ANGEL4, "angel4")
 	.dt_compat	= aa4_compat,
 	.init_early	= plat_fpga_early_init,
 	.init_machine	= plat_fpga_populate_dev,
-	.init_irq	= plat_fpga_init_IRQ,
 #ifdef CONFIG_ISS_SMP_EXTN
 	.init_smp	= iss_model_init_smp,
 #endif
@@ -183,5 +182,4 @@ MACHINE_START(GENERIC_FPGA, "generic_fpga")
 	.dt_compat	= generic_fpga_compat,
 	.init_early	= NULL,
 	.init_machine	= plat_fpga_populate_dev,
-	.init_irq	= NULL,
 MACHINE_END
