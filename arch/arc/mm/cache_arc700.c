@@ -142,14 +142,16 @@ void read_decode_cache_bcr(void)
 void arc_cache_init(void)
 {
 	unsigned int __maybe_unused cpu = smp_processor_id();
-	struct cpuinfo_arc_cache __maybe_unused *ic, __maybe_unused *dc;
 	char str[256];
 
 	printk(arc_cache_mumbojumbo(0, str, sizeof(str)));
 
-#ifdef CONFIG_ARC_HAS_ICACHE
-	ic = &cpuinfo_arc700[cpu].icache;
-	if (ic->ver) {
+	if (IS_ENABLED(CONFIG_ARC_HAS_ICACHE)) {
+		struct cpuinfo_arc_cache *ic = &cpuinfo_arc700[cpu].icache;
+
+		if (!ic->ver)
+			panic("cache support enabled but non-existent cache\n");
+
 		if (ic->line_len != L1_CACHE_BYTES)
 			panic("ICache line [%d] != kernel Config [%d]",
 			      ic->line_len, L1_CACHE_BYTES);
@@ -158,12 +160,13 @@ void arc_cache_init(void)
 			panic("Cache ver [%d] doesn't match MMU ver [%d]\n",
 			      ic->ver, CONFIG_ARC_MMU_VER);
 	}
-#endif
 
-#ifdef CONFIG_ARC_HAS_DCACHE
-	dc = &cpuinfo_arc700[cpu].dcache;
-	if (dc->ver) {
-		unsigned int dcache_does_alias;
+	if (IS_ENABLED(CONFIG_ARC_HAS_DCACHE)) {
+		struct cpuinfo_arc_cache *dc = &cpuinfo_arc700[cpu].dcache;
+		int handled;
+
+		if (!dc->ver)
+			panic("cache support enabled but non-existent cache\n");
 
 		if (dc->line_len != L1_CACHE_BYTES)
 			panic("DCache line [%d] != kernel Config [%d]",
@@ -177,7 +180,6 @@ void arc_cache_init(void)
 		else if (!dcache_does_alias && cache_is_vipt_aliasing())
 			panic("Don't need CONFIG_ARC_CACHE_VIPT_ALIASING\n");
 	}
-#endif
 }
 
 #define OP_INV		0x1
