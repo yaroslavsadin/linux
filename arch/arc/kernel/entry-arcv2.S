@@ -43,7 +43,16 @@ VECTOR	reserved		; Reserved slots
 VECTOR	reserved		; Reserved slots
 
 # Begin Interrupt Vectors
-.rept CONFIG_ARC_NUMBER_OF_INTERRUPTS
+VECTOR	handle_interrupt	; (16) Timer0
+VECTOR	handle_interrupt	; unused (Timer1)
+VECTOR	handle_interrupt	; unused (WDT)
+VECTOR	handle_interrupt	; (19) ICI (inter core interrupt)
+VECTOR	handle_interrupt
+VECTOR	handle_interrupt
+VECTOR	handle_interrupt
+VECTOR	handle_interrupt	; (23) End of fixed IRQs
+
+.rept CONFIG_ARC_NUMBER_OF_INTERRUPTS - 8
 	VECTOR	handle_interrupt
 .endr
 

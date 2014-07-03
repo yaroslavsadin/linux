@@ -69,7 +69,7 @@ static void mcip_ipi_send(int cpu)
 	unsigned long flags;
 
 	raw_spin_lock_irqsave(&mcip_lock, flags);
-	__mcip_cmd(CMD_INTRPT_GENERATE_IRQ, cpu+1);	/* MCIP is 1..N based */
+	__mcip_cmd(CMD_INTRPT_GENERATE_IRQ, cpu);
 	raw_spin_unlock_irqrestore(&mcip_lock, flags);
 }
 
@@ -85,7 +85,7 @@ static void mcip_ipi_clear(int irq)
 
 	cpu = read_aux_reg(ARC_REG_MCIP_READBK);	/* 1,2,4,8... */
 
-	__mcip_cmd(CMD_INTRPT_GENERATE_ACK, ffs(cpu)); /* 1,2,3,4... */
+	__mcip_cmd(CMD_INTRPT_GENERATE_ACK, __ffs(cpu)); /* 0,1,2,3... */
 
 	raw_spin_unlock_irqrestore(&mcip_lock, flags);
 }
