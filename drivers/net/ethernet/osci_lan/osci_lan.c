@@ -463,6 +463,8 @@ static int osci_lan_probe(struct platform_device *pdev)
 
 	}
 
+	dev_info(&pdev->dev, "OSCI Lan IRQ Rx %d Tx %d\n", irq_rx, irq_tx);
+
 	/* We don't support MULTICAST */
 	netdev->flags &= ~IFF_MULTICAST;
 
