@@ -66,6 +66,7 @@ typedef unsigned long pgtable_t;
 #define pgd_val(x)	(x)
 #define pgprot_val(x)	(x)
 #define __pte(x)	(x)
+#define __pgd(x)	(x)
 #define __pgprot(x)	(x)
 #define pte_pgprot(x)	(x)
 
