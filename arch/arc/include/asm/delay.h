@@ -57,6 +57,9 @@ static inline void __udelay(unsigned long usecs)
 	 */
 	loops = ((u64) usecs * 4295 * HZ * loops_per_jiffy) >> 32;
 
+	if (!loops)
+		loops = 100;
+
 	__delay(loops);
 }
 
