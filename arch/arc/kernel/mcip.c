@@ -66,7 +66,11 @@ void mcip_init_smp(unsigned int cpu)
 
 static void mcip_ipi_send(int cpu)
 {
+	unsigned long flags;
+
+	raw_spin_lock_irqsave(&mcip_lock, flags);
 	__mcip_cmd(CMD_INTRPT_GENERATE_IRQ, cpu+1);	/* MCIP is 1..N based */
+	raw_spin_unlock_irqrestore(&mcip_lock, flags);
 }
 
 static void mcip_ipi_clear(int irq)
