@@ -300,13 +300,29 @@ static int arc_pmu_event_init(struct perf_event *event)
 		if (!arc_pmu->has_interrupts)
 			return -ENOENT;
 
+	hwc->config = 0;
+
+	if (is_isa_arcv2()) {
+		/*
+		 * To count in both U+K modes, both flags should be reset.
+		 * Because of this implementing inverse logic here.
+		 */
+		hwc->config |= ARC_REG_PCT_CONFIG_USER | ARC_REG_PCT_CONFIG_KERN;
+
+		if (!event->attr.exclude_user)
+			hwc->config &= ~ARC_REG_PCT_CONFIG_USER;
+
+		if (!event->attr.exclude_kernel)
+			hwc->config &= ~ARC_REG_PCT_CONFIG_KERN;
+	}
+
 	switch (event->attr.type) {
 	case PERF_TYPE_HARDWARE:
 		if (event->attr.config >= PERF_COUNT_HW_MAX)
 			return -ENOENT;
 		if (arc_pmu->ev_hw_idx[event->attr.config] < 0)
 			return -ENOENT;
-		hwc->config = arc_pmu->ev_hw_idx[event->attr.config];
+		hwc->config |= arc_pmu->ev_hw_idx[event->attr.config];
 		pr_debug("initializing event %d with cfg %d\n",
 			 (int) event->attr.config, (int) hwc->config);
 		return 0;
@@ -314,7 +330,7 @@ static int arc_pmu_event_init(struct perf_event *event)
 		ret = arc_pmu_cache_event(event->attr.config);
 		if (ret < 0)
 			return ret;
-		hwc->config = arc_pmu->ev_hw_idx[ret];
+		hwc->config |= arc_pmu->ev_hw_idx[ret];
 		return 0;
 	default:
 		return -ENOENT;
