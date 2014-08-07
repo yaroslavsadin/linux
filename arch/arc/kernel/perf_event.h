@@ -58,10 +58,10 @@ struct arc_reg_cc_build {
 
 struct arc_pmu {
 	struct pmu	pmu;
-	int		counter_size;	/* in bits */
 	int		n_counters;
 	unsigned long	used_mask[BITS_TO_LONGS(ARC_PERF_MAX_COUNTERS)];
 	int		ev_hw_idx[PERF_COUNT_ARC_HW_MAX];
+	u64		max_period;
 };
 
 #endif

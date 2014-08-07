@@ -228,8 +228,7 @@ static void arc_perf_event_update(struct perf_event *event,
 	} while (local64_cmpxchg(&hwc->prev_count, prev_raw_count,
 				 new_raw_count) != prev_raw_count);
 
-	delta = (new_raw_count - prev_raw_count) &
-		((1ULL << arc_pmu->counter_size) - 1ULL);
+	delta = (new_raw_count - prev_raw_count) & arc_pmu->max_period;
 
 	local64_add(delta, &event->count);
 	local64_sub(delta, &hwc->period_left);
@@ -272,8 +271,11 @@ static int arc_pmu_event_init(struct perf_event *event)
 	struct hw_perf_event *hwc = &event->hw;
 	int ret;
 
-	/* ARC 700 PMU does not support sampling events */
-	if (is_sampling_event(event))
+	if (!is_sampling_event(event)) {
+		hwc->sample_period  = arc_pmu->max_period;
+		hwc->last_period = hwc->sample_period;
+		local64_set(&hwc->period_left, hwc->sample_period);
+	} else
 		return -ENOENT;
 
 	switch (event->attr.type) {
@@ -313,6 +315,49 @@ static void arc_pmu_disable(struct pmu *pmu)
 	write_aux_reg(ARC_REG_PCT_CONTROL, (tmp & 0xffff0000) | 0x0);
 }
 
+static int arc_pmu_event_set_period(struct perf_event *event)
+{
+	struct hw_perf_event *hwc = &event->hw;
+	u64 left = local64_read(&hwc->period_left);
+	u64 period = hwc->sample_period;
+	int idx = hwc->idx;
+	int ret = 0;
+	u64 value;
+
+	if (unlikely(left <= -period)) {
+		/* left underflowed by more than period. */
+		left = period;
+		local64_set(&hwc->period_left, left);
+		hwc->last_period = period;
+		ret = 1;
+	} else	if (unlikely((left + period) <= period)) {
+		/* left underflowed by less than period. */
+		left += period;
+		local64_set(&hwc->period_left, left);
+		hwc->last_period = period;
+		ret = 1;
+	}
+
+	if (left > arc_pmu->max_period) {
+		left = arc_pmu->max_period;
+		local64_set(&hwc->period_left, left);
+	}
+
+	value = arc_pmu->max_period - left;
+	local64_set(&hwc->prev_count, value);
+
+	/* Select counter */
+	write_aux_reg(ARC_REG_PCT_INDEX, idx);
+
+	/* Write value */
+	write_aux_reg(ARC_REG_PCT_COUNTL, value & 0xffffffff);
+	write_aux_reg(ARC_REG_PCT_COUNTH, (value >> 32));
+
+	perf_event_update_userpage(event);
+
+	return ret;
+}
+
 /*
  * Assigns hardware counter to hardware condition.
  * Note that there is no separate start/stop mechanism;
@@ -327,9 +372,11 @@ static void arc_pmu_start(struct perf_event *event, int flags)
 		return;
 
 	if (flags & PERF_EF_RELOAD)
-		WARN_ON_ONCE(!(event->hw.state & PERF_HES_UPTODATE));
+		WARN_ON_ONCE(!(hwc->state & PERF_HES_UPTODATE));
 
-	event->hw.state = 0;
+	hwc->state = 0;
+
+	arc_pmu_event_set_period(event);
 
 	/* enable ARC pmu here */
 	write_aux_reg(ARC_REG_PCT_INDEX, idx);
@@ -403,6 +450,7 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 	struct arc_reg_pct_build pct_bcr;
 	struct arc_reg_cc_build cc_bcr;
 	int i, j, ret;
+	int counter_size;	/* in bits */
 
 	union cc_name {
 		struct {
@@ -425,9 +473,6 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
-	pr_info("ARC perf\t: %d counters (%d bits), %d countable conditions\n",
-		arc_pmu->n_counters, arc_pmu->counter_size, cc_bcr.c);
-
 	arc_pmu = devm_kzalloc(&pdev->dev, sizeof(struct arc_pmu),
 			       GFP_KERNEL);
 	if (!arc_pmu)
@@ -440,7 +485,11 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 			ARC_PERF_MAX_COUNTERS, pct_bcr.c);
 	}
 
-	arc_pmu->counter_size = 32 + (pct_bcr.s << 4);
+	counter_size = 32 + (pct_bcr.s << 4);
+	arc_pmu->max_period = (1ULL << counter_size) - 1ULL;
+
+	pr_info("ARC perf\t: %d counters (%d bits), %d countable conditions\n",
+		arc_pmu->n_counters, counter_size, cc_bcr.c);
 
 	cc_name.str[8] = 0;
 	for (i = 0; i < PERF_COUNT_HW_MAX; i++)
