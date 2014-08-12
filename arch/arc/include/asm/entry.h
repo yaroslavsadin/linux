@@ -352,7 +352,11 @@
  * @reg [OUT] &thread_info of "current"
  */
 .macro GET_CURR_THR_INFO_FROM_SP  reg
+#ifdef CONFIG_ISA_ARCOMPACT
 	bic \reg, sp, (THREAD_SIZE - 1)
+#else
+	bmskn \reg, sp, THREAD_SHIFT - 1
+#endif
 .endm
 
 /*

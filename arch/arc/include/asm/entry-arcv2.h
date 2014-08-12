@@ -82,7 +82,7 @@
 #endif
 
 	PUSHAX	erbta
-	PUSHAX	ecr
+	PUSHAX	ecr		; r9 contains ECR, expected by EV_Trap
 
 	PUSH	r0		; orig_r0
 .endm
