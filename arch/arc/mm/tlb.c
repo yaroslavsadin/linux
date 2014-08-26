@@ -221,7 +221,7 @@ static void utlb_invalidate(void)
 
 static void tlb_entry_erase(unsigned int vaddr_n_asid)
 {
-	write_aux_reg(ARC_REG_TLBPD0, vaddr_n_asid);
+	write_aux_reg(ARC_REG_TLBPD0, vaddr_n_asid | _PAGE_PRESENT);
 	write_aux_reg(ARC_REG_TLBCOMMAND, TLBDeleteEntry);
 }
 
