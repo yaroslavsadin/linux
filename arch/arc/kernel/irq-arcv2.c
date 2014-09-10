@@ -88,7 +88,7 @@ static int arcv2_irq_map(struct irq_domain *d, unsigned int irq,
 	//desc = irq_to_desc(irq);
 	//if (irqd_is_per_cpu(&desc->irq_data) &&
 
-	if (irq == TIMER0_IRQ)
+	if (irq == TIMER0_IRQ || irq == IPI_IRQ)
 		irq_set_chip_and_handler(irq, &arcv2_irq_chip, handle_percpu_irq);
 	else
 		irq_set_chip_and_handler(irq, &arcv2_irq_chip, handle_level_irq);

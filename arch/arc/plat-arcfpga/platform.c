@@ -103,6 +103,9 @@ static void arc_fpga_serial_init(void)
 }
 #endif
 
+extern void mcip_init_early_smp(void);
+extern void mcip_init_smp(unsigned int cpu);
+
 static void __init plat_fpga_early_init(void)
 {
 	pr_info("[plat-arcfpga]: registering early dev resources\n");
@@ -111,6 +114,10 @@ static void __init plat_fpga_early_init(void)
 
 #ifdef CONFIG_ISS_SMP_EXTN
 	iss_model_init_early_smp();
+#endif
+#ifdef CONFIG_ARC_MCIP
+	/* No Hardware init, but filling the smp ops callbacks */
+	mcip_init_early_smp();
 #endif
 }
 
@@ -155,6 +162,9 @@ MACHINE_START(ANGEL4, "angel4")
 #ifdef CONFIG_ISS_SMP_EXTN
 	.init_smp	= iss_model_init_smp,
 #endif
+#ifdef CONFIG_ARC_MCIP
+	.init_smp	= mcip_init_smp,
+#endif
 MACHINE_END
 
 static const char *generic_fpga_compat[] __initconst = {
@@ -167,6 +177,9 @@ static const char *generic_fpga_compat[] __initconst = {
 
 MACHINE_START(GENERIC_FPGA, "generic_fpga")
 	.dt_compat	= generic_fpga_compat,
-	.init_early	= NULL,
+	.init_early	= plat_fpga_early_init,
 	.init_machine	= plat_fpga_populate_dev,
+#ifdef CONFIG_ARC_MCIP
+	.init_smp	= mcip_init_smp,
+#endif
 MACHINE_END
