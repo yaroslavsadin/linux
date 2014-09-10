@@ -228,6 +228,12 @@ void arc_local_timer_setup(unsigned int cpu)
 
 	arc_request_percpu_irq(TIMER0_IRQ, cpu, timer_irq_handler,
 			       "Timer0 (per-cpu-tick)", evt);
+
+#ifdef CONFIG_ISA_ARCV2
+	write_aux_reg(AUX_IRQ_SELECT, TIMER0_IRQ);
+	write_aux_reg(AUX_IRQ_PRIORITY, ARCV2_IRQ_DEF_PRIO);
+#endif
+
 }
 
 /*
