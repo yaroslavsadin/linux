@@ -64,7 +64,8 @@ static void arcv2_irq_unmask(struct irq_data *data)
 
 void arcv2_irq_enable(struct irq_data *data)
 {
-#if ARCV2_IRQ_DEF_PRIO != 0
+	/* XXX: OSCI LAN needs explicit IRQ_ENABLE */
+/* #if ARCV2_IRQ_DEF_PRIO != 0 */
 	/* set default priority */
 	write_aux_reg(AUX_IRQ_SELECT, data->irq);
 	write_aux_reg(AUX_IRQ_PRIORITY, ARCV2_IRQ_DEF_PRIO);
@@ -73,7 +74,8 @@ void arcv2_irq_enable(struct irq_data *data)
 	 * hw auto enables (linux unmask) all by default
 	 * So no need to do IRQ_ENABLE here
 	 */
-#endif
+/* #endif */
+	write_aux_reg(AUX_IRQ_ENABLE, 1);
 }
 
 static struct irq_chip arcv2_irq_chip = {
