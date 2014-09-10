@@ -12,6 +12,7 @@
 #ifndef __PLAT_IRQ_H
 #define __PLAT_IRQ_H
 
+#ifdef CONFIG_ISA_ARCOMPACT
 #define UART0_IRQ	5
 #define UART1_IRQ	10
 #define UART2_IRQ	11
@@ -22,6 +23,9 @@
 
 #ifdef CONFIG_SMP
 #define IDU_INTERRUPT_0 16
+#endif
+#else
+#define UART0_IRQ	18
 #endif
 
 #endif
