@@ -26,7 +26,7 @@
 
 #if IS_ENABLED(CONFIG_SERIAL_ARC)
 static unsigned long arc_uart_info[] = {
-	0,	/* uart->is_emulated (runtime @running_on_hw) */
+	0,	/* uart->is_emulated */
 	0,	/* uart->port.uartclk */
 	0,	/* uart->baud */
 	0
@@ -67,9 +67,6 @@ static struct platform_device *fpga_early_devs[] __initdata = {
 
 static void arc_fpga_serial_init(void)
 {
-	/* To let driver workaround ISS bug: baudh Reg can't be set to 0 */
-	arc_uart_info[0] = !running_on_hw;
-
 	arc_uart_info[1] = arc_get_core_freq();
 
 	arc_uart_info[2] = CONFIG_ARC_SERIAL_BAUD;
