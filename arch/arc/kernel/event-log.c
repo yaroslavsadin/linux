@@ -73,51 +73,65 @@ int timeline_ctr;
 /* Used in the low level asm handler to free up a reg */
 int tmp_save_reg, tmp_save_reg2;
 
+int get_cpu_id(void)
+{
+	unsigned int id = read_aux_reg(AUX_IDENTITY);
+	return (id >> 8) & 0xFF;
+}
 
 /* This is called from low level handlers, before doing EARLY RTIE
  * We just capture data and return
  * Don't call anything generic - printk is absolute NO
  */
-void take_snap3(int event, unsigned int sp)
+void noinline __take_snap(int event, struct pt_regs *regs, unsigned int extra3)
 {
-	unsigned long flags = 0;
 	timeline_log_t *entry = &timeline_log[timeline_ctr];
-	struct pt_regs *regs = (struct pt_regs *)sp;
 
-	/* In case this is for Level 1 ISR, disable further Interrupts
-	 * so that timeline_ctr is not clobbered
-	 */
-	if (event == SNAP_INTR_IN)
-		local_irq_save(flags);
+	if (get_cpu_id() != 0)
+		return;
 
 	memset(entry, 0, sizeof(timeline_log_t));
 
 	entry->time = read_aux_reg(0x100); //ARC_REG_TIMER1_CNT);
 	entry->task = current->pid;
 	entry->event = event;
-	entry->pc = regs->ret;
-
 	entry->sp = regs->sp;
-	entry->extra =  regs->status32;
-	entry->extra3 = read_aux_reg(0xd);	// AUX_SP
+
+	entry->pc = regs->ret;
+	entry->stat32 =  regs->status32;
+	entry->extra = extra3;
 
 	if (event == SNAP_INTR_IN) {
 	} else if (event == SNAP_TRAP_IN) {
-		entry->cause = task_pt_regs(current)->r8;
+		entry->extra = task_pt_regs(current)->r8;
 	} else if (event & EVENT_CLASS_EXIT) {
 	}
-	else { // if (event == SNAP_DO_PF_ENTER) {
+	else {
 		entry->cause = read_aux_reg(0x403);	/* ecr */
-		entry->extra2 = read_aux_reg(0x404);	// EFA
+		entry->efa = read_aux_reg(0x404);	// EFA
 	}
 
 	if (timeline_ctr == (MAX_SNAPS - 1))
 		timeline_ctr = 0;
 	else
 		timeline_ctr++;
+}
 
-	if (event == SNAP_INTR_IN)
-		local_irq_restore(flags);
+void take_snap3(int event, unsigned int sp)
+{
+	struct pt_regs *regs = (struct pt_regs *)sp;
+
+	if (!sp)
+		regs = task_pt_regs(current);
+
+	__take_snap(event, regs, regs->bta);
+}
+
+void take_snap(int event, unsigned int extra)
+{
+	struct pt_regs *regs = (struct pt_regs *)task_pt_regs(current);
+
+	__take_snap(event, regs, extra);
 }
 
 /* Event Sort API, so that counter Rollover is not visibel to user */

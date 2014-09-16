@@ -335,19 +335,7 @@ ARC_ENTRY EV_Trap
 
 	EXCEPTION_PROLOGUE
 
-	TAKE_SNAP_C_FROM_ASM SNAP_TRAP_IN
-#ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
-	ld  r0, [sp, PT_r0]
-	ld  r1, [sp, PT_r1]
-	ld  r2, [sp, PT_r2]
-	ld  r3, [sp, PT_r3]
-	ld  r4, [sp, PT_r4]
-	ld  r5, [sp, PT_r5]
-	ld  r6, [sp, PT_r6]
-	ld  r7, [sp, PT_r7]
-	ld  r8, [sp, PT_r7 + 4]
-	lr  r9, [ecr]
-#endif
+	TAKE_SNAP_SYSCALL r10, r11
 
 	; EXCEPTION_PROLOGUE has ECR in r9 already
 	bmsk.f	0, r9, 7

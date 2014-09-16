@@ -52,6 +52,8 @@
 #define SNAP_ITLB		KERNEL_ENTER_EVENT(4)	// 1001
 #define SNAP_DTLB_LD		KERNEL_ENTER_EVENT(5)	// 2001
 #define SNAP_DTLB_ST		KERNEL_ENTER_EVENT(6)	// 4001
+#define SNAP_PROTV		KERNEL_ENTER_EVENT(7)	// 8001
+#define SNAP_UMC		KERNEL_ENTER_EVENT(8)	//10001
 
 #define SNAP_INTR_OUT           KERNEL_EXIT_EVENT(0)	//  102
 #define SNAP_EXCP_OUT           KERNEL_EXIT_EVENT(1)	//  202
@@ -73,7 +75,7 @@
 #define SNAP_SENTINEL           CUSTOM_EVENT(22)
 
 #ifndef CONFIG_ARC_DBG_EVENT_TIMELINE
-
+#define take_snap(event, extra)
 #define take_snap3(event, sp)
 #define sort_snaps(halt_after_sort)
 
@@ -86,7 +88,7 @@ enum arc_event {
 	IRQ_O = SNAP_INTR_OUT,
 	EX_I = SNAP_EXCP_IN,
 	EX_O = SNAP_EXCP_OUT,
-	TRAP = SNAP_TRAP_IN,
+	SYSCALL = SNAP_TRAP_IN,
 	TRAP_O = SNAP_TRAP_OUT,
 	SW_U = SNAP_PRE_CTXSW_2_U,
 	SW_K = SNAP_PRE_CTXSW_2_K,
@@ -94,25 +96,25 @@ enum arc_event {
 	ITLB = SNAP_ITLB,
 	DITLB_ld = SNAP_DTLB_LD,
 	DTLB_st = SNAP_DTLB_ST,
-
-	extra1		= 0x20080,
-	extra2		= 0x40080,
+	ProtV = SNAP_PROTV,
+	UMC = SNAP_UMC,
 };
 
 typedef struct {
 
+	/* 28 */ unsigned long time;
 	/* 0 */ enum arc_event event;
 	/* 4 */ unsigned int cause;
-	/* 8 */ unsigned int extra; /* Traps: Syscall num, Intr: IRQ, Excep */
+	/* 8 */ unsigned int  stat32;
 	/* 12 */ unsigned int pc;
-	/* 16 */ unsigned int extra2;
-	/* 20 */ unsigned int extra3;
+	/* 16 */ unsigned int efa;
+	/* 20 */ unsigned int extra; /* Traps: Syscall num, Intr: IRQ, Excep */
 	/* 24 */ unsigned int task;
-	/* 28 */ unsigned long time;
 	/* 32 */ unsigned int sp;
 
 } timeline_log_t;
 
+void take_snap(int event, unsigned int extra);
 void take_snap3(int event, unsigned int sp);
 
 #endif /* __ASSEMBLY__ */

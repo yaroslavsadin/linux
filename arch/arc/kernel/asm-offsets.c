@@ -66,7 +66,7 @@ int main(void)
 
 #ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
 	BLANK();
-	DEFINE(EVLOG_FIELD_EXTRA, offsetof(timeline_log_t, extra));
+	DEFINE(EVLOG_FIELD_STATUS, offsetof(timeline_log_t, stat32));
 	DEFINE(EVLOG_FIELD_PC, offsetof(timeline_log_t, pc));
 	DEFINE(EVLOG_FIELD_CAUSE, offsetof(timeline_log_t, cause));
 	DEFINE(EVLOG_FIELD_TASK, offsetof(timeline_log_t, task));
@@ -74,8 +74,8 @@ int main(void)
 	DEFINE(EVLOG_FIELD_EVENT_ID, offsetof(timeline_log_t, event));
 	DEFINE(EVLOG_FIELD_SP, offsetof(timeline_log_t, sp));
 	DEFINE(EVLOG_RECORD_SZ, sizeof(timeline_log_t));
-	DEFINE(EVLOG_FIELD_EXTRA2, offsetof(timeline_log_t, extra2));
-	DEFINE(EVLOG_FIELD_EXTRA3, offsetof(timeline_log_t, extra3));
+	DEFINE(EVLOG_FIELD_EFA, offsetof(timeline_log_t, efa));
+	DEFINE(EVLOG_FIELD_EXTRA, offsetof(timeline_log_t, extra));
 #endif
 
 	return 0;

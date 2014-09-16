@@ -20,7 +20,10 @@
 
 #ifndef CONFIG_ARC_DBG_EVENT_TIMELINE
 
-.macro TAKE_SNAP_ASM reg_scratch, reg_ptr, type
+.macro TAKE_SNAP_TLB reg0, reg1, miss_type
+.endm
+
+.macro TAKE_SNAP_SYSCALL reg0, reg1
 .endm
 
 .macro TAKE_SNAP_C_FROM_ASM type
@@ -39,83 +42,90 @@
 	bl take_snap3
 .endm
 
-.macro SNAP_PROLOGUE reg_scratch, reg_ptr, type
+.macro SNAP_PROLOGUE reg0, reg1, event_id
 
-	/*
-	 * Earlier we used to save only reg_scratch and clobber reg_ptr and rely
-	 * on caller to understand this. Too much trouble.
-	 * Now we save both
-	 */
-	st \reg_scratch, [tmp_save_reg]
-	st \reg_ptr, [tmp_save_reg2]
+	PUSH		\reg0
+	PUSH		\reg1
 
-	ld \reg_ptr, [timeline_ctr]
+	GET_CPU_ID	\reg0
+	tst		\reg0, \reg0	; Z set if Zero
+	bnz		899f
+
+	ld \reg1, [timeline_ctr]
 
 	/* HACK to detect if the circular log buffer is being overflowed */
-	brne \reg_ptr, MAX_SNAPS, 1f
+	brne \reg1, MAX_SNAPS, 1f
 	flag 1
 	nop
 1:
 #ifdef CONFIG_ARC_HAS_HW_MPY
-	mpyu \reg_ptr, \reg_ptr, EVLOG_RECORD_SZ
+	mpyu \reg1, \reg1, EVLOG_RECORD_SZ
 #else
 #error "even logger broken for !CONFIG_ARC_HAS_HW_MPY
 #endif
 
-	add \reg_ptr, timeline_log, \reg_ptr
+	add \reg1, timeline_log, \reg1
 
 	/*############ Common data ########## */
 
 	/* TIMER1 count in timeline_log[timeline_ctr].time */
-	lr \reg_scratch, [0x100]
-	st \reg_scratch, [\reg_ptr, EVLOG_FIELD_TIME]
+	lr \reg0, [0x100]
+	st \reg0, [\reg1, EVLOG_FIELD_TIME]
 
 	/* current task ptr in timeline_log[timeline_ctr].task */
-	ld \reg_scratch, [_current_task]
-	ld \reg_scratch, [\reg_scratch, TASK_TGID]
-	st \reg_scratch, [\reg_ptr, EVLOG_FIELD_TASK]
+	ld \reg0, [_current_task]
+	ld \reg0, [\reg0, TASK_TGID]
+	st \reg0, [\reg1, EVLOG_FIELD_TASK]
 
 	/* Type of event (Intr/Excp/Trap etc) */
-	mov \reg_scratch, \type
-	st \reg_scratch, [\reg_ptr, EVLOG_FIELD_EVENT_ID]
+	mov \reg0, \event_id
+	st \reg0, [\reg1, EVLOG_FIELD_EVENT_ID]
 
-	st sp, [\reg_ptr, EVLOG_FIELD_SP]
+	st sp, [\reg1, EVLOG_FIELD_SP]
 
-	lr \reg_scratch, [efa]    ; EFA
-	st \reg_scratch, [\reg_ptr, EVLOG_FIELD_EXTRA2]
+	lr \reg0, [eret]
+	st \reg0, [\reg1, EVLOG_FIELD_PC]
 
-	lr \reg_scratch, [0xd]    ; AUX_SP
-	st \reg_scratch, [\reg_ptr, EVLOG_FIELD_EXTRA3]
+	lr \reg0, [efa]    ; EFA
+	st \reg0, [\reg1, EVLOG_FIELD_EFA]
 
-	lr \reg_scratch, [0x403]	; ECR
-	st \reg_scratch, [\reg_ptr, EVLOG_FIELD_CAUSE]
+	lr \reg0, [0x403]	; ECR
+	st \reg0, [\reg1, EVLOG_FIELD_CAUSE]
+
+	lr \reg0, [erstatus]
+	st \reg0, [\reg1, EVLOG_FIELD_STATUS]
+
+	lr \reg0, [0xd]    ; AUX_SP
+	st \reg0, [\reg1, EVLOG_FIELD_EXTRA]
+
 .endm
 
 
-.macro SNAP_EPILOGUE reg_scratch, reg_ptr
+.macro SNAP_EPILOGUE reg0, reg1
 
 	/* increment timeline_ctr  with mode on max */
-	ld \reg_scratch, [timeline_ctr]
-	add \reg_scratch, \reg_scratch, 1
-	and \reg_scratch, \reg_scratch, MAX_SNAPS_MASK
-	st \reg_scratch, [timeline_ctr]
+	ld \reg0, [timeline_ctr]
+	add \reg0, \reg0, 1
+	and \reg0, \reg0, MAX_SNAPS_MASK
+	st \reg0, [timeline_ctr]
 
+899:
 	/* Restore back orig scratch reg */
-	ld \reg_scratch, [tmp_save_reg]
-	ld \reg_ptr, [tmp_save_reg2]
+	POP	\reg1
+	POP	\reg0
 .endm
 
-.macro TAKE_SNAP_TLB reg_scratch, reg_ptr, type
+.macro TAKE_SNAP_TLB reg0, reg1, event_id
+	SNAP_PROLOGUE \reg0, \reg1, \event_id
+	SNAP_EPILOGUE \reg0, \reg1
+.endm
 
-	SNAP_PROLOGUE \reg_scratch, \reg_ptr, \type
+.macro TAKE_SNAP_SYSCALL reg0, reg1
+	SNAP_PROLOGUE \reg0, \reg1, SNAP_TRAP_IN
 
-	lr \reg_scratch, [eret]
-	st \reg_scratch, [\reg_ptr, EVLOG_FIELD_PC]
+	st r8, [\reg1, EVLOG_FIELD_EXTRA]	; syscall num
 
-	lr \reg_scratch, [erstatus]
-	st \reg_scratch, [\reg_ptr, EVLOG_FIELD_EXTRA]
-
-	SNAP_EPILOGUE \reg_scratch, \reg_ptr
+	SNAP_EPILOGUE \reg0, \reg1
 .endm
 
 #endif	/* CONFIG_ARC_DBG_EVENT_TIMELINE */
