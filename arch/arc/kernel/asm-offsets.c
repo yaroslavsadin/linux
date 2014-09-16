@@ -38,6 +38,7 @@ int main(void)
 
 	DEFINE(TASK_ACT_MM, offsetof(struct task_struct, active_mm));
 	DEFINE(TASK_TGID, offsetof(struct task_struct, tgid));
+	DEFINE(TASK_PID, offsetof(struct task_struct, pid));
 
 	DEFINE(MM_CTXT, offsetof(struct mm_struct, context));
 	DEFINE(MM_PGD, offsetof(struct mm_struct, pgd));
@@ -64,7 +65,7 @@ int main(void)
 #ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
 	BLANK();
 	DEFINE(EVLOG_FIELD_EXTRA, offsetof(timeline_log_t, extra));
-	DEFINE(EVLOG_FIELD_EFA, offsetof(timeline_log_t, fault_addr));
+	DEFINE(EVLOG_FIELD_PC, offsetof(timeline_log_t, pc));
 	DEFINE(EVLOG_FIELD_CAUSE, offsetof(timeline_log_t, cause));
 	DEFINE(EVLOG_FIELD_TASK, offsetof(timeline_log_t, task));
 	DEFINE(EVLOG_FIELD_TIME, offsetof(timeline_log_t, time));

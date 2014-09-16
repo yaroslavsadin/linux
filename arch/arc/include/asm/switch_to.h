@@ -41,13 +41,11 @@ extern void fpu_save_restore(struct task_struct *p, struct task_struct *n);
 #define prepare_arch_switch(next)              				\
 do {									\
 	if (next->mm)							\
-		take_snap(SNAP_PRE_CTXSW_2_U,				\
-			 (unsigned int) __builtin_return_address(0),	\
-			 current_thread_info()->preempt_count);		\
+		take_snap3(SNAP_PRE_CTXSW_2_U,				\
+			 (unsigned int) __builtin_return_address(0));	\
 	else								\
-		take_snap(SNAP_PRE_CTXSW_2_K,				\
-			 (unsigned int) __builtin_return_address(0),	\
-			 current_thread_info()->preempt_count);		\
+		take_snap3(SNAP_PRE_CTXSW_2_K,				\
+			 (unsigned int) __builtin_return_address(0));	\
 }									\
 while (0)
 #endif

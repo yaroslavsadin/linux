@@ -330,7 +330,7 @@ ARC_ENTRY EV_Trap
 	ld  r6, [sp, PT_r6]
 	ld  r7, [sp, PT_r7]
 	ld  r8, [sp, PT_r7 + 4]
-	; XXX restore r9 as well
+	lr  r9, [ecr]
 #endif
 
 	; EXCEPTION_PROLOGUE has ECR in r9 already
