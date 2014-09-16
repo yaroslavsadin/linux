@@ -34,7 +34,10 @@ static noinline void print_reg_file(long *reg_rev, int start_num)
 			n += scnprintf(buf + n, len - n, "\n");
 
 		/* because pt_regs has regs reversed: r12..r0, r25..r13 */
-		reg_rev--;
+		if (is_isa_arcv2() && start_num == 0)
+			reg_rev++;
+		else
+			reg_rev--;
 	}
 
 	if (start_num != 0)
