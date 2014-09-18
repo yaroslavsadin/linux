@@ -48,7 +48,7 @@ static void read_arc_build_cfg_regs(void)
 	FIX_PTR(cpu);
 
 	READ_BCR(AUX_IDENTITY, cpu->core);
-	READ_BCR(ARC_REG_ISA_CFG, cpu->isa);
+	READ_BCR(ARC_REG_ISA_CFG_BCR, cpu->isa);
 
 	READ_BCR(ARC_REG_TIMERS_BCR, cpu->timers);
 	cpu->vec_base = read_aux_reg(AUX_INTR_VEC_BASE);
@@ -58,10 +58,11 @@ static void read_arc_build_cfg_regs(void)
 
 	READ_BCR(ARC_REG_MUL_BCR, cpu->extn_mpy);
 
-	cpu->extn.swap = read_aux_reg(ARC_REG_SWAP_BCR) ? 1: 0;	/* 1, 3 */
-	cpu->extn.norm = read_aux_reg(ARC_REG_NORM_BCR) > 1 ? 1 : 0; /* 2, 3 */
+	cpu->extn.norm = read_aux_reg(ARC_REG_NORM_BCR) > 1 ? 1 : 0; /* 2,3 */
+	cpu->extn.barrel = read_aux_reg(ARC_REG_BARREL_BCR) > 1 ? 1 : 0; /* 2,3 */
+	cpu->extn.swap = read_aux_reg(ARC_REG_SWAP_BCR) ? 1 : 0;        /* 1,3 */
+	cpu->extn.crc = read_aux_reg(ARC_REG_CRC_BCR) ? 1 : 0;
 	cpu->extn.minmax = read_aux_reg(ARC_REG_MIXMAX_BCR) > 1 ? 1 : 0; /* 2 */
-	cpu->extn.barrel = read_aux_reg(ARC_REG_BARREL_BCR) > 1 ? 1 : 0; /* 2, 3 */
 
 	/* Note that we read the CCM BCRs independent of kernel config
 	 * This is to catch the cases where user doesn't know that
@@ -95,8 +96,36 @@ static void read_arc_build_cfg_regs(void)
 	read_decode_mmu_bcr();
 	read_decode_cache_bcr();
 
-	READ_BCR(ARC_REG_FP_BCR, cpu->fp);
-	READ_BCR(ARC_REG_DPFP_BCR, cpu->dpfp);
+	if (cpu->isa.ver <= 1) {
+		struct bcr_fp_arcompact sp, dp;
+		struct bcr_bpu_arcompact bpu;
+
+		READ_BCR(ARC_REG_FP_BCR, sp);
+		READ_BCR(ARC_REG_DPFP_BCR, dp);
+		cpu->extn.fpu_sp = sp.ver ? 1 : 0;
+		cpu->extn.fpu_dp = dp.ver ? 1 : 0;
+
+		READ_BCR(ARC_REG_BPU_BCR, bpu);
+		cpu->bpu.ver = bpu.ver;
+		cpu->bpu.full = bpu.fam ? 1 : 0;
+		if (bpu.ent) {
+			cpu->bpu.num_cache = 256 << (bpu.ent - 1);
+			cpu->bpu.num_pred = 256 << (bpu.ent - 1);
+		}
+	} else {
+		struct bcr_fp_arcv2 spdp;
+		struct bcr_bpu_arcv2 bpu;
+
+		READ_BCR(ARC_REG_FP_V2_BCR, spdp);
+		cpu->extn.fpu_sp = spdp.sp ? 1 : 0;
+		cpu->extn.fpu_dp = spdp.dp ? 1 : 0;
+
+		READ_BCR(ARC_REG_BPU_BCR, bpu);
+		cpu->bpu.ver = bpu.ver;
+		cpu->bpu.full = bpu.ft;
+		cpu->bpu.num_cache = 256 << bpu.bce;
+		cpu->bpu.num_pred = 2048 << bpu.pte;
+	}
 }
 
 static const struct cpuinfo_data arc_cpu_tbl[] = {
@@ -108,27 +137,43 @@ static const struct cpuinfo_data arc_cpu_tbl[] = {
 	{ {0x00, NULL		} }
 };
 
+#define IS_AVAIL1(var, str)	((var) ? str : "")
+#define IS_USED(cfg)		(IS_ENABLED(cfg) ? "" : "(not used) ")
+#define IS_AVAIL2(var, str, cfg)				\
+				IS_AVAIL1(var, str),		\
+				IS_AVAIL1(var, IS_USED(cfg))
+
 static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 {
-	int n = 0;
 	struct cpuinfo_arc *cpu = &cpuinfo_arc700[cpu_id];
+	struct bcr_identity *core = &cpu->core;
 	const struct cpuinfo_data *tbl;
-	char *isa_nm = cpu->isa.ver > 1 ? "ARCv2":"ARCompact";
-	int be = cpu->isa.ver ? cpu->isa.be : IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
+	char *isa_nm;
+	int i, be, atomic;
+	int n = 0;
 
 	FIX_PTR(cpu);
 
-#define IS_AVAIL1(var, str)	((var) ? str : "")
-#define IS_USED(cfg)		(IS_ENABLED(cfg) ? "" : "(not used) ")
-#define IS_AVAIL_USED(var, cfg)	(IS_AVAIL1(var, IS_USED(cfg)))
+	if (cpu->isa.ver <= 1) {
+		isa_nm = "ARCompact";
+		be = IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
+
+		atomic = cpu->isa.atomic1;
+		if (!cpu->isa.ver)	/* ISA BCR absent, use Kconfig info */
+			atomic = IS_ENABLED(CONFIG_ARC_HAS_LLSC);
+	} else {
+		isa_nm = "ARCv2";
+		be = cpu->isa.be;
+		atomic = cpu->isa.atomic;
+	}
 
 	n += scnprintf(buf + n, len - n,
 		       "\nIDENTITY\t: ARCVER [%#02x] ARCNUM [%#02x] CHIPID [%#4x]\n",
-		       cpu->core.family, cpu->core.cpu_id, cpu->core.chip_id);
+		       core->family, core->cpu_id, core->chip_id);
 
 	for (tbl = &arc_cpu_tbl[0]; tbl->info.id != 0; tbl++) {
-		if ((cpu->core.family >= tbl->info.id) &&
-		    (cpu->core.family <= tbl->up_range)) {
+		if ((core->family >= tbl->info.id) &&
+		    (core->family <= tbl->up_range)) {
 			n += scnprintf(buf + n, len - n,
 				       "processor [%d]\t: %s (%s ISA) %s\n",
 				       cpu_id, tbl->info.str, isa_nm,
@@ -144,53 +189,55 @@ static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 		       (unsigned int)(arc_get_core_freq() / 1000000),
 		       (unsigned int)(arc_get_core_freq() / 10000) % 100);
 
-	n += scnprintf(buf + n, len - n, "Timers\t\t: %s%s%s%s\n",
+	n += scnprintf(buf + n, len - n, "Timers\t\t: %s%s%s%s\nISA Extn\t: ",
 		       IS_AVAIL1(cpu->timers.t0, "Timer0 "),
 		       IS_AVAIL1(cpu->timers.t1, "Timer1 "),
-		       IS_AVAIL1(cpu->timers.rtc, "64-bit RTC "),
-		       IS_AVAIL_USED(cpu->timers.rtc, CONFIG_ARC_HAS_RTSC));
+		       IS_AVAIL2(cpu->timers.rtc, "64-bit RTC ", CONFIG_ARC_HAS_RTSC));
 
-	n += scnprintf(buf + n, len - n, "ISA Extn\t: ");
+	n += i = scnprintf(buf + n, len - n, "%s%s%s%s%s",
+			   IS_AVAIL2(atomic, "atomic ", CONFIG_ARC_HAS_LLSC),
+			   IS_AVAIL2(cpu->isa.ldd, "ll64 ", CONFIG_ARC_HAS_LL64),
+			   IS_AVAIL1(cpu->isa.unalign, "unalign (not used)"));
 
-	if (cpu->isa.ver > 1) {
-		int i;
+	if (i)
+		n += scnprintf(buf + n, len - n, "\n\t\t: ");
 
-		n += i = scnprintf(buf + n, len - n, "%s%s%s%s%s",
-			       IS_AVAIL1(cpu->isa.atomic, "atomic "),
-			       IS_AVAIL_USED(cpu->isa.atomic, CONFIG_ARC_HAS_LLSC),
-			       IS_AVAIL1(cpu->isa.ldd, "ll64 "),
-			       IS_AVAIL_USED(cpu->isa.ldd, CONFIG_ARC_HAS_LL64),
-			       IS_AVAIL1(cpu->isa.unalign, "unalign "));
+	if (cpu->extn_mpy.ver) {
+		if (cpu->extn_mpy.ver <= 0x2) {	/* ARCompact */
+			n += scnprintf(buf + n, len - n, "mpy ");
+		} else {
+			int opt = 2;	/* stock MPY/MPYH */
+			if (cpu->extn_mpy.dsp)	/* OPT 7-9 */
+				opt = cpu->extn_mpy.dsp + 6;
 
-		if (i)
-			n += scnprintf(buf + n, len - n, "\n\t\t: ");
-
-	} else {
-		n += scnprintf(buf + n, len - n, "atomic%s swape%s\n\t\t: ",
-			        IS_USED(CONFIG_ARC_HAS_LLSC),
-			        IS_USED(CONFIG_ARC_HAS_SWAPE));
+			n += scnprintf(buf + n, len - n, "mpy(opt %d) ", opt);
+		}
 	}
 
-	n += scnprintf(buf + n, len - n, "%s%s",
+	n += scnprintf(buf + n, len - n, "%s%s%s%s%s%s%s%s\n",
 		       IS_AVAIL1(cpu->isa.div_rem, "div_rem "),
-		       IS_AVAIL1(cpu->extn_mpy.ver, "mpy "));
-
-	/* Only valid for ARCv2 */
-	if (cpu->extn_mpy.dsp)
-		n += scnprintf(buf + n, len - n, "(opt %d) ",
-					cpu->extn_mpy.dsp + 6);
-
-	n += scnprintf(buf + n, len - n, "%s%s%s%s\n",
 		       IS_AVAIL1(cpu->extn.norm, "norm "),
-		       IS_AVAIL1(cpu->extn.barrel, "shift "),
+		       IS_AVAIL1(cpu->extn.barrel, "barrel-shift "),
 		       IS_AVAIL1(cpu->extn.swap, "swap "),
-		       IS_AVAIL1(cpu->extn.minmax, "minmax "));
+		       IS_AVAIL1(cpu->extn.minmax, "minmax "),
+		       IS_AVAIL1(cpu->extn.crc, "crc "),
+		       IS_AVAIL2(1, "swape", CONFIG_ARC_HAS_SWAPE));
 
-	n += scnprintf(buf + n, len - n, "Vector Table\t: %#x\n",
-		       cpu->vec_base);
+	if (cpu->bpu.ver)
+		n += scnprintf(buf + n, len - n,
+			      "BPU\t\t: %s%s match, cache:%d, Predict Table:%d\n",
+			      IS_AVAIL1(cpu->bpu.full, "full"),
+			      IS_AVAIL1(!cpu->bpu.full, "partial"),
+			      cpu->bpu.num_cache, cpu->bpu.num_pred);
 
-	n += scnprintf(buf + n, len - n, "Uncached Base\t: %#x\n",
-		       cpu->uncached_base);
+	if (cpu->extn.fpu_sp || cpu->extn.fpu_dp)
+		n += scnprintf(buf + n, len - n, "\nFPU\t\t: %s%s\n",
+			       IS_AVAIL1(cpu->extn.fpu_sp, "SP "),
+			       IS_AVAIL1(cpu->extn.fpu_dp, "DP "));
+
+	n += scnprintf(buf + n, len - n,
+		       "Vector Table\t: %#x\nUncached Base\t: %#x\n",
+		       cpu->vec_base, cpu->uncached_base);
 
 	return buf;
 }
@@ -212,17 +259,6 @@ static char *arc_extn_mumbojumbo(int cpu_id, char *buf, int len)
 	if (cpu->iccm.sz)
 		n += scnprintf(buf + n, len - n, "ICCM: @ %x, %d KB",
 			       cpu->iccm.base_addr, TO_KB(cpu->iccm.sz));
-
-	n += scnprintf(buf + n, len - n, "\nExtn [FPU]\t: %s",
-		       !(cpu->fp.ver || cpu->dpfp.ver) ? "N/A" : "");
-
-	if (cpu->fp.ver)
-		n += scnprintf(buf + n, len - n, "SP [v%d] %s",
-			       cpu->fp.ver, cpu->fp.fast ? "(fast)" : "");
-
-	if (cpu->dpfp.ver)
-		n += scnprintf(buf + n, len - n, "DP [v%d] %s",
-			       cpu->dpfp.ver, cpu->dpfp.fast ? "(fast)" : "");
 
 	n += scnprintf(buf + n, len - n, "\n");
 
@@ -272,9 +308,9 @@ static void arc_chk_core_config(void)
 	 */
 	fpu_enabled = IS_ENABLED(CONFIG_ARC_FPU_SAVE_RESTORE);
 
-	if (cpu->dpfp.ver && !fpu_enabled)
+	if (cpu->extn.fpu_dp && !fpu_enabled)
 		pr_warn("CONFIG_ARC_FPU_SAVE_RESTORE needed for working apps\n");
-	else if (!cpu->dpfp.ver && fpu_enabled)
+	else if (!cpu->extn.fpu_dp && fpu_enabled)
 		panic("FPU non-existent, disable CONFIG_ARC_FPU_SAVE_RESTORE\n");
 }
 

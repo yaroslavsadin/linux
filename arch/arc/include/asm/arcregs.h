@@ -13,10 +13,12 @@
 
 /* Build Configuration Registers */
 #define ARC_REG_DCCMBASE_BCR	0x61	/* DCCM Base Addr */
+#define ARC_REG_CRC_BCR		0x62
 #define ARC_REG_VECBASE_BCR	0x68
 #define ARC_REG_PERIBASE_BCR	0x69
-#define ARC_REG_FP_BCR		0x6B	/* Single-Precision FPU */
-#define ARC_REG_DPFP_BCR	0x6C	/* Dbl Precision FPU */
+#define ARC_REG_FP_BCR		0x6B	/* ARCompact: Single-Precision FPU */
+#define ARC_REG_DPFP_BCR	0x6C	/* ARCompact: Dbl Precision FPU */
+#define ARC_REG_FP_V2_BCR	0xc8	/* ARCv2 FPU */
 #define ARC_REG_DCCM_BCR	0x74	/* DCCM Present + SZ */
 #define ARC_REG_TIMERS_BCR	0x75
 #define ARC_REG_ICCM_BCR	0x78
@@ -28,7 +30,8 @@
 #define ARC_REG_MIXMAX_BCR	0x7e
 #define ARC_REG_BARREL_BCR	0x7f
 #define ARC_REG_D_UNCACH_BCR	0x6A
-#define ARC_REG_ISA_CFG		0xc1
+#define ARC_REG_BPU_BCR		0xc0
+#define ARC_REG_ISA_CFG_BCR	0xc1
 
 /* status32 Bits Positions */
 #define STATUS_AE_BIT		5	/* Exception active */
@@ -209,23 +212,22 @@ struct arc_fpu {
  ***************************************************************
  * Build Configuration Registers, with encoded hardware config
  */
-union bcr_identity {
-	struct {
+struct bcr_identity {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-		unsigned int chip_id:16, cpu_id:8, family:8;
+	unsigned int chip_id:16, cpu_id:8, family:8;
 #else
-		unsigned int family:8, cpu_id:8, chip_id:16;
+	unsigned int family:8, cpu_id:8, chip_id:16;
 #endif
-	};
-	unsigned int id;
 };
 
-/* Only present in ARCv2 onwards */
+/* ARCompact ISA BCR, if avail: ver:8, atomic1:1, pad1:23; */
 struct bcr_isa {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int div_rem:4, pad2:4, ldd:1, unalign:1, atomic:1, be:1, pad1:12, ver:8;
+	unsigned int div_rem:4, pad2:4, ldd:1, unalign:1, atomic:1, be:1,
+		     pad1:11, atomic1:1, ver:8;
 #else
-	unsigned int ver:8, pad1:12, be:1, atomic:1, unalign:1, ldd:1, pad2:4, div_rem:4;
+	unsigned int ver:8, atomic1:1, pad1:11, be:1, atomic:1, unalign:1,
+		     ldd:1, pad2:4, div_rem:4;
 #endif
 };
 
@@ -252,6 +254,7 @@ struct bcr_perip {
 	unsigned int pad:8, sz:8, pad2:8, start:8;
 #endif
 };
+
 struct bcr_iccm {
 #ifdef CONFIG_CPU_BIG_ENDIAN
 	unsigned int base:16, pad:5, sz:3, ver:8;
@@ -278,8 +281,8 @@ struct bcr_dccm {
 #endif
 };
 
-/* Both SP and DP FPU BCRs have same format */
-struct bcr_fp {
+/* ARCompact: Both SP and DP FPU BCRs have same format */
+struct bcr_fp_arcompact {
 #ifdef CONFIG_CPU_BIG_ENDIAN
 	unsigned int fast:1, ver:8;
 #else
@@ -287,11 +290,33 @@ struct bcr_fp {
 #endif
 };
 
+struct bcr_fp_arcv2 {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+#else
+	unsigned int ver:8, sp:1, pad1:7, dp:1, pad2:15;
+#endif
+};
+
 struct bcr_timer {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int res:21, rtc:1, t1:1, t0:1, ver:8;
+	unsigned int pad2:15, rtsc:1, pad1:5, rtc:1, t1:1, t0:1, ver:8;
 #else
-	unsigned int ver:8, t0:1, t1:1, rtc:1, res:21;
+	unsigned int ver:8, t0:1, t1:1, rtc:1, pad:5, rtsc:1, pad2:15;
+#endif
+};
+
+struct bcr_bpu_arcompact {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+	unsigned int pad2:19, fam:1, pad:2, ent:2, ver:8;
+#else
+	unsigned int ver:8, ent:2, pad:2, fam:1, pad2:19;
+#endif
+};
+
+struct bcr_bpu_arcv2 {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+#else
+	unsigned int ver:8, bce:3, pte:3, rse:2, ft:1, ts:4, tqe:2, fbe:2, pad:6;
 #endif
 };
 
@@ -305,8 +330,11 @@ struct cpuinfo_arc_mmu {
 };
 
 struct cpuinfo_arc_cache {
-	unsigned int sz_k:8, line_len:8, assoc:4, ver:4, alias:1, vipt:1,
-		     pad:6;
+	unsigned int sz_k:8, line_len:8, assoc:4, ver:4, alias:1, vipt:1, pad:6;
+};
+
+struct cpuinfo_arc_bpu {
+	unsigned int ver, full, num_cache, num_pred;
 };
 
 struct cpuinfo_arc_ccm {
@@ -316,19 +344,19 @@ struct cpuinfo_arc_ccm {
 struct cpuinfo_arc {
 	struct cpuinfo_arc_cache icache, dcache;
 	struct cpuinfo_arc_mmu mmu;
-	union bcr_identity core;
+	struct cpuinfo_arc_bpu bpu;
+	struct bcr_identity core;
 	struct bcr_isa isa;
 	struct bcr_timer timers;
 	unsigned int vec_base;
 	unsigned int uncached_base;
 	struct cpuinfo_arc_ccm iccm, dccm;
 	struct {
-		unsigned int swap:1, norm:1, minmax:1, barrel:1, ext_arith:1,
-			     crc:1, pad:22;
+		unsigned int swap:1, norm:1, minmax:1, barrel:1, crc:1,
+			     fpu_sp:1, fpu_dp:1, pad:24;
 	} extn;
 	struct bcr_mpy extn_mpy;
 	struct bcr_extn_xymem extn_xymem;
-	struct bcr_fp fp, dpfp;
 };
 
 extern struct cpuinfo_arc cpuinfo_arc700[];
