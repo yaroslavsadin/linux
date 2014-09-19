@@ -259,7 +259,7 @@ static inline void __cache_line_loop(unsigned long paddr, unsigned long vaddr,
 
 unsigned int __before_dc_op(const int cacheop)
 {
-	unsigned int reg;
+	unsigned int reg = reg;
 
 	if (cacheop == OP_FLUSH_N_INV) {
 		/* Dcache provides 2 cmd: FLUSH or INV
@@ -292,7 +292,7 @@ void __after_dc_op(const int cacheop, unsigned int reg)
  */
 static inline void __dc_entire_op(const int cacheop)
 {
-	unsigned int __maybe_unused tmp;
+	unsigned int tmp;
 	int aux;
 
 	tmp = __before_dc_op(cacheop);
@@ -316,7 +316,8 @@ static inline void __dc_entire_op(const int cacheop)
 static inline void __dc_line_op(unsigned long paddr, unsigned long vaddr,
 				unsigned long sz, const int cacheop)
 {
-	unsigned long flags, __maybe_unused tmp;
+	unsigned long flags;
+	unsigned int tmp;
 
 	local_irq_save(flags);
 	tmp = __before_dc_op(cacheop);
