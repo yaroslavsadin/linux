@@ -382,5 +382,3 @@ do_slow_path_pf:
 	b   ret_from_exception
 
 ARC_EXIT EV_TLBMissD
-
-ARC_ENTRY EV_TLBMissB   ; Bogus entry to measure sz of DTLBMiss hdlr
