@@ -58,6 +58,7 @@ int main(void)
 	DEFINE(PT_r5, offsetof(struct pt_regs, r5));
 	DEFINE(PT_r6, offsetof(struct pt_regs, r6));
 	DEFINE(PT_r7, offsetof(struct pt_regs, r7));
+	DEFINE(PT_ret, offsetof(struct pt_regs, ret));
 
 	DEFINE(SZ_CALLEE_REGS, sizeof(struct callee_regs));
 	DEFINE(SZ_PT_REGS, sizeof(struct pt_regs));
@@ -74,7 +75,6 @@ int main(void)
 	DEFINE(EVLOG_RECORD_SZ, sizeof(timeline_log_t));
 	DEFINE(EVLOG_FIELD_EXTRA2, offsetof(timeline_log_t, extra2));
 	DEFINE(EVLOG_FIELD_EXTRA3, offsetof(timeline_log_t, extra3));
-	DEFINE(PT_ret, offsetof(struct pt_regs, ret));
 #endif
 
 	return 0;
