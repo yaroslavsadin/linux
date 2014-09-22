@@ -22,6 +22,17 @@
 #include "perf_event.h"
 
 /*
+ * STAR 9000789081
+ * On write of value >= 0x8000_0000 in PCT_COUNTL LSB bit in PCT_COUNTH
+ * gets set as if PCT_COUNTL contains signed value.
+ * The same is true for pair PCT_INT_CNTL/PCT_INT_CNTH.
+ * To work-around this we just limit ourselves with LSB 30 bits so we're sure
+ * neither PCT_INT_CNT nor PCT_INT_CNT reaches 0x8000_0000
+ */
+
+#define STAR_9000789081
+
+/*
  * STAR 9000791975
  * "Cannot reset PCT_INT_ACT while counter value >= oveflow value"
  * This effectively means we must set counter value < oveflow value before
@@ -591,7 +602,12 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 			ARC_PERF_MAX_COUNTERS, pct_bcr.c);
 	}
 
+#ifdef STAR_9000789081
+	counter_size = 30;
+#else
 	counter_size = 32 + (pct_bcr.s << 4);
+#endif
+
 	arc_pmu->max_period = (1ULL << counter_size) - 1ULL;
 
 	pr_info("ARC perf\t: %d counters (%d bits), %d conditions%s\n",
