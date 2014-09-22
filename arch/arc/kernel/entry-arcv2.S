@@ -473,27 +473,49 @@ restore_regs:
 	lr	r10, [AUX_IRQ_ACT]
 
 	bmsk	r11, r10, 15	; AUX_IRQ_ACT.ACTIVE
-	breq	r11, 0, 1f	; if 0, intr not active, so ret from Exception
+	breq	r11, 0, .Lexcep_ret	; No intr active, ret from Exception
 
-	; Return from Intr uses AUX_IRQ_ACT.U to swap SP and AUX_SP
-	; However if intr taken in K mode, but returns to U mode, then
-	; AUX_IRQ_ACT.U needs to be forced for correct AUX_SP swap
+
+;####### Return from Intr #######
+
+	TAKE_SNAP_C_FROM_ASM SNAP_INTR_OUT
+	; MUST NOT clobber r0, r11
+
+debug_marker_l1:
+
+	; Handle special case #1: (Entry via Exception, Return via IRQ)
+	;
+	; Exception in U mode, preempted in kernel, Intr taken (K mode), orig
+	; task now returning to U mode (riding the Intr)
+	; AUX_IRQ_ACTIVE won't have U bit set (since intr in K mode), hence SP
+	; won't be switched to correct U mode value (from AUX_SP)
+	; So force AUX_IRQ_ACT.U for such a case
+
 	btst	r0, STATUS_U_BIT
 	bset.nz	r11, r11, STATUS_IE_BIT
 	sr	r11, [AUX_IRQ_ACT]
 
-	TAKE_SNAP_C_FROM_ASM SNAP_INTR_OUT
+	add	sp, sp, 12	; BTA/ECR/orig_r0 placeholder per pt_regs
 
-debug_marker_l1:
-	ISR_EPILOGUE
+#ifdef CONFIG_ARC_CURR_IN_REG
+	POP	r25
+#else
+	add	sp, sp, 4
+#endif
+	POPAX	AUX_USER_SP
+	POP	fp
+	POP	gp
+	POP	r12
+
 	rtie
 
-1:
+;####### Return from Exception / pure kernel mode #######
+
+.Lexcep_ret:
 	TAKE_SNAP_C_FROM_ASM SNAP_EXCP_OUT
 
 debug_marker_syscall:
 	EXCEPTION_EPILOGUE
-	rtie
 
 ARC_EXIT ret_from_exception
 

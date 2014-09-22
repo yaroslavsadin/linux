@@ -22,22 +22,6 @@
 	sub	sp, sp, 12	; BTA/ECR/orig_r0 placeholder per pt_regs
 .endm
 
-.macro ISR_EPILOGUE
-
-	add	sp, sp, 12	; BTA/ECR/orig_r0 placeholder per pt_regs
-
-#ifdef CONFIG_ARC_CURR_IN_REG
-	POP	r25
-#else
-	add	sp, sp, 4
-#endif
-	POPAX	AUX_USER_SP
-	POP	fp
-	POP	gp
-	POP	r12
-
-.endm
-
 .macro EXCEPTION_PROLOGUE
 
 	; SP auto-switched to kernel mode stack by hardware
@@ -99,8 +83,6 @@
 #endif
 
 	POPAX	AUX_USER_SP
-;	add2	r9, sp, 25
-;	sr	r9, [AUX_USER_SP]
 
 	POP	fp
 	POP	gp
@@ -132,6 +114,8 @@
 	POPAX	erstatus
 
 	ld.as	r9, [sp, -12]	; reload r9 which got clobbered
+
+	rtie
 .endm
 
 #endif
