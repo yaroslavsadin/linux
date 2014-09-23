@@ -2,26 +2,6 @@
 #ifndef __ASM_ARC_ENTRY_ARCV2_H
 #define __ASM_ARC_ENTRY_ARCV2_H
 
-.macro ISR_PROLOGUE
-
-	; SP auto-switched to kernel mode stack by hardware
-	; Lot of registers auto-saved too (look at EXCEPTION_PROLOGUE below)
-	PUSH	r12
-	PUSH	gp
-	PUSH	fp
-
-	PUSHAX	AUX_USER_SP	; user mode SP
-
-#ifdef CONFIG_ARC_CURR_IN_REG
-	PUSH	r25
-	GET_CURR_TASK_ON_CPU	r25
-#else
-	sub	sp, sp, 4
-#endif
-
-	sub	sp, sp, 12	; BTA/ECR/orig_r0 placeholder per pt_regs
-.endm
-
 .macro EXCEPTION_PROLOGUE
 
 	; SP auto-switched to kernel mode stack by hardware

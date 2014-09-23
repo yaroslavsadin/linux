@@ -70,7 +70,23 @@ reserved:		; processor restart
 
 ARC_ENTRY handle_interrupt
 
-	ISR_PROLOGUE
+	; 1. SP auto-switched to kernel mode stack by hardware
+	; 2. Auto saved: r0-r11, blink, LPE,LPS,LPC, JLI,LDI,EI, PC, STAT32
+	PUSH	r12
+	PUSH	gp
+	PUSH	fp
+
+	PUSHAX	AUX_USER_SP	; user mode SP
+
+#ifdef CONFIG_ARC_CURR_IN_REG
+	PUSH	r25
+	GET_CURR_TASK_ON_CPU	r25
+#else
+	sub	sp, sp, 4
+#endif
+
+	sub	sp, sp, 12	; BTA/ECR/orig_r0 placeholder per pt_regs
+
 	clri		; To make status32.IE agree with CPU internal state
 
 	TAKE_SNAP_C_FROM_ASM  SNAP_INTR_IN
