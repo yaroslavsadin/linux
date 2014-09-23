@@ -99,7 +99,6 @@ static const char * const arc_pmu_ev_hw_map[] = {
 	[PERF_COUNT_HW_CPU_CYCLES] = "crun",
 	[PERF_COUNT_HW_REF_CPU_CYCLES] = "crun",
 	[PERF_COUNT_HW_BUS_CYCLES] = "crun",
-
 	[PERF_COUNT_HW_STALLED_CYCLES_FRONTEND] = "bflush",
 	[PERF_COUNT_HW_STALLED_CYCLES_BACKEND] = "bstall",
 
@@ -107,7 +106,11 @@ static const char * const arc_pmu_ev_hw_map[] = {
 	[PERF_COUNT_HW_INSTRUCTIONS] = "iall",
 	[PERF_COUNT_HW_BRANCH_INSTRUCTIONS] = "ijmp",
 	[PERF_COUNT_ARC_BPOK]         = "bpok",	  /* NP-NT, PT-T, PNT-NT */
+#ifdef CONFIG_ISA_ARCV2
+	[PERF_COUNT_HW_BRANCH_MISSES] = "bpmp",
+#else
 	[PERF_COUNT_HW_BRANCH_MISSES] = "bpfail", /* NP-T, PT-NT, PNT-T */
+#endif
 
 	[PERF_COUNT_ARC_LDC] = "imemrdc",	/* Instr: mem read cached */
 	[PERF_COUNT_ARC_STC] = "imemwrc",	/* Instr: mem write cached */
