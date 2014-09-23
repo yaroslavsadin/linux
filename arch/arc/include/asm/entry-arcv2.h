@@ -24,26 +24,6 @@
 
 .macro ISR_EPILOGUE
 
-	ld	r0, [sp, PT_status32]	; status flags at the time of intr
-
-	/*
-	 * STAR 9000800642
-	 * If Intr returning to an insn in Delay Slot, restore BTA by hand.
-	 *
-	 * In HS, Interrupts are NOT allowed in DS, while Exceptions can.
-	 * A task can enter kernel via exception (in Delay Slot) but return
-	 * back to user mode via an interrupt. Since IRQ return micro-ops
-	 * don't care about BTA, next PC after Delay Slot insn, is not setup
-	 * correctly. Workaround by manually restoring BTA if orig exception
-	 * happned in DS.
-	 */
-
-	bbit0.t	r0, STATUS_DE_BIT, .Lisr_ret_continue
-	ld	r10, [sp, PT_bta]
-	sr	r10, [bta]
-
-.Lisr_ret_continue:
-
 	add	sp, sp, 12	; BTA/ECR/orig_r0 placeholder per pt_regs
 
 #ifdef CONFIG_ARC_CURR_IN_REG

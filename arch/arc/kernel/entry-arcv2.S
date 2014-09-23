@@ -472,8 +472,8 @@ restore_regs:
 	ld	r0, [sp, PT_status32]	; U/K mode at time of entry
 	lr	r10, [AUX_IRQ_ACT]
 
-	bmsk	r11, r10, 15		; AUX_IRQ_ACT.ACTIVE
-	breq	r11, 0, .Lexcep_ret	; if intr not active, ret from Exception
+	bmsk	r11, r10, 15	; AUX_IRQ_ACT.ACTIVE
+	breq	r11, 0, 1f	; if 0, intr not active, so ret from Exception
 
 	; Return from Intr uses AUX_IRQ_ACT.U to swap SP and AUX_SP
 	; However if intr taken in K mode, but returns to U mode, then
@@ -488,7 +488,7 @@ debug_marker_l1:
 	ISR_EPILOGUE
 	rtie
 
-.Lexcep_ret:
+1:
 	TAKE_SNAP_C_FROM_ASM SNAP_EXCP_OUT
 
 debug_marker_syscall:
