@@ -812,11 +812,16 @@ static int stmmac_init_phy(struct net_device *dev)
 	 * 0 rather than 0xffff. Catch this here and treat 0 as a non-existent
 	 * device as well.
 	 * Note: phydev->phy_id is the result of reading the UID PHY registers.
+	 *
+	 * Currently EPHY model reports a PHY_ID of 0. Disable this check
+	 * until the model is updated.
 	 */
+#if 0
 	if (phydev->phy_id == 0) {
 		phy_disconnect(phydev);
 		return -ENODEV;
 	}
+#endif
 	pr_debug("stmmac_init_phy:  %s: attached to PHY (UID 0x%x)"
 		 " Link = %d\n", dev->name, phydev->phy_id, phydev->link);
 
