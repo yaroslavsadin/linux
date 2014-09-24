@@ -532,6 +532,10 @@ debug_marker_syscall:
 .Lintr_ret_to_delay_slot:
 debug_marker_ds:
 
+	ld 	r2, [@intr_to_DE_cnt]
+	add	r2, r2, 1
+	st	r2, [@intr_to_DE_cnt]
+
 	ld	r2, [sp, PT_ret]
 	ld	r3, [sp, PT_status32]
 
