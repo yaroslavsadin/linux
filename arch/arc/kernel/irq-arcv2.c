@@ -47,7 +47,8 @@ void arc_init_IRQ(void)
 
 	tmp = read_aux_reg(0xa);
 	tmp |= ISA_INIT_STATUS_BITS;
-	asm volatile("flag %0	\n"::"r"(tmp));
+	/* ARCv2:FLAG insn doesn't set the IE bit */
+	asm volatile("kflag %0	\n"::"r"(tmp));
 }
 
 static void arcv2_irq_mask(struct irq_data *data)
