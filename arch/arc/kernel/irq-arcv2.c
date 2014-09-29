@@ -45,10 +45,11 @@ void arc_init_IRQ(void)
 
 	WRITE_AUX(AUX_IRQ_CTRL, ictrl);
 
+	/* setup status32, don't enable intr yet as kernel doesn't want */
 	tmp = read_aux_reg(0xa);
 	tmp |= ISA_INIT_STATUS_BITS;
-	/* ARCv2:FLAG insn doesn't set the IE bit */
-	asm volatile("kflag %0	\n"::"r"(tmp));
+	tmp &= ~STATUS_IE_MASK;
+	asm volatile("flag %0	\n"::"r"(tmp));
 }
 
 static void arcv2_irq_mask(struct irq_data *data)
