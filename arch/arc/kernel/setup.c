@@ -44,6 +44,7 @@ struct cpuinfo_arc cpuinfo_arc700[NR_CPUS];
 static void read_arc_build_cfg_regs(void)
 {
 	struct bcr_perip uncached_space;
+	struct bcr_generic bcr;
 	struct cpuinfo_arc *cpu = &cpuinfo_arc700[smp_processor_id()];
 	FIX_PTR(cpu);
 
@@ -126,6 +127,17 @@ static void read_arc_build_cfg_regs(void)
 		cpu->bpu.num_cache = 256 << bpu.bce;
 		cpu->bpu.num_pred = 2048 << bpu.pte;
 	}
+
+	READ_BCR(ARC_REG_AP_BCR, bcr);
+	cpu->extn.ap = bcr.ver ? 1 : 0;
+
+	READ_BCR(ARC_REG_SMART_BCR, bcr);
+	cpu->extn.smart = bcr.ver ? 1 : 0;
+
+	READ_BCR(ARC_REG_RTT_BCR, bcr);
+	cpu->extn.rtt = bcr.ver ? 1 : 0;
+
+	cpu->extn.debug = cpu->extn.ap | cpu->extn.smart | cpu->extn.rtt;
 }
 
 static const struct cpuinfo_data arc_cpu_tbl[] = {
@@ -231,9 +243,15 @@ static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 			      cpu->bpu.num_cache, cpu->bpu.num_pred);
 
 	if (cpu->extn.fpu_sp || cpu->extn.fpu_dp)
-		n += scnprintf(buf + n, len - n, "\nFPU\t\t: %s%s\n",
+		n += scnprintf(buf + n, len - n, "FPU\t\t: %s%s\n",
 			       IS_AVAIL1(cpu->extn.fpu_sp, "SP "),
 			       IS_AVAIL1(cpu->extn.fpu_dp, "DP "));
+
+	if (cpu->extn.debug)
+		n += scnprintf(buf + n, len - n, "DEBUG\t\t: %s%s%s\n",
+			       IS_AVAIL1(cpu->extn.ap, "ActionPoint "),
+			       IS_AVAIL1(cpu->extn.smart, "smaRT "),
+			       IS_AVAIL1(cpu->extn.rtt, "RTT "));
 
 	n += scnprintf(buf + n, len - n,
 		       "Vector Table\t: %#x\nUncached Base\t: %#x\n",

@@ -21,6 +21,7 @@
 #define ARC_REG_FP_V2_BCR	0xc8	/* ARCv2 FPU */
 #define ARC_REG_DCCM_BCR	0x74	/* DCCM Present + SZ */
 #define ARC_REG_TIMERS_BCR	0x75
+#define ARC_REG_AP_BCR		0x76
 #define ARC_REG_ICCM_BCR	0x78
 #define ARC_REG_XY_MEM_BCR	0x79
 #define ARC_REG_MAC_BCR		0x7a
@@ -32,6 +33,8 @@
 #define ARC_REG_D_UNCACH_BCR	0x6A
 #define ARC_REG_BPU_BCR		0xc0
 #define ARC_REG_ISA_CFG_BCR	0xc1
+#define ARC_REG_RTT_BCR		0xF2
+#define ARC_REG_SMART_BCR	0xFF
 
 /* status32 Bits Positions */
 #define STATUS_AE_BIT		5	/* Exception active */
@@ -320,6 +323,13 @@ struct bcr_bpu_arcv2 {
 #endif
 };
 
+struct bcr_generic {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+#else
+	unsigned int ver:8, pad:24;
+#endif
+};
+
 /*
  *******************************************************************
  * Generic structures to hold build configuration used at runtime
@@ -352,8 +362,10 @@ struct cpuinfo_arc {
 	unsigned int uncached_base;
 	struct cpuinfo_arc_ccm iccm, dccm;
 	struct {
-		unsigned int swap:1, norm:1, minmax:1, barrel:1, crc:1,
-			     fpu_sp:1, fpu_dp:1, pad:24;
+		unsigned int swap:1, norm:1, minmax:1, barrel:1, crc:1, pad1:3,
+			     fpu_sp:1, fpu_dp:1, pad2:6,
+			     debug:1, ap:1, smart:1, rtt:1, pad3:4,
+			     pad4:8;
 	} extn;
 	struct bcr_mpy extn_mpy;
 	struct bcr_extn_xymem extn_xymem;
