@@ -12,8 +12,8 @@
 #ifndef __ARC_PERF_EVENT_H
 #define __ARC_PERF_EVENT_H
 
-/* real maximum varies per CPU, this is the maximum supported by the driver */
-#define ARC_PMU_MAX_HWEVENTS	64
+/* Max number of counters that CPU may have */
+#define ARC_PERF_MAX_COUNTERS	64
 
 #define ARC_REG_CC_BUILD	0xF6
 #define ARC_REG_CC_INDEX	0x240
@@ -60,7 +60,7 @@ struct arc_pmu {
 	struct pmu	pmu;
 	int		counter_size;	/* in bits */
 	int		n_counters;
-	unsigned long	used_mask[BITS_TO_LONGS(ARC_PMU_MAX_HWEVENTS)];
+	unsigned long	used_mask[BITS_TO_LONGS(ARC_PERF_MAX_COUNTERS)];
 	int		ev_hw_idx[PERF_COUNT_ARC_HW_MAX];
 };
 

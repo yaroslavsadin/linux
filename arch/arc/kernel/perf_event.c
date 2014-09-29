@@ -420,7 +420,6 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 		pr_err("This core does not have performance counters!\n");
 		return -ENODEV;
 	}
-	BUG_ON(pct_bcr.c > ARC_PMU_MAX_HWEVENTS);
 
 	READ_BCR(ARC_REG_CC_BUILD, cc_bcr);
 	if (!cc_bcr.v) {
@@ -437,6 +436,12 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 		return -ENOMEM;
 
 	arc_pmu->n_counters = pct_bcr.c;
+	if (arc_pmu->n_counters > ARC_PERF_MAX_COUNTERS) {
+		arc_pmu->n_counters = ARC_PERF_MAX_COUNTERS;
+		pr_info("Only using %d out of avail %d counters\n",
+			ARC_PERF_MAX_COUNTERS, pct_bcr.c);
+	}
+
 	arc_pmu->counter_size = 32 + (pct_bcr.s << 4);
 
 	cc_name.str[8] = 0;
