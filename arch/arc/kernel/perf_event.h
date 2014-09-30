@@ -65,11 +65,23 @@ struct arc_reg_cc_build {
 
 struct arc_pmu {
 	struct pmu	pmu;
-	int		has_interrupts;
+	unsigned int	irq:31, has_interrupts:1;
 	int		n_counters;
-	unsigned long	used_mask[BITS_TO_LONGS(ARC_PERF_MAX_COUNTERS)];
 	int		ev_hw_idx[PERF_COUNT_ARC_HW_MAX];
 	u64		max_period;
+};
+
+struct arc_pmu_cpu {
+	/*
+	 * The events that are active on the PMU for the given index.
+	 */
+	struct perf_event *events[PERF_COUNT_ARC_HW_MAX];
+
+	/*
+	 * A 1 bit for an index indicates that the counter is being used for
+	 * an event. A 0 means that the counter can be used.
+	 */
+	unsigned long	used_mask[BITS_TO_LONGS(ARC_PERF_MAX_COUNTERS)];
 };
 
 #endif
