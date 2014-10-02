@@ -109,6 +109,9 @@ static int arc_pmu_cache_event(u64 config)
 	if (ret == CACHE_OP_UNSUPPORTED)
 		return -ENOENT;
 
+	pr_debug("initializing cache event: type %d op %d result %d\n",
+		 cache_type, cache_op, cache_result);
+
 	return ret;
 }
 
