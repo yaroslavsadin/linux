@@ -64,6 +64,7 @@ static int serial_index(struct uart_port *port)
 }
 
 static unsigned int skip_txen_test; /* force skip of txen test at init time */
+static unsigned int skip_thre_test = IS_ENABLED(CONFIG_SMP);
 
 /*
  * Debugging.
@@ -2028,7 +2029,7 @@ static int serial8250_startup(struct uart_port *port)
 		serial_port_out(port, UART_LCR, 0);
 	}
 
-	if (port->irq) {
+	if (port->irq && !skip_thre_test) {
 		unsigned char iir1;
 		/*
 		 * Test for UARTs that do not reassert THRE when the
