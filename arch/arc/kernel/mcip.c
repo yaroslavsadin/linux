@@ -18,8 +18,8 @@
 
 #define ARC_REG_MCIP_BCR	0x0d0
 #define ARC_REG_MCIP_CMD	0x600
-#define ARC_REG_MCIP_DATA	0x601
-#define ARC_REG_MCIP_READBK	0x602
+#define ARC_REG_MCIP_WDATA	0x601
+#define ARC_REG_MCIP_READBACK	0x602
 
 struct mcip_bcr {
 #ifdef CONFIG_CPU_BIG_ENDIAN
@@ -56,6 +56,14 @@ struct mcip_cmd {
 #define IDU_M_DISTRI_DEST		0x2
 };
 
+/*
+ * MCIP programming model
+ *
+ * - Simple commands write {cmd:8,param:16} to MCIP_CMD aux reg
+ *   (param could be irq, common_irq, core_id ...)
+ * - More involved commands setup MCIP_WDATA with cmd specific data
+ *   before invoking the simple command
+ */
 static void inline __mcip_cmd(unsigned int cmd, unsigned int param)
 {
 	struct mcip_cmd buf;
@@ -73,12 +81,12 @@ static DEFINE_RAW_SPINLOCK(mcip_lock);
  * Setup additional data for a cmd
  * Callers need to lock to ensure atomicity
  */
-static void inline __mcip_cmd_data(unsigned int irq, unsigned int cmd,
+static void inline __mcip_cmd_data(unsigned int cmd, unsigned int param,
 				   unsigned int data)
 {
-	write_aux_reg(ARC_REG_MCIP_DATA, data);
+	write_aux_reg(ARC_REG_MCIP_WDATA, data);
 
-	__mcip_cmd(cmd, irq);
+	__mcip_cmd(cmd, param);
 }
 
 static char smp_cpuinfo_buf[128];
@@ -114,7 +122,7 @@ static void mcip_ipi_clear(int irq)
 	/* Who sent the IPI */
 	__mcip_cmd(CMD_INTRPT_CHECK_SOURCE, 0);
 
-	cpu = read_aux_reg(ARC_REG_MCIP_READBK);	/* 1,2,4,8... */
+	cpu = read_aux_reg(ARC_REG_MCIP_READBACK);	/* 1,2,4,8... */
 
 	__mcip_cmd(CMD_INTRPT_GENERATE_ACK, __ffs(cpu)); /* 0,1,2,3... */
 
@@ -144,10 +152,11 @@ void mcip_init_early_smp(void)
 
 	READ_BCR(ARC_REG_MCIP_BCR, mp);
 
-	sprintf(smp_cpuinfo_buf, "Extn [SMP]\t: MCIP (v%d): %d cores with %s %s %s\n",
+	sprintf(smp_cpuinfo_buf, "Extn [SMP]\t: MCIP (v%d): %d cores with %s%s%s%s\n",
 		mp.ver, mp.num_cores,
-		IS_AVAIL1(mp.ipi, "IPI"),
-		IS_AVAIL1(mp.idu, "IDU"),
+		IS_AVAIL1(mp.ipi, "IPI "),
+		IS_AVAIL1(mp.idu, "IDU "),
+		IS_AVAIL1(mp.dbg, "DEBUG "),
 		IS_AVAIL1(mp.grtc, "Glb RTC"));
 
 	plat_smp_ops.info = smp_cpuinfo_buf;
@@ -178,7 +187,7 @@ void mcip_init_early_smp(void)
  */
 void noinline idu_set_dest(unsigned int cmn_irq, unsigned int cpu_mask)
 {
-	__mcip_cmd_data(cmn_irq, CMD_IDU_SET_DEST, cpu_mask);
+	__mcip_cmd_data(CMD_IDU_SET_DEST, cmn_irq, cpu_mask);
 }
 
 void noinline idu_set_mode(unsigned int cmn_irq, unsigned int lvl,
@@ -193,7 +202,7 @@ void noinline idu_set_mode(unsigned int cmn_irq, unsigned int lvl,
 
 	data.distr = distr;
 	data.lvl = lvl;
-	__mcip_cmd_data(cmn_irq, CMD_IDU_SET_MODE, data.word);
+	__mcip_cmd_data(CMD_IDU_SET_MODE, cmn_irq, data.word);
 }
 
 static inline unsigned int mcip_idu_irq(struct irq_data *d)
