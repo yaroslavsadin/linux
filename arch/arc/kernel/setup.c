@@ -148,11 +148,9 @@ static const struct cpuinfo_data arc_cpu_tbl[] = {
 	{ {0x00, NULL		} }
 };
 
-#define IS_AVAIL1(var, str)	((var) ? str : "")
+#define IS_AVAIL1(v, str)	((v) ? str : "")
 #define IS_USED(cfg)		(IS_ENABLED(cfg) ? "" : "(not used) ")
-#define IS_AVAIL2(var, str, cfg)				\
-				IS_AVAIL1(var, str),		\
-				IS_AVAIL1(var, IS_USED(cfg))
+#define IS_AVAIL2(v, str, cfg)  IS_AVAIL1(v, str), IS_AVAIL1(v, IS_USED(cfg))
 
 static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 {
@@ -241,6 +239,20 @@ static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 			      IS_AVAIL1(!cpu->bpu.full, "partial"),
 			      cpu->bpu.num_cache, cpu->bpu.num_pred);
 
+	return buf;
+}
+
+static char *arc_extn_mumbojumbo(int cpu_id, char *buf, int len)
+{
+	int n = 0;
+	struct cpuinfo_arc *cpu = &cpuinfo_arc700[cpu_id];
+
+	FIX_PTR(cpu);
+
+	n += scnprintf(buf + n, len - n,
+		       "Vector Table\t: %#x\nUncached Base\t: %#x\n",
+		       cpu->vec_base, cpu->uncached_base);
+
 	if (cpu->extn.fpu_sp || cpu->extn.fpu_dp)
 		n += scnprintf(buf + n, len - n, "FPU\t\t: %s%s\n",
 			       IS_AVAIL1(cpu->extn.fpu_sp, "SP "),
@@ -252,32 +264,10 @@ static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 			       IS_AVAIL1(cpu->extn.smart, "smaRT "),
 			       IS_AVAIL1(cpu->extn.rtt, "RTT "));
 
-	n += scnprintf(buf + n, len - n,
-		       "Vector Table\t: %#x\nUncached Base\t: %#x\n",
-		       cpu->vec_base, cpu->uncached_base);
-
-	return buf;
-}
-
-static char *arc_extn_mumbojumbo(int cpu_id, char *buf, int len)
-{
-	int n = 0;
-	struct cpuinfo_arc *cpu = &cpuinfo_arc700[cpu_id];
-
-	FIX_PTR(cpu);
-
-	n += scnprintf(buf + n, len - n, "Extn [CCM]\t: %s",
-		       !(cpu->dccm.sz || cpu->iccm.sz) ? "N/A" : "");
-
-	if (cpu->dccm.sz)
-		n += scnprintf(buf + n, len - n, "DCCM: @ %x, %d KB ",
-			       cpu->dccm.base_addr, TO_KB(cpu->dccm.sz));
-
-	if (cpu->iccm.sz)
-		n += scnprintf(buf + n, len - n, "ICCM: @ %x, %d KB",
+	if (cpu->dccm.sz || cpu->iccm.sz)
+		n += scnprintf(buf + n, len - n, "Extn [CCM]\t: DCCM @ %x, %d KB / ICCM: @ %x, %d KB\n",
+			       cpu->dccm.base_addr, TO_KB(cpu->dccm.sz),
 			       cpu->iccm.base_addr, TO_KB(cpu->iccm.sz));
-
-	n += scnprintf(buf + n, len - n, "\n");
 
 	n += scnprintf(buf + n, len - n,
 		       "OS ABI [v3]\t: no-legacy-syscalls\n");
