@@ -501,6 +501,7 @@ char coware_swa_comm_offset[TASK_COMM];
 
 static const char *axs103_compat[] __initconst = {
 	"snps,axs103",
+	"snps,axs103_arc700",
 	NULL,
 };
 
