@@ -98,6 +98,7 @@ enum arc_event {
 	DTLB_st = SNAP_DTLB_ST,
 	ProtV = SNAP_PROTV,
 	UMC = SNAP_UMC,
+	PREEMPT_I=SNAP_PREEMPT_SCH_IRQ,
 };
 
 typedef struct {

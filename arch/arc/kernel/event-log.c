@@ -65,10 +65,11 @@
  *  we don't want to do fancy intr-enable-disable etc,
  *  we keep 1 extra element in log buffer
  */
-timeline_log_t timeline_log[MAX_SNAPS + 1];
+timeline_log_t timeline_log[MAX_SNAPS + 1] __attribute__((aligned(64)));
 
 /* counter in log bugger for next entry */
-int timeline_ctr;
+int timeline_ctr __attribute__((aligned(64)));
+int just_dummy __attribute__((aligned(64)));
 
 /* Used in the low level asm handler to free up a reg */
 int tmp_save_reg, tmp_save_reg2;
@@ -79,42 +80,65 @@ int get_cpu_id(void)
 	return (id >> 8) & 0xFF;
 }
 
+unsigned int int_pend(int irq)
+{
+	unsigned int pend;
+
+	write_aux_reg(AUX_IRQ_SELECT, irq);
+	pend = read_aux_reg(0x416);  // IRQ_PENDING
+
+	if (pend)
+		pend = 1 << irq;
+
+	return pend;
+}
+
+#define STR(a, val)	arc_write_uncached_32(&(a), val)
+#define LDR(a)		arc_read_uncached_32(&(a))
+
 /* This is called from low level handlers, before doing EARLY RTIE
  * We just capture data and return
  * Don't call anything generic - printk is absolute NO
  */
 void noinline __take_snap(int event, struct pt_regs *regs, unsigned int extra3)
 {
-	timeline_log_t *entry = &timeline_log[timeline_ctr];
+	int c = LDR(timeline_ctr);
+	timeline_log_t *entry = &timeline_log[c];
 
 	if (get_cpu_id() != 0)
 		return;
 
-	memset(entry, 0, sizeof(timeline_log_t));
+	STR(entry->time, read_aux_reg(0x100)); //ARC_REG_TIMER1_CNT);
+	STR(entry->task, current->tgid);
+	STR(entry->event, event);
+	STR(entry->sp, regs->sp);
 
-	entry->time = read_aux_reg(0x100); //ARC_REG_TIMER1_CNT);
-	entry->task = current->pid;
-	entry->event = event;
-	entry->sp = regs->sp;
+	STR(entry->pc, regs->ret);
+	STR(entry->stat32, regs->status32);
+	STR(entry->extra, extra3);
+	STR(entry->efa, 0);
 
-	entry->pc = regs->ret;
-	entry->stat32 =  regs->status32;
-	entry->extra = extra3;
-
-	if (event == SNAP_INTR_IN) {
+	if ((event == SNAP_INTR_IN) || (event == SNAP_INTR_OUT)) {
+		unsigned int pend = int_pend(16) | int_pend(19) | int_pend(24);
+		STR(entry->cause, read_aux_reg(0x40a));  // icause
+		STR(entry->extra, pend);
 	} else if (event == SNAP_TRAP_IN) {
-		entry->extra = task_pt_regs(current)->r8;
-	} else if (event & EVENT_CLASS_EXIT) {
-	}
-	else {
-		entry->cause = read_aux_reg(0x403);	/* ecr */
-		entry->efa = read_aux_reg(0x404);	// EFA
+		STR(entry->cause, task_pt_regs(current)->r8);
+	} else if (event == SNAP_PRE_CTXSW_2_U || event == SNAP_PRE_CTXSW_2_K) {
+		STR(entry->pc, extra3);		// where was schedule() called from
+		STR(entry->extra, 0);
+		STR(entry->cause, 0);
+	} else {
+		STR(entry->cause, read_aux_reg(0x403));	/* ecr */
+		STR(entry->efa, read_aux_reg(0x404));	// EFA
 	}
 
-	if (timeline_ctr == (MAX_SNAPS - 1))
-		timeline_ctr = 0;
+	if (c == (MAX_SNAPS - 1))
+		c = 0;
 	else
-		timeline_ctr++;
+		c++;
+
+	STR(timeline_ctr, c);
 }
 
 void take_snap3(int event, unsigned int sp)

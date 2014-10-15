@@ -207,6 +207,8 @@ ARC_ENTRY EV_TLBProtV
 
 	EXCEPTION_PROLOGUE
 
+	TAKE_SNAP_TLB r0, r1, SNAP_PROTV
+
 	lr  r0, [efa]	; Faulting Data address
 
 	FAKE_RET_FROM_EXCPN r9
@@ -484,7 +486,13 @@ restore_regs:
 ;####### Return from Intr #######
 
 	TAKE_SNAP_C_FROM_ASM SNAP_INTR_OUT
-	; MUST NOT clobber r0, r11
+
+#ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
+	; reload r0, r11
+	ld	r0, [sp, PT_status32]	; U/K mode at time of entry
+	lr	r10, [AUX_IRQ_ACT]
+	bmsk	r11, r10, 15	; AUX_IRQ_ACT.ACTIVE
+#endif
 
 debug_marker_l1:
 
