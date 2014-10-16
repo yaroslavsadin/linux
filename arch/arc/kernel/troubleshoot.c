@@ -14,6 +14,7 @@
 #include <linux/proc_fs.h>
 #include <linux/file.h>
 #include <asm/arcregs.h>
+#include <asm/irqflags.h>
 
 /*
  * Common routine to print scratch regs (r0-r12) or callee regs (r13-r25)
@@ -196,12 +197,19 @@ void show_regs(struct pt_regs *regs)
 
 	pr_info("[STAT32]: 0x%08lx", regs->status32);
 
+#define STS_BIT(r, bit)	r->status32 & STATUS_##bit##_MASK ? #bit" " : ""
 #ifdef CONFIG_ISA_ARCOMPACT
-#define STS_BIT(r, bit)	r->status32 & STATUS_##bit##_MASK ? #bit : ""
-	if (!user_mode(regs))
-		pr_cont(" : %2s %2s %2s %2s %2s\n",
-			STS_BIT(regs, AE), STS_BIT(regs, A2), STS_BIT(regs, A1),
+	pr_cont(" : %2s%2s%2s%2s%2s%2s%2s\n",
+			STS_BIT(regs, U), STS_BIT(regs, DE),
+			STS_BIT(regs, AE),
+			STS_BIT(regs, A2), STS_BIT(regs, A1),
 			STS_BIT(regs, E2), STS_BIT(regs, E1));
+#else
+	pr_cont(" : %2s%2s%2s%2s%2s\n",
+			STS_BIT(regs, IE),
+			(regs->status32 & STATUS_U_MASK) ? "" : "K ",
+			STS_BIT(regs, U), STS_BIT(regs, DE),
+			STS_BIT(regs, AE));
 #endif
 	pr_info("BTA: 0x%08lx\t SP: 0x%08lx\t FP: 0x%08lx\n",
 		regs->bta, regs->sp, regs->fp);
