@@ -56,6 +56,8 @@ struct mcip_cmd {
 #define IDU_M_DISTRI_DEST		0x2
 };
 
+static int idu_detected;
+
 /*
  * MCIP programming model
  *
@@ -164,6 +166,8 @@ void mcip_init_early_smp(void)
 	plat_smp_ops.cpu_kick = mcip_wakeup_cpu;
 	plat_smp_ops.ipi_send = mcip_ipi_send;
 	plat_smp_ops.ipi_clear = mcip_ipi_clear;
+
+	idu_detected = mp.idu;
 
 	if (mp.dbg) {
 		__mcip_cmd_data(CMD_DEBUG_SET_SELECT, 0, 0xf);
@@ -319,15 +323,18 @@ int __init idu_of_init(struct device_node *intc, struct device_node *parent)
 	int nr_irqs = of_irq_count(intc);
 	int i, irq;
 
-	pr_info("MCIP:IDU intc detected %d irqs\n", nr_irqs);
+	if (!idu_detected)
+		panic("IDU not detected, but DeviceTree using it");
+
+	pr_info("MCIP: IDU referenced from Devicetree %d irqs\n", nr_irqs);
 
 	domain = irq_domain_add_linear(intc, nr_irqs, &idu_irq_ops, NULL);
 
-	/* Parent interrupts (core-intc) are alreadr mapped */
+	/* Parent interrupts (core-intc) are already mapped */
 
 	for (i=0; i <nr_irqs; i++) {
 		/* this step has been done before already
-		 * however we need it to get the parent virq and set our handler
+		 * however we need it to get the parent virq and set IDU handler
 		 * as first level isr
 		 */
 		irq = irq_of_parse_and_map(intc, i);
@@ -337,7 +344,6 @@ int __init idu_of_init(struct device_node *intc, struct device_node *parent)
 
 	__mcip_cmd(CMD_IDU_ENABLE, 0);
 
-	pr_info("MCIP:IDU done\n");
 	return 0;
 }
 IRQCHIP_DECLARE(arcv2_idu_intc, "snps,arcv2-idu-intc", idu_of_init);
