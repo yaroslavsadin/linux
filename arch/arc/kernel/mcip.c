@@ -35,6 +35,9 @@ struct mcip_cmd {
 #define CMD_INTRPT_GENERATE_IRQ		0x01
 #define CMD_INTRPT_GENERATE_ACK		0x02
 #define CMD_INTRPT_CHECK_SOURCE		0x04
+
+#define CMD_DEBUG_SET_MASK		0x34
+#define CMD_DEBUG_SET_SELECT		0x36
 };
 
 static void inline __mcip_cmd(unsigned int cmd, unsigned int param)
@@ -123,4 +126,9 @@ void mcip_init_early_smp(void)
 	plat_smp_ops.cpu_kick = mcip_wakeup_cpu;
 	plat_smp_ops.ipi_send = mcip_ipi_send;
 	plat_smp_ops.ipi_clear = mcip_ipi_clear;
+
+	if (mp.dbg) {
+		__mcip_cmd_data(CMD_DEBUG_SET_SELECT, 0, 0xf);
+		__mcip_cmd_data(CMD_DEBUG_SET_MASK, 0xf, 0xf);
+	}
 }
