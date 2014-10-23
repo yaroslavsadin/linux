@@ -28,15 +28,19 @@
 #define ARC_REG_PCT_CONFIG	0x254
 #define ARC_REG_PCT_CONTROL	0x255
 #define ARC_REG_PCT_INDEX	0x256
+#define ARC_REG_PCT_INT_CNTL	0x25C
+#define ARC_REG_PCT_INT_CNTH	0x25D
+#define ARC_REG_PCT_INT_CTRL	0x25E
+#define ARC_REG_PCT_INT_ACT	0x25F
 
 #define ARC_REG_PCT_CONTROL_CC	(1 << 16)	/* clear counts */
 #define ARC_REG_PCT_CONTROL_SN	(1 << 17)	/* snapshot */
 
 struct arc_reg_pct_build {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int m:8, c:8, r:6, s:2, v:8;
+	unsigned int m:8, c:8, r:5, i:1, s:2, v:8;
 #else
-	unsigned int v:8, s:2, r:6, c:8, m:8;
+	unsigned int v:8, s:2, i:1, r:5, c:8, m:8;
 #endif
 };
 
@@ -58,6 +62,7 @@ struct arc_reg_cc_build {
 
 struct arc_pmu {
 	struct pmu	pmu;
+	int		has_interrupts;
 	int		n_counters;
 	unsigned long	used_mask[BITS_TO_LONGS(ARC_PERF_MAX_COUNTERS)];
 	int		ev_hw_idx[PERF_COUNT_ARC_HW_MAX];
