@@ -11,6 +11,7 @@
  *
  */
 #include <linux/errno.h>
+#include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/of.h>
 #include <linux/perf_event.h>
@@ -302,7 +303,8 @@ static int arc_pmu_event_init(struct perf_event *event)
 		hwc->last_period = hwc->sample_period;
 		local64_set(&hwc->period_left, hwc->sample_period);
 	} else
-		return -ENOENT;
+		if (!arc_pmu->has_interrupts)
+			return -ENOENT;
 
 	switch (event->attr.type) {
 	case PERF_TYPE_HARDWARE:
@@ -414,6 +416,17 @@ static void arc_pmu_stop(struct perf_event *event, int flags)
 	struct hw_perf_event *hwc = &event->hw;
 	int idx = hwc->idx;
 
+	/* Disable interrupt for this counter */
+	if (is_sampling_event(event)) {
+		/*
+		 * Reset interrupt flag by writing of 1. This is required
+		 * to make sure pending interrupt was not left.
+		 */
+		write_aux_reg(ARC_REG_PCT_INT_ACT, 1 << idx);
+		write_aux_reg(ARC_REG_PCT_INT_CTRL,
+			      read_aux_reg(ARC_REG_PCT_INT_CTRL) & ~(1 << idx));
+	}
+
 	if (!(event->hw.state & PERF_HES_STOPPED)) {
 		/* stop ARC pmu here */
 		write_aux_reg(ARC_REG_PCT_INDEX, idx);
@@ -436,6 +449,8 @@ static void arc_pmu_del(struct perf_event *event, int flags)
 	arc_pmu_stop(event, PERF_EF_UPDATE);
 	__clear_bit(event->hw.idx, arc_pmu->used_mask);
 
+	arc_pmu->events[event->hw.idx] = 0;
+
 	perf_event_update_userpage(event);
 }
 
@@ -456,6 +471,21 @@ static int arc_pmu_add(struct perf_event *event, int flags)
 	}
 
 	write_aux_reg(ARC_REG_PCT_INDEX, idx);
+
+	arc_pmu->events[idx] = event;
+
+	if (is_sampling_event(event)) {
+		/* Mimic full counter overflow as other arches do */
+		write_aux_reg(ARC_REG_PCT_INT_CNTL, arc_pmu->max_period &
+						    0xffffffff);
+		write_aux_reg(ARC_REG_PCT_INT_CNTH,
+			      (arc_pmu->max_period >> 32));
+
+		/* Enable interrupt for this counter */
+		write_aux_reg(ARC_REG_PCT_INT_CTRL,
+			      read_aux_reg(ARC_REG_PCT_INT_CTRL) | (1 << idx));
+	}
+
 	write_aux_reg(ARC_REG_PCT_CONFIG, 0);
 	write_aux_reg(ARC_REG_PCT_COUNTL, 0);
 	write_aux_reg(ARC_REG_PCT_COUNTH, 0);
@@ -469,6 +499,65 @@ static int arc_pmu_add(struct perf_event *event, int flags)
 
 	return 0;
 }
+
+#ifdef CONFIG_ISA_ARCV2
+static irqreturn_t arc_pmu_intr(int irq, void *dev)
+{
+	struct perf_sample_data data;
+	struct arc_pmu *arc_pmu = (struct arc_pmu *)dev;
+	struct pt_regs *regs;
+	int active_ints;
+	int idx;
+
+	arc_pmu_disable(&arc_pmu->pmu);
+
+	active_ints = read_aux_reg(ARC_REG_PCT_INT_ACT);
+
+	regs = get_irq_regs();
+
+	for (idx = 0; idx < arc_pmu->n_counters; idx++) {
+		struct perf_event *event = arc_pmu->events[idx];
+		struct hw_perf_event *hwc;
+
+		if (!(active_ints & (1 << idx)))
+			continue;
+
+		/* Reset interrupt flag by writing of 1 */
+		write_aux_reg(ARC_REG_PCT_INT_ACT, 1 << idx);
+
+		/*
+		 * On reset of "interrupt active" bit corresponding
+		 * "interrupt enable" bit gets automatically reset as well.
+		 * Now we need to re-enable interrupt for the counter.
+		 */
+		write_aux_reg(ARC_REG_PCT_INT_CTRL,
+			read_aux_reg(ARC_REG_PCT_INT_CTRL) | (1 << idx));
+
+		hwc = &event->hw;
+
+		WARN_ON_ONCE(hwc->idx != idx);
+
+		arc_perf_event_update(event, &event->hw, event->hw.idx);
+		perf_sample_data_init(&data, 0, hwc->last_period);
+		if (!arc_pmu_event_set_period(event))
+			continue;
+
+		if (perf_event_overflow(event, &data, regs))
+			arc_pmu_stop(event, 0);
+	}
+
+	arc_pmu_enable(&arc_pmu->pmu);
+
+	return IRQ_HANDLED;
+}
+#else
+
+static irqreturn_t arc_pmu_intr(int irq, void *dev)
+{
+	return IRQ_NONE;
+}
+
+#endif /* CONFIG_ISA_ARCV2 */
 
 static int arc_pmu_device_probe(struct platform_device *pdev)
 {
@@ -503,6 +592,8 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 	if (!arc_pmu)
 		return -ENOMEM;
 
+	arc_pmu->has_interrupts = is_isa_arcv2() ? pct_bcr.i : 0;
+
 	arc_pmu->n_counters = pct_bcr.c;
 	if (arc_pmu->n_counters > ARC_PERF_MAX_COUNTERS) {
 		arc_pmu->n_counters = ARC_PERF_MAX_COUNTERS;
@@ -511,10 +602,12 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 	}
 
 	counter_size = 32 + (pct_bcr.s << 4);
+
 	arc_pmu->max_period = (1ULL << counter_size) - 1ULL;
 
-	pr_info("ARC perf\t: %d counters (%d bits), %d countable conditions\n",
-		arc_pmu->n_counters, counter_size, cc_bcr.c);
+	pr_info("ARC perf\t: %d counters (%d bits), %d conditions%s\n",
+		arc_pmu->n_counters, counter_size, cc_bcr.c,
+		arc_pmu->has_interrupts ? ", [overflow IRQ support]":"");
 
 	cc_name.str[8] = 0;
 	for (i = 0; i < PERF_COUNT_HW_MAX; i++)
@@ -546,8 +639,26 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 		.read		= arc_pmu_read,
 	};
 
-	/* ARC 700 PMU does not support sampling events */
-	arc_pmu->pmu.capabilities |= PERF_PMU_CAP_NO_INTERRUPT;
+	if (arc_pmu->has_interrupts) {
+		int irq = platform_get_irq(pdev, 0);
+
+		if (irq < 0) {
+			pr_err("Cannot get IRQ number for the platform\n");
+			return -ENODEV;
+		}
+
+		ret = devm_request_irq(&pdev->dev, irq, arc_pmu_intr, 0,
+				       "arc-pmu", arc_pmu);
+		if (ret) {
+			pr_err("could not allocate PMU IRQ\n");
+			return ret;
+		}
+
+		/* Clean all pending interrupt flags */
+		write_aux_reg(ARC_REG_PCT_INT_ACT, 0xffffffff);
+	} else {
+		arc_pmu->pmu.capabilities |= PERF_PMU_CAP_NO_INTERRUPT;
+	}
 
 	ret = perf_pmu_register(&arc_pmu->pmu, pdev->name, PERF_TYPE_RAW);
 
