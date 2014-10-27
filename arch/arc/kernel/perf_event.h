@@ -15,6 +15,9 @@
 /* Max number of counters that CPU may have */
 #define ARC_PERF_MAX_COUNTERS	64
 
+/* Max number of countable events that CPU may have */
+#define ARC_PERF_MAX_EVENTS	256
+
 #define ARC_REG_CC_BUILD	0xF6
 #define ARC_REG_CC_INDEX	0x240
 #define ARC_REG_CC_NAME0	0x241
@@ -68,7 +71,9 @@ struct arc_pmu {
 	unsigned int	irq:31, has_interrupts:1;
 	int		n_counters;
 	int		ev_hw_idx[PERF_COUNT_ARC_HW_MAX];
+	int		raw_events_count;
 	u64		max_period;
+	u64		raw_events[ARC_PERF_MAX_EVENTS];
 };
 
 struct arc_pmu_cpu {

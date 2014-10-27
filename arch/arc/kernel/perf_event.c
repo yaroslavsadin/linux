@@ -291,6 +291,36 @@ static int arc_pmu_cache_event(u64 config)
 	return ret;
 }
 
+static int arc_pmu_raw_event(u64 config)
+{
+	int i;
+	char name[sizeof(u64) + 1] = {0};
+	u64 swapped = __swab64(config);
+
+	/* Trim leading zeroes */
+	for (i = 0; i< sizeof(u64); i++)
+		if (!(swapped & 0xFF))
+			swapped = swapped >> 8;
+		else
+			break;
+
+	for (i = 0; i < arc_pmu->raw_events_count; i++) {
+		if (swapped == arc_pmu->raw_events[i])
+			break;
+	}
+
+	memcpy(name, &swapped, sizeof(u64));
+
+	if (i == arc_pmu->raw_events_count) {
+		pr_info("CPU has no raw event: %s\n", name);
+		i = -1;
+	}
+	else
+		pr_info("Initializing raw event: %s\n", name);
+
+	return i;
+}
+
 /* initializes hw_perf_event structure if event is supported */
 static int arc_pmu_event_init(struct perf_event *event)
 {
@@ -337,6 +367,14 @@ static int arc_pmu_event_init(struct perf_event *event)
 			return ret;
 		hwc->config |= arc_pmu->ev_hw_idx[ret];
 		return 0;
+
+	case PERF_TYPE_RAW:
+		ret = arc_pmu_raw_event(event->attr.config);
+		if (ret < 0)
+			return ret;
+		hwc->config |= ret;
+		return 0;
+
 	default:
 		return -ENOENT;
 	}
@@ -646,19 +684,28 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 #endif
 
 	arc_pmu->max_period = (1ULL << counter_size) - 1ULL;
+	arc_pmu->raw_events_count = cc_bcr.c;
+	if (arc_pmu->raw_events_count >= ARC_PERF_MAX_EVENTS) {
+		arc_pmu->raw_events_count = ARC_PERF_MAX_EVENTS-1;
+		pr_warn("Some unusable conditions");  /* Not possible, but...*/
+	}
 
 	pr_info("ARC perf\t: %d counters (%d bits), %d conditions%s\n",
-		arc_pmu->n_counters, counter_size, cc_bcr.c,
+		arc_pmu->n_counters, counter_size, arc_pmu->raw_events_count,
 		arc_pmu->has_interrupts ? ", [overflow IRQ support]":"");
 
 	cc_name.str[8] = 0;
 	for (i = 0; i < PERF_COUNT_HW_MAX; i++)
 		arc_pmu->ev_hw_idx[i] = -1;
 
-	for (j = 0; j < cc_bcr.c; j++) {
+	for (j = 0; j < arc_pmu->raw_events_count; j++) {
 		write_aux_reg(ARC_REG_CC_INDEX, j);
 		cc_name.indiv.word0 = read_aux_reg(ARC_REG_CC_NAME0);
 		cc_name.indiv.word1 = read_aux_reg(ARC_REG_CC_NAME1);
+
+		arc_pmu->raw_events[j] = ((u64)cc_name.indiv.word1 << 32) |
+						cc_name.indiv.word0;
+
 		for (i = 0; i < ARRAY_SIZE(arc_pmu_ev_hw_map); i++) {
 			if (arc_pmu_ev_hw_map[i] &&
 			    !strcmp(arc_pmu_ev_hw_map[i], cc_name.str) &&
