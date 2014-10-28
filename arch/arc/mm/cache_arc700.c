@@ -76,6 +76,7 @@
 char *arc_cache_mumbojumbo(int c, char *buf, int len)
 {
 	int n = 0;
+	struct cpuinfo_arc_cache *p;
 
 #define PR_CACHE(p, cfg, str)						\
 	if (!(p)->ver)							\
@@ -91,6 +92,11 @@ char *arc_cache_mumbojumbo(int c, char *buf, int len)
 	PR_CACHE(&cpuinfo_arc700[c].icache, CONFIG_ARC_HAS_ICACHE, "I-Cache");
 	PR_CACHE(&cpuinfo_arc700[c].dcache, CONFIG_ARC_HAS_DCACHE, "D-Cache");
 
+	p = &cpuinfo_arc700[c].slc;
+	if (p->ver)
+		n += scnprintf(buf + n, len - n,
+			"SLC\t\t: %uK, %uB Line\n", p->sz_k, p->line_len);
+
 	return buf;
 }
 
@@ -101,7 +107,7 @@ char *arc_cache_mumbojumbo(int c, char *buf, int len)
  */
 void read_decode_cache_bcr(void)
 {
-	struct cpuinfo_arc_cache *p_ic, *p_dc;
+	struct cpuinfo_arc_cache *p_ic, *p_dc, *p_slc;
 	unsigned int cpu = smp_processor_id();
 	struct bcr_cache {
 #ifdef CONFIG_CPU_BIG_ENDIAN
@@ -110,6 +116,15 @@ void read_decode_cache_bcr(void)
 		unsigned int ver:8, config:4, sz:4, line_len:4, pad:12;
 #endif
 	} ibcr, dbcr;
+
+	struct bcr_generic sbcr;
+
+	struct bcr_slc_cfg {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+#else
+		unsigned int sz:4, lsz:2, way:2, pad:24;
+#endif
+	} slc_cfg;
 
 	p_ic = &cpuinfo_arc700[cpu].icache;
 	READ_BCR(ARC_REG_IC_BCR, ibcr);
@@ -135,7 +150,7 @@ dc_chk:
 	READ_BCR(ARC_REG_DC_BCR, dbcr);
 
 	if (!dbcr.ver)
-		return;
+		goto slc_chk;
 
 	p_dc->line_len = 16 << dbcr.line_len;
 	p_dc->sz_k = 1 << (dbcr.sz - 1);
@@ -150,6 +165,16 @@ dc_chk:
 		p_dc->assoc = 1 << dbcr.config;	/* 1,2,4,8 */
 		p_dc->vipt = 0;
 		p_dc->alias = 0;	/* PIPT so can't VIPT alias */
+	}
+
+slc_chk:
+	p_slc = &cpuinfo_arc700[cpu].slc;
+	READ_BCR(ARC_REG_SLC_BCR, sbcr);
+	if (sbcr.ver) {
+		READ_BCR(ARC_REG_SLC_CFG_BCR, slc_cfg);
+		p_slc->ver = sbcr.ver;
+		p_slc->sz_k = 128 << slc_cfg.sz;
+		p_slc->line_len = (slc_cfg.lsz == 0) ? 128 : 64;
 	}
 }
 

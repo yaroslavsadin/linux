@@ -19,6 +19,7 @@
 #define ARC_REG_FP_BCR		0x6B	/* ARCompact: Single-Precision FPU */
 #define ARC_REG_DPFP_BCR	0x6C	/* ARCompact: Dbl Precision FPU */
 #define ARC_REG_FP_V2_BCR	0xc8	/* ARCv2 FPU */
+#define ARC_REG_SLC_BCR		0xce
 #define ARC_REG_DCCM_BCR	0x74	/* DCCM Present + SZ */
 #define ARC_REG_TIMERS_BCR	0x75
 #define ARC_REG_AP_BCR		0x76
@@ -35,6 +36,7 @@
 #define ARC_REG_ISA_CFG_BCR	0xc1
 #define ARC_REG_RTT_BCR		0xF2
 #define ARC_REG_SMART_BCR	0xFF
+#define ARC_REG_SLC_CFG_BCR	0x901
 
 /* status32 Bits Positions */
 #define STATUS_AE_BIT		5	/* Exception active */
@@ -344,7 +346,7 @@ struct cpuinfo_arc_ccm {
 };
 
 struct cpuinfo_arc {
-	struct cpuinfo_arc_cache icache, dcache;
+	struct cpuinfo_arc_cache icache, dcache, slc;
 	struct cpuinfo_arc_mmu mmu;
 	struct cpuinfo_arc_bpu bpu;
 	struct bcr_identity core;
