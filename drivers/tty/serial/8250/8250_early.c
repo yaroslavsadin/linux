@@ -148,6 +148,15 @@ static void __init init_port(struct early_serial8250_device *device)
 	serial8250_early_out(port, UART_LCR, c & ~UART_LCR_DLAB);
 }
 
+unsigned int __weak __init serial8250_early_base_baud(char *options)
+{
+#ifdef BASE_BAUD
+	return BASE_BAUD;
+#else
+	return 1843200/16;	/* x86 early console */
+#endif
+}
+
 static int __init parse_options(struct early_serial8250_device *device,
 								char *options)
 {
@@ -157,7 +166,7 @@ static int __init parse_options(struct early_serial8250_device *device,
 	if (!options)
 		return -ENODEV;
 
-	port->uartclk = BASE_BAUD * 16;
+	port->uartclk = serial8250_early_base_baud(options) * 16;
 
 	mmio = !strncmp(options, "mmio,", 5);
 	mmio32 = !strncmp(options, "mmio32,", 7);
