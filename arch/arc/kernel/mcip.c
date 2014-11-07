@@ -38,6 +38,7 @@ struct mcip_cmd {
 
 #define CMD_INTRPT_GENERATE_IRQ		0x01
 #define CMD_INTRPT_GENERATE_ACK		0x02
+#define CMD_INTRPT_READ_STATUS		0x03
 #define CMD_INTRPT_CHECK_SOURCE		0x04
 
 #define CMD_DEBUG_SET_MASK		0x34
@@ -108,8 +109,27 @@ void mcip_init_smp(unsigned int cpu)
 static void mcip_ipi_send(int cpu)
 {
 	unsigned long flags;
+	int ipi_was_pending;
 
-	raw_spin_lock_irqsave(&mcip_lock, flags);
+	/*
+	 * NOTE: We must spin here if the other cpu hasn't yet
+	 * serviced a previous message. This can burn lots
+	 * of time, but we MUST follows this protocol or
+	 * ipi messages can be lost!!!
+	 * Also, we must release the lock in this loop because
+	 * the other side may get to this same loop and not
+	 * be able to ack -- thus causing deadlock.
+	 */
+
+	do {
+		raw_spin_lock_irqsave(&mcip_lock, flags);
+		__mcip_cmd(CMD_INTRPT_READ_STATUS, cpu);
+		ipi_was_pending = read_aux_reg(ARC_REG_MCIP_READBACK);
+		if (ipi_was_pending == 0)
+			break; /* break out but keep lock */
+		raw_spin_unlock_irqrestore(&mcip_lock, flags);
+	} while (1);
+
 	__mcip_cmd(CMD_INTRPT_GENERATE_IRQ, cpu);
 	raw_spin_unlock_irqrestore(&mcip_lock, flags);
 }
