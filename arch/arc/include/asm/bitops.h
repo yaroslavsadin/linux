@@ -389,7 +389,7 @@ __test_bit(unsigned int nr, const volatile unsigned long *addr)
 	addr += nr >> 5;
 
 	/* ARC700 only considers 5 bits in bit-fiddling insn */
-	mask = 1 << nr;
+	mask = 1 << (nr & 0x1f);
 
 	return ((mask & *addr) != 0);
 }
