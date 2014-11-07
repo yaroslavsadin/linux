@@ -116,7 +116,7 @@ static void mcip_ipi_send(int cpu)
 
 static void mcip_ipi_clear(int irq)
 {
-	unsigned int cpu;
+	unsigned int cpu, c;
 	unsigned long flags;
 
 	raw_spin_lock_irqsave(&mcip_lock, flags);
@@ -126,7 +126,16 @@ static void mcip_ipi_clear(int irq)
 
 	cpu = read_aux_reg(ARC_REG_MCIP_READBACK);	/* 1,2,4,8... */
 
-	__mcip_cmd(CMD_INTRPT_GENERATE_ACK, __ffs(cpu)); /* 0,1,2,3... */
+	/*
+	 * In rare case, multiple concurrent IPIs sent to same target can
+	 * possibly be coalesced by MCIP into 1 asserted IRQ, so @cpus can be
+	 * "vectored" (multiple bits sets) as opposed to typical single bit
+	 */
+	do {
+		c = __ffs(cpu);			/* 0,1,2,3 */
+		__mcip_cmd(CMD_INTRPT_GENERATE_ACK, c);
+		cpu &= ~(1U << c);
+	} while (cpu);
 
 	raw_spin_unlock_irqrestore(&mcip_lock, flags);
 }
