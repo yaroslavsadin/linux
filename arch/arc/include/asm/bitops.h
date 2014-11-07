@@ -197,28 +197,20 @@ BIT_OPS(change, ^, bxor)
  * This routine doesn't need to be atomic.
  */
 static inline int
-__constant_test_bit(unsigned int nr, const volatile unsigned long *addr)
-{
-	return ((1UL << (nr & 31)) &
-		(((const volatile unsigned int *)addr)[nr >> 5])) != 0;
-}
-
-static inline int
-__test_bit(unsigned int nr, const volatile unsigned long *addr)
+test_bit(unsigned int nr, const volatile unsigned long *addr)
 {
 	unsigned long mask;
 
 	addr += nr >> 5;
 
 	/* ARC700 only considers 5 bits in bit-fiddling insn */
+	if (__builtin_constant_p(nr))
+		nr &= 0x1f;
+
 	mask = 1 << nr;
 
 	return ((mask & *addr) != 0);
 }
-
-#define test_bit(nr, addr)	(__builtin_constant_p(nr) ? \
-					__constant_test_bit((nr), (addr)) : \
-					__test_bit((nr), (addr)))
 
 #ifdef CONFIG_ISA_ARCOMPACT
 
