@@ -47,6 +47,7 @@ struct mcip_cmd {
 #define CMD_IDU_DISABLE			0x72
 #define CMD_IDU_SET_MODE		0x74
 #define CMD_IDU_SET_DEST		0x76
+#define CMD_IDU_SET_MASK		0x7C
 
 #define IDU_M_TRIG_LEVEL		0x0
 #define IDU_M_TRIG_EDGE			0x1
@@ -195,12 +196,30 @@ void noinline idu_set_mode(unsigned int cmn_irq, unsigned int lvl,
 	__mcip_cmd_data(cmn_irq, CMD_IDU_SET_MODE, data.word);
 }
 
+static inline unsigned int mcip_idu_irq(struct irq_data *d)
+{
+	BUG_ON(d==NULL);
+	return d->hwirq;
+}
+
 static void idu_irq_mask(struct irq_data *data)
 {
+	unsigned long flags;
+	unsigned long irq = mcip_idu_irq(data);
+
+	raw_spin_lock_irqsave(&mcip_lock, flags);
+	__mcip_cmd_data(CMD_IDU_SET_MASK, irq, 1);
+	raw_spin_unlock_irqrestore(&mcip_lock, flags);
 }
 
 static void idu_irq_unmask(struct irq_data *data)
 {
+	unsigned long flags;
+	unsigned long irq = mcip_idu_irq(data);
+
+	raw_spin_lock_irqsave(&mcip_lock, flags);
+	__mcip_cmd_data(CMD_IDU_SET_MASK, irq, 0);
+	raw_spin_unlock_irqrestore(&mcip_lock, flags);
 }
 
 int idu_irq_set_affinity(struct irq_data *d, const struct cpumask *cpumask,
