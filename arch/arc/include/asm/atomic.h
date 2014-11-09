@@ -17,11 +17,11 @@
 #include <asm/barrier.h>
 #include <asm/smp.h>
 
-#define atomic_read(v)  ((v)->counter)
+#define atomic_read(v)  (*(volatile int *)&(v)->counter)
 
 #ifdef CONFIG_ARC_HAS_LLSC
 
-#define atomic_set(v, i) (((v)->counter) = (i))
+#define atomic_set(v, i) ((*(volatile int *)&(v)->counter) = (i))
 
 #define ATOMIC_OP(op, c_op, asm_op)					\
 static inline void atomic_##op(int i, atomic_t *v)			\
