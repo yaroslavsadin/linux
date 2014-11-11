@@ -1,5 +1,5 @@
 /*
- * ARC MCIP (MultiCore IP) support
+ * ARC ARConnect (MultiCore IP) support (formerly known as MCIP)
  *
  * Copyright (C) 2013 Synopsys, Inc. (www.synopsys.com)
  *
@@ -195,7 +195,8 @@ void mcip_init_early_smp(void)
 
 	READ_BCR(ARC_REG_MCIP_BCR, mp);
 
-	sprintf(smp_cpuinfo_buf, "Extn [SMP]\t: MCIP (v%d): %d cores with %s%s%s%s\n",
+	sprintf(smp_cpuinfo_buf,
+                "Extn [SMP]\t: ARConnect (v%d): %d cores with %s%s%s%s\n",
 		mp.ver, mp.num_cores,
 		IS_AVAIL1(mp.ipi, "IPI "),
 		IS_AVAIL1(mp.idu, "IDU "),
@@ -367,7 +368,7 @@ int __init idu_of_init(struct device_node *intc, struct device_node *parent)
 	if (!idu_detected)
 		panic("IDU not detected, but DeviceTree using it");
 
-	pr_info("MCIP: IDU referenced from Devicetree %d irqs\n", nr_irqs);
+	pr_info("ARConnect: IDU referenced from Devicetree %d irqs\n", nr_irqs);
 
 	domain = irq_domain_add_linear(intc, nr_irqs, &idu_irq_ops, NULL);
 
