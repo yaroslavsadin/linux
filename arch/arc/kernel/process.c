@@ -44,10 +44,18 @@ SYSCALL_DEFINE0(arc_gettls)
 void arch_cpu_idle(void)
 {
 	/* sleep, but enable all interrupts before committing */
-	if (is_isa_arcompact())
+	if (is_isa_arcompact()) {
 		__asm__("sleep 0x3");
-	else
+	} else {
+#ifdef CONFIG_ISA_ARCV2
+		unsigned int irqact = read_aux_reg(AUX_IRQ_ACT) & 0xffff;
+		if (irqact) {
+			pr_info("BUG: idle task but IRQ in progress\n");
+			asm volatile("flag 1\n");
+		}
 		__asm__("sleep 0x10");
+#endif
+	}
 }
 
 asmlinkage void ret_from_fork(void);
