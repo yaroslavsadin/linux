@@ -25,9 +25,10 @@ __cmpxchg(volatile void *ptr, unsigned long expected, unsigned long new)
 	"	scond   %3, [%1]	\n"
 	"	bnz     1b		\n"
 	"2:				\n"
-	: "=&r"(prev)
-	: "r"(ptr), "ir"(expected),
-	  "r"(new) /* can't be "ir". scond can't take limm for "b" */
+	: "=&r"(prev)	/* Early clobber, to prevent reg reuse */
+	: "r"(ptr),	/* Not "m": llock only supports reg direct addr mode */
+	  "ir"(expected),
+	  "r"(new)	/* can't be "ir". scond can't take LIMM for "b" */
 	: "cc");
 
 	return prev;
