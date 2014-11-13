@@ -41,8 +41,9 @@ static inline void set_bit(unsigned long nr, volatile unsigned long *m)
 	"	bset    %0, %0, %2	\n"
 	"	scond   %0, [%1]	\n"
 	"	bnz     1b	\n"
-	: "=&r"(temp)
-	: "r"(m), "ir"(nr)
+	: "=&r"(temp)	/* Early clobber, to prevent reg reuse */
+	: "r"(m), 	/* Not "m": llock only supports reg direct addr mode */
+	  "ir"(nr)
 	: "cc");
 }
 

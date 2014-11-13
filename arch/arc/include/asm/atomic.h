@@ -35,7 +35,8 @@ static inline void atomic_add(int i, atomic_t *v)
 	"	scond   %0, [%1]	\n"
 	"	bnz     1b		\n"
 	: "=&r"(temp)	/* Early clobber, to prevent reg reuse */
-	: "r"(&v->counter), "ir"(i)
+	: "r"(&v->counter), /* Not "m": llock only supports reg direct addr mode */
+	  "ir"(i)
 	: "cc");
 }
 
