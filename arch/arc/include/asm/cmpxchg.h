@@ -29,7 +29,7 @@ __cmpxchg(volatile void *ptr, unsigned long expected, unsigned long new)
 	: "r"(ptr),	/* Not "m": llock only supports reg direct addr mode */
 	  "ir"(expected),
 	  "r"(new)	/* can't be "ir". scond can't take LIMM for "b" */
-	: "cc");
+	: "cc","memory"); /* so that gcc knows memory is being written here */
 
 	return prev;
 }
