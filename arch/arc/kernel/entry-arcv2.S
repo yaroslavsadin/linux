@@ -448,8 +448,7 @@ resume_kernel_mode:
 	; !CONFIG_PREEMPT: To ensure restore_regs is intr safe
 	IRQ_DISABLE	r9
 
-	; XXX: temp hack for STAR 9000811413
-#if defined(CONFIG_PREEMPT) && !defined(CONFIG_SMP)
+#ifdef CONFIG_PREEMPT
 
 	; Can't preempt if preemption disabled
 	GET_CURR_THR_INFO_FROM_SP   r10
