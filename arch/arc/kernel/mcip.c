@@ -15,84 +15,13 @@
 #include <linux/of.h>
 #include <linux/of_irq.h>
 #include "../../drivers/irqchip/irqchip.h"
-
-#define ARC_REG_MCIP_BCR	0x0d0
-#define ARC_REG_MCIP_CMD	0x600
-#define ARC_REG_MCIP_WDATA	0x601
-#define ARC_REG_MCIP_READBACK	0x602
-
-struct mcip_bcr {
-#ifdef CONFIG_CPU_BIG_ENDIAN
-#else
-	unsigned int ver:8,
-		     pad:1, ipi:1, sem:1, msg:1, pad2:1, dbg:1, grtc:1, iocoh:1,
-		     num_cores:6, llm:1, idu:1, pad3:8;
-#endif
-};
-
-struct mcip_cmd {
-#ifdef CONFIG_CPU_BIG_ENDIAN
-#else
-	unsigned int cmd:8, param:16, pad:8;
-#endif
-
-#define CMD_INTRPT_GENERATE_IRQ		0x01
-#define CMD_INTRPT_GENERATE_ACK		0x02
-#define CMD_INTRPT_READ_STATUS		0x03
-#define CMD_INTRPT_CHECK_SOURCE		0x04
-
-#define CMD_DEBUG_SET_MASK		0x34
-#define CMD_DEBUG_SET_SELECT		0x36
-
-#define CMD_IDU_ENABLE			0x71
-#define CMD_IDU_DISABLE			0x72
-#define CMD_IDU_SET_MODE		0x74
-#define CMD_IDU_SET_DEST		0x76
-#define CMD_IDU_SET_MASK		0x7C
-
-#define IDU_M_TRIG_LEVEL		0x0
-#define IDU_M_TRIG_EDGE			0x1
-
-#define IDU_M_DISTRI_RR			0x0
-#define IDU_M_DISTRI_DEST		0x2
-};
+#include <asm/mcip.h>
 
 static int idu_detected;
-
-/*
- * MCIP programming model
- *
- * - Simple commands write {cmd:8,param:16} to MCIP_CMD aux reg
- *   (param could be irq, common_irq, core_id ...)
- * - More involved commands setup MCIP_WDATA with cmd specific data
- *   before invoking the simple command
- */
-static void inline __mcip_cmd(unsigned int cmd, unsigned int param)
-{
-	struct mcip_cmd buf;
-
-	buf.pad = 0;
-	buf.cmd = cmd;
-	buf.param = param;
-
-	WRITE_AUX(ARC_REG_MCIP_CMD, buf);
-}
+static char smp_cpuinfo_buf[128];
 
 static DEFINE_RAW_SPINLOCK(mcip_lock);
 
-/*
- * Setup additional data for a cmd
- * Callers need to lock to ensure atomicity
- */
-static void inline __mcip_cmd_data(unsigned int cmd, unsigned int param,
-				   unsigned int data)
-{
-	write_aux_reg(ARC_REG_MCIP_WDATA, data);
-
-	__mcip_cmd(cmd, param);
-}
-
-static char smp_cpuinfo_buf[128];
 
 /*
  * Any SMP specific init any CPU does when it comes up.
@@ -191,7 +120,21 @@ void mcip_init_early_smp(void)
 {
 #define IS_AVAIL1(var, str)    ((var) ? str : "")
 
-	struct mcip_bcr mp;
+	struct mcip_bcr {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+		unsigned int pad3:8,
+			     idu:1, llm:1, num_cores:6,
+			     iocoh:1,  grtc:1, dbg:1, pad2:1,
+			     msg:1, sem:1, ipi:1, pad:1,
+			     ver:8;
+#else
+		unsigned int ver:8,
+			     pad:1, ipi:1, sem:1, msg:1,
+			     pad2:1, dbg:1, grtc:1, iocoh:1,
+			     num_cores:6, llm:1, idu:1,
+			     pad3:8;
+#endif
+	} mp;
 
 	READ_BCR(ARC_REG_MCIP_BCR, mp);
 
