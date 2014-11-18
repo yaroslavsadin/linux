@@ -169,6 +169,7 @@ static const char *generic_fpga_compat[] __initconst = {
 	"snps,nsimosci",
 	"snps,nsimosci_hs",
 	"snps,haps51",
+	"snps,zebu-hs",
 	NULL,
 };
 
