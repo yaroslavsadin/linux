@@ -25,7 +25,7 @@
 #define IDU_INTERRUPT_0 16
 #endif
 #else
-#define UART0_IRQ	18
+#define UART0_IRQ	24
 #endif
 
 #endif

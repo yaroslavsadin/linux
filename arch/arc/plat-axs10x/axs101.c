@@ -22,8 +22,8 @@
 #include <asm/mach_desc.h>
 #include <asm/io.h>
 
-#define AXC001_CREG	0xf0001000
-#define AXS_MB_CREG	0xe0011000
+#define AXC001_CREG	0xF0001000
+#define AXS_MB_CREG	0xE0011000
 
 #define AXC001_SLV_NONE		0
 #define AXC001_SLV_DDR_PORT0	1
@@ -175,8 +175,10 @@ static void axs101_early_init(void)
 	/* reset ethernet and ULPI interfaces */
 	iowrite32(0x18, (void __iomem *) AXS_MB_CREG + 0x220);
 
+#define CREG_MB_ARC770_IRQ_MUX	0x114
+
 	/* map GPIO 14:10 to ARC 9:5 (IRQ mux change for rev 2 boards) */
-	iowrite32(0x52, (void __iomem *) AXC001_CREG + 0x114);
+	iowrite32(0x52, (void __iomem *) AXC001_CREG + CREG_MB_ARC770_IRQ_MUX);
 
 	/* Set clock divider value depending on mother board version */
 	if (ioread32((void __iomem *) AXS_MB_CREG + 0x234) & (1 << 28)) {
@@ -212,6 +214,131 @@ static void axs101_early_init(void)
 	}
 }
 
+#define AXC003_CGU	0xF0000000
+#define AXC003_CREG	0xF0001000
+#define AXC003_MST_AXI_TUNNEL	0
+#define AXC003_MST_HS38		1
+
+#define CREG_MB_IRQ_MUX		0x214
+#define CREG_CPU_AXI_M0_IRQ_MUX	0x440
+#define CREG_CPU_GPIO_UART_MUX	0x480
+#define CREG_CPU_TUN_IO_CTRL	0x494
+
+
+union pll_reg {
+	struct {
+		unsigned int low:6, high:6, edge:1, bypass:1, noupd:1, pad:17;
+	};
+	unsigned int val;
+};
+
+unsigned int get_freq(void)
+{
+	union pll_reg idiv, fbdiv, odiv;
+	unsigned int f = 33333333;
+
+	idiv.val = ioread32((void __iomem *)AXC003_CGU + 0x80 + 0);
+	fbdiv.val = ioread32((void __iomem *)AXC003_CGU + 0x80 + 4);
+	odiv.val = ioread32((void __iomem *)AXC003_CGU + 0x80 + 8);
+
+	if (idiv.bypass != 1)
+		f = f / (idiv.low + idiv.high);
+
+	if (fbdiv.bypass != 1)
+		f = f * (fbdiv.low + fbdiv.high);
+
+	if (odiv.bypass != 1)
+		f = f / (odiv.low + odiv.high);
+
+	f = (f + 500000) / 1000000; /* Rounding */
+	return f;
+}
+
+unsigned int encode_pll(unsigned int id, int upd)
+{
+	union pll_reg div;
+
+	div.val = 0;
+
+	div.noupd = !upd;
+	div.bypass = id == 1 ? 1 : 0;
+	div.edge = (id%2 == 0) ? 0 : 1;  /* 0 = rising */
+	div.low = (id%2 == 0) ? id >> 1 : (id >> 1)+1;
+	div.high = id >> 1;
+
+	return div.val;
+}
+
+void set_freq(unsigned int id, unsigned int fd, unsigned int od)
+{
+	write_cgu_reg(encode_pll(id, 0),
+		(void __iomem *)AXC003_CGU + 0x80 + 0,
+		(void __iomem *)AXC003_CGU + 0x110);
+
+	write_cgu_reg(encode_pll(fd, 0),
+		(void __iomem *)AXC003_CGU + 0x80 + 4,
+		(void __iomem *)AXC003_CGU + 0x110);
+
+	write_cgu_reg(encode_pll(od, 1),
+		(void __iomem *)AXC003_CGU + 0x80 + 8,
+		(void __iomem *)AXC003_CGU + 0x110);
+}
+
+void print_axs_ver(void)
+{
+	union ver {
+		struct {
+			unsigned int d:5, m:4, y:12, pad:11;
+		};
+		unsigned int val;
+	} ver;
+
+	ver.val = ioread32((void __iomem *) (AXS_MB_CREG + 0x230));
+	printk("AXS103: MB FPGA Date: %u-%u-%u\n", ver.d, ver.m, ver.y);
+
+	ver.val = ioread32((void __iomem *) (AXC003_CREG + 4088));
+	printk("AXS103: CPU FPGA Date: %u-%u-%u\n", ver.d, ver.m, ver.y);
+}
+
+extern void mcip_init_smp(unsigned int cpu);
+extern void mcip_init_early_smp(void);
+
+static void axs103_early_init(void)
+{
+	//set_freq(1, 1, 1);
+
+	print_axs_ver();
+
+	printk("Freq is %dMHz\n", get_freq());
+
+	/* Memory maps already config in pre-bootloader */
+
+	// creg_axc003_initDevice
+	/* set GPIO mux to UART */
+	iowrite32(0x01, (void __iomem *) AXC003_CREG + CREG_CPU_GPIO_UART_MUX);
+
+	// uint32_t TUN_IO_CTRL; //RW,   0x494, control for AXI tunnel Register
+	iowrite32((0x00100000U | 0x000C0000U | 0x00003322U),
+		  (void __iomem *) AXC003_CREG + CREG_CPU_TUN_IO_CTRL);
+
+	/* Set up the AXS_MB interrupt system.*/
+
+	//creg_axc003_setIrqMux (Creg_Axc003_Master_ArcHs38 (1),
+	//			Creg_Axc003_IntSource_Gpio_a12 (12) );
+
+	iowrite32(12, (void __iomem *) (AXC003_CREG + CREG_CPU_AXI_M0_IRQ_MUX
+					 + (AXC003_MST_HS38 << 2)));
+
+	/* connect ICTL - Main Board with GPIO line */
+	// creg_axs1xx_setIrqMux(creg_mb, IRQ_MUX_SEL);
+	iowrite32(0x01, (void __iomem *) AXS_MB_CREG + CREG_MB_IRQ_MUX);
+
+#ifdef CONFIG_ARC_MCIP
+	/* No Hardware init, but filling the smp ops callbacks */
+	mcip_init_early_smp();
+#endif
+}
+
 static void axs101_plat_init(void)
 {
 	of_clk_init(NULL);
@@ -222,10 +349,24 @@ static const char *axs101_compat[] __initconst = {
 	"snps,axs101",
 	NULL,
 };
+static const char *axs103_compat[] __initconst = {
+	"snps,axs103",
+	NULL,
+};
 
 MACHINE_START(AXS101, "axs101")
 	.dt_compat	= axs101_compat,
 	.init_early	= axs101_early_init,
 	.init_machine	= axs101_plat_init,
 	.init_irq	= NULL,
+MACHINE_END
+
+MACHINE_START(AXS103, "axs103")
+	.dt_compat	= axs103_compat,
+	.init_early	= axs103_early_init,
+	.init_machine	= axs101_plat_init,
+	.init_irq	= NULL,
+#ifdef CONFIG_ARC_MCIP
+	.init_smp	= mcip_init_smp,
+#endif
 MACHINE_END

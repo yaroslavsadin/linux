@@ -1,0 +1,97 @@
+/*
+ * Copyright (C) 2014, 2015 Synopsys, Inc. (www.synopsys.com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+/*
+ * Device tree for AXC003 CPU card: HSx38 with external ARConnect IDU intc
+ */
+
+/ {
+	compatible = "snps,arc";
+	clock-frequency = <50000000>;
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	cpu_card {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		ranges = <0x00000000 0xf0000000 0x10000000>;
+
+		cpu_intc: arcv2-intc@cpu {
+			compatible = "snps,arcv2-intc";
+			interrupt-controller;
+			#interrupt-cells = <1>;
+		};
+
+		idu_intc: idu-interrupt-controller {
+			compatible = "snps,arcv2-idu-intc";
+			interrupt-controller;
+			interrupt-parent = <&cpu_intc>;
+			/* <hwirq  distribution>
+			distribution: 0=RR; 1=cpu0, 2=cpu1, 4=cpu2, 8=cpu3 */
+			#interrupt-cells = <2>;
+			/*
+			 * uplink irqs towards core:
+			 * downstream these are "COMMON" irq 0 and 1 resp
+			 */
+			interrupts = <24 25>;
+		};
+
+		/*
+		 * this GPIO intc simply acts as a "wire" for connecting
+		 * ARC core intc to main board intc (mb_intc in axs10x_mb.dtsi)
+		 * which in turn connects to mb peripherals (eth, UART, ...)
+		 *
+		 * In SMP setup, all external IRQs to core intc are first
+		 * hooked up to a 2nd level intc: ARConnect IDU (to allow for
+		 * dynamic IRQ distribition, load balacing etc)
+		 */
+		gpio_intc: dw-apb-gpio-intc@0x3000 {
+			compatible = "snps,dw-apb-gpio-intc";
+			interrupt-controller;
+			reg = < 0x3000 0x80 >;
+			interrupt-parent = <&idu_intc>;
+			interrupts = <0 1>;  /* cmn irq 0 -> cpu irq 24
+						distribute to cpu0 only */
+		};
+
+		/*
+		 * this GPIO block ORs all interrupts on CPU card (creg,..)
+		 * to uplink only 1 IRQ to ARC core intc
+		 */
+		ictl_intc: dw-apb-gpio-intc@0x2000 {
+			compatible = "snps,dw-apb-gpio-intc";
+			interrupt-controller;
+			reg = < 0x2000 0x80 >;
+			interrupt-parent = <&idu_intc>;
+			interrupts = <1 1>;  /* cmn irq 1 -> cpu irq 25
+						distribute to cpu0 only */
+		};
+
+		debug_uart: dw-apb-uart@0x5000 {
+			compatible = "snps,dw-apb-uart";
+			reg = <0x5000 0x100>;
+			clock-frequency = <33333000>;
+			interrupt-parent = <&ictl_intc>;
+			interrupts = <2>;
+			baud = <115200>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+		};
+
+	};
+
+	memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges = <0x00000000 0x80000000 0x40000000>;
+		device_type = "memory";
+		reg = <0x00000000 0x20000000>;	/* 512MiB */
+	};
+};
