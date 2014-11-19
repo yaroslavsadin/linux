@@ -21,26 +21,6 @@
 
 #include "perf_event.h"
 
-/*
- * STAR 9000789081
- * On write of value >= 0x8000_0000 in PCT_COUNTL LSB bit in PCT_COUNTH
- * gets set as if PCT_COUNTL contains signed value.
- * The same is true for pair PCT_INT_CNTL/PCT_INT_CNTH.
- * To work-around this we just limit ourselves with LSB 30 bits so we're sure
- * neither PCT_INT_CNT nor PCT_INT_CNT reaches 0x8000_0000
- */
-
-#define STAR_9000789081
-
-/*
- * STAR 9000791975
- * "Cannot reset PCT_INT_ACT while counter value >= oveflow value"
- * This effectively means we must set counter value < oveflow value before
- * resetting pending interrut flag.
- */
-
-#define STAR_9000791975
-
 static int callchain_trace(unsigned int addr, void *data)
 {
 	struct perf_callchain_entry *entry = data;
@@ -471,11 +451,6 @@ static void arc_pmu_stop(struct perf_event *event, int flags)
 
 	/* Disable interrupt for this counter */
 	if (is_sampling_event(event)) {
-#ifdef STAR_9000791975
-		write_aux_reg(ARC_REG_PCT_INDEX, idx);
-		write_aux_reg(ARC_REG_PCT_COUNTL, 0);
-		write_aux_reg(ARC_REG_PCT_COUNTH, 0);
-#endif
 		/*
 		 * Reset interrupt flag by writing of 1. This is required
 		 * to make sure pending interrupt was not left.
@@ -583,28 +558,18 @@ static irqreturn_t arc_pmu_intr(int irq, void *dev)
 		if (!(active_ints & (1 << idx)))
 			continue;
 
-#ifndef STAR_9000791975
 		/* Reset interrupt flag by writing of 1 */
 		write_aux_reg(ARC_REG_PCT_INT_ACT, 1 << idx);
-#endif
+
 		hwc = &event->hw;
 
 		WARN_ON_ONCE(hwc->idx != idx);
 
 		arc_perf_event_update(event, &event->hw, event->hw.idx);
 		perf_sample_data_init(&data, 0, hwc->last_period);
-		if (!arc_pmu_event_set_period(event)) {
-#ifdef STAR_9000791975
-			/* Reset interrupt flag by writing of 1 */
-			write_aux_reg(ARC_REG_PCT_INT_ACT, 1 << idx);
-#endif
+		if (!arc_pmu_event_set_period(event))
 			continue;
-		}
 
-#ifdef STAR_9000791975
-		/* Reset interrupt flag by writing of 1 */
-		write_aux_reg(ARC_REG_PCT_INT_ACT, 1 << idx);
-#endif
 		if (perf_event_overflow(event, &data, regs))
 			arc_pmu_stop(event, 0);
 	}
@@ -677,11 +642,7 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 			ARC_PERF_MAX_COUNTERS, pct_bcr.c);
 	}
 
-#ifdef STAR_9000789081
-	counter_size = 30;
-#else
 	counter_size = 32 + (pct_bcr.s << 4);
-#endif
 
 	arc_pmu->max_period = (1ULL << counter_size) - 1ULL;
 	arc_pmu->raw_events_count = cc_bcr.c;
