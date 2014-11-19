@@ -644,7 +644,7 @@ static int arc_pmu_device_probe(struct platform_device *pdev)
 
 	counter_size = 32 + (pct_bcr.s << 4);
 
-	arc_pmu->max_period = (1ULL << counter_size) - 1ULL;
+	arc_pmu->max_period = (1ULL << counter_size) / 2 - 1ULL;
 	arc_pmu->raw_events_count = cc_bcr.c;
 	if (arc_pmu->raw_events_count >= ARC_PERF_MAX_EVENTS) {
 		arc_pmu->raw_events_count = ARC_PERF_MAX_EVENTS-1;
