@@ -22,6 +22,14 @@
 #include <asm/mach_desc.h>
 #include <asm/io.h>
 
+static void axs10x_plat_init(void)
+{
+	of_clk_init(NULL);
+	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
+}
+
+#ifdef CONFIG_AXS101
+
 #define AXC001_CREG	0xF0001000
 #define AXS_MB_CREG	0xE0011000
 
@@ -39,6 +47,8 @@
 #define AXS_MB_SLV_AXI_TUNNEL_2	2
 #define AXS_MB_SLV_SRAM		3
 #define AXS_MB_SLV_CONTROL	4
+
+#define CREG_MB_ARC770_IRQ_MUX	0x114
 
 static const int axc001_memmap[16][2] = {
 	{AXC001_SLV_AXI_TUNNEL,		0x0},	/* 0x0000.0000 */
@@ -140,7 +150,6 @@ static int write_cgu_reg(uint32_t value, void __iomem *reg,
 	return retval;
 }
 
-
 static void axs101_early_init(void)
 {
 	int i;
@@ -175,7 +184,6 @@ static void axs101_early_init(void)
 	/* reset ethernet and ULPI interfaces */
 	iowrite32(0x18, (void __iomem *) AXS_MB_CREG + 0x220);
 
-#define CREG_MB_ARC770_IRQ_MUX	0x114
 
 	/* map GPIO 14:10 to ARC 9:5 (IRQ mux change for rev 2 boards) */
 	iowrite32(0x52, (void __iomem *) AXC001_CREG + CREG_MB_ARC770_IRQ_MUX);
@@ -213,6 +221,10 @@ static void axs101_early_init(void)
 			      (void __iomem *) 0xe0010110);
 	}
 }
+
+#endif	/* CONFIG_AXS101 */
+
+#ifdef CONFIG_AXS103
 
 #define AXC003_CGU	0xF0000000
 #define AXC003_CREG	0xF0001000
@@ -338,35 +350,39 @@ static void axs103_early_init(void)
 	mcip_init_early_smp();
 #endif
 }
+#endif
 
-static void axs101_plat_init(void)
-{
-	of_clk_init(NULL);
-	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
-}
+#ifdef CONFIG_AXS101
 
 static const char *axs101_compat[] __initconst = {
 	"snps,axs101",
-	NULL,
-};
-static const char *axs103_compat[] __initconst = {
-	"snps,axs103",
 	NULL,
 };
 
 MACHINE_START(AXS101, "axs101")
 	.dt_compat	= axs101_compat,
 	.init_early	= axs101_early_init,
-	.init_machine	= axs101_plat_init,
+	.init_machine	= axs10x_plat_init,
 	.init_irq	= NULL,
 MACHINE_END
+
+#endif	/* CONFIG_AXS101 */
+
+#ifdef CONFIG_AXS103
+
+static const char *axs103_compat[] __initconst = {
+	"snps,axs103",
+	NULL,
+};
 
 MACHINE_START(AXS103, "axs103")
 	.dt_compat	= axs103_compat,
 	.init_early	= axs103_early_init,
-	.init_machine	= axs101_plat_init,
+	.init_machine	= axs10x_plat_init,
 	.init_irq	= NULL,
 #ifdef CONFIG_ARC_MCIP
 	.init_smp	= mcip_init_smp,
 #endif
 MACHINE_END
+
+#endif	/* CONFIG_AXS103 */
