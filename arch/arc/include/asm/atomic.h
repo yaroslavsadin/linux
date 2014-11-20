@@ -59,6 +59,8 @@ static inline int atomic_add_return(int i, atomic_t *v)
 {
 	unsigned int temp;
 
+	smp_mb();
+
 	__asm__ __volatile__(
 	"1:	llock   %0, [%1]	\n"
 	"	add     %0, %0, %2	\n"
@@ -68,12 +70,16 @@ static inline int atomic_add_return(int i, atomic_t *v)
 	: "r"(&v->counter), "ir"(i)
 	: "cc");
 
+	smp_mb();
+
 	return temp;
 }
 
 static inline int atomic_sub_return(int i, atomic_t *v)
 {
 	unsigned int temp;
+
+	smp_mb();
 
 	__asm__ __volatile__(
 	"1:	llock   %0, [%1]	\n"
@@ -84,12 +90,16 @@ static inline int atomic_sub_return(int i, atomic_t *v)
 	: "r"(&v->counter), "ir"(i)
 	: "cc");
 
+	smp_mb();
+
 	return temp;
 }
 
 static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
 {
 	unsigned int temp;
+
+	smp_mb();
 
 	__asm__ __volatile__(
 	"1:	llock   %0, [%1]	\n"
@@ -99,6 +109,9 @@ static inline void atomic_clear_mask(unsigned long mask, unsigned long *addr)
 	: "=&r"(temp)
 	: "r"(addr), "ir"(mask)
 	: "cc");
+
+	smp_mb();
+
 }
 
 #else	/* !CONFIG_ARC_HAS_LLSC */
