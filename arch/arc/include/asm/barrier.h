@@ -11,7 +11,6 @@
 
 #ifndef __ASSEMBLY__
 
-/* TODO-vineetg: Need to see what this does, don't we need sync anywhere */
 #ifdef CONFIG_SMP
 #define mb() __asm__ __volatile__ ("sync" : : : "memory")
 #else
@@ -20,8 +19,11 @@
 
 #define rmb() mb()
 #define wmb() mb()
+
+/* TBD: can this be made smp_mb */
 #define set_mb(var, value)  do { var = value; mb(); } while (0)
-#define set_wmb(var, value) do { var = value; wmb(); } while (0)
+
+/* TBD: Not needed except for Alpha */
 #define read_barrier_depends()  mb()
 
 /* TODO-vineetg verify the correctness of macros here */
@@ -40,7 +42,8 @@
 #define smp_mb__before_atomic_inc()	smp_mb()
 #define smp_mb__after_atomic_inc()	smp_mb()
 
-#define smp_read_barrier_depends()      do { } while (0)
+/* TBD: Not needed except for Alpha */
+#define smp_read_barrier_depends()      smp_mb()
 
 #endif
 
