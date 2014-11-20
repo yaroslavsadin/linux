@@ -12,13 +12,22 @@
 #ifndef __ASSEMBLY__
 
 #ifdef CONFIG_SMP
-#define mb() __asm__ __volatile__ ("sync" : : : "memory")
+
+#ifdef CONFIG_ISA_ARCV2
+/* DMB + SYNC semantics */
+#define mb()		asm volatile("dsync \n" : : : "memory")
 #else
-#define mb() __asm__ __volatile__ ("" : : : "memory")
+#define mb()		asm volatile("sync \n" : : : "memory")
 #endif
 
-#define rmb() mb()
-#define wmb() mb()
+#else	/* !CONFIG_SMP */
+
+#define mb()		asm volatile("" : : : "memory")
+
+#endif
+
+#define rmb()		mb()
+#define wmb()		mb()
 
 /* TBD: can this be made smp_mb */
 #define set_mb(var, value)  do { var = value; mb(); } while (0)
@@ -26,15 +35,25 @@
 /* TBD: Not needed except for Alpha */
 #define read_barrier_depends()  mb()
 
-/* TODO-vineetg verify the correctness of macros here */
+/* TBD: Is memory clobber needed */
 #ifdef CONFIG_SMP
-#define smp_mb()        mb()
-#define smp_rmb()       rmb()
-#define smp_wmb()       wmb()
-#else
+
+#ifdef CONFIG_ISA_ARCV2
+#define smp_mb()        asm volatile("dmb 3\n": : : "memory")
+#define smp_rmb()       asm volatile("dmb 1\n": : : "memory")
+#define smp_wmb()       asm volatile("dmb 2\n": : : "memory")
+#else	/* ARCompact lacks explcit SMP barriers */
+#define smp_mb()	mb()
+#define smp_rmb()	rmb()
+#define smp_wmb()	wmb()
+#endif
+
+#else	/* !CONFIG_SMP */
+
 #define smp_mb()        barrier()
 #define smp_rmb()       barrier()
 #define smp_wmb()       barrier()
+
 #endif
 
 #define smp_mb__before_atomic_dec()	smp_mb()
