@@ -22,17 +22,23 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
 {
 	unsigned int tmp = __ARCH_SPIN_LOCK_LOCKED__;
 
+	smp_mb();
+
 	__asm__ __volatile__(
 	"1:	ex  %0, [%1]		\n"
 	"	breq  %0, %2, 1b	\n"
 	: "+&r" (tmp)
 	: "r"(&(lock->slock)), "ir"(__ARCH_SPIN_LOCK_LOCKED__)
 	: "memory");
+
+	smp_mb();
 }
 
 static inline int arch_spin_trylock(arch_spinlock_t *lock)
 {
 	unsigned int tmp = __ARCH_SPIN_LOCK_LOCKED__;
+
+	smp_mb();
 
 	__asm__ __volatile__(
 	"1:	ex  %0, [%1]		\n"
@@ -40,12 +46,16 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 	: "r"(&(lock->slock))
 	: "memory");
 
+	smp_mb();
+
 	return (tmp == __ARCH_SPIN_LOCK_UNLOCKED__);
 }
 
 static inline void arch_spin_unlock(arch_spinlock_t *lock)
 {
 	unsigned int tmp = __ARCH_SPIN_LOCK_UNLOCKED__;
+
+	smp_mb();
 
 	__asm__ __volatile__(
 	"	ex  %0, [%1]		\n"

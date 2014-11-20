@@ -44,6 +44,8 @@ static inline int atomic_##op##_return(int i, atomic_t *v)		\
 {									\
 	unsigned int temp;						\
 									\
+	smp_mb();							\
+									\
 	__asm__ __volatile__(						\
 	"1:	llock   %0, [%1]	\n"				\
 	"	" #asm_op " %0, %0, %2	\n"				\
@@ -52,6 +54,8 @@ static inline int atomic_##op##_return(int i, atomic_t *v)		\
 	: "=&r"(temp)							\
 	: "r"(&v->counter), "ir"(i)					\
 	: "cc");							\
+									\
+	smp_mb();							\
 									\
 	return temp;							\
 }
