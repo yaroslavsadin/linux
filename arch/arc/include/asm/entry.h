@@ -42,6 +42,7 @@
 
 #ifdef CONFIG_ISA_ARCV2
 #include <asm/entry-arcv2.h>
+#include <asm/irqflags-arcv2.h>
 #endif
 
 /* Note on the LD/ST addr modes with addr reg wback
@@ -338,6 +339,8 @@
  * Look at EV_ProtV to see how this is actually used
  *-------------------------------------------------------------*/
 
+#ifdef CONFIG_ISA_ARCOMPACT
+
 .macro FAKE_RET_FROM_EXCPN  reg
 
 	ld  \reg, [sp, PT_status32]
@@ -350,6 +353,15 @@
 	rtie
 55:
 .endm
+
+#else
+.macro FAKE_RET_FROM_EXCPN  reg
+	lr      \reg, [status32]
+	bic     \reg, \reg, (STATUS_U_MASK|STATUS_DE_MASK|STATUS_AE_MASK)
+	or      \reg, \reg, (STATUS_L_MASK|STATUS_IE_MASK)
+	kflag   \reg
+.endm
+#endif
 
 /*
  * @reg [OUT] &thread_info of "current"
