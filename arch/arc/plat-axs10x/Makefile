@@ -6,5 +6,5 @@
 # published by the Free Software Foundation.
 #
 
-obj-$(CONFIG_AXS101) += axs101.o
+obj-$(CONFIG_ARC_PLAT_AXS10X) += axs101.o
 obj-$(CONFIG_AXS_ADV7511) += adv7511_core.o

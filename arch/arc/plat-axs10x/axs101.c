@@ -28,8 +28,6 @@ static void axs10x_plat_init(void)
 	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
 }
 
-#ifdef CONFIG_AXS101
-
 #define AXC001_CREG	0xF0001000
 #define AXS_MB_CREG	0xE0011000
 
@@ -222,10 +220,6 @@ static void axs101_early_init(void)
 	}
 }
 
-#endif	/* CONFIG_AXS101 */
-
-#ifdef CONFIG_AXS103
-
 #define AXC003_CGU	0xF0000000
 #define AXC003_CREG	0xF0001000
 #define AXC003_MST_AXI_TUNNEL	0
@@ -350,7 +344,6 @@ static void axs103_early_init(void)
 	mcip_init_early_smp();
 #endif
 }
-#endif
 
 #ifdef CONFIG_AXS101
 
