@@ -209,8 +209,6 @@ void arc_cache_init(void)
 
 	if (IS_ENABLED(CONFIG_ARC_HAS_DCACHE)) {
 		struct cpuinfo_arc_cache *dc = &cpuinfo_arc700[cpu].dcache;
-		int handled;
-
 		if (!dc->ver)
 			panic("cache support enabled but non-existent cache\n");
 
