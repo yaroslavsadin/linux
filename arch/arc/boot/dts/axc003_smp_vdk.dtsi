@@ -1,0 +1,64 @@
+/*
+ * Copyright (C) 2013, 2014 Synopsys, Inc. (www.synopsys.com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+
+/*
+ * Device tree for AXC003 HS382 (Dual core) CPU card - VDK version
+ */
+
+/ {
+	compatible = "snps,arc";
+	clock-frequency = <50000000>;	/* 50 MHZ */
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	cpu_card {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		ranges = <0x00000000 0xf0000000 0x10000000>;
+
+		cpu_intc: arcv2-intc@cpu {
+			compatible = "snps,arcv2-intc";
+			interrupt-controller;
+			#interrupt-cells = <1>;
+		};
+
+
+		idu_intc: idu-interrupt-controller {
+			compatible = "snps,arcv2-idu-intc";
+			interrupt-controller;
+                        interrupt-parent = <&cpu_intc>;
+			/* <hwirq  distribution>
+			  distribution: 0=RR, n=cpu[n] */
+			#interrupt-cells = <2>;
+			interrupts = <24 25 26 27>;
+
+		};
+
+		debug_uart: dw-apb-uart@0x5000 {
+			compatible = "snps,dw-apb-uart";
+			reg = <0x5000 0x100>;
+			clock-frequency = <2403200>;
+			interrupt-parent = <&idu_intc>;
+			interrupts = <2 0>;
+			baud = <115200>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+		};
+
+	};
+
+	memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges = <0x00000000 0x80000000 0x40000000>;
+		device_type = "memory";
+		reg = <0x00000000 0x20000000>;	/* 512MiB */
+	};
+};
