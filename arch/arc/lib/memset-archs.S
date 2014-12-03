@@ -1,7 +1,9 @@
 
 #include <asm/linkage.h>
 
-#ifdef USE_PREFETCH
+#undef PREALLOC_NOT_AVAIL
+
+#ifdef PREALLOC_NOT_AVAIL
 #define PREWRITE(A,B)	ldb 0,[(A),(B)]
 #else
 #define PREWRITE(A,B)	prealloc [(A),(B)]

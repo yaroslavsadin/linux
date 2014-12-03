@@ -1,12 +1,6 @@
 
 #include <asm/linkage.h>
 
-#ifdef __HS__
-# ifndef DISABLE_DOUBLE
-#  define USE_DOUBLE
-# endif
-#endif
-
 #ifdef __LITTLE_ENDIAN__
 # define SHIFT_1(RX,RY,IMM)	asl	RX, RY, IMM	; <<
 # define SHIFT_2(RX,RY,IMM)	lsr	RX, RY, IMM	; >>
@@ -23,7 +17,7 @@
 # define EXTRACT_2(RX,RY,IMM)	and	RX, RY, 0xFFFF
 #endif
 
-#ifdef USE_DOUBLE
+#ifdef CONFIG_ARC_HAS_LL64
 # define PREFETCH_READ(RX)	ldb	0, [RX, 56]
 # define PREFETCH_WRITE(RX)	ldb	0, [RX, 64]
 # define LOADX(DST,RX)		ldd.ab	DST, [RX, 8]
