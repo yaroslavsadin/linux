@@ -20,6 +20,7 @@
 #include <linux/clk-provider.h>
 #include <linux/of_platform.h>
 #include <asm/mach_desc.h>
+#include <asm/asm-offsets.h>
 #include <asm/io.h>
 
 static void axs10x_plat_init(void)
@@ -362,6 +363,12 @@ MACHINE_END
 #endif	/* CONFIG_AXS101 */
 
 #ifdef CONFIG_AXS103
+
+/*
+ * For the VDK OS-kit, to get the offset to pid and command fields
+ */
+char coware_swa_pid_offset[TASK_PID];
+char coware_swa_comm_offset[TASK_COMM];
 
 static const char *axs103_compat[] __initconst = {
 	"snps,axs103",
