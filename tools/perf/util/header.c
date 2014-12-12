@@ -2811,7 +2811,7 @@ int perf_session__read_header(struct perf_session *session)
 		 */
 		perf_evlist__add(session->evlist, evsel);
 
-		nr_ids = f_attr.ids.size / sizeof(u64);
+		nr_ids = f_attr.ids.size / sizeof(u64) ? : 1;
 		/*
 		 * We don't have the cpu and thread maps on the header, so
 		 * for allocating the perf_sample_id table we fake 1 cpu and
