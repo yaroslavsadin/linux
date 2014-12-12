@@ -28,7 +28,11 @@ void arc_init_IRQ(void)
 	unsigned int tmp;
 
 	struct aux_irq_ctrl {
-#ifndef CONFIG_CPU_BIG_ENDIAN
+#ifdef CONFIG_CPU_BIG_ENDIAN
+		unsigned int res3:18, save_idx_regs:1, res2:1,
+			     save_u_to_u:1, save_lp_regs:1, save_blink:1,
+			     res:4, save_nr_gpr_pairs:5;
+#else
 		unsigned int save_nr_gpr_pairs:5, res:4,
 			     save_blink:1, save_lp_regs:1, save_u_to_u:1,
 			     res2:1, save_idx_regs:1, res3:18;

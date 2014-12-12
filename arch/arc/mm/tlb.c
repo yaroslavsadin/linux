@@ -608,6 +608,8 @@ void read_decode_mmu_bcr(void)
 
 	struct bcr_mmu_4 {
 #ifdef CONFIG_CPU_BIG_ENDIAN
+	unsigned int ver:8, sasid:1, sz1:4, sz0:4, res:2, pae:1,
+		     n_ways:2, n_entry:2, n_super:2, u_itlb:3, u_dtlb:3;
 #else
 	/*           DTLB      ITLB      JES        JE         JA      */
 	unsigned int u_dtlb:3, u_itlb:3, n_super:2, n_entry:2, n_ways:2,

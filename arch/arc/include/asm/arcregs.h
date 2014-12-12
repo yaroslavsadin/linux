@@ -289,6 +289,7 @@ struct bcr_fp_arcompact {
 
 struct bcr_fp_arcv2 {
 #ifdef CONFIG_CPU_BIG_ENDIAN
+	unsigned int pad2:15, dp:1, pad1:7, sp:1, ver:8;
 #else
 	unsigned int ver:8, sp:1, pad1:7, dp:1, pad2:15;
 #endif
@@ -312,6 +313,7 @@ struct bcr_bpu_arcompact {
 
 struct bcr_bpu_arcv2 {
 #ifdef CONFIG_CPU_BIG_ENDIAN
+	unsigned int pad:6, fbe:2, tqe:2, ts:4, ft:1, rse:2, pte:3, bce:3, ver:8;
 #else
 	unsigned int ver:8, bce:3, pte:3, rse:2, ft:1, ts:4, tqe:2, fbe:2, pad:6;
 #endif
@@ -319,6 +321,7 @@ struct bcr_bpu_arcv2 {
 
 struct bcr_generic {
 #ifdef CONFIG_CPU_BIG_ENDIAN
+	unsigned int pad:24, ver:8;
 #else
 	unsigned int ver:8, pad:24;
 #endif

@@ -121,6 +121,7 @@ void read_decode_cache_bcr(void)
 
 	struct bcr_slc_cfg {
 #ifdef CONFIG_CPU_BIG_ENDIAN
+		unsigned int pad:24, way:2, lsz:2, sz:4;
 #else
 		unsigned int sz:4, lsz:2, way:2, pad:24;
 #endif
