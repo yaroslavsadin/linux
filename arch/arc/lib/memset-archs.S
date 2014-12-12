@@ -4,7 +4,7 @@
 #undef PREALLOC_NOT_AVAIL
 
 #ifdef PREALLOC_NOT_AVAIL
-#define PREWRITE(A,B)	prefetch [(A),(B)]
+#define PREWRITE(A,B)	prefetchw [(A),(B)]
 #else
 #define PREWRITE(A,B)	prealloc [(A),(B)]
 #endif
