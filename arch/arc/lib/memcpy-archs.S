@@ -18,15 +18,15 @@
 #endif
 
 #ifdef CONFIG_ARC_HAS_LL64
-# define PREFETCH_READ(RX)	ldb	0, [RX, 56]
-# define PREFETCH_WRITE(RX)	ldb	0, [RX, 64]
+# define PREFETCH_READ(RX)	prefetch    [RX, 56]
+# define PREFETCH_WRITE(RX)	prefetch    [RX, 64]
 # define LOADX(DST,RX)		ldd.ab	DST, [RX, 8]
 # define STOREX(SRC,RX)		std.ab	SRC, [RX, 8]
 # define ZOLSHFT		5
 # define ZOLAND			0x1F
 #else
-# define PREFETCH_READ(RX)	ldb	0, [RX, 28]
-# define PREFETCH_WRITE(RX)	ldb	0, [RX, 32]
+# define PREFETCH_READ(RX)	prefetch    [RX, 28]
+# define PREFETCH_WRITE(RX)	prefetch    [RX, 32]
 # define LOADX(DST,RX)		ld.ab	DST, [RX, 4]
 # define STOREX(SRC,RX)		st.ab	SRC, [RX, 4]
 # define ZOLSHFT		4
@@ -34,8 +34,8 @@
 #endif
 
 ARC_ENTRY memcpy
-	ldb	0, [r1]		; Prefetch the read location
-	ldb	0, [r0]		; Prefetch the write location
+	prefetch [r1]		; Prefetch the read location
+	prefetch [r0]		; Prefetch the write location
 	mov.f	0, r2
 ;;; if size is zero
 	jz.d	[blink]
@@ -110,9 +110,9 @@ sourceunaligned:
 	lpnz	@copy8bytes_1
 	;; LOOP START
 	ld.ab	r6, [r1, 4]
-	ldb	0, [r1, 28]	;Prefetch the next read location
+	prefetch [r1, 28]	;Prefetch the next read location
 	ld.ab	r8, [r1,4]
-	ldb	0, [r3, 32]	;Prefetch the next write location
+	prefetch [r3, 32]	;Prefetch the next write location
 
 	SHIFT_1	(r7, r6, 24)
 	or	r7, r7, r5
@@ -152,9 +152,9 @@ unalignedOffby2:
 	lpnz	@copy8bytes_2
 	;; LOOP START
 	ld.ab	r6, [r1, 4]
-	ldb	0, [r1, 28]	;Prefetch the next read location
+	prefetch [r1, 28]	;Prefetch the next read location
 	ld.ab	r8, [r1,4]
-	ldb	0, [r3, 32]	;Prefetch the next write location
+	prefetch [r3, 32]	;Prefetch the next write location
 
 	SHIFT_1	(r7, r6, 16)
 	or	r7, r7, r5
@@ -188,9 +188,9 @@ unalignedOffby3:
 	lpnz	@copy8bytes_3
 	;; LOOP START
 	ld.ab	r6, [r1, 4]
-	ldb	0, [r1, 28]	;Prefetch the next read location
+	prefetch [r1, 28]	;Prefetch the next read location
 	ld.ab	r8, [r1,4]
-	ldb	0, [r3, 32]	;Prefetch the next write location
+	prefetch [r3, 32]	;Prefetch the next write location
 
 	SHIFT_1	(r7, r6, 8)
 	or	r7, r7, r5
