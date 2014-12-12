@@ -12,7 +12,11 @@ ifeq ($(CROSS_COMPILE),)
 CROSS_COMPILE := arc-linux-uclibc-
 endif
 
+ifdef CONFIG_ISA_ARCOMPACT
 KBUILD_DEFCONFIG := nsim_700_defconfig
+else
+KBUILD_DEFCONFIG := nsim_hs_defconfig
+endif
 
 cflags-${CONFIG_ISA_ARCOMPACT}	+= -mA7
 cflags-${CONFIG_ISA_ARCV2}	+= -mcpu=ARCv2HS -mdiv-rem
