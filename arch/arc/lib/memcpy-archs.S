@@ -11,10 +11,10 @@
 #else
 # define SHIFT_1(RX,RY,IMM)	lsr	RX, RY, IMM	; >>
 # define SHIFT_2(RX,RY,IMM)	asl	RX, RY, IMM	; <<
-# define MERGE_1(RX,RY,IMM)
-# define MERGE_2(RX,RY,IMM)	asl	RX, RY, IMM
+# define MERGE_1(RX,RY,IMM)	asl	RX, RY, IMM	; <<
+# define MERGE_2(RX,RY,IMM)	asl	RX, RY, IMM	; <<
 # define EXTRACT_1(RX,RY,IMM)	lsr	RX, RY, IMM
-# define EXTRACT_2(RX,RY,IMM)	and	RX, RY, 0xFFFF
+# define EXTRACT_2(RX,RY,IMM)	lsr	RX, RY, 0x08
 #endif
 
 #ifdef CONFIG_ARC_HAS_LL64
@@ -103,7 +103,7 @@ sourceunaligned:
 	;; Convert to words, unfold x2
 	lsr.f	lp_count, r2, 3
 	MERGE_1 (r6, r6, 8)
-	MERGE_2 (r5, r5, 16)
+	MERGE_2 (r5, r5, 24)
 	or	r5, r5, r6
 
 	;; Both src and dst are aligned
@@ -127,7 +127,7 @@ sourceunaligned:
 copy8bytes_1:
 
 	;; Write back the remaining 16bits
-	EXTRACT_1 (r6, r5, 8)
+	EXTRACT_1 (r6, r5, 16)
 	sth.ab	r6, [r3, 2]
 	;; Write back the remaining 8bits
 	EXTRACT_2 (r5, r5, 16)
@@ -149,6 +149,9 @@ unalignedOffby2:
 	;; Both src and dst are aligned
 	;; Convert to words, unfold x2
 	lsr.f	lp_count, r2, 3
+#ifdef __BIG_ENDIAN__
+	asl.nz	r5, r5, 16
+#endif
 	lpnz	@copy8bytes_2
 	;; LOOP START
 	ld.ab	r6, [r1, 4]
@@ -168,6 +171,9 @@ unalignedOffby2:
 	st.ab	r9, [r3, 4]
 copy8bytes_2:
 
+#ifdef __BIG_ENDIAN__
+	lsr.nz	r5, r5, 16
+#endif
 	sth.ab	r5, [r3, 2]
 
 	and.f	lp_count, r2, 0x07 ;Last 8bytes
@@ -185,6 +191,9 @@ unalignedOffby3:
 	;; Both src and dst are aligned
 	;; Convert to words, unfold x2
 	lsr.f	lp_count, r2, 3
+#ifdef __BIG_ENDIAN__
+	asl.ne	r5, r5, 24
+#endif
 	lpnz	@copy8bytes_3
 	;; LOOP START
 	ld.ab	r6, [r1, 4]
@@ -204,6 +213,9 @@ unalignedOffby3:
 	st.ab	r9, [r3, 4]
 copy8bytes_3:
 
+#ifdef __BIG_ENDIAN__
+	lsr.nz	r5, r5, 24
+#endif
 	stb.ab	r5, [r3, 1]
 
 	and.f	lp_count, r2, 0x07 ;Last 8bytes
