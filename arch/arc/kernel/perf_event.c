@@ -561,6 +561,14 @@ static irqreturn_t arc_pmu_intr(int irq, void *dev)
 		/* Reset interrupt flag by writing of 1 */
 		write_aux_reg(ARC_REG_PCT_INT_ACT, 1 << idx);
 
+		/*
+		 * On reset of "interrupt active" bit corresponding
+		 * "interrupt enable" bit gets automatically reset as well.
+		 * Now we need to re-enable interrupt for the counter.
+		 */
+		write_aux_reg(ARC_REG_PCT_INT_CTRL,
+			read_aux_reg(ARC_REG_PCT_INT_CTRL) | (1 << idx));
+
 		hwc = &event->hw;
 
 		WARN_ON_ONCE(hwc->idx != idx);
