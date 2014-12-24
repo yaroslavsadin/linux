@@ -144,7 +144,7 @@ void mcip_init_early_smp(void)
 		IS_AVAIL1(mp.ipi, "IPI "),
 		IS_AVAIL1(mp.idu, "IDU "),
 		IS_AVAIL1(mp.dbg, "DEBUG "),
-		IS_AVAIL1(mp.grtc, "Glb RTC"));
+		IS_AVAIL1(mp.grtc, "GRTC"));
 
 	plat_smp_ops.info = smp_cpuinfo_buf;
 
@@ -158,6 +158,9 @@ void mcip_init_early_smp(void)
 		__mcip_cmd_data(CMD_DEBUG_SET_SELECT, 0, 0xf);
 		__mcip_cmd_data(CMD_DEBUG_SET_MASK, 0xf, 0xf);
 	}
+
+	if (IS_ENABLED(CONFIG_ARC_HAS_GRTC) && !mp.grtc)
+		panic("kernel trying to use non-existent GRTC\n");
 }
 
 /***************************************************************************
