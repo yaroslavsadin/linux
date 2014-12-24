@@ -26,6 +26,7 @@
  * while TIMER1 for free running (clocksource)
  *
  * Newer ARC700 cores have 64bit clk fetching RTSC insn, preferred over TIMER1
+ * which however is currently broken
  */
 
 #include <linux/spinlock.h>
@@ -59,7 +60,7 @@
 
 /********** Clock Source Device *********/
 
-#ifdef CONFIG_ARC_HAS_RTSC
+#ifdef CONFIG_ARC_HAS_RTC
 
 #define AUX_RTC_CTRL	0x103
 #define AUX_RTC_LOW	0x104
@@ -69,11 +70,8 @@ int arc_counter_setup(void)
 {
 	write_aux_reg(AUX_RTC_CTRL, 1);
 
-	/*
-	 * For SMP this needs to be 0. However Kconfig glue doesn't
-	 * enable this option for SMP configs
-	 */
-	return 1;
+	/* Not usable in SMP */
+	return !IS_ENABLED(CONFIG_SMP);
 }
 
 static cycle_t arc_counter_read(struct clocksource *cs)
@@ -101,23 +99,14 @@ static cycle_t arc_counter_read(struct clocksource *cs)
 }
 
 static struct clocksource arc_counter = {
-	.name   = "ARCv2 RTSC",
+	.name   = "ARCv2 RTC",
 	.rating = 350,
 	.read   = arc_counter_read,
 	.mask   = CLOCKSOURCE_MASK(64),
 	.flags  = CLOCK_SOURCE_IS_CONTINUOUS,
 };
 
-#else /* !CONFIG_ARC_HAS_RTSC */
-
-static bool is_usable_as_clocksource(void)
-{
-#ifdef CONFIG_SMP
-	return 0;
-#else
-	return 1;
-#endif
-}
+#else /* !CONFIG_ARC_HAS_RTC */
 
 /*
  * set 32bit TIMER1 to keep counting monotonically and wraparound
@@ -128,7 +117,8 @@ int arc_counter_setup(void)
 	write_aux_reg(ARC_REG_TIMER1_CNT, 0);
 	write_aux_reg(ARC_REG_TIMER1_CTRL, TIMER_CTRL_NH);
 
-	return is_usable_as_clocksource();
+	/* Not usable in SMP */
+	return !IS_ENABLED(CONFIG_SMP);
 }
 
 static cycle_t arc_counter_read(struct clocksource *cs)

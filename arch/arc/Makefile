@@ -40,7 +40,6 @@ cflags-$(atleast_gcc44)			+= -fsection-anchors
 
 cflags-$(CONFIG_ARC_HAS_LLSC)		+= -mlock
 cflags-$(CONFIG_ARC_HAS_SWAPE)		+= -mswape
-cflags-$(CONFIG_ARC_HAS_RTSC)		+= -mrtsc
 
 ifdef CONFIG_ARC_HAS_LL64
 cflags-y		+= -mll64
