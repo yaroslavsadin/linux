@@ -21,7 +21,7 @@
 
 static unsigned int arc_base_baud = 33333333;
 
-unsigned int __init serial8250_early_base_baud(char *options)
+unsigned int __init arc_early_base_baud(void)
 {
 	return arc_base_baud/16;
 }
