@@ -321,17 +321,13 @@ static int arc_pmu_event_init(struct perf_event *event)
 	hwc->config = 0;
 
 	if (is_isa_arcv2()) {
-		/*
-		 * To count in both U+K modes, both flags should be reset.
-		 * Because of this implementing inverse logic here.
-		 */
-		hwc->config |= ARC_REG_PCT_CONFIG_USER | ARC_REG_PCT_CONFIG_KERN;
+		/* "exclude user" means "count only kernel" */
+		if (event->attr.exclude_user)
+			hwc->config |= ARC_REG_PCT_CONFIG_KERN;
 
-		if (!event->attr.exclude_user)
-			hwc->config &= ~ARC_REG_PCT_CONFIG_USER;
-
-		if (!event->attr.exclude_kernel)
-			hwc->config &= ~ARC_REG_PCT_CONFIG_KERN;
+		/* "exclude kernel" means "count only user" */
+		if (event->attr.exclude_kernel)
+			hwc->config |= ARC_REG_PCT_CONFIG_USER;
 	}
 
 	switch (event->attr.type) {
