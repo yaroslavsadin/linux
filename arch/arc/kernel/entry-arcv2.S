@@ -76,7 +76,19 @@ ARC_ENTRY handle_interrupt
 	PUSH	gp
 	PUSH	fp
 
-	PUSHAX	AUX_USER_SP	; user mode SP
+	; Saving pt_regs->sp correctly requires some extra work due to the way
+	; Auto stack switch works
+	;  - U mode: retrieve it from AUX_USER_SP
+	;  - K mode: add the offset from current SP where H/w starts auto push
+	;
+	; Utilize the fact that Z bit is set if Intr taken in U mode
+	mov.nz	r9, sp
+	add.nz	r9, r9, SZ_PT_REGS - PT_sp - 4
+	bnz	1f
+
+	lr	r9, [AUX_USER_SP]
+1:
+	PUSH	r9
 
 #ifdef CONFIG_ARC_CURR_IN_REG
 	PUSH	r25
