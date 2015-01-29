@@ -42,10 +42,14 @@
 	;  - U mode: retrieve it from AUX_USER_SP
 	;  - K mode: add the off from current SP where H/w starts auto push
 	;
-	; Utilize the fact that Z bit is set if Intr taken in U mode
-	mov.nz	r9, sp
-	add.nz	r9, r9, SZ_PT_REGS - PT_sp - 4
-	bnz	1f
+	; Although H/w does set Z flag for U mode (just like interrupts)
+	; we can't rely on that in case we land here from a TLB Miss
+	; exception handler (tlbex.S) which clobbers the flags already
+	;
+	btst	r10, STATUS_U_BIT
+	mov.z	r9, sp
+	add.z	r9, r9, SZ_PT_REGS - PT_sp - 4
+	bz	1f
 
 	lr	r9, [AUX_USER_SP]
 1:
