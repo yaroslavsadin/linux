@@ -35,7 +35,7 @@
 
 ARC_ENTRY memcpy
 	prefetch [r1]		; Prefetch the read location
-	prefetch [r0]		; Prefetch the write location
+	prefetchw [r0]		; Prefetch the write location
 	mov.f	0, r2
 ;;; if size is zero
 	jz.d	[blink]
@@ -112,7 +112,7 @@ sourceunaligned:
 	ld.ab	r6, [r1, 4]
 	prefetch [r1, 28]	;Prefetch the next read location
 	ld.ab	r8, [r1,4]
-	prefetch [r3, 32]	;Prefetch the next write location
+	prefetchw [r3, 32]	;Prefetch the next write location
 
 	SHIFT_1	(r7, r6, 24)
 	or	r7, r7, r5
@@ -157,7 +157,7 @@ unalignedOffby2:
 	ld.ab	r6, [r1, 4]
 	prefetch [r1, 28]	;Prefetch the next read location
 	ld.ab	r8, [r1,4]
-	prefetch [r3, 32]	;Prefetch the next write location
+	prefetchw [r3, 32]	;Prefetch the next write location
 
 	SHIFT_1	(r7, r6, 16)
 	or	r7, r7, r5

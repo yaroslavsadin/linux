@@ -10,7 +10,7 @@
 #endif
 
 ARC_ENTRY memset
-	ldb	0, [r0]		; Prefetch the write location
+	prefetchw [r0]		; Prefetch the write location
 	mov.f	0, r2
 ;;; if size is zero
 	jz.d	[blink]
