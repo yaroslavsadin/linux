@@ -496,9 +496,10 @@ restore_regs:
 
 ;####### Return from Intr #######
 
+#ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
+
 	TAKE_SNAP_C_FROM_ASM SNAP_INTR_OUT
 
-#ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
 	; reload r0, r11
 	ld	r0, [sp, PT_status32]	; U/K mode at time of entry
 	lr	r10, [AUX_IRQ_ACT]
@@ -529,7 +530,13 @@ debug_marker_l1:
 #else
 	add	sp, sp, 4
 #endif
+
+	; Don't touch AUX_USER_SP if returning to K mode (Z bit set)
+	add.z	sp, sp, 4
+	bz	1f
+
 	POPAX	AUX_USER_SP
+1:
 	POP	fp
 	POP	gp
 	POP	r12
@@ -539,7 +546,13 @@ debug_marker_l1:
 ;####### Return from Exception / pure kernel mode #######
 
 .Lexcep_ret:
+
+#ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
 	TAKE_SNAP_C_FROM_ASM SNAP_EXCP_OUT
+
+	; reload r0
+	ld	r0, [sp, PT_status32]	; U/K mode at time of entry
+#endif
 
 debug_marker_syscall:
 	EXCEPTION_EPILOGUE

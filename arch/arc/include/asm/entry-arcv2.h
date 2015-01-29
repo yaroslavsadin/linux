@@ -69,6 +69,8 @@
 .endm
 
 .macro EXCEPTION_EPILOGUE
+	; Assumes r0 has PT_status32
+	btst	r0, STATUS_U_BIT
 
 	add	sp, sp, 8	;orig_r0/ECR don't need restoring
 	POPAX	erbta
@@ -79,8 +81,11 @@
 	add	sp, sp, 4
 #endif
 
-	POPAX	AUX_USER_SP
+	add.z	sp, sp, 4
+	bz	1f
 
+	POPAX	AUX_USER_SP
+1:
 	POP	fp
 	POP	gp
 
