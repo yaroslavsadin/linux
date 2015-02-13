@@ -622,21 +622,21 @@ void read_decode_mmu_bcr(void)
 
 	if (mmu->ver <= 2) {
 		mmu2 = (struct bcr_mmu_1_2 *)&tmp;
-		mmu->pg_sz = PAGE_SIZE;
+		mmu->pg_sz_k = TO_KB(PAGE_SIZE);
 		mmu->sets = 1 << mmu2->sets;
 		mmu->ways = 1 << mmu2->ways;
 		mmu->u_dtlb = mmu2->u_dtlb;
 		mmu->u_itlb = mmu2->u_itlb;
 	} else if (mmu->ver == 3) {
 		mmu3 = (struct bcr_mmu_3 *)&tmp;
-		mmu->pg_sz = 512 << mmu3->pg_sz;
+		mmu->pg_sz_k = 1 << (mmu3->pg_sz - 1);
 		mmu->sets = 1 << mmu3->sets;
 		mmu->ways = 1 << mmu3->ways;
 		mmu->u_dtlb = mmu3->u_dtlb;
 		mmu->u_itlb = mmu3->u_itlb;
 	} else {
 		mmu4 = (struct bcr_mmu_4 *)&tmp;
-		mmu->pg_sz = 512 << mmu4->sz0;
+		mmu->pg_sz_k = 1 << (mmu4->sz0 - 1);
 		mmu->sets = 64 << mmu4->n_entry ;
 		mmu->ways = mmu4->n_ways * 2;
 		mmu->u_dtlb = mmu4->u_dtlb * 4;
@@ -653,7 +653,7 @@ char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len)
 
 	n += scnprintf(buf + n, len - n,
 		      "MMU [v%x]\t: %dk PAGE, JTLB %d (%dx%d), uDTLB %d, uITLB %d %s\n",
-		       p_mmu->ver, TO_KB(p_mmu->pg_sz),
+		       p_mmu->ver, p_mmu->pg_sz_k,
 		       p_mmu->num_tlb, p_mmu->sets, p_mmu->ways,
 		       p_mmu->u_dtlb, p_mmu->u_itlb,
 		       IS_ENABLED(CONFIG_ARC_MMU_SASID) ? ",SASID" : "");
@@ -681,7 +681,7 @@ void arc_mmu_init(void)
 		      mmu->ver, CONFIG_ARC_MMU_VER);
 	}
 
-	if (mmu->pg_sz != PAGE_SIZE)
+	if ((mmu->pg_sz_k << 10) != PAGE_SIZE)
 		panic("MMU pg size != PAGE_SIZE (%luk)\n", TO_KB(PAGE_SIZE));
 
 	/* Enable the MMU */
