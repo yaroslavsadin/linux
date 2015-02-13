@@ -688,6 +688,7 @@ void read_decode_mmu_bcr(void)
 	} else {
 		mmu4 = (struct bcr_mmu_4 *)&tmp;
 		mmu->pg_sz_k = 1 << (mmu4->sz0 - 1);
+		mmu->s_pg_sz_m = 1 << (mmu4->sz1 - 11);
 		mmu->sets = 64 << mmu4->n_entry ;
 		mmu->ways = mmu4->n_ways * 2;
 		mmu->u_dtlb = mmu4->u_dtlb * 4;
@@ -701,10 +702,18 @@ char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len)
 {
 	int n = 0;
 	struct cpuinfo_arc_mmu *p_mmu = &cpuinfo_arc700[cpu_id].mmu;
+	char super_pg[64];
+
+	if (p_mmu->s_pg_sz_m)
+		scnprintf(super_pg, 64, "%dM Super Page %s",
+			  p_mmu->s_pg_sz_m,
+			  IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) ? "" : "(not used)");
+	else
+		super_pg[0] = '\0';
 
 	n += scnprintf(buf + n, len - n,
-		      "MMU [v%x]\t: %dk PAGE, JTLB %d (%dx%d), uDTLB %d, uITLB %d %s\n",
-		       p_mmu->ver, p_mmu->pg_sz_k,
+		      "MMU [v%x]\t: %dk PAGE, %s JTLB %d (%dx%d), uDTLB %d, uITLB %d %s\n",
+		       p_mmu->ver, p_mmu->pg_sz_k, super_pg,
 		       p_mmu->num_tlb, p_mmu->sets, p_mmu->ways,
 		       p_mmu->u_dtlb, p_mmu->u_itlb,
 		       IS_ENABLED(CONFIG_ARC_MMU_SASID) ? ",SASID" : "");
@@ -734,6 +743,11 @@ void arc_mmu_init(void)
 
 	if (mmu->pg_sz_k != TO_KB(PAGE_SIZE))
 		panic("MMU pg size != PAGE_SIZE (%luk)\n", TO_KB(PAGE_SIZE));
+
+	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+	    mmu->s_pg_sz_m != TO_MB(HPAGE_PMD_SIZE))
+		panic("MMU Super pg size != HPAGE_PMD_SIZE (%luM)\n",
+			TO_MB(HPAGE_PMD_SIZE));
 
 	/* Enable the MMU */
 	write_aux_reg(ARC_REG_PID, MMU_ENABLE);
