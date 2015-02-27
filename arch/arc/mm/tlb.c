@@ -681,7 +681,7 @@ void arc_mmu_init(void)
 		      mmu->ver, CONFIG_ARC_MMU_VER);
 	}
 
-	if ((mmu->pg_sz_k << 10) != PAGE_SIZE)
+	if (mmu->pg_sz_k != TO_KB(PAGE_SIZE))
 		panic("MMU pg size != PAGE_SIZE (%luk)\n", TO_KB(PAGE_SIZE));
 
 	/* Enable the MMU */
