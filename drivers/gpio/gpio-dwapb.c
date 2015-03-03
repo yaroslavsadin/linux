@@ -370,6 +370,9 @@ static void dwapb_configure_irqs(struct dwapb_gpio *gpio,
 		irq_create_mapping(gpio->domain, hwirq);
 
 	port->bgc.gc.to_irq = dwapb_gpio_to_irq;
+
+	/* Reset mask register */
+	dwapb_write(gpio, GPIO_INTMASK, 0);
 }
 
 static void dwapb_irq_teardown(struct dwapb_gpio *gpio)
