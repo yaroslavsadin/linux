@@ -219,8 +219,10 @@ static char *arc_cpu_mumbojumbo(int cpu_id, char *buf, int len)
 			if (cpu->extn_mpy.dsp)	/* OPT 7-9 */
 				opt = cpu->extn_mpy.dsp + 6;
 
-			n += scnprintf(buf + n, len - n, "mpy(opt %d) ", opt);
+			n += scnprintf(buf + n, len - n, "mpy[opt %d] ", opt);
 		}
+		n += scnprintf(buf + n, len - n, "%s",
+			       IS_USED(CONFIG_ARC_HAS_HW_MPY));
 	}
 
 	n += scnprintf(buf + n, len - n, "%s%s%s%s%s%s%s%s\n",
