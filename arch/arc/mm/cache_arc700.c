@@ -750,8 +750,8 @@ void flush_anon_page(struct vm_area_struct *vma, struct page *page,
 void copy_user_highpage(struct page *to, struct page *from,
 	unsigned long u_vaddr, struct vm_area_struct *vma)
 {
-	void *kfrom = page_address(from);
-	void *kto = page_address(to);
+	void *kfrom = kmap(from);	/* vgupta: kmap_atomic not needed */
+	void *kto = kmap(to);
 	int clean_src_k_mappings = 0;
 
 	/*
@@ -789,6 +789,9 @@ void copy_user_highpage(struct page *to, struct page *from,
 	} else {
 		clear_bit(PG_dc_clean, &from->flags);
 	}
+
+	kunmap(kto);
+	kunmap(kfrom);
 }
 
 void clear_user_page(void *to, unsigned long u_vaddr, struct page *page)
