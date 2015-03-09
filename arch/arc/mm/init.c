@@ -15,6 +15,7 @@
 #endif
 #include <linux/swap.h>
 #include <linux/module.h>
+#include <linux/highmem.h>
 #include <asm/page.h>
 #include <asm/pgalloc.h>
 #include <asm/sections.h>
@@ -92,7 +93,7 @@ void __init setup_arch_memory(void)
 	/* first page of system - kernel .vector starts here */
 	min_low_pfn = ARCH_PFN_OFFSET;
 
-	/* Last usable page of low mem (no HIGHMEM yet for ARC port) */
+	/* Last usable page of low mem */
 	max_low_pfn = max_pfn = PFN_DOWN(end_mem);
 
 	max_mapnr = max_pfn - min_low_pfn;
@@ -112,6 +113,9 @@ void __init setup_arch_memory(void)
 	/*-------------- node setup --------------------------------*/
 	memset(zones_size, 0, sizeof(zones_size));
 	zones_size[ZONE_NORMAL] = max_mapnr;
+#ifdef CONFIG_HIGHMEM
+	zones_size[ZONE_HIGHMEM] = max_pfn - max_low_pfn;
+#endif
 
 	/*
 	 * We can't use the helper free_area_init(zones[]) because it uses
@@ -125,6 +129,10 @@ void __init setup_arch_memory(void)
 			    NULL);		/* NO holes */
 
 	high_memory = (void *)end_mem;
+
+#ifdef CONFIG_HIGHMEM
+	kmap_init();
+#endif
 }
 
 /*
@@ -135,6 +143,14 @@ void __init setup_arch_memory(void)
  */
 void __init mem_init(void)
 {
+#ifdef CONFIG_HIGHMEM
+	unsigned long tmp;
+
+	reset_all_zones_managed_pages();
+	for (tmp = max_low_pfn; tmp < max_pfn; tmp++)
+		free_highmem_page(pfn_to_page(tmp));
+#endif
+
 	free_all_bootmem();
 	mem_init_print_info(NULL);
 }
