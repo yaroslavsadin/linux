@@ -270,7 +270,7 @@ int idu_irq_xlate(struct irq_domain *d, struct device_node *n,
 	if (distri == 0) {
 		/* 0 - Round Robin to all cpus (in DEST ?) */
 		raw_spin_lock_irqsave(&mcip_lock, flags);
-		idu_set_dest(hwirq, BIT(NR_CPUS) - 1); /* 1 bit per core */
+		idu_set_dest(hwirq, BIT(num_online_cpus()) - 1); /* 1 bit per core */
 		idu_set_mode(hwirq, IDU_M_TRIG_LEVEL, IDU_M_DISTRI_RR);
 		raw_spin_unlock_irqrestore(&mcip_lock, flags);
 	} else {
