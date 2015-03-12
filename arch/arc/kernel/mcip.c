@@ -239,12 +239,14 @@ static struct irq_chip idu_irq_chip = {
 
 };
 
+static int idu_first_irq;
+
 void idu_cascade_isr(unsigned int core_irq, struct irq_desc *desc)
 {
 	struct irq_domain *domain = irq_desc_get_handler_data(desc);
 	unsigned int idu_irq;
 
-	idu_irq = core_irq - 24;
+	idu_irq = core_irq - idu_first_irq;
 	generic_handle_irq(irq_find_mapping(domain, idu_irq));
 }
 
@@ -326,6 +328,9 @@ int __init idu_of_init(struct device_node *intc, struct device_node *parent)
 		 * as first level isr
 		 */
 		irq = irq_of_parse_and_map(intc, i);
+		if (!i)
+			idu_first_irq = irq;
+
 		irq_set_handler_data(irq, domain);
 		irq_set_chained_handler(irq, idu_cascade_isr);
 	}
