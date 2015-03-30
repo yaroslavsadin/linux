@@ -36,6 +36,7 @@
 #define ARC_REG_ISA_CFG_BCR	0xc1
 #define ARC_REG_RTT_BCR		0xF2
 #define ARC_REG_SMART_BCR	0xFF
+#define ARC_REG_CLUSTER_BCR	0xcf
 
 /* status32 Bits Positions */
 #define STATUS_AE_BIT		5	/* Exception active */
@@ -109,6 +110,9 @@
 #define ARC_AUX_DPFP_2L         0x303
 #define ARC_AUX_DPFP_2H         0x304
 #define ARC_AUX_DPFP_STAT       0x305
+
+/* CLUSTER Bits Positions */
+#define CLUSTER_COH_IO_SUPPORTED	24
 
 #ifndef __ASSEMBLY__
 
