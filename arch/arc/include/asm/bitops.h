@@ -19,69 +19,35 @@
 #include <linux/compiler.h>
 #include <asm/barrier.h>
 
-/*
- * Hardware assisted read-modify-write using ARC700 LLOCK/SCOND insns.
- * The Kconfig glue ensures that in SMP, this is only set if the container
- * SoC/platform has cross-core coherent LLOCK/SCOND
- */
+#ifndef CONFIG_ARC_HAS_LLSC
+#include <asm/smp.h>
+#endif
+
 #if defined(CONFIG_ARC_HAS_LLSC)
 
-static inline void set_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned int temp;
+/*
+ * Hardware assisted Atomic-R-M-W
+ */
 
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	__asm__ __volatile__(
-	"1:	llock   %0, [%1]	\n"
-	"	bset    %0, %0, %2	\n"
-	"	scond   %0, [%1]	\n"
-	"	bnz     1b	\n"
-	: "=&r"(temp)	/* Early clobber, to prevent reg reuse */
-	: "r"(m), 	/* Not "m": llock only supports reg direct addr mode */
-	  "ir"(nr)
-	: "cc");
-}
-
-static inline void clear_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned int temp;
-
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	__asm__ __volatile__(
-	"1:	llock   %0, [%1]	\n"
-	"	bclr    %0, %0, %2	\n"
-	"	scond   %0, [%1]	\n"
-	"	bnz     1b	\n"
-	: "=&r"(temp)
-	: "r"(m), "ir"(nr)
-	: "cc");
-}
-
-static inline void change_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned int temp;
-
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	__asm__ __volatile__(
-	"1:	llock   %0, [%1]	\n"
-	"	bxor    %0, %0, %2	\n"
-	"	scond   %0, [%1]	\n"
-	"	bnz     1b		\n"
-	: "=&r"(temp)
-	: "r"(m), "ir"(nr)
-	: "cc");
+#define BIT_OP(op, c_op, asm_op)					\
+static inline void op##_bit(unsigned long nr, volatile unsigned long *m)\
+{									\
+	unsigned int temp;						\
+									\
+	m += nr >> 5;							\
+									\
+	if (__builtin_constant_p(nr))					\
+		nr &= 0x1f;						\
+									\
+	__asm__ __volatile__(						\
+	"1:	llock       %0, [%1]		\n"			\
+	"	" #asm_op " %0, %0, %2	\n"			\
+	"	scond       %0, [%1]		\n"			\
+	"	bnz         1b			\n"			\
+	: "=&r"(temp)	/* Early clobber, to prevent reg reuse */	\
+	: "r"(m), 	/* Not "m": llock only supports reg direct addr mode */	\
+	  "ir"(nr)							\
+	: "cc");							\
 }
 
 /*
@@ -95,86 +61,33 @@ static inline void change_bit(unsigned long nr, volatile unsigned long *m)
  * Since ARC lacks a equivalent h/w primitive, the bit is set unconditionally
  * and the old value of bit is returned
  */
-static inline int test_and_set_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long old, temp;
-
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	smp_mb();
-
-	__asm__ __volatile__(
-	"1:	llock   %0, [%2]	\n"
-	"	bset    %1, %0, %3	\n"
-	"	scond   %1, [%2]	\n"
-	"	bnz     1b		\n"
-	: "=&r"(old), "=&r"(temp)
-	: "r"(m), "ir"(nr)
-	: "cc");
-
-	smp_mb();
-
-	return (old & (1 << nr)) != 0;
-}
-
-static inline int
-test_and_clear_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned int old, temp;
-
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	smp_mb();
-
-	__asm__ __volatile__(
-	"1:	llock   %0, [%2]	\n"
-	"	bclr    %1, %0, %3	\n"
-	"	scond   %1, [%2]	\n"
-	"	bnz     1b		\n"
-	: "=&r"(old), "=&r"(temp)
-	: "r"(m), "ir"(nr)
-	: "cc");
-
-	smp_mb();
-
-	return (old & (1 << nr)) != 0;
-}
-
-static inline int
-test_and_change_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned int old, temp;
-
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	smp_mb();
-
-	__asm__ __volatile__(
-	"1:	llock   %0, [%2]	\n"
-	"	bxor    %1, %0, %3	\n"
-	"	scond   %1, [%2]	\n"
-	"	bnz     1b		\n"
-	: "=&r"(old), "=&r"(temp)
-	: "r"(m), "ir"(nr)
-	: "cc");
-
-	smp_mb();
-
-	return (old & (1 << nr)) != 0;
+#define TEST_N_BIT_OP(op, c_op, asm_op)						\
+static inline int test_and_##op##_bit(unsigned long nr, volatile unsigned long *m)\
+{										\
+	unsigned long old, temp;						\
+										\
+	m += nr >> 5;								\
+										\
+	if (__builtin_constant_p(nr))						\
+		nr &= 0x1f;							\
+										\
+	smp_mb();								\
+										\
+	__asm__ __volatile__(							\
+	"1:	llock       %0, [%2]	\n"					\
+	"	" #asm_op " %1, %0, %3	\n"					\
+	"	scond       %1, [%2]	\n"					\
+	"	bnz         1b		\n"					\
+	: "=&r"(old), "=&r"(temp)						\
+	: "r"(m), "ir"(nr)							\
+	: "cc");								\
+										\
+	smp_mb();								\
+										\
+	return (old & (1 << nr)) != 0;						\
 }
 
 #else	/* !CONFIG_ARC_HAS_LLSC */
-
-#include <asm/smp.h>
 
 /*
  * Non hardware assisted Atomic-R-M-W
@@ -192,108 +105,40 @@ test_and_change_bit(unsigned long nr, volatile unsigned long *m)
  *             at compile time)
  */
 
-static inline void set_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long temp, flags;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	bitops_lock(flags);
-
-	temp = *m;
-	*m = temp | (1UL << nr);
-
-	bitops_unlock(flags);
+#define BIT_OP(op, c_op, asm_op)						\
+static inline void op##_bit(unsigned long nr, volatile unsigned long *m)	\
+{										\
+	unsigned long temp, flags;						\
+	m += nr >> 5;								\
+										\
+	if (__builtin_constant_p(nr))						\
+		nr &= 0x1f;							\
+										\
+	bitops_lock(flags);							\
+										\
+	temp = *m;								\
+	*m = temp c_op (1UL << nr);						\
+										\
+	bitops_unlock(flags);							\
 }
 
-static inline void clear_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long temp, flags;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	bitops_lock(flags);
-
-	temp = *m;
-	*m = temp & ~(1UL << nr);
-
-	bitops_unlock(flags);
-}
-
-static inline void change_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long temp, flags;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	bitops_lock(flags);
-
-	temp = *m;
-	*m = temp ^ (1UL << nr);
-
-	bitops_unlock(flags);
-}
-
-static inline int test_and_set_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long old, flags;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	bitops_lock(flags);
-
-	old = *m;
-	*m = old | (1 << nr);
-
-	bitops_unlock(flags);
-
-	return (old & (1 << nr)) != 0;
-}
-
-static inline int
-test_and_clear_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long old, flags;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	bitops_lock(flags);
-
-	old = *m;
-	*m = old & ~(1 << nr);
-
-	bitops_unlock(flags);
-
-	return (old & (1 << nr)) != 0;
-}
-
-static inline int
-test_and_change_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long old, flags;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	bitops_lock(flags);
-
-	old = *m;
-	*m = old ^ (1 << nr);
-
-	bitops_unlock(flags);
-
-	return (old & (1 << nr)) != 0;
+#define TEST_N_BIT_OP(op, c_op, asm_op)						\
+static inline int test_and_##op##_bit(unsigned long nr, volatile unsigned long *m)\
+{										\
+	unsigned long old, flags;						\
+	m += nr >> 5;								\
+										\
+	if (__builtin_constant_p(nr))						\
+		nr &= 0x1f;							\
+										\
+	bitops_lock(flags);							\
+										\
+	old = *m;								\
+	*m = old c_op (1 << nr);						\
+										\
+	bitops_unlock(flags);							\
+										\
+	return (old & (1 << nr)) != 0;						\
 }
 
 #endif /* CONFIG_ARC_HAS_LLSC */
@@ -302,86 +147,43 @@ test_and_change_bit(unsigned long nr, volatile unsigned long *m)
  * Non atomic variants
  **************************************/
 
-static inline void __set_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long temp;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	temp = *m;
-	*m = temp | (1UL << nr);
+#define __BIT_OP(op, c_op, asm_op)						\
+static inline void __##op##_bit(unsigned long nr, volatile unsigned long *m)	\
+{										\
+	unsigned long temp;							\
+	m += nr >> 5;								\
+										\
+	if (__builtin_constant_p(nr))						\
+		nr &= 0x1f;							\
+										\
+	temp = *m;								\
+	*m = temp c_op (1UL << nr);						\
 }
 
-static inline void __clear_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long temp;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	temp = *m;
-	*m = temp & ~(1UL << nr);
+#define __TEST_N_BIT_OP(op, c_op, asm_op)					\
+static inline int __test_and_##op##_bit(unsigned long nr, volatile unsigned long *m)\
+{										\
+	unsigned long old;							\
+	m += nr >> 5;								\
+										\
+	if (__builtin_constant_p(nr))						\
+		nr &= 0x1f;							\
+										\
+	old = *m;								\
+	*m = old c_op (1 << nr);						\
+										\
+	return (old & (1 << nr)) != 0;						\
 }
 
-static inline void __change_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long temp;
-	m += nr >> 5;
+#define BIT_OPS(op, c_op, asm_op)						\
+	BIT_OP(op, c_op, asm_op)						\
+	TEST_N_BIT_OP(op, c_op, asm_op)						\
+	__BIT_OP(op, c_op, asm_op)						\
+	__TEST_N_BIT_OP(op, c_op, asm_op)
 
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	temp = *m;
-	*m = temp ^ (1UL << nr);
-}
-
-static inline int
-__test_and_set_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long old;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	old = *m;
-	*m = old | (1 << nr);
-
-	return (old & (1 << nr)) != 0;
-}
-
-static inline int
-__test_and_clear_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long old;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	old = *m;
-	*m = old & ~(1 << nr);
-
-	return (old & (1 << nr)) != 0;
-}
-
-static inline int
-__test_and_change_bit(unsigned long nr, volatile unsigned long *m)
-{
-	unsigned long old;
-	m += nr >> 5;
-
-	if (__builtin_constant_p(nr))
-		nr &= 0x1f;
-
-	old = *m;
-	*m = old ^ (1 << nr);
-
-	return (old & (1 << nr)) != 0;
-}
+BIT_OPS(set, |, bset)
+BIT_OPS(clear, & ~, bclr)
+BIT_OPS(change, ^, bxor)
 
 /*
  * This routine doesn't need to be atomic.
