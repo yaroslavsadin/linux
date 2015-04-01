@@ -55,10 +55,6 @@ static const struct ohci_driver_overrides platform_overrides __initconst = {
 	.reset =	ohci_platform_reset,
 };
 
-static const struct usb_ohci_pdata default_pdata = {
-	.num_ports = 1,
-};
-
 static int ohci_platform_probe(struct platform_device *dev)
 {
 	struct usb_hcd *hcd;
@@ -68,12 +64,8 @@ static int ohci_platform_probe(struct platform_device *dev)
 	int err = -ENOMEM;
 
 	if (!pdata) {
-		err = platform_device_add_data(dev, &default_pdata,
-					       sizeof(default_pdata));
-		if (err)
-			return err;
-
-		pdata = dev->dev.platform_data;
+		WARN_ON(1);
+		return -ENODEV;
 	}
 
 	if (usb_disabled())
@@ -186,11 +178,6 @@ static int ohci_platform_resume(struct device *dev)
 #define ohci_platform_resume	NULL
 #endif /* CONFIG_PM */
 
-static const struct of_device_id ohci_ids[] = {
-	{ .compatible = "snps,h20apb-ohci", },
-        {}
-};
-
 static const struct platform_device_id ohci_platform_table[] = {
 	{ "ohci-platform", 0 },
 	{ }
@@ -211,7 +198,6 @@ static struct platform_driver ohci_platform_driver = {
 		.owner	= THIS_MODULE,
 		.name	= "ohci-platform",
 		.pm	= &ohci_platform_pm_ops,
-		.of_match_table = ohci_ids,
 	}
 };
 
