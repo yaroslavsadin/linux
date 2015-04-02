@@ -89,7 +89,8 @@ SIMPLE_DEV_PM_OPS(dw_mci_pltfm_pmops, dw_mci_pltfm_suspend, dw_mci_pltfm_resume)
 EXPORT_SYMBOL_GPL(dw_mci_pltfm_pmops);
 
 static const struct of_device_id dw_mci_pltfm_match[] = {
-	{ .compatible = "snps,dw-mshc", },
+	{ .compatible = "snps,dw-mshc",
+		.data = &rockchip_drv_data },
 	{ .compatible = "rockchip,rk2928-dw-mshc",
 		.data = &rockchip_drv_data },
 	{},
