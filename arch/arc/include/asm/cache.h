@@ -82,4 +82,13 @@ extern void read_decode_cache_bcr(void);
 #define DC_CTRL_INV_MODE_FLUSH  0x40
 #define DC_CTRL_FLUSH_STATUS    0x100
 
+/*System-level cache (SLC) related Auxiliary registers */
+#define ARC_REG_SLC_CFG		0x901
+#define ARC_REG_SLC_CONTROL	0x903
+#define ARC_REG_SLC_FLUSH	0x904
+#define ARC_REG_SLC_INVALIDATE	0x905
+
+/* Bit val in SLC_CONTROL */
+#define SLC_CONTROL_DISABLE	0x1
+
 #endif /* _ASM_CACHE_H */

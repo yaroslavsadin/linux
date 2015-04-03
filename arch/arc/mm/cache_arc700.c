@@ -172,7 +172,7 @@ slc_chk:
 	p_slc = &cpuinfo_arc700[cpu].slc;
 	READ_BCR(ARC_REG_SLC_BCR, sbcr);
 	if (sbcr.ver) {
-		READ_BCR(ARC_REG_SLC_CFG_BCR, slc_cfg);
+		READ_BCR(ARC_REG_SLC_CFG, slc_cfg);
 		p_slc->ver = sbcr.ver;
 		p_slc->sz_k = 128 << slc_cfg.sz;
 		p_slc->line_len = (slc_cfg.lsz == 0) ? 128 : 64;

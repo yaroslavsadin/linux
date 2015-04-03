@@ -36,7 +36,6 @@
 #define ARC_REG_ISA_CFG_BCR	0xc1
 #define ARC_REG_RTT_BCR		0xF2
 #define ARC_REG_SMART_BCR	0xFF
-#define ARC_REG_SLC_CFG_BCR	0x901
 
 /* status32 Bits Positions */
 #define STATUS_AE_BIT		5	/* Exception active */
