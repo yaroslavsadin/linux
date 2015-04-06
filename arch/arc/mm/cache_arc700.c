@@ -76,6 +76,7 @@
 char *arc_cache_mumbojumbo(int c, char *buf, int len)
 {
 	int n = 0;
+	struct cpuinfo_arc_cache *p;
 
 #define PR_CACHE(p, cfg, str)						\
 	if (!(p)->ver)							\
@@ -91,6 +92,11 @@ char *arc_cache_mumbojumbo(int c, char *buf, int len)
 	PR_CACHE(&cpuinfo_arc700[c].icache, CONFIG_ARC_HAS_ICACHE, "I-Cache");
 	PR_CACHE(&cpuinfo_arc700[c].dcache, CONFIG_ARC_HAS_DCACHE, "D-Cache");
 
+	p = &cpuinfo_arc700[c].slc;
+	if (p->ver)
+		n += scnprintf(buf + n, len - n,
+			"SLC\t\t: %uK, %uB Line\n", p->sz_k, p->line_len);
+
 	return buf;
 }
 
@@ -101,7 +107,7 @@ char *arc_cache_mumbojumbo(int c, char *buf, int len)
  */
 void read_decode_cache_bcr(void)
 {
-	struct cpuinfo_arc_cache *p_ic, *p_dc;
+	struct cpuinfo_arc_cache *p_ic, *p_dc, *p_slc;
 	unsigned int cpu = smp_processor_id();
 	struct bcr_cache {
 #ifdef CONFIG_CPU_BIG_ENDIAN
@@ -111,14 +117,29 @@ void read_decode_cache_bcr(void)
 #endif
 	} ibcr, dbcr;
 
+	struct bcr_generic sbcr;
+
+	struct bcr_slc_cfg {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+		unsigned int pad:24, way:2, lsz:2, sz:4;
+#else
+		unsigned int sz:4, lsz:2, way:2, pad:24;
+#endif
+	} slc_cfg;
+
 	p_ic = &cpuinfo_arc700[cpu].icache;
 	READ_BCR(ARC_REG_IC_BCR, ibcr);
 
 	if (!ibcr.ver)
 		goto dc_chk;
 
-	BUG_ON(ibcr.config != 3);
-	p_ic->assoc = 2;		/* Fixed to 2w set assoc */
+	if (ibcr.ver <= 3) {
+		BUG_ON(ibcr.config != 3);
+		p_ic->assoc = 2;		/* Fixed to 2w set assoc */
+	} else if (ibcr.ver >= 4) {
+		p_ic->assoc = 1 << ibcr.config;	/* 1,2,4,8 */
+	}
+
 	p_ic->line_len = 8 << ibcr.line_len;
 	p_ic->sz_k = 1 << (ibcr.sz - 1);
 	p_ic->ver = ibcr.ver;
@@ -130,15 +151,32 @@ dc_chk:
 	READ_BCR(ARC_REG_DC_BCR, dbcr);
 
 	if (!dbcr.ver)
-		return;
+		goto slc_chk;
 
-	BUG_ON(dbcr.config != 2);
-	p_dc->assoc = 4;		/* Fixed to 4w set assoc */
+	if (dbcr.ver <= 3) {
+		BUG_ON(dbcr.config != 2);
+		p_dc->assoc = 4;		/* Fixed to 4w set assoc */
+		p_dc->vipt = 1;
+		p_dc->alias = p_dc->sz_k/p_dc->assoc/TO_KB(PAGE_SIZE) > 1;
+	} else if (dbcr.ver >= 4) {
+		p_dc->assoc = 1 << dbcr.config;	/* 1,2,4,8 */
+		p_dc->vipt = 0;
+		p_dc->alias = 0;		/* PIPT so can't VIPT alias */
+	}
+
 	p_dc->line_len = 16 << dbcr.line_len;
 	p_dc->sz_k = 1 << (dbcr.sz - 1);
 	p_dc->ver = dbcr.ver;
-	p_dc->vipt = 1;
-	p_dc->alias = p_dc->sz_k/p_dc->assoc/TO_KB(PAGE_SIZE) > 1;
+
+slc_chk:
+	p_slc = &cpuinfo_arc700[cpu].slc;
+	READ_BCR(ARC_REG_SLC_BCR, sbcr);
+	if (sbcr.ver) {
+		READ_BCR(ARC_REG_SLC_CFG, slc_cfg);
+		p_slc->ver = sbcr.ver;
+		p_slc->sz_k = 128 << slc_cfg.sz;
+		p_slc->line_len = (slc_cfg.lsz == 0) ? 128 : 64;
+	}
 }
 
 /*
@@ -172,8 +210,6 @@ void arc_cache_init(void)
 
 	if (IS_ENABLED(CONFIG_ARC_HAS_DCACHE)) {
 		struct cpuinfo_arc_cache *dc = &cpuinfo_arc700[cpu].dcache;
-		int handled;
-
 		if (!dc->ver)
 			panic("cache support enabled but non-existent cache\n");
 
@@ -181,13 +217,15 @@ void arc_cache_init(void)
 			panic("DCache line [%d] != kernel Config [%d]",
 			      dc->line_len, L1_CACHE_BYTES);
 
-		/* check for D-Cache aliasing */
-		handled = IS_ENABLED(CONFIG_ARC_CACHE_VIPT_ALIASING);
+		/* check for D-Cache aliasing on ARCompact: ARCv2 dcache is PIPT */
+		if (is_isa_arcompact()) {
+			int handled = IS_ENABLED(CONFIG_ARC_CACHE_VIPT_ALIASING);
 
-		if (dc->alias && !handled)
-			panic("Enable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
-		else if (!dc->alias && handled)
-			panic("Don't need CONFIG_ARC_CACHE_VIPT_ALIASING\n");
+			if (dc->alias && !handled)
+				panic("Enable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
+			else if (!dc->alias && handled)
+				panic("Disable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
+		}
 	}
 }
 
@@ -196,6 +234,7 @@ void arc_cache_init(void)
 #define OP_FLUSH_N_INV	0x3
 #define OP_INV_IC	0x4
 
+#if (CONFIG_ARC_MMU_VER < 4)
 /*
  * Common Helper for Line Operations on {I,D}-Cache
  */
@@ -259,6 +298,54 @@ static inline void __cache_line_loop(unsigned long paddr, unsigned long vaddr,
 #endif
 	}
 }
+
+#else
+
+/*
+ * In HS38x (MMU v4), although icache is VIPT, we only need paddr for cache
+ * maintenance ops, as long as icache doesn't alias.
+ * e.g. for 8k page, 4way/set, upto 32k works well with this scheme
+ *
+ * For Aliasing icache, PTAG reg would take vaddr.
+ *
+ * This is unlike ARC700 (MMU v3) where, PTAG is always used
+ */
+static inline void __cache_line_loop(unsigned long paddr, unsigned long vaddr,
+				     unsigned long sz, const int cacheop)
+{
+	unsigned int aux_cmd;
+	int num_lines;
+	const int full_page_op = __builtin_constant_p(sz) && sz == PAGE_SIZE;
+
+	if (cacheop == OP_INV_IC) {
+		aux_cmd = ARC_REG_IC_IVIL;
+	}
+	else {
+		/* d$ cmd: INV (discard or wback-n-discard) OR FLUSH (wback) */
+		aux_cmd = cacheop & OP_INV ? ARC_REG_DC_IVDL : ARC_REG_DC_FLDL;
+	}
+
+	/* Ensure we properly floor/ceil the non-line aligned/sized requests
+	 * and have @paddr - aligned to cache line and integral @num_lines.
+	 * This however can be avoided for page sized since:
+	 *  -@paddr will be cache-line aligned already (being page aligned)
+	 *  -@sz will be integral multiple of line size (being page sized).
+	 */
+	if (!full_page_op) {
+		sz += paddr & ~CACHE_LINE_MASK;
+		paddr &= CACHE_LINE_MASK;
+	}
+
+	num_lines = DIV_ROUND_UP(sz, L1_CACHE_BYTES);
+
+	while (num_lines-- > 0) {
+		write_aux_reg(aux_cmd, paddr);
+		paddr += L1_CACHE_BYTES;
+	}
+}
+
+#endif
+
 
 #ifdef CONFIG_ARC_HAS_DCACHE
 
