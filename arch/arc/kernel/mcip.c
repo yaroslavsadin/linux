@@ -179,7 +179,7 @@ void mcip_init_early_smp(void)
  */
 void noinline idu_set_dest(unsigned int cmn_irq, unsigned int cpu_mask)
 {
-	__mcip_cmd_data(cmn_irq, CMD_IDU_SET_DEST, cpu_mask);
+	__mcip_cmd_data(CMD_IDU_SET_DEST, cmn_irq, cpu_mask);
 }
 
 void noinline idu_set_mode(unsigned int cmn_irq, unsigned int lvl,
@@ -194,7 +194,7 @@ void noinline idu_set_mode(unsigned int cmn_irq, unsigned int lvl,
 
 	data.distr = distr;
 	data.lvl = lvl;
-	__mcip_cmd_data(cmn_irq, CMD_IDU_SET_MODE, data.word);
+	__mcip_cmd_data(CMD_IDU_SET_MODE, cmn_irq, data.word);
 }
 
 static void idu_irq_mask(struct irq_data *data)
