@@ -17,11 +17,15 @@
 #include <linux/init.h>
 #include <linux/clk-provider.h>
 #include <linux/of_platform.h>
+#include <linux/slab.h>
+
 #include <asm/asm-offsets.h>
 #include <asm/clk.h>
 #include <asm/mach_desc.h>
 #include <asm/mcip.h>
 #include <asm/io.h>
+
+static int mb_rev;
 
 static void enable_gpio_intc_wire(void)
 {
@@ -96,10 +100,8 @@ static int write_cgu_reg(uint32_t value, void __iomem *reg,
 static void setup_pgu_clk(void)
 {
 	/* Set clock divider value depending on mother board version */
-	if (ioread32((void __iomem *) AXS_MB_CREG + 0x234) & (1 << 28)) {
+	if (mb_rev == 3) {
 		/*
-		 * 1 => HT-3 (rev3.0)
-		 *
 		 * Set clock for PGU, 74.25 Mhz
 		 * to obtain 74.25MHz pixel clock, required for 720p60
 		 * (27 * 22) / 8 == 74.25
@@ -113,8 +115,6 @@ static void setup_pgu_clk(void)
 	}
 	else {
 		/*
-		 * 0 => HT-2 (rev2.0)
-		 *
 		 * Set clock for PGU, 150 Mhz
 		 * to obtain 75MHz pixel clock, required for 720p60
 		 * (25 * 18) / 3 == 25 * 6 == 150
@@ -129,8 +129,62 @@ static void setup_pgu_clk(void)
 	}
 }
 
+static void setup_nand_bus_width(void)
+{
+	/*
+	 * There're 2 versions of motherboards that could be used in ARC SDP.
+	 * Among other things different NAND ICs are in use:
+	 * [1] v2 board sports MT29F4G08ABADAWP while
+	 * [2] v3 board sports MT29F4G16ABADAWP
+	 *
+	 * They are almost the same except data bus width 8-bit in [1] and
+	 * 16-bit in [2]. And for proper support of 16-bit data bus
+	 * NAND_BUSWIDTH_16 option must be passed to NAND driver core.
+	 *
+	 * Here in platform init code we update device tree description with
+	 * proper value of "nand-bus-width" property of "snps,axs-nand"
+	 * compatible nodes so on real NAND driver probe it gets proper value.
+	 */
+
+	struct device_node *dn = of_find_compatible_node(NULL, NULL,
+							 "snps,axs-nand");
+	struct property *prop;
+	u32 buswidth;
+
+	if (!dn)
+		return;
+
+	prop = kzalloc(sizeof(*prop) + sizeof(u32), GFP_KERNEL);
+
+	buswidth = (mb_rev == 2) ? 8 : 16;
+
+	prop->length = sizeof(buswidth);
+	prop->name = kstrdup("nand-bus-width", GFP_KERNEL);
+	prop->value = prop + 1;
+	*(u32 *)prop->value = cpu_to_be32(buswidth);
+
+	if (of_find_property(dn, prop->name, NULL))
+		of_update_property(dn, prop);
+	else
+		of_add_property(dn, prop);
+}
+
+static void axs10x_plat_init(void)
+{
+	setup_nand_bus_width();
+	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
+}
+
 static void axs10x_early_init(void)
 {
+	/* Determine motherboard version */
+	if (ioread32((void __iomem *) AXS_MB_CREG + 0x234) & (1 << 28))
+		/* 1 => HT-3 (rev3.0) */
+		mb_rev = 3;
+	else
+		/* 0 => HT-2 (rev2.0) */
+		mb_rev = 2;
+
 	enable_gpio_intc_wire();
 	setup_pgu_clk();
 }
@@ -389,6 +443,7 @@ static const char *axs101_compat[] __initconst = {
 MACHINE_START(AXS101, "axs101")
 	.dt_compat	= axs101_compat,
 	.init_early	= axs101_early_init,
+	.init_machine	= axs10x_plat_init,
 MACHINE_END
 
 #endif	/* CONFIG_AXS101 */
@@ -409,6 +464,7 @@ static const char *axs103_compat[] __initconst = {
 MACHINE_START(AXS103, "axs103")
 	.dt_compat	= axs103_compat,
 	.init_early	= axs103_early_init,
+	.init_machine	= axs10x_plat_init,
 #ifdef CONFIG_ARC_MCIP
 	.init_smp	= mcip_init_smp,
 #endif
