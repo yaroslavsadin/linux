@@ -16,6 +16,7 @@
 #include <linux/mtd/nand.h>
 #include <linux/mtd/partitions.h>
 #include <linux/of_address.h>
+#include <linux/of_mtd.h>
 #include <linux/of_platform.h>
 #include <linux/io.h>
 
@@ -283,7 +284,7 @@ static int axs_nand_probe(struct platform_device *pdev)
 	struct axs_nand_host *host;
 	struct resource *res_regs;
 	struct mtd_info *mtd;
-	int err;
+	int err, ecc_mode;
 
 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
 	if (!host) {
@@ -319,7 +320,7 @@ static int axs_nand_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	}
 	dev_dbg(&pdev->dev, "Data buffer mapped @ %p, DMA @ %pad\n", host->db,
-		host->db_dma);
+		&host->db_dma);
 
 	mtd = &host->mtd;
 	nand_chip = &host->nand_chip;
@@ -337,7 +338,12 @@ static int axs_nand_probe(struct platform_device *pdev)
 	nand_chip->read_word = axs_nand_read_word;
 	nand_chip->write_buf = axs_nand_write_buf;
 	nand_chip->read_buf = axs_nand_read_buf;
-	nand_chip->ecc.mode = NAND_ECC_SOFT;
+
+	ecc_mode = of_get_nand_ecc_mode(host->dev->of_node);
+	nand_chip->ecc.mode = ecc_mode < 0 ? NAND_ECC_SOFT : ecc_mode;
+
+	if (of_get_nand_bus_width(host->dev->of_node) == 16)
+		nand_chip->options |= NAND_BUSWIDTH_16;
 
 	dev_set_drvdata(&pdev->dev, host);
 
