@@ -314,14 +314,12 @@ static int arc_pmu_raw_event(u64 config)
 			break;
 	}
 
+	if (i == arc_pmu->raw_events_count)
+		return -ENOENT;
+
 	memcpy(name, &swapped, sizeof(u64));
 
-	if (i == arc_pmu->raw_events_count) {
-		pr_info("CPU has no raw event: %s\n", name);
-		i = -1;
-	}
-	else
-		pr_info("Initializing raw event: %s\n", name);
+	pr_debug("Initializing raw event: %s\n", name);
 
 	return i;
 }
