@@ -18,6 +18,7 @@
 #include <linux/clk-provider.h>
 #include <linux/of_platform.h>
 #include <asm/asm-offsets.h>
+#include <asm/clk.h>
 #include <asm/mach_desc.h>
 #include <asm/mcip.h>
 #include <asm/io.h>
@@ -341,10 +342,18 @@ void axs103_print_ver(void)
 static void axs103_early_init(void)
 {
 	/* set_freq(1, 1, 1); */
+	unsigned int dt_mhz, pll_mhz;
 
 	axs103_print_ver();
 
-	printk("Freq is %dMHz\n", axs103_get_freq());
+	pll_mhz = axs103_get_freq();
+	dt_mhz = arc_get_core_freq()/1000000;
+
+	pr_info("Freq is %dMHz\n", pll_mhz);
+
+	if (pll_mhz != dt_mhz)
+		panic("\"clock-frequency\"=<%d>MHz in .dts doesn't match h/w %dMHz\n",
+		      dt_mhz, pll_mhz);
 
 	/* Memory maps already config in pre-bootloader */
 
