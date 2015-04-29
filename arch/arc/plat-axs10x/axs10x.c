@@ -332,10 +332,10 @@ void axs103_print_ver(void)
 	} ver;
 
 	ver.val = ioread32((void __iomem *) (AXS_MB_CREG + 0x230));
-	printk("AXS103: MB FPGA Date: %u-%u-%u\n", ver.d, ver.m, ver.y);
+	pr_info("AXS103: MB FPGA Date: %u-%u-%u\n", ver.d, ver.m, ver.y);
 
 	ver.val = ioread32((void __iomem *) (AXC003_CREG + 4088));
-	printk("AXS103: CPU FPGA Date: %u-%u-%u\n", ver.d, ver.m, ver.y);
+	pr_info("AXS103: CPU FPGA Date: %u-%u-%u\n", ver.d, ver.m, ver.y);
 }
 
 static void axs103_early_init(void)
