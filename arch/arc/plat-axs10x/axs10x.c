@@ -99,34 +99,23 @@ static int write_cgu_reg(uint32_t value, void __iomem *reg,
 
 static void setup_pgu_clk(void)
 {
-	/* Set clock divider value depending on mother board version */
-	if (mb_rev == 3) {
-		/*
-		 * Set clock for PGU, 74.25 Mhz
-		 * to obtain 74.25MHz pixel clock, required for 720p60
-		 * (27 * 22) / 8 == 74.25
-		 */
-		write_cgu_reg(0x2041, (void __iomem *) 0xe0010080,
-			      (void __iomem *) 0xe0010110);
-		write_cgu_reg((22 << 6) | 22, (void __iomem *) 0xe0010084,
-			      (void __iomem *) 0xe0010110);
-		write_cgu_reg((8 << 6) | 8, (void __iomem *) 0xe0010088,
-			      (void __iomem *) 0xe0010110);
-	}
-	else {
-		/*
-		 * Set clock for PGU, 150 Mhz
-		 * to obtain 75MHz pixel clock, required for 720p60
-		 * (25 * 18) / 3 == 25 * 6 == 150
-		 */
+	/*
+	 * PGU clock dividers for 720p60 varies for Main Board version
+	 * MB v2: 150   MHz pixel clk => (25 * 18) / 3 == 150
+	 * MB v2: 74.25 MHz pixel clk => (27 * 22) / 8 == 74.25
+	 */
+	unsigned int mb2[] = {0x2000, 18, 3};
+	unsigned int mb3[] = {0x2041, 22, 8};
+	unsigned int *div;
 
-		write_cgu_reg(0x2000, (void __iomem *) 0xe0010080,
+	div = (mb_rev == 2) ? mb2 : mb3;
+
+	write_cgu_reg(div[0], (void __iomem *) 0xe0010080,
 			      (void __iomem *) 0xe0010110);
-		write_cgu_reg((18 << 6) | 18, (void __iomem *) 0xe0010084,
+	write_cgu_reg((div[1] << 6) | div[1], (void __iomem *) 0xe0010084,
 			      (void __iomem *) 0xe0010110);
-		write_cgu_reg((3 << 6) | 3, (void __iomem *) 0xe0010088,
+	write_cgu_reg((div[2] << 6) | div[2], (void __iomem *) 0xe0010088,
 			      (void __iomem *) 0xe0010110);
-	}
 }
 
 static void setup_nand_bus_width(void)
