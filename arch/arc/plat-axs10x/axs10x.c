@@ -100,13 +100,13 @@ static int write_cgu_reg(uint32_t value, void __iomem *reg,
 static void setup_pgu_clk(void)
 {
 	/*
-	 * PGU clock dividers for 720p60 varies for Main Board version
-	 * MB v2: 150   MHz pixel clk => (25 * 18) / 3 == 150
-	 * MB v2: 74.25 MHz pixel clk => (27 * 22) / 8 == 74.25
+	 * PGU clock dividers settings for MB version
+	 * MB v2:  720p: Input 25MHz: (25 * 18) / 3 == 150 => IDIV2 => 75 MHz
+	 * MB v3: 1280p: Input 27MHz: (27 * 22) / 8 == 74.25 MHz (IDIV2 removed)
 	 */
 	unsigned int mb2[] = {0x2000, 18, 3};
 	unsigned int mb3[] = {0x2041, 22, 8};
-	unsigned int *div;
+	const unsigned int *div;
 
 	div = (mb_rev == 2) ? mb2 : mb3;
 
