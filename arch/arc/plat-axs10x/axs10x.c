@@ -105,7 +105,7 @@ static void setup_pgu_clk(void)
 	 * MB v3: 1280p: Input 27MHz: (27 * 22) / 8 == 74.25 MHz (IDIV2 removed)
 	 */
 	unsigned int mb2[] = {0x2000, 18, 3};
-	unsigned int mb3[] = {0x2041, 22, 8};
+	unsigned int mb3[] = {0x2000, 22, 8};
 	const unsigned int *div;
 
 	div = (mb_rev == 2) ? mb2 : mb3;
