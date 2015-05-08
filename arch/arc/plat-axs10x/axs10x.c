@@ -339,7 +339,11 @@ static void axs101_early_init(void)
 
 union pll_reg {
 	struct {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+		unsigned int pad:17, noupd:1, bypass:1, edge:1, high:6,low:6;
+#else
 		unsigned int low:6, high:6, edge:1, bypass:1, noupd:1, pad:17;
+#endif
 	};
 	unsigned int val;
 };
