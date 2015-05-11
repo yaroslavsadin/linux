@@ -411,7 +411,7 @@ static inline void __cache_line_loop(unsigned long paddr, unsigned long vaddr,
  * Machine specific helpers for Entire D-Cache or Per Line ops
  */
 
-static unsigned int __before_dc_op(const int op)
+static inline unsigned int __before_dc_op(const int op)
 {
 	unsigned int reg = reg;
 
@@ -429,7 +429,7 @@ static unsigned int __before_dc_op(const int op)
 	return reg;
 }
 
-static void __after_dc_op(const int op, unsigned int reg)
+static inline void __after_dc_op(const int op, unsigned int reg)
 {
 	if (op & OP_FLUSH)	/* flush / flush-n-inv both wait */
 		while (read_aux_reg(ARC_REG_DC_CTRL) & DC_CTRL_FLUSH_STATUS);
@@ -577,8 +577,8 @@ static void __ic_line_inv_vaddr_helper(void *info)
         __ic_line_inv_vaddr_local(ic_inv->paddr, ic_inv->vaddr, ic_inv->sz);
 }
 
-static void __ic_line_inv_vaddr(unsigned long paddr, unsigned long vaddr,
-				unsigned long sz)
+static void inline __ic_line_inv_vaddr(unsigned long paddr, unsigned long vaddr,
+				       unsigned long sz)
 {
 	struct ic_inv_args ic_inv = {
 		.paddr = paddr,
