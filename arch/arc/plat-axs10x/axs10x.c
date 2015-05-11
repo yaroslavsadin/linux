@@ -164,8 +164,27 @@ static void axs10x_plat_init(void)
 	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
 }
 
+static void axs10x_print_board_ver(unsigned int creg, const char *str)
+{
+	union ver {
+		struct {
+#ifdef CONFIG_CPU_BIG_ENDIAN
+			unsigned int pad:11, y:12, m:4, d:5;
+#else
+			unsigned int d:5, m:4, y:12, pad:11;
+#endif
+		};
+		unsigned int val;
+	} board;
+
+	board.val = ioread32((void __iomem *)creg);
+	pr_info("AXS: %s FPGA Date: %u-%u-%u\n", str, board.d, board.m, board.y);
+}
+
 static void axs10x_early_init(void)
 {
+	char mb[32];
+
 	/* Determine motherboard version */
 	if (ioread32((void __iomem *) AXS_MB_CREG + 0x234) & (1 << 28))
 		/* 1 => HT-3 (rev3.0) */
@@ -174,9 +193,14 @@ static void axs10x_early_init(void)
 		/* 0 => HT-2 (rev2.0) */
 		mb_rev = 2;
 
+	scnprintf(mb, 32, "MainBoard v%d", mb_rev);
+
 	enable_gpio_intc_wire();
 	setup_pgu_clk();
+
+	axs10x_print_board_ver(AXS_MB_CREG + 0x230, mb);
 }
+
 
 #define AXS_MB_CREG	0xE0011000
 
@@ -370,28 +394,10 @@ static unsigned int axs103_get_freq(void)
 	return f;
 }
 
-void axs103_print_ver(void)
-{
-	union ver {
-		struct {
-			unsigned int d:5, m:4, y:12, pad:11;
-		};
-		unsigned int val;
-	} ver;
-
-	ver.val = ioread32((void __iomem *) (AXS_MB_CREG + 0x230));
-	pr_info("AXS103: MB FPGA Date: %u-%u-%u\n", ver.d, ver.m, ver.y);
-
-	ver.val = ioread32((void __iomem *) (AXC003_CREG + 4088));
-	pr_info("AXS103: CPU FPGA Date: %u-%u-%u\n", ver.d, ver.m, ver.y);
-}
-
 static void axs103_early_init(void)
 {
 	/* set_freq(1, 1, 1); */
 	unsigned int dt_mhz, pll_mhz;
-
-	axs103_print_ver();
 
 	pll_mhz = axs103_get_freq();
 	dt_mhz = arc_get_core_freq()/1000000;
@@ -416,6 +422,8 @@ static void axs103_early_init(void)
 
 	/* connect ICTL - Main Board with GPIO line */
 	iowrite32(0x01, (void __iomem *) AXS_MB_CREG + CREG_MB_IRQ_MUX);
+
+	axs10x_print_board_ver(AXC003_CREG + 4088, "AXC003 CPU Card");
 
 	axs10x_early_init();
 
