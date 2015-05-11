@@ -34,6 +34,8 @@ static void __init arc_set_early_base_baud(unsigned long dt_root)
 		arc_base_baud = core_clk/3;
 	else if (of_flat_dt_is_compatible(dt_root, "snps,arc-sdp"))
 		arc_base_baud = 33333333;	/* Fixed 33MHz clk (AXS101/AXS103) */
+	else if (of_flat_dt_is_compatible(dt_root, "snps,zebu_hs"))
+		arc_base_baud = 50000000;
 	else
 		arc_base_baud = core_clk;
 }

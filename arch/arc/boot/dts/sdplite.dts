@@ -1,0 +1,58 @@
+/*
+ * Copyright (C) 2013 Synopsys, Inc. (www.synopsys.com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+/dts-v1/;
+
+/include/ "skeleton.dtsi"
+
+/ {
+	compatible = "snps,zebu_hs";
+	clock-frequency = <50000000>;	/* 50 MHZ */
+	#address-cells = <1>;
+	#size-cells = <1>;
+	interrupt-parent = <&intc>;
+
+	memory {
+		device_type = "memory";
+		reg = <0x80000000 0x20000000>;	/* 512 */
+	};
+
+	chosen {
+		bootargs = "earlycon=uart8250,mmio32,0xf0000000,115200n8 console=ttyS0,115200n8 debug print-fatal-signals=1";
+	};
+
+	aliases {
+		serial0 = &uart0;
+	};
+
+	fpga {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		/* child and parent address space 1:1 mapped */
+		ranges;
+
+		intc: interrupt-controller {
+			compatible = "snps,archs-intc";
+			interrupt-controller;
+			#interrupt-cells = <1>;
+		};
+
+		uart0: serial@f0000000 {
+			compatible = "ns8250";
+			/*compatible = "ns16550a";*/   /* for fifos */
+			reg = <0xf0000000 0x2000>;
+			interrupts = <24>;
+			clock-frequency = <50000000>;
+			baud = <115200>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			no-loopback-test = <1>;
+		};
+	};
+};
