@@ -84,11 +84,12 @@ extern void read_decode_cache_bcr(void);
 
 /*System-level cache (L2 cache) related Auxiliary registers */
 #define ARC_REG_SLC_CFG		0x901
-#define ARC_REG_SLC_CONTROL	0x903
+#define ARC_REG_SLC_CTRL	0x903
 #define ARC_REG_SLC_FLUSH	0x904
 #define ARC_REG_SLC_INVALIDATE	0x905
 
 /* Bit val in SLC_CONTROL */
-#define SLC_CONTROL_DISABLE	0x1
+#define SLC_CTRL_DISABLE	0x001
+#define SLC_CTRL_BUSY		0x100
 
 #endif /* _ASM_CACHE_H */

@@ -233,8 +233,10 @@ void arc_cache_init(void)
 				   (1 << CLUSTER_COH_IO_SUPPORTED))) {
 			printk("SLC\t\t: disabled, no IO coherency unit\n");
 			write_aux_reg(ARC_REG_SLC_FLUSH, 1);
-			write_aux_reg(ARC_REG_SLC_CONTROL,
-				      read_aux_reg(ARC_REG_SLC_CONTROL) | 1);
+			/* Important to wait for flush to complete */
+			while (read_aux_reg(ARC_REG_SLC_CTRL) & SLC_CTRL_BUSY);
+			write_aux_reg(ARC_REG_SLC_CTRL,
+				      read_aux_reg(ARC_REG_SLC_CTRL) | SLC_CTRL_DISABLE);
 		}
 	}
 }
