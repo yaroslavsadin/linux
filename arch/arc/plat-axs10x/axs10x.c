@@ -74,25 +74,20 @@ static void enable_gpio_intc_wire(void)
 	iowrite32(1 << MB_TO_GPIO_IRQ, (void __iomem *) (GPIO_INTC + GPIO_INTEN));
 }
 
-static int wait_cgu_lock(void __iomem *lock_reg, uint32_t val)
-{
-	unsigned long timeout = jiffies + msecs_to_jiffies(100);
-	while ((ioread32(lock_reg) & 1) == val) {
-		if (time_after(jiffies, timeout))
-			return -EBUSY;
-		cpu_relax();
-	}
-	return 0;
-}
-
-static int write_cgu_reg(uint32_t value, void __iomem *reg,
+void noinline write_cgu_reg(uint32_t value, void __iomem *reg,
 			 void __iomem *lock_reg)
 {
-	int retval = 0;
+	unsigned int loops = 128 * 1024, ctr;
+
 	iowrite32(value, reg);
-	retval |= wait_cgu_lock(lock_reg, 1);	/* wait for unlock */
-	retval |= wait_cgu_lock(lock_reg, 0);	/* wait for re-lock */
-	return retval;
+
+	ctr = loops;
+	while (((ioread32(lock_reg) & 1) == 1) && ctr--) /* wait for unlock */
+		cpu_relax();
+
+	ctr = loops;
+	while (((ioread32(lock_reg) & 1) == 0) && ctr--) /* wait for re-lock */
+		cpu_relax();
 }
 
 #define AXS_MB_CREG	0xE0011000
