@@ -232,20 +232,6 @@ void arc_cache_init(void)
 				panic("Disable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
 		}
 	}
-
-	if (is_isa_arcv2() && cpuinfo_arc700[cpu].slc.ver) {
-		if (!(read_aux_reg(ARC_REG_CLUSTER_BCR) &
-				   (1 << CLUSTER_COH_IO_SUPPORTED))) {
-			printk("SLC\t\t: disabled, no IO coherency unit\n");
-			write_aux_reg(ARC_REG_SLC_FLUSH, 1);
-			/* Important to wait for flush to complete */
-			while (read_aux_reg(ARC_REG_SLC_CTRL) & SLC_CTRL_BUSY);
-			write_aux_reg(ARC_REG_SLC_CTRL,
-				      read_aux_reg(ARC_REG_SLC_CTRL) | SLC_CTRL_DISABLE);
-			while (read_aux_reg(ARC_REG_SLC_CTRL) & SLC_CTRL_BUSY);
-			l2_line_sz = 0;
-		}
-	}
 }
 
 #define OP_INV		0x1
