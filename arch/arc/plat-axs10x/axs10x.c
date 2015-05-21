@@ -90,6 +90,7 @@ void noinline write_cgu_reg(uint32_t value, void __iomem *reg,
 		cpu_relax();
 }
 
+#define AXS_MB_CGU	0xE0010000
 #define AXS_MB_CREG	0xE0011000
 
 static void setup_pgu_clk(void)
@@ -105,12 +106,12 @@ static void setup_pgu_clk(void)
 
 	div = (mb_rev == 2) ? mb2 : mb3;
 
-	write_cgu_reg(div[0], (void __iomem *) 0xe0010080,
-			      (void __iomem *) 0xe0010110);
-	write_cgu_reg((div[1] << 6) | div[1], (void __iomem *) 0xe0010084,
-			      (void __iomem *) 0xe0010110);
-	write_cgu_reg((div[2] << 6) | div[2], (void __iomem *) 0xe0010088,
-			      (void __iomem *) 0xe0010110);
+	write_cgu_reg(div[0], (void __iomem *) AXS_MB_CGU + 0x80 + 0,
+			      (void __iomem *) AXS_MB_CGU + 0x110);
+	write_cgu_reg((div[1] << 6) | div[1], (void __iomem *) AXS_MB_CGU + 0x80 + 4,
+			      (void __iomem *) AXS_MB_CGU + 0x110);
+	write_cgu_reg((div[2] << 6) | div[2], (void __iomem *) AXS_MB_CGU + 0x80 + 8,
+			      (void __iomem *) AXS_MB_CGU + 0x110);
 }
 
 static void setup_nand_bus_width(void)
@@ -195,9 +196,6 @@ static void axs10x_early_init(void)
 
 	axs10x_print_board_ver(AXS_MB_CREG + 0x230, mb);
 }
-
-
-#define AXS_MB_CREG	0xE0011000
 
 #ifdef CONFIG_AXS101
 
