@@ -389,19 +389,68 @@ static unsigned int axs103_get_freq(void)
 	return f;
 }
 
+static inline unsigned int encode_div(unsigned int id, int upd)
+{
+	union pll_reg div;
+
+	div.val = 0;
+
+	div.noupd = !upd;
+	div.bypass = id == 1 ? 1 : 0;
+	div.edge = (id%2 == 0) ? 0 : 1;  /* 0 = rising */
+	div.low = (id%2 == 0) ? id >> 1 : (id >> 1)+1;
+	div.high = id >> 1;
+
+	return div.val;
+}
+
+void axs103_set_freq(unsigned int id, unsigned int fd, unsigned int od)
+{
+	write_cgu_reg(encode_div(id, 0),
+		(void __iomem *)AXC003_CGU + 0x80 + 0,
+		(void __iomem *)AXC003_CGU + 0x110);
+
+	write_cgu_reg(encode_div(fd, 0),
+		(void __iomem *)AXC003_CGU + 0x80 + 4,
+		(void __iomem *)AXC003_CGU + 0x110);
+
+	write_cgu_reg(encode_div(od, 1),
+		(void __iomem *)AXC003_CGU + 0x80 + 8,
+		(void __iomem *)AXC003_CGU + 0x110);
+}
+
 static void axs103_early_init(void)
 {
-	/* set_freq(1, 1, 1); */
-	unsigned int dt_mhz, pll_mhz;
+	switch (arc_get_core_freq()/1000000) {
+	case 33:
+		axs103_set_freq(1, 1, 1);
+		break;
+	case 50:
+		axs103_set_freq(1, 30, 20);
+		break;
+	case 75:
+		axs103_set_freq(2, 45, 10);
+		break;
+	case 90:
+		axs103_set_freq(2, 54, 10);
+		break;
+	case 100:
+		axs103_set_freq(1, 30, 10);
+		break;
+	case 125:
+		axs103_set_freq(2, 45,  6);
+		break;
+	default:
+		/*
+		 * In this case, core_frequency derived from
+		 * DT "clock-frequency" might not match with board value.
+		 * Hence update it to match the board value.
+		 */
+		arc_set_core_freq(axs103_get_freq() * 1000000);
+		break;
+	}
 
-	pll_mhz = axs103_get_freq();
-	dt_mhz = arc_get_core_freq()/1000000;
-
-	pr_info("Freq is %dMHz\n", pll_mhz);
-
-	if (pll_mhz != dt_mhz)
-		panic("\"clock-frequency\"=<%d>MHz in .dts doesn't match h/w %dMHz\n",
-		      dt_mhz, pll_mhz);
+	pr_info("Freq is %dMHz\n", axs103_get_freq());
 
 	/* Memory maps already config in pre-bootloader */
 
