@@ -272,6 +272,12 @@ static int arcpgufb_setcolreg(unsigned regno, unsigned red, unsigned green,
 	return 0;
 }
 
+static int arcpgufb_mmap(struct fb_info *info, struct vm_area_struct *vma)
+{
+	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+	return vm_iomap_memory(vma, info->fix.smem_start, info->fix.smem_len);
+}
+
 static struct fb_ops arcpgufb_ops = {
 	.owner		= THIS_MODULE,
 	.fb_check_var	= arcpgufb_check_var,
@@ -280,6 +286,7 @@ static struct fb_ops arcpgufb_ops = {
 	.fb_fillrect	= cfb_fillrect,
 	.fb_copyarea	= cfb_copyarea,
 	.fb_imageblit	= cfb_imageblit,
+	.fb_mmap	= arcpgufb_mmap,
 };
 
 /* ------------------------------------------------------------------------- */
