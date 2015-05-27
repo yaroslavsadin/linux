@@ -367,9 +367,8 @@ void __init setup_arch(char **cmdline_p)
 	/* See if u-boot passed an external Device Tree blob */
 	machine_desc = setup_machine_fdt(uboot_arg);	/* uboot_tag == 2 */
 	if (!machine_desc)
-#else
-	{
 #endif
+	{
 		/* No, so try the embedded one */
 		machine_desc = setup_machine_fdt(__dtb_start);
 		if (!machine_desc)
