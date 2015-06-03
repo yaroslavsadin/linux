@@ -25,9 +25,9 @@
 #include <asm/mcip.h>
 #include <asm/io.h>
 
-static int mb_rev;
+static __initdata int mb_rev;
 
-static void enable_gpio_intc_wire(void)
+static void __init enable_gpio_intc_wire(void)
 {
 	/*
 	 * Peripherals on CPU Card and Mother Board are wired to cpu intc via
@@ -74,7 +74,7 @@ static void enable_gpio_intc_wire(void)
 	iowrite32(1 << MB_TO_GPIO_IRQ, (void __iomem *) (GPIO_INTC + GPIO_INTEN));
 }
 
-void noinline write_cgu_reg(uint32_t value, void __iomem *reg,
+void __init noinline write_cgu_reg(uint32_t value, void __iomem *reg,
 			 void __iomem *lock_reg)
 {
 	unsigned int loops = 128 * 1024, ctr;
@@ -93,7 +93,7 @@ void noinline write_cgu_reg(uint32_t value, void __iomem *reg,
 #define AXS_MB_CGU	0xE0010000
 #define AXS_MB_CREG	0xE0011000
 
-static void setup_pgu_clk(void)
+static void __init setup_pgu_clk(void)
 {
 	/*
 	 * PGU clock dividers settings for MB version
@@ -114,7 +114,7 @@ static void setup_pgu_clk(void)
 			      (void __iomem *) AXS_MB_CGU + 0x110);
 }
 
-static void setup_nand_bus_width(void)
+static void __init setup_nand_bus_width(void)
 {
 	/*
 	 * There're 2 versions of motherboards that could be used in ARC SDP.
@@ -154,13 +154,13 @@ static void setup_nand_bus_width(void)
 		of_add_property(dn, prop);
 }
 
-static void axs10x_plat_init(void)
+static void __init axs10x_plat_init(void)
 {
 	setup_nand_bus_width();
 	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
 }
 
-static void axs10x_print_board_ver(unsigned int creg, const char *str)
+static void __init axs10x_print_board_ver(unsigned int creg, const char *str)
 {
 	union ver {
 		struct {
@@ -177,7 +177,7 @@ static void axs10x_print_board_ver(unsigned int creg, const char *str)
 	pr_info("AXS: %s FPGA Date: %u-%u-%u\n", str, board.d, board.m, board.y);
 }
 
-static void axs10x_early_init(void)
+static void __init axs10x_early_init(void)
 {
 	char mb[32];
 
@@ -220,7 +220,7 @@ static void axs10x_early_init(void)
 #define CREG_MB_IRQ_MUX		0x214
 #define CREG_MB_SW_RESET	0x220
 
-static const int axc001_memmap[16][2] = {
+static __initdata const int axc001_memmap[16][2] = {
 	{AXC001_SLV_AXI_TUNNEL,		0x0},	/* 0x0000.0000 */
 	{AXC001_SLV_AXI_TUNNEL,		0x1},	/* 0x1000.0000 */
 	{AXC001_SLV_SRAM,		0x0},	/* 0x0000.0000 */
@@ -239,7 +239,7 @@ static const int axc001_memmap[16][2] = {
 	{AXC001_SLV_AXI2APB,		0x0},	/* 0x0000.0000 */
 };
 
-static const int axc001_axi_tunnel_memmap[16][2] = {
+static __initdata const int axc001_axi_tunnel_memmap[16][2] = {
 	{AXC001_SLV_AXI_TUNNEL,		0x0},	/* 0x0000.0000 */
 	{AXC001_SLV_AXI_TUNNEL,		0x1},	/* 0x1000.0000 */
 	{AXC001_SLV_SRAM,		0x0},	/* 0x0000.0000 */
@@ -258,7 +258,7 @@ static const int axc001_axi_tunnel_memmap[16][2] = {
 	{AXC001_SLV_AXI2APB,		0x0},	/* 0x0000.0000 */
 };
 
-static const int axs_mb_memmap[16][2] = {
+static __initdata const int axs_mb_memmap[16][2] = {
 	{AXS_MB_SLV_SRAM,		0x0},	/* 0x0000.0000 */
 	{AXS_MB_SLV_SRAM,		0x0},	/* 0x0000.0000 */
 	{AXS_MB_SLV_NONE,		0x0},	/* 0x0000.0000 */
@@ -283,7 +283,7 @@ static const int axs_mb_memmap[16][2] = {
  * base + 0x08 : slave offset (low 32 bits)
  * base + 0x0C : slave offset (high 32 bits)
  */
-static void axs101_set_memmap(void __iomem *base, const int memmap[16][2])
+static void __init axs101_set_memmap(void __iomem *base, const int memmap[16][2])
 {
 	int i;
 	u64 slave_select, slave_offset;
@@ -299,7 +299,7 @@ static void axs101_set_memmap(void __iomem *base, const int memmap[16][2])
 	iowrite32(slave_offset >> 32,		base + 0xC);
 }
 
-static void axs101_early_init(void)
+static void __init axs101_early_init(void)
 {
 	int i;
 
@@ -365,7 +365,7 @@ union pll_reg {
 	unsigned int val;
 };
 
-static unsigned int axs103_get_freq(void)
+static unsigned int __init axs103_get_freq(void)
 {
 	union pll_reg idiv, fbdiv, odiv;
 	unsigned int f = 33333333;
@@ -387,7 +387,7 @@ static unsigned int axs103_get_freq(void)
 	return f;
 }
 
-static inline unsigned int encode_div(unsigned int id, int upd)
+static inline unsigned int __init encode_div(unsigned int id, int upd)
 {
 	union pll_reg div;
 
@@ -402,7 +402,7 @@ static inline unsigned int encode_div(unsigned int id, int upd)
 	return div.val;
 }
 
-void axs103_set_freq(unsigned int id, unsigned int fd, unsigned int od)
+void __init axs103_set_freq(unsigned int id, unsigned int fd, unsigned int od)
 {
 	write_cgu_reg(encode_div(id, 0),
 		(void __iomem *)AXC003_CGU + 0x80 + 0,
@@ -417,7 +417,7 @@ void axs103_set_freq(unsigned int id, unsigned int fd, unsigned int od)
 		(void __iomem *)AXC003_CGU + 0x110);
 }
 
-static void axs103_early_init(void)
+static void __init axs103_early_init(void)
 {
 	switch (arc_get_core_freq()/1000000) {
 	case 33:
