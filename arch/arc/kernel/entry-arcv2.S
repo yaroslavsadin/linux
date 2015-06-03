@@ -24,7 +24,7 @@
 	.align 4
 
 # Initial 16 slots are Exception Vectors
-VECTOR	res_service		; Restart Vector
+VECTOR	stext			; Restart Vector (jump to entry point)
 VECTOR	mem_service		; Mem exception
 VECTOR	instr_service		; Instrn Error
 VECTOR	EV_MachineCheck		; Fatal Machine check
@@ -57,13 +57,8 @@ VECTOR	handle_interrupt	; (23) End of fixed IRQs
 
 	.section .text, "ax",@progbits
 
-res_service:		; processor restart
-	flag    0x1     ; not implemented
-	nop
-	nop
-
-reserved:		; processor restart
-	rtie            ; jump to processor initializations
+reserved:
+	flag 1		; Unexpected event, halt
 
 ;##################### Interrupt Handling ##############################
 
