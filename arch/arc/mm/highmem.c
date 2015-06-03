@@ -125,7 +125,7 @@ static pte_t *alloc_kmap_pgtable(unsigned long kvaddr)
 	return pte_k;
 }
 
-void kmap_init(void)
+void __init kmap_init(void)
 {
 	/* Due to recursive include hell, we can't do this in processor.h */
 	BUILD_BUG_ON(PAGE_OFFSET < (VMALLOC_END + FIXMAP_SIZE + PKMAP_SIZE));
