@@ -220,7 +220,7 @@ static void __init axs10x_early_init(void)
 #define CREG_MB_IRQ_MUX		0x214
 #define CREG_MB_SW_RESET	0x220
 
-static __initdata const int axc001_memmap[16][2] = {
+static const int axc001_memmap[16][2] = {
 	{AXC001_SLV_AXI_TUNNEL,		0x0},	/* 0x0000.0000 */
 	{AXC001_SLV_AXI_TUNNEL,		0x1},	/* 0x1000.0000 */
 	{AXC001_SLV_SRAM,		0x0},	/* 0x0000.0000 */
@@ -239,7 +239,7 @@ static __initdata const int axc001_memmap[16][2] = {
 	{AXC001_SLV_AXI2APB,		0x0},	/* 0x0000.0000 */
 };
 
-static __initdata const int axc001_axi_tunnel_memmap[16][2] = {
+static const int axc001_axi_tunnel_memmap[16][2] = {
 	{AXC001_SLV_AXI_TUNNEL,		0x0},	/* 0x0000.0000 */
 	{AXC001_SLV_AXI_TUNNEL,		0x1},	/* 0x1000.0000 */
 	{AXC001_SLV_SRAM,		0x0},	/* 0x0000.0000 */
@@ -258,7 +258,7 @@ static __initdata const int axc001_axi_tunnel_memmap[16][2] = {
 	{AXC001_SLV_AXI2APB,		0x0},	/* 0x0000.0000 */
 };
 
-static __initdata const int axs_mb_memmap[16][2] = {
+static const int axs_mb_memmap[16][2] = {
 	{AXS_MB_SLV_SRAM,		0x0},	/* 0x0000.0000 */
 	{AXS_MB_SLV_SRAM,		0x0},	/* 0x0000.0000 */
 	{AXS_MB_SLV_NONE,		0x0},	/* 0x0000.0000 */
