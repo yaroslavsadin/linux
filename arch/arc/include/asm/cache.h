@@ -62,7 +62,7 @@ extern int ioc_exists;
 #define ARC_REG_IC_IVIC		0x10
 #define ARC_REG_IC_CTRL		0x11
 #define ARC_REG_IC_IVIL		0x19
-#if defined(CONFIG_ARC_MMU_V3)
+#if defined(CONFIG_ARC_MMU_V3) || defined(CONFIG_ARC_MMU_V4)
 #define ARC_REG_IC_PTAG		0x1E
 #endif
 

@@ -76,6 +76,8 @@
 static int l2_line_sz;
 int ioc_exists;
 
+void (*_cache_line_loop_ic_fn)(unsigned long paddr, unsigned long vaddr,
+			    unsigned long sz, const int cacheop);
 void (*__dma_cache_wback_inv)(unsigned long start, unsigned long sz);
 void (*__dma_cache_inv)(unsigned long start, unsigned long sz);
 void (*__dma_cache_wback)(unsigned long start, unsigned long sz);
@@ -320,6 +322,45 @@ static inline void __cache_line_loop(unsigned long paddr, unsigned long vaddr,
 	}
 }
 
+static inline void
+__cache_line_loop_ic_alias(unsigned long paddr, unsigned long vaddr,
+			   unsigned long sz, const int cacheop)
+{
+	unsigned int aux_cmd, aux_tag;
+	int num_lines;
+	const int full_page_op = __builtin_constant_p(sz) && sz == PAGE_SIZE;
+
+	aux_cmd = ARC_REG_IC_IVIL;
+	aux_tag = ARC_REG_IC_PTAG;
+
+	/* Ensure we properly floor/ceil the non-line aligned/sized requests
+	 * and have @paddr - aligned to cache line and integral @num_lines.
+	 * This however can be avoided for page sized since:
+	 *  -@paddr will be cache-line aligned already (being page aligned)
+	 *  -@sz will be integral multiple of line size (being page sized).
+	 */
+	if (!full_page_op) {
+		sz += paddr & ~CACHE_LINE_MASK;
+		paddr &= CACHE_LINE_MASK;
+		vaddr &= CACHE_LINE_MASK;
+	} else {
+		/* V-P const, PTAG can be written once outside loop */
+		write_aux_reg(aux_tag, paddr);
+	}
+
+	num_lines = DIV_ROUND_UP(sz, L1_CACHE_BYTES);
+
+	while (num_lines-- > 0) {
+		if (!full_page_op) {
+			write_aux_reg(aux_tag, paddr);
+			paddr += L1_CACHE_BYTES;
+		}
+
+		write_aux_reg(aux_cmd, vaddr);
+		vaddr += L1_CACHE_BYTES;
+	}
+}
+
 #endif
 
 
@@ -471,7 +512,7 @@ __ic_line_inv_vaddr_local(unsigned long paddr, unsigned long vaddr,
 	unsigned long flags;
 
 	local_irq_save(flags);
-	__cache_line_loop(paddr, vaddr, sz, OP_INV_IC);
+	(*_cache_line_loop_ic_fn)(paddr, vaddr, sz, OP_INV_IC);
 	local_irq_restore(flags);
 }
 
@@ -910,6 +951,17 @@ void arc_cache_init(void)
 		if (ic->ver != CONFIG_ARC_MMU_VER)
 			panic("Cache ver [%d] doesn't match MMU ver [%d]\n",
 			      ic->ver, CONFIG_ARC_MMU_VER);
+
+#if (CONFIG_ARC_MMU_VER >= 4)
+		/*
+		 * In MMU v4 (HS38x) the alising icache config uses IVIL/PTAG
+		 * pair to provide vaddr/paddr respectively, just as in MMU v3
+		*/
+		if (ic->alias)
+			_cache_line_loop_ic_fn = __cache_line_loop_ic_alias;
+		else
+#endif
+			_cache_line_loop_ic_fn = __cache_line_loop;
 	}
 
 	if (IS_ENABLED(CONFIG_ARC_HAS_DCACHE)) {
