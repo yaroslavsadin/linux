@@ -80,16 +80,6 @@ void (*__dma_cache_wback_inv)(unsigned long start, unsigned long sz);
 void (*__dma_cache_inv)(unsigned long start, unsigned long sz);
 void (*__dma_cache_wback)(unsigned long start, unsigned long sz);
 
-static void __dma_cache_wback_inv_l1(unsigned long start, unsigned long sz);
-static void __dma_cache_inv_l1(unsigned long start, unsigned long sz);
-static void __dma_cache_wback_l1(unsigned long start, unsigned long sz);
-static void __dma_cache_wback_inv_slc(unsigned long start, unsigned long sz);
-static void __dma_cache_inv_slc(unsigned long start, unsigned long sz);
-static void __dma_cache_wback_slc(unsigned long start, unsigned long sz);
-static void __dma_cache_wback_inv_ioc(unsigned long start, unsigned long sz);
-static void __dma_cache_inv_ioc(unsigned long start, unsigned long sz);
-static void __dma_cache_wback_ioc(unsigned long start, unsigned long sz);
-
 char *arc_cache_mumbojumbo(int c, char *buf, int len)
 {
 	int n = 0;
@@ -214,78 +204,6 @@ slc_chk:
 		ioc_exists = 1;
 }
 
-/*
- * 1. Validate the Cache Geomtery (compile time config matches hardware)
- * 2. If I-cache suffers from aliasing, setup work arounds (difft flush rtn)
- *    (aliasing D-cache configurations are not supported YET)
- * 3. Enable the Caches, setup default flush mode for D-Cache
- * 3. Calculate the SHMLBA used by user space
- */
-void arc_cache_init(void)
-{
-	unsigned int __maybe_unused cpu = smp_processor_id();
-	char str[256];
-
-	printk(arc_cache_mumbojumbo(0, str, sizeof(str)));
-
-	if (IS_ENABLED(CONFIG_ARC_HAS_ICACHE)) {
-		struct cpuinfo_arc_cache *ic = &cpuinfo_arc700[cpu].icache;
-
-		if (!ic->ver)
-			panic("cache support enabled but non-existent cache\n");
-
-		if (ic->line_len != L1_CACHE_BYTES)
-			panic("ICache line [%d] != kernel Config [%d]",
-			      ic->line_len, L1_CACHE_BYTES);
-
-		if (ic->ver != CONFIG_ARC_MMU_VER)
-			panic("Cache ver [%d] doesn't match MMU ver [%d]\n",
-			      ic->ver, CONFIG_ARC_MMU_VER);
-	}
-
-	if (IS_ENABLED(CONFIG_ARC_HAS_DCACHE)) {
-		struct cpuinfo_arc_cache *dc = &cpuinfo_arc700[cpu].dcache;
-		if (!dc->ver)
-			panic("cache support enabled but non-existent cache\n");
-
-		if (dc->line_len != L1_CACHE_BYTES)
-			panic("DCache line [%d] != kernel Config [%d]",
-			      dc->line_len, L1_CACHE_BYTES);
-
-		/* check for D-Cache aliasing on ARCompact: ARCv2 dcache is PIPT */
-		if (is_isa_arcompact()) {
-			int handled = IS_ENABLED(CONFIG_ARC_CACHE_VIPT_ALIASING);
-
-			if (dc->alias && !handled)
-				panic("Enable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
-			else if (!dc->alias && handled)
-				panic("Disable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
-		}
-	}
-
-	if (is_isa_arcv2() && ioc_exists) {
-		/* IO coherency base - 0x8z */
-		write_aux_reg(ARC_REG_IO_COH_AP0_BASE, 0x80000);
-		/* IO coherency aperture size - 512Mb: 0x8z-0xAz */
-		write_aux_reg(ARC_REG_IO_COH_AP0_SIZE, 0x11);
-		/* Enable partial writes */
-		write_aux_reg(ARC_REG_IO_COH_PARTIAL, 1);
-		/* Enable IO coherency */
-		write_aux_reg(ARC_REG_IO_COH_ENABLE, 1);
-
-		__dma_cache_wback_inv = __dma_cache_wback_inv_ioc;
-		__dma_cache_inv = __dma_cache_inv_ioc;
-		__dma_cache_wback = __dma_cache_wback_ioc;
-	} else if (is_isa_arcv2() && l2_line_sz) {
-		__dma_cache_wback_inv = __dma_cache_wback_inv_slc;
-		__dma_cache_inv = __dma_cache_inv_slc;
-		__dma_cache_wback = __dma_cache_wback_slc;
-	} else {
-		__dma_cache_wback_inv = __dma_cache_wback_inv_l1;
-		__dma_cache_inv = __dma_cache_inv_l1;
-		__dma_cache_wback = __dma_cache_wback_l1;
-	}
-}
 
 #define OP_INV		0x1
 #define OP_FLUSH	0x2
@@ -963,4 +881,77 @@ SYSCALL_DEFINE3(cacheflush, uint32_t, start, uint32_t, sz, uint32_t, flags)
 	/* TBD: optimize this */
 	flush_cache_all();
 	return 0;
+}
+
+/*
+ * 1. Validate the Cache Geomtery (compile time config matches hardware)
+ * 2. If I-cache suffers from aliasing, setup work arounds (difft flush rtn)
+ *    (aliasing D-cache configurations are not supported YET)
+ * 3. Enable the Caches, setup default flush mode for D-Cache
+ * 3. Calculate the SHMLBA used by user space
+ */
+void arc_cache_init(void)
+{
+	unsigned int __maybe_unused cpu = smp_processor_id();
+	char str[256];
+
+	printk(arc_cache_mumbojumbo(0, str, sizeof(str)));
+
+	if (IS_ENABLED(CONFIG_ARC_HAS_ICACHE)) {
+		struct cpuinfo_arc_cache *ic = &cpuinfo_arc700[cpu].icache;
+
+		if (!ic->ver)
+			panic("cache support enabled but non-existent cache\n");
+
+		if (ic->line_len != L1_CACHE_BYTES)
+			panic("ICache line [%d] != kernel Config [%d]",
+			      ic->line_len, L1_CACHE_BYTES);
+
+		if (ic->ver != CONFIG_ARC_MMU_VER)
+			panic("Cache ver [%d] doesn't match MMU ver [%d]\n",
+			      ic->ver, CONFIG_ARC_MMU_VER);
+	}
+
+	if (IS_ENABLED(CONFIG_ARC_HAS_DCACHE)) {
+		struct cpuinfo_arc_cache *dc = &cpuinfo_arc700[cpu].dcache;
+		if (!dc->ver)
+			panic("cache support enabled but non-existent cache\n");
+
+		if (dc->line_len != L1_CACHE_BYTES)
+			panic("DCache line [%d] != kernel Config [%d]",
+			      dc->line_len, L1_CACHE_BYTES);
+
+		/* check for D-Cache aliasing on ARCompact: ARCv2 dcache is PIPT */
+		if (is_isa_arcompact()) {
+			int handled = IS_ENABLED(CONFIG_ARC_CACHE_VIPT_ALIASING);
+
+			if (dc->alias && !handled)
+				panic("Enable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
+			else if (!dc->alias && handled)
+				panic("Disable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
+		}
+	}
+
+	if (is_isa_arcv2() && ioc_exists) {
+		/* IO coherency base - 0x8z */
+		write_aux_reg(ARC_REG_IO_COH_AP0_BASE, 0x80000);
+		/* IO coherency aperture size - 512Mb: 0x8z-0xAz */
+		write_aux_reg(ARC_REG_IO_COH_AP0_SIZE, 0x11);
+		/* Enable partial writes */
+		write_aux_reg(ARC_REG_IO_COH_PARTIAL, 1);
+		/* Enable IO coherency */
+		write_aux_reg(ARC_REG_IO_COH_ENABLE, 1);
+
+		__dma_cache_wback_inv = __dma_cache_wback_inv_ioc;
+		__dma_cache_inv = __dma_cache_inv_ioc;
+		__dma_cache_wback = __dma_cache_wback_ioc;
+	} else if (is_isa_arcv2() && l2_line_sz) {
+		__dma_cache_wback_inv = __dma_cache_wback_inv_slc;
+		__dma_cache_inv = __dma_cache_inv_slc;
+		__dma_cache_wback = __dma_cache_wback_slc;
+	} else {
+		__dma_cache_wback_inv = __dma_cache_wback_inv_l1;
+		__dma_cache_inv = __dma_cache_inv_l1;
+		__dma_cache_wback = __dma_cache_wback_l1;
+	}
 }
