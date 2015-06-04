@@ -75,6 +75,7 @@
 
 static int l2_line_sz;
 int ioc_exists;
+volatile int slc_enable = 1;
 
 void (*_cache_line_loop_ic_fn)(unsigned long paddr, unsigned long vaddr,
 			    unsigned long sz, const int cacheop);
@@ -984,6 +985,20 @@ void arc_cache_init(void)
 		}
 	}
 
+	if (is_isa_arcv2() && l2_line_sz && !slc_enable) {
+
+		/* IM set : flush before invalidate */
+		write_aux_reg(ARC_REG_SLC_CTRL,
+			read_aux_reg(ARC_REG_SLC_CTRL) | SLC_CTRL_IM);
+
+		write_aux_reg(ARC_REG_SLC_INVALIDATE, 1);
+
+		/* Important to wait for flush to complete */
+		while (read_aux_reg(ARC_REG_SLC_CTRL) & SLC_CTRL_BUSY);
+		write_aux_reg(ARC_REG_SLC_CTRL,
+			read_aux_reg(ARC_REG_SLC_CTRL) | SLC_CTRL_DISABLE);
+	}
+
 	if (is_isa_arcv2() && ioc_exists) {
 		/* IO coherency base - 0x8z */
 		write_aux_reg(ARC_REG_IO_COH_AP0_BASE, 0x80000);
@@ -997,7 +1012,7 @@ void arc_cache_init(void)
 		__dma_cache_wback_inv = __dma_cache_wback_inv_ioc;
 		__dma_cache_inv = __dma_cache_inv_ioc;
 		__dma_cache_wback = __dma_cache_wback_ioc;
-	} else if (is_isa_arcv2() && l2_line_sz) {
+	} else if (is_isa_arcv2() && l2_line_sz && slc_enable) {
 		__dma_cache_wback_inv = __dma_cache_wback_inv_slc;
 		__dma_cache_inv = __dma_cache_inv_slc;
 		__dma_cache_wback = __dma_cache_wback_slc;
