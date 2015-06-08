@@ -175,10 +175,18 @@ static inline int __test_and_##op##_bit(unsigned long nr, volatile unsigned long
 	return (old & (1 << nr)) != 0;						\
 }
 
-#define BIT_OPS(op, c_op, asm_op)						\
-	BIT_OP(op, c_op, asm_op)						\
-	TEST_N_BIT_OP(op, c_op, asm_op)						\
-	__BIT_OP(op, c_op, asm_op)						\
+#define BIT_OPS(op, c_op, asm_op)					\
+									\
+	/* set_bit(), clear_bit(), change_bit() */			\
+	BIT_OP(op, c_op, asm_op)					\
+									\
+	/* test_and_set_bit(), test_and_clear_bit(), test_and_change_bit() */\
+	TEST_N_BIT_OP(op, c_op, asm_op)					\
+									\
+	/* __set_bit(), __clear_bit(), __change_bit() */		\
+	__BIT_OP(op, c_op, asm_op)					\
+									\
+	/* __test_and_set_bit(), __test_and_clear_bit(), __test_and_change_bit() */\
 	__TEST_N_BIT_OP(op, c_op, asm_op)
 
 BIT_OPS(set, |, bset)
