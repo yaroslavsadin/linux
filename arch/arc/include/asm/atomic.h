@@ -157,9 +157,15 @@ ATOMIC_OP(and, &=, and)
 #define __atomic_add_unless(v, a, u)					\
 ({									\
 	int c, old;							\
+									\
+	smp_mb();							\
+									\
 	c = atomic_read(v);						\
 	while (c != (u) && (old = atomic_cmpxchg((v), c, c + (a))) != c)\
 		c = old;						\
+									\
+	smp_mb();							\
+									\
 	c;								\
 })
 
