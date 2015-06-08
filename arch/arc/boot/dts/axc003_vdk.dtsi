@@ -42,6 +42,20 @@
 
 	};
 
+	/*
+	 * This intc actually resides on MB, but we move it here to
+	 * avoid duplicating the MB dtsi file given that IRQ from
+	 * this intc to cpu intc are different for UP and SMP configs
+	 */
+	mb_intc: dw-apb-ictl@0xe0012000 {
+		#interrupt-cells = <1>;
+		compatible = "snps,dw-apb-ictl";
+		reg = < 0xe0012000 0x200 >;
+		interrupt-controller;
+		interrupt-parent = <&cpu_intc>;
+		interrupts = < 18 >;
+	};
+
 	memory {
 		#address-cells = <1>;
 		#size-cells = <1>;
