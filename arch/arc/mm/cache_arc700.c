@@ -76,6 +76,7 @@
 static int l2_line_sz;
 int ioc_exists;
 volatile int slc_enable = 1;
+volatile int ioc_enable = 1;
 
 void (*_cache_line_loop_ic_fn)(unsigned long paddr, unsigned long vaddr,
 			    unsigned long sz, const int cacheop);
@@ -203,7 +204,7 @@ slc_chk:
 	}
 
 	READ_BCR(ARC_REG_CLUSTER_BCR, cbcr);
-	if (cbcr.c)
+	if (cbcr.c & ioc_enable)
 		ioc_exists = 1;
 }
 
