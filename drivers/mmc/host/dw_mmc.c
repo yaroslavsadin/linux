@@ -80,6 +80,9 @@ struct idmac_desc {
 
 	u32		des3;	/* buffer 2 physical address */
 };
+
+/* Each descriptor can transfer up to 4KB of data in chained mode */
+#define DW_MCI_DESC_DATA_LENGTH	0x1000
 #endif /* CONFIG_MMC_DW_IDMAC */
 
 static bool dw_mci_reset(struct dw_mci *host);
@@ -414,30 +417,49 @@ static void dw_mci_translate_sglist(struct dw_mci *host, struct mmc_data *data,
 				    unsigned int sg_len)
 {
 	int i;
-	struct idmac_desc *desc = host->sg_cpu;
+	unsigned int desc_len;
+	struct idmac_desc *desc_first, *desc_last, *desc;
 
-	for (i = 0; i < sg_len; i++, desc++) {
+	desc_first = desc_last = desc = host->sg_cpu;
+
+	for (i = 0; i < sg_len; i++) {
 		unsigned int length = sg_dma_len(&data->sg[i]);
 		u32 mem_addr = sg_dma_address(&data->sg[i]);
 
-		/* Set the OWN bit and disable interrupts for this descriptor */
-		desc->des0 = IDMAC_DES0_OWN | IDMAC_DES0_DIC | IDMAC_DES0_CH;
+		for ( ; length ; desc++) {
+			/* Make sure we're not putting too much of data */
+			desc_len = (length <= DW_MCI_DESC_DATA_LENGTH) ?
+				   length : DW_MCI_DESC_DATA_LENGTH;
 
-		/* Buffer length */
-		IDMAC_SET_BUFFER1_SIZE(desc, length);
+			length -= desc_len;
 
-		/* Physical address to DMA to/from */
-		desc->des2 = mem_addr;
+			/*
+			 * Set the OWN bit and disable interrupts
+			 * for this descriptor
+			 */
+			desc->des0 = IDMAC_DES0_OWN | IDMAC_DES0_DIC |
+				     IDMAC_DES0_CH;
+
+			/* Buffer length */
+			IDMAC_SET_BUFFER1_SIZE(desc, desc_len);
+
+			/* Physical address to DMA to/from */
+			desc->des2 = mem_addr;
+
+			/* Update physical address for the next descriptor */
+			mem_addr += desc_len;
+
+			/* Save pointer to the last descriptor */
+			desc_last = desc;
+		}
 	}
 
 	/* Set first descriptor */
-	desc = host->sg_cpu;
-	desc->des0 |= IDMAC_DES0_FD;
+	desc_first->des0 |= IDMAC_DES0_FD;
 
 	/* Set last descriptor */
-	desc = host->sg_cpu + (i - 1) * sizeof(struct idmac_desc);
-	desc->des0 &= ~(IDMAC_DES0_CH | IDMAC_DES0_DIC);
-	desc->des0 |= IDMAC_DES0_LD;
+	desc_last->des0 &= ~(IDMAC_DES0_CH | IDMAC_DES0_DIC);
+	desc_last->des0 |= IDMAC_DES0_LD;
 
 	wmb();
 }
@@ -2274,7 +2296,7 @@ static int dw_mci_init_slot(struct dw_mci *host, unsigned int id)
 		mmc->max_segs = host->ring_size;
 		mmc->max_blk_size = 65536;
 		mmc->max_blk_count = host->ring_size;
-		mmc->max_seg_size = 0x1000;
+		mmc->max_seg_size = DW_MCI_DESC_DATA_LENGTH;
 		mmc->max_req_size = mmc->max_seg_size * mmc->max_blk_count;
 #else
 		mmc->max_segs = 64;
