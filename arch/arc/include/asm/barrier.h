@@ -9,24 +9,37 @@
 #ifndef __ASM_BARRIER_H
 #define __ASM_BARRIER_H
 
-#ifdef CONFIG_SMP
-
 #ifdef CONFIG_ISA_ARCV2
 
-/* DMB + SYNC semantics */
-#define mb()		asm volatile("dsync\n": : : "memory")
+/*
+ * ARCv2 based HS38 cores are in-order issue, but still weakly ordered
+ * due to micro-arch buffering/queuing of load/store, cache hit vs. miss ...
+ * Explicit barrier provided by DMB instruction with operand supporting
+ * load/store/load+store semantics
+ *
+ *  - DMB gaurantees SMP as well as local barrier semantics
+ *    (asm-generic/barrier.h ensures sane smp_*mb if not defined here, i.e.
+ *    UP: barrier(), SMP: smp_*mb == *mb)
+ *  - DSYNC provides DMB+completion_of_cache_bpu_ops hence not needed
+ *    in the general case. Plus it only provides full barrier.
+ */
 
-#define smp_mb()	asm volatile("dmb 3\n": : : "memory")
-#define smp_rmb()	asm volatile("dmb 1\n": : : "memory")
-#define smp_wmb()	asm volatile("dmb 2\n": : : "memory")
+#define mb()	asm volatile("dmb 3\n": : : "memory")
+#define rmb()	asm volatile("dmb 1\n": : : "memory")
+#define wmb()	asm volatile("dmb 2\n": : : "memory")
 
-#else	/* CONFIG_ISA_ARCOMPACT */
+#endif
+
+#ifdef CONFIG_ISA_ARCOMPACT
+
+/*
+ * ARCompact based cores (ARC700) only have SYNC instruction which is super
+ * heavy weight as it flushes the pipeline as well.
+ * There are no real SMP implementations of such cores.
+ */
 
 #define mb()		asm volatile("sync \n" : : : "memory")
-
-#endif	/* CONFIG_ISA_ARCV2 */
-
-#endif	/* CONFIG_SMP */
+#endif
 
 #include <asm-generic/barrier.h>
 
