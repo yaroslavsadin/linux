@@ -89,6 +89,7 @@ char *arc_cache_mumbojumbo(int c, char *buf, int len)
 	int n = 0;
 	struct cpuinfo_arc_cache *p;
 
+#define IS_USED_RUN(v)		((v) ? "" : "(disabled) ")
 #define PR_CACHE(p, cfg, str)						\
 	if (!(p)->ver)							\
 		n += scnprintf(buf + n, len - n, str"\t\t: N/A\n");	\
@@ -106,10 +107,12 @@ char *arc_cache_mumbojumbo(int c, char *buf, int len)
 	p = &cpuinfo_arc700[c].slc;
 	if (p->ver)
 		n += scnprintf(buf + n, len - n,
-			"SLC\t\t: %uK, %uB Line\n", p->sz_k, p->line_len);
+			       "SLC\t\t: %uK, %uB Line%s\n",
+			       p->sz_k, p->line_len, IS_USED_RUN(slc_enable));
 
 	if (ioc_exists)
-		n += scnprintf(buf + n, len - n, "IOC\t\t: exists\n");
+		n += scnprintf(buf + n, len - n, "IOC\t\t:%s\n",
+				IS_USED_RUN(ioc_enable));
 
 	return buf;
 }
