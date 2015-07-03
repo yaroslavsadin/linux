@@ -36,8 +36,7 @@ static inline void op##_bit(unsigned long nr, volatile unsigned long *m)\
 									\
 	m += nr >> 5;							\
 									\
-	if (__builtin_constant_p(nr))					\
-		nr &= 0x1f;						\
+	nr &= 0x1f;							\
 									\
 	__asm__ __volatile__(						\
 	"1:	llock       %0, [%1]		\n"			\
@@ -68,8 +67,7 @@ static inline int test_and_##op##_bit(unsigned long nr, volatile unsigned long *
 										\
 	m += nr >> 5;								\
 										\
-	if (__builtin_constant_p(nr))						\
-		nr &= 0x1f;							\
+	nr &= 0x1f;								\
 										\
 	smp_mb();								\
 										\
