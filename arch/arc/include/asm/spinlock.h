@@ -70,9 +70,23 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 
 static inline void arch_spin_unlock(arch_spinlock_t *lock)
 {
+	unsigned int val;
+
 	smp_mb();
 
-	lock->slock = __ARCH_SPIN_LOCK_UNLOCKED__;
+	/*
+	 * lock->slock = __ARCH_SPIN_LOCK_UNLOCKED__;
+	 */
+
+	__asm__ __volatile__(
+	"1:	llock	%[val], [%[slock]]	\n"
+	"	scond	%[UNLOCKED], [%[slock]]	\n"
+	"	bnz	1b			\n"
+	"					\n"
+	: [val]		"=&r"	(val)
+	: [slock]	"r"	(&(lock->slock)),
+	  [UNLOCKED]	"r"	(__ARCH_SPIN_LOCK_UNLOCKED__)
+	: "memory", "cc");
 
 	smp_mb();
 }
