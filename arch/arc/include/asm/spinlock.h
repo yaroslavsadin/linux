@@ -70,23 +70,9 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
 
 static inline void arch_spin_unlock(arch_spinlock_t *lock)
 {
-	unsigned int val;
-
 	smp_mb();
 
-	/*
-	 * lock->slock = __ARCH_SPIN_LOCK_UNLOCKED__;
-	 */
-
-	__asm__ __volatile__(
-	"1:	llock	%[val], [%[slock]]	\n"
-	"	scond	%[UNLOCKED], [%[slock]]	\n"
-	"	bnz	1b			\n"
-	"					\n"
-	: [val]		"=&r"	(val)
-	: [slock]	"r"	(&(lock->slock)),
-	  [UNLOCKED]	"r"	(__ARCH_SPIN_LOCK_UNLOCKED__)
-	: "memory", "cc");
+	lock->slock = __ARCH_SPIN_LOCK_UNLOCKED__;
 
 	smp_mb();
 }
@@ -246,18 +232,7 @@ static inline void arch_write_unlock(arch_rwlock_t *rw)
 
 	smp_mb();
 
-	/*
-	 * rw->counter = __ARCH_RW_LOCK_UNLOCKED__;
-	 */
-	__asm__ __volatile__(
-	"1:	llock	%[val], [%[rwlock]]	\n"
-	"	scond	%[UNLOCKED], [%[rwlock]]\n"
-	"	bnz	1b			\n"
-	"					\n"
-	: [val]		"=&r"	(val)
-	: [rwlock]	"r"	(&(rw->counter)),
-	  [UNLOCKED]	"r"	(__ARCH_RW_LOCK_UNLOCKED__)
-	: "memory", "cc");
+	rw->counter = __ARCH_RW_LOCK_UNLOCKED__;
 
 	smp_mb();
 }
@@ -511,22 +486,9 @@ static inline void arch_read_unlock(arch_rwlock_t *rw)
 
 static inline void arch_write_unlock(arch_rwlock_t *rw)
 {
-	unsigned int val;
-
 	smp_mb();
 
-	/*
-	 * rw->counter = __ARCH_RW_LOCK_UNLOCKED__;
-	 */
-	__asm__ __volatile__(
-	"1:	llock	%[val], [%[rwlock]]	\n"
-	"	scond	%[UNLOCKED], [%[rwlock]]\n"
-	"	bnz	1b			\n"
-	"					\n"
-	: [val]		"=&r"	(val)
-	: [rwlock]	"r"	(&(rw->counter)),
-	  [UNLOCKED]	"r"	(__ARCH_RW_LOCK_UNLOCKED__)
-	: "memory", "cc");
+	rw->counter = __ARCH_RW_LOCK_UNLOCKED__;
 
 	smp_mb();
 }
