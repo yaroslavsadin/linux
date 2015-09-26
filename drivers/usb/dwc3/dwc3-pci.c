@@ -25,6 +25,8 @@
 #include <linux/usb/otg.h>
 #include <linux/usb/usb_phy_generic.h>
 
+#include "platform_data.h"
+
 /* FIXME define these in <linux/pci_ids.h> */
 #define PCI_VENDOR_ID_SYNOPSYS		0x16c3
 #define PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3	0xabcd
@@ -40,6 +42,26 @@ struct dwc3_pci {
 	struct platform_device	*usb2_phy;
 	struct platform_device	*usb3_phy;
 };
+
+static int dwc3_pci_quirks(struct pci_dev *pdev,
+			struct platform_device *dwc3)
+{
+	if (pdev->vendor == PCI_VENDOR_ID_SYNOPSYS &&
+	    (pdev->device == PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3 ||
+	     pdev->device == PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3_AXI ||
+	     pdev->device == PCI_DEVICE_ID_SYNOPSYS_HAPSUSB31)) {
+
+		struct dwc3_platform_data pdata;
+
+		memset(&pdata, 0, sizeof(pdata));
+		pdata.dis_enblslpm_quirk = true;
+
+		return platform_device_add_data(dwc3, &pdata,
+						sizeof(pdata));
+	}
+
+	return 0;
+}
 
 static int dwc3_pci_register_phys(struct dwc3_pci *glue)
 {
@@ -149,6 +171,10 @@ static int dwc3_pci_probe(struct pci_dev *pci,
 	}
 
 	pci_set_drvdata(pci, glue);
+
+	ret = dwc3_pci_quirks(pci, dwc3);
+	if (ret)
+		goto err3;
 
 	dma_set_coherent_mask(&dwc3->dev, dev->coherent_dma_mask);
 
