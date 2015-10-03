@@ -390,6 +390,13 @@ static int dwc3_core_init(struct dwc3 *dwc)
 		goto err0;
 	}
 
+	/* Clear GUSB2PHYCFG.ENBLSLPM */
+	if (dwc->dis_enblslpm_quirk) {
+		reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
+		reg &= ~0x100;
+		dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(0), reg);
+	}
+
 	/* Handle USB2.0-only core configuration */
 	if (DWC3_GHWPARAMS3_SSPHY_IFC(dwc->hwparams.hwparams3) ==
 			DWC3_GHWPARAMS3_SSPHY_IFC_DIS) {
@@ -696,11 +703,14 @@ static int dwc3_probe(struct platform_device *pdev)
 
 		dwc->needs_fifo_resize = of_property_read_bool(node, "tx-fifo-resize");
 		dwc->dr_mode = of_usb_get_dr_mode(node);
+		dwc->dis_enblslpm_quirk = of_property_read_bool(node,
+					"snps,dis_enblslpm_quirk");
 	} else if (pdata) {
 		dwc->maximum_speed = pdata->maximum_speed;
 
 		dwc->needs_fifo_resize = pdata->tx_fifo_resize;
 		dwc->dr_mode = pdata->dr_mode;
+		dwc->dis_enblslpm_quirk = pdata->dis_enblslpm_quirk;
 	}
 
 	/* default to superspeed if no maximum_speed passed */
