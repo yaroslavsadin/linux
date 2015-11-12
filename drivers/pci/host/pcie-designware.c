@@ -22,10 +22,16 @@
 #include <linux/pci_regs.h>
 #include <linux/platform_device.h>
 #include <linux/types.h>
+#include <linux/delay.h>
+#include <linux/sizes.h>
 
 #include "pcie-designware.h"
 
-/* Synopsis specific PCIE configuration registers */
+/* Synopsys Default PCIE Control and Status Register Memory-Mapped */
+#define LINK_CONTROL_LINK_STATUS_REG  0x80
+#define PCIE_RETRAIN_LINK_MASK        (1<<5)
+
+/* Synopsys DWC PCIE specific PCIE configuration registers */
 #define PCIE_PORT_LINK_CONTROL		0x710
 #define PORT_LINK_MODE_MASK		(0x3f << 16)
 #define PORT_LINK_MODE_1_LANES		(0x1 << 16)
@@ -333,7 +339,6 @@ static int dw_pcie_msi_map(struct irq_domain *domain, unsigned int irq,
 {
 	irq_set_chip_and_handler(irq, &dw_msi_irq_chip, handle_simple_irq);
 	irq_set_chip_data(irq, domain->host_data);
-	set_irq_flags(irq, IRQF_VALID);
 
 	return 0;
 }
@@ -766,6 +771,15 @@ static struct hw_pci dw_pci = {
 	.map_irq	= dw_pcie_map_irq,
 	.add_bus	= dw_pcie_add_bus,
 };
+
+void dw_pcie_link_retrain(struct pcie_port *pp)
+{
+	u32 val = 0;
+	dw_pcie_readl_rc(pp, LINK_CONTROL_LINK_STATUS_REG, &val);
+	val = val | PCIE_RETRAIN_LINK_MASK;
+	dw_pcie_writel_rc (pp, val, LINK_CONTROL_LINK_STATUS_REG);
+	return;
+}
 
 void dw_pcie_setup_rc(struct pcie_port *pp)
 {
