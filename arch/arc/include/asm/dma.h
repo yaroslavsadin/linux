@@ -11,4 +11,10 @@
 
 #define MAX_DMA_ADDRESS 0xC0000000
 
+#ifdef CONFIG_PCI
+extern int isa_dma_bridge_buggy;
+#else
+#define isa_dma_bridge_buggy    (0)
+#endif
+
 #endif
