@@ -151,12 +151,23 @@
 			interrupts = <14>;
 		};
 
-		i2c@0x1e000 {
-			compatible = "snps,designware-i2c";
+		i2s: i2s@0x1e000 {
+			compatible = "snps,designware-i2s";
 			reg = <0x1e000 0x100>;
-			clock-frequency = <400000>;
-			clocks = <&i2cclk>;
 			interrupts = <15>;
+			#sound-dai-cells = <0>;
+		};
+
+		sound {
+			compatible = "simple-audio-card";
+			simple-audio-card,name = "AXS10X HDMI Audio";
+			simple-audio-card,format = "i2s";
+			simple-audio-card,cpu {
+				sound-dai = <&i2s>;
+			};
+			simple-audio-card,codec {
+				sound-dai = <&adv7511>;
+			};
 		};
 
 		i2c@0x1f000 {
@@ -168,7 +179,7 @@
 			clocks = <&i2cclk>;
 			interrupts = <16>;
 
-			adv7511@0x39 {
+			adv7511: adv7511@0x39 {
 				compatible = "adi,adv7511";
 				reg = <0x39>;
 				interrupts = <23>;
@@ -189,6 +200,7 @@
 				adi,vsync-polarity = <0x02>;
 				adi,hsync-polarity = <0x02>;
 				adi,clock-delay = <0x03>;
+				#sound-dai-cells = <0>;
 			};
 
 			rtc@0x6F {
