@@ -187,6 +187,10 @@
 #define ADV7511_PACKET_GM(x)	    ADV7511_PACKET(5, x)
 #define ADV7511_PACKET_SPARE(x)	    ADV7511_PACKET(6, x)
 
+#define ADV7511_CTS_CFG_MODE_MASK	0x80
+#define ADV7511_CTS_CFG_MODE_AUTOMATIC	0x00
+#define ADV7511_CTS_CFG_MODE_MANUAL	0x80
+
 
 struct i2c_client;
 struct regmap;
@@ -194,6 +198,11 @@ struct adv7511;
 
 int adv7511_packet_enable(struct adv7511 *adv7511, unsigned int packet);
 int adv7511_packet_disable(struct adv7511 *adv7511, unsigned int packet);
+
+#ifdef CONFIG_AXS_ADV7511_AUDIO
+int adv7511_audio_init(struct device *dev);
+void adv7511_audio_exit(struct device *dev);
+#endif
 
 /**
  * enum adv7511_input_style - Selects the input format style

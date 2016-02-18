@@ -56,6 +56,48 @@ static const struct reg_default adv7511_fixed_registers[] = {
 
 
 /**
+* @brief enable packet sending
+*
+* @param adv7511
+* @param packet
+*/
+int adv7511_packet_enable(struct adv7511 *adv7511, unsigned int packet)
+{
+	if (packet & 0xff)
+		regmap_update_bits(adv7511->regmap, ADV7511_REG_PACKET_ENABLE0,
+				   packet, 0xff);
+
+	if (packet & 0xff00) {
+		packet >>= 8;
+		regmap_update_bits(adv7511->regmap, ADV7511_REG_PACKET_ENABLE1,
+				   packet, 0xff);
+	}
+
+	return 0;
+}
+
+/**
+* @brief disable packet sending
+*
+* @param adv7511
+* @param packet
+*/
+int adv7511_packet_disable(struct adv7511 *adv7511, unsigned int packet)
+{
+	if (packet & 0xff)
+		regmap_update_bits(adv7511->regmap, ADV7511_REG_PACKET_ENABLE0,
+				   packet, 0x00);
+
+	if (packet & 0xff00) {
+		packet >>= 8;
+		regmap_update_bits(adv7511->regmap, ADV7511_REG_PACKET_ENABLE1,
+				   packet, 0x00);
+	}
+
+	return 0;
+}
+
+/**
 * @brief set link parameters
 *
 * @param adv7511
@@ -105,10 +147,10 @@ static void adv7511_set_link_config(struct adv7511 *adv7511,
 	regmap_update_bits(adv7511->regmap, ADV7511_REG_VIDEO_INPUT_CFG2,
 		ADV7511_ASPECT_RATIO_MASK, ADV7511_ASPECT_RATIO_16_9);
 
-	/* enable DVI mode */
+	/* enable HDMI mode */
 	regmap_update_bits(adv7511->regmap, ADV7511_REG_HDCP_HDMI_CFG,
 			   ADV7511_HDMI_CFG_MODE_MASK,
-			   ADV7511_HDMI_CFG_MODE_DVI);
+			   ADV7511_HDMI_CFG_MODE_HDMI);
 
 	adv7511->hsync_polarity = config->hsync_polarity;
 	adv7511->vsync_polarity = config->vsync_polarity;
@@ -434,6 +476,10 @@ static int adv7511_probe(struct i2c_client *i2c,
 	adv7511->current_edid_segment = -1;
 
 	i2c_set_clientdata(i2c, adv7511);
+
+#ifdef CONFIG_AXS_ADV7511_AUDIO
+	adv7511_audio_init(&i2c->dev);
+#endif
 
 	/* default setting of adv7511 */
 	adv7511_set_link_config(adv7511, &link_config);
