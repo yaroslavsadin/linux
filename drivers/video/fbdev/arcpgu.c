@@ -45,6 +45,13 @@
 
 #define ENCODE_PGU_XY(x, y)	((((x) - 1) << 16) | ((y) - 1))
 
+#define AXS_MB_CREG	0xE0011000
+#define AXS_MB_CGU	0xE0010000
+
+#define PGU_PLL_IDIV	(AXS_MB_CGU + 0x80)
+#define PGU_PLL_FBDIV	(AXS_MB_CGU + 0x80 + 0x4)
+#define PGU_PLL_ODIV	(AXS_MB_CGU + 0x80 + 0x8)
+
 /*---------------------------------------------------------------------------*/
 /* arc_pgu regs*/
 struct arc_pgu_regs {
@@ -191,6 +198,65 @@ static int arcpgufb_check_var(struct fb_var_screeninfo *var,
 	return 0;
 }
 
+static int arcpgufb_set_pll(int div_factor)
+{
+	unsigned int mb2[3], mb3[3];
+	const unsigned int *div;
+	int mb_rev;
+
+	/* IDIV Bypass */
+	mb2[0] = 0x2000;
+	mb3[0] = 0x2000;
+
+	switch (div_factor) {
+	case 2:
+		/* (25 * 18) / 3 == 150 => IDIV2 => 75MHz */
+		mb2[1] = 18;
+		mb2[2] = 3;
+
+		/* (27 * 22) / 8 == 74.25 MHz (IDIV2 removed) */
+		mb3[1] = 22;
+		mb3[2] = 8;
+		break;
+	case 3:
+		/* (25 * 4) / 1 == 100 => IDIV2 => 50MHz */
+		mb2[1] = 4;
+		mb2[2] = 1;
+
+		/* (27 * 50) / 27 == 50 MHz (IDIV2 removed) */
+		mb3[1] = 50;
+		mb3[2] = 27;
+		break;
+	case 6:
+		/* (25 * 2) / 1 == 50 => IDIV2 => 25MHz */
+		mb2[1] = 2;
+		mb2[2] = 1;
+
+		/* (27 * 42) / 45 == 25.2 MHz (IDIV2 removed) */
+		mb3[1] = 42;
+		mb3[2] = 45;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	/* Determine motherboard version */
+	if (ioread32((void __iomem *)AXS_MB_CREG + 0x234) & (1 << 28))
+		/* 1 => HT-3 (rev3.0) */
+		mb_rev = 3;
+	else
+		/* 0 => HT-2 (rev2.0) */
+		mb_rev = 2;
+
+	div = (mb_rev == 2) ? mb2 : mb3;
+
+	iowrite32(div[0], (void *)PGU_PLL_IDIV);
+	iowrite32((div[1] << 6) | div[1], (void *)PGU_PLL_FBDIV);
+	iowrite32((div[2] << 6) | div[2], (void *)PGU_PLL_ODIV);
+
+	return 0;
+}
+
 static int arcpgufb_set_par(struct fb_info *info)
 {
 	struct arcpgu_par *par = info->par;
@@ -245,7 +311,7 @@ static int arcpgufb_set_par(struct fb_info *info)
 	/* start dma transfer for frame buffer 0  */
 	iowrite32(1, &par->regs->start_set);
 	dev_dbg(info->dev, "CTRL:%x", ioread32(&par->regs->ctrl));
-	return 0;
+	return arcpgufb_set_pll(par->display->div);
 }
 
 /* This function is required for correct operation of frame buffer console */
