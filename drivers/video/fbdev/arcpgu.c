@@ -233,6 +233,8 @@ static int arcpgufb_set_par(struct fb_info *info)
 	iowrite32(0, &par->regs->stride);	/* stride */
 
 	iowrite32((par->display->div - 1) << 24 |
+		  (par->display->vsync_polarity << 3) |
+		  (par->display->hsync_polarity << 4) |
 #ifdef CONFIG_ARCPGU_RGB888
 		  0x67,
 #else
