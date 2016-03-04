@@ -107,15 +107,15 @@ struct arcpgu_par {
 struct known_displays dw_displays[] = {
 	{
 		"ADV7511 HDMI Transmitter 640x480@60, pixclk 25",
-		640, 656, 720, 816, 480, 481, 484, 516, false, true, 6
+		640, 656, 752, 800, 480, 491, 493, 525, false, false, 6
 	},
 	{
 		"ADV7511 HDMI Transmitter 1024x576@60, pixclk 50",
 		1024, 1064, 1176, 1360, 576, 577, 580, 617, false, true, 3
 	},
 	{
-		"ADV7511 HDMI Transmitter 1280x720@30, pixclk 75",
-		1280, 1288, 1416, 1600, 720, 721, 724, 760, false, true, 2
+		"ADV7511 HDMI Transmitter 1280x720@60, pixclk 75",
+		1280, 1390, 1430, 1650, 720, 726, 731, 750, true, true, 2
 	},
 };
 
