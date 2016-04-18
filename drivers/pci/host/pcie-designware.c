@@ -73,6 +73,11 @@
 #define PCIE_ATU_FUNC(x)		(((x) & 0x7) << 16)
 #define PCIE_ATU_UPPER_TARGET		0x91C
 
+/* PCIe Port Logic registers */
+#define PLR_OFFSET			0x700
+#define PCIE_PHY_DEBUG_R1		(PLR_OFFSET + 0x2c)
+#define PCIE_PHY_DEBUG_R1_LINK_UP	0x00000010
+
 static struct hw_pci dw_pci;
 
 static unsigned long global_io_offset;
@@ -326,12 +331,33 @@ static struct msi_chip dw_pcie_msi_chip = {
 	.teardown_irq = dw_msi_teardown_irq,
 };
 
+int dw_pcie_wait_for_link(struct pcie_port *pp)
+{
+	int retries;
+
+	/* check if the link is up or not */
+	for (retries = 0; retries < LINK_WAIT_MAX_RETRIES; retries++) {
+		if (dw_pcie_link_up(pp)) {
+			dev_info(pp->dev, "link up\n");
+			return 0;
+		}
+		usleep_range(LINK_WAIT_USLEEP_MIN, LINK_WAIT_USLEEP_MAX);
+	}
+
+	dev_err(pp->dev, "phy link never came up\n");
+
+	return -ETIMEDOUT;
+}
+
 int dw_pcie_link_up(struct pcie_port *pp)
 {
+	u32 val;
+
 	if (pp->ops->link_up)
 		return pp->ops->link_up(pp);
-	else
-		return 0;
+
+	val = readl(pp->dbi_base + PCIE_PHY_DEBUG_R1);
+	return val & PCIE_PHY_DEBUG_R1_LINK_UP;
 }
 
 static int dw_pcie_msi_map(struct irq_domain *domain, unsigned int irq,
@@ -771,15 +797,6 @@ static struct hw_pci dw_pci = {
 	.map_irq	= dw_pcie_map_irq,
 	.add_bus	= dw_pcie_add_bus,
 };
-
-void dw_pcie_link_retrain(struct pcie_port *pp)
-{
-	u32 val = 0;
-	dw_pcie_readl_rc(pp, LINK_CONTROL_LINK_STATUS_REG, &val);
-	val = val | PCIE_RETRAIN_LINK_MASK;
-	dw_pcie_writel_rc (pp, val, LINK_CONTROL_LINK_STATUS_REG);
-	return;
-}
 
 void dw_pcie_setup_rc(struct pcie_port *pp)
 {
