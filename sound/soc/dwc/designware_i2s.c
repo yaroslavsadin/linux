@@ -25,8 +25,6 @@
 #include <sound/soc.h>
 #include <sound/dmaengine_pcm.h>
 
-#include "designware_pcm.h"
-
 /* common register for all channel */
 #define IER		0x000
 #define IRER		0x004
@@ -86,14 +84,35 @@
 #define MAX_CHANNEL_NUM		8
 #define MIN_CHANNEL_NUM		2
 
+/* FPGA Version Info */
+#define FPGA_VER_INFO	0xE0011230
+#define FPGA_VER_27M	0x000FBED9
+
 /* PLL registers addresses */
 #define PLL_IDIV_ADDR	0xE00100A0
-#define PLL_FBDIV_ADDR 	0xE00100A4
-#define PLL_ODIV_ADDR	0xE00100A8
+#define PLL_FBDIV_ADDR	0xE00100A4
+#define PLL_ODIV0_ADDR	0xE00100A8
+#define PLL_ODIV1_ADDR	0xE00100AC
+
+/* PCM definitions */
+#define BUFFER_BYTES_MAX	384000
+#define PERIOD_BYTES_MIN	2048
+#define PERIODS_MIN		8
 
 union dw_i2s_snd_dma_data {
 	struct i2s_dma_data pd;
 	struct snd_dmaengine_dai_dma_data dt;
+};
+
+struct dw_pcm_binfo {
+	struct snd_pcm_substream *stream;
+	unsigned char *dma_base;
+	unsigned char *dma_pointer;
+	unsigned int period_size_frames;
+	unsigned int size;
+	snd_pcm_uframes_t period_pointer;
+	unsigned int total_periods;
+	unsigned int current_period;
 };
 
 struct dw_i2s_dev {
@@ -115,7 +134,7 @@ struct dw_i2s_dev {
 	union dw_i2s_snd_dma_data capture_dma_data;
 	struct i2s_clk_config_data config;
 	int (*i2s_clk_cfg)(struct i2s_clk_config_data *config);
-	int (*pcm_get)(u32 *lsample, u32 *rsample, int bytes, int buf_size);
+	struct dw_pcm_binfo binfo;
 };
 
 struct dw_i2s_pll {
@@ -123,17 +142,86 @@ struct dw_i2s_pll {
 	unsigned int data_width;
 	unsigned int idiv;
 	unsigned int fbdiv;
-	unsigned int odiv;
+	unsigned int odiv0;
+	unsigned int odiv1;
 };
 
-static const struct dw_i2s_pll dw_i2s_pll_cfg[] = {
-	{ 32000, 16, 0x104, 0x451, 0x10E38 },	/* 32 kHz */
-	{ 32000, 32, 0x82, 0x451, 0x10E38 },
-	{ 44100, 16, 0x104, 0x596, 0x10D35},	/* 44.1 kHz */
-	{ 44100, 32, 0x82, 0x596, 0x10D35 },
-	{ 48000, 16, 0x208, 0xA28, 0x10B2C },	/* 48 kHz */
-	{ 48000, 32, 0x104, 0xA28, 0x10B2C },
+static const struct dw_i2s_pll dw_i2s_pll_cfg_27m[] = {
+	/* 27Mhz */
+	{ 32000, 16, 0x104, 0x451, 0x10E38, 0x2000 },
+	{ 44100, 16, 0x104, 0x596, 0x10D35, 0x2000 },
+	{ 48000, 16, 0x208, 0xA28, 0x10B2C, 0x2000 },
+	{ 0, 0, 0, 0, 0, 0 },
 };
+
+static const struct dw_i2s_pll dw_i2s_pll_cfg_28m[] = {
+	/* 28.224Mhz */
+	{ 32000, 16, 0x82, 0x105, 0x107DF, 0x2000 },
+	{ 44100, 16, 0x28A, 0x1, 0x10001, 0x2000 },
+	{ 48000, 16, 0xA28, 0x187, 0x10042, 0x2000 },
+	{ 0, 0, 0, 0, 0, 0 },
+};
+
+static const struct snd_pcm_hardware dw_pcm_hw = {
+	.info       = SNDRV_PCM_INFO_INTERLEAVED |
+			SNDRV_PCM_INFO_MMAP |
+			SNDRV_PCM_INFO_MMAP_VALID |
+			SNDRV_PCM_INFO_BLOCK_TRANSFER,
+	.rates      = SNDRV_PCM_RATE_32000 |
+			SNDRV_PCM_RATE_44100 |
+			SNDRV_PCM_RATE_48000,
+	.rate_min   = 32000,
+	.rate_max   = 48000,
+	.formats    = SNDRV_PCM_FMTBIT_S16_LE,
+	.channels_min = 2,
+	.channels_max = 2,
+	.buffer_bytes_max = BUFFER_BYTES_MAX,
+	.period_bytes_min = PERIOD_BYTES_MIN,
+	.period_bytes_max = BUFFER_BYTES_MAX / PERIODS_MIN,
+	.periods_min      = PERIODS_MIN,
+	.periods_max      = BUFFER_BYTES_MAX / PERIOD_BYTES_MIN,
+};
+
+static int dw_pcm_transfer(u32 *lsample, u32 *rsample, int bytes, int buf_size,
+		struct dw_pcm_binfo *bi)
+{
+	struct snd_pcm_runtime *rt = NULL;
+	int i;
+
+	if (!bi)
+		return -EINVAL;
+
+	rt = bi->stream->runtime;
+
+	for (i = 0; i < buf_size; i++) {
+		if (bi->stream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+			memcpy(&lsample[i], bi->dma_pointer, bytes);
+			bi->dma_pointer += bytes;
+			memcpy(&rsample[i], bi->dma_pointer, bytes);
+			bi->dma_pointer += bytes;
+		} else {
+			memcpy(bi->dma_pointer, &lsample[i], bytes);
+			bi->dma_pointer += bytes;
+			memcpy(bi->dma_pointer, &rsample[i], bytes);
+			bi->dma_pointer += bytes;
+		}
+	}
+	bi->period_pointer += bytes_to_frames(rt, bytes * 2 * buf_size);
+
+	if (bi->period_pointer >=
+			(bi->period_size_frames * bi->current_period)) {
+		bi->current_period++;
+		if (bi->current_period > bi->total_periods) {
+			bi->dma_pointer = bi->dma_base;
+			bi->period_pointer = 0;
+			bi->current_period = 1;
+		}
+
+		snd_pcm_period_elapsed(bi->stream);
+	}
+
+	return 0;
+}
 
 static inline void i2s_write_reg(void __iomem *io_base, int reg, u32 val)
 {
@@ -181,12 +269,13 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev_id)
 		isr[i] = i2s_read_reg(dev->i2s_base, ISR(i));
 
 	for (i = 0; i < 4; i++) {
-		/* Copy only to first two channels.
+		/* Copy only to/from first two channels.
 		   TODO: Remaining channels */
-		if ((isr[i] & 0x10) && (i == 0) && (dev->pcm_get)) {
+		if ((isr[i] & 0x10) && (i == 0) && (dev->binfo.stream->stream ==
+					SNDRV_PCM_STREAM_PLAYBACK)) {
 			/* TXFE - TX FIFO is empty */
-			dev->pcm_get(sleft, sright, dev->xfer_bytes,
-					dev->fifo_th);
+			dw_pcm_transfer(sleft, sright, dev->xfer_bytes,
+					dev->fifo_th, &dev->binfo);
 
 			for (j = 0; j < dev->fifo_th; j++) {
 				i2s_write_reg(dev->i2s_base, LRBR_LTHR(i),
@@ -194,6 +283,19 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev_id)
 				i2s_write_reg(dev->i2s_base, RRBR_RTHR(i),
 						sright[j]);
 			}
+		} else if ((isr[i] & 0x1) && (i == 0) &&
+					(dev->binfo.stream->stream ==
+					SNDRV_PCM_STREAM_CAPTURE)) {
+			/* RSFE - RX FIFO is full */
+			for (j = 0; j < dev->fifo_th; j++) {
+				sleft[j] = i2s_read_reg(dev->i2s_base,
+						LRBR_LTHR(i));
+				sright[j] = i2s_read_reg(dev->i2s_base,
+						RRBR_RTHR(i));
+			}
+
+			dw_pcm_transfer(sleft, sright, dev->xfer_bytes,
+					dev->fifo_th, &dev->binfo);
 		}
 	}
 
@@ -205,21 +307,28 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev_id)
 
 static int i2s_pll_cfg(struct i2s_clk_config_data *config)
 {
+	const struct dw_i2s_pll *pll_cfg;
 	u32 rate = config->sample_rate;
 	u32 data_width = config->data_width;
 	int i;
 
-	for (i = 0; i < ARRAY_SIZE(dw_i2s_pll_cfg); i++) {
-		if ((dw_i2s_pll_cfg[i].rate == rate) &&
-				(dw_i2s_pll_cfg[i].data_width == data_width)) {
-			writel(dw_i2s_pll_cfg[i].idiv, (void *)PLL_IDIV_ADDR);
-			writel(dw_i2s_pll_cfg[i].fbdiv, (void *)PLL_FBDIV_ADDR);
-			writel(dw_i2s_pll_cfg[i].odiv, (void *)PLL_ODIV_ADDR);
+	if (readl((void *)FPGA_VER_INFO) <= FPGA_VER_27M)
+		pll_cfg = dw_i2s_pll_cfg_27m;
+	else
+		pll_cfg = dw_i2s_pll_cfg_28m;
+
+	for (i = 0; pll_cfg[i].rate != 0; i++) {
+		if ((pll_cfg[i].rate == rate) &&
+				(pll_cfg[i].data_width == data_width)) {
+			writel(pll_cfg[i].idiv, (void *)PLL_IDIV_ADDR);
+			writel(pll_cfg[i].fbdiv, (void *)PLL_FBDIV_ADDR);
+			writel(pll_cfg[i].odiv0, (void *)PLL_ODIV0_ADDR);
+			writel(pll_cfg[i].odiv1, (void *)PLL_ODIV1_ADDR);
 			return 0;
 		}
 	}
 
-	return -1;
+	return -EINVAL;
 }
 
 static void i2s_start(struct dw_i2s_dev *dev,
@@ -273,6 +382,139 @@ static void i2s_stop(struct dw_i2s_dev *dev,
 		i2s_write_reg(dev->i2s_base, IER, 0);
 	}
 }
+
+static int dw_pcm_open(struct snd_pcm_substream *substream)
+{
+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+	struct snd_pcm_runtime *rt = substream->runtime;
+	struct dw_i2s_dev *dev = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+
+	snd_soc_set_runtime_hwparams(substream, &dw_pcm_hw);
+	snd_pcm_hw_constraint_integer(rt, SNDRV_PCM_HW_PARAM_PERIODS);
+
+	rt->hw.rate_min = 32000;
+	rt->hw.rate_max = 48000;
+
+	dev->binfo.stream = substream;
+	rt->private_data = &dev->binfo;
+	return 0;
+}
+
+static int dw_pcm_close(struct snd_pcm_substream *substream)
+{
+	return 0;
+}
+
+static int dw_pcm_hw_params(struct snd_pcm_substream *substream,
+			    struct snd_pcm_hw_params *hw_params)
+{
+	struct snd_pcm_runtime *rt = substream->runtime;
+	struct dw_pcm_binfo *bi = rt->private_data;
+	int ret;
+
+	ret = snd_pcm_lib_alloc_vmalloc_buffer(substream,
+			params_buffer_bytes(hw_params));
+	if (ret < 0)
+		return ret;
+
+	memset(rt->dma_area, 0, params_buffer_bytes(hw_params));
+	bi->dma_base = rt->dma_area;
+	bi->dma_pointer = bi->dma_base;
+
+	return 0;
+}
+
+static int dw_pcm_hw_free(struct snd_pcm_substream *substream)
+{
+	int ret;
+
+	ret = snd_pcm_lib_free_vmalloc_buffer(substream);
+	if (ret < 0)
+		return ret;
+
+	return 0;
+}
+
+static int dw_pcm_prepare(struct snd_pcm_substream *substream)
+{
+	struct snd_pcm_runtime *rt = substream->runtime;
+	struct dw_pcm_binfo *bi = rt->private_data;
+	u32 buffer_size_frames = 0;
+
+	bi->period_size_frames = bytes_to_frames(rt,
+			snd_pcm_lib_period_bytes(substream));
+	bi->size = snd_pcm_lib_buffer_bytes(substream);
+	buffer_size_frames = bytes_to_frames(rt, bi->size);
+	bi->total_periods = buffer_size_frames / bi->period_size_frames;
+	bi->current_period = 1;
+
+	if ((buffer_size_frames % bi->period_size_frames) != 0)
+		return -EINVAL;
+
+	return 0;
+}
+
+static int dw_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+{
+	switch (cmd) {
+	case SNDRV_PCM_TRIGGER_START:
+		break;
+	case SNDRV_PCM_TRIGGER_STOP:
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+static snd_pcm_uframes_t dw_pcm_pointer(struct snd_pcm_substream *substream)
+{
+	struct snd_pcm_runtime *rt = substream->runtime;
+	struct dw_pcm_binfo *bi = rt->private_data;
+
+	return bi->period_pointer;
+}
+
+static struct snd_pcm_ops dw_pcm_ops = {
+	.open      = dw_pcm_open,
+	.close     = dw_pcm_close,
+	.ioctl     = snd_pcm_lib_ioctl,
+	.hw_params = dw_pcm_hw_params,
+	.hw_free   = dw_pcm_hw_free,
+	.prepare   = dw_pcm_prepare,
+	.trigger   = dw_pcm_trigger,
+	.pointer   = dw_pcm_pointer,
+	.page      = snd_pcm_lib_get_vmalloc_page,
+	.mmap      = snd_pcm_lib_mmap_vmalloc,
+};
+
+static int dw_pcm_new(struct snd_soc_pcm_runtime *runtime)
+{
+	struct snd_pcm *pcm = runtime->pcm;
+	int ret;
+
+	ret =  snd_pcm_lib_preallocate_pages_for_all(pcm,
+			SNDRV_DMA_TYPE_DEV,
+			snd_dma_continuous_data(GFP_KERNEL),
+			dw_pcm_hw.buffer_bytes_max,
+			dw_pcm_hw.buffer_bytes_max);
+	if (ret < 0)
+		return ret;
+
+	return 0;
+}
+
+static void dw_pcm_free(struct snd_pcm *pcm)
+{
+	snd_pcm_lib_preallocate_free_for_all(pcm);
+}
+
+static struct snd_soc_platform_driver dw_pcm_soc_platform = {
+	.pcm_new  = dw_pcm_new,
+	.pcm_free = dw_pcm_free,
+	.ops = &dw_pcm_ops,
+};
 
 static int dw_i2s_startup(struct snd_pcm_substream *substream,
 		struct snd_soc_dai *cpu_dai)
@@ -561,18 +803,6 @@ static const u32 bus_widths[COMP_MAX_DATA_WIDTH] = {
 	DMA_SLAVE_BUSWIDTH_UNDEFINED
 };
 
-/* PCM format to support channel resolution */
-static const u32 formats[COMP_MAX_WORDSIZE] = {
-	SNDRV_PCM_FMTBIT_S16_LE,
-	SNDRV_PCM_FMTBIT_S16_LE,
-	SNDRV_PCM_FMTBIT_S24_LE,
-	SNDRV_PCM_FMTBIT_S24_LE,
-	SNDRV_PCM_FMTBIT_S32_LE,
-	0,
-	0,
-	0
-};
-
 static int dw_configure_dai(struct dw_i2s_dev *dev,
 				   struct snd_soc_dai_driver *dw_i2s_dai,
 				   unsigned int rates)
@@ -582,8 +812,7 @@ static int dw_configure_dai(struct dw_i2s_dev *dev,
 	 * the I2S block's configuration.
 	 */
 	u32 comp1 = i2s_read_reg(dev->i2s_base, dev->i2s_reg_comp1);
-	u32 comp2 = i2s_read_reg(dev->i2s_base, dev->i2s_reg_comp2);
-	u32 idx;
+	u32 fifo_depth = 1 << (1 + COMP1_FIFO_DEPTH_GLOBAL(comp1));
 
 	if (dev->capability & DWC_I2S_RECORD &&
 			dev->quirks & DW_I2S_QUIRK_COMP_PARAM1)
@@ -591,25 +820,23 @@ static int dw_configure_dai(struct dw_i2s_dev *dev,
 
 	if (COMP1_TX_ENABLED(comp1)) {
 		dev_dbg(dev->dev, " designware: play supported\n");
-		idx = COMP1_TX_WORDSIZE_0(comp1);
-		if (WARN_ON(idx >= ARRAY_SIZE(formats)))
-			return -EINVAL;
 		dw_i2s_dai->playback.channels_min = MIN_CHANNEL_NUM;
 		dw_i2s_dai->playback.channels_max =
 				1 << (COMP1_TX_CHANNELS(comp1) + 1);
-		dw_i2s_dai->playback.formats = formats[idx];
+		dw_i2s_dai->playback.formats = SNDRV_PCM_FMTBIT_S16_LE |
+				SNDRV_PCM_FMTBIT_S24_LE |
+				SNDRV_PCM_FMTBIT_S32_LE;
 		dw_i2s_dai->playback.rates = rates;
 	}
 
 	if (COMP1_RX_ENABLED(comp1)) {
 		dev_dbg(dev->dev, "designware: record supported\n");
-		idx = COMP2_RX_WORDSIZE_0(comp2);
-		if (WARN_ON(idx >= ARRAY_SIZE(formats)))
-			return -EINVAL;
 		dw_i2s_dai->capture.channels_min = MIN_CHANNEL_NUM;
 		dw_i2s_dai->capture.channels_max =
 				1 << (COMP1_RX_CHANNELS(comp1) + 1);
-		dw_i2s_dai->capture.formats = formats[idx];
+		dw_i2s_dai->capture.formats = SNDRV_PCM_FMTBIT_S16_LE |
+				SNDRV_PCM_FMTBIT_S24_LE |
+				SNDRV_PCM_FMTBIT_S32_LE;
 		dw_i2s_dai->capture.rates = rates;
 	}
 
@@ -621,6 +848,7 @@ static int dw_configure_dai(struct dw_i2s_dev *dev,
 		dev->capability |= DW_I2S_SLAVE;
 	}
 
+	dev->fifo_th = fifo_depth / 2;
 	return 0;
 }
 
@@ -696,7 +924,6 @@ static int dw_configure_dai_by_dt(struct dw_i2s_dev *dev,
 		dev->capture_dma_data.dt.maxburst = 16;
 	}
 
-	dev->fifo_th = fifo_depth / 2;
 	return 0;
 
 }
@@ -801,8 +1028,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
 			/* Using DMA */
 			ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
 		} else {
-			ret = dw_pcm_platform_register(pdev);
-			dev->pcm_get = dw_pcm_platform_get;
+			ret = snd_soc_register_platform(&pdev->dev,
+					&dw_pcm_soc_platform);
 		}
 
 		if (ret) {
@@ -828,12 +1055,13 @@ static int dw_i2s_remove(struct platform_device *pdev)
 		clk_disable_unprepare(dev->clk);
 
 	pm_runtime_disable(&pdev->dev);
+	snd_soc_unregister_platform(&pdev->dev);
 	return 0;
 }
 
 #ifdef CONFIG_OF
 static const struct of_device_id dw_i2s_of_match[] = {
-	{ .compatible = "snps,designware-i2s",	 },
+	{ .compatible = "snps,designware-i2s", },
 	{},
 };
 
