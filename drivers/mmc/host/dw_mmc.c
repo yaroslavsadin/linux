@@ -1293,6 +1293,12 @@ static void dw_mci_setup_bus(struct dw_mci_slot *slot, bool force_clkinit)
 		/* set clock to desired speed */
 		mci_writel(host, CLKDIV, div);
 
+		/*
+		 * UHS_REG_EXT[24:23] -> clk_drv_phase_ctrl[1:0] = 1 -> 90 degrees
+		 * UHS_REG_EXT[17:16] -> clk_sample_phase_ctrl[1:0] = 1 -> 90 degrees
+		 */
+		*(u32*)0xf000A108 = 0x00810000;
+
 		/* inform CIU */
 		mci_send_cmd(slot, sdmmc_cmd_bits, 0);
 
@@ -1496,7 +1502,14 @@ static void dw_mci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
 		set_bit(DW_MMC_CARD_NEED_INIT, &slot->flags);
 		regs = mci_readl(slot->host, PWREN);
 		regs |= (1 << slot->id);
+		/* Set PWREN[2] to disable EBI */
+		regs |= (1 << 2);
 		mci_writel(slot->host, PWREN, regs);
+		/* Drive high ebi_addr[18] to enable level shifter IC20 */
+		regs = mci_readl(slot->host, GPIO);
+		regs |= (1 << 13);
+		mci_writel(slot->host, GPIO, regs);
+
 		break;
 	case MMC_POWER_ON:
 		if (!slot->host->vqmmc_enabled) {
@@ -2774,7 +2787,7 @@ static int dw_mci_init_slot(struct dw_mci *host)
 		return -ENOMEM;
 
 	slot = mmc_priv(mmc);
-	slot->id = 0;
+	slot->id = 1;
 	slot->sdio_id = host->sdio_id0 + slot->id;
 	slot->mmc = mmc;
 	slot->host = host;
