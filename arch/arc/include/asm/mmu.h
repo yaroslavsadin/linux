@@ -105,12 +105,6 @@ static void inline mmu_setup_pgd(struct mm_struct *mm, pgd_t *pgd)
 
 #endif
 
-#ifdef CONFIG_ARC_DBG_TLB_PARANOIA
-void tlb_paranoid_check(unsigned int mm_asid, unsigned long address);
-#else
-#define tlb_paranoid_check(a, b)
-#endif
-
 static inline int is_pae40_enabled(void)
 {
 	return IS_ENABLED(CONFIG_ARC_HAS_PAE40);
