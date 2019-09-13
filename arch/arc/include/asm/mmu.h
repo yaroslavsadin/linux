@@ -111,10 +111,6 @@ void tlb_paranoid_check(unsigned int mm_asid, unsigned long address);
 #define tlb_paranoid_check(a, b)
 #endif
 
-void arc_mmu_init(void);
-extern char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len);
-void read_decode_mmu_bcr(void);
-
 static inline int is_pae40_enabled(void)
 {
 	return IS_ENABLED(CONFIG_ARC_HAS_PAE40);
