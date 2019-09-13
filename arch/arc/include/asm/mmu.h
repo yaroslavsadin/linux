@@ -78,6 +78,33 @@ typedef struct {
 	unsigned int asid[NR_CPUS];	/* 8 bit MMU PID + Generation cycle */
 } mm_context_t;
 
+#ifndef CONFIG_ARC_MMU_HW_WALK
+
+static void inline mmu_setup_asid(struct mm_struct *mm, unsigned int asid)
+{
+	write_aux_reg(ARC_REG_PID, asid | MMU_ENABLE);
+}
+
+static void inline mmu_setup_pgd(struct mm_struct *mm, pgd_t *pgd)
+{
+	/* PGD cached in MMU reg to avoid 3 mem lookups: task->mm->pgd */
+#ifdef CONFIG_ISA_ARCV2
+	write_aux_reg(ARC_REG_SCRATCH_DATA0, (unsigned int)pgd);
+#endif
+}
+
+#else
+
+static void inline mmu_setup_asid(struct mm_struct *mm, unsigned int asid)
+{
+}
+
+static void inline mmu_setup_pgd(struct mm_struct *mm, pgd_t *pgd)
+{
+}
+
+#endif
+
 #ifdef CONFIG_ARC_DBG_TLB_PARANOIA
 void tlb_paranoid_check(unsigned int mm_asid, unsigned long address);
 #else
