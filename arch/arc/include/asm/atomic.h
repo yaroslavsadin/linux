@@ -95,12 +95,10 @@ static inline int atomic_fetch_##op(int i, atomic_t *v)			\
 
 #else	/* !CONFIG_ARC_HAS_LLSC */
 
-#ifndef CONFIG_SMP
-
- /* violating atomic_xxx API locking protocol in UP for optimization sake */
-#define atomic_set(v, i) WRITE_ONCE(((v)->counter), (i))
-
-#else
+/*
+ * Non hardware assisted Atomic-R-M-W
+ * Locking would change to irq-disabling only (UP) and spinlocks (SMP)
+ */
 
 static inline void atomic_set(atomic_t *v, int i)
 {
@@ -121,13 +119,6 @@ static inline void atomic_set(atomic_t *v, int i)
 }
 
 #define atomic_set_release(v, i)	atomic_set((v), (i))
-
-#endif
-
-/*
- * Non hardware assisted Atomic-R-M-W
- * Locking would change to irq-disabling only (UP) and spinlocks (SMP)
- */
 
 #define ATOMIC_OP(op, c_op, asm_op)					\
 static inline void atomic_##op(int i, atomic_t *v)			\
