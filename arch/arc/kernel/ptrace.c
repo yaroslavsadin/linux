@@ -46,9 +46,15 @@ static int genregs_get(struct task_struct *target,
 
 	REG_O_ZERO(pad);
 	REG_O_ONE(scratch.bta, &ptregs->bta);
+#ifndef CONFIG_ARC_LACKS_ZOL
 	REG_O_ONE(scratch.lp_start, &ptregs->lp_start);
 	REG_O_ONE(scratch.lp_end, &ptregs->lp_end);
 	REG_O_ONE(scratch.lp_count, &ptregs->lp_count);
+#else
+	REG_O_ZERO(scratch.lp_start);
+	REG_O_ZERO(scratch.lp_end);
+	REG_O_ZERO(scratch.lp_count);
+#endif
 	REG_O_ONE(scratch.status32, &ptregs->status32);
 	REG_O_ONE(scratch.ret, &ptregs->ret);
 	REG_O_ONE(scratch.blink, &ptregs->blink);
@@ -134,9 +140,15 @@ static int genregs_set(struct task_struct *target,
 	REG_IGNORE_ONE(pad);
 
 	REG_IN_ONE(scratch.bta, &ptregs->bta);
+#ifndef CONFIG_ARC_LACKS_ZOL
 	REG_IN_ONE(scratch.lp_start, &ptregs->lp_start);
 	REG_IN_ONE(scratch.lp_end, &ptregs->lp_end);
 	REG_IN_ONE(scratch.lp_count, &ptregs->lp_count);
+#else
+	REG_IGNORE_ONE(scratch.lp_start);
+	REG_IGNORE_ONE(scratch.lp_end);
+	REG_IGNORE_ONE(scratch.lp_count);
+#endif
 
 	REG_IGNORE_ONE(scratch.status32);
 
