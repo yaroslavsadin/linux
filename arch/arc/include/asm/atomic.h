@@ -16,13 +16,10 @@
 
 #define ATOMIC_INIT(i)	{ (i) }
 
-#ifndef CONFIG_ARC_PLAT_EZNPS
-
-#define atomic_read(v)  READ_ONCE((v)->counter)
-
 #ifdef CONFIG_ARC_HAS_LLSC
 
-#define atomic_set(v, i) WRITE_ONCE(((v)->counter), (i))
+#define atomic_read(v)          READ_ONCE((v)->counter)
+#define atomic_set(v, i)        WRITE_ONCE(((v)->counter), (i))
 
 #define ATOMIC_OP(op, c_op, asm_op)					\
 static inline void atomic_##op(int i, atomic_t *v)			\
@@ -88,80 +85,6 @@ static inline int atomic_fetch_##op##_relaxed(int i, atomic_t *v)		\
 #define atomic_fetch_or_relaxed		atomic_fetch_or_relaxed
 #define atomic_fetch_xor_relaxed	atomic_fetch_xor_relaxed
 
-#else	/* !CONFIG_ARC_HAS_LLSC */
-
-/*
- * Non hardware assisted Atomic-R-M-W
- * Locking would change to irq-disabling only (UP) and spinlocks (SMP)
- */
-
-static inline void atomic_set(atomic_t *v, int i)
-{
-	/*
-	 * Independent of hardware support, all of the atomic_xxx() APIs need
-	 * to follow the same locking rules to make sure that a "hardware"
-	 * atomic insn (e.g. LD) doesn't clobber an "emulated" atomic insn
-	 * sequence
-	 *
-	 * Thus atomic_set() despite being 1 insn (and seemingly atomic)
-	 * requires the locking.
-	 */
-	unsigned long flags;
-
-	atomic_ops_lock(flags);
-	WRITE_ONCE(v->counter, i);
-	atomic_ops_unlock(flags);
-}
-
-#define atomic_set_release(v, i)	atomic_set((v), (i))
-
-#define ATOMIC_OP(op, c_op, asm_op)					\
-static inline void atomic_##op(int i, atomic_t *v)			\
-{									\
-	unsigned long flags;						\
-									\
-	atomic_ops_lock(flags);						\
-	v->counter c_op i;						\
-	atomic_ops_unlock(flags);					\
-}
-
-#define ATOMIC_OP_RETURN(op, c_op, asm_op)				\
-static inline int atomic_##op##_return(int i, atomic_t *v)		\
-{									\
-	unsigned long flags;						\
-	unsigned long temp;						\
-									\
-	/*								\
-	 * spin lock/unlock provides the needed smp_mb() before/after	\
-	 */								\
-	atomic_ops_lock(flags);						\
-	temp = v->counter;						\
-	temp c_op i;							\
-	v->counter = temp;						\
-	atomic_ops_unlock(flags);					\
-									\
-	return temp;							\
-}
-
-#define ATOMIC_FETCH_OP(op, c_op, asm_op)				\
-static inline int atomic_fetch_##op(int i, atomic_t *v)			\
-{									\
-	unsigned long flags;						\
-	unsigned long orig;						\
-									\
-	/*								\
-	 * spin lock/unlock provides the needed smp_mb() before/after	\
-	 */								\
-	atomic_ops_lock(flags);						\
-	orig = v->counter;						\
-	v->counter c_op i;						\
-	atomic_ops_unlock(flags);					\
-									\
-	return orig;							\
-}
-
-#endif /* !CONFIG_ARC_HAS_LLSC */
-
 #define ATOMIC_OPS(op, c_op, asm_op)					\
 	ATOMIC_OP(op, c_op, asm_op)					\
 	ATOMIC_OP_RETURN(op, c_op, asm_op)				\
@@ -182,107 +105,15 @@ ATOMIC_OPS(andnot, &= ~, bic)
 ATOMIC_OPS(or, |=, or)
 ATOMIC_OPS(xor, ^=, xor)
 
-#else /* CONFIG_ARC_PLAT_EZNPS */
+#elif defined(CONFIG_ARC_PLAT_EZNPS)
 
-static inline int atomic_read(const atomic_t *v)
-{
-	int temp;
+#include <asm/atomic-nps.h>
 
-	__asm__ __volatile__(
-	"	ld.di %0, [%1]"
-	: "=r"(temp)
-	: "r"(&v->counter)
-	: "memory");
-	return temp;
-}
+#else
 
-static inline void atomic_set(atomic_t *v, int i)
-{
-	__asm__ __volatile__(
-	"	st.di %0,[%1]"
-	:
-	: "r"(i), "r"(&v->counter)
-	: "memory");
-}
+#include <asm/atomic-spinlock.h>
 
-#define ATOMIC_OP(op, c_op, asm_op)					\
-static inline void atomic_##op(int i, atomic_t *v)			\
-{									\
-	__asm__ __volatile__(						\
-	"	mov r2, %0\n"						\
-	"	mov r3, %1\n"						\
-	"       .word %2\n"						\
-	:								\
-	: "r"(i), "r"(&v->counter), "i"(asm_op)				\
-	: "r2", "r3", "memory");					\
-}									\
-
-#define ATOMIC_OP_RETURN(op, c_op, asm_op)				\
-static inline int atomic_##op##_return(int i, atomic_t *v)		\
-{									\
-	unsigned int temp = i;						\
-									\
-	/* Explicit full memory barrier needed before/after */		\
-	smp_mb();							\
-									\
-	__asm__ __volatile__(						\
-	"	mov r2, %0\n"						\
-	"	mov r3, %1\n"						\
-	"       .word %2\n"						\
-	"	mov %0, r2"						\
-	: "+r"(temp)							\
-	: "r"(&v->counter), "i"(asm_op)					\
-	: "r2", "r3", "memory");					\
-									\
-	smp_mb();							\
-									\
-	temp c_op i;							\
-									\
-	return temp;							\
-}
-
-#define ATOMIC_FETCH_OP(op, c_op, asm_op)				\
-static inline int atomic_fetch_##op(int i, atomic_t *v)			\
-{									\
-	unsigned int temp = i;						\
-									\
-	/* Explicit full memory barrier needed before/after */		\
-	smp_mb();							\
-									\
-	__asm__ __volatile__(						\
-	"	mov r2, %0\n"						\
-	"	mov r3, %1\n"						\
-	"       .word %2\n"						\
-	"	mov %0, r2"						\
-	: "+r"(temp)							\
-	: "r"(&v->counter), "i"(asm_op)					\
-	: "r2", "r3", "memory");					\
-									\
-	smp_mb();							\
-									\
-	return temp;							\
-}
-
-#define ATOMIC_OPS(op, c_op, asm_op)					\
-	ATOMIC_OP(op, c_op, asm_op)					\
-	ATOMIC_OP_RETURN(op, c_op, asm_op)				\
-	ATOMIC_FETCH_OP(op, c_op, asm_op)
-
-ATOMIC_OPS(add, +=, CTOP_INST_AADD_DI_R2_R2_R3)
-#define atomic_sub(i, v) atomic_add(-(i), (v))
-#define atomic_sub_return(i, v) atomic_add_return(-(i), (v))
-#define atomic_fetch_sub(i, v) atomic_fetch_add(-(i), (v))
-
-#undef ATOMIC_OPS
-#define ATOMIC_OPS(op, c_op, asm_op)					\
-	ATOMIC_OP(op, c_op, asm_op)					\
-	ATOMIC_FETCH_OP(op, c_op, asm_op)
-
-ATOMIC_OPS(and, &=, CTOP_INST_AAND_DI_R2_R2_R3)
-ATOMIC_OPS(or, |=, CTOP_INST_AOR_DI_R2_R2_R3)
-ATOMIC_OPS(xor, ^=, CTOP_INST_AXOR_DI_R2_R2_R3)
-
-#endif /* CONFIG_ARC_PLAT_EZNPS */
+#endif /* CONFIG_ARC_HAS_LLSC */
 
 #undef ATOMIC_OPS
 #undef ATOMIC_FETCH_OP
