@@ -41,15 +41,9 @@ static inline void atomic_##op(int i, atomic_t *v)			\
 }									\
 
 #define ATOMIC_OP_RETURN(op, c_op, asm_op)				\
-static inline int atomic_##op##_return(int i, atomic_t *v)		\
+static inline int atomic_##op##_return_relaxed(int i, atomic_t *v)	\
 {									\
 	unsigned int val;						\
-									\
-	/*								\
-	 * Explicit full memory barrier needed before/after as		\
-	 * LLOCK/SCOND thmeselves don't provide any such semantics	\
-	 */								\
-	smp_mb();							\
 									\
 	__asm__ __volatile__(						\
 	"1:	llock   %[val], [%[ctr]]		\n"		\
@@ -61,21 +55,16 @@ static inline int atomic_##op##_return(int i, atomic_t *v)		\
 	  [i]	"ir"	(i)						\
 	: "cc");							\
 									\
-	smp_mb();							\
-									\
 	return val;							\
 }
 
+#define atomic_add_return_relaxed	atomic_add_return_relaxed
+#define atomic_sub_return_relaxed	atomic_sub_return_relaxed
+
 #define ATOMIC_FETCH_OP(op, c_op, asm_op)				\
-static inline int atomic_fetch_##op(int i, atomic_t *v)			\
+static inline int atomic_fetch_##op##_relaxed(int i, atomic_t *v)		\
 {									\
 	unsigned int val, orig;						\
-									\
-	/*								\
-	 * Explicit full memory barrier needed before/after as		\
-	 * LLOCK/SCOND thmeselves don't provide any such semantics	\
-	 */								\
-	smp_mb();							\
 									\
 	__asm__ __volatile__(						\
 	"1:	llock   %[orig], [%[ctr]]		\n"		\
@@ -88,10 +77,16 @@ static inline int atomic_fetch_##op(int i, atomic_t *v)			\
 	  [i]	"ir"	(i)						\
 	: "cc");							\
 									\
-	smp_mb();							\
-									\
 	return orig;							\
 }
+
+#define atomic_fetch_add_relaxed	atomic_fetch_add_relaxed
+#define atomic_fetch_sub_relaxed	atomic_fetch_sub_relaxed
+
+#define atomic_fetch_and_relaxed	atomic_fetch_and_relaxed
+#define atomic_fetch_andnot_relaxed	atomic_fetch_andnot_relaxed
+#define atomic_fetch_or_relaxed		atomic_fetch_or_relaxed
+#define atomic_fetch_xor_relaxed	atomic_fetch_xor_relaxed
 
 #else	/* !CONFIG_ARC_HAS_LLSC */
 
@@ -176,7 +171,6 @@ ATOMIC_OPS(add, +=, add)
 ATOMIC_OPS(sub, -=, sub)
 
 #define atomic_andnot		atomic_andnot
-#define atomic_fetch_andnot	atomic_fetch_andnot
 
 #undef ATOMIC_OPS
 #define ATOMIC_OPS(op, c_op, asm_op)					\
@@ -367,11 +361,9 @@ static inline void atomic64_##op(s64 a, atomic64_t *v)			\
 }									\
 
 #define ATOMIC64_OP_RETURN(op, op1, op2)		        	\
-static inline s64 atomic64_##op##_return(s64 a, atomic64_t *v)		\
+static inline s64 atomic64_##op##_return_relaxed(s64 a, atomic64_t *v)	\
 {									\
 	s64 val;							\
-									\
-	smp_mb();							\
 									\
 	__asm__ __volatile__(						\
 	"1:				\n"				\
@@ -384,17 +376,16 @@ static inline s64 atomic64_##op##_return(s64 a, atomic64_t *v)		\
 	: "r"(&v->counter), "ir"(a)					\
 	: "cc");	/* memory clobber comes from smp_mb() */	\
 									\
-	smp_mb();							\
-									\
 	return val;							\
 }
 
+#define atomic64_add_return_relaxed	atomic64_add_return_relaxed
+#define atomic64_sub_return_relaxed	atomic64_sub_return_relaxed
+
 #define ATOMIC64_FETCH_OP(op, op1, op2)		        		\
-static inline s64 atomic64_fetch_##op(s64 a, atomic64_t *v)		\
+static inline s64 atomic64_fetch_##op##_relaxed(s64 a, atomic64_t *v)	\
 {									\
 	s64 val, orig;							\
-									\
-	smp_mb();							\
 									\
 	__asm__ __volatile__(						\
 	"1:				\n"				\
@@ -407,10 +398,16 @@ static inline s64 atomic64_fetch_##op(s64 a, atomic64_t *v)		\
 	: "r"(&v->counter), "ir"(a)					\
 	: "cc");	/* memory clobber comes from smp_mb() */	\
 									\
-	smp_mb();							\
-									\
 	return orig;							\
 }
+
+#define atomic64_fetch_add_relaxed	atomic64_fetch_add_relaxed
+#define atomic64_fetch_sub_relaxed	atomic64_fetch_sub_relaxed
+
+#define atomic64_fetch_and_relaxed	atomic64_fetch_and_relaxed
+#define atomic64_fetch_andnot_relaxed	atomic64_fetch_andnot_relaxed
+#define atomic64_fetch_or_relaxed	atomic64_fetch_or_relaxed
+#define atomic64_fetch_xor_relaxed	atomic64_fetch_xor_relaxed
 
 #define ATOMIC64_OPS(op, op1, op2)					\
 	ATOMIC64_OP(op, op1, op2)					\
