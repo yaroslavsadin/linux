@@ -141,15 +141,9 @@ static inline unsigned long __xchg(unsigned long val, volatile void *ptr,
  *  - For !LLSC, cmpxchg() needs to use that lock (see above) and there is lot
  *    of  kernel code which calls xchg()/cmpxchg() on same data (see llist.h)
  *    Hence xchg() needs to follow same locking rules.
- *
- * Technically the lock is also needed for UP (boils down to irq save/restore)
- * but we can cheat a bit since cmpxchg() atomic_ops_lock() would cause irqs to
- * be disabled thus can't possibly be interrpted/preempted/clobbered by xchg()
- * Other way around, xchg is one instruction anyways, so can't be interrupted
- * as such
  */
 
-#if !defined(CONFIG_ARC_HAS_LLSC) && defined(CONFIG_SMP)
+#ifndef CONFIG_ARC_HAS_LLSC
 
 #define xchg(ptr, with)			\
 ({					\
@@ -161,10 +155,6 @@ static inline unsigned long __xchg(unsigned long val, volatile void *ptr,
 	atomic_ops_unlock(flags);	\
 	old_val;			\
 })
-
-#else
-
-#define xchg(ptr, with)  _xchg(ptr, with)
 
 #endif
 
