@@ -18,7 +18,7 @@
  * if (*ptr == @old)
  *      *ptr = @new
  */
-#define __cmpxchg(ptr, old, new)					\
+#define __cmpxchg_relaxed(ptr, old, new)				\
 ({									\
 	__typeof__(*(ptr)) _prev;					\
 									\
@@ -51,8 +51,25 @@
 		 * Explicit full memory barrier needed before/after	\
 	         */							\
 		smp_mb();						\
-		_prev_ = __cmpxchg(_p_, _o_, _n_);			\
+		_prev_ = __cmpxchg_relaxed(_p_, _o_, _n_);		\
 		smp_mb();						\
+		break;							\
+	default:							\
+		BUILD_BUG();						\
+	}								\
+	_prev_;								\
+})
+
+#define cmpxchg_relaxed(ptr, old, new)				        \
+({									\
+	__typeof__(ptr) _p_ = (ptr);					\
+	__typeof__(*(ptr)) _o_ = (old);					\
+	__typeof__(*(ptr)) _n_ = (new);					\
+	__typeof__(*(ptr)) _prev_;					\
+									\
+	switch(sizeof((_p_))) {				        	\
+	case 4:								\
+		_prev_ = __cmpxchg_relaxed(_p_, _o_, _n_);		\
 		break;							\
 	default:							\
 		BUILD_BUG();						\
@@ -131,7 +148,7 @@
  */
 #ifdef CONFIG_ARC_HAS_LLSC
 
-#define __xchg(ptr, val)						\
+#define __xchg_relaxed(ptr, val)					\
 ({									\
 	__asm__ __volatile__(						\
 	"	ex  %0, [%1]	\n"	/* set new value */	        \
@@ -149,8 +166,23 @@
 	switch(sizeof(*(_p_))) {					\
 	case 4:								\
 		smp_mb();						\
-		_val_ = __xchg(_p_, _val_);				\
+		_val_ = __xchg_relaxed(_p_, _val_);			\
 	        smp_mb();						\
+		break;							\
+	default:							\
+		BUILD_BUG();						\
+	}								\
+	_val_;								\
+})
+
+#define xchg_relaxed(ptr, val)						\
+({									\
+	__typeof__(ptr) _p_ = (ptr);					\
+	__typeof__(*(ptr)) _val_ = (val);				\
+									\
+	switch(sizeof(*(_p_))) {					\
+	case 4:								\
+		_val_ = __xchg_relaxed(_p_, _val_);			\
 		break;							\
 	default:							\
 		BUILD_BUG();						\
