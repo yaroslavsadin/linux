@@ -120,6 +120,30 @@ ATOMIC_OPS(xor, ^=, xor)
 #undef ATOMIC_OP_RETURN
 #undef ATOMIC_OP
 
+#define atomic_cmpxchg(v, o, n)						\
+({									\
+	cmpxchg(&((v)->counter), (o), (n));				\
+})
+
+#ifdef cmpxchg_relaxed
+#define atomic_cmpxchg_relaxed(v, o, n)					\
+({									\
+	cmpxchg_relaxed(&((v)->counter), (o), (n));			\
+})
+#endif
+
+#define atomic_xchg(v, n)						\
+({									\
+	xchg(&((v)->counter), (n));					\
+})
+
+#ifdef xchg_relaxed
+#define atomic_xchg_relaxed(v, n)					\
+({									\
+	xchg_relaxed(&((v)->counter), (n));				\
+})
+#endif
+
 /*
  * 64-bit atomics
  */

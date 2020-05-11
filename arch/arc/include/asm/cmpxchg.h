@@ -134,14 +134,6 @@
 
 #endif
 
-/*
- * atomic_cmpxchg is same as cmpxchg
- *   LLSC: only different in data-type, semantics are exactly same
- *  !LLSC: cmpxchg() has to use an external lock atomic_ops_lock to guarantee
- *         semantics, and this lock also happens to be used by atomic_*()
- */
-#define atomic_cmpxchg(v, o, n) ((int)cmpxchg(&((v)->counter), (o), (n)))
-
 
 /*
  * xchg
@@ -242,21 +234,5 @@
 })
 
 #endif
-
-
-/*
- * "atomic" variant of xchg()
- * REQ: It needs to follow the same serialization rules as other atomic_xxx()
- * Since xchg() doesn't always do that, it would seem that following defintion
- * is incorrect. But here's the rationale:
- *   SMP : Even xchg() takes the atomic_ops_lock, so OK.
- *   LLSC: atomic_ops_lock are not relevant at all (even if SMP, since LLSC
- *         is natively "SMP safe", no serialization required).
- *   UP  : other atomics disable IRQ, so no way a difft ctxt atomic_xchg()
- *         could clobber them. atomic_xchg() itself would be 1 insn, so it
- *         can't be clobbered by others. Thus no serialization required when
- *         atomic_xchg is involved.
- */
-#define atomic_xchg(v, new) (xchg(&((v)->counter), new))
 
 #endif
