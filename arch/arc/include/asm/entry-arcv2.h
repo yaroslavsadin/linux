@@ -17,7 +17,6 @@
  *              |      orig_r0      |
  *              |      event/ECR    |
  *              |      bta          |
- *              |      user_r25     |
  *              |      gp           |
  *              |      fp           |
  *              |      sp           |
@@ -55,7 +54,7 @@
 	;                 hardware does even if CONFIG_ARC_IRQ_NO_AUTOSAVE
 	;   4. Auto save: (optional) r0-r11, blink, LPE,LPS,LPC, JLI,LDI,EI
 	;
-	; (B) Manually saved some regs: r12,r25,r30, sp,fp,gp, ACCL pair
+	; (B) Manually saved some regs: r12,r30, sp,fp,gp, ACCL pair
 
 #ifdef CONFIG_ARC_IRQ_NO_AUTOSAVE
 	; carve pt_regs on stack (case #3), PC/STAT32 already on stack
@@ -158,13 +157,12 @@
 
 	st	r10, [sp, PT_sp]	; SP (pt_regs->sp)
 
-#ifdef CONFIG_ARC_CURR_IN_REG
-	st	r25, [sp, PT_user_r25]
-	GET_CURR_TASK_ON_CPU	r25
-#endif
-
 #ifdef CONFIG_ARC_HAS_ACCL_REGS
 	ST2	r58, r59, PT_r58
+#endif
+
+#ifdef CONFIG_ARC_CURR_IN_REG
+	GET_CURR_TASK_ON_CPU	gp
 #endif
 
 .endm
@@ -186,10 +184,6 @@
 	ld	r10, [sp, PT_sp]	; SP (pt_regs->sp)
 	sr	r10, [AUX_USER_SP]
 1:
-
-#ifdef CONFIG_ARC_CURR_IN_REG
-	ld	r25, [sp, PT_user_r25]
-#endif
 
 #ifdef CONFIG_ARC_HAS_ACCL_REGS
 	LD2	r58, r59, PT_r58
