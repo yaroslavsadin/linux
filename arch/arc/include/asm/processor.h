@@ -39,9 +39,7 @@ struct thread_struct {
 #endif
 };
 
-#define INIT_THREAD  {                          \
-	.ksp = sizeof(init_stack) + (unsigned long) init_stack, \
-}
+#define INIT_THREAD  { }
 
 /* Forward declaration, a strange C thing */
 struct task_struct;
