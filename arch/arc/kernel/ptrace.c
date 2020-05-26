@@ -59,7 +59,7 @@ static int genregs_get(struct task_struct *target,
 	REG_O_ONE(scratch.ret, &ptregs->ret);
 	REG_O_ONE(scratch.blink, &ptregs->blink);
 	REG_O_ONE(scratch.fp, &ptregs->fp);
-	REG_O_ONE(scratch.gp, &ptregs->r26);
+	REG_O_ONE(scratch.gp, &ptregs->gp);
 	REG_O_ONE(scratch.r12, &ptregs->r12);
 	REG_O_ONE(scratch.r11, &ptregs->r11);
 	REG_O_ONE(scratch.r10, &ptregs->r10);
@@ -155,7 +155,7 @@ static int genregs_set(struct task_struct *target,
 	REG_IN_ONE(scratch.ret, &ptregs->ret);
 	REG_IN_ONE(scratch.blink, &ptregs->blink);
 	REG_IN_ONE(scratch.fp, &ptregs->fp);
-	REG_IN_ONE(scratch.gp, &ptregs->r26);
+	REG_IN_ONE(scratch.gp, &ptregs->gp);
 	REG_IN_ONE(scratch.r12, &ptregs->r12);
 	REG_IN_ONE(scratch.r11, &ptregs->r11);
 	REG_IN_ONE(scratch.r10, &ptregs->r10);
