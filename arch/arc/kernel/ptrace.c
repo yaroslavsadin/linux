@@ -9,6 +9,7 @@
 #include <linux/regset.h>
 #include <linux/unistd.h>
 #include <linux/elf.h>
+#include <asm/asm-offsets.h>
 
 static struct callee_regs *task_callee_regs(struct task_struct *tsk)
 {
@@ -36,13 +37,13 @@ static int genregs_get(struct task_struct *target,
 	if (!ret)		\
 		ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf, PTR, \
 			offsetof(struct user_regs_struct, LOC), \
-			offsetof(struct user_regs_struct, LOC) + 4);
+			offsetof(struct user_regs_struct, LOC) + REGSZ);
 
 #define REG_O_ZERO(LOC)		\
 	if (!ret)		\
 		ret = user_regset_copyout_zero(&pos, &count, &kbuf, &ubuf, \
 			offsetof(struct user_regs_struct, LOC), \
-			offsetof(struct user_regs_struct, LOC) + 4);
+			offsetof(struct user_regs_struct, LOC) + REGSZ);
 
 	REG_O_ZERO(pad);
 	REG_O_ONE(scratch.bta, &ptregs->bta);
@@ -134,13 +135,13 @@ static int genregs_set(struct task_struct *target,
 		ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, \
 			(void *)(PTR), \
 			offsetof(struct user_regs_struct, LOC), \
-			offsetof(struct user_regs_struct, LOC) + 4);
+			offsetof(struct user_regs_struct, LOC) + REGSZ);
 
 #define REG_IGNORE_ONE(LOC)		\
 	if (!ret)			\
 		ret = user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf, \
 			offsetof(struct user_regs_struct, LOC), \
-			offsetof(struct user_regs_struct, LOC) + 4);
+			offsetof(struct user_regs_struct, LOC) + REGSZ);
 
 	REG_IGNORE_ONE(pad);
 
@@ -215,7 +216,7 @@ static int arcv2regs_get(struct task_struct *target,
 	if (IS_ENABLED(CONFIG_ARC_HAS_ACCL_REGS))
 		copy_sz = sizeof(struct user_regs_arcv2);
 	else
-		copy_sz = 4;	/* r30 only */
+		copy_sz = REGSZ;	/* r30 only */
 
 	/*
 	 * itemized copy not needed like above as layout of regs (r30,r58,r59)
@@ -238,7 +239,7 @@ static int arcv2regs_set(struct task_struct *target,
 	if (IS_ENABLED(CONFIG_ARC_HAS_ACCL_REGS))
 		copy_sz = sizeof(struct user_regs_arcv2);
 	else
-		copy_sz = 4;	/* r30 only */
+		copy_sz = REGSZ;	/* r30 only */
 
 	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, (void *)&regs->r30,
 				  0, copy_sz);
@@ -313,7 +314,7 @@ long arch_ptrace(struct task_struct *child, long request,
 asmlinkage int syscall_trace_enter(struct pt_regs *regs)
 {
 	if (tracehook_report_syscall_entry(regs))
-		return ULONG_MAX;
+		return -1;
 
 	return regs->r8;
 }

@@ -43,7 +43,7 @@
 #define MM_CTXT_CYCLE_MASK	(~MM_CTXT_ASID_MASK)
 
 #define MM_CTXT_FIRST_CYCLE	(MM_CTXT_ASID_MASK + 1)
-#define MM_CTXT_NO_ASID		0UL
+#define MM_CTXT_NO_ASID		0U
 
 #define asid_mm(mm, cpu)	mm->context.asid[cpu]
 #define hw_pid(mm, cpu)		(asid_mm(mm, cpu) & MM_CTXT_ASID_MASK)
@@ -146,7 +146,7 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
 
 #ifdef ARC_USE_SCRATCH_REG
 	/* PGD cached in MMU reg to avoid 3 mem lookups: task->mm->pgd */
-	write_aux_reg(ARC_REG_SCRATCH_DATA0, next->pgd);
+	write_aux_reg(ARC_REG_SCRATCH_DATA0, (unsigned int)next->pgd);
 #endif
 
 	get_new_mmu_context(next);
