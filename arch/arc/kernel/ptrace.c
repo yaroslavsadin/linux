@@ -89,7 +89,12 @@ static int genregs_get(struct task_struct *target,
 	REG_O_ONE(callee.r16, &cregs->r16);
 	REG_O_ONE(callee.r15, &cregs->r15);
 	REG_O_ONE(callee.r14, &cregs->r14);
+
+#ifdef CONFIG_ISA_ARCV3
+	REG_O_ONE(callee.r13, &ptregs->r13);
+#else
 	REG_O_ONE(callee.r13, &cregs->r13);
+#endif
 
 	REG_O_ONE(efa, &target->thread.fault_address);
 
@@ -185,7 +190,12 @@ static int genregs_set(struct task_struct *target,
 	REG_IN_ONE(callee.r16, &cregs->r16);
 	REG_IN_ONE(callee.r15, &cregs->r15);
 	REG_IN_ONE(callee.r14, &cregs->r14);
+
+#ifdef CONFIG_ISA_ARCV3
+	REG_IN_ONE(callee.r13, &ptregs->r13);
+#else
 	REG_IN_ONE(callee.r13, &cregs->r13);
+#endif
 
 	REG_IGNORE_ONE(efa);			/* efa update invalid */
 	REG_IGNORE_ONE(stop_pc);		/* PC updated via @ret */
