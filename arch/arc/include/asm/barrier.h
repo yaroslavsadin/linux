@@ -6,7 +6,7 @@
 #ifndef __ASM_BARRIER_H
 #define __ASM_BARRIER_H
 
-#ifdef CONFIG_ISA_ARCV2
+#if defined(CONFIG_ISA_ARCV2) || defined(CONFIG_ISA_ARCV3)
 
 /*
  * ARCv2 based HS38 cores are in-order issue, but still weakly ordered
@@ -27,7 +27,14 @@
 #define rmb()	asm volatile("dmb 1\n" : : : "memory")
 #define wmb()	asm volatile("dmb 2\n" : : : "memory")
 
-#elif !defined(CONFIG_ARC_PLAT_EZNPS)  /* CONFIG_ISA_ARCOMPACT */
+#elif defined(CONFIG_ARC_PLAT_EZNPS)
+
+#include <plat/ctop.h>
+
+#define mb()	asm volatile (".word %0" : : "i"(CTOP_INST_SCHD_RW) : "memory")
+#define rmb()	asm volatile (".word %0" : : "i"(CTOP_INST_SCHD_RD) : "memory")
+
+#else	/* CONFIG_ISA_ARCOMPACT */
 
 /*
  * ARCompact based cores (ARC700) only have SYNC instruction which is super
@@ -36,13 +43,6 @@
  */
 
 #define mb()	asm volatile("sync\n" : : : "memory")
-
-#else	/* CONFIG_ARC_PLAT_EZNPS */
-
-#include <plat/ctop.h>
-
-#define mb()	asm volatile (".word %0" : : "i"(CTOP_INST_SCHD_RW) : "memory")
-#define rmb()	asm volatile (".word %0" : : "i"(CTOP_INST_SCHD_RD) : "memory")
 
 #endif
 
