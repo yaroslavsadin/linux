@@ -305,6 +305,11 @@ setup_rt_frame(struct ksignal *ksig, sigset_t *set, struct pt_regs *regs)
 	return err;
 }
 
+static inline int syscall_trap_sz(void)
+{
+	return is_isa_arcompact() ? 4 : 2;
+}
+
 static void arc_restart_syscall(struct k_sigaction *ka, struct pt_regs *regs)
 {
 	switch (regs->r0) {
@@ -343,7 +348,7 @@ static void arc_restart_syscall(struct k_sigaction *ka, struct pt_regs *regs)
 		 * their orig user space value when we ret from kernel
 		 */
 		regs->r0 = regs->orig_r0;
-		regs->ret -= is_isa_arcv2() ? 2 : 4;
+		regs->ret -= syscall_trap_sz();
 		break;
 	}
 }
@@ -382,13 +387,13 @@ void do_signal(struct pt_regs *regs)
 	if (restart_scall) {
 		/* No handler for syscall: restart it */
 		if (regs->r0 == -ERESTARTNOHAND ||
-		    regs->r0 == -ERESTARTSYS || regs->r0 == -ERESTARTNOINTR) {
+		    regs->r0 == -ERESTARTSYS    ||
+		    regs->r0 == -ERESTARTNOINTR) {
 			regs->r0 = regs->orig_r0;
-			regs->ret -= is_isa_arcv2() ? 2 : 4;
 		} else if (regs->r0 == -ERESTART_RESTARTBLOCK) {
 			regs->r8 = __NR_restart_syscall;
-			regs->ret -= is_isa_arcv2() ? 2 : 4;
 		}
+		regs->ret -= syscall_trap_sz();
 		syscall_wont_restart(regs);	/* No more restarts */
 	}
 
