@@ -290,24 +290,3 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *fpu)
 {
 	return 0;
 }
-
-int elf_check_arch(const struct elf32_hdr *x)
-{
-	unsigned int eflags;
-
-	if (x->e_machine != ELF_ARCH) {
-		pr_err("ELF not built for %s ISA\n",
-			is_isa_arcompact() ? "ARCompact":"ARCv2");
-		return 0;
-	}
-
-	eflags = x->e_flags;
-	if ((eflags & EF_ARC_OSABI_MSK) != EF_ARC_OSABI_CURRENT) {
-		pr_err("ABI mismatch - you need newer toolchain\n");
-		force_sigsegv(SIGSEGV);
-		return 0;
-	}
-
-	return 1;
-}
-EXPORT_SYMBOL(elf_check_arch);
