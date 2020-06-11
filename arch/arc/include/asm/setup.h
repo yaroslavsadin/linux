@@ -43,6 +43,5 @@ extern char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len);
 
 extern void arc_cache_init(void);
 extern char *arc_cache_mumbojumbo(int cpu_id, char *buf, int len);
-extern void read_decode_cache_bcr(void);
 
 #endif /* __ASMARC_SETUP_H */
