@@ -19,18 +19,24 @@ int arc_hsdk_axi_dmac_coherent __section(.data) = 0;
 
 static void __init hsdk_init_per_cpu(unsigned int cpu)
 {
+	struct bcr_iccm_arcv2 iccm;
+	struct bcr_dccm_arcv2 dccm;
+
+	READ_BCR(ARC_REG_ICCM_BUILD, iccm);
+	READ_BCR(ARC_REG_DCCM_BUILD, dccm);
+
 	/*
 	 * By default ICCM is mapped to 0x7z while this area is used for
 	 * kernel virtual mappings, so move it to currently unused area.
 	 */
-	if (cpuinfo_arc700[cpu].iccm.sz)
+	if (iccm.ver)
 		write_aux_reg(ARC_REG_AUX_ICCM, ARC_CCM_UNUSED_ADDR);
 
 	/*
 	 * By default DCCM is mapped to 0x8z while this area is used by kernel,
 	 * so move it to currently unused area.
 	 */
-	if (cpuinfo_arc700[cpu].dccm.sz)
+	if (dccm.ver)
 		write_aux_reg(ARC_REG_AUX_DCCM, ARC_CCM_UNUSED_ADDR);
 }
 
