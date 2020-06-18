@@ -12,7 +12,7 @@ endif
 tune-mcpu-def-$(CONFIG_ISA_ARCOMPACT)	:= -mA7
 tune-mcpu-def-$(CONFIG_ISA_ARCV2)	:= -mcpu=hs38
 #TODO add -mcpu=hs6x when supported by compiler
-tune-mcpu-def-$(CONFIG_ISA_ARCV3)	:= -mcmodel=large
+tune-mcpu-def-$(CONFIG_ISA_ARCV3)	:= -mcmodel=medium
 
 ifeq ($(CONFIG_ARC_TUNE_MCPU),"")
 cflags-y				+= $(tune-mcpu-def-y)
