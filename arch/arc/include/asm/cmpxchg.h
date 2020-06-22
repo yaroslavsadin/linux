@@ -76,7 +76,7 @@
 	__typeof__(*(ptr)) _n_ = (new);					\
 	__typeof__(*(ptr)) _prev_;					\
 									\
-	switch(sizeof((_p_))) {					        \
+	switch(sizeof(*(_p_))) {				        \
 	case 4:								\
 	        /*							\
 		 * Explicit full memory barrier needed before/after	\
@@ -103,7 +103,7 @@
 	__typeof__(*(ptr)) _n_ = (new);					\
 	__typeof__(*(ptr)) _prev_;					\
 									\
-	switch(sizeof((_p_))) {				        	\
+	switch(sizeof(*(_p_))) {			        	\
 	case 4:								\
 		_prev_ = __cmpxchg_relaxed(_p_, _o_, _n_);		\
 		break;							\
@@ -124,7 +124,7 @@
 	__typeof__(*(ptr)) _o_ = (old);					\
 	__typeof__(*(ptr)) _n_ = (new);					\
 									\
-	BUILD_BUG_ON(sizeof(_p_) != 4);					\
+	BUILD_BUG_ON(sizeof(*_p_) != 4);				\
 									\
 	/*								\
 	 * Explicit full memory barrier needed before/after		\
@@ -156,7 +156,7 @@
 	__typeof__(*(ptr)) _n_ = (n);					\
 	__typeof__(*(ptr)) _prev_;					\
 									\
-	BUILD_BUG_ON(sizeof(_p_) != 4);					\
+	BUILD_BUG_ON(sizeof(*_p_) != 4);				\
 									\
 	unsigned long __flags;						\
 									\
