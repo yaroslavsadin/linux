@@ -116,26 +116,26 @@ ex_saved_reg1:
 #else	/* ARCv2 */
 
 .macro TLBMISS_FREEUP_REGS
-#ifdef CONFIG_ARC_HAS_LL64
+#if 0
 	std   r0, [sp, -16]
 	std   r2, [sp, -8]
 #else
-	PUSH  r0
-	PUSH  r1
-	PUSH  r2
-	PUSH  r3
+	PUSHR  r0
+	PUSHR  r1
+	PUSHR  r2
+	PUSHR  r3
 #endif
 .endm
 
 .macro TLBMISS_RESTORE_REGS
-#ifdef CONFIG_ARC_HAS_LL64
+#if 0
 	ldd   r0, [sp, -16]
 	ldd   r2, [sp, -8]
 #else
-	POP   r3
-	POP   r2
-	POP   r1
-	POP   r0
+	POPR   r3
+	POPR   r2
+	POPR   r1
+	POPR   r0
 #endif
 .endm
 
