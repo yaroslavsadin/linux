@@ -161,7 +161,7 @@ ex_saved_reg1:
 #endif
 
 	lsr     r0, r2, PGDIR_SHIFT     ; Bits for indexing into PGD
-	ld.as   r3, [r1, r0]            ; PGD entry corresp to faulting addr
+	LDR.as  r3, r1, r0              ; PGD entry corresp to faulting addr
 	tst	r3, r3
 	bz	do_slow_path_pf         ; if no Page Table, do page fault
 
@@ -179,7 +179,7 @@ ex_saved_reg1:
 	; (2) y = x & (PTRS_PER_PTE - 1) -> to get index
 	; (3) z = (pgtbl + y * 4)
 
-#ifdef CONFIG_ARC_HAS_PAE40
+#if defined(CONFIG_ARC_HAS_PAE40) || defined(CONFIG_ISA_ARCV3)
 #define PTE_SIZE_LOG	3	/* 8 == 2 ^ 3 */
 #else
 #define PTE_SIZE_LOG	2	/* 4 == 2 ^ 2 */
@@ -188,7 +188,7 @@ ex_saved_reg1:
 	; multiply in step (3) above avoided by shifting lesser in step (1)
 	lsr     r0, r2, ( PAGE_SHIFT - PTE_SIZE_LOG )
 	and     r0, r0, ( (PTRS_PER_PTE - 1) << PTE_SIZE_LOG )
-	ld.aw   r0, [r1, r0]            ; r0: PTE (lower word only for PAE40)
+	LDR.aw  r0, r1, r0              ; r0: PTE (lower word only for PAE40)
 					; r1: PTE ptr
 
 2:
