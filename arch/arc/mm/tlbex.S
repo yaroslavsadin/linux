@@ -339,7 +339,7 @@ EV_TLBMissD_fast_ret:	; additional label for VDK OS-kit instrumentation
 ;-------- Common routine to call Linux Page Fault Handler -----------
 do_slow_path_pf:
 
-#ifdef CONFIG_ISA_ARCV2
+#if !defined(CONFIG_ISA_ARCOMPACT)
 	; Set Z flag if exception in U mode. Hardware micro-ops do this on any
 	; taken interrupt/exception, and thus is already the case at the entry
 	; above, but ensuing code would have already clobbered.
