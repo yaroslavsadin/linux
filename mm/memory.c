@@ -113,11 +113,13 @@ EXPORT_SYMBOL(high_memory);
  * ( When CONFIG_COMPAT_BRK=y we exclude brk from randomization,
  *   as ancient (libc5 based) binaries can segfault. )
  */
-int randomize_va_space __read_mostly =
+int randomize_va_space __read_mostly = 0;
+#if 0
 #ifdef CONFIG_COMPAT_BRK
 					1;
 #else
 					2;
+#endif
 #endif
 
 #ifndef arch_faults_on_old_pte
@@ -3150,7 +3152,7 @@ out_release:
  * but allow concurrent faults), and pte mapped but not yet locked.
  * We return with mmap_sem still held, but pte unmapped and unlocked.
  */
-static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+noinline vm_fault_t do_anonymous_page(struct vm_fault *vmf)
 {
 	struct vm_area_struct *vma = vmf->vma;
 	struct mem_cgroup *memcg;
@@ -3265,7 +3267,7 @@ oom:
  * released depending on flags and vma->vm_ops->fault() return value.
  * See filemap_fault() and __lock_page_retry().
  */
-static vm_fault_t __do_fault(struct vm_fault *vmf)
+noinline vm_fault_t __do_fault(struct vm_fault *vmf)
 {
 	struct vm_area_struct *vma = vmf->vma;
 	vm_fault_t ret;
@@ -3324,7 +3326,7 @@ static int pmd_devmap_trans_unstable(pmd_t *pmd)
 	return pmd_devmap(*pmd) || pmd_trans_unstable(pmd);
 }
 
-static vm_fault_t pte_alloc_one_map(struct vm_fault *vmf)
+noinline vm_fault_t pte_alloc_one_map(struct vm_fault *vmf)
 {
 	struct vm_area_struct *vma = vmf->vma;
 
@@ -3559,7 +3561,7 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
 }
 
 static unsigned long fault_around_bytes __read_mostly =
-	rounddown_pow_of_two(65536);
+	rounddown_pow_of_two(8192);
 
 #ifdef CONFIG_DEBUG_FS
 static int fault_around_bytes_get(void *data, u64 *val)
@@ -3673,7 +3675,7 @@ out:
 	return ret;
 }
 
-static vm_fault_t do_read_fault(struct vm_fault *vmf)
+noinline vm_fault_t do_read_fault(struct vm_fault *vmf)
 {
 	struct vm_area_struct *vma = vmf->vma;
 	vm_fault_t ret = 0;
@@ -3700,7 +3702,7 @@ static vm_fault_t do_read_fault(struct vm_fault *vmf)
 	return ret;
 }
 
-static vm_fault_t do_cow_fault(struct vm_fault *vmf)
+noinline vm_fault_t do_cow_fault(struct vm_fault *vmf)
 {
 	struct vm_area_struct *vma = vmf->vma;
 	vm_fault_t ret;
@@ -3739,7 +3741,7 @@ uncharge_out:
 	return ret;
 }
 
-static vm_fault_t do_shared_fault(struct vm_fault *vmf)
+noinline vm_fault_t do_shared_fault(struct vm_fault *vmf)
 {
 	struct vm_area_struct *vma = vmf->vma;
 	vm_fault_t ret, tmp;
@@ -3782,7 +3784,7 @@ static vm_fault_t do_shared_fault(struct vm_fault *vmf)
  * If mmap_sem is released, vma may become invalid (for example
  * by other thread calling munmap()).
  */
-static vm_fault_t do_fault(struct vm_fault *vmf)
+noinline vm_fault_t do_fault(struct vm_fault *vmf)
 {
 	struct vm_area_struct *vma = vmf->vma;
 	struct mm_struct *vm_mm = vma->vm_mm;
@@ -4005,7 +4007,7 @@ static vm_fault_t wp_huge_pud(struct vm_fault *vmf, pud_t orig_pud)
  * The mmap_sem may have been released depending on flags and our return value.
  * See filemap_fault() and __lock_page_or_retry().
  */
-static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+noinline vm_fault_t handle_pte_fault(struct vm_fault *vmf)
 {
 	pte_t entry;
 
@@ -4093,7 +4095,7 @@ unlock:
  * The mmap_sem may have been released depending on flags and our
  * return value.  See filemap_fault() and __lock_page_or_retry().
  */
-static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
+noinline vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
 		unsigned long address, unsigned int flags)
 {
 	struct vm_fault vmf = {
