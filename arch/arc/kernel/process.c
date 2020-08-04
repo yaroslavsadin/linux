@@ -25,12 +25,6 @@
 SYSCALL_DEFINE1(arc_settls, void *, user_tls_data_ptr)
 {
 	task_thread_info(current)->thr_ptr = (unsigned long)user_tls_data_ptr;
-
-#ifdef CONFIG_ISA_ARCV3
-	/* workaround for glibc __builtin_set_thread_pointer() not working */
-	current_pt_regs()->gp = (unsigned long)user_tls_data_ptr;
-#endif
-
 	return 0;
 }
 
