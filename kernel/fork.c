@@ -1813,6 +1813,8 @@ static __always_inline void delayed_free_task(struct task_struct *tsk)
 		free_task(tsk);
 }
 
+extern int arc_debug;
+
 /*
  * This creates a new process as a copy of the old one,
  * but does not actually start it yet.
@@ -2166,6 +2168,9 @@ static __latent_entropy struct task_struct *copy_process(
 		p->tgid = p->pid;
 	}
 
+	if (arc_debug)
+		printk("(%d) New child %p (%d)\n\n", current->pid, p, p->pid);
+
 	p->nr_dirtied = 0;
 	p->nr_dirtied_pause = 128 >> (PAGE_SHIFT - 10);
 	p->dirty_paused_when = 0;
@@ -2425,6 +2430,13 @@ long _do_fork(struct kernel_clone_args *args)
 
 		if (likely(!ptrace_event_enabled(current, trace)))
 			trace = 0;
+	}
+
+	if (arc_debug) {
+		char comm[TASK_COMM_LEN];
+		printk("(%d)/%d Fork: \'%s\'\n",
+			current->pid, current->tgid,
+			get_task_comm(comm, current));
 	}
 
 	p = copy_process(NULL, trace, NUMA_NO_NODE, args);

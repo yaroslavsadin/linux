@@ -267,9 +267,14 @@ int tsk_fork_get_node(struct task_struct *tsk)
 	return NUMA_NO_NODE;
 }
 
+extern int arc_debug;
+
 static void create_kthread(struct kthread_create_info *create)
 {
 	int pid;
+
+	if (arc_debug)
+		printk("\nkthread fn %pS\n", create->threadfn);
 
 #ifdef CONFIG_NUMA
 	current->pref_node_fork = create->node;

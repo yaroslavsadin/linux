@@ -1713,6 +1713,8 @@ static int exec_binprm(struct linux_binprm *bprm)
 	return ret;
 }
 
+extern int arc_debug;
+
 /*
  * sys_execve() executes a new program.
  */
@@ -1728,6 +1730,10 @@ static int __do_execve_file(int fd, struct filename *filename,
 
 	if (IS_ERR(filename))
 		return PTR_ERR(filename);
+
+	if (arc_debug)
+		printk("\n(%d) EXECVE: %p %s\n",
+			current->pid, current, filename->name);
 
 	/*
 	 * We move the actual failure in case of RLIMIT_NPROC excess from
