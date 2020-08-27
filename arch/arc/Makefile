@@ -6,7 +6,11 @@
 KBUILD_DEFCONFIG := haps_hs_smp_defconfig
 
 ifeq ($(CROSS_COMPILE),)
-CROSS_COMPILE := $(call cc-cross-prefix, arc64-elf- arc64-unknown-linux-gnu- arc-elf32- arc-linux- arceb-linux-)
+ifdef CONFIG_ISA_ARCV3
+CROSS_COMPILE := $(call cc-cross-prefix, arc64-elf- arc64-unknown-linux-gnu-)
+else
+CROSS_COMPILE := $(call cc-cross-prefix, arc-elf32- arc-linux- arceb-linux-)
+endif
 endif
 
 tune-mcpu-def-$(CONFIG_ISA_ARCOMPACT)	:= -mA7
