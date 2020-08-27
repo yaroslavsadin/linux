@@ -33,13 +33,13 @@ static inline __sum16 csum_fold(__wsum s)
 
 #ifdef CONFIG_64BIT
 static inline __sum16
-ip_fast_csum(const void *iph, unsigned int ihl)
+ip_fast_csum(const void *iphv, unsigned int ihl)
 {
+	u8 *iph = (u8 *)iphv;
 	u64 tmp;
 	u32 sum;
 
-	tmp = *(const u64 *)iph++;
-	tmp += *(const u64 *)iph++;
+	tmp = *(const u64 *)iph;
 	iph += 8;
 	ihl -= 2;
 	tmp += ((tmp >> 32) | (tmp << 32));
