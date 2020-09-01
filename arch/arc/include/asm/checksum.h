@@ -33,8 +33,9 @@ static inline __sum16 csum_fold(__wsum s)
 
 #ifdef CONFIG_64BIT
 static inline __sum16
-ip_fast_csum(const void *iphv, unsigned int ihl)
+ip_fast_csum(const void *iph, unsigned int ihl)
 {
+#if 0
 	u8 *iph = (u8 *)iphv;
 	u64 tmp;
 	u32 sum;
@@ -48,7 +49,29 @@ ip_fast_csum(const void *iphv, unsigned int ihl)
 		sum += *(const u32 *)iph;
 		iph += 4;
 	} while (--ihl);
+#else
+	unsigned int tmp, sum;
+	unsigned int w1, w2, w3, w4;
 
+	__asm__(
+	"	ld.ab  %0, [%6, 4]	\n"
+	"	ld.ab  %1, [%6, 4]	\n"
+	"	ld.ab  %2, [%6, 4]	\n"
+	"	ld.ab  %3, [%6, 4]	\n"
+	"	sub    %7, %7, 4	\n"
+	"	add.f  %5, %0, %1	\n"
+	"	adc.f  %5, %5, %2	\n"
+	"	adc.f  %5, %5, %3	\n"
+	"1:	ld.ab  %4, [%6, 4]	\n"
+	"	adc.f  %5, %5, %4	\n"
+	"	DBNZR  %7, 1b		\n"
+	"	add.cs %5, %5, 1	\n"
+
+	: "=&r" (w1), "=&r" (w2), "=&r" (w3), "=&r" (w4), "=&r" (tmp), "=&r" (sum),
+	  "+&r" (iph), "+&r"(ihl)
+	:
+	: "cc", "memory");
+#endif
 	return csum_fold(sum);
 }
 
