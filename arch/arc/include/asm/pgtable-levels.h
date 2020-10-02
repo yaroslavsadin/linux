@@ -45,6 +45,12 @@
  *   MMUv4 (8K page): <4> : <3> : <4> : <8> : <13>
  */
 #define PGDIR_SHIFT		28
+#if CONFIG_PGTABLE_LEVELS > 3
+#define PUD_SHIFT		25
+#endif
+#if CONFIG_PGTABLE_LEVELS > 2
+#define PMD_SHIFT		21
+#endif
 
 #endif
 
@@ -53,14 +59,12 @@
 #define PTRS_PER_PGD		BIT(32 - PGDIR_SHIFT)
 
 #if CONFIG_PGTABLE_LEVELS > 3
-#define PUD_SHIFT		25
 #define PUD_SIZE		BIT(PUD_SHIFT)
 #define PUD_MASK		(~(PUD_SIZE - 1))
 #define PTRS_PER_PUD		BIT(PGDIR_SHIFT - PUD_SHIFT)
 #endif
 
 #if CONFIG_PGTABLE_LEVELS > 2
-#define PMD_SHIFT		21
 #define PMD_SIZE		BIT(PMD_SHIFT)
 #define PMD_MASK		(~(PMD_SIZE - 1))
 #define PTRS_PER_PMD		BIT(PUD_SHIFT - PMD_SHIFT)
