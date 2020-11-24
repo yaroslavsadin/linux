@@ -186,7 +186,6 @@ static inline pmd_t * pmd_offset(pud_t * pud, unsigned long addr)
 #define pmd_none(x)		(!pmd_val(x))
 #define pmd_bad(x)		((pmd_val(x) & ~PAGE_MASK))
 #define pmd_present(x)		(pmd_val(x))
-#define pmd_leaf(x)		(pmd_val(x) & _PAGE_HW_SZ)
 #define pmd_clear(xp)		do { pmd_val(*(xp)) = 0; } while (0)
 #define pmd_page_vaddr(pmd)	(pmd_val(pmd) & PAGE_MASK)
 #define pmd_page(pmd)		virt_to_page(pmd_page_vaddr(pmd))
@@ -221,6 +220,10 @@ static inline pte_t * pte_offset(pmd_t *pmd, unsigned long addr)
 
 #define pte_unmap(pte)		do { } while (0)
 #define pte_unmap_nested(pte)	do { } while (0)
+
+#ifdef CONFIG_ISA_ARCV2
+#define pmd_leaf(x)		(pmd_val(x) & _PAGE_HW_SZ)
+#endif
 
 #endif	/* !__ASSEMBLY__ */
 
