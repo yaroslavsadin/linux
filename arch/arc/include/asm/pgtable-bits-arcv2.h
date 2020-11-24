@@ -32,4 +32,6 @@
 #define _PAGE_HW_SZ		0
 #endif
 
+#define _PAGE_TABLE		0x3
+
 #endif
