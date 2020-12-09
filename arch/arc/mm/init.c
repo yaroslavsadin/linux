@@ -18,7 +18,10 @@
 #include <asm/sections.h>
 #include <asm/arcregs.h>
 
-pgd_t swapper_pg_dir[PTRS_PER_PGD] __aligned(PAGE_SIZE);
+pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+pud_t swapper_pud[PTRS_PER_PUD] __page_aligned_bss;
+pmd_t swapper_pmd[PTRS_PER_PMD] __page_aligned_bss;
+
 char empty_zero_page[PAGE_SIZE] __aligned(PAGE_SIZE);
 EXPORT_SYMBOL(empty_zero_page);
 
@@ -202,4 +205,24 @@ void __init mem_init(void)
 
 	memblock_free_all();
 	mem_init_print_info(NULL);
+}
+
+void arc_paging_init(void)
+{
+#ifdef CONFIG_ARC_MMU_V6
+	phys_addr_t pa = (unsigned long)PAGE_OFFSET;
+
+	unsigned int idx = pgd_index(pa);
+	swapper_pg_dir[idx] = pfn_pgd(PFN_DOWN((phys_addr_t)swapper_pud), PAGE_TABLE);
+
+	idx = pud_index(pa);
+	swapper_pud[idx] =  pfn_pud(PFN_DOWN((phys_addr_t)swapper_pmd), PAGE_TABLE);
+
+	idx = pmd_index(pa);
+	swapper_pmd[idx] =  pfn_pmd(pa, PAGE_BLOCK);
+
+	pa += PMD_SIZE;
+	idx = pmd_index(pa);
+	swapper_pmd[idx] =  pfn_pmd(pa, PAGE_BLOCK);
+#endif
 }
