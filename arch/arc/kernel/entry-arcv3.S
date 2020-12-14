@@ -70,9 +70,15 @@ reserved:
 
 ENTRY(EV_IMMUFault)
 	; Read MMU_STATUS reg to find faulting lookup level
+	EXCEPTION_PROLOGUE
+	bl    do_page_fault
+	b     ret_from_exception
 END(EV_IMMUFault)
 
 ENTRY(EV_DMMUFault)
+	EXCEPTION_PROLOGUE
+	bl    do_page_fault
+	b     ret_from_exception
 END(EV_DMMUFault)
 
 #include "entry-cmn.S"
