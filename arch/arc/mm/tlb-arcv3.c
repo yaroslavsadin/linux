@@ -136,9 +136,17 @@ void update_mmu_cache(struct vm_area_struct *vma, unsigned long vaddr_unaligned,
 
 }
 
+noinline void mmu_setup_asid(struct mm_struct *mm, unsigned long asid)
 {
+#ifdef CONFIG_64BIT
+	unsigned long rtp0 = (asid << 48) | __pa(mm->pgd);
 
+	BUG_ON(__pa(mm->pgd) >> 48);
+	write_aux_64(ARC_REG_MMU_RTP0, rtp0);
 
+#else
+#error "Need to implement 2 SR ops"
+#endif
 }
 
 void activate_mm(struct mm_struct *prev_mm, struct mm_struct *next_mm)

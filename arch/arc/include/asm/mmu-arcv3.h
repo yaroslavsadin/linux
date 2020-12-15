@@ -22,6 +22,9 @@
 
 #include <linux/sched/mm.h>
 
+#if 1
+noinline extern void mmu_setup_asid(struct mm_struct *mm, unsigned long asid);
+#else
 static void inline mmu_setup_asid(struct mm_struct *mm, unsigned long asid)
 {
 #ifdef CONFIG_64BIT
@@ -34,6 +37,7 @@ static void inline mmu_setup_asid(struct mm_struct *mm, unsigned long asid)
 #error "Need to implement 2 SR ops"
 #endif
 }
+#endif
 
 static void inline mmu_setup_pgd(struct mm_struct *mm, pgd_t *pgd)
 {
