@@ -187,13 +187,15 @@ static inline int arch_dup_mmap(struct mm_struct *oldmm,
 {
 	return 0;
 }
-#else
-extern int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm);
-#endif
 
 static inline void arch_exit_mmap(struct mm_struct *mm)
 {
 }
+
+#else
+extern int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm);
+extern void arch_exit_mmap(struct mm_struct *mm);
+#endif
 
 static inline void arch_unmap(struct mm_struct *mm,
 			unsigned long start, unsigned long end)

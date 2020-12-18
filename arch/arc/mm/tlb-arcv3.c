@@ -167,6 +167,15 @@ int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
 	return 0;
 }
 
+void arch_exit_mmap(struct mm_struct *mm)
+{
+	/*
+	 * set the kernel page tables to allow kernel to run
+	 * since task paging tree will be nuked right after
+	 */
+	write_aux_64(ARC_REG_MMU_RTP0, __pa(swapper_pg_dir));
+}
+
 noinline void local_flush_tlb_all(void)
 {
 	write_aux_reg(ARC_REG_MMU_TLB_CMD, 1);
