@@ -56,7 +56,7 @@ int arc_mmu_mumbojumbo(int c, char *buf, int len)
  *
  * TBD: assumes 4 levels, implement properly using p*d_addr_end loops
  */
-int arc_map_kernel_in_mm(struct mm_struct *mm)
+int noinline arc_map_kernel_in_mm(struct mm_struct *mm)
 {
 	unsigned long addr = (unsigned long) PAGE_OFFSET, end = 0xFFFFFFFF;
 	pgd_t *pgd;
