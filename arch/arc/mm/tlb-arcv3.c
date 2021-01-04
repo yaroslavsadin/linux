@@ -181,9 +181,33 @@ noinline void local_flush_tlb_all(void)
 	write_aux_reg(ARC_REG_MMU_TLB_CMD, 1);
 }
 
+#undef TLB_FLUSH_MM_INCR_ASID
+
 noinline void local_flush_tlb_mm(struct mm_struct *mm)
 {
+#ifndef TLB_FLUSH_MM_INCR_ASID
 	local_flush_tlb_all();
+#else
+	/*
+	 * Small optimisation courtesy IA64
+	 * flush_mm called during fork,exit,munmap etc, multiple times as well.
+	 * Only for fork( ) do we need to move parent to a new MMU ctxt,
+	 * all other cases are NOPs, hence this check.
+	 */
+	if (atomic_read(&mm->mm_users) == 0)
+		return;
+
+	/*
+	 * - Move to a new ASID, but only if the mm is still wired in
+	 *   (Android Binder ended up calling this for vma->mm != tsk->mm,
+	 *    causing h/w - s/w ASID to get out of sync)
+	 * - Also get_new_mmu_context() new implementation allocates a new
+	 *   ASID only if it is not allocated already - so unallocate first
+	 */
+	destroy_context(mm);
+	if (current->mm == mm)
+		get_new_mmu_context(mm);
+#endif
 }
 
 void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
