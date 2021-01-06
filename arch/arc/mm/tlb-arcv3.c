@@ -178,7 +178,12 @@ int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
 
 noinline void local_flush_tlb_all(void)
 {
+	unsigned long flags;
+
+	/* TBD: this might not be needed */
+	local_irq_save(flags);
 	write_aux_reg(ARC_REG_MMU_TLB_CMD, 1);
+	local_irq_restore(flags);
 }
 
 #undef TLB_FLUSH_MM_INCR_ASID
