@@ -14,6 +14,8 @@ static struct cpuinfo_arc_mmu {
 	unsigned int pg_sz_k;
 } mmuinfo;
 
+volatile int arc_debug_tlb_flush_mm_nuke = 1;
+
 int arc_mmu_mumbojumbo(int c, char *buf, int len)
 {
 	unsigned int lookups, pg_sz_k, ntlb, u_dtlb, u_itlb;
@@ -41,6 +43,10 @@ int arc_mmu_mumbojumbo(int c, char *buf, int len)
 		      "MMU [v%x]\t: %s hwalk %d levels, %dk PAGE, JTLB %d uD/I %d/%d\n",
 		       mmu6.ver, variant_nm[mmu6.variant], lookups,
 		       pg_sz_k, ntlb, u_dtlb, u_itlb);
+
+	n += scnprintf(buf + n, len - n,
+		       "\t\t tlb_flush_mm %s\n",
+		       arc_debug_tlb_flush_mm_nuke ? "flushes TLB" : "Incr ASID");
 
 	mmuinfo.pg_sz_k = pg_sz_k;
 
@@ -186,13 +192,13 @@ noinline void local_flush_tlb_all(void)
 	local_irq_restore(flags);
 }
 
-#undef TLB_FLUSH_MM_INCR_ASID
-
 noinline void local_flush_tlb_mm(struct mm_struct *mm)
 {
-#ifndef TLB_FLUSH_MM_INCR_ASID
-	local_flush_tlb_all();
-#else
+	if (arc_debug_tlb_flush_mm_nuke) {
+		local_flush_tlb_all();
+		return;
+	}
+
 	/*
 	 * Small optimisation courtesy IA64
 	 * flush_mm called during fork,exit,munmap etc, multiple times as well.
@@ -212,7 +218,6 @@ noinline void local_flush_tlb_mm(struct mm_struct *mm)
 	destroy_context(mm);
 	if (current->mm == mm)
 		get_new_mmu_context(mm);
-#endif
 }
 
 void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
