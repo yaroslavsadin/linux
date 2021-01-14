@@ -164,6 +164,9 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
  * only if it was unallocated
  */
 #define activate_mm(prev, next)		switch_mm(prev, next, NULL)
+#else
+extern void activate_mm(struct mm_struct *prev, struct mm_struct *next);
+#endif
 
 /* it seemed that deactivate_mm( ) is a reasonable place to do book-keeping
  * for retiring-mm. However destroy_context( ) still needs to do that because
@@ -173,11 +176,6 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
  * again (this teased me for a whole day).
  */
 #define deactivate_mm(tsk, mm)   do { } while (0)
-
-#else
-extern void activate_mm(struct mm_struct *prev, struct mm_struct *next);
-extern void deactivate_mm(struct task_struct *tsk, struct mm_struct *mm);
-#endif
 
 #define enter_lazy_tlb(mm, tsk)
 
@@ -189,13 +187,15 @@ static inline int arch_dup_mmap(struct mm_struct *oldmm,
 {
 	return 0;
 }
-#else
-extern int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm);
-#endif
 
 static inline void arch_exit_mmap(struct mm_struct *mm)
 {
 }
+
+#else
+extern int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm);
+extern void arch_exit_mmap(struct mm_struct *mm);
+#endif
 
 static inline void arch_unmap(struct mm_struct *mm,
 			unsigned long start, unsigned long end)
