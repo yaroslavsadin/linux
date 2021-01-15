@@ -36,7 +36,7 @@ unsigned int intr_to_DE_cnt;
 int __initdata uboot_tag;
 int __initdata uboot_magic;
 char __initdata *uboot_arg;
-int arc_debug = 1;
+int arc_debug = 0;
 
 const struct machine_desc *machine_desc;
 
