@@ -137,11 +137,6 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
 {
 	const int cpu = smp_processor_id();
 
-        if (prev == next) {
-                BUG_ON(asid_mm(next, cpu) == MM_CTXT_NO_ASID);
-                return;
-        }
-
 	/*
 	 * Note that the mm_cpumask is "aggregating" only, we don't clear it
 	 * for the switched-out task, unlike some other arches.
