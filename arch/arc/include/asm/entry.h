@@ -90,7 +90,13 @@
  */
 .macro  GET_CURR_TASK_ON_CPU   reg
 	GET_CPU_ID  \reg
-	LDR.as  \reg, @_current_task, \reg
+	; P10019563-45108: replace with LDR.as when nSIM P10019563-45108 fixed
+#ifdef CONFIG_64BIT
+	ADD3R   \reg, @_current_task, \reg
+#else
+	ADD2R   \reg, @_current_task, \reg
+#endif
+	LDR     \reg, \reg
 .endm
 
 /*-------------------------------------------------
@@ -105,7 +111,11 @@
 
 .macro  SET_CURR_TASK_ON_CPU    tsk, tmp
 	GET_CPU_ID  \tmp
+#ifdef CONFIG_64BIT
+	ADD3R \tmp, @_current_task, \tmp
+#else
 	ADD2R \tmp, @_current_task, \tmp
+#endif
 	STR   \tsk, \tmp
 #ifdef CONFIG_ARC_CURR_IN_REG
 	MOVR gp, \tsk
