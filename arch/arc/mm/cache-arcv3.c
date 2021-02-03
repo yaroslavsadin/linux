@@ -102,7 +102,7 @@ static inline void __dc_op_after(const int op)
 	}
 }
 
-static void __flush_dcache_range(phys_addr_t paddr, unsigned long vaddr, int len, const int op)
+noinline void __flush_dcache_range(phys_addr_t paddr, unsigned long vaddr, int len, const int op)
 {
 	unsigned long end;
 
@@ -120,7 +120,7 @@ static void __flush_dcache_range(phys_addr_t paddr, unsigned long vaddr, int len
  * Note:
  *    - This function would never straddle the MMU page
  */
-static void __inv_icache_range(phys_addr_t paddr, unsigned long vaddr, int len)
+noinline void __inv_icache_range(phys_addr_t paddr, unsigned long vaddr, int len)
 {
         unsigned long start, end;
 
