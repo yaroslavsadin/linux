@@ -108,6 +108,8 @@
 #include <asm-generic/pgtable-nopmd.h>
 #endif
 
+extern void ptw_flush(void *pxx);
+
 /*
  * 1st level paging: pgd
  */
@@ -124,10 +126,10 @@
 #define p4d_none(x)		(!p4d_val(x))
 #define p4d_bad(x)		(!(p4d_val(x) & _PAGE_TABLE))
 #define p4d_present(x)		(p4d_val(x))
-#define p4d_clear(xp)		do { p4d_val(*(xp)) = 0; } while (0)
+#define p4d_clear(xp)		do { p4d_val(*(xp)) = 0; ptw_flush(xp); } while (0)
 #define p4d_page_vaddr(p4d)	(p4d_val(p4d) & PAGE_MASK)
 #define p4d_page(p4d)		virt_to_page(pud_page_vaddr(p4d))
-#define set_p4d(p4dp, p4d)	(*(p4dp) = p4d)
+#define set_p4d(p4dp, p4d)	do { *(p4dp) = p4d; ptw_flush(p4dp); } while (0)
 
 /*
  * 2nd level paging: pud
@@ -153,10 +155,10 @@ static inline pud_t * pud_offset(p4d_t * p4d, unsigned long addr)
 #define pud_none(x)		(!pud_val(x))
 #define pud_bad(x)		(!(pud_val(x) & _PAGE_TABLE))
 #define pud_present(x)		(pud_val(x))
-#define pud_clear(xp)		do { pud_val(*(xp)) = 0; } while (0)
+#define pud_clear(xp)		do { pud_val(*(xp)) = 0; ptw_flush(xp); } while (0)
 #define pud_page_vaddr(pud)	(pud_val(pud) & PAGE_MASK)
 #define pud_page(pud)		virt_to_page(pmd_page_vaddr(pud))
-#define set_pud(pudp, pud)	(*(pudp) = pud)
+#define set_pud(pudp, pud)	do { *(pudp) = pud; ptw_flush(pudp); } while (0)
 #define pfn_pud(pfn,prot)	__pud(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
 
 /*
@@ -188,10 +190,10 @@ static inline pmd_t * pmd_offset(pud_t * pud, unsigned long addr)
 #define pmd_none(x)		(!pmd_val(x))
 #define pmd_bad(pmd)		(!(pmd_val(pmd) & _PAGE_TABLE))
 #define pmd_present(x)		(pmd_val(x))
-#define pmd_clear(xp)		do { pmd_val(*(xp)) = 0; } while (0)
+#define pmd_clear(xp)		do { pmd_val(*(xp)) = 0; ptw_flush(xp); } while (0)
 #define pmd_page_vaddr(pmd)	(pmd_val(pmd) & PAGE_MASK)
 #define pmd_page(pmd)		virt_to_page(pmd_page_vaddr(pmd))
-#define set_pmd(pmdp, pmd)	(*(pmdp) = pmd)
+#define set_pmd(pmdp, pmd)	do { *(pmdp) = pmd; ptw_flush(pmdp); } while (0)
 
 /*
  * 4th level paging: pte
@@ -215,7 +217,7 @@ static inline pte_t * pte_offset(pmd_t *pmd, unsigned long addr)
 #define pte_present(x)		(pte_val(x) & _PAGE_PRESENT)
 #define pte_clear(mm,addr,ptep)	set_pte_at(mm, addr, ptep, __pte(0))
 #define pte_page(pte)		pfn_to_page(pte_pfn(pte))
-#define set_pte(ptep, pte)	((*(ptep)) = (pte))
+#define set_pte(ptep, pte)	do { (*(ptep)) = (pte); ptw_flush(ptep); } while (0)
 #define pte_pfn(pte)		((pte_val(pte) >> PAGE_SHIFT) & ((1UL << (ARC_VADDR_BITS - PAGE_SHIFT)) - 1))
 #define pfn_pte(pfn, prot)	__pte(__pfn_to_phys(pfn) | pgprot_val(prot))
 #define mk_pte(page, prot)	pfn_pte(page_to_pfn(page), prot)
