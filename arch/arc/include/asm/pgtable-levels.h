@@ -108,7 +108,11 @@
 #include <asm-generic/pgtable-nopmd.h>
 #endif
 
+#ifdef CONFIG_ARC_MMU_V6
 extern void ptw_flush(void *pxx);
+#else
+#define ptw_flush(pxx)
+#endif
 
 /*
  * 1st level paging: pgd
