@@ -14,7 +14,7 @@ static struct cpuinfo_arc_mmu {
 	unsigned int pg_sz_k;
 } mmuinfo;
 
-volatile int arc_debug_tlb_flush_mm_nuke = 1;
+volatile int arc_debug_tlb_flush_mm_nuke = 0;
 
 int arc_mmu_mumbojumbo(int c, char *buf, int len)
 {
