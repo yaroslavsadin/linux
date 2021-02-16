@@ -11,7 +11,7 @@
 #ifndef _ASM_ARC_PGTABLE_BITS_ARCV2_H
 #define _ASM_ARC_PGTABLE_BITS_ARCV2_H
 
-#ifndef CONFIG_ARC_CACHE_PAGES
+#ifdef CONFIG_ARC_CACHE_PAGES
 #define _PAGE_CACHEABLE		(1 << 0)  /* Cached (H) */
 #else
 #define _PAGE_CACHEABLE		0

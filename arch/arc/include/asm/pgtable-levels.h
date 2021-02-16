@@ -86,7 +86,7 @@ static inline pte_t * pte_offset(pmd_t *pmd, unsigned long addr)
 #define pte_offset_map(dir, addr)	pte_offset(dir, addr)
 
 #define pte_ERROR(e) \
-	pr_crit("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pgd_val(e))
+	pr_crit("%s:%d: bad pte %08lx.\n", __FILE__, __LINE__, pte_val(e))
 
 #define pte_none(x)		(!pte_val(x))
 #define pte_present(x)		(pte_val(x) & _PAGE_PRESENT)
