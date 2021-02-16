@@ -694,7 +694,7 @@ out:
  * covered by this vma.
  */
 
-noinline unsigned long
+static inline unsigned long
 copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 		pte_t *dst_pte, pte_t *src_pte, struct vm_area_struct *vma,
 		unsigned long addr, int *rss)
@@ -801,7 +801,7 @@ out_set_pte:
 	return 0;
 }
 
-noinline int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 		   pmd_t *dst_pmd, pmd_t *src_pmd, struct vm_area_struct *vma,
 		   unsigned long addr, unsigned long end)
 {
@@ -864,7 +864,7 @@ again:
 	return 0;
 }
 
-noinline int copy_pmd_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+static inline int copy_pmd_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 		pud_t *dst_pud, pud_t *src_pud, struct vm_area_struct *vma,
 		unsigned long addr, unsigned long end)
 {
@@ -898,7 +898,7 @@ noinline int copy_pmd_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 	return 0;
 }
 
-noinline int copy_pud_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+static inline int copy_pud_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 		p4d_t *dst_p4d, p4d_t *src_p4d, struct vm_area_struct *vma,
 		unsigned long addr, unsigned long end)
 {
@@ -932,7 +932,7 @@ noinline int copy_pud_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 	return 0;
 }
 
-noinline int copy_p4d_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+static inline int copy_p4d_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 		pgd_t *dst_pgd, pgd_t *src_pgd, struct vm_area_struct *vma,
 		unsigned long addr, unsigned long end)
 {
@@ -954,7 +954,7 @@ noinline int copy_p4d_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 	return 0;
 }
 
-noinline int copy_page_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+int copy_page_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
 		struct vm_area_struct *vma)
 {
 	pgd_t *src_pgd, *dst_pgd;
