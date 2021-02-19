@@ -24,7 +24,7 @@ ifeq ($(DEBUG),0)
 ifeq ($(CC_NO_CLANG), 0)
   CFLAGS += -O3
 else
-  CFLAGS += -O2
+  CFLAGS += -O6
 endif
 endif
 

@@ -32,7 +32,7 @@ ifeq ($(DEBUG),1)
 else ifeq ($(CC_NO_CLANG), 0)
   CFLAGS += -O3
 else
-  CFLAGS += -O2
+  CFLAGS += -O6
 endif
 
 # Treat warnings as errors unless directed not to
