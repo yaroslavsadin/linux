@@ -390,10 +390,11 @@ void do_signal(struct pt_regs *regs)
 		    regs->r0 == -ERESTARTSYS    ||
 		    regs->r0 == -ERESTARTNOINTR) {
 			regs->r0 = regs->orig_r0;
+			regs->ret -= syscall_trap_sz();
 		} else if (regs->r0 == -ERESTART_RESTARTBLOCK) {
 			regs->r8 = __NR_restart_syscall;
+			regs->ret -= syscall_trap_sz();
 		}
-		regs->ret -= syscall_trap_sz();
 		syscall_wont_restart(regs);	/* No more restarts */
 	}
 
