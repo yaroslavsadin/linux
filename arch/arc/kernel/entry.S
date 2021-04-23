@@ -227,7 +227,7 @@ ENTRY(EV_Trap)
 
 	;============ Normal syscall case
 
-	cmp     r8,  NR_syscalls
+	cmp     r8,  NR_syscalls - 1
 	MOVR.hi r0, -ENOSYS
 	bhi     .Lret_from_system_call
 
