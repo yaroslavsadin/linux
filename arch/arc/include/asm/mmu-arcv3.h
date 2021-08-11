@@ -20,7 +20,8 @@
 
 #ifndef __ASSEMBLY__
 
-#include <linux/sched/mm.h>
+/* strange "C" things which can be very useful sometimes */
+struct mm_struct;
 
 #if 1
 noinline extern void mmu_setup_asid(struct mm_struct *mm, unsigned long asid);
