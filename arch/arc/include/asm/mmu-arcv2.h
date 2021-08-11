@@ -83,7 +83,7 @@ static void inline mmu_setup_asid(struct mm_struct *mm, unsigned long asid)
 	write_aux_reg(ARC_REG_PID, asid | MMU_ENABLE);
 }
 
-static void inline mmu_setup_pgd(struct mm_struct *mm, pgd_t *pgd)
+static void inline mmu_setup_pgd(struct mm_struct *mm, void *pgd)
 {
 	/* PGD cached in MMU reg to avoid 3 mem lookups: task->mm->pgd */
 #ifdef CONFIG_ISA_ARCV2
