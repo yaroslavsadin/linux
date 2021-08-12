@@ -29,16 +29,11 @@
 #ifndef _ASM_ARC_PGALLOC_H
 #define _ASM_ARC_PGALLOC_H
 
-/*
- * For ARC, pgtable_t is not struct page *, but pte_t * (to avoid
- * extraneous page_address() calculations) hence can't use
- * use asm-generic/pgalloc.h which assumes it being struct page *
- */
 #include <linux/mm.h>
 #include <linux/log2.h>
 
 static inline void
-pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmdp, pte_t *ptep)
+pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
 {
 	/*
 	 * The cast to long below is OK in 32-bit PAE40 regime with long long pte
@@ -47,24 +42,22 @@ pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmdp, pte_t *ptep)
 	 *
 	 * The cast itself is needed given simplistic definition of set_pmd()
 	 */
-	set_pmd(pmdp, __pmd((unsigned long)ptep | _PAGE_TABLE));
+	set_pmd(pmd, __pmd((unsigned long)pte | _PAGE_TABLE));
 }
 
-/*
- * pmd_populate can be implemented in terms of pmd_populate_kernel since
- * pgtable_t is pte * on ARC
- */
-#define pmd_populate(mm, pmdp, ptep)	pmd_populate_kernel(mm, pmdp, ptep)
-
-static inline int __get_order_pgd(void)
+static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd, pgtable_t pte_page)
 {
-	return get_order(PTRS_PER_PGD * sizeof(pgd_t));
+	set_pmd(pmd, __pmd((unsigned long)page_address(pte_page) | _PAGE_TABLE));
 }
 
 static inline pgd_t *pgd_alloc(struct mm_struct *mm)
 {
 	int num, num2;
-	pgd_t *ret = (pgd_t *) __get_free_pages(GFP_KERNEL, __get_order_pgd());
+	pgd_t *ret;
+
+	BUILD_BUG_ON((PTRS_PER_PGD * sizeof(pgd_t)) > PAGE_SIZE);
+
+	ret = (pgd_t *) __get_free_page(GFP_KERNEL | __GFP_ZERO);
 
 	if (ret) {
 		num = USER_PTRS_PER_PGD + USER_KERNEL_GUTTER / PGDIR_SIZE;
@@ -82,7 +75,7 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
 
 static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
 {
-	free_pages((unsigned long)pgd, __get_order_pgd());
+	free_page((unsigned long)pgd);
 }
 
 
@@ -95,6 +88,8 @@ static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4dp, pud_t *pudp)
 
 static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)
 {
+	BUILD_BUG_ON((PTRS_PER_PUD * sizeof(pud_t)) > PAGE_SIZE);
+
 	return (pud_t *)__get_free_page(
 		GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_ZERO);
 }
@@ -130,61 +125,48 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
 
 #endif
 
-/*
- * With software-only page-tables, addr-split for traversal is tweakable and
- * that directly governs how big tables would be at each level.
- * Further, the MMU page size is configurable.
- * Thus we need to programatically assert the size constraint
- * All of this is const math, allowing gcc to do constant folding/propagation.
- */
-
-static inline int __get_order_pte(void)
-{
-	return get_order(PTRS_PER_PTE * sizeof(pte_t));
-}
-
 static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
 {
 	pte_t *pte;
 
-	pte = (pte_t *) __get_free_pages(GFP_KERNEL | __GFP_ZERO,
-					 __get_order_pte());
+	BUILD_BUG_ON((PTRS_PER_PTE * sizeof(pte_t)) > PAGE_SIZE);
+
+	pte = (pte_t *) __get_free_page(GFP_KERNEL | __GFP_ZERO);
 
 	return pte;
 }
 
-static inline pgtable_t
-pte_alloc_one(struct mm_struct *mm)
+static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
 {
-	pgtable_t pte_pg;
 	struct page *page;
 
-	pte_pg = (pgtable_t)__get_free_pages(GFP_KERNEL, __get_order_pte());
-	if (!pte_pg)
-		return 0;
-	memzero((void *)pte_pg, PTRS_PER_PTE * sizeof(pte_t));
-	page = virt_to_page(pte_pg);
+	BUILD_BUG_ON((PTRS_PER_PTE * sizeof(pte_t)) > PAGE_SIZE);
+
+	page = (pgtable_t)alloc_page(GFP_KERNEL |  __GFP_ZERO | __GFP_ACCOUNT);
+	if (!page)
+		return NULL;
+
 	if (!pgtable_pte_page_ctor(page)) {
 		__free_page(page);
-		return 0;
+		return NULL;
 	}
 
-	return pte_pg;
+	return page;
 }
 
 static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
 {
-	free_pages((unsigned long)pte, __get_order_pte()); /* takes phy addr */
+	free_page((unsigned long)pte);
 }
 
-static inline void pte_free(struct mm_struct *mm, pgtable_t ptep)
+static inline void pte_free(struct mm_struct *mm, pgtable_t pte_page)
 {
-	pgtable_pte_page_dtor(virt_to_page(ptep));
-	free_pages((unsigned long)ptep, __get_order_pte());
+	pgtable_pte_page_dtor(pte_page);
+	__free_page(pte_page);
 }
 
 #define __pte_free_tlb(tlb, pte, addr)  pte_free((tlb)->mm, pte)
 
-#define pmd_pgtable(pmd)	((pgtable_t) pmd_page_vaddr(pmd))
+#define pmd_pgtable(pmd)	pmd_page(pmd)
 
 #endif /* _ASM_ARC_PGALLOC_H */
