@@ -31,6 +31,7 @@
 
 #include <linux/mm.h>
 #include <linux/log2.h>
+#include <asm-generic/pgalloc.h>
 
 static inline void
 pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
@@ -78,7 +79,6 @@ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
 	free_page((unsigned long)pgd);
 }
 
-
 #if CONFIG_PGTABLE_LEVELS > 3
 
 static inline void p4d_populate(struct mm_struct *mm, p4d_t *p4dp, pud_t *pudp)
@@ -90,8 +90,7 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)
 {
 	BUILD_BUG_ON((PTRS_PER_PUD * sizeof(pud_t)) > PAGE_SIZE);
 
-	return (pud_t *)__get_free_page(
-		GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_ZERO);
+	return (pud_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 }
 
 static inline void pud_free(struct mm_struct *mm, pud_t *pudp)
@@ -112,8 +111,7 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmdp)
 
 static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
 {
-	return (pmd_t *)__get_free_page(
-		GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_ZERO);
+	return (pmd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 }
 
 static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
@@ -124,46 +122,6 @@ static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
 #define __pmd_free_tlb(tlb, pmd, addr)  pmd_free((tlb)->mm, pmd)
 
 #endif
-
-static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
-{
-	pte_t *pte;
-
-	BUILD_BUG_ON((PTRS_PER_PTE * sizeof(pte_t)) > PAGE_SIZE);
-
-	pte = (pte_t *) __get_free_page(GFP_KERNEL | __GFP_ZERO);
-
-	return pte;
-}
-
-static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
-{
-	struct page *page;
-
-	BUILD_BUG_ON((PTRS_PER_PTE * sizeof(pte_t)) > PAGE_SIZE);
-
-	page = (pgtable_t)alloc_page(GFP_KERNEL |  __GFP_ZERO | __GFP_ACCOUNT);
-	if (!page)
-		return NULL;
-
-	if (!pgtable_pte_page_ctor(page)) {
-		__free_page(page);
-		return NULL;
-	}
-
-	return page;
-}
-
-static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
-{
-	free_page((unsigned long)pte);
-}
-
-static inline void pte_free(struct mm_struct *mm, pgtable_t pte_page)
-{
-	pgtable_pte_page_dtor(pte_page);
-	__free_page(pte_page);
-}
 
 #define __pte_free_tlb(tlb, pte, addr)  pte_free((tlb)->mm, pte)
 
