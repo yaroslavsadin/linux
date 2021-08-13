@@ -35,8 +35,13 @@
 #elif defined(CONFIG_ARC_HUGEPAGE_2M)
 #define PGDIR_SHIFT		21
 #else
-/* No Super page case: in theory this can be any number */
+/* No Super page case */
+#ifdef CONFIG_ARC_PAGE_SIZE_4K
+#define PGDIR_SHIFT		22
+#else
 #define PGDIR_SHIFT		21
+#endif
+
 #endif
 
 #elif defined(CONFIG_ISA_ARCV3) && CONFIG_PGTABLE_LEVELS == 4
