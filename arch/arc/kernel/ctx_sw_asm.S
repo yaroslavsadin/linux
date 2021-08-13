@@ -21,12 +21,12 @@ ENTRY_CFI(__switch_to)
 
 	/* save kernel stack frame regs of @prev task */
 	PUSHR	blink
-	CFI_DEF_CFA_OFFSET 4
-	CFI_OFFSET r31, -4
+	CFI_DEF_CFA_OFFSET REGSZ
+	CFI_OFFSET r31, -REGSZ
 
 	PUSHR	fp
-	CFI_DEF_CFA_OFFSET 8
-	CFI_OFFSET r27, -8
+	CFI_DEF_CFA_OFFSET (REGSZ*2)
+	CFI_OFFSET r27, -(REGSZ*2)
 
 	MOVR	fp, sp
 	CFI_DEF_CFA_REGISTER r27
@@ -53,7 +53,7 @@ ENTRY_CFI(__switch_to)
 
 	POPR	fp
 	CFI_RESTORE r27
-	CFI_DEF_CFA r28, 4
+	CFI_DEF_CFA r28, REGSZ
 
 	POPR	blink
 	CFI_RESTORE r31

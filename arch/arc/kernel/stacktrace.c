@@ -30,6 +30,7 @@
 #include <asm/arcregs.h>
 #include <asm/unwind.h>
 #include <asm/switch_to.h>
+#include <asm/asm-offsets.h>
 
 /*-------------------------------------------------------------------------
  *              Unwinder Iterator
@@ -103,7 +104,7 @@ seed_unwind_frame_info(struct task_struct *tsk, struct pt_regs *regs,
 		 * assembly code
 		 */
 		frame_info->regs.r27 = 0;
-		frame_info->regs.r28 += 60;
+		frame_info->regs.r28 += 15*REGSZ;
 		frame_info->call_frame = 0;
 
 	}

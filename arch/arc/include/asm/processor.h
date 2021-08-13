@@ -76,7 +76,7 @@ struct task_struct;
 #define TSK_K_REG(tsk, off)	(*((unsigned long *)(TSK_K_ESP(tsk) + \
 					sizeof(struct callee_regs) + off)))
 
-#define TSK_K_BLINK(tsk)	TSK_K_REG(tsk, 4)
+#define TSK_K_BLINK(tsk)	TSK_K_REG(tsk, REGSZ)
 #define TSK_K_FP(tsk)		TSK_K_REG(tsk, 0)
 
 extern void start_thread(struct pt_regs * regs, unsigned long pc,
