@@ -163,24 +163,6 @@ noinline void mmu_setup_asid(struct mm_struct *mm, unsigned long asid)
 #endif
 }
 
-void activate_mm(struct mm_struct *prev_mm, struct mm_struct *next_mm)
-{
-	int map = 0;
-
-	map = arc_map_kernel_in_mm(next_mm);
-	BUG_ON(map);
-
-	switch_mm(prev_mm, next_mm, NULL);
-}
-
-int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
-{
-	int map = arc_map_kernel_in_mm(mm);
-	BUG_ON(map);
-
-	return 0;
-}
-
 void arch_exit_mmap(struct mm_struct *mm)
 {
 	/*

@@ -149,7 +149,6 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
 	mmu_setup_pgd(next, next->pgd);
 }
 
-#ifndef CONFIG_ARC_MMU_V6
 /*
  * Called at the time of execve() to get a new ASID
  * Note the subtlety here: get_new_mmu_context() behaves differently here
@@ -158,9 +157,6 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
  * only if it was unallocated
  */
 #define activate_mm(prev, next)		switch_mm(prev, next, NULL)
-#else
-extern void activate_mm(struct mm_struct *prev, struct mm_struct *next);
-#endif
 
 /* it seemed that deactivate_mm( ) is a reasonable place to do book-keeping
  * for retiring-mm. However destroy_context( ) still needs to do that because
@@ -175,19 +171,17 @@ extern void activate_mm(struct mm_struct *prev, struct mm_struct *next);
 
 /* override mm_hooks.h */
 
-#ifndef CONFIG_ARC_MMU_V6
 static inline int arch_dup_mmap(struct mm_struct *oldmm,
 				struct mm_struct *mm)
 {
 	return 0;
 }
 
+#ifndef CONFIG_ARC_MMU_V6
 static inline void arch_exit_mmap(struct mm_struct *mm)
 {
 }
-
 #else
-extern int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm);
 extern void arch_exit_mmap(struct mm_struct *mm);
 #endif
 
