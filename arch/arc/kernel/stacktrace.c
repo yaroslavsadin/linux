@@ -118,7 +118,7 @@ arc_unwind_core(struct task_struct *tsk, struct pt_regs *regs,
 		long (*consumer_fn) (unsigned long, void *), void *arg)
 {
 #ifdef CONFIG_ARC_DW2_UNWIND
-	int ret = 0, cnt = 0;
+	int cnt = 0;
 	unsigned long address;
 	struct unwind_frame_info frame_info;
 
