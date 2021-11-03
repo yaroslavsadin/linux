@@ -100,8 +100,10 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)
 
 	pud = (pud_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
 
+#if defined(CONFIG_ARC_PAGE_SIZE_4K)
 	pud[2] = swapper_pud[2];
 	pud[3] = swapper_pud[3];
+#endif
 
 	return pud;
 }
@@ -124,7 +126,15 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmdp)
 
 static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
 {
-	return (pmd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+	pmd_t *pmd = (pmd_t *)__get_free_page(GFP_KERNEL | __GFP_ZERO);
+
+#if defined(CONFIG_ARC_PAGE_SIZE_16K)
+	int i;
+	for (i = pmd_index(PAGE_OFFSET); i <= pmd_index(0xFFFFFFFF); i++) {
+		pmd[i] = swapper_pmd[i];
+	}
+#endif
+	return pmd;
 }
 
 static inline void pmd_free(struct mm_struct *mm, pmd_t *pmd)
