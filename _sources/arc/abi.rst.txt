@@ -1,0 +1,189 @@
+===================================
+ARC Linux Syscall ABI Compatibility
+===================================
+
+*Starting with gcc 6.x based tools and Linux kernel v4.8 syscall ABI for
+ARC Linux has been v4 and stable*
+
+Introduction
+============
+
+Some revisions of ARC GNU toolchain are not compatible with certain
+ARC kernel revisions due to syscall ABI changes made in the kernel.
+This document explains the concept of the Linux syscall ABI and provides
+a kernel-toolchain compatibility matrix.
+
+What is the Syscall ABI?
+========================
+
+An ABI or Application Binary Interface essentially sets the expectations
+of one binary component with respect to another.
+In GCC toolchain parlance it defines aspects like the following:
+
+1. Registers possibly clobbered by a function call and registers guaranteed
+   to be preserved (by GCC stack spill code).
+2. Functions, call arguments, return register.
+3. How 64-bit data is handled (multiple registers, paired registers,
+   or other means).
+4. Layout of procedure — linkage table and other control structures.
+
+Linux userspace applications and the kernel (both technically binary components)
+interact through the syscall (system-call) interface, which must be well-defined.
+This interface is referred to as the  Linux syscall ABI and consists
+of the following:
+
+1. Actual system calls available and their exact IDs (for example, the ``fork()``
+   syscall might be not be provided by the kernel and might require emulation
+   using the ``clone()`` syscall).
+2. Layout of data structures used in system calls (such as ``struct stat``
+   for the ``stat()``, ``lstat()``, and ``fstat()`` system calls).
+3. Layout of registers expected by the ``ptrace()`` system call and
+   ``ucontext`` structure in signal handlers.
+
+The ABI is defined in the kernel-exported headers, which are used
+for building the toolchain itself (for non-bare-metal versions,
+such as uClibc-based versions) and greatly impacts toolchain components
+like uClibc, GDB, and gdbserver.
+
+ABI compatibility thus requires the kernel and toolchain to be in sync.
+Keeping them in sync generally involves only rebuilding the toolchain
+components with updated kernel headers, but in some cases it might
+require deeper adjustments to userspace code. For example,
+the uClibc ``fork()`` wrapper might need to be written in terms
+of the ``clone()`` syscall, or ``gdbserver`` might need to be switched
+to ``PTRACE_GETREGSETS`` commands instead of ``PTRACE_GETREGS``.
+
+ARC Linux Syscall ABI Versions
+==============================
+
+Historically the ARC Linux kernel and GNU toolchain have had a stable
+syscall ABI up to and including the 2.6.35 kernel.
+The ABI had no explicit versioning, so it is referred to here as v1.
+
+ABI v2
+------
+
+In 2012, as part of ARC kernel maintenance, an emphasis was placed
+on reusing generic kernel headers as much as possible,
+instead of ARC-specific headers. This change meant switching to
+``asm-generic`` versions of the following:
+
+1. ``unistd.h`` (for syscall IDs).
+2. ``stat.h`` (for struct stat used by applications like ``ls``).
+3. ``fcntl.h`` (for ``O_DIRECTORY`` and related parameters).
+
+These versions were not compatible with the existing ARC ``unistd.h``
+(for example, the ``sigreturn()`` syscall was no longer available,
+the definition of ``O_DIRECTORY`` changed, and so on).
+
+The 3.2 ARC kernel was the first kernel to start using these headers,
+and the corresponding pairing changes were made in uClibc 0.9.30.3
+(GNU 4.4 release, May 2012). This release defined ABI v2.
+
+By definition ABI v2 was not backward-compatible, meaning that
+a GNU 4.4-based toolchain (and applications built with it)
+cannot be used with the ARC 2.6.35 kernel.
+By the same token, the 3.2 kernel cannot be used with user
+applications built with the GNU 2.4 toolchain (GCC 4.2.1 based).
+
+A run-time ABI version check was introduced to make the transition
+as easy as possible. The GNU 4.4 tools explicitly tagged ELF binaries
+with syscall ABI version 2 in ELF header ``e_flags``,
+as shown in the following snippet:
+
+.. code-block:: console
+
+    arc-linux-uclibc-readelf -h busybox_dyn_v2_old  | grep Flags
+    Flags:                             0x3, ARC700, legacy syscall ABI
+                                   ^^^^^^
+    arc-linux-uclibc-readelf -h busybox_dyn_v2_chk | grep Flags
+    Flags:                             0x23, ARC700, v2 syscall ABI
+                                   ^^^^^^
+
+The 3.2 kernel ensured that any userspace program trying to run had “v2” in its ELF header.  If not, the application was likely built with older tools and the kernel pro-actively terminated it to prevent random runtime crashes, and printed the following message to the console:
+
+.. code-block:: console
+
+    [ARCLinux]$ /mnt/arc/ltp/testcases/bin/mmap01
+    ABI mismatch - you need newer toolchain
+    ABI mismatch - you need newer toolchain
+    Segmentation fault
+
+ABI v3
+------
+
+As part of ARC kernel submission on the LKML, comments from reviewers
+required the ABI to change again. Kernel reviewers required
+a no-legacy-syscall-ABI:
+
+1. Many syscalls were marked as deprecated, despite being present in
+   ``asm-generic/unistd.h`` (for existing architectures), and new kernel ports
+   were mandated not to support them. An example is the ``stat()`` family
+   of syscalls (``stat()``, ``fstat()``, ``lstat()``, ``statat()``,
+   and their 64 bit versions). Here a total of eight syscalls were reduced
+   to just two (``fstat64()`` and ``fstatat64()``). Libc is still expected
+   to provide the eight wrappers, but rewritten to use one of
+   the two syscall IDs.
+2. The ``ptrace()`` syscall (used by GDB) can no longer support the legacy
+   ``PEEKUSR`` and ``POKEUSR`` options and can only use the ``GETREGSETS``
+   and ``SETREGSETS`` interface.
+3. ``struct pt_regs`` (used in GDB ``ptrace()`` requests to specify a register)
+   was made kernel-internal only. It was replaced with
+   ``struct user_regs_struct`` but with a slightly different layout,
+   so the register offsets used by GDB for ``ptrace()`` changed in
+   a non-compatible way.
+
+Discussions and proposals to avert these changes (to avoid an ABI change)
+were unsuccessful, and as a result the first ARC-supported mainline kernel
+(``3.9-rc1``) is ABI v3.
+
+To reduce inconvenience to existing ARC Linux users,
+patches to downgrade the ARC kernel to ABI v2 are available for both 3.8
+(as a ready-to-use branch on GitHub) and the mainline 3.9 kernel
+(as a single patch file).
+
+ABI v4
+------
+
+ARCv2 ISA (HS cores) added support for 64-bit load/store instructions (LDD/STD)
+with requirement that register pair is even-odd aligned. This influenced
+the gcc function call ABI for ARCv2 to force 64-bit args to be even-odd
+aligned even if that meant punching register holes. e.g.
+``void foo(int a, int int b)`` would assign ``@a`` to ``r0``, and ``@b``
+to ``r2,r3``, leaving unused ``r1`` "hole". The idea was to avoid any
+extraneous MOVs later on when saving this reg to memory.
+This gcc ABI is embedded in the syscall ABI with user-space being "caller"
+and kernel being "callee". uClibc has explicit support for 64-bit
+data register alignment.
+
+However during upstreaming gcc port to ARCv2 cores, this aspect of gcc ABI
+was rejected and hence the genesis of ABI v4.
+
+In terms of change management, any code built with upstream gcc
+(essentially 6.x onwards) is ABI v4. Starting with v4.8, Linux kernel
+supports ABI v3 user-space (when built with gcc 4.8 or older) or ABI v4
+(gcc 6.x or later). The gcc version used for building the kernel
+- and that alone - mandates whether kernel supports v3 or v4 user-space code.
+
+1. uClibc support for ABI v4:  `<http://lists.infradead.org/pipermail/linux-snps-arc/2016-August/001406.html>`_
+2. kernel support for ABI v4: `<http://lists.infradead.org/pipermail/linux-snps-arc/2016-August/001407.html>`_
+
+It needs to be noted that gcc port for ARCompact ISA (ARC700 cores)
+is not really impacted in terms of code generated. However to keep things
+uniform/consistent across ports, v4 ABI applies to ARCompact builds as well.
+
+ABI Compatibility Matrix
+------------------------
+
+Use the following table to match ARC GNU tools versions with syscall ABI
+and kernel versions.
+
+=========== ====================================== =================
+ABI Version Kernel Version                         GNU Tools Version
+=========== ====================================== =================
+v1          <= 2.6.35                              <= GNU 2.4
+v2          3.2 (stable-arc-3.2 branch @ github)   GNU 4.4
+v2          3.8 (arc-3.8-baseline branch @ github) GNU 4.4
+v3          3.9 upstream @ git.kernel.org          >= GNU 4.8
+v4          4.8 upstream @ git.kernel.org          >= gcc 6.x (GNU 2016.09)
+=========== ====================================== =================

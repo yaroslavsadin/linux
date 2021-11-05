@@ -1,0 +1,516 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>ARC Linux Syscall ABI Compatibility &mdash; The Linux Kernel  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Feature status on arc architecture" href="features.html" />
+    <link rel="prev" title="Linux kernel for ARC processors" href="arc.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> The Linux Kernel
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                5.15.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../admin-guide/index.html">The Linux kernel user’s and administrator’s guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kbuild/index.html">Kernel Build System</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../firmware-guide/index.html">The Linux kernel firmware guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../devicetree/index.html">Open Firmware and Devicetree</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../userspace-api/index.html">The Linux kernel user-space API guide</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../process/index.html">Working with the kernel development community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev-tools/index.html">Development tools for the kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc-guide/index.html">How to write kernel documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel-hacking/index.html">Kernel Hacking Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trace/index.html">Linux Tracing Technologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintainer/index.html">Kernel Maintainer Handbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fault-injection/index.html">fault-injection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../livepatch/index.html">Kernel Livepatching</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../driver-api/index.html">The Linux driver implementer’s API guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core-api/index.html">Core API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../locking/index.html">locking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../accounting/index.html">Accounting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../block/index.html">Block</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cdrom/index.html">cdrom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cpu-freq/index.html">Linux CPUFreq - CPU frequency and voltage scaling code in the Linux(TM) kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ide/index.html">Integrated Drive Electronics (IDE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fb/index.html">Frame Buffer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fpga/index.html">fpga</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hid/index.html">Human Interface Devices (HID)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../i2c/index.html">I2C/SMBus Subsystem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../iio/index.html">Industrial I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../isdn/index.html">ISDN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../infiniband/index.html">InfiniBand</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../leds/index.html">LEDs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../netlabel/index.html">NetLabel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking/index.html">Linux Networking Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pcmcia/index.html">pcmcia</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../power/index.html">Power Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../target/index.html">TCM Virtual Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timers/index.html">timers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../spi/index.html">Serial Peripheral Interface (SPI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../w1/index.html">1-Wire Subsystem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../watchdog/index.html">Linux Watchdog Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../virt/index.html">Linux Virtualization Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../input/index.html">The Linux Input Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hwmon/index.html">Linux Hardware Monitoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gpu/index.html">Linux GPU Driver Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../security/index.html">Security Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sound/index.html">Linux Sound Subsystem Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../crypto/index.html">Linux Kernel Crypto API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filesystems/index.html">Filesystems in the Linux kernel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vm/index.html">Linux Memory Management Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bpf/index.html">BPF Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usb/index.html">USB support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../PCI/index.html">Linux PCI Bus Subsystem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scsi/index.html">Linux SCSI Subsystem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc-devices/index.html">Assorted Miscellaneous Devices Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scheduler/index.html">Linux Scheduler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mhi/index.html">MHI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../asm-annotations.html">Assembler Annotations</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../arch.html">CPU Architectures</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">ARC architecture</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="arc.html">Linux kernel for ARC processors</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ARC Linux Syscall ABI Compatibility</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-the-syscall-abi">What is the Syscall ABI?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#arc-linux-syscall-abi-versions">ARC Linux Syscall ABI Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="features.html">Feature status on arc architecture</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../arm/index.html">ARM Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../arm64/index.html">ARM64 Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ia64/index.html">IA-64 Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../m68k/index.html">m68k Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mips/index.html">MIPS-specific Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nios2/index.html">Nios II Specific Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../openrisc/index.html">OpenRISC Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parisc/index.html">PA-RISC Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../powerpc/index.html">powerpc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../riscv/index.html">RISC-V architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../s390/index.html">s390 Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sh/index.html">SuperH Interfaces Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sparc/index.html">Sparc Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../x86/index.html">x86-specific Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xtensa/index.html">Xtensa Architecture</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../staging/index.html">Unsorted Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../staging/index.html#atomic-types">Atomic Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../staging/index.html#atomic-bitops">Atomic bitops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../staging/index.html#memory-barriers">Memory Barriers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../watch_queue.html">General notification mechanism</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../translations/index.html">Translations</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">The Linux Kernel</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../arch.html">CPU Architectures</a> &raquo;</li>
+        
+          <li><a href="index.html">ARC architecture</a> &raquo;</li>
+        
+      <li>ARC Linux Syscall ABI Compatibility</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/arc/abi.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="arc-linux-syscall-abi-compatibility">
+<h1>ARC Linux Syscall ABI Compatibility<a class="headerlink" href="#arc-linux-syscall-abi-compatibility" title="Permalink to this headline">¶</a></h1>
+<p><em>Starting with gcc 6.x based tools and Linux kernel v4.8 syscall ABI for
+ARC Linux has been v4 and stable</em></p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Some revisions of ARC GNU toolchain are not compatible with certain
+ARC kernel revisions due to syscall ABI changes made in the kernel.
+This document explains the concept of the Linux syscall ABI and provides
+a kernel-toolchain compatibility matrix.</p>
+</section>
+<section id="what-is-the-syscall-abi">
+<h2>What is the Syscall ABI?<a class="headerlink" href="#what-is-the-syscall-abi" title="Permalink to this headline">¶</a></h2>
+<p>An ABI or Application Binary Interface essentially sets the expectations
+of one binary component with respect to another.
+In GCC toolchain parlance it defines aspects like the following:</p>
+<ol class="arabic simple">
+<li><p>Registers possibly clobbered by a function call and registers guaranteed
+to be preserved (by GCC stack spill code).</p></li>
+<li><p>Functions, call arguments, return register.</p></li>
+<li><p>How 64-bit data is handled (multiple registers, paired registers,
+or other means).</p></li>
+<li><p>Layout of procedure — linkage table and other control structures.</p></li>
+</ol>
+<p>Linux userspace applications and the kernel (both technically binary components)
+interact through the syscall (system-call) interface, which must be well-defined.
+This interface is referred to as the  Linux syscall ABI and consists
+of the following:</p>
+<ol class="arabic simple">
+<li><p>Actual system calls available and their exact IDs (for example, the <code class="docutils literal notranslate"><span class="pre">fork()</span></code>
+syscall might be not be provided by the kernel and might require emulation
+using the <code class="docutils literal notranslate"><span class="pre">clone()</span></code> syscall).</p></li>
+<li><p>Layout of data structures used in system calls (such as <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">stat</span></code>
+for the <code class="docutils literal notranslate"><span class="pre">stat()</span></code>, <code class="docutils literal notranslate"><span class="pre">lstat()</span></code>, and <code class="docutils literal notranslate"><span class="pre">fstat()</span></code> system calls).</p></li>
+<li><p>Layout of registers expected by the <code class="docutils literal notranslate"><span class="pre">ptrace()</span></code> system call and
+<code class="docutils literal notranslate"><span class="pre">ucontext</span></code> structure in signal handlers.</p></li>
+</ol>
+<p>The ABI is defined in the kernel-exported headers, which are used
+for building the toolchain itself (for non-bare-metal versions,
+such as uClibc-based versions) and greatly impacts toolchain components
+like uClibc, GDB, and gdbserver.</p>
+<p>ABI compatibility thus requires the kernel and toolchain to be in sync.
+Keeping them in sync generally involves only rebuilding the toolchain
+components with updated kernel headers, but in some cases it might
+require deeper adjustments to userspace code. For example,
+the uClibc <code class="docutils literal notranslate"><span class="pre">fork()</span></code> wrapper might need to be written in terms
+of the <code class="docutils literal notranslate"><span class="pre">clone()</span></code> syscall, or <code class="docutils literal notranslate"><span class="pre">gdbserver</span></code> might need to be switched
+to <code class="docutils literal notranslate"><span class="pre">PTRACE_GETREGSETS</span></code> commands instead of <code class="docutils literal notranslate"><span class="pre">PTRACE_GETREGS</span></code>.</p>
+</section>
+<section id="arc-linux-syscall-abi-versions">
+<h2>ARC Linux Syscall ABI Versions<a class="headerlink" href="#arc-linux-syscall-abi-versions" title="Permalink to this headline">¶</a></h2>
+<p>Historically the ARC Linux kernel and GNU toolchain have had a stable
+syscall ABI up to and including the 2.6.35 kernel.
+The ABI had no explicit versioning, so it is referred to here as v1.</p>
+<section id="abi-v2">
+<h3>ABI v2<a class="headerlink" href="#abi-v2" title="Permalink to this headline">¶</a></h3>
+<p>In 2012, as part of ARC kernel maintenance, an emphasis was placed
+on reusing generic kernel headers as much as possible,
+instead of ARC-specific headers. This change meant switching to
+<code class="docutils literal notranslate"><span class="pre">asm-generic</span></code> versions of the following:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unistd.h</span></code> (for syscall IDs).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stat.h</span></code> (for struct stat used by applications like <code class="docutils literal notranslate"><span class="pre">ls</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fcntl.h</span></code> (for <code class="docutils literal notranslate"><span class="pre">O_DIRECTORY</span></code> and related parameters).</p></li>
+</ol>
+<p>These versions were not compatible with the existing ARC <code class="docutils literal notranslate"><span class="pre">unistd.h</span></code>
+(for example, the <code class="docutils literal notranslate"><span class="pre">sigreturn()</span></code> syscall was no longer available,
+the definition of <code class="docutils literal notranslate"><span class="pre">O_DIRECTORY</span></code> changed, and so on).</p>
+<p>The 3.2 ARC kernel was the first kernel to start using these headers,
+and the corresponding pairing changes were made in uClibc 0.9.30.3
+(GNU 4.4 release, May 2012). This release defined ABI v2.</p>
+<p>By definition ABI v2 was not backward-compatible, meaning that
+a GNU 4.4-based toolchain (and applications built with it)
+cannot be used with the ARC 2.6.35 kernel.
+By the same token, the 3.2 kernel cannot be used with user
+applications built with the GNU 2.4 toolchain (GCC 4.2.1 based).</p>
+<p>A run-time ABI version check was introduced to make the transition
+as easy as possible. The GNU 4.4 tools explicitly tagged ELF binaries
+with syscall ABI version 2 in ELF header <code class="docutils literal notranslate"><span class="pre">e_flags</span></code>,
+as shown in the following snippet:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">arc-linux-uclibc-readelf -h busybox_dyn_v2_old  | grep Flags</span>
+<span class="go">Flags:                             0x3, ARC700, legacy syscall ABI</span>
+<span class="go">                               ^^^^^^</span>
+<span class="go">arc-linux-uclibc-readelf -h busybox_dyn_v2_chk | grep Flags</span>
+<span class="go">Flags:                             0x23, ARC700, v2 syscall ABI</span>
+<span class="go">                               ^^^^^^</span>
+</pre></div>
+</div>
+<p>The 3.2 kernel ensured that any userspace program trying to run had “v2” in its ELF header.  If not, the application was likely built with older tools and the kernel pro-actively terminated it to prevent random runtime crashes, and printed the following message to the console:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[ARCLinux]$ </span>/mnt/arc/ltp/testcases/bin/mmap01
+<span class="go">ABI mismatch - you need newer toolchain</span>
+<span class="go">ABI mismatch - you need newer toolchain</span>
+<span class="go">Segmentation fault</span>
+</pre></div>
+</div>
+</section>
+<section id="abi-v3">
+<h3>ABI v3<a class="headerlink" href="#abi-v3" title="Permalink to this headline">¶</a></h3>
+<p>As part of ARC kernel submission on the LKML, comments from reviewers
+required the ABI to change again. Kernel reviewers required
+a no-legacy-syscall-ABI:</p>
+<ol class="arabic simple">
+<li><p>Many syscalls were marked as deprecated, despite being present in
+<code class="docutils literal notranslate"><span class="pre">asm-generic/unistd.h</span></code> (for existing architectures), and new kernel ports
+were mandated not to support them. An example is the <code class="docutils literal notranslate"><span class="pre">stat()</span></code> family
+of syscalls (<code class="docutils literal notranslate"><span class="pre">stat()</span></code>, <code class="docutils literal notranslate"><span class="pre">fstat()</span></code>, <code class="docutils literal notranslate"><span class="pre">lstat()</span></code>, <code class="docutils literal notranslate"><span class="pre">statat()</span></code>,
+and their 64 bit versions). Here a total of eight syscalls were reduced
+to just two (<code class="docutils literal notranslate"><span class="pre">fstat64()</span></code> and <code class="docutils literal notranslate"><span class="pre">fstatat64()</span></code>). Libc is still expected
+to provide the eight wrappers, but rewritten to use one of
+the two syscall IDs.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">ptrace()</span></code> syscall (used by GDB) can no longer support the legacy
+<code class="docutils literal notranslate"><span class="pre">PEEKUSR</span></code> and <code class="docutils literal notranslate"><span class="pre">POKEUSR</span></code> options and can only use the <code class="docutils literal notranslate"><span class="pre">GETREGSETS</span></code>
+and <code class="docutils literal notranslate"><span class="pre">SETREGSETS</span></code> interface.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pt_regs</span></code> (used in GDB <code class="docutils literal notranslate"><span class="pre">ptrace()</span></code> requests to specify a register)
+was made kernel-internal only. It was replaced with
+<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">user_regs_struct</span></code> but with a slightly different layout,
+so the register offsets used by GDB for <code class="docutils literal notranslate"><span class="pre">ptrace()</span></code> changed in
+a non-compatible way.</p></li>
+</ol>
+<p>Discussions and proposals to avert these changes (to avoid an ABI change)
+were unsuccessful, and as a result the first ARC-supported mainline kernel
+(<code class="docutils literal notranslate"><span class="pre">3.9-rc1</span></code>) is ABI v3.</p>
+<p>To reduce inconvenience to existing ARC Linux users,
+patches to downgrade the ARC kernel to ABI v2 are available for both 3.8
+(as a ready-to-use branch on GitHub) and the mainline 3.9 kernel
+(as a single patch file).</p>
+</section>
+<section id="abi-v4">
+<h3>ABI v4<a class="headerlink" href="#abi-v4" title="Permalink to this headline">¶</a></h3>
+<p>ARCv2 ISA (HS cores) added support for 64-bit load/store instructions (LDD/STD)
+with requirement that register pair is even-odd aligned. This influenced
+the gcc function call ABI for ARCv2 to force 64-bit args to be even-odd
+aligned even if that meant punching register holes. e.g.
+<code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">foo(int</span> <span class="pre">a,</span> <span class="pre">int</span> <span class="pre">int</span> <span class="pre">b)</span></code> would assign <code class="docutils literal notranslate"><span class="pre">&#64;a</span></code> to <code class="docutils literal notranslate"><span class="pre">r0</span></code>, and <code class="docutils literal notranslate"><span class="pre">&#64;b</span></code>
+to <code class="docutils literal notranslate"><span class="pre">r2,r3</span></code>, leaving unused <code class="docutils literal notranslate"><span class="pre">r1</span></code> “hole”. The idea was to avoid any
+extraneous MOVs later on when saving this reg to memory.
+This gcc ABI is embedded in the syscall ABI with user-space being “caller”
+and kernel being “callee”. uClibc has explicit support for 64-bit
+data register alignment.</p>
+<p>However during upstreaming gcc port to ARCv2 cores, this aspect of gcc ABI
+was rejected and hence the genesis of ABI v4.</p>
+<p>In terms of change management, any code built with upstream gcc
+(essentially 6.x onwards) is ABI v4. Starting with v4.8, Linux kernel
+supports ABI v3 user-space (when built with gcc 4.8 or older) or ABI v4
+(gcc 6.x or later). The gcc version used for building the kernel
+- and that alone - mandates whether kernel supports v3 or v4 user-space code.</p>
+<ol class="arabic simple">
+<li><p>uClibc support for ABI v4:  <a class="reference external" href="http://lists.infradead.org/pipermail/linux-snps-arc/2016-August/001406.html">http://lists.infradead.org/pipermail/linux-snps-arc/2016-August/001406.html</a></p></li>
+<li><p>kernel support for ABI v4: <a class="reference external" href="http://lists.infradead.org/pipermail/linux-snps-arc/2016-August/001407.html">http://lists.infradead.org/pipermail/linux-snps-arc/2016-August/001407.html</a></p></li>
+</ol>
+<p>It needs to be noted that gcc port for ARCompact ISA (ARC700 cores)
+is not really impacted in terms of code generated. However to keep things
+uniform/consistent across ports, v4 ABI applies to ARCompact builds as well.</p>
+</section>
+<section id="abi-compatibility-matrix">
+<h3>ABI Compatibility Matrix<a class="headerlink" href="#abi-compatibility-matrix" title="Permalink to this headline">¶</a></h3>
+<p>Use the following table to match ARC GNU tools versions with syscall ABI
+and kernel versions.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 52%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>ABI Version</p></th>
+<th class="head"><p>Kernel Version</p></th>
+<th class="head"><p>GNU Tools Version</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>v1</p></td>
+<td><p>&lt;= 2.6.35</p></td>
+<td><p>&lt;= GNU 2.4</p></td>
+</tr>
+<tr class="row-odd"><td><p>v2</p></td>
+<td><p>3.2 (stable-arc-3.2 branch &#64; github)</p></td>
+<td><p>GNU 4.4</p></td>
+</tr>
+<tr class="row-even"><td><p>v2</p></td>
+<td><p>3.8 (arc-3.8-baseline branch &#64; github)</p></td>
+<td><p>GNU 4.4</p></td>
+</tr>
+<tr class="row-odd"><td><p>v3</p></td>
+<td><p>3.9 upstream &#64; git.kernel.org</p></td>
+<td><p>&gt;= GNU 4.8</p></td>
+</tr>
+<tr class="row-even"><td><p>v4</p></td>
+<td><p>4.8 upstream &#64; git.kernel.org</p></td>
+<td><p>&gt;= gcc 6.x (GNU 2016.09)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="features.html" class="btn btn-neutral float-right" title="Feature status on arc architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="arc.html" class="btn btn-neutral float-left" title="Linux kernel for ARC processors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright The kernel development community.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
