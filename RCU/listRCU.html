@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Using RCU to Protect Read-Mostly Linked Lists &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -277,14 +279,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="using-rcu-to-protect-read-mostly-linked-lists">
+  <div class="section" id="using-rcu-to-protect-read-mostly-linked-lists">
 <span id="list-rcu-doc"></span><h1>Using RCU to Protect Read-Mostly Linked Lists<a class="headerlink" href="#using-rcu-to-protect-read-mostly-linked-lists" title="Permalink to this headline">¶</a></h1>
 <p>One of the best applications of RCU is to protect read-mostly linked lists
 (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">list_head</span></code> in list.h).  One big advantage of this approach
 is that all of the required memory barriers are included for you in
 the list macros.  This document describes several applications of RCU,
 with the best fits first.</p>
-<section id="example-1-read-mostly-list-deferred-destruction">
+<div class="section" id="example-1-read-mostly-list-deferred-destruction">
 <h2>Example 1: Read-mostly list: Deferred Destruction<a class="headerlink" href="#example-1-read-mostly-list-deferred-destruction" title="Permalink to this headline">¶</a></h2>
 <p>A widely used usecase for RCU lists in the kernel is lockless iteration over
 all processes in the system. <code class="docutils literal notranslate"><span class="pre">task_struct::tasks</span></code> represents the list node that
@@ -328,8 +330,8 @@ ensures that any readers traversing the list will see valid <code class="docutil
 pointers and deletion/freeing can happen in parallel with traversal of the list.
 This pattern is also called an <strong>existence lock</strong>, since RCU pins the object in
 memory until all existing readers finish.</p>
-</section>
-<section id="example-2-read-side-action-taken-outside-of-lock-no-in-place-updates">
+</div>
+<div class="section" id="example-2-read-side-action-taken-outside-of-lock-no-in-place-updates">
 <h2>Example 2: Read-Side Action Taken Outside of Lock: No In-Place Updates<a class="headerlink" href="#example-2-read-side-action-taken-outside-of-lock-no-in-place-updates" title="Permalink to this headline">¶</a></h2>
 <p>The best applications are cases where, if reader-writer locking were
 used, the read-side lock would be dropped before taking any action
@@ -468,8 +470,8 @@ pointer poisoning debug-assist code that would otherwise cause concurrent
 readers to fail spectacularly.</p>
 <p>So, when readers can tolerate stale data and when entries are either added or
 deleted, without in-place modification, it is very easy to use RCU!</p>
-</section>
-<section id="example-3-handling-in-place-updates">
+</div>
+<div class="section" id="example-3-handling-in-place-updates">
 <h2>Example 3: Handling In-Place Updates<a class="headerlink" href="#example-3-handling-in-place-updates" title="Permalink to this headline">¶</a></h2>
 <p>The system-call auditing code does not update auditing rules in place.  However,
 if it did, the reader-writer-locked code to do so might look as follows
@@ -537,8 +539,8 @@ through a hashtable using an RCU-managed hlist for the hash chains. When a new
 limit is set, a new limit object is allocated and <code class="docutils literal notranslate"><span class="pre">ct_limit_set()</span></code> is called
 to replace the old limit object with the new one using <a class="reference internal" href="../core-api/kernel-api.html#c.list_replace_rcu" title="list_replace_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">list_replace_rcu()</span></code></a>.
 The old limit object is then freed after a grace period using <a class="reference internal" href="../core-api/kernel-api.html#c.kfree_rcu" title="kfree_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree_rcu()</span></code></a>.</p>
-</section>
-<section id="example-4-eliminating-stale-data">
+</div>
+<div class="section" id="example-4-eliminating-stale-data">
 <h2>Example 4: Eliminating Stale Data<a class="headerlink" href="#example-4-eliminating-stale-data" title="Permalink to this headline">¶</a></h2>
 <p>The auditing example above tolerates stale data, as do most algorithms
 that are tracking external state.  Because there is a delay from the
@@ -611,8 +613,8 @@ spinlock as follows:</p>
 </pre></div>
 </div>
 <p>This too assumes that the caller holds <code class="docutils literal notranslate"><span class="pre">audit_filter_mutex</span></code>.</p>
-</section>
-<section id="example-5-skipping-stale-objects">
+</div>
+<div class="section" id="example-5-skipping-stale-objects">
 <h2>Example 5: Skipping Stale Objects<a class="headerlink" href="#example-5-skipping-stale-objects" title="Permalink to this headline">¶</a></h2>
 <p>For some usecases, reader performance can be improved by skipping stale objects
 during read-side list traversal if the object in concern is pending destruction
@@ -691,8 +693,8 @@ objects:</p>
 while objects are being added and removed to the list, sometimes the traversal
 can step on an object that has been removed from the list. In this example, it
 is seen that it is better to skip such objects using a flag.</p>
-</section>
-<section id="summary">
+</div>
+<div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>Read-mostly list-based data structures that can tolerate stale data are
 the most amenable to use of RCU.  The simplest case is where entries are
@@ -714,8 +716,8 @@ that uses the value that was returned.</p>
 </dd>
 </dl>
 <p><a class="reference internal" href="#quick-quiz"><span class="std std-ref">Back to Quick Quiz</span></a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

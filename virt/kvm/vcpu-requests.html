@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>KVM VCPU Requests &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -277,9 +279,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kvm-vcpu-requests">
+  <div class="section" id="kvm-vcpu-requests">
 <h1>KVM VCPU Requests<a class="headerlink" href="#kvm-vcpu-requests" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>KVM supports an internal API enabling threads to request a VCPU thread to
 perform some activity.  For example, a thread may request a VCPU to flush
@@ -315,7 +317,7 @@ as possible after making the request.  This means most requests
 (kvm_make_request() calls) are followed by a call to kvm_vcpu_kick(),
 and kvm_make_all_cpus_request() has the kicking of all VCPUs built
 into it.</p>
-<section id="vcpu-kicks">
+<div class="section" id="vcpu-kicks">
 <h3>VCPU Kicks<a class="headerlink" href="#vcpu-kicks" title="Permalink to this headline">¶</a></h3>
 <p>The goal of a VCPU kick is to bring a VCPU thread out of guest mode in
 order to perform some KVM maintenance.  To do so, an IPI is sent, forcing
@@ -332,8 +334,8 @@ may be suppressed, see KVM_REQUEST_NO_WAKEUP below.</p></li>
 <li><p>Nothing.  When the VCPU is not in guest mode and the VCPU thread is not
 sleeping, then there is nothing to do.</p></li>
 </ol>
-</section>
-<section id="vcpu-mode">
+</div>
+<div class="section" id="vcpu-mode">
 <h3>VCPU Mode<a class="headerlink" href="#vcpu-mode" title="Permalink to this headline">¶</a></h3>
 <p>VCPUs have a mode state, <code class="docutils literal notranslate"><span class="pre">vcpu-&gt;mode</span></code>, that is used to track whether the
 guest is running in guest mode or not, as well as some specific
@@ -361,9 +363,9 @@ OUTSIDE_GUEST_MODE.</p>
 certain VCPU requests, namely KVM_REQ_TLB_FLUSH, to wait until the VCPU
 thread is done reading the page tables.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="vcpu-request-internals">
+</div>
+</div>
+<div class="section" id="vcpu-request-internals">
 <h2>VCPU Request Internals<a class="headerlink" href="#vcpu-request-internals" title="Permalink to this headline">¶</a></h2>
 <p>VCPU requests are simply bit indices of the <code class="docutils literal notranslate"><span class="pre">vcpu-&gt;requests</span></code> bitmap.
 This means general bitops, like those documented in <a class="reference internal" href="#atomic-ops" id="id1"><span>[atomic-ops]</span></a> could
@@ -375,7 +377,7 @@ also be used, e.g.</p>
 break the abstraction.  The first 8 bits are reserved for architecture
 independent requests, all additional bits are available for architecture
 dependent requests.</p>
-<section id="architecture-independent-requests">
+<div class="section" id="architecture-independent-requests">
 <h3>Architecture Independent Requests<a class="headerlink" href="#architecture-independent-requests" title="Permalink to this headline">¶</a></h3>
 <p>KVM_REQ_TLB_FLUSH</p>
 <blockquote>
@@ -408,15 +410,15 @@ in contrast to when kvm_vcpu_block() returns due to any other reason,
 such as a pending signal, which does not indicate the VCPU’s halt
 emulation should stop, and therefore does not make the request.</p>
 </div></blockquote>
-</section>
-<section id="kvm-request-mask">
+</div>
+<div class="section" id="kvm-request-mask">
 <h3>KVM_REQUEST_MASK<a class="headerlink" href="#kvm-request-mask" title="Permalink to this headline">¶</a></h3>
 <p>VCPU requests should be masked by KVM_REQUEST_MASK before using them with
 bitops.  This is because only the lower 8 bits are used to represent the
 request’s number.  The upper bits are used as flags.  Currently only two
 flags are defined.</p>
-</section>
-<section id="vcpu-request-flags">
+</div>
+<div class="section" id="vcpu-request-flags">
 <h3>VCPU Request Flags<a class="headerlink" href="#vcpu-request-flags" title="Permalink to this headline">¶</a></h3>
 <p>KVM_REQUEST_NO_WAKEUP</p>
 <blockquote>
@@ -436,9 +438,9 @@ safely combined with KVM_REQUEST_NO_WAKEUP.  See “Waiting for
 Acknowledgements” for more information about requests with
 KVM_REQUEST_WAIT.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="vcpu-requests-with-associated-state">
+</div>
+</div>
+<div class="section" id="vcpu-requests-with-associated-state">
 <h2>VCPU Requests with Associated State<a class="headerlink" href="#vcpu-requests-with-associated-state" title="Permalink to this headline">¶</a></h2>
 <p>Requesters that want the receiving VCPU to handle new state need to ensure
 the newly written state is observable to the receiving VCPU thread’s CPU
@@ -452,8 +454,8 @@ scenario 3, Message and Flag, of <a class="reference internal" href="#lwn-mb" id
 <p>The pair of functions, kvm_check_request() and kvm_make_request(), provide
 the memory barriers, allowing this requirement to be handled internally by
 the API.</p>
-</section>
-<section id="ensuring-requests-are-seen">
+</div>
+<div class="section" id="ensuring-requests-are-seen">
 <h2>Ensuring Requests Are Seen<a class="headerlink" href="#ensuring-requests-are-seen" title="Permalink to this headline">¶</a></h2>
 <p>When making requests to VCPUs, we want to avoid the receiving VCPU
 executing in guest mode for an arbitrary long time without handling the
@@ -499,14 +501,14 @@ the Dekker pattern has been extended to disable interrupts before setting
 pedantically implement the memory barrier pattern, guaranteeing the
 compiler doesn’t interfere with <code class="docutils literal notranslate"><span class="pre">vcpu-&gt;mode</span></code>’s carefully planned
 accesses.</p>
-<section id="ipi-reduction">
+<div class="section" id="ipi-reduction">
 <h3>IPI Reduction<a class="headerlink" href="#ipi-reduction" title="Permalink to this headline">¶</a></h3>
 <p>As only one IPI is needed to get a VCPU to check for any/all requests,
 then they may be coalesced.  This is easily done by having the first IPI
 sending kick also change the VCPU mode to something !IN_GUEST_MODE.  The
 transitional state, EXITING_GUEST_MODE, is used for this purpose.</p>
-</section>
-<section id="waiting-for-acknowledgements">
+</div>
+<div class="section" id="waiting-for-acknowledgements">
 <h3>Waiting for Acknowledgements<a class="headerlink" href="#waiting-for-acknowledgements" title="Permalink to this headline">¶</a></h3>
 <p>Some requests, those with the KVM_REQUEST_WAIT flag set, require IPIs to
 be sent, and the acknowledgements to be waited upon, even when the target
@@ -516,8 +518,8 @@ is set after disabling interrupts.  To support these cases, the
 KVM_REQUEST_WAIT flag changes the condition for sending an IPI from
 checking that the VCPU is IN_GUEST_MODE to checking that it is not
 OUTSIDE_GUEST_MODE.</p>
-</section>
-<section id="request-less-vcpu-kicks">
+</div>
+<div class="section" id="request-less-vcpu-kicks">
 <h3>Request-less VCPU Kicks<a class="headerlink" href="#request-less-vcpu-kicks" title="Permalink to this headline">¶</a></h3>
 <p>As the determination of whether or not to send an IPI depends on the
 two-variable Dekker memory barrier pattern, then it’s clear that
@@ -537,11 +539,11 @@ role of <code class="docutils literal notranslate"><span class="pre">vcpu-&gt;re
 set before reading <code class="docutils literal notranslate"><span class="pre">vcpu-&gt;mode</span></code>; dually, in the VCPU thread,
 vmx_sync_pir_to_irr() reads PIR after setting <code class="docutils literal notranslate"><span class="pre">vcpu-&gt;mode</span></code> to
 IN_GUEST_MODE.</p>
-</section>
-</section>
-<section id="additional-considerations">
+</div>
+</div>
+<div class="section" id="additional-considerations">
 <h2>Additional Considerations<a class="headerlink" href="#additional-considerations" title="Permalink to this headline">¶</a></h2>
-<section id="sleeping-vcpus">
+<div class="section" id="sleeping-vcpus">
 <h3>Sleeping VCPUs<a class="headerlink" href="#sleeping-vcpus" title="Permalink to this headline">¶</a></h3>
 <p>VCPU threads may need to consider requests before and/or after calling
 functions that may put them to sleep, e.g. kvm_vcpu_block().  Whether they
@@ -549,8 +551,8 @@ do or not, and, if they do, which requests need consideration, is
 architecture dependent.  kvm_vcpu_block() calls kvm_arch_vcpu_runnable()
 to check if it should awaken.  One reason to do so is to provide
 architectures a function where requests may be checked if necessary.</p>
-</section>
-<section id="clearing-requests">
+</div>
+<div class="section" id="clearing-requests">
 <h3>Clearing Requests<a class="headerlink" href="#clearing-requests" title="Permalink to this headline">¶</a></h3>
 <p>Generally it only makes sense for the receiving VCPU thread to clear a
 request.  However, in some circumstances, such as when the requesting
@@ -563,9 +565,9 @@ examples of this are kvm_vcpu_block() calls made by VCPUs to block
 themselves.  A possible side-effect of that call is to make the
 KVM_REQ_UNHALT request, which may then be cleared immediately when the
 VCPU returns from the call.</p>
-</section>
-</section>
-<section id="references">
+</div>
+</div>
+<div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <dl class="citation">
 <dt class="label" id="atomic-ops"><span class="brackets"><a class="fn-backref" href="#id1">atomic-ops</a></span></dt>
@@ -578,8 +580,8 @@ VCPU returns from the call.</p>
 <dd><p><a class="reference external" href="https://lwn.net/Articles/573436/">https://lwn.net/Articles/573436/</a></p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

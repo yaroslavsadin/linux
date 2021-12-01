@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>TODO list &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -307,11 +309,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="todo-list">
+  <div class="section" id="todo-list">
 <span id="todo"></span><h1>TODO list<a class="headerlink" href="#todo-list" title="Permalink to this headline">¶</a></h1>
 <p>This section contains a list of smaller janitorial tasks in the kernel DRM
 graphics subsystem useful as newbie projects. Or for slow rainy days.</p>
-<section id="difficulty">
+<div class="section" id="difficulty">
 <h2>Difficulty<a class="headerlink" href="#difficulty" title="Permalink to this headline">¶</a></h2>
 <p>To make it easier task are categorized into different levels:</p>
 <p>Starter: Good tasks to get started with the DRM subsystem.</p>
@@ -324,11 +326,11 @@ and graphics topics. Generally need the relevant hardware for development and
 testing.</p>
 <p>Expert: Only attempt these if you’ve successfully completed some tricky
 refactorings already and are an expert in the specific area</p>
-<section id="subsystem-wide-refactorings">
+<div class="section" id="subsystem-wide-refactorings">
 <h3>Subsystem-wide refactorings<a class="headerlink" href="#subsystem-wide-refactorings" title="Permalink to this headline">¶</a></h3>
-</section>
-</section>
-<section id="remove-custom-dumb-map-offset-implementations">
+</div>
+</div>
+<div class="section" id="remove-custom-dumb-map-offset-implementations">
 <h2>Remove custom dumb_map_offset implementations<a class="headerlink" href="#remove-custom-dumb-map-offset-implementations" title="Permalink to this headline">¶</a></h2>
 <p>All GEM based drivers should be using <a class="reference internal" href="drm-mm.html#c.drm_gem_create_mmap_offset" title="drm_gem_create_mmap_offset"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_create_mmap_offset()</span></code></a> instead.
 Audit each individual driver, make sure it’ll work with the generic
@@ -336,8 +338,8 @@ implementation (there’s lots of outdated locking leftovers in various
 implementations), and then remove it.</p>
 <p>Contact: Daniel Vetter, respective driver maintainers</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="convert-existing-kms-drivers-to-atomic-modesetting">
+</div>
+<div class="section" id="convert-existing-kms-drivers-to-atomic-modesetting">
 <h2>Convert existing KMS drivers to atomic modesetting<a class="headerlink" href="#convert-existing-kms-drivers-to-atomic-modesetting" title="Permalink to this headline">¶</a></h2>
 <p>3.19 has the atomic modeset interfaces and helpers, so drivers can now be
 converted over. Modern compositors like Wayland or Surfaceflinger on Android
@@ -351,8 +353,8 @@ exposing primary &amp; cursor as proper plane objects). But that’s much easier
 do by directly using the new atomic helper driver callbacks.</p>
 <p>Contact: Daniel Vetter, respective driver maintainers</p>
 <p>Level: Advanced</p>
-</section>
-<section id="clean-up-the-clipped-coordination-confusion-around-planes">
+</div>
+<div class="section" id="clean-up-the-clipped-coordination-confusion-around-planes">
 <h2>Clean up the clipped coordination confusion around planes<a class="headerlink" href="#clean-up-the-clipped-coordination-confusion-around-planes" title="Permalink to this headline">¶</a></h2>
 <p>We have a helper to get this right with drm_plane_helper_check_update(), but
 it’s not consistently used. This should be fixed, preferrably in the atomic
@@ -362,8 +364,8 @@ avoid confusion - the other helpers in that file are all deprecated legacy
 helpers.</p>
 <p>Contact: Ville Syrjälä, Daniel Vetter, driver maintainers</p>
 <p>Level: Advanced</p>
-</section>
-<section id="improve-plane-atomic-check-helpers">
+</div>
+<div class="section" id="improve-plane-atomic-check-helpers">
 <h2>Improve plane atomic_check helpers<a class="headerlink" href="#improve-plane-atomic-check-helpers" title="Permalink to this headline">¶</a></h2>
 <p>Aside from the clipped coordinates right above there’s a few suboptimal things
 with the current helpers:</p>
@@ -380,8 +382,8 @@ checks for plane_state-&gt;fb and plane_state-&gt;crtc.</p></li>
 </ul>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Advanced</p>
-</section>
-<section id="convert-early-atomic-drivers-to-async-commit-helpers">
+</div>
+<div class="section" id="convert-early-atomic-drivers-to-async-commit-helpers">
 <h2>Convert early atomic drivers to async commit helpers<a class="headerlink" href="#convert-early-atomic-drivers-to-async-commit-helpers" title="Permalink to this headline">¶</a></h2>
 <p>For the first year the atomic modeset helpers didn’t support asynchronous /
 nonblocking commits, and every driver had to hand-roll them. This is fixed
@@ -394,8 +396,8 @@ the new atomic_async_check/commit functionality in the helpers in drivers that
 still look at that flag.</p>
 <p>Contact: Daniel Vetter, respective driver maintainers</p>
 <p>Level: Advanced</p>
-</section>
-<section id="fallout-from-atomic-kms">
+</div>
+<div class="section" id="fallout-from-atomic-kms">
 <h2>Fallout from atomic KMS<a class="headerlink" href="#fallout-from-atomic-kms" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">drm_atomic_helper.c</span></code> provides a batch of functions which implement legacy
 IOCTLs on top of the new atomic driver interface. Which is really nice for
@@ -421,8 +423,8 @@ internal use. Some of these hooks should be move from <code class="docutils lite
 </ul>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="get-rid-of-dev-struct-mutex-from-gem-drivers">
+</div>
+<div class="section" id="get-rid-of-dev-struct-mutex-from-gem-drivers">
 <h2>Get rid of dev-&gt;struct_mutex from GEM drivers<a class="headerlink" href="#get-rid-of-dev-struct-mutex-from-gem-drivers" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">dev-&gt;struct_mutex</span></code> is the Big DRM Lock from legacy days and infested
 everything. Nowadays in modern drivers the only bit where it’s mandatory is
@@ -441,8 +443,8 @@ fine-grained per-buffer object and per-context lockings scheme. Currently only
 the <code class="docutils literal notranslate"><span class="pre">msm</span></code> and <cite>i915</cite> drivers use <code class="docutils literal notranslate"><span class="pre">struct_mutex</span></code>.</p>
 <p>Contact: Daniel Vetter, respective driver maintainers</p>
 <p>Level: Advanced</p>
-</section>
-<section id="move-buffer-object-locking-to-dma-resv-lock">
+</div>
+<div class="section" id="move-buffer-object-locking-to-dma-resv-lock">
 <h2>Move Buffer Object Locking to dma_resv_lock()<a class="headerlink" href="#move-buffer-object-locking-to-dma-resv-lock" title="Permalink to this headline">¶</a></h2>
 <p>Many drivers have their own per-object locking scheme, usually using
 <a class="reference internal" href="../kernel-hacking/locking.html#c.mutex_lock" title="mutex_lock"><code class="xref c c-func docutils literal notranslate"><span class="pre">mutex_lock()</span></code></a>. This causes all kinds of trouble for buffer sharing, since
@@ -454,8 +456,8 @@ other driver specific per-object locks removed. The problem is tha rolling out
 the actual change to the locking contract is a flag day, due to <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_buf" title="dma_buf"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_buf</span></code></a>
 buffer sharing.</p>
 <p>Level: Expert</p>
-</section>
-<section id="convert-logging-to-drm-functions-with-drm-device-paramater">
+</div>
+<div class="section" id="convert-logging-to-drm-functions-with-drm-device-paramater">
 <h2>Convert logging to drm_* functions with drm_device paramater<a class="headerlink" href="#convert-logging-to-drm-functions-with-drm-device-paramater" title="Permalink to this headline">¶</a></h2>
 <p>For drivers which could have multiple instances, it is necessary to
 differentiate between which is which in the logs. Since DRM_INFO/WARN/ERROR
@@ -467,8 +469,8 @@ sure your work will be merged - not everyone agrees that the DRM dmesg macros
 are better.</p>
 <p>Contact: Sean Paul, Maintainer of the driver you plan to convert</p>
 <p>Level: Starter</p>
-</section>
-<section id="convert-drivers-to-use-simple-modeset-suspend-resume">
+</div>
+<div class="section" id="convert-drivers-to-use-simple-modeset-suspend-resume">
 <h2>Convert drivers to use simple modeset suspend/resume<a class="headerlink" href="#convert-drivers-to-use-simple-modeset-suspend-resume" title="Permalink to this headline">¶</a></h2>
 <p>Most drivers (except i915 and nouveau) that use
 drm_atomic_helper_suspend/resume() can probably be converted to use
@@ -476,8 +478,8 @@ drm_mode_config_helper_suspend/resume(). Also there’s still open-coded version
 of the atomic suspend/resume code in older atomic modeset drivers.</p>
 <p>Contact: Maintainer of the driver you plan to convert</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="convert-drivers-to-use-drm-fbdev-generic-setup">
+</div>
+<div class="section" id="convert-drivers-to-use-drm-fbdev-generic-setup">
 <h2>Convert drivers to use drm_fbdev_generic_setup()<a class="headerlink" href="#convert-drivers-to-use-drm-fbdev-generic-setup" title="Permalink to this headline">¶</a></h2>
 <p>Most drivers can use <a class="reference internal" href="drm-kms-helpers.html#c.drm_fbdev_generic_setup" title="drm_fbdev_generic_setup"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_fbdev_generic_setup()</span></code></a>. Driver have to implement
 atomic modesetting and GEM vmap support. Historically, generic fbdev emulation
@@ -486,8 +488,8 @@ expected the framebuffer in system memory or system-like memory. By employing
 as well.</p>
 <p>Contact: Maintainer of the driver you plan to convert</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="reimplement-functions-in-drm-fbdev-fb-ops-without-fbdev">
+</div>
+<div class="section" id="reimplement-functions-in-drm-fbdev-fb-ops-without-fbdev">
 <h2>Reimplement functions in drm_fbdev_fb_ops without fbdev<a class="headerlink" href="#reimplement-functions-in-drm-fbdev-fb-ops-without-fbdev" title="Permalink to this headline">¶</a></h2>
 <p>A number of callback functions in drm_fbdev_fb_ops could benefit from
 being rewritten without dependencies on the fbdev module. Some of the
@@ -495,8 +497,8 @@ helpers could further benefit from using <a class="reference internal" href="../
 raw pointers.</p>
 <p>Contact: Thomas Zimmermann &lt;<a class="reference external" href="mailto:tzimmermann&#37;&#52;&#48;suse&#46;de">tzimmermann<span>&#64;</span>suse<span>&#46;</span>de</a>&gt;, Daniel Vetter</p>
 <p>Level: Advanced</p>
-</section>
-<section id="drm-framebuffer-funcs-and-drm-mode-config-funcs-fb-create-cleanup">
+</div>
+<div class="section" id="drm-framebuffer-funcs-and-drm-mode-config-funcs-fb-create-cleanup">
 <h2>drm_framebuffer_funcs and drm_mode_config_funcs.fb_create cleanup<a class="headerlink" href="#drm-framebuffer-funcs-and-drm-mode-config-funcs-fb-create-cleanup" title="Permalink to this headline">¶</a></h2>
 <p>A lot more drivers could be switched over to the drm_gem_framebuffer helpers.
 Various hold-ups:</p>
@@ -516,16 +518,16 @@ drm_gem_fb_create/_with_dirty/_with_funcs as needed.</p></li>
 </ul>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="clean-up-mmap-forwarding">
+</div>
+<div class="section" id="clean-up-mmap-forwarding">
 <h2>Clean up mmap forwarding<a class="headerlink" href="#clean-up-mmap-forwarding" title="Permalink to this headline">¶</a></h2>
 <p>A lot of drivers forward gem mmap calls to dma-buf mmap for imported buffers.
 And also a lot of them forward dma-buf mmap to the gem mmap implementations.
 There’s <a class="reference internal" href="drm-mm.html#c.drm_gem_prime_mmap" title="drm_gem_prime_mmap"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_prime_mmap()</span></code></a> for this now, but still needs to be rolled out.</p>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="generic-fbdev-defio-support">
+</div>
+<div class="section" id="generic-fbdev-defio-support">
 <h2>Generic fbdev defio support<a class="headerlink" href="#generic-fbdev-defio-support" title="Permalink to this headline">¶</a></h2>
 <p>The defio support code in the fbdev core has some very specific requirements,
 which means drivers need to have a special framebuffer for fbdev. The main
@@ -552,8 +554,8 @@ should work) to avoid clobbering struct page.</p></li>
 <p>Might be good to also have some igt testcases for this.</p>
 <p>Contact: Daniel Vetter, Noralf Tronnes</p>
 <p>Level: Advanced</p>
-</section>
-<section id="garbage-collect-fbdev-scrolling-acceleration">
+</div>
+<div class="section" id="garbage-collect-fbdev-scrolling-acceleration">
 <h2>Garbage collect fbdev scrolling acceleration<a class="headerlink" href="#garbage-collect-fbdev-scrolling-acceleration" title="Permalink to this headline">¶</a></h2>
 <p>Scroll acceleration has been disabled in fbcon. Now it works as the old
 SCROLL_REDRAW mode. A ton of code was removed in fbcon.c and the hook bmove was
@@ -571,8 +573,8 @@ support is still accelerated, which might be good candidates for further
 deletion projects.</p>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="idr-init-base">
+</div>
+<div class="section" id="idr-init-base">
 <h2>idr_init_base()<a class="headerlink" href="#idr-init-base" title="Permalink to this headline">¶</a></h2>
 <p>DRM core&amp;drivers uses a lot of idr (integer lookup directories) for mapping
 userspace IDs to internal objects, and in most places ID=0 means NULL and hence
@@ -580,15 +582,15 @@ is never used. Switching to <a class="reference internal" href="../core-api/idr.
 efficient.</p>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Starter</p>
-</section>
-<section id="struct-drm-gem-object-funcs">
+</div>
+<div class="section" id="struct-drm-gem-object-funcs">
 <h2>struct drm_gem_object_funcs<a class="headerlink" href="#struct-drm-gem-object-funcs" title="Permalink to this headline">¶</a></h2>
 <p>GEM objects can now have a function table instead of having the callbacks on the
 DRM driver struct. This is now the preferred way. Callbacks in drivers have been
 converted, except for <a class="reference internal" href="drm-internals.html#c.drm_driver" title="drm_driver"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_driver</span></code></a>.gem_prime_mmap.</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="rename-cma-helpers-to-dma-helpers">
+</div>
+<div class="section" id="rename-cma-helpers-to-dma-helpers">
 <h2>Rename CMA helpers to DMA helpers<a class="headerlink" href="#rename-cma-helpers-to-dma-helpers" title="Permalink to this headline">¶</a></h2>
 <p>CMA (standing for contiguous memory allocator) is really a bit an accident of
 what these were used for first, a much better name would be DMA helpers. In the
@@ -597,8 +599,8 @@ no one knows what that means) since underneath they just use dma_alloc_coherent.
 <p>Contact: Laurent Pinchart, Daniel Vetter</p>
 <p>Level: Intermediate (mostly because it is a huge tasks without good partial
 milestones, not technically itself that challenging)</p>
-</section>
-<section id="connector-register-unregister-fixes">
+</div>
+<div class="section" id="connector-register-unregister-fixes">
 <h2>connector register/unregister fixes<a class="headerlink" href="#connector-register-unregister-fixes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>For most connectors it’s a no-op to call drm_connector_register/unregister
@@ -610,8 +612,8 @@ drm_dp_aux_init, and moving the actual registering into a late_register
 callback as recommended in the kerneldoc.</p></li>
 </ul>
 <p>Level: Intermediate</p>
-</section>
-<section id="remove-load-unload-callbacks-from-all-non-driver-legacy-drivers">
+</div>
+<div class="section" id="remove-load-unload-callbacks-from-all-non-driver-legacy-drivers">
 <h2>Remove load/unload callbacks from all non-DRIVER_LEGACY drivers<a class="headerlink" href="#remove-load-unload-callbacks-from-all-non-driver-legacy-drivers" title="Permalink to this headline">¶</a></h2>
 <p>The load/unload callbacks in struct &amp;drm_driver are very much midlayers, plus
 for historical reasons they get the ordering wrong (and we can’t fix that)
@@ -624,8 +626,8 @@ callbacks for all modern drivers.</p></li>
 </ul>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="replace-drm-detect-hdmi-monitor-with-drm-display-info-is-hdmi">
+</div>
+<div class="section" id="replace-drm-detect-hdmi-monitor-with-drm-display-info-is-hdmi">
 <h2>Replace drm_detect_hdmi_monitor() with drm_display_info.is_hdmi<a class="headerlink" href="#replace-drm-detect-hdmi-monitor-with-drm-display-info-is-hdmi" title="Permalink to this headline">¶</a></h2>
 <p>Once EDID is parsed, the monitor HDMI support information is available through
 drm_display_info.is_hdmi. Many drivers still call <a class="reference internal" href="drm-kms-helpers.html#c.drm_detect_hdmi_monitor" title="drm_detect_hdmi_monitor"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_detect_hdmi_monitor()</span></code></a> to
@@ -634,8 +636,8 @@ retrieve the same information, which is less efficient.</p>
 drm_display_info.is_hdmi if applicable.</p>
 <p>Contact: Laurent Pinchart, respective driver maintainers</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="consolidate-custom-driver-modeset-properties">
+</div>
+<div class="section" id="consolidate-custom-driver-modeset-properties">
 <h2>Consolidate custom driver modeset properties<a class="headerlink" href="#consolidate-custom-driver-modeset-properties" title="Permalink to this headline">¶</a></h2>
 <p>Before atomic modeset took place, many drivers where creating their own
 properties. Among other things, atomic brought the requirement that custom,
@@ -657,8 +659,8 @@ if available:</p>
 - zorder (omapdrm) - same as zpos (?)</p>
 <p>Contact: Emil Velikov, respective driver maintainers</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="use-struct-dma-buf-map-throughout-codebase">
+</div>
+<div class="section" id="use-struct-dma-buf-map-throughout-codebase">
 <h2>Use struct dma_buf_map throughout codebase<a class="headerlink" href="#use-struct-dma-buf-map-throughout-codebase" title="Permalink to this headline">¶</a></h2>
 <p>Pointers to shared device memory are stored in <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_buf_map" title="dma_buf_map"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_buf_map</span></code></a>. Each
 instance knows whether it refers to system or I/O memory. Most of the DRM-wide
@@ -672,11 +674,11 @@ often still use raw pointers.</p>
 </ul>
 <p>Contact: Thomas Zimmermann &lt;<a class="reference external" href="mailto:tzimmermann&#37;&#52;&#48;suse&#46;de">tzimmermann<span>&#64;</span>suse<span>&#46;</span>de</a>&gt;, Christian König, Daniel Vetter</p>
 <p>Level: Intermediate</p>
-<section id="core-refactorings">
+<div class="section" id="core-refactorings">
 <h3>Core refactorings<a class="headerlink" href="#core-refactorings" title="Permalink to this headline">¶</a></h3>
-</section>
-</section>
-<section id="make-panic-handling-work">
+</div>
+</div>
+<div class="section" id="make-panic-handling-work">
 <h2>Make panic handling work<a class="headerlink" href="#make-panic-handling-work" title="Permalink to this headline">¶</a></h2>
 <p>This is a really varied tasks with lots of little bits and pieces:</p>
 <ul class="simple">
@@ -709,8 +711,8 @@ obviously work for both console, in case we ever get kmslog merged.</p></li>
 </ul>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Advanced</p>
-</section>
-<section id="clean-up-the-debugfs-support">
+</div>
+<div class="section" id="clean-up-the-debugfs-support">
 <h2>Clean up the debugfs support<a class="headerlink" href="#clean-up-the-debugfs-support" title="Permalink to this headline">¶</a></h2>
 <p>There’s a bunch of issues with it:</p>
 <ul class="simple">
@@ -733,8 +735,8 @@ debugfs_init.</p></li>
 <p>Previous RFC that hasn’t landed yet: <a class="reference external" href="https://lore.kernel.org/dri-devel/20200513114130.28641-2-wambui.karugax&#64;gmail.com/">https://lore.kernel.org/dri-devel/20200513114130.28641-2-wambui.karugax&#64;gmail.com/</a></p>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="object-lifetime-fixes">
+</div>
+<div class="section" id="object-lifetime-fixes">
 <h2>Object lifetime fixes<a class="headerlink" href="#object-lifetime-fixes" title="Permalink to this headline">¶</a></h2>
 <p>There’s two related issues here</p>
 <ul class="simple">
@@ -750,8 +752,8 @@ various convenience wrappers provided, e.g. <a class="reference internal" href="
 <a class="reference internal" href="drm-kms.html#c.drmm_universal_plane_alloc" title="drmm_universal_plane_alloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">drmm_universal_plane_alloc()</span></code></a>, … and so on.</p>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="remove-automatic-page-mapping-from-dma-buf-importing">
+</div>
+<div class="section" id="remove-automatic-page-mapping-from-dma-buf-importing">
 <h2>Remove automatic page mapping from dma-buf importing<a class="headerlink" href="#remove-automatic-page-mapping-from-dma-buf-importing" title="Permalink to this headline">¶</a></h2>
 <p>When importing dma-bufs, the dma-buf and PRIME frameworks automatically map
 imported pages into the importer’s DMA area. <a class="reference internal" href="drm-mm.html#c.drm_gem_prime_fd_to_handle" title="drm_gem_prime_fd_to_handle"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_prime_fd_to_handle()</span></code></a> and
@@ -766,16 +768,16 @@ this problem for USB devices by fishing out the USB host controller device, as
 long as that supports DMA. Otherwise importing can still needlessly fail.</p>
 <p>Contact: Thomas Zimmermann &lt;<a class="reference external" href="mailto:tzimmermann&#37;&#52;&#48;suse&#46;de">tzimmermann<span>&#64;</span>suse<span>&#46;</span>de</a>&gt;, Daniel Vetter</p>
 <p>Level: Advanced</p>
-<section id="better-testing">
+<div class="section" id="better-testing">
 <h3>Better Testing<a class="headerlink" href="#better-testing" title="Permalink to this headline">¶</a></h3>
-</section>
-</section>
-<section id="enable-trinity-for-drm">
+</div>
+</div>
+<div class="section" id="enable-trinity-for-drm">
 <h2>Enable trinity for DRM<a class="headerlink" href="#enable-trinity-for-drm" title="Permalink to this headline">¶</a></h2>
 <p>And fix up the fallout. Should be really interesting …</p>
 <p>Level: Advanced</p>
-</section>
-<section id="make-kms-tests-in-i-g-t-generic">
+</div>
+<div class="section" id="make-kms-tests-in-i-g-t-generic">
 <h2>Make KMS tests in i-g-t generic<a class="headerlink" href="#make-kms-tests-in-i-g-t-generic" title="Permalink to this headline">¶</a></h2>
 <p>The i915 driver team maintains an extensive testsuite for the i915 DRM driver,
 including tons of testcases for corner-cases in the modesetting API. It would
@@ -786,15 +788,15 @@ converting things over. For modeset tests we also first need a bit of
 infrastructure to use dumb buffers for untiled buffers, to be able to run all
 the non-i915 specific modeset tests.</p>
 <p>Level: Advanced</p>
-</section>
-<section id="extend-virtual-test-driver-vkms">
+</div>
+<div class="section" id="extend-virtual-test-driver-vkms">
 <h2>Extend virtual test driver (VKMS)<a class="headerlink" href="#extend-virtual-test-driver-vkms" title="Permalink to this headline">¶</a></h2>
 <p>See the documentation of <a class="reference internal" href="vkms.html#vkms"><span class="std std-ref">VKMS</span></a> for more details. This is an ideal
 internship task, since it only requires a virtual machine and can be sized to
 fit the available time.</p>
 <p>Level: See details</p>
-</section>
-<section id="backlight-refactoring">
+</div>
+<div class="section" id="backlight-refactoring">
 <h2>Backlight Refactoring<a class="headerlink" href="#backlight-refactoring" title="Permalink to this headline">¶</a></h2>
 <p>Backlight drivers have a triple enable/disable state, which is a bit overkill.
 Plan to fix this:</p>
@@ -806,17 +808,17 @@ has started already.</p></li>
 </ol>
 <p>Contact: Daniel Vetter</p>
 <p>Level: Intermediate</p>
-<section id="driver-specific">
+<div class="section" id="driver-specific">
 <h3>Driver Specific<a class="headerlink" href="#driver-specific" title="Permalink to this headline">¶</a></h3>
-</section>
-</section>
-<section id="amd-dc-display-driver">
+</div>
+</div>
+<div class="section" id="amd-dc-display-driver">
 <h2>AMD DC Display Driver<a class="headerlink" href="#amd-dc-display-driver" title="Permalink to this headline">¶</a></h2>
 <p>AMD DC is the display driver for AMD devices starting with Vega. There has been
 a bunch of progress cleaning it up but there’s still plenty of work to be done.</p>
 <p>See drivers/gpu/drm/amd/display/TODO for tasks.</p>
 <p>Contact: Harry Wentland, Alex Deucher</p>
-<section id="bootsplash">
+<div class="section" id="bootsplash">
 <h3>Bootsplash<a class="headerlink" href="#bootsplash" title="Permalink to this headline">¶</a></h3>
 <p>There is support in place now for writing internal DRM clients making it
 possible to pick up the bootsplash work that was rejected because it was written
@@ -829,12 +831,12 @@ for fbdev.</p>
 </ul>
 <p>Contact: Sam Ravnborg</p>
 <p>Level: Advanced</p>
-</section>
-<section id="outside-drm">
+</div>
+<div class="section" id="outside-drm">
 <h3>Outside DRM<a class="headerlink" href="#outside-drm" title="Permalink to this headline">¶</a></h3>
-</section>
-</section>
-<section id="convert-fbdev-drivers-to-drm">
+</div>
+</div>
+<div class="section" id="convert-fbdev-drivers-to-drm">
 <h2>Convert fbdev drivers to DRM<a class="headerlink" href="#convert-fbdev-drivers-to-drm" title="Permalink to this headline">¶</a></h2>
 <p>There are plenty of fbdev drivers for older hardware. Some hardware has
 become obsolete, but some still provides good(-enough) framebuffers. The
@@ -860,8 +862,8 @@ and Weston.</p>
 </div></blockquote>
 <p>Contact: Thomas Zimmermann &lt;<a class="reference external" href="mailto:tzimmermann&#37;&#52;&#48;suse&#46;de">tzimmermann<span>&#64;</span>suse<span>&#46;</span>de</a>&gt;</p>
 <p>Level: Advanced</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

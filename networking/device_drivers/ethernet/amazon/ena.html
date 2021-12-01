@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Linux kernel driver for Elastic Network Adapter (ENA) family &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
@@ -416,9 +418,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-kernel-driver-for-elastic-network-adapter-ena-family">
+  <div class="section" id="linux-kernel-driver-for-elastic-network-adapter-ena-family">
 <h1>Linux kernel driver for Elastic Network Adapter (ENA) family<a class="headerlink" href="#linux-kernel-driver-for-elastic-network-adapter-ena-family" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>ENA is a networking interface designed to make good use of modern CPU
 features and system architectures.</p>
@@ -484,8 +486,8 @@ driver.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="management-interface">
+</div>
+<div class="section" id="management-interface">
 <h2>Management Interface:<a class="headerlink" href="#management-interface" title="Permalink to this headline">¶</a></h2>
 <p>ENA management interface is exposed by means of:</p>
 <ul class="simple">
@@ -554,8 +556,8 @@ A Keep-Alive event is delivered by the device every second.
 The driver maintains a watchdog (WD) handler which logs the current state and
 statistics. If the keep-alive events aren’t delivered as expected the WD resets
 the device and the driver.</p>
-</section>
-<section id="data-path-interface">
+</div>
+<div class="section" id="data-path-interface">
 <h2>Data Path Interface<a class="headerlink" href="#data-path-interface" title="Permalink to this headline">¶</a></h2>
 <p>I/O operations are based on Tx and Rx Submission Queues (Tx SQ and Rx
 SQ correspondingly). Each SQ has a completion queue (CQ) associated
@@ -592,8 +594,8 @@ packets to the CPU, where the application thread consuming the
 packet is running.</p></li>
 <li><p>In hardware interrupt re-direction.</p></li>
 </ul>
-</section>
-<section id="interrupt-modes">
+</div>
+<div class="section" id="interrupt-modes">
 <h2>Interrupt Modes<a class="headerlink" href="#interrupt-modes" title="Permalink to this headline">¶</a></h2>
 <p>The driver assigns a single MSI-X vector per queue pair (for both Tx
 and Rx directions). The driver assigns an additional dedicated MSI-X vector
@@ -615,8 +617,8 @@ interface is closed.</p>
 modes. That is, once MSI-X is delivered to the host, its Cause bit is
 automatically cleared and the interrupt is masked. The interrupt is
 unmasked by the driver after NAPI processing is complete.</p>
-</section>
-<section id="interrupt-moderation">
+</div>
+<div class="section" id="interrupt-moderation">
 <h2>Interrupt Moderation<a class="headerlink" href="#interrupt-moderation" title="Permalink to this headline">¶</a></h2>
 <p>ENA driver and device can operate in conventional or adaptive interrupt
 moderation mode.</p>
@@ -631,36 +633,36 @@ according to the traffic nature.</p>
 <code class="code docutils literal notranslate"><span class="pre">adaptive_rx</span> <span class="pre">on|off</span></code> parameter.</p>
 <p>More information about Adaptive Interrupt Moderation (DIM) can be found in
 <a class="reference internal" href="../../../net_dim.html"><span class="doc">Net DIM - Generic Network Dynamic Interrupt Moderation</span></a></p>
-</section>
-<section id="rx-copybreak">
+</div>
+<div class="section" id="rx-copybreak">
 <h2>RX copybreak<a class="headerlink" href="#rx-copybreak" title="Permalink to this headline">¶</a></h2>
 <p>The rx_copybreak is initialized by default to ENA_DEFAULT_RX_COPYBREAK
 and can be configured by the ETHTOOL_STUNABLE command of the
 SIOCETHTOOL ioctl.</p>
-</section>
-<section id="statistics">
+</div>
+<div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>The user can obtain ENA device and driver statistics using <cite>ethtool</cite>.
 The driver can collect regular or extended statistics (including
 per-queue stats) from the device.</p>
 <p>In addition the driver logs the stats to syslog upon device reset.</p>
-</section>
-<section id="mtu">
+</div>
+<div class="section" id="mtu">
 <h2>MTU<a class="headerlink" href="#mtu" title="Permalink to this headline">¶</a></h2>
 <p>The driver supports an arbitrarily large MTU with a maximum that is
 negotiated with the device. The driver configures MTU using the
 SetFeature command (ENA_ADMIN_MTU property). The user can change MTU
 via <cite>ip(8)</cite> and similar legacy tools.</p>
-</section>
-<section id="stateless-offloads">
+</div>
+<div class="section" id="stateless-offloads">
 <h2>Stateless Offloads<a class="headerlink" href="#stateless-offloads" title="Permalink to this headline">¶</a></h2>
 <p>The ENA driver supports:</p>
 <ul class="simple">
 <li><p>IPv4 header checksum offload</p></li>
 <li><p>TCP/UDP over IPv4/IPv6 checksum offloads</p></li>
 </ul>
-</section>
-<section id="rss">
+</div>
+<div class="section" id="rss">
 <h2>RSS<a class="headerlink" href="#rss" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The ENA device supports RSS that allows flexible Rx traffic
@@ -677,10 +679,10 @@ SKB.</p></li>
 <li><p>The user can provide a hash key, hash function, and configure the
 indirection table through <cite>ethtool(8)</cite>.</p></li>
 </ul>
-</section>
-<section id="data-path">
+</div>
+<div class="section" id="data-path">
 <h2>DATA PATH<a class="headerlink" href="#data-path" title="Permalink to this headline">¶</a></h2>
-<section id="tx">
+<div class="section" id="tx">
 <h3>Tx<a class="headerlink" href="#tx" title="Permalink to this headline">¶</a></h3>
 <p><code class="code docutils literal notranslate"><span class="pre">ena_start_xmit()</span></code> is called by the stack. This function does the following:</p>
 <ul class="simple">
@@ -716,8 +718,8 @@ the budget is reached.</p></li>
 </ul>
 </li>
 </ul>
-</section>
-<section id="rx">
+</div>
+<div class="section" id="rx">
 <h3>Rx<a class="headerlink" href="#rx" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>When a packet is received from the ENA device.</p></li>
@@ -745,9 +747,9 @@ descriptor as <cite>skb</cite>’s linear part and the other descriptors as the
 checksum hw verify result, etc), and then passed to the network
 stack, using the NAPI interface function <code class="code docutils literal notranslate"><span class="pre">napi_gro_receive()</span></code>.</p></li>
 </ul>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

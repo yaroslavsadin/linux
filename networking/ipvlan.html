@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>IPVLAN Driver HOWTO &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -374,27 +376,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ipvlan-driver-howto">
+  <div class="section" id="ipvlan-driver-howto">
 <h1>IPVLAN Driver HOWTO<a class="headerlink" href="#ipvlan-driver-howto" title="Permalink to this headline">¶</a></h1>
 <dl class="simple">
 <dt>Initial Release:</dt><dd><p>Mahesh Bandewar &lt;maheshb AT google.com&gt;</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>1. Introduction:<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This is conceptually very similar to the macvlan driver with one major
 exception of using L3 for mux-ing /demux-ing among slaves. This property makes
 the master device share the L2 with it’s slave devices. I have developed this
 driver in conjunction with network namespaces and not sure if there is use case
 outside of it.</p>
-</section>
-<section id="building-and-installation">
+</div>
+<div class="section" id="building-and-installation">
 <h2>2. Building and Installation:<a class="headerlink" href="#building-and-installation" title="Permalink to this headline">¶</a></h2>
 <p>In order to build the driver, please select the config item CONFIG_IPVLAN.
 The driver can be built into the kernel (CONFIG_IPVLAN=y) or as a module
 (CONFIG_IPVLAN=m).</p>
-</section>
-<section id="configuration">
+</div>
+<div class="section" id="configuration">
 <h2>3. Configuration:<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <p>There are no module parameters for this driver and it can be configured
 using IProute2/ip utility.</p>
@@ -430,8 +432,8 @@ L3 bridge mode:</p>
 </li>
 </ol>
 </div></blockquote>
-</section>
-<section id="operating-modes">
+</div>
+<div class="section" id="operating-modes">
 <h2>4. Operating modes:<a class="headerlink" href="#operating-modes" title="Permalink to this headline">¶</a></h2>
 <p>IPvlan has two modes of operation - L2 and L3. For a given master device,
 you can select one of these two modes and all slaves on that master will
@@ -439,45 +441,45 @@ operate in the same (selected) mode. The RX mode is almost identical except
 that in L3 mode the slaves wont receive any multicast / broadcast traffic.
 L3 mode is more restrictive since routing is controlled from the other (mostly)
 default namespace.</p>
-<section id="l2-mode">
+<div class="section" id="l2-mode">
 <h3>4.1 L2 mode:<a class="headerlink" href="#l2-mode" title="Permalink to this headline">¶</a></h3>
 <p>In this mode TX processing happens on the stack instance attached to the
 slave device and packets are switched and queued to the master device to send
 out. In this mode the slaves will RX/TX multicast and broadcast (if applicable)
 as well.</p>
-</section>
-<section id="l3-mode">
+</div>
+<div class="section" id="l3-mode">
 <h3>4.2 L3 mode:<a class="headerlink" href="#l3-mode" title="Permalink to this headline">¶</a></h3>
 <p>In this mode TX processing up to L3 happens on the stack instance attached
 to the slave device and packets are switched to the stack instance of the
 master device for the L2 processing and routing from that instance will be
 used before packets are queued on the outbound device. In this mode the slaves
 will not receive nor can send multicast / broadcast traffic.</p>
-</section>
-<section id="l3s-mode">
+</div>
+<div class="section" id="l3s-mode">
 <h3>4.3 L3S mode:<a class="headerlink" href="#l3s-mode" title="Permalink to this headline">¶</a></h3>
 <p>This is very similar to the L3 mode except that iptables (conn-tracking)
 works in this mode and hence it is L3-symmetric (L3s). This will have slightly less
 performance but that shouldn’t matter since you are choosing this mode over plain-L3
 mode to make conn-tracking work.</p>
-</section>
-</section>
-<section id="mode-flags">
+</div>
+</div>
+<div class="section" id="mode-flags">
 <h2>5. Mode flags:<a class="headerlink" href="#mode-flags" title="Permalink to this headline">¶</a></h2>
 <p>At this time following mode flags are available</p>
-<section id="bridge">
+<div class="section" id="bridge">
 <h3>5.1 bridge:<a class="headerlink" href="#bridge" title="Permalink to this headline">¶</a></h3>
 <p>This is the default option. To configure the IPvlan port in this mode,
 user can choose to either add this option on the command-line or don’t specify
 anything. This is the traditional mode where slaves can cross-talk among
 themselves apart from talking through the master device.</p>
-</section>
-<section id="private">
+</div>
+<div class="section" id="private">
 <h3>5.2 private:<a class="headerlink" href="#private" title="Permalink to this headline">¶</a></h3>
 <p>If this option is added to the command-line, the port is set in private
 mode. i.e. port won’t allow cross communication between slaves.</p>
-</section>
-<section id="vepa">
+</div>
+<div class="section" id="vepa">
 <h3>5.3 vepa:<a class="headerlink" href="#vepa" title="Permalink to this headline">¶</a></h3>
 <p>If this is added to the command-line, the port is set in VEPA mode.
 i.e. port will offload switching functionality to the external entity as
@@ -486,9 +488,9 @@ Note: VEPA mode in IPvlan has limitations. IPvlan uses the mac-address of the
 master-device, so the packets which are emitted in this mode for the adjacent
 neighbor will have source and destination mac same. This will make the switch /
 router send the redirect message.</p>
-</section>
-</section>
-<section id="what-to-choose-macvlan-vs-ipvlan">
+</div>
+</div>
+<div class="section" id="what-to-choose-macvlan-vs-ipvlan">
 <h2>6. What to choose (macvlan vs. ipvlan)?<a class="headerlink" href="#what-to-choose-macvlan-vs-ipvlan" title="Permalink to this headline">¶</a></h2>
 <p>These two devices are very similar in many regards and the specific use
 case could very well define which device to choose. if one of the following
@@ -501,8 +503,8 @@ puts the NIC in promiscuous mode and degraded performance is a concern.</p></li>
 <li><p>If the slave device is to be put into the hostile / untrusted network
 namespace where L2 on the slave could be changed / misused.</p></li>
 </ol>
-</section>
-<section id="example-configuration">
+</div>
+<div class="section" id="example-configuration">
 <h2>6. Example configuration:<a class="headerlink" href="#example-configuration" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>+=============================================================+
 |  Host: host1                                                |
@@ -565,8 +567,8 @@ ip link set dev ipvl1 netns ns1
 </div></blockquote>
 </li>
 </ol>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

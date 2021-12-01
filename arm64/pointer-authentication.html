@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Pointer authentication in AArch64 Linux &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -285,13 +287,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="pointer-authentication-in-aarch64-linux">
+  <div class="section" id="pointer-authentication-in-aarch64-linux">
 <h1>Pointer authentication in AArch64 Linux<a class="headerlink" href="#pointer-authentication-in-aarch64-linux" title="Permalink to this headline">¶</a></h1>
 <p>Author: Mark Rutland &lt;<a class="reference external" href="mailto:mark&#46;rutland&#37;&#52;&#48;arm&#46;com">mark<span>&#46;</span>rutland<span>&#64;</span>arm<span>&#46;</span>com</a>&gt;</p>
 <p>Date: 2017-07-19</p>
 <p>This document briefly describes the provision of pointer authentication
 functionality in AArch64 Linux.</p>
-<section id="architecture-overview">
+<div class="section" id="architecture-overview">
 <h2>Architecture overview<a class="headerlink" href="#architecture-overview" title="Permalink to this headline">¶</a></h2>
 <p>The ARMv8.3 Pointer Authentication extension adds primitives that can be
 used to mitigate certain classes of attack where an attacker can corrupt
@@ -312,8 +314,8 @@ extension.</p>
 <p>The extension provides five separate keys to generate PACs - two for
 instruction addresses (APIAKey, APIBKey), two for data addresses
 (APDAKey, APDBKey), and one for generic authentication (APGAKey).</p>
-</section>
-<section id="basic-support">
+</div>
+<div class="section" id="basic-support">
 <h2>Basic support<a class="headerlink" href="#basic-support" title="Permalink to this headline">¶</a></h2>
 <p>When CONFIG_ARM64_PTR_AUTH is selected, and relevant HW support is
 present, the kernel will assign random key values to each process at
@@ -334,8 +336,8 @@ using the PR_PAC_RESET_KEYS prctl. A bitmask of PR_PAC_APIAKEY,
 PR_PAC_APIBKEY, PR_PAC_APDAKEY, PR_PAC_APDBKEY and PR_PAC_APGAKEY
 specifies which keys are to be reinitialized; specifying 0 means “all
 keys”.</p>
-</section>
-<section id="debugging">
+</div>
+<div class="section" id="debugging">
 <h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
 <p>When CONFIG_ARM64_PTR_AUTH is selected, and HW support for address
 authentication is present, the kernel will expose the position of TTBR0
@@ -350,8 +352,8 @@ pointers).</p>
 will expose the NT_ARM_PACA_KEYS and NT_ARM_PACG_KEYS regsets (struct
 user_pac_address_keys and struct user_pac_generic_keys). These can be
 used to get and set the keys for a thread.</p>
-</section>
-<section id="virtualization">
+</div>
+<div class="section" id="virtualization">
 <h2>Virtualization<a class="headerlink" href="#virtualization" title="Permalink to this headline">¶</a></h2>
 <p>Pointer authentication is enabled in KVM guest when each virtual cpu is
 initialised by passing flags KVM_ARM_VCPU_PTRAUTH_[ADDRESS/GENERIC] and
@@ -369,8 +371,8 @@ filter out the Pointer Authentication system key registers from
 KVM_GET/SET_REG_* ioctls and mask those features from cpufeature ID
 register. Any attempt to use the Pointer Authentication instructions will
 result in an UNDEFINED exception being injected into the guest.</p>
-</section>
-<section id="enabling-and-disabling-keys">
+</div>
+<div class="section" id="enabling-and-disabling-keys">
 <h2>Enabling and disabling keys<a class="headerlink" href="#enabling-and-disabling-keys" title="Permalink to this headline">¶</a></h2>
 <p>The prctl PR_PAC_SET_ENABLED_KEYS allows the user program to control which
 PAC keys are enabled in a particular task. It takes two arguments, the
@@ -397,8 +399,8 @@ IB, DA and DB enabled, and are reset to this state on exec(). Processes created
 via fork() and clone() inherit the key enabled state from the calling process.</p>
 <p>It is recommended to avoid disabling the IA key, as this has higher performance
 overhead than disabling any of the other keys.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

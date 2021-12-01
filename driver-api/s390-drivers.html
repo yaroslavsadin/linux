@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Writing s390 channel device drivers &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -353,14 +355,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="writing-s390-channel-device-drivers">
+  <div class="section" id="writing-s390-channel-device-drivers">
 <h1>Writing s390 channel device drivers<a class="headerlink" href="#writing-s390-channel-device-drivers" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Cornelia Huck</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This document describes the interfaces available for device drivers that
 drive s390 based channel attached I/O devices. This includes interfaces
@@ -379,8 +381,8 @@ not strictly considered I/O devices. They are considered here as well,
 although they are not the focus of this document.</p>
 <p>Some additional information can also be found in the kernel source under
 <a class="reference internal" href="../s390/driver-model.html"><span class="doc">S/390 driver model interfaces</span></a>.</p>
-</section>
-<section id="the-css-bus">
+</div>
+<div class="section" id="the-css-bus">
 <h2>The css bus<a class="headerlink" href="#the-css-bus" title="Permalink to this headline">¶</a></h2>
 <p>The css bus contains the subchannels available on the system. They fall
 into several categories:</p>
@@ -394,8 +396,8 @@ device on the ccw bus and are described below.</p></li>
 to send asynchronous chsc commands.</p></li>
 <li><p>eADM subchannels. Used for talking to storage class memory.</p></li>
 </ul>
-</section>
-<section id="the-ccw-bus">
+</div>
+<div class="section" id="the-ccw-bus">
 <h2>The ccw bus<a class="headerlink" href="#the-ccw-bus" title="Permalink to this headline">¶</a></h2>
 <p>The ccw bus typically contains the majority of devices available to a
 s390 system. Named after the channel command word (ccw), the basic
@@ -405,15 +407,15 @@ subchannels, visible on the css bus. A device driver for
 channel-attached devices, however, will never interact with the
 subchannel directly, but only via the I/O device on the ccw bus, the ccw
 device.</p>
-<section id="i-o-functions-for-channel-attached-devices">
+<div class="section" id="i-o-functions-for-channel-attached-devices">
 <h3>I/O functions for channel-attached devices<a class="headerlink" href="#i-o-functions-for-channel-attached-devices" title="Permalink to this headline">¶</a></h3>
 <p>Some hardware structures have been translated into C structures for use
 by the common I/O layer and device drivers. For more information on the
 hardware structures represented here, please consult the Principles of
 Operation.</p>
 <dl class="c struct">
-<dt id="c.ccw1">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ccw1</span></code><a class="headerlink" href="#c.ccw1" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw1">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw1</span></span></span><a class="headerlink" href="#c.ccw1" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>channel command word</p>
 </dd></dl>
 
@@ -442,8 +444,8 @@ Operation.</p>
 operations with the device or the control unit. Only Format-1 channel
 command words are supported.</p>
 <dl class="c struct">
-<dt id="c.ccw0">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ccw0</span></code><a class="headerlink" href="#c.ccw0" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw0">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw0</span></span></span><a class="headerlink" href="#c.ccw0" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>channel command word</p>
 </dd></dl>
 
@@ -473,8 +475,8 @@ command words are supported.</p>
 <p><strong>Description</strong></p>
 <p>The format-0 ccw structure.</p>
 <dl class="c struct">
-<dt id="c.erw">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">erw</span></code><a class="headerlink" href="#c.erw" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.erw">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">erw</span></span></span><a class="headerlink" href="#c.erw" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>extended report word</p>
 </dd></dl>
 
@@ -517,8 +519,8 @@ command words are supported.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.erw_eadm">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">erw_eadm</span></code><a class="headerlink" href="#c.erw_eadm" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.erw_eadm">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">erw_eadm</span></span></span><a class="headerlink" href="#c.erw_eadm" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EADM Subchannel extended report word</p>
 </dd></dl>
 
@@ -539,8 +541,8 @@ command words are supported.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.sublog">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">sublog</span></code><a class="headerlink" href="#c.sublog" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sublog">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sublog</span></span></span><a class="headerlink" href="#c.sublog" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>subchannel logout area</p>
 </dd></dl>
 
@@ -586,8 +588,8 @@ command words are supported.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.esw0">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">esw0</span></code><a class="headerlink" href="#c.esw0" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.esw0">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">esw0</span></span></span><a class="headerlink" href="#c.esw0" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Format 0 Extended Status Word (ESW)</p>
 </dd></dl>
 
@@ -612,8 +614,8 @@ command words are supported.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.esw1">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">esw1</span></code><a class="headerlink" href="#c.esw1" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.esw1">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">esw1</span></span></span><a class="headerlink" href="#c.esw1" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Format 1 Extended Status Word (ESW)</p>
 </dd></dl>
 
@@ -641,8 +643,8 @@ command words are supported.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.esw2">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">esw2</span></code><a class="headerlink" href="#c.esw2" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.esw2">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">esw2</span></span></span><a class="headerlink" href="#c.esw2" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Format 2 Extended Status Word (ESW)</p>
 </dd></dl>
 
@@ -670,8 +672,8 @@ command words are supported.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.esw3">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">esw3</span></code><a class="headerlink" href="#c.esw3" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.esw3">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">esw3</span></span></span><a class="headerlink" href="#c.esw3" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Format 3 Extended Status Word (ESW)</p>
 </dd></dl>
 
@@ -699,8 +701,8 @@ command words are supported.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.esw_eadm">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">esw_eadm</span></code><a class="headerlink" href="#c.esw_eadm" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.esw_eadm">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">esw_eadm</span></span></span><a class="headerlink" href="#c.esw_eadm" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EADM Subchannel Extended Status Word (ESW)</p>
 </dd></dl>
 
@@ -722,8 +724,8 @@ command words are supported.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.irb">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irb</span></code><a class="headerlink" href="#c.irb" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irb">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irb</span></span></span><a class="headerlink" href="#c.irb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>interruption response block</p>
 </dd></dl>
 
@@ -760,8 +762,8 @@ sense (so that the device driver never needs to perform basic sense itself).
 For unsolicited interrupts, the irb is passed as-is (expect for sense data,
 if applicable).</p>
 <dl class="c struct">
-<dt id="c.ciw">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ciw</span></code><a class="headerlink" href="#c.ciw" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ciw">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ciw</span></span></span><a class="headerlink" href="#c.ciw" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>command information word (CIW) layout</p>
 </dd></dl>
 
@@ -789,8 +791,8 @@ if applicable).</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.ccw_dev_id">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ccw_dev_id</span></code><a class="headerlink" href="#c.ccw_dev_id" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_dev_id">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_dev_id</span></span></span><a class="headerlink" href="#c.ccw_dev_id" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unique identifier for ccw devices</p>
 </dd></dl>
 
@@ -815,8 +817,8 @@ which is in turn identified by its id. In order to get a unique identifier
 for ccw devices across subchannel sets, <strong>struct</strong> ccw_dev_id has been
 introduced.</p>
 <dl class="c function">
-<dt id="c.ccw_dev_id_is_equal">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_dev_id_is_equal</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_dev_id" title="ccw_dev_id"><span class="pre">ccw_dev_id</span></a> <span class="pre">*</span><em><span class="pre">dev_id1</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_dev_id" title="ccw_dev_id"><span class="pre">ccw_dev_id</span></a> <span class="pre">*</span><em><span class="pre">dev_id2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_dev_id_is_equal" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_dev_id_is_equal">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_dev_id_is_equal</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_dev_id" title="ccw_dev_id"><span class="n"><span class="pre">ccw_dev_id</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id1</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_dev_id" title="ccw_dev_id"><span class="n"><span class="pre">ccw_dev_id</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_dev_id_is_equal" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>compare two ccw_dev_ids</p>
 </dd></dl>
 
@@ -835,8 +837,8 @@ introduced.</p>
 <p><strong>Context</strong></p>
 <p>any</p>
 <dl class="c function">
-<dt id="c.pathmask_to_pos">
-<span class="pre">u8</span> <code class="sig-name descname"><span class="pre">pathmask_to_pos</span></code><span class="sig-paren">(</span><span class="pre">u8</span> <em><span class="pre">mask</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pathmask_to_pos" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.pathmask_to_pos">
+<span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pathmask_to_pos</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">mask</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pathmask_to_pos" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>find the position of the left-most bit in a pathmask</p>
 </dd></dl>
 
@@ -845,8 +847,8 @@ introduced.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">u8</span> <span class="pre">mask</span></code></dt><dd><p>pathmask with at least one bit set</p>
 </dd>
 </dl>
-</section>
-<section id="ccw-devices">
+</div>
+<div class="section" id="ccw-devices">
 <h3>ccw devices<a class="headerlink" href="#ccw-devices" title="Permalink to this headline">¶</a></h3>
 <p>Devices that want to initiate channel I/O need to attach to the ccw bus.
 Interaction with the driver core is done via the common I/O layer, which
@@ -855,8 +857,8 @@ provides the abstractions of ccw devices and ccw device drivers.</p>
 device structure. Device drivers must not bypass those functions or
 strange side effects may happen.</p>
 <dl class="c struct">
-<dt id="c.ccw_device">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ccw_device</span></code><a class="headerlink" href="#c.ccw_device" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device</span></span></span><a class="headerlink" href="#c.ccw_device" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>channel attached device</p>
 </dd></dl>
 
@@ -891,8 +893,8 @@ strange side effects may happen.</p>
 can have different interrupt handlers for different ccw devices
 (multi-subchannel drivers).</p>
 <dl class="c struct">
-<dt id="c.ccw_driver">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ccw_driver</span></code><a class="headerlink" href="#c.ccw_driver" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_driver">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_driver</span></span></span><a class="headerlink" href="#c.ccw_driver" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>device driver for channel attached devices</p>
 </dd></dl>
 
@@ -938,8 +940,8 @@ can have different interrupt handlers for different ccw devices
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.ccw_device_set_offline">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_set_offline</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_set_offline" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_set_offline">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_set_offline</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_set_offline" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>disable a ccw device for I/O</p>
 </dd></dl>
 
@@ -958,8 +960,8 @@ given, and then disables <strong>cdev</strong>.</p>
 <p><strong>Context</strong></p>
 <p>enabled, ccw device lock not held</p>
 <dl class="c function">
-<dt id="c.ccw_device_set_online">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_set_online</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_set_online" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_set_online">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_set_online</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_set_online" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enable a ccw device for I/O</p>
 </dd></dl>
 
@@ -979,8 +981,8 @@ disabled again.</p>
 <p><strong>Context</strong></p>
 <p>enabled, ccw device lock not held</p>
 <dl class="c function">
-<dt id="c.get_ccwdev_by_dev_id">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">get_ccwdev_by_dev_id</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_dev_id" title="ccw_dev_id"><span class="pre">ccw_dev_id</span></a> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.get_ccwdev_by_dev_id" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.get_ccwdev_by_dev_id">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_ccwdev_by_dev_id</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_dev_id" title="ccw_dev_id"><span class="n"><span class="pre">ccw_dev_id</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.get_ccwdev_by_dev_id" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>obtain device from a ccw device id</p>
 </dd></dl>
 
@@ -998,8 +1000,8 @@ matching <strong>dev_id</strong>.</p>
 else <code class="docutils literal notranslate"><span class="pre">NULL</span></code> is returned.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.get_ccwdev_by_busid">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">get_ccwdev_by_busid</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_driver" title="ccw_driver"><span class="pre">ccw_driver</span></a> <span class="pre">*</span><em><span class="pre">cdrv</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">bus_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.get_ccwdev_by_busid" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.get_ccwdev_by_busid">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">get_ccwdev_by_busid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_driver" title="ccw_driver"><span class="n"><span class="pre">ccw_driver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdrv</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bus_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.get_ccwdev_by_busid" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>obtain device from a bus id</p>
 </dd></dl>
 
@@ -1019,8 +1021,8 @@ id matching <strong>bus_id</strong>.</p>
 and it is returned; else <code class="docutils literal notranslate"><span class="pre">NULL</span></code> is returned.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.ccw_driver_register">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_driver_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_driver" title="ccw_driver"><span class="pre">ccw_driver</span></a> <span class="pre">*</span><em><span class="pre">cdriver</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_driver_register" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_driver_register">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_driver_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_driver" title="ccw_driver"><span class="n"><span class="pre">ccw_driver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdriver</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_driver_register" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>register a ccw driver</p>
 </dd></dl>
 
@@ -1036,8 +1038,8 @@ and it is returned; else <code class="docutils literal notranslate"><span class=
 <div><p><code class="docutils literal notranslate"><span class="pre">0</span></code> on success and a negative error value on failure.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.ccw_driver_unregister">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ccw_driver_unregister</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_driver" title="ccw_driver"><span class="pre">ccw_driver</span></a> <span class="pre">*</span><em><span class="pre">cdriver</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_driver_unregister" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_driver_unregister">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_driver_unregister</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_driver" title="ccw_driver"><span class="n"><span class="pre">ccw_driver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdriver</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_driver_unregister" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>deregister a ccw driver</p>
 </dd></dl>
 
@@ -1049,8 +1051,8 @@ and it is returned; else <code class="docutils literal notranslate"><span class=
 <p><strong>Description</strong></p>
 <p>This function is mainly a wrapper around <a class="reference internal" href="infrastructure.html#c.driver_unregister" title="driver_unregister"><code class="xref c c-func docutils literal notranslate"><span class="pre">driver_unregister()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.ccw_device_siosl">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_siosl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_siosl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_siosl">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_siosl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_siosl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>initiate logging</p>
 </dd></dl>
 
@@ -1063,8 +1065,8 @@ and it is returned; else <code class="docutils literal notranslate"><span class=
 <p>This function is used to invoke model-dependent logging within the channel
 subsystem.</p>
 <dl class="c function">
-<dt id="c.ccw_device_set_options_mask">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_set_options_mask</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_set_options_mask" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_set_options_mask">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_set_options_mask</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_set_options_mask" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set some options and unset the rest</p>
 </dd></dl>
 
@@ -1083,8 +1085,8 @@ are cleared.</p>
 <div><p><code class="docutils literal notranslate"><span class="pre">0</span></code> on success, -<code class="docutils literal notranslate"><span class="pre">EINVAL</span></code> on an invalid flag combination.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.ccw_device_set_options">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_set_options</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_set_options" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_set_options">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_set_options</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_set_options" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set some options</p>
 </dd></dl>
 
@@ -1102,8 +1104,8 @@ are cleared.</p>
 <div><p><code class="docutils literal notranslate"><span class="pre">0</span></code> on success, -<code class="docutils literal notranslate"><span class="pre">EINVAL</span></code> if an invalid flag combination would ensue.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.ccw_device_clear_options">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ccw_device_clear_options</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_clear_options" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_clear_options">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_clear_options</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_clear_options" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>clear some options</p>
 </dd></dl>
 
@@ -1117,8 +1119,8 @@ are cleared.</p>
 <p><strong>Description</strong></p>
 <p>All flags specified in <strong>flags</strong> are cleared, the remainder is left untouched.</p>
 <dl class="c function">
-<dt id="c.ccw_device_is_pathgroup">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_is_pathgroup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_is_pathgroup" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_is_pathgroup">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_is_pathgroup</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_is_pathgroup" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>determine if paths to this device are grouped</p>
 </dd></dl>
 
@@ -1130,8 +1132,8 @@ are cleared.</p>
 <p><strong>Description</strong></p>
 <p>Return non-zero if there is a path group, zero otherwise.</p>
 <dl class="c function">
-<dt id="c.ccw_device_is_multipath">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_is_multipath</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_is_multipath" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_is_multipath">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_is_multipath</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_is_multipath" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>determine if device is operating in multipath mode</p>
 </dd></dl>
 
@@ -1143,8 +1145,8 @@ are cleared.</p>
 <p><strong>Description</strong></p>
 <p>Return non-zero if device is operating in multipath mode, zero otherwise.</p>
 <dl class="c function">
-<dt id="c.ccw_device_clear">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_clear</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">intparm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_clear" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_clear">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_clear</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">intparm</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_clear" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>terminate I/O request processing</p>
 </dd></dl>
 
@@ -1166,8 +1168,8 @@ are cleared.</p>
 <p><strong>Context</strong></p>
 <p>Interrupts disabled, ccw device lock held</p>
 <dl class="c function">
-<dt id="c.ccw_device_start_timeout_key">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_start_timeout_key</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw1" title="ccw1"><span class="pre">ccw1</span></a> <span class="pre">*</span><em><span class="pre">cpa</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">intparm</span></em>, <span class="pre">__u8</span> <em><span class="pre">lpm</span></em>, <span class="pre">__u8</span> <em><span class="pre">key</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em>, <span class="pre">int</span> <em><span class="pre">expires</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_start_timeout_key" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_start_timeout_key">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_start_timeout_key</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw1" title="ccw1"><span class="n"><span class="pre">ccw1</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cpa</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">intparm</span></span>, <span class="n"><span class="pre">__u8</span></span><span class="w"> </span><span class="n"><span class="pre">lpm</span></span>, <span class="n"><span class="pre">__u8</span></span><span class="w"> </span><span class="n"><span class="pre">key</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">expires</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_start_timeout_key" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start a s390 channel program with timeout and key</p>
 </dd></dl>
 
@@ -1213,8 +1215,8 @@ another interruption parameter is specified by a subsequent invocation of
 <p><strong>Context</strong></p>
 <p>Interrupts disabled, ccw device lock held</p>
 <dl class="c function">
-<dt id="c.ccw_device_start_key">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_start_key</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw1" title="ccw1"><span class="pre">ccw1</span></a> <span class="pre">*</span><em><span class="pre">cpa</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">intparm</span></em>, <span class="pre">__u8</span> <em><span class="pre">lpm</span></em>, <span class="pre">__u8</span> <em><span class="pre">key</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_start_key" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_start_key">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_start_key</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw1" title="ccw1"><span class="n"><span class="pre">ccw1</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cpa</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">intparm</span></span>, <span class="n"><span class="pre">__u8</span></span><span class="w"> </span><span class="n"><span class="pre">lpm</span></span>, <span class="n"><span class="pre">__u8</span></span><span class="w"> </span><span class="n"><span class="pre">key</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_start_key" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start a s390 channel program with key</p>
 </dd></dl>
 
@@ -1254,8 +1256,8 @@ another interruption parameter is specified by a subsequent invocation of
 <p><strong>Context</strong></p>
 <p>Interrupts disabled, ccw device lock held</p>
 <dl class="c function">
-<dt id="c.ccw_device_start">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_start</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw1" title="ccw1"><span class="pre">ccw1</span></a> <span class="pre">*</span><em><span class="pre">cpa</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">intparm</span></em>, <span class="pre">__u8</span> <em><span class="pre">lpm</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_start" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_start">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_start</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw1" title="ccw1"><span class="n"><span class="pre">ccw1</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cpa</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">intparm</span></span>, <span class="n"><span class="pre">__u8</span></span><span class="w"> </span><span class="n"><span class="pre">lpm</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_start" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start a s390 channel program</p>
 </dd></dl>
 
@@ -1293,8 +1295,8 @@ another interruption parameter is specified by a subsequent invocation of
 <p><strong>Context</strong></p>
 <p>Interrupts disabled, ccw device lock held</p>
 <dl class="c function">
-<dt id="c.ccw_device_start_timeout">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_start_timeout</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw1" title="ccw1"><span class="pre">ccw1</span></a> <span class="pre">*</span><em><span class="pre">cpa</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">intparm</span></em>, <span class="pre">__u8</span> <em><span class="pre">lpm</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em>, <span class="pre">int</span> <em><span class="pre">expires</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_start_timeout" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_start_timeout">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_start_timeout</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw1" title="ccw1"><span class="n"><span class="pre">ccw1</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cpa</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">intparm</span></span>, <span class="n"><span class="pre">__u8</span></span><span class="w"> </span><span class="n"><span class="pre">lpm</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">expires</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_start_timeout" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start a s390 channel program with timeout</p>
 </dd></dl>
 
@@ -1338,8 +1340,8 @@ another interruption parameter is specified by a subsequent invocation of
 <p><strong>Context</strong></p>
 <p>Interrupts disabled, ccw device lock held</p>
 <dl class="c function">
-<dt id="c.ccw_device_halt">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_halt</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">intparm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_halt" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_halt">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_halt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">intparm</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_halt" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>halt I/O request processing</p>
 </dd></dl>
 
@@ -1365,8 +1367,8 @@ another interruption parameter is specified by a subsequent invocation of
 <p><strong>Context</strong></p>
 <p>Interrupts disabled, ccw device lock held</p>
 <dl class="c function">
-<dt id="c.ccw_device_resume">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_resume</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_resume" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_resume">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_resume</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_resume" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>resume channel program execution</p>
 </dd></dl>
 
@@ -1387,8 +1389,8 @@ another interruption parameter is specified by a subsequent invocation of
 <p><strong>Context</strong></p>
 <p>Interrupts disabled, ccw device lock held</p>
 <dl class="c function">
-<dt id="c.ccw_device_get_ciw">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ciw" title="ciw"><span class="pre">ciw</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ccw_device_get_ciw</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">__u32</span> <em><span class="pre">ct</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_ciw" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_ciw">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ciw" title="ciw"><span class="n"><span class="pre">ciw</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_ciw</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="n"><span class="pre">__u32</span></span><span class="w"> </span><span class="n"><span class="pre">ct</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_ciw" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Search for CIW command in extended sense data.</p>
 </dd></dl>
 
@@ -1411,8 +1413,8 @@ specified command type could be found,
 else a pointer to the CIW of the specified command type.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.ccw_device_get_path_mask">
-<span class="pre">__u8</span> <code class="sig-name descname"><span class="pre">ccw_device_get_path_mask</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_path_mask" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_path_mask">
+<span class="n"><span class="pre">__u8</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_path_mask</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_path_mask" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get currently available paths</p>
 </dd></dl>
 
@@ -1427,8 +1429,8 @@ else a pointer to the CIW of the specified command type.</p>
 else the mask of currently available paths for the ccw device’s subchannel.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.ccw_device_get_chp_desc">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">channel_path_desc_fmt0</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ccw_device_get_chp_desc</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">int</span> <em><span class="pre">chp_idx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_chp_desc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_chp_desc">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">channel_path_desc_fmt0</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_chp_desc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">chp_idx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_chp_desc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return newly allocated channel-path descriptor</p>
 </dd></dl>
 
@@ -1443,8 +1445,8 @@ else the mask of currently available paths for the ccw device’s subchannel.</p
 <p>On success return a newly allocated copy of the channel-path description
 data associated with the given channel path. Return <code class="docutils literal notranslate"><span class="pre">NULL</span></code> on error.</p>
 <dl class="c function">
-<dt id="c.ccw_device_get_util_str">
-<span class="pre">u8</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ccw_device_get_util_str</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">int</span> <em><span class="pre">chp_idx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_util_str" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_util_str">
+<span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_util_str</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">chp_idx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_util_str" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return newly allocated utility strings</p>
 </dd></dl>
 
@@ -1459,8 +1461,8 @@ data associated with the given channel path. Return <code class="docutils litera
 <p>On success return a newly allocated copy of the utility strings
 associated with the given channel path. Return <code class="docutils literal notranslate"><span class="pre">NULL</span></code> on error.</p>
 <dl class="c function">
-<dt id="c.ccw_device_get_id">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ccw_device_get_id</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_dev_id" title="ccw_dev_id"><span class="pre">ccw_dev_id</span></a> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_id" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_id">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_id</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_dev_id" title="ccw_dev_id"><span class="n"><span class="pre">ccw_dev_id</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_id" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>obtain a ccw device id</p>
 </dd></dl>
 
@@ -1472,8 +1474,8 @@ associated with the given channel path. Return <code class="docutils literal not
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.ccw_device_tm_start_timeout_key">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_tm_start_timeout_key</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device_tm_start_timeout_key" title="tcw"><span class="pre">tcw</span></a> <span class="pre">*</span><em><span class="pre">tcw</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">intparm</span></em>, <span class="pre">u8</span> <em><span class="pre">lpm</span></em>, <span class="pre">u8</span> <em><span class="pre">key</span></em>, <span class="pre">int</span> <em><span class="pre">expires</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_tm_start_timeout_key" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_tm_start_timeout_key">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_tm_start_timeout_key</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device_tm_start_timeout_key" title="tcw"><span class="n"><span class="pre">tcw</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">tcw</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">intparm</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">lpm</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">key</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">expires</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_tm_start_timeout_key" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>perform start function</p>
 </dd></dl>
 
@@ -1496,8 +1498,8 @@ associated with the given channel path. Return <code class="docutils literal not
 <p>Start the tcw on the given ccw device. Return zero on success, non-zero
 otherwise.</p>
 <dl class="c function">
-<dt id="c.ccw_device_tm_start_key">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_tm_start_key</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device_tm_start_key" title="tcw"><span class="pre">tcw</span></a> <span class="pre">*</span><em><span class="pre">tcw</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">intparm</span></em>, <span class="pre">u8</span> <em><span class="pre">lpm</span></em>, <span class="pre">u8</span> <em><span class="pre">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_tm_start_key" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_tm_start_key">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_tm_start_key</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device_tm_start_key" title="tcw"><span class="n"><span class="pre">tcw</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">tcw</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">intparm</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">lpm</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_tm_start_key" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>perform start function</p>
 </dd></dl>
 
@@ -1518,8 +1520,8 @@ otherwise.</p>
 <p>Start the tcw on the given ccw device. Return zero on success, non-zero
 otherwise.</p>
 <dl class="c function">
-<dt id="c.ccw_device_tm_start">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_tm_start</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device_tm_start" title="tcw"><span class="pre">tcw</span></a> <span class="pre">*</span><em><span class="pre">tcw</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">intparm</span></em>, <span class="pre">u8</span> <em><span class="pre">lpm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_tm_start" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_tm_start">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_tm_start</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device_tm_start" title="tcw"><span class="n"><span class="pre">tcw</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">tcw</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">intparm</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">lpm</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_tm_start" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>perform start function</p>
 </dd></dl>
 
@@ -1538,8 +1540,8 @@ otherwise.</p>
 <p>Start the tcw on the given ccw device. Return zero on success, non-zero
 otherwise.</p>
 <dl class="c function">
-<dt id="c.ccw_device_tm_start_timeout">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_tm_start_timeout</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device_tm_start_timeout" title="tcw"><span class="pre">tcw</span></a> <span class="pre">*</span><em><span class="pre">tcw</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">intparm</span></em>, <span class="pre">u8</span> <em><span class="pre">lpm</span></em>, <span class="pre">int</span> <em><span class="pre">expires</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_tm_start_timeout" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_tm_start_timeout">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_tm_start_timeout</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device_tm_start_timeout" title="tcw"><span class="n"><span class="pre">tcw</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">tcw</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">intparm</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">lpm</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">expires</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_tm_start_timeout" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>perform start function</p>
 </dd></dl>
 
@@ -1560,8 +1562,8 @@ otherwise.</p>
 <p>Start the tcw on the given ccw device. Return zero on success, non-zero
 otherwise.</p>
 <dl class="c function">
-<dt id="c.ccw_device_get_mdc">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_get_mdc</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">u8</span> <em><span class="pre">mask</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_mdc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_mdc">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_mdc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">mask</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_mdc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>accumulate max data count</p>
 </dd></dl>
 
@@ -1576,8 +1578,8 @@ otherwise.</p>
 <p>Return the number of 64K-bytes blocks all paths at least support
 for a transport command. Return value 0 indicates failure.</p>
 <dl class="c function">
-<dt id="c.ccw_device_tm_intrg">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_tm_intrg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_tm_intrg" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_tm_intrg">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_tm_intrg</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_tm_intrg" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>perform interrogate function</p>
 </dd></dl>
 
@@ -1590,8 +1592,8 @@ for a transport command. Return value 0 indicates failure.</p>
 <p>Perform an interrogate function on the given ccw device. Return zero on
 success, non-zero otherwise.</p>
 <dl class="c function">
-<dt id="c.ccw_device_get_schid">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ccw_device_get_schid</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">subchannel_id</span> <span class="pre">*</span><em><span class="pre">schid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_schid" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_schid">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_schid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">subchannel_id</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">schid</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_schid" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>obtain a subchannel id</p>
 </dd></dl>
 
@@ -1603,8 +1605,8 @@ success, non-zero otherwise.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.ccw_device_pnso">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_pnso</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">chsc_pnso_area</span> <span class="pre">*</span><em><span class="pre">pnso_area</span></em>, <span class="pre">u8</span> <em><span class="pre">oc</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">chsc_pnso_resume_token</span> <em><span class="pre">resume_token</span></em>, <span class="pre">int</span> <em><span class="pre">cnc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_pnso" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_pnso">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_pnso</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">chsc_pnso_area</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pnso_area</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">oc</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">chsc_pnso_resume_token</span></span><span class="w"> </span><span class="n"><span class="pre">resume_token</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cnc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_pnso" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Perform Network-Subchannel Operation</p>
 </dd></dl>
 
@@ -1625,8 +1627,8 @@ success, non-zero otherwise.</p>
 <p>pnso_area must be allocated by the caller with get_zeroed_page(GFP_KERNEL)</p>
 <p>Returns 0 on success.</p>
 <dl class="c function">
-<dt id="c.ccw_device_get_cssid">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_get_cssid</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">u8</span> <span class="pre">*</span><em><span class="pre">cssid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_cssid" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_cssid">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_cssid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cssid</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_cssid" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>obtain Channel Subsystem ID</p>
 </dd></dl>
 
@@ -1638,8 +1640,8 @@ success, non-zero otherwise.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.ccw_device_get_iid">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_get_iid</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">u8</span> <span class="pre">*</span><em><span class="pre">iid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_iid" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_iid">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_iid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">iid</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_iid" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>obtain MIF-image ID</p>
 </dd></dl>
 
@@ -1651,8 +1653,8 @@ success, non-zero otherwise.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.ccw_device_get_chpid">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_get_chpid</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">int</span> <em><span class="pre">chp_idx</span></em>, <span class="pre">u8</span> <span class="pre">*</span><em><span class="pre">chpid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_chpid" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_chpid">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_chpid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">chp_idx</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">chpid</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_chpid" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>obtain Channel Path ID</p>
 </dd></dl>
 
@@ -1666,8 +1668,8 @@ success, non-zero otherwise.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.ccw_device_get_chid">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccw_device_get_chid</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">int</span> <em><span class="pre">chp_idx</span></em>, <span class="pre">u16</span> <span class="pre">*</span><em><span class="pre">chid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_chid" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccw_device_get_chid">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccw_device_get_chid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">chp_idx</span></span>, <span class="n"><span class="pre">u16</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">chid</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccw_device_get_chid" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>obtain Channel ID associated with specified CHPID</p>
 </dd></dl>
 
@@ -1680,15 +1682,15 @@ success, non-zero otherwise.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">u16</span> <span class="pre">*chid</span></code></dt><dd><p>The resulting Channel ID</p>
 </dd>
 </dl>
-</section>
-<section id="the-channel-measurement-facility">
+</div>
+<div class="section" id="the-channel-measurement-facility">
 <h3>The channel-measurement facility<a class="headerlink" href="#the-channel-measurement-facility" title="Permalink to this headline">¶</a></h3>
 <p>The channel-measurement facility provides a means to collect measurement
 data which is made available by the channel subsystem for each channel
 attached device.</p>
 <dl class="c struct">
-<dt id="c.cmbdata">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">cmbdata</span></code><a class="headerlink" href="#c.cmbdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cmbdata">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cmbdata</span></span></span><a class="headerlink" href="#c.cmbdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>channel measurement block data for user space</p>
 </dd></dl>
 
@@ -1744,8 +1746,8 @@ z990 machines) is activated.
 Potentially, more fields could be added, which would result in a
 new ioctl number.</p>
 <dl class="c function">
-<dt id="c.enable_cmf">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">enable_cmf</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.enable_cmf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.enable_cmf">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">enable_cmf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.enable_cmf" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>switch on the channel measurement for a specific device</p>
 </dd></dl>
 
@@ -1762,8 +1764,8 @@ measurement data is triggered.</p>
 <p><strong>Context</strong></p>
 <p>non-atomic</p>
 <dl class="c function">
-<dt id="c.disable_cmf">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">disable_cmf</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_cmf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.disable_cmf">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">disable_cmf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_cmf" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>switch off the channel measurement for a specific device</p>
 </dd></dl>
 
@@ -1777,8 +1779,8 @@ measurement data is triggered.</p>
 <p><strong>Context</strong></p>
 <p>non-atomic</p>
 <dl class="c function">
-<dt id="c.cmf_read">
-<span class="pre">u64</span> <code class="sig-name descname"><span class="pre">cmf_read</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <span class="pre">int</span> <em><span class="pre">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cmf_read" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cmf_read">
+<span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cmf_read</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cmf_read" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>read one value from the current channel measurement block</p>
 </dd></dl>
 
@@ -1794,8 +1796,8 @@ measurement data is triggered.</p>
 <p><strong>Context</strong></p>
 <p>any</p>
 <dl class="c function">
-<dt id="c.cmf_readall">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">cmf_readall</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.cmbdata" title="cmbdata"><span class="pre">cmbdata</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cmf_readall" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cmf_readall">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cmf_readall</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.cmbdata" title="cmbdata"><span class="n"><span class="pre">cmbdata</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cmf_readall" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>read the current channel measurement block</p>
 </dd></dl>
 
@@ -1810,20 +1812,20 @@ measurement data is triggered.</p>
 <p><code class="docutils literal notranslate"><span class="pre">0</span></code> on success, a negative error value otherwise.</p>
 <p><strong>Context</strong></p>
 <p>any</p>
-</section>
-</section>
-<section id="the-ccwgroup-bus">
+</div>
+</div>
+<div class="section" id="the-ccwgroup-bus">
 <h2>The ccwgroup bus<a class="headerlink" href="#the-ccwgroup-bus" title="Permalink to this headline">¶</a></h2>
 <p>The ccwgroup bus only contains artificial devices, created by the user.
 Many networking devices (e.g. qeth) are in fact composed of several ccw
 devices (like read, write and data channel for qeth). The ccwgroup bus
 provides a mechanism to create a meta-device which contains those ccw
 devices as slave devices and can be associated with the netdevice.</p>
-<section id="ccw-group-devices">
+<div class="section" id="ccw-group-devices">
 <h3>ccw group devices<a class="headerlink" href="#ccw-group-devices" title="Permalink to this headline">¶</a></h3>
 <dl class="c struct">
-<dt id="c.ccwgroup_device">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ccwgroup_device</span></code><a class="headerlink" href="#c.ccwgroup_device" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccwgroup_device">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccwgroup_device</span></span></span><a class="headerlink" href="#c.ccwgroup_device" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>ccw group device</p>
 </dd></dl>
 
@@ -1854,8 +1856,8 @@ devices as slave devices and can be associated with the netdevice.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.ccwgroup_driver">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ccwgroup_driver</span></code><a class="headerlink" href="#c.ccwgroup_driver" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccwgroup_driver">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccwgroup_driver</span></span></span><a class="headerlink" href="#c.ccwgroup_driver" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>driver for ccw group devices</p>
 </dd></dl>
 
@@ -1889,8 +1891,8 @@ devices as slave devices and can be associated with the netdevice.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.ccwgroup_set_online">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccwgroup_set_online</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccwgroup_device" title="ccwgroup_device"><span class="pre">ccwgroup_device</span></a> <span class="pre">*</span><em><span class="pre">gdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_set_online" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccwgroup_set_online">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccwgroup_set_online</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccwgroup_device" title="ccwgroup_device"><span class="n"><span class="pre">ccwgroup_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">gdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_set_online" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enable a ccwgroup device</p>
 </dd></dl>
 
@@ -1906,8 +1908,8 @@ devices as slave devices and can be associated with the netdevice.</p>
 <div><p><code class="docutils literal notranslate"><span class="pre">0</span></code> on success and a negative error value on failure.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.ccwgroup_set_offline">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccwgroup_set_offline</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccwgroup_device" title="ccwgroup_device"><span class="pre">ccwgroup_device</span></a> <span class="pre">*</span><em><span class="pre">gdev</span></em>, <span class="pre">bool</span> <em><span class="pre">call_gdrv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_set_offline" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccwgroup_set_offline">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccwgroup_set_offline</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccwgroup_device" title="ccwgroup_device"><span class="n"><span class="pre">ccwgroup_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">gdev</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">call_gdrv</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_set_offline" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>disable a ccwgroup device</p>
 </dd></dl>
 
@@ -1925,8 +1927,8 @@ devices as slave devices and can be associated with the netdevice.</p>
 <div><p><code class="docutils literal notranslate"><span class="pre">0</span></code> on success and a negative error value on failure.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.ccwgroup_create_dev">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccwgroup_create_dev</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">parent</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccwgroup_driver" title="ccwgroup_driver"><span class="pre">ccwgroup_driver</span></a> <span class="pre">*</span><em><span class="pre">gdrv</span></em>, <span class="pre">int</span> <em><span class="pre">num_devices</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">buf</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_create_dev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccwgroup_create_dev">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccwgroup_create_dev</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccwgroup_driver" title="ccwgroup_driver"><span class="n"><span class="pre">ccwgroup_driver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">gdrv</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_devices</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_create_dev" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>create and register a ccw group device</p>
 </dd></dl>
 
@@ -1951,8 +1953,8 @@ devices are obtained from the list of bus ids given in <strong>buf</strong>.</p>
 <p><strong>Context</strong></p>
 <p>non-atomic</p>
 <dl class="c function">
-<dt id="c.ccwgroup_driver_register">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccwgroup_driver_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccwgroup_driver" title="ccwgroup_driver"><span class="pre">ccwgroup_driver</span></a> <span class="pre">*</span><em><span class="pre">cdriver</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_driver_register" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccwgroup_driver_register">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccwgroup_driver_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccwgroup_driver" title="ccwgroup_driver"><span class="n"><span class="pre">ccwgroup_driver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdriver</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_driver_register" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>register a ccw group driver</p>
 </dd></dl>
 
@@ -1964,8 +1966,8 @@ devices are obtained from the list of bus ids given in <strong>buf</strong>.</p>
 <p><strong>Description</strong></p>
 <p>This function is mainly a wrapper around <a class="reference internal" href="infrastructure.html#c.driver_register" title="driver_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">driver_register()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.ccwgroup_driver_unregister">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ccwgroup_driver_unregister</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccwgroup_driver" title="ccwgroup_driver"><span class="pre">ccwgroup_driver</span></a> <span class="pre">*</span><em><span class="pre">cdriver</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_driver_unregister" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccwgroup_driver_unregister">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccwgroup_driver_unregister</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccwgroup_driver" title="ccwgroup_driver"><span class="n"><span class="pre">ccwgroup_driver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdriver</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_driver_unregister" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>deregister a ccw group driver</p>
 </dd></dl>
 
@@ -1977,8 +1979,8 @@ devices are obtained from the list of bus ids given in <strong>buf</strong>.</p>
 <p><strong>Description</strong></p>
 <p>This function is mainly a wrapper around <a class="reference internal" href="infrastructure.html#c.driver_unregister" title="driver_unregister"><code class="xref c c-func docutils literal notranslate"><span class="pre">driver_unregister()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.ccwgroup_probe_ccwdev">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ccwgroup_probe_ccwdev</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_probe_ccwdev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccwgroup_probe_ccwdev">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccwgroup_probe_ccwdev</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_probe_ccwdev" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>probe function for slave devices</p>
 </dd></dl>
 
@@ -1995,8 +1997,8 @@ a ccw group device.</p>
 <div><p>always <code class="docutils literal notranslate"><span class="pre">0</span></code></p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.ccwgroup_remove_ccwdev">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ccwgroup_remove_ccwdev</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="pre">ccw_device</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_remove_ccwdev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ccwgroup_remove_ccwdev">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ccwgroup_remove_ccwdev</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.ccw_device" title="ccw_device"><span class="n"><span class="pre">ccw_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ccwgroup_remove_ccwdev" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>remove function for slave devices</p>
 </dd></dl>
 
@@ -2009,20 +2011,20 @@ a ccw group device.</p>
 <p>This is a remove function for ccw devices that are slave devices in a ccw
 group device. It sets the ccw device offline and also deregisters the
 embedding ccw group device.</p>
-</section>
-</section>
-<section id="generic-interfaces">
+</div>
+</div>
+<div class="section" id="generic-interfaces">
 <h2>Generic interfaces<a class="headerlink" href="#generic-interfaces" title="Permalink to this headline">¶</a></h2>
 <p>The following section contains interfaces in use not only by drivers
 dealing with ccw devices, but drivers for various other s390 hardware
 as well.</p>
-<section id="adapter-interrupts">
+<div class="section" id="adapter-interrupts">
 <h3>Adapter interrupts<a class="headerlink" href="#adapter-interrupts" title="Permalink to this headline">¶</a></h3>
 <p>The common I/O layer provides helper functions for dealing with adapter
 interrupts and interrupt vectors.</p>
 <dl class="c function">
-<dt id="c.register_adapter_interrupt">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">register_adapter_interrupt</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">airq_struct</span> <span class="pre">*</span><em><span class="pre">airq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.register_adapter_interrupt" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.register_adapter_interrupt">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">register_adapter_interrupt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">airq_struct</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">airq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.register_adapter_interrupt" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>register adapter interrupt handler</p>
 </dd></dl>
 
@@ -2034,8 +2036,8 @@ interrupts and interrupt vectors.</p>
 <p><strong>Description</strong></p>
 <p>Returns 0 on success, or -EINVAL.</p>
 <dl class="c function">
-<dt id="c.unregister_adapter_interrupt">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">unregister_adapter_interrupt</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">airq_struct</span> <span class="pre">*</span><em><span class="pre">airq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.unregister_adapter_interrupt" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.unregister_adapter_interrupt">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">unregister_adapter_interrupt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">airq_struct</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">airq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.unregister_adapter_interrupt" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unregister adapter interrupt handler</p>
 </dd></dl>
 
@@ -2045,8 +2047,8 @@ interrupts and interrupt vectors.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.airq_iv_create">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">airq_iv</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">airq_iv_create</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">bits</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.airq_iv_create" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.airq_iv_create">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">airq_iv</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">airq_iv_create</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">bits</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.airq_iv_create" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>create an interrupt vector</p>
 </dd></dl>
 
@@ -2060,8 +2062,8 @@ interrupts and interrupt vectors.</p>
 <p><strong>Description</strong></p>
 <p>Returns a pointer to an interrupt vector structure</p>
 <dl class="c function">
-<dt id="c.airq_iv_release">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">airq_iv_release</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">airq_iv</span> <span class="pre">*</span><em><span class="pre">iv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.airq_iv_release" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.airq_iv_release">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">airq_iv_release</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">airq_iv</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">iv</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.airq_iv_release" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>release an interrupt vector</p>
 </dd></dl>
 
@@ -2071,8 +2073,8 @@ interrupts and interrupt vectors.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.airq_iv_alloc">
-<span class="pre">unsigned</span> <span class="pre">long</span> <code class="sig-name descname"><span class="pre">airq_iv_alloc</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">airq_iv</span> <span class="pre">*</span><em><span class="pre">iv</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.airq_iv_alloc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.airq_iv_alloc">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">airq_iv_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">airq_iv</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">iv</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">num</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.airq_iv_alloc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate irq bits from an interrupt vector</p>
 </dd></dl>
 
@@ -2088,8 +2090,8 @@ interrupts and interrupt vectors.</p>
 or -1UL if no bit is available or the AIRQ_IV_ALLOC flag has not been
 specified</p>
 <dl class="c function">
-<dt id="c.airq_iv_free">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">airq_iv_free</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">airq_iv</span> <span class="pre">*</span><em><span class="pre">iv</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">bit</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.airq_iv_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.airq_iv_free">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">airq_iv_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">airq_iv</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">iv</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">bit</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">num</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.airq_iv_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free irq bits of an interrupt vector</p>
 </dd></dl>
 
@@ -2103,8 +2105,8 @@ specified</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.airq_iv_scan">
-<span class="pre">unsigned</span> <span class="pre">long</span> <code class="sig-name descname"><span class="pre">airq_iv_scan</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">airq_iv</span> <span class="pre">*</span><em><span class="pre">iv</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">start</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">end</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.airq_iv_scan" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.airq_iv_scan">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">airq_iv_scan</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">airq_iv</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">iv</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">start</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">end</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.airq_iv_scan" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>scan interrupt vector for non-zero bits</p>
 </dd></dl>
 
@@ -2120,9 +2122,9 @@ specified</p>
 <p><strong>Description</strong></p>
 <p>Returns the bit number of the next non-zero interrupt bit, or
 -1UL if the scan completed without finding any more any non-zero bits.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

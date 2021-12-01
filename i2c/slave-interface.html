@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Linux I2C slave interface description &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -255,7 +257,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-i2c-slave-interface-description">
+  <div class="section" id="linux-i2c-slave-interface-description">
 <h1>Linux I2C slave interface description<a class="headerlink" href="#linux-i2c-slave-interface-description" title="Permalink to this headline">¶</a></h1>
 <p>by Wolfram Sang &lt;<a class="reference external" href="mailto:wsa&#37;&#52;&#48;sang-engineering&#46;com">wsa<span>&#64;</span>sang-engineering<span>&#46;</span>com</a>&gt; in 2014-15</p>
 <p>Linux can also be an I2C slave if the I2C controller in use has slave
@@ -279,7 +281,7 @@ use a character device, be in-kernel only, or something completely different:</p
 </div>
 <p>Note: Technically, there is also the I2C core between the backend and the
 driver. However, at this time of writing, the layer is transparent.</p>
-<section id="user-manual">
+<div class="section" id="user-manual">
 <h2>User manual<a class="headerlink" href="#user-manual" title="Permalink to this headline">¶</a></h2>
 <p>I2C slave backends behave like standard I2C clients. So, you can instantiate
 them as described in the document ‘instantiating-devices’. The only difference
@@ -292,13 +294,13 @@ on bus 1:</p>
 </div>
 <p>Each backend should come with separate documentation to describe its specific
 behaviour and setup.</p>
-</section>
-<section id="developer-manual">
+</div>
+<div class="section" id="developer-manual">
 <h2>Developer manual<a class="headerlink" href="#developer-manual" title="Permalink to this headline">¶</a></h2>
 <p>First, the events which are used by the bus driver and the backend will be
 described in detail. After that, some implementation hints for extending bus
 drivers and writing backends will be given.</p>
-<section id="i2c-slave-events">
+<div class="section" id="i2c-slave-events">
 <h3>I2C slave events<a class="headerlink" href="#i2c-slave-events" title="Permalink to this headline">¶</a></h3>
 <p>The bus driver sends an event to the backend using the following function:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ret = i2c_slave_event(client, event, &amp;val)
@@ -361,8 +363,8 @@ your backend, though.</p>
 </ul>
 <p>A stop condition was received. This can happen anytime and the backend should
 reset its state machine for I2C transfers to be able to receive new requests.</p>
-</section>
-<section id="software-backends">
+</div>
+<div class="section" id="software-backends">
 <h3>Software backends<a class="headerlink" href="#software-backends" title="Permalink to this headline">¶</a></h3>
 <p>If you want to write a software backend:</p>
 <ul class="simple">
@@ -372,8 +374,8 @@ reset its state machine for I2C transfers to be able to receive new requests.</p
 <li><p>register this callback via i2c_slave_register()</p></li>
 </ul>
 <p>Check the i2c-slave-eeprom driver as an example.</p>
-</section>
-<section id="bus-driver-support">
+</div>
+<div class="section" id="bus-driver-support">
 <h3>Bus driver support<a class="headerlink" href="#bus-driver-support" title="Permalink to this headline">¶</a></h3>
 <p>If you want to add slave support to the bus driver:</p>
 <ul class="simple">
@@ -390,8 +392,8 @@ if you extend a bus driver, please make sure that the driver supports that as
 well. In almost all cases, slave support does not need to disable the master
 functionality.</p>
 <p>Check the i2c-rcar driver as an example.</p>
-</section>
-<section id="about-ack-nack">
+</div>
+<div class="section" id="about-ack-nack">
 <h3>About ACK/NACK<a class="headerlink" href="#about-ack-nack" title="Permalink to this headline">¶</a></h3>
 <p>It is good behaviour to always ACK the address phase, so the master knows if a
 device is basically present or if it mysteriously disappeared. Using NACK to
@@ -405,8 +407,8 @@ byte when it reads from us. We could make this an optional event if the need
 arises. However, cases should be extremely rare because the master is expected
 to send STOP after that and we have an event for that. Also, keep in mind not
 all I2C controllers have the possibility to report that event.</p>
-</section>
-<section id="about-buffers">
+</div>
+<div class="section" id="about-buffers">
 <h3>About buffers<a class="headerlink" href="#about-buffers" title="Permalink to this headline">¶</a></h3>
 <p>During development of this API, the question of using buffers instead of just
 bytes came up. Such an extension might be possible, usefulness is unclear at
@@ -423,9 +425,9 @@ updated a register because of internal processing.</p></li>
 means additional code to handle this exception. Such code tends to be
 error-prone.</p></li>
 </ul>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

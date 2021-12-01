@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Kernel CAPI Interface to Hardware Drivers &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -258,9 +260,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kernel-capi-interface-to-hardware-drivers">
+  <div class="section" id="kernel-capi-interface-to-hardware-drivers">
 <h1>Kernel CAPI Interface to Hardware Drivers<a class="headerlink" href="#kernel-capi-interface-to-hardware-drivers" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>From the CAPI 2.0 specification:
 COMMON-ISDN-API (CAPI) is an application programming interface standard used
@@ -276,8 +278,8 @@ corresponding hardware driver. Kernel CAPI then forwards CAPI messages in both
 directions between the application and the hardware driver.</p>
 <p>Format and semantics of CAPI messages are specified in the CAPI 2.0 standard.
 This standard is freely available from <a class="reference external" href="https://www.capi.org">https://www.capi.org</a>.</p>
-</section>
-<section id="driver-and-device-registration">
+</div>
+<div class="section" id="driver-and-device-registration">
 <h2>2. Driver and Device Registration<a class="headerlink" href="#driver-and-device-registration" title="Permalink to this headline">¶</a></h2>
 <p>CAPI drivers must register each of the ISDN devices they control with Kernel
 CAPI by calling the Kernel CAPI function attach_capi_ctr() with a pointer to a
@@ -294,8 +296,8 @@ device.</p>
 <p>If the device becomes unusable for any reason (shutdown, disconnect …), the
 driver has to call capi_ctr_down(). This will prevent further calls to the
 callback functions by Kernel CAPI.</p>
-</section>
-<section id="application-registration-and-communication">
+</div>
+<div class="section" id="application-registration-and-communication">
 <h2>3. Application Registration and Communication<a class="headerlink" href="#application-registration-and-communication" title="Permalink to this headline">¶</a></h2>
 <p>Kernel CAPI forwards registration requests from applications (calls to CAPI
 operation CAPI_REGISTER) to an appropriate hardware driver by calling its
@@ -312,10 +314,10 @@ Kernel CAPI for forwarding to an application, specifying its ApplID.</p>
 forwarded as calls to the release_appl() callback function, passing the same
 ApplID as with register_appl(). After return from release_appl(), no CAPI
 messages for that application may be passed to or from the device anymore.</p>
-</section>
-<section id="data-structures">
+</div>
+<div class="section" id="data-structures">
 <h2>4. Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<section id="struct-capi-driver">
+<div class="section" id="struct-capi-driver">
 <h3>4.1 struct capi_driver<a class="headerlink" href="#struct-capi-driver" title="Permalink to this headline">¶</a></h3>
 <p>This structure describes a Kernel CAPI driver itself. It is used in the
 register_capi_driver() and unregister_capi_driver() functions, and contains
@@ -327,15 +329,15 @@ register_capi_driver():</p>
 <dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">revision[32]</span></code></dt><dd><p>the revision number of the driver, as a zero-terminated ASCII string</p>
 </dd>
 </dl>
-</section>
-<section id="struct-capi-ctr">
+</div>
+<div class="section" id="struct-capi-ctr">
 <h3>4.2 struct capi_ctr<a class="headerlink" href="#struct-capi-ctr" title="Permalink to this headline">¶</a></h3>
 <p>This structure describes an ISDN device (controller) handled by a Kernel CAPI
 driver. After registration via the attach_capi_ctr() function it is passed to
 all controller specific lower layer interface and callback functions to
 identify the controller to operate on.</p>
 <p>It contains the following non-private fields:</p>
-<section id="to-be-set-by-the-driver-before-calling-attach-capi-ctr">
+<div class="section" id="to-be-set-by-the-driver-before-calling-attach-capi-ctr">
 <h4>to be set by the driver before calling attach_capi_ctr():<a class="headerlink" href="#to-be-set-by-the-driver-before-calling-attach-capi-ctr" title="Permalink to this headline">¶</a></h4>
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">module</span> <span class="pre">*owner</span></code></dt><dd><p>pointer to the driver module owning the device</p>
@@ -391,8 +393,8 @@ the CAPI controller info table, /proc/capi/controller</p>
 context.</p>
 </dd>
 </dl>
-</section>
-<section id="to-be-filled-in-before-calling-capi-ctr-ready">
+</div>
+<div class="section" id="to-be-filled-in-before-calling-capi-ctr-ready">
 <h4>to be filled in before calling capi_ctr_ready():<a class="headerlink" href="#to-be-filled-in-before-calling-capi-ctr-ready" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">u8</span> <span class="pre">manu[CAPI_MANUFACTURER_LEN]</span></code></dt><dd><p>value to return for CAPI_GET_MANUFACTURER</p>
@@ -404,9 +406,9 @@ context.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">u8</span> <span class="pre">serial[CAPI_SERIAL_LEN]</span></code></dt><dd><p>value to return for CAPI_GET_SERIAL</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="skbs">
+</div>
+</div>
+<div class="section" id="skbs">
 <h3>4.3 SKBs<a class="headerlink" href="#skbs" title="Permalink to this headline">¶</a></h3>
 <p>CAPI messages are passed between Kernel CAPI and the driver via send_message()
 and capi_ctr_handle_message(), stored in the data portion of a socket buffer
@@ -417,8 +419,8 @@ payload data immediately follows the CAPI message itself within the same skb.
 The Data and Data64 parameters are not used for processing. The Data64
 parameter may be omitted by setting the length field of the CAPI message to 22
 instead of 30.</p>
-</section>
-<section id="the-cmsg-structure">
+</div>
+<div class="section" id="the-cmsg-structure">
 <h3>4.4 The _cmsg Structure<a class="headerlink" href="#the-cmsg-structure" title="Permalink to this headline">¶</a></h3>
 <p>(declared in &lt;linux/isdn/capiutil.h&gt;)</p>
 <p>The _cmsg structure stores the contents of a CAPI 2.0 message in an easily
@@ -470,9 +472,9 @@ _cmsg structure members.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-<section id="lower-layer-interface-functions">
+</div>
+</div>
+<div class="section" id="lower-layer-interface-functions">
 <h2>5. Lower Layer Interface Functions<a class="headerlink" href="#lower-layer-interface-functions" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int attach_capi_ctr(struct capi_ctr *ctrlr)
 int detach_capi_ctr(struct capi_ctr *ctrlr)
@@ -490,8 +492,8 @@ void capi_ctr_down(struct capi_ctr *ctrlr)
 </div>
 <p>pass a received CAPI message to Kernel CAPI
 for forwarding to the specified application</p>
-</section>
-<section id="helper-functions-and-macros">
+</div>
+<div class="section" id="helper-functions-and-macros">
 <h2>6. Helper Functions and Macros<a class="headerlink" href="#helper-functions-and-macros" title="Permalink to this headline">¶</a></h2>
 <p>Macros to extract/set element values from/in a CAPI message header
 (from &lt;linux/isdn/capiutil.h&gt;):</p>
@@ -556,8 +558,8 @@ be NULL if the command/subcommand is not one of those defined in the
 CAPI 2.0 standard.</p>
 </dd>
 </dl>
-</section>
-<section id="debugging">
+</div>
+<div class="section" id="debugging">
 <h2>7. Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
 <p>The module kernelcapi has a module parameter showcapimsgs controlling some
 debugging output produced by the module. It can only be set when the module is
@@ -575,8 +577,8 @@ DATA_B3 messages are only logged if the value of traceflag is &gt; 2.</p>
 <p>If the lowest bit of traceflag is set, only the command/subcommand and message
 length are logged. Otherwise, kernelcapi logs a readable representation of
 the entire message.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

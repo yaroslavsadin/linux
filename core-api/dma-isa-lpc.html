@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>DMA with ISA and LPC devices &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -268,7 +270,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="dma-with-isa-and-lpc-devices">
+  <div class="section" id="dma-with-isa-and-lpc-devices">
 <h1>DMA with ISA and LPC devices<a class="headerlink" href="#dma-with-isa-and-lpc-devices" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -278,7 +280,7 @@
 <p>This document describes how to do DMA transfers using the old ISA DMA
 controller. Even though ISA is more or less dead today the LPC bus
 uses the same DMA system so it will be around for quite some time.</p>
-<section id="headers-and-dependencies">
+<div class="section" id="headers-and-dependencies">
 <h2>Headers and dependencies<a class="headerlink" href="#headers-and-dependencies" title="Permalink to this headline">¶</a></h2>
 <p>To do ISA style DMA you need to include two headers:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#include &lt;linux/dma-mapping.h&gt;
@@ -291,8 +293,8 @@ bus addresses (see <a class="reference internal" href="dma-api.html"><span class
 this is not present on all platforms make sure you construct your
 Kconfig to be dependent on ISA_DMA_API (not ISA) so that nobody tries
 to build your driver on unsupported platforms.</p>
-</section>
-<section id="buffer-allocation">
+</div>
+<div class="section" id="buffer-allocation">
 <h2>Buffer allocation<a class="headerlink" href="#buffer-allocation" title="Permalink to this headline">¶</a></h2>
 <p>The ISA DMA controller has some very strict requirements on which
 memory it can access so extra care must be taken when allocating
@@ -309,8 +311,8 @@ allocate the memory during boot-up it’s a good idea to also pass
 __GFP_RETRY_MAYFAIL and __GFP_NOWARN to make the allocator try a bit harder.</p>
 <p>(This scarcity also means that you should allocate the buffer as
 early as possible and not release it until the driver is unloaded.)</p>
-</section>
-<section id="address-translation">
+</div>
+<div class="section" id="address-translation">
 <h2>Address translation<a class="headerlink" href="#address-translation" title="Permalink to this headline">¶</a></h2>
 <p>To translate the virtual address to a bus address, use the normal DMA
 API. Do _not_ use isa_virt_to_bus() even though it does the same
@@ -321,8 +323,8 @@ has its origins in ISA it is used elsewhere.</p>
 <p>Note: x86_64 had a broken DMA API when it came to ISA but has since
 been fixed. If your arch has problems then fix the DMA API instead of
 reverting to the ISA functions.</p>
-</section>
-<section id="channels">
+</div>
+<div class="section" id="channels">
 <h2>Channels<a class="headerlink" href="#channels" title="Permalink to this headline">¶</a></h2>
 <p>A normal ISA DMA controller has 8 channels. The lower four are for
 8-bit transfers and the upper four are for 16-bit transfers.</p>
@@ -335,8 +337,8 @@ extern void free_dma(unsigned int dmanr);</p>
 <p>The ability to use 16-bit or 8-bit transfers is _not_ up to you as a
 driver author but depends on what the hardware supports. Check your
 specs or test different channels.</p>
-</section>
-<section id="transfer-data">
+</div>
+<div class="section" id="transfer-data">
 <h2>Transfer data<a class="headerlink" href="#transfer-data" title="Permalink to this headline">¶</a></h2>
 <p>Now for the good stuff, the actual DMA transfer. :)</p>
 <p>Before you use any ISA DMA routines you need to claim the DMA lock
@@ -389,16 +391,16 @@ if (residue != 0)
 release_dma_lock(flags);
 </pre></div>
 </div>
-</section>
-<section id="suspend-resume">
+</div>
+<div class="section" id="suspend-resume">
 <h2>Suspend/resume<a class="headerlink" href="#suspend-resume" title="Permalink to this headline">¶</a></h2>
 <p>It is the driver’s responsibility to make sure that the machine isn’t
 suspended while a DMA transfer is in progress. Also, all DMA settings
 are lost when the system suspends so if your driver relies on the DMA
 controller being in a certain state then you have to restore these
 registers upon resume.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

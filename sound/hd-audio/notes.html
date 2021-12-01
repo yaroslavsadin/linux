@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>More Notes on HD-Audio Driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -262,10 +264,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="more-notes-on-hd-audio-driver">
+  <div class="section" id="more-notes-on-hd-audio-driver">
 <h1>More Notes on HD-Audio Driver<a class="headerlink" href="#more-notes-on-hd-audio-driver" title="Permalink to this headline">¶</a></h1>
 <p>Takashi Iwai &lt;<a class="reference external" href="mailto:tiwai&#37;&#52;&#48;suse&#46;de">tiwai<span>&#64;</span>suse<span>&#46;</span>de</a>&gt;</p>
-<section id="general">
+<div class="section" id="general">
 <h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
 <p>HD-audio is the new standard on-board audio component on modern PCs
 after AC97.  Although Linux has been supporting HD-audio since long
@@ -299,10 +301,10 @@ Intel’s web page, for example:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.intel.com/standards/hdaudio/">https://www.intel.com/standards/hdaudio/</a></p></li>
 </ul>
-</section>
-<section id="hd-audio-controller">
+</div>
+<div class="section" id="hd-audio-controller">
 <h2>HD-Audio Controller<a class="headerlink" href="#hd-audio-controller" title="Permalink to this headline">¶</a></h2>
-<section id="dma-position-problem">
+<div class="section" id="dma-position-problem">
 <h3>DMA-Position Problem<a class="headerlink" href="#dma-position-problem" title="Permalink to this headline">¶</a></h3>
 <p>The most common problem of the controller is the inaccurate DMA
 pointer reporting.  The DMA pointer for playback and capture can be
@@ -339,8 +341,8 @@ an appropriate value depending on the controller chip.  For Intel
 chips, it’d be 1 while it’d be 32 for others.  Usually this works.
 Only in case it doesn’t work and you get warning messages, you should
 change this parameter to other values.</p>
-</section>
-<section id="codec-probing-problem">
+</div>
+<div class="section" id="codec-probing-problem">
 <h3>Codec-Probing Problem<a class="headerlink" href="#codec-probing-problem" title="Permalink to this headline">¶</a></h3>
 <p>A less often but a more severe problem is the codec probing.  When
 BIOS reports the available codec slots wrongly, the driver gets
@@ -374,8 +376,8 @@ In such a case, turn the bit 8 (0x100) of <code class="docutils literal notransl
 Then the rest 8 bits are passed as the codec slots to probe
 unconditionally.  For example, <code class="docutils literal notranslate"><span class="pre">probe_mask=0x103</span></code> will force to probe
 the codec slots 0 and 1 no matter what the hardware reports.</p>
-</section>
-<section id="interrupt-handling">
+</div>
+<div class="section" id="interrupt-handling">
 <h3>Interrupt Handling<a class="headerlink" href="#interrupt-handling" title="Permalink to this headline">¶</a></h3>
 <p>HD-audio driver uses MSI as default (if available) since 2.6.33
 kernel as MSI works better on some machines, and in general, it’s
@@ -388,11 +390,11 @@ in the recent kernel, try to pass <code class="docutils literal notranslate"><sp
 MSI.  If it works, you can add the known bad device to the blacklist
 defined in hda_intel.c.  In such a case, please report and give the
 patch back to the upstream developer.</p>
-</section>
-</section>
-<section id="hd-audio-codec">
+</div>
+</div>
+<div class="section" id="hd-audio-codec">
 <h2>HD-Audio Codec<a class="headerlink" href="#hd-audio-codec" title="Permalink to this headline">¶</a></h2>
-<section id="model-option">
+<div class="section" id="model-option">
 <h3>Model Option<a class="headerlink" href="#model-option" title="Permalink to this headline">¶</a></h3>
 <p>The most common problem regarding the HD-audio driver is the
 unsupported codec features or the mismatched device configuration.
@@ -459,8 +461,8 @@ target quirk isn’t listed in the model table.  For example, passing
 model=103c:8862 will apply the quirk for HP ProBook 445 G8 (which
 isn’t found in the model table as of writing) as long as the device is
 handled equivalently by the same driver.</p>
-</section>
-<section id="speaker-and-headphone-output">
+</div>
+<div class="section" id="speaker-and-headphone-output">
 <h3>Speaker and Headphone Output<a class="headerlink" href="#speaker-and-headphone-output" title="Permalink to this headline">¶</a></h3>
 <p>One of the most frequent (and obvious) bugs with HD-audio is the
 silent output from either or both of a built-in speaker and a
@@ -499,8 +501,8 @@ triggered.  Issuing GET_PIN_SENSE verb (0xf09) may result in the
 codec-communication stall.  Some examples are found in
 patch_realtek.c.</p></li>
 </ul>
-</section>
-<section id="capture-problems">
+</div>
+<div class="section" id="capture-problems">
 <h3>Capture Problems<a class="headerlink" href="#capture-problems" title="Permalink to this headline">¶</a></h3>
 <p>The capture problems are often because of missing setups of mixers.
 Thus, before submitting a bug report, make sure that you set up the
@@ -526,8 +528,8 @@ provides it as the capture source.  Use CDDA instead.</p>
 is implemented on some codec models but not on every model.  Partly
 because of my laziness but mostly lack of testers.  Feel free to
 submit the improvement patch to the author.</p>
-</section>
-<section id="direct-debugging">
+</div>
+<div class="section" id="direct-debugging">
 <h3>Direct Debugging<a class="headerlink" href="#direct-debugging" title="Permalink to this headline">¶</a></h3>
 <p>If no model option gives you a better result, and you are a tough guy
 to fight against evil, try debugging via hitting the raw HD-audio
@@ -535,11 +537,11 @@ codec verbs to the device.  Some tools are available: hda-emu and
 hda-analyzer.  The detailed description is found in the sections
 below.  You’d need to enable hwdep for using these tools.  See “Kernel
 Configuration” section.</p>
-</section>
-</section>
-<section id="other-issues">
+</div>
+</div>
+<div class="section" id="other-issues">
 <h2>Other Issues<a class="headerlink" href="#other-issues" title="Permalink to this headline">¶</a></h2>
-<section id="kernel-configuration">
+<div class="section" id="kernel-configuration">
 <h3>Kernel Configuration<a class="headerlink" href="#kernel-configuration" title="Permalink to this headline">¶</a></h3>
 <p>In general, I recommend you to enable the sound debug option,
 <code class="docutils literal notranslate"><span class="pre">CONFIG_SND_DEBUG=y</span></code>, no matter whether you are debugging or not.
@@ -566,8 +568,8 @@ the corresponding hwdep directory.  See “HD-audio reconfiguration”
 section below.</p>
 <p><code class="docutils literal notranslate"><span class="pre">CONFIG_SND_HDA_POWER_SAVE</span></code> option enables the power-saving feature.
 See “Power-saving” section below.</p>
-</section>
-<section id="codec-proc-file">
+</div>
+<div class="section" id="codec-proc-file">
 <h3>Codec Proc-File<a class="headerlink" href="#codec-proc-file" title="Permalink to this headline">¶</a></h3>
 <p>The codec proc-file is a treasure-chest for debugging HD-audio.
 It shows most of useful information of each codec widget.</p>
@@ -582,8 +584,8 @@ section below.</p>
 <p>This proc file can be also used to check whether the generic parser is
 used.  When the generic parser is used, the vendor/product ID name
 will appear as “Realtek ID 0262”, instead of “Realtek ALC262”.</p>
-</section>
-<section id="hd-audio-reconfiguration">
+</div>
+<div class="section" id="hd-audio-reconfiguration">
 <h3>HD-Audio Reconfiguration<a class="headerlink" href="#hd-audio-reconfiguration" title="Permalink to this headline">¶</a></h3>
 <p>This is an experimental feature to allow you re-configure the HD-audio
 codec dynamically without reloading the driver.  The following sysfs
@@ -646,8 +648,8 @@ re-configure based on that state, run like below:</p>
 # echo 1 &gt; /sys/class/sound/hwC0D0/reconfig
 </pre></div>
 </div>
-</section>
-<section id="hint-strings">
+</div>
+<div class="section" id="hint-strings">
 <h3>Hint Strings<a class="headerlink" href="#hint-strings" title="Permalink to this headline">¶</a></h3>
 <p>The codec parser have several switches and adjustment knobs for
 matching better with the actual codec or device behavior.  Many of
@@ -725,8 +727,8 @@ case; default true</p>
 <dt>mixer_nid (int)</dt><dd><p>specifies the widget NID of the analog-loopback mixer</p>
 </dd>
 </dl>
-</section>
-<section id="early-patching">
+</div>
+<div class="section" id="early-patching">
 <h3>Early Patching<a class="headerlink" href="#early-patching" title="Permalink to this headline">¶</a></h3>
 <p>When <code class="docutils literal notranslate"><span class="pre">CONFIG_SND_HDA_PATCH_LOADER=y</span></code> is set, you can pass a “patch”
 as a firmware file for modifying the HD-audio setup before
@@ -805,8 +807,8 @@ for an HDMI video board, you may pass patch option like below:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>options snd-hda-intel patch=on-board-patch,hdmi-patch
 </pre></div>
 </div>
-</section>
-<section id="power-saving">
+</div>
+<div class="section" id="power-saving">
 <h3>Power-Saving<a class="headerlink" href="#power-saving" title="Permalink to this headline">¶</a></h3>
 <p>The power-saving is a kind of auto-suspend of the device.  When the
 device is inactive for a certain time, the device is automatically
@@ -829,8 +831,8 @@ down dynamically.  The feature is enabled only for certain controller
 chips like Intel LynxPoint.  You can enable/disable this feature
 forcibly by setting <code class="docutils literal notranslate"><span class="pre">power_save_controller</span></code> option, which is also
 available at /sys/module/snd_hda_intel/parameters directory.</p>
-</section>
-<section id="tracepoints">
+</div>
+<div class="section" id="tracepoints">
 <h3>Tracepoints<a class="headerlink" href="#tracepoints" title="Permalink to this headline">¶</a></h3>
 <p>The hd-audio driver gives a few basic tracepoints.
 <code class="docutils literal notranslate"><span class="pre">hda:hda_send_cmd</span></code> traces each CORB write while <code class="docutils literal notranslate"><span class="pre">hda:hda_get_response</span></code>
@@ -875,8 +877,8 @@ amp raw val = 0xa019
 output, left, idx=0, mute=0, val=25
 </pre></div>
 </div>
-</section>
-<section id="development-tree">
+</div>
+<div class="section" id="development-tree">
 <h3>Development Tree<a class="headerlink" href="#development-tree" title="Permalink to this headline">¶</a></h3>
 <p>The latest development codes for HD-audio are found on sound git tree:</p>
 <ul class="simple">
@@ -886,8 +888,8 @@ output, left, idx=0, mute=0, val=25
 development branches in general while the development for the current
 and next kernels are found in for-linus and for-next branches,
 respectively.</p>
-</section>
-<section id="sending-a-bug-report">
+</div>
+<div class="section" id="sending-a-bug-report">
 <h3>Sending a Bug Report<a class="headerlink" href="#sending-a-bug-report" title="Permalink to this headline">¶</a></h3>
 <p>If any model or module options don’t work for your device, it’s time
 to send a bug report to the developers.  Give the following in your
@@ -908,13 +910,13 @@ compare the codec registers directly.</p>
 <dt>alsa-devel ML</dt><dd><p><a class="reference external" href="mailto:alsa-devel&#37;&#52;&#48;alsa-project&#46;org">alsa-devel<span>&#64;</span>alsa-project<span>&#46;</span>org</a></p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="debug-tools">
+</div>
+</div>
+<div class="section" id="debug-tools">
 <h2>Debug Tools<a class="headerlink" href="#debug-tools" title="Permalink to this headline">¶</a></h2>
 <p>This section describes some tools available for debugging HD-audio
 problems.</p>
-<section id="alsa-info">
+<div class="section" id="alsa-info">
 <h3>alsa-info<a class="headerlink" href="#alsa-info" title="Permalink to this headline">¶</a></h3>
 <p>The script <code class="docutils literal notranslate"><span class="pre">alsa-info.sh</span></code> is a very useful tool to gather the audio
 device information.  It’s included in alsa-utils package.  The latest
@@ -946,8 +948,8 @@ configuration via hwdep sysfs file if hda-reconfig option is enabled.
 Using <code class="docutils literal notranslate"><span class="pre">probe_only</span></code> mask 2 skips the reset of HDA codecs (use
 <code class="docutils literal notranslate"><span class="pre">probe_only=3</span></code> as module option). The hwdep interface can be used
 to determine the BIOS codec initialization.</p>
-</section>
-<section id="hda-verb">
+</div>
+<div class="section" id="hda-verb">
 <h3>hda-verb<a class="headerlink" href="#hda-verb" title="Permalink to this headline">¶</a></h3>
 <p>hda-verb is a tiny program that allows you to access the HD-audio
 codec directly.  You can execute a raw HD-audio codec verb with this.
@@ -993,8 +995,8 @@ via hda-verb won’t change the mixer value.</p>
 </ul>
 <p>See README file in the tarball for more details about hda-verb
 program.</p>
-</section>
-<section id="hda-analyzer">
+</div>
+<div class="section" id="hda-analyzer">
 <h3>hda-analyzer<a class="headerlink" href="#hda-analyzer" title="Permalink to this headline">¶</a></h3>
 <p>hda-analyzer provides a graphical interface to access the raw HD-audio
 control, based on pyGTK2 binding.  It’s a more powerful version of
@@ -1009,8 +1011,8 @@ proc-compatible output.</p>
 <ul class="simple">
 <li><p>git://git.alsa-project.org/alsa.git</p></li>
 </ul>
-</section>
-<section id="codecgraph">
+</div>
+<div class="section" id="codecgraph">
 <h3>Codecgraph<a class="headerlink" href="#codecgraph" title="Permalink to this headline">¶</a></h3>
 <p>Codecgraph is a utility program to generate a graph and visualizes the
 codec-node connection of a codec chip.  It’s especially useful when
@@ -1021,8 +1023,8 @@ program.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="http://helllabs.org/codecgraph/">http://helllabs.org/codecgraph/</a></p></li>
 </ul>
-</section>
-<section id="hda-emu">
+</div>
+<div class="section" id="hda-emu">
 <h3>hda-emu<a class="headerlink" href="#hda-emu" title="Permalink to this headline">¶</a></h3>
 <p>hda-emu is an HD-audio emulator.  The main purpose of this program is
 to debug an HD-audio codec without the real hardware.  Thus, it
@@ -1051,8 +1053,8 @@ operation, the jack plugging simulation, etc.</p>
 </ul>
 <p>See README file in the repository for more details about hda-emu
 program.</p>
-</section>
-<section id="hda-jack-retask">
+</div>
+<div class="section" id="hda-jack-retask">
 <h3>hda-jack-retask<a class="headerlink" href="#hda-jack-retask" title="Permalink to this headline">¶</a></h3>
 <p>hda-jack-retask is a user-friendly GUI program to manipulate the
 HD-audio pin control for jack retasking.  If you have a problem about
@@ -1064,9 +1066,9 @@ firmware patch file (see “Early Patching” section).</p>
 <ul class="simple">
 <li><p>git://git.alsa-project.org/alsa-tools.git</p></li>
 </ul>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

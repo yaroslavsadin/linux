@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Developing Cipher Algorithms &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -271,9 +273,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="developing-cipher-algorithms">
+  <div class="section" id="developing-cipher-algorithms">
 <h1>Developing Cipher Algorithms<a class="headerlink" href="#developing-cipher-algorithms" title="Permalink to this headline">¶</a></h1>
-<section id="registering-and-unregistering-transformation">
+<div class="section" id="registering-and-unregistering-transformation">
 <h2>Registering And Unregistering Transformation<a class="headerlink" href="#registering-and-unregistering-transformation" title="Permalink to this headline">¶</a></h2>
 <p>There are three distinct types of registration functions in the Crypto
 API. One is used to register a generic cryptographic transformation,
@@ -305,22 +307,22 @@ through, then any changes are rolled back.</p>
 <p>The unregistration functions always succeed, so they don’t have a
 return value.  Don’t try to unregister algorithms that aren’t
 currently registered.</p>
-</section>
-<section id="single-block-symmetric-ciphers-cipher">
+</div>
+<div class="section" id="single-block-symmetric-ciphers-cipher">
 <h2>Single-Block Symmetric Ciphers [CIPHER]<a class="headerlink" href="#single-block-symmetric-ciphers-cipher" title="Permalink to this headline">¶</a></h2>
 <p>Example of transformations: aes, serpent, …</p>
 <p>This section describes the simplest of all transformation
 implementations, that being the CIPHER type used for symmetric ciphers.
 The CIPHER type is used for transformations which operate on exactly one
 block at a time and there are no dependencies between blocks at all.</p>
-<section id="registration-specifics">
+<div class="section" id="registration-specifics">
 <h3>Registration specifics<a class="headerlink" href="#registration-specifics" title="Permalink to this headline">¶</a></h3>
 <p>The registration of [CIPHER] algorithm is specific in that <a class="reference internal" href="api-skcipher.html#c.crypto_alg" title="crypto_alg"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span>
 <span class="pre">crypto_alg</span></code></a> field .cra_type is empty. The .cra_u.cipher has to be
 filled in with proper callbacks to implement this transformation.</p>
 <p>See <a class="reference internal" href="api-skcipher.html#c.cipher_alg" title="cipher_alg"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">cipher_alg</span></code></a> below.</p>
-</section>
-<section id="cipher-definition-with-struct-cipher-alg">
+</div>
+<div class="section" id="cipher-definition-with-struct-cipher-alg">
 <h3>Cipher Definition With struct cipher_alg<a class="headerlink" href="#cipher-definition-with-struct-cipher-alg" title="Permalink to this headline">¶</a></h3>
 <p>Struct cipher_alg defines a single block cipher.</p>
 <p>Here are schematics of how these functions are called when operated from
@@ -343,16 +345,16 @@ is also valid:</p>
                          &#39;---&gt; CIPHERTEXT1                  &#39;---&gt; CIPHERTEXT2
 </pre></div>
 </div>
-</section>
-</section>
-<section id="multi-block-ciphers">
+</div>
+</div>
+<div class="section" id="multi-block-ciphers">
 <h2>Multi-Block Ciphers<a class="headerlink" href="#multi-block-ciphers" title="Permalink to this headline">¶</a></h2>
 <p>Example of transformations: cbc(aes), chacha20, …</p>
 <p>This section describes the multi-block cipher transformation
 implementations. The multi-block ciphers are used for transformations
 which operate on scatterlists of data supplied to the transformation
 functions. They output the result into a scatterlist of data as well.</p>
-<section id="id1">
+<div class="section" id="id1">
 <h3>Registration Specifics<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The registration of multi-block cipher algorithms is one of the most
 standard procedures throughout the crypto API.</p>
@@ -362,25 +364,25 @@ identify a memory alignment mask. The kernel crypto API is able to
 process requests that are unaligned. This implies, however, additional
 overhead as the kernel crypto API needs to perform the realignment of
 the data which may imply moving of data.</p>
-</section>
-<section id="cipher-definition-with-struct-skcipher-alg">
+</div>
+<div class="section" id="cipher-definition-with-struct-skcipher-alg">
 <h3>Cipher Definition With struct skcipher_alg<a class="headerlink" href="#cipher-definition-with-struct-skcipher-alg" title="Permalink to this headline">¶</a></h3>
 <p>Struct skcipher_alg defines a multi-block cipher, or more generally, a
 length-preserving symmetric cipher algorithm.</p>
-</section>
-<section id="scatterlist-handling">
+</div>
+<div class="section" id="scatterlist-handling">
 <h3>Scatterlist handling<a class="headerlink" href="#scatterlist-handling" title="Permalink to this headline">¶</a></h3>
 <p>Some drivers will want to use the Generic ScatterWalk in case the
 hardware needs to be fed separate chunks of the scatterlist which
 contains the plaintext and will contain the ciphertext. Please refer
 to the ScatterWalk interface offered by the Linux kernel scatter /
 gather list implementation.</p>
-</section>
-</section>
-<section id="hashing-hash">
+</div>
+</div>
+<div class="section" id="hashing-hash">
 <h2>Hashing [HASH]<a class="headerlink" href="#hashing-hash" title="Permalink to this headline">¶</a></h2>
 <p>Example of transformations: crc32, md5, sha1, sha256,…</p>
-<section id="registering-and-unregistering-the-transformation">
+<div class="section" id="registering-and-unregistering-the-transformation">
 <h3>Registering And Unregistering The Transformation<a class="headerlink" href="#registering-and-unregistering-the-transformation" title="Permalink to this headline">¶</a></h3>
 <p>There are multiple ways to register a HASH transformation, depending on
 whether the transformation is synchronous [SHASH] or asynchronous
@@ -400,8 +402,8 @@ void crypto_unregister_shash(struct shash_alg *alg);
 void crypto_unregister_shashes(struct shash_alg *algs, int count);
 </pre></div>
 </div>
-</section>
-<section id="cipher-definition-with-struct-shash-alg-and-ahash-alg">
+</div>
+<div class="section" id="cipher-definition-with-struct-shash-alg-and-ahash-alg">
 <h3>Cipher Definition With struct shash_alg and ahash_alg<a class="headerlink" href="#cipher-definition-with-struct-shash-alg-and-ahash-alg" title="Permalink to this headline">¶</a></h3>
 <p>Here are schematics of how these functions are called when operated from
 other part of the kernel. Note that the .setkey() call might happen
@@ -457,17 +459,17 @@ PARTIAL_HASH--.   DATA2-.
 <p>In other words implementations should mind the resource allocation and clean-up.
 No resources related to request objects should remain allocated after a call
 to .init() or .update(), since there might be no chance to free them.</p>
-</section>
-<section id="specifics-of-asynchronous-hash-transformation">
+</div>
+<div class="section" id="specifics-of-asynchronous-hash-transformation">
 <h3>Specifics Of Asynchronous HASH Transformation<a class="headerlink" href="#specifics-of-asynchronous-hash-transformation" title="Permalink to this headline">¶</a></h3>
 <p>Some of the drivers will want to use the Generic ScatterWalk in case the
 implementation needs to be fed separate chunks of the scatterlist which
 contains the input data. The buffer containing the resulting hash will
 always be properly aligned to .cra_alignmask so there is no need to
 worry about this.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

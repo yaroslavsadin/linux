@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Intel Integrated Sensor Hub (ISH) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -263,7 +265,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="intel-integrated-sensor-hub-ish">
+  <div class="section" id="intel-integrated-sensor-hub-ish">
 <h1>Intel Integrated Sensor Hub (ISH)<a class="headerlink" href="#intel-integrated-sensor-hub-ish" title="Permalink to this headline">¶</a></h1>
 <p>A sensor hub enables the ability to offload sensor polling and algorithm
 processing to a dedicated low power co-processor. This allows the core
@@ -278,7 +280,7 @@ are many commercial devices already shipped with Integrated Sensor Hubs (ISH).
 These ISH also comply to HID sensor specification, but the difference is the
 transport protocol used for communication. The current external sensor hubs
 mainly use HID over I2C or USB. But ISH doesn’t use either I2C or USB.</p>
-<section id="overview">
+<div class="section" id="overview">
 <h2>1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Using a analogy with a usbhid implementation, the ISH follows a similar model
 for a very high speed communication:</p>
@@ -314,8 +316,8 @@ update applications.</p>
 implemented as a bus. Each client application executing in the ISH processor
 is registered as a device on this bus. The driver, which binds each device
 (ISH HID driver) identifies the device type and registers with the HID core.</p>
-</section>
-<section id="ish-implementation-block-diagram">
+</div>
+<div class="section" id="ish-implementation-block-diagram">
 <h2>2. ISH Implementation: Block Diagram<a class="headerlink" href="#ish-implementation-block-diagram" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>       ---------------------------
       |  User Space Applications  |
@@ -351,26 +353,26 @@ Hardware + Firmware
        ----------------------------
 </pre></div>
 </div>
-</section>
-<section id="high-level-processing-in-above-blocks">
+</div>
+<div class="section" id="high-level-processing-in-above-blocks">
 <h2>3. High level processing in above blocks<a class="headerlink" href="#high-level-processing-in-above-blocks" title="Permalink to this headline">¶</a></h2>
-<section id="hardware-interface">
+<div class="section" id="hardware-interface">
 <h3>3.1 Hardware Interface<a class="headerlink" href="#hardware-interface" title="Permalink to this headline">¶</a></h3>
 <p>The ISH is exposed as “Non-VGA unclassified PCI device” to the host. The PCI
 product and vendor IDs are changed from different generations of processors. So
 the source code which enumerates drivers needs to update from generation to
 generation.</p>
-</section>
-<section id="inter-processor-communication-ipc-driver">
+</div>
+<div class="section" id="inter-processor-communication-ipc-driver">
 <h3>3.2 Inter Processor Communication (IPC) driver<a class="headerlink" href="#inter-processor-communication-ipc-driver" title="Permalink to this headline">¶</a></h3>
 <p>Location: drivers/hid/intel-ish-hid/ipc</p>
 <p>The IPC message uses memory mapped I/O. The registers are defined in
 hw-ish-regs.h.</p>
-<section id="ipc-fw-message-types">
+<div class="section" id="ipc-fw-message-types">
 <h4>3.2.1 IPC/FW message types<a class="headerlink" href="#ipc-fw-message-types" title="Permalink to this headline">¶</a></h4>
 <p>There are two types of messages, one for management of link and another for
 messages to and from transport layers.</p>
-<section id="tx-and-rx-of-transport-messages">
+<div class="section" id="tx-and-rx-of-transport-messages">
 <h5>TX and RX of Transport messages<a class="headerlink" href="#tx-and-rx-of-transport-messages" title="Permalink to this headline">¶</a></h5>
 <p>A set of memory mapped register offers support of multi-byte messages TX and
 RX (e.g. IPC_REG_ISH2HOST_MSG, IPC_REG_HOST2ISH_MSG). The IPC layer maintains
@@ -389,19 +391,19 @@ Bit 31: doorbell trigger (signal H/W interrupt to the other side)
 Other bits are reserved, should be 0.
 </pre></div>
 </div>
-</section>
-</section>
-<section id="transport-layer-interface">
+</div>
+</div>
+<div class="section" id="transport-layer-interface">
 <h4>3.2.2 Transport layer interface<a class="headerlink" href="#transport-layer-interface" title="Permalink to this headline">¶</a></h4>
 <p>To abstract HW level IPC communication, a set of callbacks is registered.
 The transport layer uses them to send and receive messages.
 Refer to struct ishtp_hw_ops for callbacks.</p>
-</section>
-</section>
-<section id="ish-transport-layer">
+</div>
+</div>
+<div class="section" id="ish-transport-layer">
 <h3>3.3 ISH Transport layer<a class="headerlink" href="#ish-transport-layer" title="Permalink to this headline">¶</a></h3>
 <p>Location: drivers/hid/intel-ish-hid/ishtp/</p>
-<section id="a-generic-transport-layer">
+<div class="section" id="a-generic-transport-layer">
 <h4>3.3.1 A Generic Transport Layer<a class="headerlink" href="#a-generic-transport-layer" title="Permalink to this headline">¶</a></h4>
 <p>The transport layer is a bi-directional protocol, which defines:
 - Set of commands to start, stop, connect, disconnect and flow control
@@ -409,8 +411,8 @@ Refer to struct ishtp_hw_ops for callbacks.</p>
 - A flow control mechanism to avoid buffer overflows</p>
 <p>This protocol resembles bus messages described in the following document:
 <a class="reference external" href="http://www.intel.com/content/dam/www/public/us/en/documents/technical">http://www.intel.com/content/dam/www/public/us/en/documents/technical</a>-specifications/dcmi-hi-1-0-spec.pdf “Chapter 7: Bus Message Layer”</p>
-</section>
-<section id="connection-and-flow-control-mechanism">
+</div>
+<div class="section" id="connection-and-flow-control-mechanism">
 <h4>3.3.2 Connection and Flow Control Mechanism<a class="headerlink" href="#connection-and-flow-control-mechanism" title="Permalink to this headline">¶</a></h4>
 <p>Each FW client and a protocol is identified by a UUID. In order to communicate
 to a FW client, a connection must be established using connect request and
@@ -422,8 +424,8 @@ flow-control credit before. Once it has sent a message, it may not send another 
 before receiving the next flow control credit.
 Either side can send disconnect request bus message to end communication. Also
 the link will be dropped if major FW reset occurs.</p>
-</section>
-<section id="peer-to-peer-data-transfer">
+</div>
+<div class="section" id="peer-to-peer-data-transfer">
 <h4>3.3.3 Peer to Peer data transfer<a class="headerlink" href="#peer-to-peer-data-transfer" title="Permalink to this headline">¶</a></h4>
 <p>Peer to Peer data transfer can happen with or without using DMA. Depending on
 the sensor bandwidth requirement DMA can be enabled by using module parameter
@@ -454,8 +456,8 @@ In principle, multiple DMA_XFER and DMA_XFER_ACK messages may be sent at once
 (up to IPC MTU), thus allowing for interrupt throttling.
 Currently, ISH FW decides to send over DMA if ISHTP message is more than 3 IPC
 fragments and via IPC otherwise.</p>
-</section>
-<section id="ring-buffers">
+</div>
+<div class="section" id="ring-buffers">
 <h4>3.3.4 Ring Buffers<a class="headerlink" href="#ring-buffers" title="Permalink to this headline">¶</a></h4>
 <p>When a client initiates a connection, a ring of RX and TX buffers is allocated.
 The size of ring can be specified by the client. HID client sets 16 and 32 for
@@ -464,8 +466,8 @@ sent is copied to one of the send ring buffer and scheduled to be sent using
 bus message protocol. These buffers are required because the FW may have not
 have processed the last message and may not have enough flow control credits
 to send. Same thing holds true on receive side and flow control is required.</p>
-</section>
-<section id="host-enumeration">
+</div>
+<div class="section" id="host-enumeration">
 <h4>3.3.5 Host Enumeration<a class="headerlink" href="#host-enumeration" title="Permalink to this headline">¶</a></h4>
 <p>The host enumeration bus command allows discovery of clients present in the FW.
 There can be multiple sensor clients and clients for calibration function.</p>
@@ -486,9 +488,9 @@ max ISHTP message size, etc.</p></li>
 <li><p>Once host received properties for that last discovered client, it considers
 ISHTP device fully functional (and allocates DMA buffers)</p></li>
 </ul>
-</section>
-</section>
-<section id="hid-over-ish-client">
+</div>
+</div>
+<div class="section" id="hid-over-ish-client">
 <h3>3.4 HID over ISH Client<a class="headerlink" href="#hid-over-ish-client" title="Permalink to this headline">¶</a></h3>
 <p>Location: drivers/hid/intel-ish-hid</p>
 <p>The ISHTP client driver is responsible for:</p>
@@ -499,15 +501,15 @@ ISHTP device fully functional (and allocates DMA buffers)</p></li>
 <li><p>Process Get/Set feature request</p></li>
 <li><p>Get input reports</p></li>
 </ul>
-</section>
-<section id="hid-sensor-hub-mfd-and-iio-sensor-drivers">
+</div>
+<div class="section" id="hid-sensor-hub-mfd-and-iio-sensor-drivers">
 <h3>3.5 HID Sensor Hub MFD and IIO sensor drivers<a class="headerlink" href="#hid-sensor-hub-mfd-and-iio-sensor-drivers" title="Permalink to this headline">¶</a></h3>
 <p>The functionality in these drivers is the same as an external sensor hub.
 Refer to
 <a class="reference internal" href="hid-sensor.html"><span class="doc">HID Sensors Framework</span></a> for HID sensor
 Documentation/ABI/testing/sysfs-bus-iio for IIO ABIs to user space.</p>
-</section>
-<section id="end-to-end-hid-transport-sequence-diagram">
+</div>
+<div class="section" id="end-to-end-hid-transport-sequence-diagram">
 <h3>3.6 End to End HID transport Sequence Diagram<a class="headerlink" href="#end-to-end-hid-transport-sequence-diagram" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>HID-ISH-CLN                    ISHTP                    IPC                             HW
         |                        |                       |                               |
@@ -570,16 +572,16 @@ for each enumerated device
         |                        |                       |                               |
 </pre></div>
 </div>
-</section>
-<section id="ish-debugging">
+</div>
+<div class="section" id="ish-debugging">
 <h3>3.7 ISH Debugging<a class="headerlink" href="#ish-debugging" title="Permalink to this headline">¶</a></h3>
 <p>To debug ISH, event tracing mechanism is used. To enable debug logs:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>echo 1 &gt; /sys/kernel/debug/tracing/events/intel_ish/enable
 cat /sys/kernel/debug/tracing/trace
 </pre></div>
 </div>
-</section>
-<section id="ish-iio-sysfs-example-on-lenovo-thinkpad-yoga-260">
+</div>
+<div class="section" id="ish-iio-sysfs-example-on-lenovo-thinkpad-yoga-260">
 <h3>3.8 ISH IIO sysfs Example on Lenovo thinkpad Yoga 260<a class="headerlink" href="#ish-iio-sysfs-example-on-lenovo-thinkpad-yoga-260" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>root@otcpl-ThinkPad-Yoga-260:~# tree -l /sys/bus/iio/devices/
 /sys/bus/iio/devices/
@@ -716,9 +718,9 @@ cat /sys/kernel/debug/tracing/trace
 ...
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

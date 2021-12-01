@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>ALSA Compress-Offload API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -271,11 +273,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="alsa-compress-offload-api">
+  <div class="section" id="alsa-compress-offload-api">
 <h1>ALSA Compress-Offload API<a class="headerlink" href="#alsa-compress-offload-api" title="Permalink to this headline">¶</a></h1>
 <p>Pierre-Louis.Bossart &lt;<a class="reference external" href="mailto:pierre-louis&#46;bossart&#37;&#52;&#48;linux&#46;intel&#46;com">pierre-louis<span>&#46;</span>bossart<span>&#64;</span>linux<span>&#46;</span>intel<span>&#46;</span>com</a>&gt;</p>
 <p>Vinod Koul &lt;<a class="reference external" href="mailto:vinod&#46;koul&#37;&#52;&#48;linux&#46;intel&#46;com">vinod<span>&#46;</span>koul<span>&#64;</span>linux<span>&#46;</span>intel<span>&#46;</span>com</a>&gt;</p>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Since its early days, the ALSA API was defined with PCM support or
 constant bitrates payloads such as IEC61937 in mind. Arguments and
@@ -295,8 +297,8 @@ provide a control and data-streaming interface for audio DSPs.</p>
 Intel Moorestown SOC, with many corrections required to upstream the
 API in the mainline kernel instead of the staging tree and make it
 usable by others.</p>
-</section>
-<section id="requirements">
+</div>
+<div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>The main requirements are:</p>
 <ul class="simple">
@@ -334,8 +336,8 @@ to expose, translate and make use of the capabilities of the audio
 DSP, eg. Android HAL or PulseAudio sinks. By construction, regular
 applications are not supposed to make use of this API.</p></li>
 </ul>
-</section>
-<section id="design">
+</div>
+<div class="section" id="design">
 <h2>Design<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h2>
 <p>The new API shares a number of concepts with the PCM API for flow
 control. Start, pause, resume, drain and stop commands have the same
@@ -400,8 +402,8 @@ Modifications include:
 - Addition of format information for WMA
 - Addition of encoding options when required (derived from OpenMAX IL)
 - Addition of rateControlSupported (missing in OpenMAX AL)</p>
-</section>
-<section id="state-machine">
+</div>
+<div class="section" id="state-machine">
 <h2>State Machine<a class="headerlink" href="#state-machine" title="Permalink to this headline">¶</a></h2>
 <p>The compressed audio stream state machine is described below</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>                                      +----------+
@@ -451,8 +453,8 @@ Modifications include:
      +----------+                   +----------+
 </pre></div>
 </div>
-</section>
-<section id="gapless-playback">
+</div>
+<div class="section" id="gapless-playback">
 <h2>Gapless Playback<a class="headerlink" href="#gapless-playback" title="Permalink to this headline">¶</a></h2>
 <p>When playing thru an album, the decoders have the ability to skip the encoder
 delay and padding and directly move from one track content to another. The end
@@ -493,8 +495,8 @@ data would belong to next track</p>
 - Fill data of the next track
 - DSP switches to second track</p>
 <p>(note: order for partial_drain and write for next track can be reversed as well)</p>
-</section>
-<section id="gapless-playback-sm">
+</div>
+<div class="section" id="gapless-playback-sm">
 <h2>Gapless Playback SM<a class="headerlink" href="#gapless-playback-sm" title="Permalink to this headline">¶</a></h2>
 <p>For Gapless, we move from running state to partial drain and back, along
 with setting of meta_data and signalling for next track</p>
@@ -525,8 +527,8 @@ with setting of meta_data and signalling for next track</p>
                           +----------+
 </pre></div>
 </div>
-</section>
-<section id="not-supported">
+</div>
+<div class="section" id="not-supported">
 <h2>Not supported<a class="headerlink" href="#not-supported" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Support for VoIP/circuit-switched calls is not the target of this
@@ -554,8 +556,8 @@ in nature and data written/read doesn’t translate directly to
 rendered output in time, this does not deal with underrun/overrun and
 maybe dealt in user-library</p></li>
 </ul>
-</section>
-<section id="credits">
+</div>
+<div class="section" id="credits">
 <h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Mark Brown and Liam Girdwood for discussions on the need for this API</p></li>
@@ -565,8 +567,8 @@ maybe dealt in user-library</p></li>
 demonstrating and quantifying the benefits of audio offload on a
 real platform.</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

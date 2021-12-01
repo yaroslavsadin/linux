@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>NETWORK FILESYSTEM HELPER LIBRARY &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -253,9 +255,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="network-filesystem-helper-library">
+  <div class="section" id="network-filesystem-helper-library">
 <h1>NETWORK FILESYSTEM HELPER LIBRARY<a class="headerlink" href="#network-filesystem-helper-library" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The network filesystem helper library is a set of functions designed to aid a
 network filesystem in implementing VM/VFS operations.  For the moment, that
@@ -264,8 +266,8 @@ from the server.  The helper library, however, can also interpose other
 services, such as local caching or local data encryption.</p>
 <p>Note that the library module doesn’t link against local caching directly, so
 access must be provided by the netfs.</p>
-</section>
-<section id="buffered-read-helpers">
+</div>
+<div class="section" id="buffered-read-helpers">
 <h2>Buffered Read Helpers<a class="headerlink" href="#buffered-read-helpers" title="Permalink to this headline">¶</a></h2>
 <p>The library provides a set of read helpers that handle the -&gt;readpage(),
 -&gt;readahead() and much of the -&gt;write_begin() VM operations and translate them
@@ -292,7 +294,7 @@ local encryption of data to be stored remotely or in the cache.</p></li>
 <p>From the network filesystem, the helpers require a table of operations.  This
 includes a mandatory method to issue a read operation along with a number of
 optional methods.</p>
-<section id="read-helper-functions">
+<div class="section" id="read-helper-functions">
 <h3>Read Helper Functions<a class="headerlink" href="#read-helper-functions" title="Permalink to this headline">¶</a></h3>
 <p>Three read helpers are provided:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>* void netfs_readahead(struct readahead_control *ractl,
@@ -347,8 +349,8 @@ occurs, the request will get partially completed if sufficient data is read.</p>
 of bytes transferred or a negative error code, plus a flag indicating whether
 the operation was asynchronous (ie. whether the follow-on processing can be
 done in the current context, given this may involve sleeping).</p>
-</section>
-<section id="read-helper-structures">
+</div>
+<div class="section" id="read-helper-structures">
 <h3>Read Helper Structures<a class="headerlink" href="#read-helper-structures" title="Permalink to this headline">¶</a></h3>
 <p>The read helpers make use of a couple of structures to maintain the state of
 the read.  The first is a structure that manages a read request as a whole:</p>
@@ -451,8 +453,8 @@ reference.</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="read-helper-operations">
+</div>
+<div class="section" id="read-helper-operations">
 <h3>Read Helper Operations<a class="headerlink" href="#read-helper-operations" title="Permalink to this headline">¶</a></h3>
 <p>The network filesystem must provide the read helpers with a table of operations
 through which it can issue requests and negotiate:</p>
@@ -545,8 +547,8 @@ filesystem can clean up -&gt;netfs_priv.</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="read-helper-procedure">
+</div>
+<div class="section" id="read-helper-procedure">
 <h3>Read Helper Procedure<a class="headerlink" href="#read-helper-procedure" title="Permalink to this headline">¶</a></h3>
 <p>The read helpers work by the following general procedure:</p>
 <blockquote>
@@ -597,8 +599,8 @@ PG_fscache mark removed when that completes.</p></li>
 <li><p>The request structures will be cleaned up when everything has completed.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="read-helper-cache-api">
+</div>
+<div class="section" id="read-helper-cache-api">
 <h3>Read Helper Cache API<a class="headerlink" href="#read-helper-cache-api" title="Permalink to this headline">¶</a></h3>
 <p>When implementing a local cache to be used by the read helpers, two things are
 required: some way for the network filesystem to initialise the caching for a
@@ -707,8 +709,8 @@ not the read request structure as they could be used in other situations where
 there isn’t a read request structure as well, such as writing dirty data to the
 cache.</p>
 <dl class="c function">
-<dt id="c.folio_start_fscache">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_start_fscache</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_start_fscache" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_start_fscache" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.folio_start_fscache">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">folio_start_fscache</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.folio_start_fscache" title="folio"><span class="n"><span class="pre">folio</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">folio</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_start_fscache" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Start an fscache write on a folio.</p>
 </dd></dl>
 
@@ -721,8 +723,8 @@ cache.</p>
 <p>Call this function before writing a folio to a local cache.  Starting a
 second write before the first one finishes is not allowed.</p>
 <dl class="c function">
-<dt id="c.folio_end_fscache">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_end_fscache</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_end_fscache" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_end_fscache" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.folio_end_fscache">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">folio_end_fscache</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.folio_end_fscache" title="folio"><span class="n"><span class="pre">folio</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">folio</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_end_fscache" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>End an fscache write on a folio.</p>
 </dd></dl>
 
@@ -735,8 +737,8 @@ second write before the first one finishes is not allowed.</p>
 <p>Call this function after the folio has been written to the local cache.
 This will wake any sleepers waiting on this folio.</p>
 <dl class="c function">
-<dt id="c.folio_wait_fscache">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_wait_fscache</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_wait_fscache" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_fscache" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.folio_wait_fscache">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">folio_wait_fscache</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.folio_wait_fscache" title="folio"><span class="n"><span class="pre">folio</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">folio</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_fscache" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Wait for an fscache write on this folio to end.</p>
 </dd></dl>
 
@@ -750,8 +752,8 @@ This will wake any sleepers waiting on this folio.</p>
 the write to finish.  Another write may start after this one finishes,
 unless the caller holds the folio lock.</p>
 <dl class="c function">
-<dt id="c.folio_wait_fscache_killable">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">folio_wait_fscache_killable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_wait_fscache_killable" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_fscache_killable" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.folio_wait_fscache_killable">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">folio_wait_fscache_killable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.folio_wait_fscache_killable" title="folio"><span class="n"><span class="pre">folio</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">folio</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_fscache_killable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Wait for an fscache write on this folio to end.</p>
 </dd></dl>
 
@@ -770,9 +772,9 @@ holds the folio lock.</p>
 <li><p>0 if successful.</p></li>
 <li><p>-EINTR if a fatal signal was encountered.</p></li>
 </ul>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

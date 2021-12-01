@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Linux I2C fault injection &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -256,7 +258,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-i2c-fault-injection">
+  <div class="section" id="linux-i2c-fault-injection">
 <h1>Linux I2C fault injection<a class="headerlink" href="#linux-i2c-fault-injection" title="Permalink to this headline">¶</a></h1>
 <p>The GPIO based I2C bus master driver can be configured to provide fault
 injection capabilities. It is then meant to be connected to another I2C bus
@@ -268,9 +270,9 @@ master driver should handle gracefully.</p>
 mounted at /sys/kernel/debug. There will be a separate subdirectory per GPIO
 driven I2C bus. Each subdirectory will contain files to trigger the fault
 injection. They will be described now along with their intended use-cases.</p>
-<section id="wire-states">
+<div class="section" id="wire-states">
 <h2>Wire states<a class="headerlink" href="#wire-states" title="Permalink to this headline">¶</a></h2>
-<section id="scl">
+<div class="section" id="scl">
 <h3>“scl”<a class="headerlink" href="#scl" title="Permalink to this headline">¶</a></h3>
 <p>By reading this file, you get the current state of SCL. By writing, you can
 change its state to either force it low or to release it again. So, by using
@@ -278,8 +280,8 @@ change its state to either force it low or to release it again. So, by using
 because the bus master under test will not be able to clock. It should detect
 the condition of SCL being unresponsive and report an error to the upper
 layers.</p>
-</section>
-<section id="sda">
+</div>
+<div class="section" id="sda">
 <h3>“sda”<a class="headerlink" href="#sda" title="Permalink to this headline">¶</a></h3>
 <p>By reading this file, you get the current state of SDA. By writing, you can
 change its state to either force it low or to release it again. So, by using
@@ -290,9 +292,9 @@ core (see ‘struct bus_recovery_info’). However, the bus recovery will not
 succeed because SDA is still pinned low until you manually release it again
 with “echo 1 &gt; sda”. A test with an automatic release can be done with the
 “incomplete transfers” class of fault injectors.</p>
-</section>
-</section>
-<section id="incomplete-transfers">
+</div>
+</div>
+<div class="section" id="incomplete-transfers">
 <h2>Incomplete transfers<a class="headerlink" href="#incomplete-transfers" title="Permalink to this headline">¶</a></h2>
 <p>The following fault injectors create situations where SDA will be held low by a
 device. Bus recovery should be able to fix these situations. But please note:
@@ -302,7 +304,7 @@ device deglitching and monitoring the I2C bus. It could also detect a stuck SDA
 and will init a bus recovery on its own. If you want to implement bus recovery
 in a bus master driver, make sure you checked your hardware setup for such
 devices before. And always verify with a scope or logic analyzer!</p>
-<section id="incomplete-address-phase">
+<div class="section" id="incomplete-address-phase">
 <h3>“incomplete_address_phase”<a class="headerlink" href="#incomplete-address-phase" title="Permalink to this headline">¶</a></h3>
 <p>This file is write only and you need to write the address of an existing I2C
 client device to it. Then, a read transfer to this device will be started, but
@@ -312,8 +314,8 @@ being pulled low by the device while SCL is high. So, similar to the “sda” f
 above, the bus master under test should detect this condition and try a bus
 recovery. This time, however, it should succeed and the device should release
 SDA after toggling SCL.</p>
-</section>
-<section id="incomplete-write-byte">
+</div>
+<div class="section" id="incomplete-write-byte">
 <h3>“incomplete_write_byte”<a class="headerlink" href="#incomplete-write-byte" title="Permalink to this headline">¶</a></h3>
 <p>Similar to above, this file is write only and you need to write the address of
 an existing I2C client device to it.</p>
@@ -329,13 +331,13 @@ register 0x00 (if it has registers) when further clock pulses happen on SCL.
 This is why bus recovery (up to 9 clock pulses) must either check SDA or send
 additional STOP conditions to ensure the bus has been released. Otherwise
 random data will be written to a device!</p>
-</section>
-</section>
-<section id="lost-arbitration">
+</div>
+</div>
+<div class="section" id="lost-arbitration">
 <h2>Lost arbitration<a class="headerlink" href="#lost-arbitration" title="Permalink to this headline">¶</a></h2>
 <p>Here, we want to simulate the condition where the master under test loses the
 bus arbitration against another master in a multi-master setup.</p>
-<section id="lose-arbitration">
+<div class="section" id="lose-arbitration">
 <h3>“lose_arbitration”<a class="headerlink" href="#lose-arbitration" title="Permalink to this headline">¶</a></h3>
 <p>This file is write only and you need to write the duration of the arbitration
 intereference (in µs, maximum is 100ms). The calling process will then sleep
@@ -353,16 +355,16 @@ idle bus is:</p>
 # i2cget -y &lt;bus_to_test&gt; 0x3f
 </pre></div>
 </div>
-</section>
-</section>
-<section id="panic-during-transfer">
+</div>
+</div>
+<div class="section" id="panic-during-transfer">
 <h2>Panic during transfer<a class="headerlink" href="#panic-during-transfer" title="Permalink to this headline">¶</a></h2>
 <p>This fault injector will create a Kernel panic once the master under test
 started a transfer. This usually means that the state machine of the bus master
 driver will be ungracefully interrupted and the bus may end up in an unusual
 state. Use this to check if your shutdown/reboot/boot code can handle this
 scenario.</p>
-<section id="inject-panic">
+<div class="section" id="inject-panic">
 <h3>“inject_panic”<a class="headerlink" href="#inject-panic" title="Permalink to this headline">¶</a></h3>
 <p>This file is write only and you need to write the delay between the detected
 start of a transmission and the induced Kernel panic (in µs, maximum is 100ms).
@@ -376,9 +378,9 @@ under test.  A good starting point for using this fault injector is:</p>
 </div>
 <p>Note that there doesn’t need to be a device listening to the address you are
 using. Results may vary depending on that, though.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

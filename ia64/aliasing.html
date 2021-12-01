@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Memory Attribute Aliasing on IA-64 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -278,11 +280,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="memory-attribute-aliasing-on-ia-64">
+  <div class="section" id="memory-attribute-aliasing-on-ia-64">
 <h1>Memory Attribute Aliasing on IA-64<a class="headerlink" href="#memory-attribute-aliasing-on-ia-64" title="Permalink to this headline">¶</a></h1>
 <p>Bjorn Helgaas &lt;<a class="reference external" href="mailto:bjorn&#46;helgaas&#37;&#52;&#48;hp&#46;com">bjorn<span>&#46;</span>helgaas<span>&#64;</span>hp<span>&#46;</span>com</a>&gt;</p>
 <p>May 4, 2006</p>
-<section id="memory-attributes">
+<div class="section" id="memory-attributes">
 <h2>Memory Attributes<a class="headerlink" href="#memory-attributes" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Itanium supports several attributes for virtual memory references.
@@ -319,8 +321,8 @@ on which regions of the address space.  For example, some chipsets
 support either WB or UC access to main memory, while others support
 only WB access.</p>
 </div></blockquote>
-</section>
-<section id="memory-map">
+</div>
+<div class="section" id="memory-map">
 <h2>Memory Map<a class="headerlink" href="#memory-map" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Platform firmware describes the physical memory map and the
@@ -343,8 +345,8 @@ scheme.</p>
 <p>The efi_memmap table is preserved unmodified because the original
 boot-time information is required for kexec.</p>
 </div></blockquote>
-</section>
-<section id="kernel-identify-mappings">
+</div>
+<div class="section" id="kernel-identify-mappings">
 <h2>Kernel Identify Mappings<a class="headerlink" href="#kernel-identify-mappings" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Linux/ia64 identity mappings are done with large pages, currently
@@ -362,21 +364,21 @@ software.  This allows UC identity mappings to cover granules that
 are only partially populated, or populated with a combination of UC
 and WB regions.</p>
 </div></blockquote>
-</section>
-<section id="user-mappings">
+</div>
+<div class="section" id="user-mappings">
 <h2>User Mappings<a class="headerlink" href="#user-mappings" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>User mappings are typically done with 16K or 64K pages.  The smaller
 page size allows more flexibility because only 16K or 64K has to be
 homogeneous with respect to memory attributes.</p>
 </div></blockquote>
-</section>
-<section id="potential-attribute-aliasing-cases">
+</div>
+<div class="section" id="potential-attribute-aliasing-cases">
 <h2>Potential Attribute Aliasing Cases<a class="headerlink" href="#potential-attribute-aliasing-cases" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>There are several ways the kernel creates new mappings:</p>
 </div></blockquote>
-<section id="mmap-of-dev-mem">
+<div class="section" id="mmap-of-dev-mem">
 <h3>mmap of /dev/mem<a class="headerlink" href="#mmap-of-dev-mem" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>This uses <a class="reference internal" href="../core-api/mm-api.html#c.remap_pfn_range" title="remap_pfn_range"><code class="xref c c-func docutils literal notranslate"><span class="pre">remap_pfn_range()</span></code></a>, which creates user mappings.  These
@@ -389,8 +391,8 @@ an attribute reported as being supported in the EFI memory map.</p>
 <p>Since the EFI memory map does not describe MMIO on some
 machines, this should use an uncacheable mapping as a fallback.</p>
 </div></blockquote>
-</section>
-<section id="mmap-of-sys-class-pci-bus-legacy-mem">
+</div>
+<div class="section" id="mmap-of-sys-class-pci-bus-legacy-mem">
 <h3>mmap of /sys/class/pci_bus/…/legacy_mem<a class="headerlink" href="#mmap-of-sys-class-pci-bus-legacy-mem" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>This is very similar to mmap of /dev/mem, except that legacy_mem
@@ -403,8 +405,8 @@ rather than /dev/mem allows multiple instances of X to talk to
 different VGA cards.</p>
 <p>The /dev/mem mmap constraints apply.</p>
 </div></blockquote>
-</section>
-<section id="mmap-of-proc-bus-pci">
+</div>
+<div class="section" id="mmap-of-proc-bus-pci">
 <h3>mmap of /proc/bus/pci/…/??.?<a class="headerlink" href="#mmap-of-proc-bus-pci" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>This is an MMIO mmap of PCI functions, which additionally may or
@@ -415,8 +417,8 @@ the WC mapping is allowed.</p>
 <p>Otherwise, the user mapping must use the same attribute as the
 kernel mapping.</p>
 </div></blockquote>
-</section>
-<section id="read-write-of-dev-mem">
+</div>
+<div class="section" id="read-write-of-dev-mem">
 <h3>read/write of /dev/mem<a class="headerlink" href="#read-write-of-dev-mem" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>This uses copy_from_user(), which implicitly uses a kernel
@@ -430,8 +432,8 @@ registers typically can be accessed only with four-byte or
 eight-byte accesses, and the copy_from_user() path doesn’t allow
 any control over the access size, so this would be dangerous.</p>
 </div></blockquote>
-</section>
-<section id="ioremap">
+</div>
+<div class="section" id="ioremap">
 <h3>ioremap()<a class="headerlink" href="#ioremap" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>This returns a mapping for use inside the kernel.</p>
@@ -445,11 +447,11 @@ region safely with kernel page table mappings, we can use
 ioremap_page_range() as most other architectures do.</p>
 <p>Failing all of the above, we have to fall back to a UC mapping.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="past-problem-cases">
+</div>
+</div>
+<div class="section" id="past-problem-cases">
 <h2>Past Problem Cases<a class="headerlink" href="#past-problem-cases" title="Permalink to this headline">¶</a></h2>
-<section id="mmap-of-various-mmio-regions-from-dev-mem-by-x-on-intel-platforms">
+<div class="section" id="mmap-of-various-mmio-regions-from-dev-mem-by-x-on-intel-platforms">
 <h3>mmap of various MMIO regions from /dev/mem by “X” on Intel platforms<a class="headerlink" href="#mmap-of-various-mmio-regions-from-dev-mem-by-x-on-intel-platforms" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The EFI memory map may not report these MMIO regions.</p>
@@ -458,8 +460,8 @@ when the EFI memory map is incomplete, every /dev/mem mmap must
 succeed.  It may create either WB or UC user mappings, depending
 on whether the region is in kern_memmap or the EFI memory map.</p>
 </div></blockquote>
-</section>
-<section id="mmap-of-0x0-0x9ffff-dev-mem-by-hwinfo-on-hp-sx1000-with-vga-enabled">
+</div>
+<div class="section" id="mmap-of-0x0-0x9ffff-dev-mem-by-hwinfo-on-hp-sx1000-with-vga-enabled">
 <h3>mmap of 0x0-0x9FFFF /dev/mem by “hwinfo” on HP sx1000 with VGA enabled<a class="headerlink" href="#mmap-of-0x0-0x9ffff-dev-mem-by-hwinfo-on-hp-sx1000-with-vga-enabled" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The EFI memory map reports the following attributes:</p>
@@ -494,8 +496,8 @@ WB-only memory, but since UC is non-speculative, the processor will
 never generate an uncacheable reference to the WB-only areas unless
 the driver explicitly touches them.</p>
 </div></blockquote>
-</section>
-<section id="mmap-of-0x0-0xfffff-legacy-mem-by-x">
+</div>
+<div class="section" id="mmap-of-0x0-0xfffff-legacy-mem-by-x">
 <h3>mmap of 0x0-0xFFFFF legacy_mem by “X”<a class="headerlink" href="#mmap-of-0x0-0xfffff-legacy-mem-by-x" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>If the EFI memory map reports that the entire range supports the
@@ -509,8 +511,8 @@ safe attribute to use.</p>
 that doesn’t report the VGA frame buffer at all), we should fail the
 mmap and force the user to map just the specific region of interest.</p>
 </div></blockquote>
-</section>
-<section id="mmap-of-0xa0000-0xbffff-legacy-mem-by-x-on-hp-sx1000-with-vga-disabled">
+</div>
+<div class="section" id="mmap-of-0xa0000-0xbffff-legacy-mem-by-x-on-hp-sx1000-with-vga-disabled">
 <h3>mmap of 0xA0000-0xBFFFF legacy_mem by “X” on HP sx1000 with VGA disabled<a class="headerlink" href="#mmap-of-0xa0000-0xbffff-legacy-mem-by-x-on-hp-sx1000-with-vga-disabled" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The EFI memory map reports the following attributes:</p>
@@ -520,8 +522,8 @@ mmap and force the user to map just the specific region of interest.</p>
 <p>This is a special case of the previous case, and the mmap should
 fail for the same reason as above.</p>
 </div></blockquote>
-</section>
-<section id="read-of-sys-devices-rom">
+</div>
+<div class="section" id="read-of-sys-devices-rom">
 <h3>read of /sys/devices/…/rom<a class="headerlink" href="#read-of-sys-devices-rom" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>For VGA devices, this may cause an <a class="reference internal" href="../driver-api/device-io.html#c.ioremap" title="ioremap"><code class="xref c c-func docutils literal notranslate"><span class="pre">ioremap()</span></code></a> of 0xC0000.  This
@@ -531,16 +533,16 @@ an MCA on HP sx[12]000 chipsets.</p>
 <p>We should use WB page table mappings to avoid covering the VGA
 frame buffer.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="notes">
+</div>
+</div>
+<div class="section" id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>[1] SDM rev 2.2, vol 2, sec 4.4.1.
 [2] SDM rev 2.2, vol 2, sec 4.4.6.</p>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

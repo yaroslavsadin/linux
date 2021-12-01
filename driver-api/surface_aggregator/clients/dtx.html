@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>User-Space DTX (Clipboard Detachment System) Interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -351,7 +353,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="user-space-dtx-clipboard-detachment-system-interface">
+  <div class="section" id="user-space-dtx-clipboard-detachment-system-interface">
 <h1><a class="toc-backref" href="#id13">User-Space DTX (Clipboard Detachment System) Interface</a><a class="headerlink" href="#user-space-dtx-clipboard-detachment-system-interface" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">surface_dtx</span></code> driver is responsible for proper clipboard detachment
 and re-attachment handling. To this end, it provides the <code class="docutils literal notranslate"><span class="pre">/dev/surface/dtx</span></code>
@@ -413,7 +415,7 @@ initiated by the EC.</p>
 </li>
 </ul>
 </div>
-<section id="nomenclature">
+<div class="section" id="nomenclature">
 <h2><a class="toc-backref" href="#id14">Nomenclature</a><a class="headerlink" href="#nomenclature" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>Clipboard:</strong>
@@ -429,12 +431,12 @@ The command is accepted by the EC as a valid command and acknowledged
 (following the standard communication protocol), but the EC does not act
 upon it, i.e. ignores it.e upper part of the</p></li>
 </ul>
-</section>
-<section id="detachment-process">
+</div>
+<div class="section" id="detachment-process">
 <h2><a class="toc-backref" href="#id15">Detachment Process</a><a class="headerlink" href="#detachment-process" title="Permalink to this headline">¶</a></h2>
 <p>Warning: This part of the documentation is based on reverse engineering and
 testing and thus may contain errors or be incomplete.</p>
-<section id="latch-states">
+<div class="section" id="latch-states">
 <h3><a class="toc-backref" href="#id16">Latch States</a><a class="headerlink" href="#latch-states" title="Permalink to this headline">¶</a></h3>
 <p>The latch mechanism has two major states: <em>open</em> and <em>closed</em>. In the
 <em>closed</em> state (default), the clipboard is secured to the base, whereas in
@@ -445,8 +447,8 @@ is intended to prevent the dGPU, positioned in the base of the device, from
 being hot-unplugged while in use. More details can be found in the
 documentation for the detachment procedure below. By default, the latch is
 unlocked.</p>
-</section>
-<section id="detachment-procedure">
+</div>
+<div class="section" id="detachment-procedure">
 <h3><a class="toc-backref" href="#id17">Detachment Procedure</a><a class="headerlink" href="#detachment-procedure" title="Permalink to this headline">¶</a></h3>
 <p>Note that the detachment process is governed fully by the EC. The
 <code class="docutils literal notranslate"><span class="pre">surface_dtx</span></code> driver only relays events from the EC to user-space and
@@ -517,11 +519,11 @@ detachment process.</p>
 <p>The detachment process may further be canceled by the EC due to hardware
 failures or a low clipboard battery. This is done via a cancel event
 (<code class="docutils literal notranslate"><span class="pre">SDTX_EVENT_CANCEL</span></code>) with the corresponding cancel reason.</p>
-</section>
-</section>
-<section id="user-space-interface-documentation">
+</div>
+</div>
+<div class="section" id="user-space-interface-documentation">
 <h2><a class="toc-backref" href="#id18">User-Space Interface Documentation</a><a class="headerlink" href="#user-space-interface-documentation" title="Permalink to this headline">¶</a></h2>
-<section id="error-codes-and-status-values">
+<div class="section" id="error-codes-and-status-values">
 <h3><a class="toc-backref" href="#id19">Error Codes and Status Values</a><a class="headerlink" href="#error-codes-and-status-values" title="Permalink to this headline">¶</a></h3>
 <p>Error and status codes are divided into different categories, which can be
 used to determine if the status code is an error, and, if it is, the
@@ -668,8 +670,8 @@ overlap and are generally only unique within their use-case:</p>
 </tbody>
 </table>
 <p>Again, other codes are reserved for future use.</p>
-</section>
-<section id="events">
+</div>
+<div class="section" id="events">
 <span id="id1"></span><h3><a class="toc-backref" href="#id20">Events</a><a class="headerlink" href="#events" title="Permalink to this headline">¶</a></h3>
 <p>Events can be received by reading from the device file. They are disabled by
 default and have to be enabled by executing <code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_EVENTS_ENABLE</span></code>
@@ -723,14 +725,14 @@ types gracefully, by relying on the payload length given in the event header.</p
 </tbody>
 </table>
 <p>Individual events in more detail:</p>
-<section id="sdtx-event-request">
+<div class="section" id="sdtx-event-request">
 <h4><a class="toc-backref" href="#id21"><code class="docutils literal notranslate"><span class="pre">SDTX_EVENT_REQUEST</span></code></a><a class="headerlink" href="#sdtx-event-request" title="Permalink to this headline">¶</a></h4>
 <p>Sent when a detachment process is started or, if in progress, aborted by the
 user, either via a detach button press or a detach request
 (<code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_LATCH_REQUEST</span></code>) being sent from user-space.</p>
 <p>Does not have any payload.</p>
-</section>
-<section id="sdtx-event-cancel">
+</div>
+<div class="section" id="sdtx-event-cancel">
 <h4><a class="toc-backref" href="#id22"><code class="docutils literal notranslate"><span class="pre">SDTX_EVENT_CANCEL</span></code></a><a class="headerlink" href="#sdtx-event-cancel" title="Permalink to this headline">¶</a></h4>
 <p>Sent when a detachment process is canceled by the EC due to unfulfilled
 preconditions (e.g. clipboard battery too low to detach) or hardware
@@ -772,8 +774,8 @@ not given.</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="sdtx-event-base-connection">
+</div>
+<div class="section" id="sdtx-event-base-connection">
 <h4><a class="toc-backref" href="#id23"><code class="docutils literal notranslate"><span class="pre">SDTX_EVENT_BASE_CONNECTION</span></code></a><a class="headerlink" href="#sdtx-event-base-connection" title="Permalink to this headline">¶</a></h4>
 <p>Sent when the base connection state has changed, i.e. when the base has been
 attached, detached, or detachment has become infeasible due to low clipboard
@@ -811,8 +813,8 @@ below:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">SDTX_DETACH_NOT_FEASIBLE</span></code>.</p></li>
 </ul>
 <p>Other values are reserved for future use.</p>
-</section>
-<section id="sdtx-event-latch-status">
+</div>
+<div class="section" id="sdtx-event-latch-status">
 <h4><a class="toc-backref" href="#id24"><code class="docutils literal notranslate"><span class="pre">SDTX_EVENT_LATCH_STATUS</span></code></a><a class="headerlink" href="#sdtx-event-latch-status" title="Permalink to this headline">¶</a></h4>
 <p>Sent when the latch status has changed, i.e. when the latch has been opened,
 closed, or an error occurred. The current status is provided as payload:</p>
@@ -845,8 +847,8 @@ closed, or an error occurred. The current status is provided as payload:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">SDTX_ERR_FAILED_TO_CLOSE</span></code>.</p></li>
 </ul>
 <p>Other values are reserved for future use.</p>
-</section>
-<section id="sdtx-event-device-mode">
+</div>
+<div class="section" id="sdtx-event-device-mode">
 <h4><a class="toc-backref" href="#id25"><code class="docutils literal notranslate"><span class="pre">SDTX_EVENT_DEVICE_MODE</span></code></a><a class="headerlink" href="#sdtx-event-device-mode" title="Permalink to this headline">¶</a></h4>
 <p>Sent when the device mode has changed. The new device mode is provided as
 payload:</p>
@@ -877,9 +879,9 @@ payload:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">SDTX_DEVICE_MODE_STUDIO</span></code>.</p></li>
 </ul>
 <p>Other values are reserved for future use.</p>
-</section>
-</section>
-<section id="ioctls">
+</div>
+</div>
+<div class="section" id="ioctls">
 <span id="id2"></span><h3><a class="toc-backref" href="#id26">IOCTLs</a><a class="headerlink" href="#ioctls" title="Permalink to this headline">¶</a></h3>
 <p>The following IOCTLs are provided:</p>
 <table class="docutils align-default" id="id12">
@@ -968,34 +970,34 @@ payload:</p>
 </tr>
 </tbody>
 </table>
-<section id="sdtx-ioctl-events-enable">
+<div class="section" id="sdtx-ioctl-events-enable">
 <h4><a class="toc-backref" href="#id27"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_EVENTS_ENABLE</span></code></a><a class="headerlink" href="#sdtx-ioctl-events-enable" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IO(0xA5,</span> <span class="pre">0x22)</span></code>.</p>
 <p>Enable events for the current file descriptor. Events can be obtained by
 reading from the device, if enabled. Events are disabled by default.</p>
-</section>
-<section id="sdtx-ioctl-events-disable">
+</div>
+<div class="section" id="sdtx-ioctl-events-disable">
 <h4><a class="toc-backref" href="#id28"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_EVENTS_DISABLE</span></code></a><a class="headerlink" href="#sdtx-ioctl-events-disable" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IO(0xA5,</span> <span class="pre">0x22)</span></code>.</p>
 <p>Disable events for the current file descriptor. Events can be obtained by
 reading from the device, if enabled. Events are disabled by default.</p>
-</section>
-<section id="sdtx-ioctl-latch-lock">
+</div>
+<div class="section" id="sdtx-ioctl-latch-lock">
 <h4><a class="toc-backref" href="#id29"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_LATCH_LOCK</span></code></a><a class="headerlink" href="#sdtx-ioctl-latch-lock" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IO(0xA5,</span> <span class="pre">0x23)</span></code>.</p>
 <p>Locks the latch, causing the detachment procedure to abort without opening
 the latch on timeout. The latch is unlocked by default. This command will be
 silently ignored if the latch is already locked.</p>
-</section>
-<section id="sdtx-ioctl-latch-unlock">
+</div>
+<div class="section" id="sdtx-ioctl-latch-unlock">
 <h4><a class="toc-backref" href="#id30"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_LATCH_UNLOCK</span></code></a><a class="headerlink" href="#sdtx-ioctl-latch-unlock" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IO(0xA5,</span> <span class="pre">0x24)</span></code>.</p>
 <p>Unlocks the latch, causing the detachment procedure to open the latch on
 timeout. The latch is unlocked by default. This command will not open the
 latch when sent during an ongoing detachment process. It will be silently
 ignored if the latch is already unlocked.</p>
-</section>
-<section id="sdtx-ioctl-latch-request">
+</div>
+<div class="section" id="sdtx-ioctl-latch-request">
 <h4><a class="toc-backref" href="#id31"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_LATCH_REQUEST</span></code></a><a class="headerlink" href="#sdtx-ioctl-latch-request" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IO(0xA5,</span> <span class="pre">0x25)</span></code>.</p>
 <p>Generic latch request. Behavior depends on the context: If no
@@ -1004,8 +1006,8 @@ currently active detachment-process will be aborted.</p>
 <p>If a detachment process is canceled by this operation, a generic detachment
 request event (<code class="docutils literal notranslate"><span class="pre">SDTX_EVENT_REQUEST</span></code>) will be sent.</p>
 <p>This essentially behaves the same as a detachment button press.</p>
-</section>
-<section id="sdtx-ioctl-latch-confirm">
+</div>
+<div class="section" id="sdtx-ioctl-latch-confirm">
 <h4><a class="toc-backref" href="#id32"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_LATCH_CONFIRM</span></code></a><a class="headerlink" href="#sdtx-ioctl-latch-confirm" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IO(0xA5,</span> <span class="pre">0x26)</span></code>.</p>
 <p>Acknowledges and confirms a latch request. If sent during an ongoing
@@ -1014,8 +1016,8 @@ The latch will also be opened if it has been locked. In this case, the latch
 lock is reset to the unlocked state.</p>
 <p>This command will be silently ignored if there is currently no detachment
 procedure in progress.</p>
-</section>
-<section id="sdtx-ioctl-latch-heartbeat">
+</div>
+<div class="section" id="sdtx-ioctl-latch-heartbeat">
 <h4><a class="toc-backref" href="#id33"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_LATCH_HEARTBEAT</span></code></a><a class="headerlink" href="#sdtx-ioctl-latch-heartbeat" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IO(0xA5,</span> <span class="pre">0x27)</span></code>.</p>
 <p>Sends a heartbeat, essentially resetting the detachment timeout. This
@@ -1023,8 +1025,8 @@ command can be used to keep the detachment process alive while work required
 for the detachment to succeed is still in progress.</p>
 <p>This command will be silently ignored if there is currently no detachment
 procedure in progress.</p>
-</section>
-<section id="sdtx-ioctl-latch-cancel">
+</div>
+<div class="section" id="sdtx-ioctl-latch-cancel">
 <h4><a class="toc-backref" href="#id34"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_LATCH_CANCEL</span></code></a><a class="headerlink" href="#sdtx-ioctl-latch-cancel" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IO(0xA5,</span> <span class="pre">0x28)</span></code>.</p>
 <p>Cancels detachment in progress (if any). If a detachment process is canceled
@@ -1032,8 +1034,8 @@ by this operation, a generic detachment request event
 (<code class="docutils literal notranslate"><span class="pre">SDTX_EVENT_REQUEST</span></code>) will be sent.</p>
 <p>This command will be silently ignored if there is currently no detachment
 procedure in progress.</p>
-</section>
-<section id="sdtx-ioctl-get-base-info">
+</div>
+<div class="section" id="sdtx-ioctl-get-base-info">
 <h4><a class="toc-backref" href="#id35"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_GET_BASE_INFO</span></code></a><a class="headerlink" href="#sdtx-ioctl-get-base-info" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IOR(0xA5,</span> <span class="pre">0x29,</span> <span class="pre">struct</span> <span class="pre">sdtx_base_info)</span></code>.</p>
 <p>Get the current base connection state (i.e. attached/detached) and the type
@@ -1047,8 +1049,8 @@ a way to query the information provided by the base connection change event
 <li><p><code class="docutils literal notranslate"><span class="pre">SDTX_DETACH_NOT_FEASIBLE</span></code>.</p></li>
 </ul>
 <p>Other values are reserved for future use.</p>
-</section>
-<section id="sdtx-ioctl-get-device-mode">
+</div>
+<div class="section" id="sdtx-ioctl-get-device-mode">
 <h4><a class="toc-backref" href="#id36"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_GET_DEVICE_MODE</span></code></a><a class="headerlink" href="#sdtx-ioctl-get-device-mode" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IOR(0xA5,</span> <span class="pre">0x2A,</span> <span class="pre">__u16)</span></code>.</p>
 <p>Returns the device operation mode, indicating if and how the base is
@@ -1063,8 +1065,8 @@ query the information provided by the device mode change event
 </ul>
 <p>See <a class="reference internal" href="#c.sdtx_device_mode" title="sdtx_device_mode"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sdtx_device_mode</span></code></a> for details. Other values are reserved for future
 use.</p>
-</section>
-<section id="sdtx-ioctl-get-latch-status">
+</div>
+<div class="section" id="sdtx-ioctl-get-latch-status">
 <h4><a class="toc-backref" href="#id37"><code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_GET_LATCH_STATUS</span></code></a><a class="headerlink" href="#sdtx-ioctl-get-latch-status" title="Permalink to this headline">¶</a></h4>
 <p>Defined as <code class="docutils literal notranslate"><span class="pre">_IOR(0xA5,</span> <span class="pre">0x2B,</span> <span class="pre">__u16)</span></code>.</p>
 <p>Get the current latch status or (presumably) the last error encountered when
@@ -1080,9 +1082,9 @@ to query the information provided by the latch status change event
 <li><p><code class="docutils literal notranslate"><span class="pre">SDTX_ERR_FAILED_TO_CLOSE</span></code>.</p></li>
 </ul>
 <p>Other values are reserved for future use.</p>
-</section>
-</section>
-<section id="a-note-on-base-ids">
+</div>
+</div>
+<div class="section" id="a-note-on-base-ids">
 <h3><a class="toc-backref" href="#id38">A Note on Base IDs</a><a class="headerlink" href="#a-note-on-base-ids" title="Permalink to this headline">¶</a></h3>
 <p>Base types/IDs provided via <code class="docutils literal notranslate"><span class="pre">SDTX_EVENT_BASE_CONNECTION</span></code> or
 <code class="docutils literal notranslate"><span class="pre">SDTX_IOCTL_GET_BASE_INFO</span></code> are directly forwarded from the EC in the lower
@@ -1098,12 +1100,12 @@ Hub.</p></li>
 </ul>
 <p>Note that currently only the <code class="docutils literal notranslate"><span class="pre">SSH</span></code> type EC is supported, however <code class="docutils literal notranslate"><span class="pre">HID</span></code>
 type is reserved for future use.</p>
-</section>
-<section id="structures-and-enums">
+</div>
+<div class="section" id="structures-and-enums">
 <h3><a class="toc-backref" href="#id39">Structures and Enums</a><a class="headerlink" href="#structures-and-enums" title="Permalink to this headline">¶</a></h3>
 <dl class="c enum">
-<dt id="c.sdtx_device_mode">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">sdtx_device_mode</span></code><a class="headerlink" href="#c.sdtx_device_mode" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sdtx_device_mode">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sdtx_device_mode</span></span></span><a class="headerlink" href="#c.sdtx_device_mode" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mode describing how (and if) the clipboard is attached to the base of the device.</p>
 </dd></dl>
 
@@ -1123,8 +1125,8 @@ are available to the system.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.sdtx_event">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">sdtx_event</span></code><a class="headerlink" href="#c.sdtx_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sdtx_event">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sdtx_event</span></span></span><a class="headerlink" href="#c.sdtx_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Event provided by reading from the DTX device file.</p>
 </dd></dl>
 
@@ -1148,8 +1150,8 @@ are available to the system.</p>
 <p><strong>Description</strong></p>
 <p>See <a class="reference internal" href="#c.sdtx_event_code" title="sdtx_event_code"><code class="xref c c-type docutils literal notranslate"><span class="pre">enum</span> <span class="pre">sdtx_event_code</span></code></a> for currently valid event codes.</p>
 <dl class="c enum">
-<dt id="c.sdtx_event_code">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">sdtx_event_code</span></code><a class="headerlink" href="#c.sdtx_event_code" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sdtx_event_code">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sdtx_event_code</span></span></span><a class="headerlink" href="#c.sdtx_event_code" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Code describing the type of an event.</p>
 </dd></dl>
 
@@ -1173,8 +1175,8 @@ gracefully handle unknown events, i.e. by simply skipping them.</p>
 <p>Consult the DTX user-space interface documentation for details regarding
 the individual event types.</p>
 <dl class="c struct">
-<dt id="c.sdtx_base_info">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">sdtx_base_info</span></code><a class="headerlink" href="#c.sdtx_base_info" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sdtx_base_info">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sdtx_base_info</span></span></span><a class="headerlink" href="#c.sdtx_base_info" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Describes if and what type of base is connected.</p>
 </dd></dl>
 
@@ -1195,14 +1197,14 @@ values are currently reserved.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">base_id</span></code></dt><dd><p>The type of base connected. Zero if no base is connected.</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="api-users">
+</div>
+</div>
+<div class="section" id="api-users">
 <h2><a class="toc-backref" href="#id40">API Users</a><a class="headerlink" href="#api-users" title="Permalink to this headline">¶</a></h2>
 <p>A user-space daemon utilizing this API can be found at
 <a class="reference external" href="https://github.com/linux-surface/surface-dtx-daemon">https://github.com/linux-surface/surface-dtx-daemon</a>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

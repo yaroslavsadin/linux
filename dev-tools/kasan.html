@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The Kernel Address Sanitizer (KASAN) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -279,9 +281,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-kernel-address-sanitizer-kasan">
+  <div class="section" id="the-kernel-address-sanitizer-kasan">
 <h1>The Kernel Address Sanitizer (KASAN)<a class="headerlink" href="#the-kernel-address-sanitizer-kasan" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>KernelAddressSANitizer (KASAN) is a dynamic memory safety error detector
 designed to find out-of-bound and use-after-free bugs. KASAN has three modes:</p>
@@ -310,8 +312,8 @@ This mode is supported in GCC 10+ and Clang 11+.</p>
 while the hardware tag-based KASAN currently only supports SLUB.</p>
 <p>Currently, generic KASAN is supported for the x86_64, arm, arm64, xtensa, s390,
 and riscv architectures, and tag-based KASAN modes are supported only for arm64.</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>To enable KASAN, configure the kernel with:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CONFIG_KASAN=y
@@ -326,7 +328,7 @@ The former produces a smaller binary while the latter is 1.1-2 times faster.</p>
 <p>To include alloc and free stack traces of affected slab objects into reports,
 enable <code class="docutils literal notranslate"><span class="pre">CONFIG_STACKTRACE</span></code>. To include alloc and free stack traces of affected
 physical pages, enable <code class="docutils literal notranslate"><span class="pre">CONFIG_PAGE_OWNER</span></code> and boot with <code class="docutils literal notranslate"><span class="pre">page_owner=on</span></code>.</p>
-<section id="error-reports">
+<div class="section" id="error-reports">
 <h3>Error reports<a class="headerlink" href="#error-reports" title="Permalink to this headline">¶</a></h3>
 <p>A typical KASAN report looks like this:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>==================================================================
@@ -432,8 +434,8 @@ information it has. The actual type of the bug might be different.</p>
 traces point to places in code that interacted with the object but that are not
 directly present in the bad access stack trace. Currently, this includes
 <a class="reference internal" href="../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a> and workqueue queuing.</p>
-</section>
-<section id="boot-parameters">
+</div>
+<div class="section" id="boot-parameters">
 <h3>Boot parameters<a class="headerlink" href="#boot-parameters" title="Permalink to this headline">¶</a></h3>
 <p>KASAN is affected by the generic <code class="docutils literal notranslate"><span class="pre">panic_on_warn</span></code> command line parameter.
 When it is enabled, KASAN panics the kernel after printing a bug report.</p>
@@ -466,11 +468,11 @@ asynchronously on writes.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">kasan.stacktrace=off</span></code> or <code class="docutils literal notranslate"><span class="pre">=on</span></code> disables or enables alloc and free stack
 traces collection (default: <code class="docutils literal notranslate"><span class="pre">on</span></code>).</p></li>
 </ul>
-</section>
-</section>
-<section id="implementation-details">
+</div>
+</div>
+<div class="section" id="implementation-details">
 <h2>Implementation details<a class="headerlink" href="#implementation-details" title="Permalink to this headline">¶</a></h2>
-<section id="generic-kasan">
+<div class="section" id="generic-kasan">
 <h3>Generic KASAN<a class="headerlink" href="#generic-kasan" title="Permalink to this headline">¶</a></h3>
 <p>Software KASAN modes use shadow memory to record whether each byte of memory is
 safe to access and use compile-time instrumentation to insert shadow memory
@@ -498,8 +500,8 @@ enlarges the kernel, but it gives an x1.1-x2 performance boost over the
 outline-instrumented kernel.</p>
 <p>Generic KASAN is the only mode that delays the reuse of freed objects via
 quarantine (see mm/kasan/quarantine.c for implementation).</p>
-</section>
-<section id="software-tag-based-kasan">
+</div>
+<div class="section" id="software-tag-based-kasan">
 <h3>Software tag-based KASAN<a class="headerlink" href="#software-tag-based-kasan" title="Permalink to this headline">¶</a></h3>
 <p>Software tag-based KASAN uses a software memory tagging approach to checking
 access validity. It is currently only implemented for the arm64 architecture.</p>
@@ -526,8 +528,8 @@ pointers with the 0xFF pointer tag are not checked). The value 0xFE is currently
 reserved to tag freed memory regions.</p>
 <p>Software tag-based KASAN currently only supports tagging of slab and page_alloc
 memory.</p>
-</section>
-<section id="hardware-tag-based-kasan">
+</div>
+<div class="section" id="hardware-tag-based-kasan">
 <h3>Hardware tag-based KASAN<a class="headerlink" href="#hardware-tag-based-kasan" title="Permalink to this headline">¶</a></h3>
 <p>Hardware tag-based KASAN is similar to the software mode in concept but uses
 hardware memory tagging support instead of compiler instrumentation and
@@ -552,16 +554,16 @@ enabled. Even when <code class="docutils literal notranslate"><span class="pre">
 support MTE (but supports TBI).</p>
 <p>Hardware tag-based KASAN only reports the first found bug. After that, MTE tag
 checking gets disabled.</p>
-</section>
-</section>
-<section id="shadow-memory">
+</div>
+</div>
+<div class="section" id="shadow-memory">
 <h2>Shadow memory<a class="headerlink" href="#shadow-memory" title="Permalink to this headline">¶</a></h2>
 <p>The kernel maps memory in several different parts of the address space.
 The range of kernel virtual addresses is large: there is not enough real
 memory to support a real shadow region for every address that could be
 accessed by the kernel. Therefore, KASAN only maps real shadow for certain
 parts of the address space.</p>
-<section id="default-behaviour">
+<div class="section" id="default-behaviour">
 <h3>Default behaviour<a class="headerlink" href="#default-behaviour" title="Permalink to this headline">¶</a></h3>
 <p>By default, architectures only map real memory over the shadow region
 for the linear mapping (and potentially other small areas). For all
@@ -576,8 +578,8 @@ This allows detection of invalid accesses to module globals, for example.</p>
 lives in vmalloc space, it will be shadowed by the read-only page, and
 the kernel will fault when trying to set up the shadow data for stack
 variables.</p>
-</section>
-<section id="config-kasan-vmalloc">
+</div>
+<div class="section" id="config-kasan-vmalloc">
 <h3>CONFIG_KASAN_VMALLOC<a class="headerlink" href="#config-kasan-vmalloc" title="Permalink to this headline">¶</a></h3>
 <p>With <code class="docutils literal notranslate"><span class="pre">CONFIG_KASAN_VMALLOC</span></code>, KASAN can cover vmalloc space at the
 cost of greater memory usage. Currently, this is supported on x86,
@@ -601,11 +603,11 @@ not be covered by the early shadow page but will be left unmapped.
 This will require changes in arch-specific code.</p>
 <p>This allows <code class="docutils literal notranslate"><span class="pre">VMAP_STACK</span></code> support on x86 and can simplify support of
 architectures that do not have a fixed module region.</p>
-</section>
-</section>
-<section id="for-developers">
+</div>
+</div>
+<div class="section" id="for-developers">
 <h2>For developers<a class="headerlink" href="#for-developers" title="Permalink to this headline">¶</a></h2>
-<section id="ignoring-accesses">
+<div class="section" id="ignoring-accesses">
 <h3>Ignoring accesses<a class="headerlink" href="#ignoring-accesses" title="Permalink to this headline">¶</a></h3>
 <p>Software KASAN modes use compiler instrumentation to insert validity checks.
 Such instrumentation might be incompatible with some parts of the kernel, and
@@ -645,8 +647,8 @@ checking, use <code class="docutils literal notranslate"><span class="pre">kasan
 temporarily disabling access checking via <code class="docutils literal notranslate"><span class="pre">page_kasan_tag_reset()</span></code> requires
 saving and restoring the per-page KASAN tag via
 <code class="docutils literal notranslate"><span class="pre">page_kasan_tag</span></code>/<code class="docutils literal notranslate"><span class="pre">page_kasan_tag_set</span></code>.</p>
-</section>
-<section id="tests">
+</div>
+<div class="section" id="tests">
 <h3>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h3>
 <p>There are KASAN tests that allow verifying that KASAN works and can detect
 certain types of memory corruptions. The tests consist of two parts:</p>
@@ -701,9 +703,9 @@ See <a class="reference external" href="https://www.kernel.org/doc/html/latest/d
 for more up-to-date information on <code class="docutils literal notranslate"><span class="pre">kunit_tool</span></code>.</p>
 </li>
 </ol>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

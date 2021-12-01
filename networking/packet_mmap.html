@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Packet MMAP &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -380,9 +382,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="packet-mmap">
+  <div class="section" id="packet-mmap">
 <h1>Packet MMAP<a class="headerlink" href="#packet-mmap" title="Permalink to this headline">¶</a></h1>
-<section id="abstract">
+<div class="section" id="abstract">
 <h2>Abstract<a class="headerlink" href="#abstract" title="Permalink to this headline">¶</a></h2>
 <p>This file documents the mmap() facility available with the PACKET
 socket interface. This type of sockets is used for</p>
@@ -402,8 +404,8 @@ access to network interface.</p></li>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="why-use-packet-mmap">
+</div>
+<div class="section" id="why-use-packet-mmap">
 <h2>Why use PACKET_MMAP<a class="headerlink" href="#why-use-packet-mmap" title="Permalink to this headline">¶</a></h2>
 <p>Non PACKET_MMAP capture process (plain AF_PACKET) is very
 inefficient. It uses very limited buffers and requires one system call to
@@ -424,16 +426,16 @@ load mitigation or (even better) if it supports NAPI, also make sure it is
 enabled. For transmission, check the MTU (Maximum Transmission Unit) used and
 supported by devices of your network. CPU IRQ pinning of your network interface
 card can also be an advantage.</p>
-</section>
-<section id="how-to-use-mmap-to-improve-capture-process">
+</div>
+<div class="section" id="how-to-use-mmap-to-improve-capture-process">
 <h2>How to use mmap() to improve capture process<a class="headerlink" href="#how-to-use-mmap-to-improve-capture-process" title="Permalink to this headline">¶</a></h2>
 <p>From the user standpoint, you should use the higher level libpcap library, which
 is a de facto standard, portable across nearly all operating systems
 including Win32.</p>
 <p>Packet MMAP support was integrated into libpcap around the time of version 1.3.0;
 TPACKET_V3 support was added in version 1.5.0</p>
-</section>
-<section id="how-to-use-mmap-directly-to-improve-capture-process">
+</div>
+<div class="section" id="how-to-use-mmap-directly-to-improve-capture-process">
 <h2>How to use mmap() directly to improve capture process<a class="headerlink" href="#how-to-use-mmap-directly-to-improve-capture-process" title="Permalink to this headline">¶</a></h2>
 <p>From the system calls stand point, the use of PACKET_MMAP involves
 the following process:</p>
@@ -469,8 +471,8 @@ See “Mapping and use of the circular buffer (ring)”.</p>
 <p>Next I will describe PACKET_MMAP settings and its constraints,
 also the mapping of the circular buffer in the user process and
 the use of this buffer.</p>
-</section>
-<section id="how-to-use-mmap-directly-to-improve-transmission-process">
+</div>
+<div class="section" id="how-to-use-mmap-directly-to-improve-transmission-process">
 <h2>How to use mmap() directly to improve transmission process<a class="headerlink" href="#how-to-use-mmap-directly-to-improve-transmission-process" title="Permalink to this headline">¶</a></h2>
 <p>Transmission process is similar to capture as shown below:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[setup]         socket() -------&gt; creation of the transmission socket
@@ -550,8 +552,8 @@ the frame (for payload alignment with SOCK_RAW mode for instance) you
 can set tp_net (with SOCK_DGRAM) or tp_mac (with SOCK_RAW). In order
 to make this work it must be enabled previously with setsockopt()
 and the PACKET_TX_HAS_OFF option.</p>
-</section>
-<section id="packet-mmap-settings">
+</div>
+<div class="section" id="packet-mmap-settings">
 <h2>PACKET_MMAP settings<a class="headerlink" href="#packet-mmap-settings" title="Permalink to this headline">¶</a></h2>
 <p>To setup PACKET_MMAP from user level code is done with a call like</p>
 <blockquote>
@@ -617,13 +619,13 @@ can only hold an integer number of frames, or in other words, a frame cannot
 be spawned across two blocks, so there are some details you have to take into
 account when choosing the frame_size. See “Mapping and use of the circular
 buffer (ring)”.</p>
-</section>
-<section id="packet-mmap-setting-constraints">
+</div>
+<div class="section" id="packet-mmap-setting-constraints">
 <h2>PACKET_MMAP setting constraints<a class="headerlink" href="#packet-mmap-setting-constraints" title="Permalink to this headline">¶</a></h2>
 <p>In kernel versions prior to 2.4.26 (for the 2.4 branch) and 2.6.5 (2.6 branch),
 the PACKET_MMAP buffer could hold only 32768 frames in a 32 bit architecture or
 16384 in a 64 bit architecture.</p>
-<section id="block-size-limit">
+<div class="section" id="block-size-limit">
 <h3>Block size limit<a class="headerlink" href="#block-size-limit" title="Permalink to this headline">¶</a></h3>
 <p>As stated earlier, each block is a contiguous physical region of memory. These
 memory regions are allocated with calls to the __get_free_pages() function. As
@@ -646,8 +648,8 @@ respectively, with an i386 architecture.</p>
 /usr/include/linux/mmzone.h to get PAGE_SIZE MAX_ORDER declarations.</p>
 <p>The pagesize can also be determined dynamically with the getpagesize (2)
 system call.</p>
-</section>
-<section id="block-number-limit">
+</div>
+<div class="section" id="block-number-limit">
 <h3>Block number limit<a class="headerlink" href="#block-number-limit" title="Permalink to this headline">¶</a></h3>
 <p>To understand the constraints of PACKET_MMAP, we have to see the structure
 used to hold the pointers to each block.</p>
@@ -676,9 +678,9 @@ pointers to blocks is:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>131072/4 = 32768 blocks
 </pre></div>
 </div>
-</section>
-</section>
-<section id="packet-mmap-buffer-size-calculator">
+</div>
+</div>
+<div class="section" id="packet-mmap-buffer-size-calculator">
 <h2>PACKET_MMAP buffer size calculator<a class="headerlink" href="#packet-mmap-buffer-size-calculator" title="Permalink to this headline">¶</a></h2>
 <p>Definitions:</p>
 <table class="docutils align-default">
@@ -740,7 +742,7 @@ an i386 kernel’s memory size is limited to 1GiB.</p>
 allocations are done with GFP_KERNEL priority, this basically means that
 the allocation can wait and swap other process’ memory in order to allocate
 the necessary memory, so normally limits can be reached.</p>
-<section id="other-constraints">
+<div class="section" id="other-constraints">
 <h3>Other constraints<a class="headerlink" href="#other-constraints" title="Permalink to this headline">¶</a></h3>
 <p>If you check the source code you will see that what I draw here as a frame
 is not only the link level frame. At the beginning of each frame there is a
@@ -773,8 +775,8 @@ the following (from include/linux/if_packet.h):</p>
 </div></blockquote>
 <p>Note that tp_block_size should be chosen to be a power of two or there will
 be a waste of memory.</p>
-</section>
-<section id="mapping-and-use-of-the-circular-buffer-ring">
+</div>
+<div class="section" id="mapping-and-use-of-the-circular-buffer-ring">
 <h3>Mapping and use of the circular buffer (ring)<a class="headerlink" href="#mapping-and-use-of-the-circular-buffer-ring" title="Permalink to this headline">¶</a></h3>
 <p>The mapping of the buffer in the user process is done with the conventional
 mmap function. Even the circular buffer is compound of several physically
@@ -804,7 +806,7 @@ after the RX one.</p>
 struct tpacket_hdr). If this field is 0 means that the frame is ready
 to be used for the kernel, If not, there is a frame the user can read
 and the following flags apply:</p>
-<section id="capture-process">
+<div class="section" id="capture-process">
 <h4>Capture process<a class="headerlink" href="#capture-process" title="Permalink to this headline">¶</a></h4>
 <p>From include/linux/if_packet.h:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#define TP_STATUS_COPY          (1 &lt;&lt; 1)
@@ -876,8 +878,8 @@ if (status == TP_STATUS_KERNEL)
 </div>
 <p>It doesn’t incur in a race condition to first check the status value and
 then poll for frames.</p>
-</section>
-<section id="transmission-process">
+</div>
+<div class="section" id="transmission-process">
 <h4>Transmission process<a class="headerlink" href="#transmission-process" title="Permalink to this headline">¶</a></h4>
 <p>Those defines are also used for transmission:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#define TP_STATUS_AVAILABLE        0 // Frame is available
@@ -908,10 +910,10 @@ pfd.events = POLLOUT;
 retval = poll(&amp;pfd, 1, timeout);
 </pre></div>
 </div>
-</section>
-</section>
-</section>
-<section id="what-tpacket-versions-are-available-and-when-to-use-them">
+</div>
+</div>
+</div>
+<div class="section" id="what-tpacket-versions-are-available-and-when-to-use-them">
 <h2>What TPACKET versions are available and when to use them?<a class="headerlink" href="#what-tpacket-versions-are-available-and-when-to-use-them" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int val = tpacket_version;
 setsockopt(fd, SOL_PACKET, PACKET_VERSION, &amp;val, sizeof(val));
@@ -984,8 +986,8 @@ Packets with non-zero values of tp_next_offset will be dropped.</p></li>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="af-packet-fanout-mode">
+</div>
+<div class="section" id="af-packet-fanout-mode">
 <h2>AF_PACKET fanout mode<a class="headerlink" href="#af-packet-fanout-mode" title="Permalink to this headline">¶</a></h2>
 <p>In the AF_PACKET fanout mode, packet reception can be load balanced among
 processes. This also works in combination with mmap(2) on packet sockets.</p>
@@ -1141,8 +1143,8 @@ int main(int argc, char **argp)
 }
 </pre></div>
 </div>
-</section>
-<section id="af-packet-tpacket-v3-example">
+</div>
+<div class="section" id="af-packet-tpacket-v3-example">
 <h2>AF_PACKET TPACKET_V3 example<a class="headerlink" href="#af-packet-tpacket-v3-example" title="Permalink to this headline">¶</a></h2>
 <p>AF_PACKET’s TPACKET_V3 ring buffer can be configured to use non-static frame
 sizes by doing it’s own memory management. It is based on blocks where polling
@@ -1391,8 +1393,8 @@ int main(int argc, char **argp)
 }
 </pre></div>
 </div>
-</section>
-<section id="packet-qdisc-bypass">
+</div>
+<div class="section" id="packet-qdisc-bypass">
 <h2>PACKET_QDISC_BYPASS<a class="headerlink" href="#packet-qdisc-bypass" title="Permalink to this headline">¶</a></h2>
 <p>If there is a requirement to load the network with many packets in a similar
 fashion as pktgen does, you might set the following option after socket
@@ -1409,8 +1411,8 @@ you have been warned; generally, this can be useful for stress testing various
 components of a system.</p>
 <p>On default, PACKET_QDISC_BYPASS is disabled and needs to be explicitly enabled
 on PF_PACKET sockets.</p>
-</section>
-<section id="packet-timestamp">
+</div>
+<div class="section" id="packet-timestamp">
 <h2>PACKET_TIMESTAMP<a class="headerlink" href="#packet-timestamp" title="Permalink to this headline">¶</a></h2>
 <p>The PACKET_TIMESTAMP setting determines the source of the timestamp in
 the packet meta information for mmap(2)ed RX_RING and TX_RINGs.  If your
@@ -1451,21 +1453,21 @@ members do not contain a valid value. For TX_RINGs, by default no timestamp
 is generated!</p>
 <p>See include/linux/net_tstamp.h and <a class="reference internal" href="timestamping.html"><span class="doc">Timestamping</span></a>
 for more information on hardware timestamps.</p>
-</section>
-<section id="miscellaneous-bits">
+</div>
+<div class="section" id="miscellaneous-bits">
 <h2>Miscellaneous bits<a class="headerlink" href="#miscellaneous-bits" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Packet sockets work well together with Linux socket filters, thus you also
 might want to have a look at <a class="reference internal" href="filter.html"><span class="doc">Linux Socket Filtering aka Berkeley Packet Filter (BPF)</span></a></p></li>
 </ul>
-</section>
-<section id="thanks">
+</div>
+<div class="section" id="thanks">
 <h2>THANKS<a class="headerlink" href="#thanks" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Jesse Brandeburg, for fixing my grammathical/spelling errors</p>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

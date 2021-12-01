@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>autofs - how it works &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -320,9 +322,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="autofs-how-it-works">
+  <div class="section" id="autofs-how-it-works">
 <h1>autofs - how it works<a class="headerlink" href="#autofs-how-it-works" title="Permalink to this headline">¶</a></h1>
-<section id="purpose">
+<div class="section" id="purpose">
 <h2>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline">¶</a></h2>
 <p>The goal of autofs is to provide on-demand mounting and race free
 automatic unmounting of various other filesystems.  This provides two
@@ -342,8 +344,8 @@ filesystem can even be programmatic rather than database-backed,
 allowing wildcards for example, and can vary based on the user who
 first accessed a name.</p></li>
 </ol>
-</section>
-<section id="context">
+</div>
+<div class="section" id="context">
 <h2>Context<a class="headerlink" href="#context" title="Permalink to this headline">¶</a></h2>
 <p>The “autofs” filesystem module is only one part of an autofs system.
 There also needs to be a user-space program which looks up names
@@ -355,8 +357,8 @@ as the “automount daemon” or simply “the daemon”.</p>
 <p>“autofs” is a Linux kernel module which provides the “autofs”
 filesystem type.  Several “autofs” filesystems can be mounted and they
 can each be managed separately, or all managed by the same daemon.</p>
-</section>
-<section id="content">
+</div>
+<div class="section" id="content">
 <h2>Content<a class="headerlink" href="#content" title="Permalink to this headline">¶</a></h2>
 <p>An autofs filesystem can contain 3 sorts of objects: directories,
 symbolic links and mount traps.  Mount traps are directories with
@@ -387,8 +389,8 @@ precisely when they are empty.</p>
 directories are sometimes mount traps, and sometimes not depending on
 where in the tree they are (root, top level, or lower), the <em>maxproto</em>,
 and whether the mount was <em>indirect</em> or not.</p>
-</section>
-<section id="mount-traps">
+</div>
+<div class="section" id="mount-traps">
 <h2>Mount Traps<a class="headerlink" href="#mount-traps" title="Permalink to this headline">¶</a></h2>
 <p>A core element of the implementation of autofs is the Mount Traps
 which are provided by the Linux VFS.  Any directory provided by a
@@ -489,8 +491,8 @@ RCU-walk mode by returning <cite>-ECHILD</cite>.</p>
 mounted filesystem, otherwise it should return 0.</p>
 <p>autofs will return <cite>-ECHILD</cite> if an expiry of the filesystem has been
 initiated or is being considered, otherwise it returns 0.</p>
-</section>
-<section id="mountpoint-expiry">
+</div>
+<div class="section" id="mountpoint-expiry">
 <h2>Mountpoint expiry<a class="headerlink" href="#mountpoint-expiry" title="Permalink to this headline">¶</a></h2>
 <p>The VFS has a mechanism for automatically expiring unused mounts,
 much as it can expire any unused dentry information from the dcache.
@@ -577,8 +579,8 @@ thread than the one which handles notification.</p>
 <cite>d_manage</cite> will block until the daemon affirms that the unmount has
 completed (together with removing any directories that might have been
 necessary), or has been aborted.</p>
-</section>
-<section id="communicating-with-autofs-detecting-the-daemon">
+</div>
+<div class="section" id="communicating-with-autofs-detecting-the-daemon">
 <h2>Communicating with autofs: detecting the daemon<a class="headerlink" href="#communicating-with-autofs-detecting-the-daemon" title="Permalink to this headline">¶</a></h2>
 <p>There are several forms of communication between the automount daemon
 and the filesystem.  As we have already seen, the daemon can create and
@@ -591,8 +593,8 @@ case that number is recorded instead.  Any request arriving from a
 process in that process group is considered to come from the daemon.
 If the daemon ever has to be stopped and restarted a new pgid can be
 provided through an ioctl as will be described below.</p>
-</section>
-<section id="communicating-with-autofs-the-event-pipe">
+</div>
+<div class="section" id="communicating-with-autofs-the-event-pipe">
 <h2>Communicating with autofs: the event pipe<a class="headerlink" href="#communicating-with-autofs-the-event-pipe" title="Permalink to this headline">¶</a></h2>
 <p>When an autofs filesystem is mounted, the ‘write’ end of a pipe must
 be passed using the ‘fd=’ mount option.  autofs will write
@@ -637,8 +639,8 @@ the pipe the affected dentry is marked as either “active” or
 “expiring” and other accesses to it block until the message is
 acknowledged using one of the ioctls below with the relevant
 <cite>wait_queue_token</cite>.</p>
-</section>
-<section id="communicating-with-autofs-root-directory-ioctls">
+</div>
+<div class="section" id="communicating-with-autofs-root-directory-ioctls">
 <h2>Communicating with autofs: root directory ioctls<a class="headerlink" href="#communicating-with-autofs-root-directory-ioctls" title="Permalink to this headline">¶</a></h2>
 <p>The root directory of an autofs filesystem will respond to a number of
 ioctls.  The process issuing the ioctl must have the CAP_SYS_ADMIN
@@ -727,8 +729,8 @@ name to expire.  This is only safe when <em>maxproto</em> is 4.</p>
 </dl>
 </li>
 </ul>
-</section>
-<section id="communicating-with-autofs-char-device-ioctls">
+</div>
+<div class="section" id="communicating-with-autofs-char-device-ioctls">
 <h2>Communicating with autofs: char-device ioctls<a class="headerlink" href="#communicating-with-autofs-char-device-ioctls" title="Permalink to this headline">¶</a></h2>
 <p>It is not always possible to open the root of an autofs filesystem,
 particularly a <em>direct</em> mounted filesystem.  If the automount daemon
@@ -833,8 +835,8 @@ function as the similarly named <strong>AUTOFS_IOC</strong> ioctls, except
 that <strong>FAIL</strong> can be given an explicit error number in <cite>fail.status</cite>
 instead of assuming <cite>ENOENT</cite>, and this <strong>EXPIRE</strong> command
 corresponds to <strong>AUTOFS_IOC_EXPIRE_MULTI</strong>.</p>
-</section>
-<section id="catatonic-mode">
+</div>
+<div class="section" id="catatonic-mode">
 <h2>Catatonic mode<a class="headerlink" href="#catatonic-mode" title="Permalink to this headline">¶</a></h2>
 <p>As mentioned, an autofs mount can enter “catatonic” mode.  This
 happens if a write to the notification pipe fails, or if it is
@@ -852,8 +854,8 @@ create directories or symlinks in the root directory, but not in other
 directories.</p>
 <p>Catatonic mode can only be left via the
 <strong>AUTOFS_DEV_IOCTL_OPENMOUNT_CMD</strong> ioctl on the <cite>/dev/autofs</cite>.</p>
-</section>
-<section id="the-ignore-mount-option">
+</div>
+<div class="section" id="the-ignore-mount-option">
 <h2>The “ignore” mount option<a class="headerlink" href="#the-ignore-mount-option" title="Permalink to this headline">¶</a></h2>
 <p>The “ignore” mount option can be used to provide a generic indicator
 to applications that the mount entry should be ignored when displaying
@@ -864,8 +866,8 @@ the one use on the most common OSes) is allowed so that autofs file
 system users can optionally use it.</p>
 <p>This is intended to be used by user space programs to exclude autofs
 mounts from consideration when reading the mounts list.</p>
-</section>
-<section id="autofs-name-spaces-and-shared-mounts">
+</div>
+<div class="section" id="autofs-name-spaces-and-shared-mounts">
 <h2>autofs, name spaces, and shared mounts<a class="headerlink" href="#autofs-name-spaces-and-shared-mounts" title="Permalink to this headline">¶</a></h2>
 <p>With bind mounts and name spaces it is possible for an autofs
 filesystem to appear at multiple places in one or more filesystem
@@ -881,8 +883,8 @@ other locations will likely result in the <cite>ELOOP</cite> error</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Too many levels of symbolic links
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>vfio-ccw: the basic infrastructure &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -288,9 +290,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="vfio-ccw-the-basic-infrastructure">
+  <div class="section" id="vfio-ccw-the-basic-infrastructure">
 <h1>vfio-ccw: the basic infrastructure<a class="headerlink" href="#vfio-ccw-the-basic-infrastructure" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Here we describe the vfio support for I/O subchannel devices for
 Linux/s390. Motivation for vfio-ccw is to passthrough subchannels to a
@@ -324,8 +326,8 @@ qemu/hw/s390x/css.c</p></li>
 </ul>
 <p>For vfio mediated device framework:
 - <a class="reference internal" href="../driver-api/vfio-mediated-device.html"><span class="doc">VFIO Mediated devices</span></a></p>
-</section>
-<section id="motivation-of-vfio-ccw">
+</div>
+<div class="section" id="motivation-of-vfio-ccw">
 <h2>Motivation of vfio-ccw<a class="headerlink" href="#motivation-of-vfio-ccw" title="Permalink to this headline">¶</a></h2>
 <p>Typically, a guest virtualized via QEMU/KVM on s390 only sees
 paravirtualized virtio devices via the “Virtio Over Channel I/O
@@ -341,8 +343,8 @@ exploit.</p>
 everybody else, namely vfio. We implement this vfio support for channel
 devices via the vfio mediated device framework and the subchannel device
 driver “vfio_ccw”.</p>
-</section>
-<section id="access-patterns-of-ccw-devices">
+</div>
+<div class="section" id="access-patterns-of-ccw-devices">
 <h2>Access patterns of CCW devices<a class="headerlink" href="#access-patterns-of-ccw-devices" title="Permalink to this headline">¶</a></h2>
 <p>s390 architecture has implemented a so called channel subsystem, that
 provides a unified view of the devices physically attached to the
@@ -375,8 +377,8 @@ and starts the I/O with issuing a privileged Channel I/O instruction
 And it will be copied as IRB to user space to pass it back to the
 guest.</p></li>
 </ul>
-</section>
-<section id="physical-vfio-ccw-device-and-its-child-mdev">
+</div>
+<div class="section" id="physical-vfio-ccw-device-and-its-child-mdev">
 <h2>Physical vfio ccw device and its child mdev<a class="headerlink" href="#physical-vfio-ccw-device-and-its-child-mdev" title="Permalink to this headline">¶</a></h2>
 <p>As mentioned above, we realize vfio-ccw with a mdev implementation.</p>
 <p>Channel I/O does not have IOMMU hardware support, so the physical
@@ -455,13 +457,13 @@ vfio_mdev is also the vfio device drvier. It will probe the mdev and
 add it to an iommu_group and a vfio_group. Then we could pass through
 the mdev to a guest.</p></li>
 </ol>
-</section>
-<section id="vfio-ccw-regions">
+</div>
+<div class="section" id="vfio-ccw-regions">
 <h2>VFIO-CCW Regions<a class="headerlink" href="#vfio-ccw-regions" title="Permalink to this headline">¶</a></h2>
 <p>The vfio-ccw driver exposes MMIO regions to accept requests from and return
 results to userspace.</p>
-</section>
-<section id="vfio-ccw-i-o-region">
+</div>
+<div class="section" id="vfio-ccw-i-o-region">
 <h2>vfio-ccw I/O region<a class="headerlink" href="#vfio-ccw-i-o-region" title="Permalink to this headline">¶</a></h2>
 <p>An I/O region is used to accept channel program request from user
 space and store I/O interrupt result for user space to retrieve. The
@@ -505,8 +507,8 @@ requests, or an internal error occurred.</p>
 occurred.</p>
 </dd>
 </dl>
-</section>
-<section id="vfio-ccw-cmd-region">
+</div>
+<div class="section" id="vfio-ccw-cmd-region">
 <h2>vfio-ccw cmd region<a class="headerlink" href="#vfio-ccw-cmd-region" title="Permalink to this headline">¶</a></h2>
 <p>The vfio-ccw cmd region is used to accept asynchronous instructions
 from userspace:</p>
@@ -537,8 +539,8 @@ requests.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">-EBUSY</span></code></dt><dd><p>The subchannel was status pending or busy while processing a halt request.</p>
 </dd>
 </dl>
-</section>
-<section id="vfio-ccw-schib-region">
+</div>
+<div class="section" id="vfio-ccw-schib-region">
 <h2>vfio-ccw schib region<a class="headerlink" href="#vfio-ccw-schib-region" title="Permalink to this headline">¶</a></h2>
 <p>The vfio-ccw schib region is used to return Subchannel-Information
 Block (SCHIB) data to userspace:</p>
@@ -551,8 +553,8 @@ Block (SCHIB) data to userspace:</p>
 <p>This region is exposed via region type VFIO_REGION_SUBTYPE_CCW_SCHIB.</p>
 <p>Reading this region triggers a STORE SUBCHANNEL to be issued to the
 associated hardware.</p>
-</section>
-<section id="vfio-ccw-crw-region">
+</div>
+<div class="section" id="vfio-ccw-crw-region">
 <h2>vfio-ccw crw region<a class="headerlink" href="#vfio-ccw-crw-region" title="Permalink to this headline">¶</a></h2>
 <p>The vfio-ccw crw region is used to return Channel Report Word (CRW)
 data to userspace:</p>
@@ -569,8 +571,8 @@ pending, or all zeroes if not. If multiple CRWs are pending (including
 possibly chained CRWs), reading this region again will return the next
 one, until no more CRWs are pending and zeroes are returned. This is
 similar to how STORE CHANNEL REPORT WORD works.</p>
-</section>
-<section id="vfio-ccw-operation-details">
+</div>
+<div class="section" id="vfio-ccw-operation-details">
 <h2>vfio-ccw operation details<a class="headerlink" href="#vfio-ccw-operation-details" title="Permalink to this headline">¶</a></h2>
 <p>vfio-ccw follows what vfio-pci did on the s390 platform and uses
 vfio-iommu-type1 as the vfio iommu backend.</p>
@@ -656,8 +658,8 @@ region.</p>
 <dt>Q7.</dt><dd><p>Update the irb for the guest.</p>
 </dd>
 </dl>
-</section>
-<section id="limitations">
+</div>
+<div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <p>The current vfio-ccw implementation focuses on supporting basic commands
 needed to implement block device functionality (read/write) of DASD/ECKD
@@ -682,8 +684,8 @@ in QEMU’s s390-ccw bios as of QEMU 4.1.</p>
 mode (HPF) is not supported.</p>
 <p>QDIO subchannels are currently not supported. Classic devices other than
 DASD/ECKD might work, but have not been tested.</p>
-</section>
-<section id="reference">
+</div>
+<div class="section" id="reference">
 <h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>ESA/s390 Principles of Operation manual (IBM Form. No. SA22-7832)</p></li>
@@ -693,8 +695,8 @@ DASD/ECKD might work, but have not been tested.</p>
 <li><p><a class="reference internal" href="../driver-api/vfio.html"><span class="doc">VFIO - “Virtual Function I/O” </span></a></p></li>
 <li><p><a class="reference internal" href="../driver-api/vfio-mediated-device.html"><span class="doc">VFIO Mediated devices</span></a></p></li>
 </ol>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

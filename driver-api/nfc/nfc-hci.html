@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>HCI backend for NFC Core &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -356,20 +358,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="hci-backend-for-nfc-core">
+  <div class="section" id="hci-backend-for-nfc-core">
 <h1>HCI backend for NFC Core<a class="headerlink" href="#hci-backend-for-nfc-core" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p>Author: Eric Lapuyade, Samuel Ortiz</p></li>
 <li><p>Contact: <a class="reference external" href="mailto:eric&#46;lapuyade&#37;&#52;&#48;intel&#46;com">eric<span>&#46;</span>lapuyade<span>&#64;</span>intel<span>&#46;</span>com</a>, <a class="reference external" href="mailto:samuel&#46;ortiz&#37;&#52;&#48;intel&#46;com">samuel<span>&#46;</span>ortiz<span>&#64;</span>intel<span>&#46;</span>com</a></p></li>
 </ul>
-<section id="general">
+<div class="section" id="general">
 <h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
 <p>The HCI layer implements much of the ETSI TS 102 622 V10.2.0 specification. It
 enables easy writing of HCI-based NFC drivers. The HCI layer runs as an NFC Core
 backend, implementing an abstract nfc device and translating NFC Core API
 to HCI commands and events.</p>
-</section>
-<section id="hci">
+</div>
+<div class="section" id="hci">
 <h2>HCI<a class="headerlink" href="#hci" title="Permalink to this headline">¶</a></h2>
 <p>HCI registers as an nfc device with NFC Core. Requests coming from userspace are
 routed through netlink sockets to NFC Core and then to HCI. From this point,
@@ -386,8 +388,8 @@ HCI uses 2 execution contexts:</p>
 can be executing at any given moment.</p></li>
 <li><p>one for dispatching received events and commands : nfc_hci_msg_rx_work().</p></li>
 </ul>
-</section>
-<section id="hci-session-initialization">
+</div>
+<div class="section" id="hci-session-initialization">
 <h2>HCI Session initialization<a class="headerlink" href="#hci-session-initialization" title="Permalink to this headline">¶</a></h2>
 <p>The Session initialization is an HCI standard which must unfortunately
 support proprietary gates. This is the reason why the driver will pass a list
@@ -395,22 +397,22 @@ of proprietary gates that must be part of the session. HCI will ensure all
 those gates have pipes connected when the hci device is set up.
 In case the chip supports pre-opened gates and pseudo-static pipes, the driver
 can pass that information to HCI core.</p>
-</section>
-<section id="hci-gates-and-pipes">
+</div>
+<div class="section" id="hci-gates-and-pipes">
 <h2>HCI Gates and Pipes<a class="headerlink" href="#hci-gates-and-pipes" title="Permalink to this headline">¶</a></h2>
 <p>A gate defines the ‘port’ where some service can be found. In order to access
 a service, one must create a pipe to that gate and open it. In this
 implementation, pipes are totally hidden. The public API only knows gates.
 This is consistent with the driver need to send commands to proprietary gates
 without knowing the pipe connected to it.</p>
-</section>
-<section id="driver-interface">
+</div>
+<div class="section" id="driver-interface">
 <h2>Driver interface<a class="headerlink" href="#driver-interface" title="Permalink to this headline">¶</a></h2>
 <p>A driver is generally written in two parts : the physical link management and
 the HCI management. This makes it easier to maintain a driver for a chip that
 can be connected using various phy (i2c, spi, …)</p>
-</section>
-<section id="hci-management">
+</div>
+<div class="section" id="hci-management">
 <h2>HCI Management<a class="headerlink" href="#hci-management" title="Permalink to this headline">¶</a></h2>
 <p>A driver would normally register itself with HCI and provide the following
 entry points:</p>
@@ -474,8 +476,8 @@ can handle the event or return 1 to let HCI attempt standard processing.</p></li
 <p>On the rx path, the driver is responsible to push incoming HCP frames to HCI
 using nfc_hci_recv_frame(). HCI will take care of re-aggregation and handling
 This must be done from a context that can sleep.</p>
-</section>
-<section id="phy-management">
+</div>
+<div class="section" id="phy-management">
 <h2>PHY Management<a class="headerlink" href="#phy-management" title="Permalink to this headline">¶</a></h2>
 <p>The physical link (i2c, …) management is defined by the following structure:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct nfc_phy_ops {
@@ -497,8 +499,8 @@ result (return 0 for success, negative for failure).</p>
 </dd>
 </dl>
 <p>Data coming from the chip shall be sent directly to nfc_hci_recv_frame().</p>
-</section>
-<section id="llc">
+</div>
+<div class="section" id="llc">
 <h2>LLC<a class="headerlink" href="#llc" title="Permalink to this headline">¶</a></h2>
 <p>Communication between the CPU and the chip often requires some link layer
 protocol. Those are isolated as modules managed by the HCI layer. There are
@@ -538,13 +540,13 @@ calling:</p>
 </div>
 <p>Again, note that the llc does not handle the physical link. It is thus very
 easy to mix any physical link with any llc for a given chip driver.</p>
-</section>
-<section id="included-drivers">
+</div>
+<div class="section" id="included-drivers">
 <h2>Included Drivers<a class="headerlink" href="#included-drivers" title="Permalink to this headline">¶</a></h2>
 <p>An HCI based driver for an NXP PN544, connected through I2C bus, and using
 shdlc is included.</p>
-</section>
-<section id="execution-contexts">
+</div>
+<div class="section" id="execution-contexts">
 <h2>Execution Contexts<a class="headerlink" href="#execution-contexts" title="Permalink to this headline">¶</a></h2>
 <p>The execution contexts are the following:
 - IRQ handler (IRQH):
@@ -566,8 +568,8 @@ the current llc. In case of shdlc, the frame is queued in shdlc rx queue.</p>
 <p>Any entrypoint in HCI called from NFC Core</p>
 </li>
 </ul>
-</section>
-<section id="workflow-executing-an-hci-command-using-shdlc">
+</div>
+<div class="section" id="workflow-executing-an-hci-command-using-shdlc">
 <h2>Workflow executing an HCI command (using shdlc)<a class="headerlink" href="#workflow-executing-an-hci-command-using-shdlc" title="Permalink to this headline">¶</a></h2>
 <p>Executing an HCI command can easily be performed synchronously using the
 following API:</p>
@@ -603,8 +605,8 @@ The completion callback will then wake the syscall context.</p>
 </div>
 <p>The workflow is the same, except that the API call returns immediately, and
 the callback will be called with the result from the SMW context.</p>
-</section>
-<section id="workflow-receiving-an-hci-event-or-command">
+</div>
+<div class="section" id="workflow-receiving-an-hci-event-or-command">
 <h2>Workflow receiving an HCI event or command<a class="headerlink" href="#workflow-receiving-an-hci-event-or-command" title="Permalink to this headline">¶</a></h2>
 <p>HCI commands or events are not dispatched from SMW context. Instead, they are
 queued to HCI rx_queue and will be dispatched from HCI rx worker
@@ -614,8 +616,8 @@ NFC_HCI_EVT_TARGET_DISCOVERED event from PN544 requires to issue an
 ANY_GET_PARAMETER to the reader A gate to get information on the target
 that was discovered).</p>
 <p>Typically, such an event will be propagated to NFC Core from MSGRXWQ context.</p>
-</section>
-<section id="error-management">
+</div>
+<div class="section" id="error-management">
 <h2>Error management<a class="headerlink" href="#error-management" title="Permalink to this headline">¶</a></h2>
 <p>Errors that occur synchronously with the execution of an NFC Core request are
 simply returned as the execution result of the request. These are easy.</p>
@@ -644,8 +646,8 @@ space to let it know that the poll operation will never be able to detect a
 tag. If polling is not active and the error was sticky, lower levels will
 return it at next invocation.</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

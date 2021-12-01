@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>内核骇客指北 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -287,14 +289,14 @@
 <dd class="field-even"><p>吴想成 Wu XiangCheng &lt;<a class="reference external" href="mailto:bobwxc&#37;&#52;&#48;email&#46;cn">bobwxc<span>&#64;</span>email<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="id1">
+<div class="section" id="id1">
 <h1>内核骇客指北<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">作者</dt>
 <dd class="field-odd"><p>Rusty Russell</p>
 </dd>
 </dl>
-<section id="id2">
+<div class="section" id="id2">
 <h2>引言<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>欢迎咱优雅的读者们来阅读Rusty的非常不靠谱的Linux内核骇客（Hacking）指南。本文
 描述了内核代码的常见例程和一般要求：其目标是引导有经验的C程序员入门Linux内核
@@ -302,8 +304,8 @@
 <p>在你读这篇文章之前，请理解我从来没有想过要写这篇文章，因为我的资历太低了；
 但我一直想读这样的文章，自己写是唯一的方法。我希望它能成长为一个最佳实践、
 通用起点和其他信息的汇编。</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>玩家<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>在任何时候，系统中的每个CPU都可以：</p>
 <ul class="simple">
@@ -316,7 +318,7 @@
 每个层级只能被上方的抢占。例如，当一个软中断在CPU上运行时，没有其他软中断
 会抢占它，但是硬件中断可以抢占它。不过，系统中的任何其他CPU都是独立执行的。</p>
 <p>我们将会看到许多方法，用户上下文可以阻止中断，从而成为真正的不可抢占。</p>
-<section id="id4">
+<div class="section" id="id4">
 <h3>用户上下文<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>用户上下文是指当您从系统调用或其他陷阱进入时：就像用户空间一样，您可以被更
 重要的任务和中断抢占。您可以通过调用 <code class="xref c c-func docutils literal notranslate"><span class="pre">schedule()</span></code> 进行睡眠。</p>
@@ -331,8 +333,8 @@
 <p>请注意，如果您禁用了抢占或软中断（见下文），<code class="xref c c-func docutils literal notranslate"><span class="pre">in_interrupt()</span></code> 会
 返回假阳性。</p>
 </div>
-</section>
-<section id="hard-irqs">
+</div>
+<div class="section" id="hard-irqs">
 <h3>硬件中断（Hard IRQs）<a class="headerlink" href="#hard-irqs" title="Permalink to this headline">¶</a></h3>
 <p>像定时器、网卡和键盘等都是可能在任意时刻产生中断的真实硬件。内核运行中断
 处理程序，为硬件提供服务。内核确保处理程序永远不会重入：如果相同的中断到达，
@@ -343,8 +345,8 @@
 <p class="admonition-title">Warning</p>
 <p>请注意，如果中断被禁用，这将返回假阳性（见下文）。</p>
 </div>
-</section>
-<section id="softirqs-tasklets">
+</div>
+<div class="section" id="softirqs-tasklets">
 <h3>软件中断上下文：软中断（Softirqs）与子任务（Tasklets）<a class="headerlink" href="#softirqs-tasklets" title="Permalink to this headline">¶</a></h3>
 <p>当系统调用即将返回用户空间或硬件中断处理程序退出时，任何标记为挂起（通常通
 过硬件中断）的“软件中断”将运行（ <code class="docutils literal notranslate"><span class="pre">kernel/softirq.c</span></code> ）。</p>
@@ -370,9 +372,9 @@
 <p>注意，如果持有 <a class="reference internal" href="#local-bh-disable-zh"><span class="std std-ref">bottom half lock</span></a> 锁，这将返回
 假阳性。</p>
 </div>
-</section>
-</section>
-<section id="id5">
+</div>
+</div>
+<div class="section" id="id5">
 <h2>一些基本规则<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>缺少内存保护</dt><dd><p>如果你损坏了内存，无论是在用户上下文还是中断上下文中，整个机器都会崩溃。
@@ -391,8 +393,8 @@
 最小化以便于移植。一般来说，它应该局限于内核树中有体系结构依赖的部分。</p>
 </dd>
 </dl>
-</section>
-<section id="ioctls">
+</div>
+<div class="section" id="ioctls">
 <h2>输入输出控制（ioctls）：避免编写新的系统调用<a class="headerlink" href="#ioctls" title="Permalink to this headline">¶</a></h2>
 <p>系统调用（system call）通常看起来像这样:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>asmlinkage long sys_mycall(int arg)
@@ -426,8 +428,8 @@
 </div>
 <p>接口设计的小注释：UNIX系统调用的格言是“提供机制而不是策略
 Provide mechanism not policy”。</p>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h2>死锁的“配方”<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <p>您不能调用任何可能睡眠的程序，除非：</p>
 <ul class="simple">
@@ -441,10 +443,10 @@ Provide mechanism not policy”。</p>
 <p>您应该始终打开  <code class="docutils literal notranslate"><span class="pre">CONFIG_DEBUG_ATOMIC_SLEEP</span></code>  项来编译内核，如果您违反这些
 规则，它将警告您。如果你 <strong>真的</strong> 违反了规则，你最终会锁住你的电脑。</p>
 <p>真的会这样。</p>
-</section>
-<section id="id7">
+</div>
+<div class="section" id="id7">
 <h2>常用函数/程序<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
-<section id="printk">
+<div class="section" id="printk">
 <h3><a class="reference internal" href="../../../core-api/printk-basics.html#c.printk" title="printk"><code class="xref c c-func docutils literal notranslate"><span class="pre">printk()</span></code></a><a class="headerlink" href="#printk" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/printk.h</span></code></p>
 <p><a class="reference internal" href="../../../core-api/printk-basics.html#c.printk" title="printk"><code class="xref c c-func docutils literal notranslate"><span class="pre">printk()</span></code></a> 将内核消息提供给控制台、dmesg和syslog守护进程。它对于调
@@ -471,8 +473,8 @@ printk(KERN_INFO &quot;my ip: %pI4\n&quot;, &amp;ipaddress);
 <p>另一个注释：最初的unix第六版源代码在其printf函数的顶部有一个注释：“printf
 不应该用于叽叽喳喳”。你也应该遵循此建议。</p>
 </div>
-</section>
-<section id="copy-to-user-copy-from-user-get-user-put-user">
+</div>
+<div class="section" id="copy-to-user-copy-from-user-get-user-put-user">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">copy_to_user()</span></code> / <code class="xref c c-func docutils literal notranslate"><span class="pre">copy_from_user()</span></code> / <a class="reference internal" href="../../../core-api/mm-api.html#c.get_user" title="get_user"><code class="xref c c-func docutils literal notranslate"><span class="pre">get_user()</span></code></a> / <a class="reference internal" href="../../../core-api/mm-api.html#c.put_user" title="put_user"><code class="xref c c-func docutils literal notranslate"><span class="pre">put_user()</span></code></a><a class="headerlink" href="#copy-to-user-copy-from-user-get-user-put-user" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/uaccess.h</span></code> / <code class="docutils literal notranslate"><span class="pre">asm/uaccess.h</span></code></p>
 <p><strong>[睡眠]</strong></p>
@@ -490,8 +492,8 @@ printk(KERN_INFO &quot;my ip: %pI4\n&quot;, &amp;ipaddress);
 —— Rusty Russell】</p>
 <p>这些函数可以隐式睡眠。它不应该在用户上下文之外调用（没有意义）、调用时禁用中断
 或获得自旋锁。</p>
-</section>
-<section id="kmalloc-kfree">
+</div>
+<div class="section" id="kmalloc-kfree">
 <h3><a class="reference internal" href="../../../core-api/mm-api.html#c.kmalloc" title="kmalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">kmalloc()</span></code></a>/<a class="reference internal" href="../../../core-api/mm-api.html#c.kfree" title="kfree"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree()</span></code></a><a class="headerlink" href="#kmalloc-kfree" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/slab.h</span></code></p>
 <p><strong>[可能睡眠：见下]</strong></p>
@@ -522,22 +524,22 @@ Linux对此支持很差，因为正在运行的内核中的内存碎片化会使
 方法是在引导过程的早期通过 <code class="xref c c-func docutils literal notranslate"><span class="pre">alloc_bootmem()</span></code> 函数分配。</p>
 <p>在创建自己的常用对象缓存之前，请考虑使用 <code class="docutils literal notranslate"><span class="pre">include/linux/slab.h</span></code> 中的slab
 缓存。</p>
-</section>
-<section id="current">
+</div>
+<div class="section" id="current">
 <h3><code class="xref c c-macro docutils literal notranslate"><span class="pre">current</span></code><a class="headerlink" href="#current" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/asm/current.h</span></code></p>
 <p>此全局变量（其实是宏）包含指向当前任务结构（task structure）的指针，因此仅在
 用户上下文中有效。例如，当进程进行系统调用时，这将指向调用进程的任务结构。
 在中断上下文中不为空（<strong>not NULL</strong>）。</p>
-</section>
-<section id="mdelay-udelay">
+</div>
+<div class="section" id="mdelay-udelay">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">mdelay()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">udelay()</span></code><a class="headerlink" href="#mdelay-udelay" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/asm/delay.h</span></code> / <code class="docutils literal notranslate"><span class="pre">include/linux/delay.h</span></code></p>
 <p><code class="xref c c-func docutils literal notranslate"><span class="pre">udelay()</span></code> 和 <code class="xref c c-func docutils literal notranslate"><span class="pre">ndelay()</span></code> 函数可被用于小暂停。不要对它们使用
 大的值，因为这样会导致溢出——帮助函数 <code class="xref c c-func docutils literal notranslate"><span class="pre">mdelay()</span></code> 在这里很有用，或者
 考虑 <a class="reference internal" href="../../../driver-api/basics.html#c.msleep" title="msleep"><code class="xref c c-func docutils literal notranslate"><span class="pre">msleep()</span></code></a>。</p>
-</section>
-<section id="cpu-to-be32-be32-to-cpu-cpu-to-le32-le32-to-cpu">
+</div>
+<div class="section" id="cpu-to-be32-be32-to-cpu-cpu-to-le32-le32-to-cpu">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_be32()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">be32_to_cpu()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_le32()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">le32_to_cpu()</span></code><a class="headerlink" href="#cpu-to-be32-be32-to-cpu-cpu-to-le32-le32-to-cpu" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/asm/byteorder.h</span></code></p>
 <p><code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_be32()</span></code> 系列函数（其中“32”可以替换为64或16，“be”可以替换为
@@ -547,22 +549,22 @@ Linux对此支持很差，因为正在运行的内核中的内存碎片化会使
 <p>这些函数有两个主要的变体：指针变体，例如 <code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_be32p()</span></code> ，它获取
 指向给定类型的指针，并返回转换后的值。另一个变体是“in-situ”系列，例如
 <code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_be32s()</span></code> ，它转换指针引用的值，并返回void。</p>
-</section>
-<section id="local-irq-save-local-irq-restore">
+</div>
+<div class="section" id="local-irq-save-local-irq-restore">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_save()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_restore()</span></code><a class="headerlink" href="#local-irq-save-local-irq-restore" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/irqflags.h</span></code></p>
 <p>这些程序禁用本地CPU上的硬中断，并还原它们。它们是可重入的；在其一个
 <code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">flags</span></code> 参数中保存以前的状态。如果您知道中断已启用，那么可
 直接使用 <code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_disable()</span></code> 和 <code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_enable()</span></code>。</p>
-</section>
-<section id="local-bh-disable-local-bh-enable">
+</div>
+<div class="section" id="local-bh-disable-local-bh-enable">
 <span id="local-bh-disable-zh"></span><h3><code class="xref c c-func docutils literal notranslate"><span class="pre">local_bh_disable()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">local_bh_enable()</span></code><a class="headerlink" href="#local-bh-disable-local-bh-enable" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/bottom_half.h</span></code></p>
 <p>这些程序禁用本地CPU上的软中断，并还原它们。它们是可重入的；如果之前禁用了
 软中断，那么在调用这对函数之后仍然会禁用它们。它们阻止软中断和子任务在当前
 CPU上运行。</p>
-</section>
-<section id="smp-processor-id">
+</div>
+<div class="section" id="smp-processor-id">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">smp_processor_id()</span></code><a class="headerlink" href="#smp-processor-id" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/smp.h</span></code></p>
 <p><code class="xref c c-func docutils literal notranslate"><span class="pre">get_cpu()</span></code> 禁用抢占（这样您就不会突然移动到另一个cpu）并返回当前
@@ -570,8 +572,8 @@ CPU上运行。</p>
 使用 <code class="xref c c-func docutils literal notranslate"><span class="pre">put_cpu()</span></code> 再次返回。</p>
 <p>如果您知道您不能被另一个任务抢占（即您处于中断上下文中，或已禁用抢占），您
 可以使用 <code class="xref c c-func docutils literal notranslate"><span class="pre">smp_processor_id()</span></code>。</p>
-</section>
-<section id="init-exit-initdata">
+</div>
+<div class="section" id="init-exit-initdata">
 <h3><code class="docutils literal notranslate"><span class="pre">__init</span></code>/<code class="docutils literal notranslate"><span class="pre">__exit</span></code>/<code class="docutils literal notranslate"><span class="pre">__initdata</span></code><a class="headerlink" href="#init-exit-initdata" title="Permalink to this headline">¶</a></h3>
 <p>定义于  <code class="docutils literal notranslate"><span class="pre">include/linux/init.h</span></code></p>
 <p>引导之后，内核释放一个特殊的部分；用 <code class="docutils literal notranslate"><span class="pre">__init</span></code> 标记的函数和用 <code class="docutils literal notranslate"><span class="pre">__initdata</span></code>
@@ -580,8 +582,8 @@ CPU上运行。</p>
 被删除。请参阅头文件以使用。请注意，使用 <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL()</span></code> 或
 <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_GPL()</span></code> 将标记为 <code class="docutils literal notranslate"><span class="pre">__init</span></code> 的函数导出到模块是没有意义
 的——这将出问题。</p>
-</section>
-<section id="initcall-module-init">
+</div>
+<div class="section" id="initcall-module-init">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">__initcall()</span></code>/<a class="reference internal" href="../../../driver-api/basics.html#c.module_init" title="module_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_init()</span></code></a><a class="headerlink" href="#initcall-module-init" title="Permalink to this headline">¶</a></h3>
 <p>定义于  <code class="docutils literal notranslate"><span class="pre">include/linux/init.h</span></code> / <code class="docutils literal notranslate"><span class="pre">include/linux/module.h</span></code></p>
 <p>内核的许多部分都作为模块（内核的可动态加载部分）良好服务。使用
@@ -592,16 +594,16 @@ CPU上运行。</p>
 <code class="xref c c-func docutils literal notranslate"><span class="pre">__initcall()</span></code> ，它通过链接器的魔力确保在引导时调用该函数。</p>
 <p>该函数可以返回一个错误值，以导致模块加载失败（不幸的是，如果将模块编译到内核
 中，则此操作无效）。此函数在启用中断的用户上下文中调用，因此可以睡眠。</p>
-</section>
-<section id="module-exit">
+</div>
+<div class="section" id="module-exit">
 <h3><a class="reference internal" href="../../../driver-api/basics.html#c.module_exit" title="module_exit"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_exit()</span></code></a><a class="headerlink" href="#module-exit" title="Permalink to this headline">¶</a></h3>
 <p>定义于  <code class="docutils literal notranslate"><span class="pre">include/linux/module.h</span></code></p>
 <p>这个宏定义了在模块删除时要调用的函数（如果是编译到内核中的文件，则无用武之地）。
 只有在模块使用计数到零时才会调用它。这个函数也可以睡眠，但不能失败：当它返回
 时，所有的东西都必须清理干净。</p>
 <p>注意，这个宏是可选的：如果它不存在，您的模块将不可移除（除非 <code class="docutils literal notranslate"><span class="pre">rmmod</span> <span class="pre">-f</span></code> ）。</p>
-</section>
-<section id="try-module-get-module-put">
+</div>
+<div class="section" id="try-module-get-module-put">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">try_module_get()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">module_put()</span></code><a class="headerlink" href="#try-module-get-module-put" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/module.h</span></code></p>
 <p>这些函数会操作模块使用计数，以防止删除（如果另一个模块使用其导出的符号之一，
@@ -611,35 +613,35 @@ CPU上运行。</p>
 <p>大多数可注册结构体都有所有者字段，例如在
 <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">file_operations</span></code> 结构体中，此字段应设置为
 宏 <code class="docutils literal notranslate"><span class="pre">THIS_MODULE</span></code> 。</p>
-</section>
-</section>
-<section id="include-linux-wait-h">
+</div>
+</div>
+<div class="section" id="include-linux-wait-h">
 <h2>等待队列 <code class="docutils literal notranslate"><span class="pre">include/linux/wait.h</span></code><a class="headerlink" href="#include-linux-wait-h" title="Permalink to this headline">¶</a></h2>
 <p><strong>[睡眠]</strong></p>
 <p>等待队列用于等待某程序在条件为真时唤醒另一程序。必须小心使用，以确保没有竞争
 条件。先声明一个 <code class="xref c c-type docutils literal notranslate"><span class="pre">wait_queue_head_t</span></code> ，然后对希望等待该条件的进程声明
 一个关于它们自己的 <code class="xref c c-type docutils literal notranslate"><span class="pre">wait_queue_entry_t</span></code> ，并将其放入队列中。</p>
-<section id="id8">
+<div class="section" id="id8">
 <h3>声明<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <p>使用 <code class="xref c c-func docutils literal notranslate"><span class="pre">DECLARE_WAIT_QUEUE_HEAD()</span></code> 宏声明一个 <code class="docutils literal notranslate"><span class="pre">wait_queue_head_t</span></code> ，
 或者在初始化代码中使用 <code class="xref c c-func docutils literal notranslate"><span class="pre">init_waitqueue_head()</span></code> 程序。</p>
-</section>
-<section id="id9">
+</div>
+<div class="section" id="id9">
 <h3>排队<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <p>将自己放在等待队列中相当复杂，因为你必须在检查条件之前将自己放入队列中。有一
 个宏可以来执行此操作： <a class="reference internal" href="../../../driver-api/basics.html#c.wait_event_interruptible" title="wait_event_interruptible"><code class="xref c c-func docutils literal notranslate"><span class="pre">wait_event_interruptible()</span></code></a>
 （ <code class="docutils literal notranslate"><span class="pre">include/linux/wait.h</span></code> ）第一个参数是等待队列头，第二个参数是计算的表达
 式；当该表达式为true时宏返回0，或者在接收到信号时返回 <code class="docutils literal notranslate"><span class="pre">-ERESTARTSYS</span></code> 。
 <a class="reference internal" href="../../../driver-api/basics.html#c.wait_event" title="wait_event"><code class="xref c c-func docutils literal notranslate"><span class="pre">wait_event()</span></code></a> 版本会忽略信号。</p>
-</section>
-<section id="id10">
+</div>
+<div class="section" id="id10">
 <h3>唤醒排队任务<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>调用 <code class="xref c c-func docutils literal notranslate"><span class="pre">wake_up()</span></code> （ <code class="docutils literal notranslate"><span class="pre">include/linux/wait.h</span></code> ），它将唤醒队列中的所有
 进程。例外情况：如果有一个进程设置了 <code class="docutils literal notranslate"><span class="pre">TASK_EXCLUSIVE</span></code> ，队列的其余部分将不
 会被唤醒。这个基本函数的其他变体也可以在同一个头文件中使用。</p>
-</section>
-</section>
-<section id="id11">
+</div>
+</div>
+<div class="section" id="id11">
 <h2>原子操作<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
 <p>某些操作在所有平台上都有保证。第一类为操作 <code class="xref c c-type docutils literal notranslate"><span class="pre">atomic_t</span></code>
 （ <code class="docutils literal notranslate"><span class="pre">include/asm/atomic.h</span></code> ）的函数；它包含一个有符号整数（至少32位长），
@@ -658,47 +660,47 @@ CPU上运行。</p>
 true；这些对于原子设置标志特别有用。</p>
 <p>可以使用大于 <code class="docutils literal notranslate"><span class="pre">BITS_PER_LONG</span></code> 位的位索引调用这些操作。但结果在大端序平台上
 不太正常，所以最好不要这样做。</p>
-</section>
-<section id="id12">
+</div>
+<div class="section" id="id12">
 <h2>符号<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h2>
 <p>在内核内部，正常的链接规则仍然适用（即除非用static关键字将符号声明为文件范围，
 否则它可以在内核中的任何位置使用）。但是对于模块，会保留一个特殊可导出符号表，
 该表将入口点限制为内核内部。模块也可以导出符号。</p>
-<section id="export-symbol">
+<div class="section" id="export-symbol">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL()</span></code><a class="headerlink" href="#export-symbol" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>这是导出符号的经典方法：动态加载的模块将能够正常使用符号。</p>
-</section>
-<section id="export-symbol-gpl">
+</div>
+<div class="section" id="export-symbol-gpl">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_GPL()</span></code><a class="headerlink" href="#export-symbol-gpl" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>类似于 <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL()</span></code>，只是 <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_GPL()</span></code> 导出的
 符号只能由具有由 <code class="xref c c-func docutils literal notranslate"><span class="pre">MODULE_LICENSE()</span></code> 指定GPL兼容许可证的模块看到。这
 意味着此函数被认为是一个内部实现问题，而不是一个真正的接口。一些维护人员和
 开发人员在添加一些新的API或功能时可能却需要导出 EXPORT_SYMBOL_GPL()。</p>
-</section>
-<section id="export-symbol-ns">
+</div>
+<div class="section" id="export-symbol-ns">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_NS()</span></code><a class="headerlink" href="#export-symbol-ns" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>这是 <code class="docutils literal notranslate"><span class="pre">EXPORT_SYMBOL()</span></code> 的变体，允许指定符号命名空间。符号名称空间记录于
 <a class="reference internal" href="../../../core-api/symbol-namespaces.html"><span class="doc">Symbol Namespaces</span></a> 。</p>
-</section>
-<section id="export-symbol-ns-gpl">
+</div>
+<div class="section" id="export-symbol-ns-gpl">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_NS_GPL()</span></code><a class="headerlink" href="#export-symbol-ns-gpl" title="Permalink to this headline">¶</a></h3>
 <p>定义于 <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>这是 <code class="docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_GPL()</span></code> 的变体，允许指定符号命名空间。符号名称空间记录于
 <a class="reference internal" href="../../../core-api/symbol-namespaces.html"><span class="doc">Symbol Namespaces</span></a> 。</p>
-</section>
-</section>
-<section id="id13">
+</div>
+</div>
+<div class="section" id="id13">
 <h2>程序与惯例<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h2>
-<section id="include-linux-list-h">
+<div class="section" id="include-linux-list-h">
 <h3>双向链表 <code class="docutils literal notranslate"><span class="pre">include/linux/list.h</span></code><a class="headerlink" href="#include-linux-list-h" title="Permalink to this headline">¶</a></h3>
 <p>内核头文件中曾经有三组链表程序，但这一组是赢家。如果你对一个单链表没有特别迫切的
 需求，那么这是一个不错的选择。</p>
 <p>通常 <a class="reference internal" href="../../../core-api/kernel-api.html#c.list_for_each_entry" title="list_for_each_entry"><code class="xref c c-func docutils literal notranslate"><span class="pre">list_for_each_entry()</span></code></a> 很有用。</p>
-</section>
-<section id="id14">
+</div>
+<div class="section" id="id14">
 <h3>返回值惯例<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
 <p>对于在用户上下文中调用的代码，违背C语言惯例是很常见的，即返回0表示成功，返回
 负错误值（例如 <code class="docutils literal notranslate"><span class="pre">-EFAULT</span></code> ）表示失败。这在一开始可能是不直观的，但在内核中
@@ -706,16 +708,16 @@ true；这些对于原子设置标志特别有用。</p>
 <p>使用 <code class="xref c c-func docutils literal notranslate"><span class="pre">ERR_PTR()</span></code> （ <code class="docutils literal notranslate"><span class="pre">include/linux/err.h</span></code> ）将负错误值编码到指针中，
 然后使用 <code class="xref c c-func docutils literal notranslate"><span class="pre">IS_ERR()</span></code> 和 <code class="xref c c-func docutils literal notranslate"><span class="pre">PTR_ERR()</span></code> 将其再取出：避免为错误值
 使用单独的指针参数。挺讨厌的，但的确是个好方式。</p>
-</section>
-<section id="id15">
+</div>
+<div class="section" id="id15">
 <h3>破坏编译<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
 <p>Linus和其他开发人员有时会更改开发内核中的函数或结构体名称；这样做不仅是为了
 让每个人都保持警惕，还反映了一个重大的更改（例如，不能再在打开中断的情况下
 调用，或者执行额外的检查，或者不执行以前捕获的检查）。通常这会附带一个linux
 内核邮件列表中相当全面的注释；请搜索存档以查看。简单地对文件进行全局替换通常
 会让事情变得 <strong>更糟</strong> 。</p>
-</section>
-<section id="id16">
+</div>
+<div class="section" id="id16">
 <h3>初始化结构体成员<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <p>初始化结构体的首选方法是使用指定的初始化器，如ISO C99所述。
 例如:</p>
@@ -729,8 +731,8 @@ true；这些对于原子设置标志特别有用。</p>
 </div>
 <p>这使得很容易查找（grep），并且可以清楚地看到设置了哪些结构字段。你应该这样做，
 因为它看起来很酷。</p>
-</section>
-<section id="gnu">
+</div>
+<div class="section" id="gnu">
 <h3>GNU 扩展<a class="headerlink" href="#gnu" title="Permalink to this headline">¶</a></h3>
 <p>Linux内核中明确允许GNU扩展。请注意，由于缺乏通用性，一些更复杂的版本并没有
 得到很好的支持，但以下内容被认为是标准的（有关更多详细信息，请参阅GCC info页
@@ -750,20 +752,20 @@ true；这些对于原子设置标志特别有用。</p>
 </ul>
 <p>在内核中使用long long时要小心，gcc为其生成的代码非常糟糕：除法和乘法在i386上
 不能工作，因为内核环境中缺少用于它的gcc运行时函数。</p>
-</section>
-<section id="c">
+</div>
+<div class="section" id="c">
 <h3>C++<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h3>
 <p>在内核中使用C++通常是个坏主意，因为内核不提供必要的运行时环境，并且不为其
 测试包含文件。不过这仍然是可能的，但不建议。如果你真的想这么做，至少别用
 异常处理（exceptions）。</p>
-</section>
-<section id="if">
+</div>
+<div class="section" id="if">
 <h3>#if<a class="headerlink" href="#if" title="Permalink to this headline">¶</a></h3>
 <p>通常认为，在头文件（或.c文件顶部）中使用宏来抽象函数比在源代码中使用“if”预
 处理器语句更干净。</p>
-</section>
-</section>
-<section id="id17">
+</div>
+</div>
+<div class="section" id="id17">
 <h2>把你的东西放进内核里<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h2>
 <p>为了让你的东西更正式、补丁更整洁，还有一些工作要做：</p>
 <ul>
@@ -789,8 +791,8 @@ true；这些对于原子设置标志特别有用。</p>
 <li><p>最后，别忘记去阅读 <a class="reference internal" href="../../../process/submitting-patches.html"><span class="doc">Submitting patches: the essential guide to getting your code into the kernel</span></a> ，
 也许还有 <a class="reference internal" href="../../../process/submitting-drivers.html"><span class="doc">Submitting Drivers For The Linux Kernel</span></a> 。</p></li>
 </ul>
-</section>
-<section id="kernel">
+</div>
+<div class="section" id="kernel">
 <h2>Kernel 仙女棒<a class="headerlink" href="#kernel" title="Permalink to this headline">¶</a></h2>
 <p>浏览源代码时的一些收藏。请随意添加到此列表。</p>
 <p><code class="docutils literal notranslate"><span class="pre">arch/x86/include/asm/delay.h</span></code>:</p>
@@ -845,8 +847,8 @@ C_LABEL(cputypvar_sun4m):
  */
 </pre></div>
 </div>
-</section>
-<section id="id18">
+</div>
+<div class="section" id="id18">
 <h2>致谢<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h2>
 <p>感谢Andi Kleen提出点子，回答我的问题，纠正我的错误，充实内容等帮助。
 感谢Philipp Rumpf做了许多拼写和清晰度修复，以及一些优秀的不明显的点。
@@ -854,8 +856,8 @@ C_LABEL(cputypvar_sun4m):
 Jes Sorensen和Andrea Arcangeli补充了一些注意事项。
 感谢Michael Elizabeth Chastain检查并补充了配置部分。
 感谢Telsa Gwynne教我DocBook。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

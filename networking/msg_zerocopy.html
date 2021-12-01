@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>MSG_ZEROCOPY &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -373,13 +375,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="msg-zerocopy">
+  <div class="section" id="msg-zerocopy">
 <h1>MSG_ZEROCOPY<a class="headerlink" href="#msg-zerocopy" title="Permalink to this headline">¶</a></h1>
-<section id="intro">
+<div class="section" id="intro">
 <h2>Intro<a class="headerlink" href="#intro" title="Permalink to this headline">¶</a></h2>
 <p>The MSG_ZEROCOPY flag enables copy avoidance for socket send calls.
 The feature is currently implemented for TCP and UDP sockets.</p>
-<section id="opportunity-and-caveats">
+<div class="section" id="opportunity-and-caveats">
 <h3>Opportunity and Caveats<a class="headerlink" href="#opportunity-and-caveats" title="Permalink to this headline">¶</a></h3>
 <p>Copying large buffers between user process and kernel can be
 expensive. Linux supports various interfaces that eschew copying,
@@ -398,8 +400,8 @@ stream.</p>
 <p>The kernel returns a notification when it is safe to modify data.
 Converting an existing application to MSG_ZEROCOPY is not always as
 trivial as just passing the flag, then.</p>
-</section>
-<section id="more-info">
+</div>
+<div class="section" id="more-info">
 <h3>More Info<a class="headerlink" href="#more-info" title="Permalink to this headline">¶</a></h3>
 <p>Much of this document was derived from a longer paper presented at
 netdev 2.1. For more in-depth information see that paper and talk,
@@ -415,13 +417,13 @@ the excellent reporting over at LWN.net or read the original code.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-</section>
-<section id="interface">
+</div>
+</div>
+<div class="section" id="interface">
 <h2>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h2>
 <p>Passing the MSG_ZEROCOPY flag is the most obvious step to enable copy
 avoidance, but not the only one.</p>
-<section id="socket-setup">
+<div class="section" id="socket-setup">
 <h3>Socket Setup<a class="headerlink" href="#socket-setup" title="Permalink to this headline">¶</a></h3>
 <p>The kernel is permissive when applications pass undefined flags to the
 send system call. By default it simply ignores these. To avoid enabling
@@ -431,8 +433,8 @@ this flag, a process must first signal intent by setting a socket option:</p>
         error(1, errno, &quot;setsockopt zerocopy&quot;);
 </pre></div>
 </div>
-</section>
-<section id="transmission">
+</div>
+<div class="section" id="transmission">
 <h3>Transmission<a class="headerlink" href="#transmission" title="Permalink to this headline">¶</a></h3>
 <p>The change to send (or sendto, sendmsg, sendmmsg) itself is trivial.
 Pass the new flag.</p>
@@ -442,15 +444,15 @@ Pass the new flag.</p>
 <p>A zerocopy failure will return -1 with errno ENOBUFS. This happens if
 the socket option was not set, the socket exceeds its optmem limit or
 the user exceeds its ulimit on locked pages.</p>
-<section id="mixing-copy-avoidance-and-copying">
+<div class="section" id="mixing-copy-avoidance-and-copying">
 <h4>Mixing copy avoidance and copying<a class="headerlink" href="#mixing-copy-avoidance-and-copying" title="Permalink to this headline">¶</a></h4>
 <p>Many workloads have a mixture of large and small buffers. Because copy
 avoidance is more expensive than copying for small packets, the
 feature is implemented as a flag. It is safe to mix calls with the flag
 with those without.</p>
-</section>
-</section>
-<section id="notifications">
+</div>
+</div>
+<div class="section" id="notifications">
 <h3>Notifications<a class="headerlink" href="#notifications" title="Permalink to this headline">¶</a></h3>
 <p>The kernel has to notify the process when it is safe to reuse a
 previously passed buffer. It queues completion notifications on the
@@ -461,7 +463,7 @@ MSG_ZEROCOPY that successfully sends data increments the counter. The
 counter is not incremented on failure or if called with length zero.
 The counter counts system call invocations, not bytes. It wraps after
 UINT_MAX calls.</p>
-<section id="notification-reception">
+<div class="section" id="notification-reception">
 <h4>Notification Reception<a class="headerlink" href="#notification-reception" title="Permalink to this headline">¶</a></h4>
 <p>The below snippet demonstrates the API. In the simplest case, each
 send syscall is followed by a poll and recvmsg on the error queue.</p>
@@ -488,8 +490,8 @@ every couple of send calls.</p>
 the socket. A socket that has an error queued would normally block
 other operations until the error is read. Zerocopy notifications have
 a zero error code, however, to not block send and recv calls.</p>
-</section>
-<section id="notification-batching">
+</div>
+<div class="section" id="notification-batching">
 <h4>Notification Batching<a class="headerlink" href="#notification-batching" title="Permalink to this headline">¶</a></h4>
 <p>Multiple outstanding packets can be read at once using the recvmmsg
 call. This is often not needed. In each message the kernel returns not
@@ -504,8 +506,8 @@ notification can be squashed into the previous one, so that no more
 than one notification is outstanding at any one point.</p>
 <p>Ordered delivery is the common case, but not guaranteed. Notifications
 may arrive out of order on retransmission and socket teardown.</p>
-</section>
-<section id="notification-parsing">
+</div>
+<div class="section" id="notification-parsing">
 <h4>Notification Parsing<a class="headerlink" href="#notification-parsing" title="Permalink to this headline">¶</a></h4>
 <p>The below snippet demonstrates how to parse the control message: the
 read_notification() call in the previous snippet. A notification
@@ -534,8 +536,8 @@ if (serr-&gt;ee_errno != 0 ||
 printf(&quot;completed: %u..%u\n&quot;, serr-&gt;ee_info, serr-&gt;ee_data);
 </pre></div>
 </div>
-</section>
-<section id="deferred-copies">
+</div>
+<div class="section" id="deferred-copies">
 <h4>Deferred copies<a class="headerlink" href="#deferred-copies" title="Permalink to this headline">¶</a></h4>
 <p>Passing flag MSG_ZEROCOPY is a hint to the kernel to apply copy
 avoidance, and a contract that the kernel will queue a completion
@@ -556,21 +558,21 @@ reason, the kernel signals if data was completed with a copy, by
 setting flag SO_EE_CODE_ZEROCOPY_COPIED in field ee_code on return.
 A process may use this signal to stop passing flag MSG_ZEROCOPY on
 subsequent requests on the same socket.</p>
-</section>
-</section>
-</section>
-<section id="implementation">
+</div>
+</div>
+</div>
+<div class="section" id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
-<section id="loopback">
+<div class="section" id="loopback">
 <h3>Loopback<a class="headerlink" href="#loopback" title="Permalink to this headline">¶</a></h3>
 <p>Data sent to local sockets can be queued indefinitely if the receive
 process does not read its socket. Unbound notification latency is not
 acceptable. For this reason all packets generated with MSG_ZEROCOPY
 that are looped to a local socket will incur a deferred copy. This
 includes looping onto packet sockets (e.g., tcpdump) and tun devices.</p>
-</section>
-</section>
-<section id="testing">
+</div>
+</div>
+<div class="section" id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
 <p>More realistic example code can be found in the kernel source under
 tools/testing/selftests/net/msg_zerocopy.c.</p>
@@ -580,8 +582,8 @@ instance when run with msg_zerocopy.sh between a veth pair across
 namespaces, the test will not show any improvement. For testing, the
 loopback restriction can be temporarily relaxed by making
 skb_orphan_frags_rx identical to skb_orphan_frags.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

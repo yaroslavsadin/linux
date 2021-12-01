@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Open vSwitch datapath developer documentation &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -364,7 +366,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="open-vswitch-datapath-developer-documentation">
+  <div class="section" id="open-vswitch-datapath-developer-documentation">
 <h1>Open vSwitch datapath developer documentation<a class="headerlink" href="#open-vswitch-datapath-developer-documentation" title="Permalink to this headline">¶</a></h1>
 <p>The Open vSwitch kernel module allows flexible userspace control over
 flow-level packet processing on selected network devices.  It can be
@@ -384,7 +386,7 @@ is a matching flow, it executes the associated actions.  If there is
 no match, it queues the packet to userspace for processing (as part of
 its processing, userspace will likely set up a flow to handle further
 packets of the same type entirely in-kernel).</p>
-<section id="flow-key-compatibility">
+<div class="section" id="flow-key-compatibility">
 <h2>Flow key compatibility<a class="headerlink" href="#flow-key-compatibility" title="Permalink to this headline">¶</a></h2>
 <p>Network protocols evolve over time.  New protocols become important
 and existing protocols lose their prominence.  For the Open vSwitch
@@ -422,8 +424,8 @@ forwarding behavior, then it could set up a flow anyway.)</p></li>
 </div></blockquote>
 <p>How flow keys evolve over time is important to making this work, so
 the following sections go into detail.</p>
-</section>
-<section id="flow-key-format">
+</div>
+<div class="section" id="flow-key-format">
 <h2>Flow key format<a class="headerlink" href="#flow-key-format" title="Permalink to this headline">¶</a></h2>
 <p>A flow key is passed over a Netlink socket as a sequence of Netlink
 attributes.  Some attributes represent packet metadata, defined as any
@@ -446,8 +448,8 @@ frag=no), tcp(src=49163, dst=80)
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>in_port(1), eth(...), eth_type(0x0800), ipv4(...), tcp(...)
 </pre></div>
 </div>
-</section>
-<section id="wildcarded-flow-key-format">
+</div>
+<div class="section" id="wildcarded-flow-key-format">
 <h2>Wildcarded flow key format<a class="headerlink" href="#wildcarded-flow-key-format" title="Permalink to this headline">¶</a></h2>
 <p>A wildcarded flow is described with two sequences of Netlink attributes
 passed over the Netlink socket. A flow key, exactly as described above, and an
@@ -479,8 +481,8 @@ responsibility of the user space program to ensure that any incoming packet
 can match at most one flow, wildcarded or not. The current implementation
 performs best-effort detection of overlapping wildcarded flows and may reject
 some but not all of them. However, this behavior may change in future versions.</p>
-</section>
-<section id="unique-flow-identifiers">
+</div>
+<div class="section" id="unique-flow-identifiers">
 <h2>Unique flow identifiers<a class="headerlink" href="#unique-flow-identifiers" title="Permalink to this headline">¶</a></h2>
 <p>An alternative to using the original match portion of a key as the handle for
 flow identification is a unique flow identifier, or “UFID”. UFIDs are optional
@@ -489,8 +491,8 @@ for both the kernel and user space program.</p>
 setup in addition to the flow, then refer to the flow using the UFID for all
 future operations. The kernel is not required to index flows by the original
 flow key if a UFID is specified.</p>
-</section>
-<section id="basic-rule-for-evolving-flow-keys">
+</div>
+<div class="section" id="basic-rule-for-evolving-flow-keys">
 <h2>Basic rule for evolving flow keys<a class="headerlink" href="#basic-rule-for-evolving-flow-keys" title="Permalink to this headline">¶</a></h2>
 <p>Some care is needed to really maintain forward and backward
 compatibility for applications that follow the rules listed under
@@ -540,8 +542,8 @@ nested inside the “encap” attribute.  Thus, an application that does
 not understand the “vlan” key will not see either of those attributes
 and therefore will not misinterpret them.  (Also, the outer eth_type
 is still 0x8100, not changed to 0x0800.)</p>
-</section>
-<section id="handling-malformed-packets">
+</div>
+<div class="section" id="handling-malformed-packets">
 <h2>Handling malformed packets<a class="headerlink" href="#handling-malformed-packets" title="Permalink to this headline">¶</a></h2>
 <p>Don’t drop packets in the kernel for malformed protocol headers, bad
 checksums, etc.  This would prevent userspace from implementing a
@@ -572,8 +574,8 @@ VLAN_TAG_PRESENT inside the kernel) is ordinarily set in a vlan
 attribute expressly to allow this situation to be distinguished.
 Thus, the flow key in this second example unambiguously indicates a
 missing or malformed VLAN TCI.</p>
-</section>
-<section id="other-rules">
+</div>
+<div class="section" id="other-rules">
 <h2>Other rules<a class="headerlink" href="#other-rules" title="Permalink to this headline">¶</a></h2>
 <p>The other rules for flow keys are much less subtle:</p>
 <blockquote>
@@ -586,8 +588,8 @@ compare entire flow keys that it may not be able to fully
 interpret.</p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

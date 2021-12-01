@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Dynamic DMA mapping using the generic device &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -269,7 +271,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="dynamic-dma-mapping-using-the-generic-device">
+  <div class="section" id="dynamic-dma-mapping-using-the-generic-device">
 <h1>Dynamic DMA mapping using the generic device<a class="headerlink" href="#dynamic-dma-mapping-using-the-generic-device" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -283,7 +285,7 @@ Part II describes extensions for supporting non-consistent memory
 machines.  Unless you know that your driver absolutely has to support
 non-consistent platforms (this is usually only legacy platforms) you
 should only use the API described in part I.</p>
-<section id="part-i-dma-api">
+<div class="section" id="part-i-dma-api">
 <h2>Part I - dma_API<a class="headerlink" href="#part-i-dma-api" title="Permalink to this headline">¶</a></h2>
 <p>To get the dma_API, you must #include &lt;linux/dma-mapping.h&gt;.  This
 provides dma_addr_t and the interfaces described below.</p>
@@ -291,8 +293,8 @@ provides dma_addr_t and the interfaces described below.</p>
 given to a device to use as a DMA source or target.  A CPU cannot reference
 a dma_addr_t directly because there may be translation between its physical
 address space and the DMA address space.</p>
-</section>
-<section id="part-ia-using-large-dma-coherent-buffers">
+</div>
+<div class="section" id="part-ia-using-large-dma-coherent-buffers">
 <h2>Part Ia - Using large DMA-coherent buffers<a class="headerlink" href="#part-ia-using-large-dma-coherent-buffers" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void *
 dma_alloc_coherent(struct device *dev, size_t size,
@@ -329,8 +331,8 @@ dma_alloc_coherent().  cpu_addr must be the virtual address returned by
 the dma_alloc_coherent().</p>
 <p>Note that unlike their sibling allocation calls, these routines
 may only be called with IRQs enabled.</p>
-</section>
-<section id="part-ib-using-small-dma-coherent-buffers">
+</div>
+<div class="section" id="part-ib-using-small-dma-coherent-buffers">
 <h2>Part Ib - Using small DMA-coherent buffers<a class="headerlink" href="#part-ib-using-small-dma-coherent-buffers" title="Permalink to this headline">¶</a></h2>
 <p>To get this part of the dma_API, you must #include &lt;linux/dmapool.h&gt;</p>
 <p>Many drivers need lots of small DMA-coherent memory regions for DMA
@@ -387,8 +389,8 @@ dma_pool_destroy(struct dma_pool *pool);
 <p><a class="reference internal" href="mm-api.html#c.dma_pool_destroy" title="dma_pool_destroy"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_pool_destroy()</span></code></a> frees the resources of the pool.  It must be
 called in a context which can sleep.  Make sure you’ve freed all allocated
 memory back to the pool before you destroy it.</p>
-</section>
-<section id="part-ic-dma-addressing-limitations">
+</div>
+<div class="section" id="part-ic-dma-addressing-limitations">
 <h2>Part Ic - DMA addressing limitations<a class="headerlink" href="#part-ic-dma-addressing-limitations" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int
 dma_set_mask_and_coherent(struct device *dev, u64 mask)
@@ -442,8 +444,8 @@ dma_get_merge_boundary(struct device *dev);
 </div>
 <p>Returns the DMA merge boundary. If the device cannot merge any the DMA address
 segments, the function returns 0.</p>
-</section>
-<section id="part-id-streaming-dma-mappings">
+</div>
+<div class="section" id="part-id-streaming-dma-mappings">
 <h2>Part Id - Streaming DMA mappings<a class="headerlink" href="#part-id-streaming-dma-mappings" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>dma_addr_t
 dma_map_single(struct device *dev, void *cpu_addr, size_t size,
@@ -718,8 +720,8 @@ routines, e.g.::</p>
 }
 </pre></div>
 </div>
-</section>
-<section id="part-ii-non-coherent-dma-allocations">
+</div>
+<div class="section" id="part-ii-non-coherent-dma-allocations">
 <h2>Part II - Non-coherent DMA allocations<a class="headerlink" href="#part-ii-non-coherent-dma-allocations" title="Permalink to this headline">¶</a></h2>
 <p>These APIs allow to allocate pages that are guaranteed to be DMA addressable
 by the passed in device, but which need explicit management of memory ownership
@@ -855,8 +857,8 @@ line, but it will guarantee that one or more cache lines fit exactly
 into the width returned by this call.  It will also always be a power
 of two for easy alignment.</p>
 </div>
-</section>
-<section id="part-iii-debug-drivers-use-of-the-dma-api">
+</div>
+<div class="section" id="part-iii-debug-drivers-use-of-the-dma-api">
 <h2>Part III - Debug drivers use of the DMA-API<a class="headerlink" href="#part-iii-debug-drivers-use-of-the-dma-api" title="Permalink to this headline">¶</a></h2>
 <p>The DMA-API as described above has some constraints. DMA addresses must be
 released with the corresponding function with the same size for example. With
@@ -1001,8 +1003,8 @@ the driver. When driver does unmap, debug_dma_unmap() checks the flag and if
 this flag is still set, prints warning message that includes call trace that
 leads up to the unmap. This interface can be called from dma_mapping_error()
 routines to enable DMA mapping error check debugging.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

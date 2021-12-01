@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Device Drivers &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -359,24 +361,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="device-drivers">
+  <div class="section" id="device-drivers">
 <h1>Device Drivers<a class="headerlink" href="#device-drivers" title="Permalink to this headline">¶</a></h1>
 <p>See the kerneldoc for the struct device_driver.</p>
-<section id="allocation">
+<div class="section" id="allocation">
 <h2>Allocation<a class="headerlink" href="#allocation" title="Permalink to this headline">¶</a></h2>
 <p>Device drivers are statically allocated structures. Though there may
 be multiple devices in a system that a driver supports, struct
 device_driver represents the driver as a whole (not a particular
 device instance).</p>
-</section>
-<section id="initialization">
+</div>
+<div class="section" id="initialization">
 <h2>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
 <p>The driver must initialize at least the name and bus fields. It should
 also initialize the devclass field (when it arrives), so it may obtain
 the proper linkage internally. It should also initialize as many of
 the callbacks as possible, though each is optional.</p>
-</section>
-<section id="declaration">
+</div>
+<div class="section" id="declaration">
 <h2>Declaration<a class="headerlink" href="#declaration" title="Permalink to this headline">¶</a></h2>
 <p>As stated above, struct device_driver objects are statically
 allocated. Below is an example declaration of the eepro100
@@ -426,8 +428,8 @@ the definition of the bus-specific driver. Like this:</p>
 </div>
 <p>Some may find the syntax of embedded struct initialization awkward or
 even a bit ugly. So far, it’s the best way we’ve found to do what we want…</p>
-</section>
-<section id="registration">
+</div>
+<div class="section" id="registration">
 <h2>Registration<a class="headerlink" href="#registration" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int driver_register(struct device_driver *drv);
 </pre></div>
@@ -443,8 +445,8 @@ possible. Registration with the core initializes several fields in the
 struct device_driver object, including the reference count and the
 lock. These fields are assumed to be valid at all times and may be
 used by the device model core or the bus driver.</p>
-</section>
-<section id="transition-bus-drivers">
+</div>
+<div class="section" id="transition-bus-drivers">
 <h2>Transition Bus Drivers<a class="headerlink" href="#transition-bus-drivers" title="Permalink to this headline">¶</a></h2>
 <p>By defining wrapper functions, the transition to the new model can be
 made easier. Drivers can ignore the generic structure altogether and
@@ -456,8 +458,8 @@ information in the driver, the drivers must be modified anyway. Since
 converting drivers to the new model should reduce some infrastructural
 complexity and code size, it is recommended that they are converted as
 class information is added.</p>
-</section>
-<section id="access">
+</div>
+<div class="section" id="access">
 <h2>Access<a class="headerlink" href="#access" title="Permalink to this headline">¶</a></h2>
 <p>Once the object has been registered, it may access the common fields of
 the object, like the lock and the list of devices:</p>
@@ -470,8 +472,8 @@ the driver. The LDM core provides a helper function to operate on all
 the devices a driver controls. This helper locks the driver on each
 node access, and does proper reference counting on each device as it
 accesses it.</p>
-</section>
-<section id="sysfs">
+</div>
+<div class="section" id="sysfs">
 <h2>sysfs<a class="headerlink" href="#sysfs" title="Permalink to this headline">¶</a></h2>
 <p>When a driver is registered, a sysfs directory is created in its
 bus’s directory. In this directory, the driver can export an interface
@@ -480,8 +482,8 @@ e.g. toggling debugging output in the driver.</p>
 <p>A future feature of this directory will be a ‘devices’ directory. This
 directory will contain symlinks to the directories of devices it
 supports.</p>
-</section>
-<section id="callbacks">
+</div>
+<div class="section" id="callbacks">
 <h2>Callbacks<a class="headerlink" href="#callbacks" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int     (*probe)        (struct device *dev);
 </pre></div>
@@ -576,8 +578,8 @@ it into a supported low-power state.</p>
 </pre></div>
 </div>
 <p>Resume is used to bring a device back from a low power state.</p>
-</section>
-<section id="attributes">
+</div>
+<div class="section" id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct driver_attribute {
         struct attribute        attr;
@@ -604,8 +606,8 @@ driver’s directory using:</p>
 void driver_remove_file(struct device_driver *, const struct driver_attribute *);
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

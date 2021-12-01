@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>FS-Cache Network Filesystem API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -274,7 +276,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="fs-cache-network-filesystem-api">
+  <div class="section" id="fs-cache-network-filesystem-api">
 <h1>FS-Cache Network Filesystem API<a class="headerlink" href="#fs-cache-network-filesystem-api" title="Permalink to this headline">¶</a></h1>
 <p>There’s an API by which a network filesystem can make use of the FS-Cache
 facilities.  This is based around a number of principles:</p>
@@ -292,7 +294,7 @@ hierarchy for each netfs is structured according the whim of the netfs.</p></li>
 </ol>
 </div></blockquote>
 <p>This API is declared in &lt;linux/fscache.h&gt;.</p>
-<section id="network-filesystem-definition">
+<div class="section" id="network-filesystem-definition">
 <h2>Network Filesystem Definition<a class="headerlink" href="#network-filesystem-definition" title="Permalink to this headline">¶</a></h2>
 <p>FS-Cache needs a description of the network filesystem.  This is specified
 using a record of the following structure:</p>
@@ -326,8 +328,8 @@ itself:</p>
 };
 </pre></div>
 </div>
-</section>
-<section id="index-definition">
+</div>
+<div class="section" id="index-definition">
 <h2>Index Definition<a class="headerlink" href="#index-definition" title="Permalink to this headline">¶</a></h2>
 <p>Indices are used for two purposes:</p>
 <blockquote>
@@ -358,8 +360,8 @@ controlled by cache tags (see below).</p></li>
 function is recursive.  Too many layers will run the kernel out of stack.</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="object-definition">
+</div>
+<div class="section" id="object-definition">
 <h2>Object Definition<a class="headerlink" href="#object-definition" title="Permalink to this headline">¶</a></h2>
 <p>To define an object, a structure of the following type should be filled out:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct fscache_cookie_def
@@ -475,8 +477,8 @@ uncached.</p>
 </li>
 </ol>
 </div></blockquote>
-</section>
-<section id="network-filesystem-un-registration">
+</div>
+<div class="section" id="network-filesystem-un-registration">
 <h2>Network Filesystem (Un)registration<a class="headerlink" href="#network-filesystem-un-registration" title="Permalink to this headline">¶</a></h2>
 <p>The first step is to declare the network filesystem to the cache.  This also
 involves specifying the layout of the primary index (for AFS, this would be the
@@ -495,8 +497,8 @@ appropriate.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void fscache_unregister_netfs(struct fscache_netfs *netfs);
 </pre></div>
 </div>
-</section>
-<section id="cache-tag-lookup">
+</div>
+<div class="section" id="cache-tag-lookup">
 <h2>Cache Tag Lookup<a class="headerlink" href="#cache-tag-lookup" title="Permalink to this headline">¶</a></h2>
 <p>FS-Cache permits the use of more than one cache.  To permit particular index
 subtrees to be bound to particular caches, the second step is to look up cache
@@ -516,8 +518,8 @@ of memory; this will inhibit caching with this tag.</p>
 </div>
 <p>The tag will be retrieved by FS-Cache when it calls the object definition
 operation select_cache().</p>
-</section>
-<section id="index-registration">
+</div>
+<div class="section" id="index-registration">
 <h2>Index Registration<a class="headerlink" href="#index-registration" title="Permalink to this headline">¶</a></h2>
 <p>The third step is to inform FS-Cache about part of an index hierarchy that can
 be used to locate files.  This is done by requesting a cookie for each index in
@@ -579,8 +581,8 @@ another index for vnodes (AFS inode equivalents):</p>
                                volume, 0, true);
 </pre></div>
 </div>
-</section>
-<section id="data-file-registration">
+</div>
+<div class="section" id="data-file-registration">
 <h2>Data File Registration<a class="headerlink" href="#data-file-registration" title="Permalink to this headline">¶</a></h2>
 <p>The fourth step is to request a data file be created in the cache.  This is
 identical to index cookie acquisition.  The only difference is that the type in
@@ -593,8 +595,8 @@ the object definition should be something other than index type:</p>
                                vnode, vnode-&gt;status.size, true);
 </pre></div>
 </div>
-</section>
-<section id="miscellaneous-object-registration">
+</div>
+<div class="section" id="miscellaneous-object-registration">
 <h2>Miscellaneous Object Registration<a class="headerlink" href="#miscellaneous-object-registration" title="Permalink to this headline">¶</a></h2>
 <p>An optional step is to request an object of miscellaneous type be created in
 the cache.  This is almost identical to index cookie acquisition.  The only
@@ -611,8 +613,8 @@ it would be some other type of object such as a data file:</p>
 </div>
 <p>Miscellaneous objects might be used to store extended attributes or directory
 entries for example.</p>
-</section>
-<section id="setting-the-data-file-size">
+</div>
+<div class="section" id="setting-the-data-file-size">
 <h2>Setting the Data File Size<a class="headerlink" href="#setting-the-data-file-size" title="Permalink to this headline">¶</a></h2>
 <p>The fifth step is to set the physical attributes of the file, such as its size.
 This doesn’t automatically reserve any space in the cache, but permits the
@@ -627,8 +629,8 @@ be rebuffed with -ENOBUFS.</p>
 <p>This operation schedules an attribute adjustment to happen asynchronously at
 some point in the future, and as such, it may happen after the function returns
 to the caller.  The attribute adjustment excludes read and write operations.</p>
-</section>
-<section id="page-alloc-read-write">
+</div>
+<div class="section" id="page-alloc-read-write">
 <h2>Page alloc/read/write<a class="headerlink" href="#page-alloc-read-write" title="Permalink to this headline">¶</a></h2>
 <p>And the sixth step is to store and retrieve pages in the cache.  There are
 three functions that are used to do this.</p>
@@ -642,7 +644,7 @@ from the pagecache.</p></li>
 </ol>
 </div></blockquote>
 <p>This permits the cache to maintain its page tracking in proper order.</p>
-<section id="page-read">
+<div class="section" id="page-read">
 <h3>PAGE READ<a class="headerlink" href="#page-read" title="Permalink to this headline">¶</a></h3>
 <p>Firstly, the netfs should ask FS-Cache to examine the caches and read the
 contents cached for a particular page of a particular file if present, or else
@@ -706,8 +708,8 @@ appropriate place.</p></li>
 </div></blockquote>
 <p>This function may also return -ENOMEM or -EINTR, in which case it won’t have
 read any data from the cache.</p>
-</section>
-<section id="page-allocate">
+</div>
+<div class="section" id="page-allocate">
 <h3>Page Allocate<a class="headerlink" href="#page-allocate" title="Permalink to this headline">¶</a></h3>
 <p>Alternatively, if there’s not expected to be any data in the cache for a page
 because the file has been extended, a block can simply be allocated instead:</p>
@@ -722,8 +724,8 @@ rather than -ENODATA as the other would.  One or the other must be performed
 before writing to the cache.</p>
 <p>The mark_pages_cached() cookie operation will be called on the page if
 successful.</p>
-</section>
-<section id="page-write">
+</div>
+<div class="section" id="page-write">
 <h3>Page Write<a class="headerlink" href="#page-write" title="Permalink to this headline">¶</a></h3>
 <p>Secondly, if the netfs changes the contents of the page (either due to an
 initial download or if a user performs a write), then the page should be
@@ -761,8 +763,8 @@ anyone waiting for that bit will be woken up.</p></li>
 is also possible for the PG_fscache_write bit to be cleared when no write took
 place if unforeseen circumstances arose (such as a disk error).</p>
 <p>Writing takes place asynchronously.</p>
-</section>
-<section id="multiple-page-read">
+</div>
+<div class="section" id="multiple-page-read">
 <h3>Multiple Page Read<a class="headerlink" href="#multiple-page-read" title="Permalink to this headline">¶</a></h3>
 <p>A facility is provided to read several pages at once, as requested by the
 readpages() address space operation:</p>
@@ -799,8 +801,8 @@ be called in interrupt context if there is no error.</p></li>
 <p>Note that a return of -ENODATA, -ENOBUFS or any other error does not preclude
 some of the pages being read and some being allocated.  Those pages will have
 been marked appropriately and will need uncaching.</p>
-</section>
-<section id="cancellation-of-unread-pages">
+</div>
+<div class="section" id="cancellation-of-unread-pages">
 <h3>Cancellation of Unread Pages<a class="headerlink" href="#cancellation-of-unread-pages" title="Permalink to this headline">¶</a></h3>
 <p>If one or more pages are passed to fscache_read_or_alloc_pages() but not then
 read from the cache and also not read from the underlying filesystem then
@@ -813,9 +815,9 @@ done by calling:</p>
 <p>prior to returning to the caller.  The cookie argument should be as passed to
 fscache_read_or_alloc_pages().  Every page in the pages list will be examined
 and any that have PG_fscache set will be uncached.</p>
-</section>
-</section>
-<section id="page-uncaching">
+</div>
+</div>
+<div class="section" id="page-uncaching">
 <h2>Page Uncaching<a class="headerlink" href="#page-uncaching" title="Permalink to this headline">¶</a></h2>
 <p>To uncache a page, this function should be called:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void fscache_uncache_page(struct fscache_cookie *cookie,
@@ -857,7 +859,7 @@ released.</p>
 <p>To make a page available for release, this function may wait for an outstanding
 storage request to complete, or it may attempt to cancel the storage request -
 in which case the page will not be stored in the cache this time.</p>
-<section id="bulk-image-page-uncache">
+<div class="section" id="bulk-image-page-uncache">
 <h3>Bulk Image Page Uncache<a class="headerlink" href="#bulk-image-page-uncache" title="Permalink to this headline">¶</a></h3>
 <p>A convenience routine is provided to perform an uncache on all the pages
 attached to an inode.  This assumes that the pages on the inode correspond on a
@@ -870,9 +872,9 @@ attached to an inode.  This assumes that the pages on the inode correspond on a
 the pages are attached to.  This function will wait for pages to finish being
 written to the cache and for the cache to finish with the page generally.  No
 error is returned.</p>
-</section>
-</section>
-<section id="index-and-data-file-consistency">
+</div>
+</div>
+<div class="section" id="index-and-data-file-consistency">
 <h2>Index and Data File consistency<a class="headerlink" href="#index-and-data-file-consistency" title="Permalink to this headline">¶</a></h2>
 <p>To find out whether auxiliary data for an object is up to data within the
 cache, the following function can be called:</p>
@@ -895,8 +897,8 @@ that is non-NULL and then schedule this to be stored on disk.  The update
 method in the parent index definition will be called to transfer the data.</p>
 <p>Note that partial updates may happen automatically at other times, such as when
 data blocks are added to a data file object.</p>
-</section>
-<section id="cookie-enablement">
+</div>
+<div class="section" id="cookie-enablement">
 <h2>Cookie Enablement<a class="headerlink" href="#cookie-enablement" title="Permalink to this headline">¶</a></h2>
 <p>Cookies exist in one of two states: enabled and disabled.  If a cookie is
 disabled, it ignores all attempts to acquire child cookies; check, update or
@@ -935,8 +937,8 @@ as enabled if provisional backing objects are allocated.</p>
 -&gt;check_aux() function.</p>
 <p>In both cases, the cookie’s auxiliary data buffer is updated from aux_data if
 that is non-NULL inside the enablement lock before proceeding.</p>
-</section>
-<section id="miscellaneous-cookie-operations">
+</div>
+<div class="section" id="miscellaneous-cookie-operations">
 <h2>Miscellaneous Cookie operations<a class="headerlink" href="#miscellaneous-cookie-operations" title="Permalink to this headline">¶</a></h2>
 <p>There are a number of operations that can be used to control cookies:</p>
 <blockquote>
@@ -974,8 +976,8 @@ make space if it’s not in use.</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="cookie-unregistration">
+</div>
+<div class="section" id="cookie-unregistration">
 <h2>Cookie Unregistration<a class="headerlink" href="#cookie-unregistration" title="Permalink to this headline">¶</a></h2>
 <p>To get rid of a cookie, this function should be called:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void fscache_relinquish_cookie(struct fscache_cookie *cookie,
@@ -994,13 +996,13 @@ so that the cache can lazily update it on disk.</p>
 <p>One very important note - relinquish must NOT be called for a cookie unless all
 the cookies for “child” indices, objects and pages have been relinquished
 first.</p>
-</section>
-<section id="index-invalidation">
+</div>
+<div class="section" id="index-invalidation">
 <h2>Index Invalidation<a class="headerlink" href="#index-invalidation" title="Permalink to this headline">¶</a></h2>
 <p>There is no direct way to invalidate an index subtree.  To do this, the caller
 should relinquish and retire the cookie they have, and then acquire a new one.</p>
-</section>
-<section id="data-file-invalidation">
+</div>
+<div class="section" id="data-file-invalidation">
 <h2>Data File Invalidation<a class="headerlink" href="#data-file-invalidation" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes it will be necessary to invalidate an object that contains data.
 Typically this will be necessary when the server tells the netfs of a foreign
@@ -1024,8 +1026,8 @@ once again:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void fscache_wait_on_invalidate(struct fscache_cookie *cookie);
 </pre></div>
 </div>
-</section>
-<section id="fs-cache-specific-page-flag">
+</div>
+<div class="section" id="fs-cache-specific-page-flag">
 <h2>FS-cache Specific Page Flag<a class="headerlink" href="#fs-cache-specific-page-flag" title="Permalink to this headline">¶</a></h2>
 <p>FS-Cache makes use of a page flag, PG_private_2, for its own purpose.  This is
 given the alternative name PG_fscache.</p>
@@ -1053,8 +1055,8 @@ int TestClearPageFsCache(struct page *page)
 </div>
 <p>These functions are bit test, bit set, bit clear, bit test and set and bit
 test and clear operations on PG_fscache.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>EHCI driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -279,7 +281,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ehci-driver">
+  <div class="section" id="ehci-driver">
 <h1>EHCI driver<a class="headerlink" href="#ehci-driver" title="Permalink to this headline">¶</a></h1>
 <p>27-Dec-2002</p>
 <p>The EHCI driver is used to talk to high speed USB 2.0 devices using
@@ -319,13 +321,13 @@ APIs exposed to USB device drivers.</p>
 <li><p>David Brownell
 &lt;<a class="reference external" href="mailto:dbrownell&#37;&#52;&#48;users&#46;sourceforge&#46;net">dbrownell<span>&#64;</span>users<span>&#46;</span>sourceforge<span>&#46;</span>net</a>&gt;</p></li>
 </ul>
-<section id="functionality">
+<div class="section" id="functionality">
 <h2>Functionality<a class="headerlink" href="#functionality" title="Permalink to this headline">¶</a></h2>
 <p>This driver is regularly tested on x86 hardware, and has also been
 used on PPC hardware so big/little endianness issues should be gone.
 It’s believed to do all the right PCI magic so that I/O works even on
 systems with interesting DMA mapping issues.</p>
-<section id="transfer-types">
+<div class="section" id="transfer-types">
 <h3>Transfer Types<a class="headerlink" href="#transfer-types" title="Permalink to this headline">¶</a></h3>
 <p>At this writing the driver should comfortably handle all control, bulk,
 and interrupt transfers, including requests to USB 1.1 devices through
@@ -337,8 +339,8 @@ is not yet available.  Note that split transaction support for ISO
 transfers can’t share much code with the code for high speed ISO transfers,
 since EHCI represents these with a different data structure.  So for now,
 most USB audio and video devices can’t be connected to high speed buses.</p>
-</section>
-<section id="driver-behavior">
+</div>
+<div class="section" id="driver-behavior">
 <h3>Driver Behavior<a class="headerlink" href="#driver-behavior" title="Permalink to this headline">¶</a></h3>
 <p>Transfers of all types can be queued.  This means that control transfers
 from a driver on one interface (or through usbfs) won’t interfere with
@@ -354,9 +356,9 @@ behave quite right at the moment.</p>
 transactions (interrupt and isochronous transfers).  These place some
 limits on the number of periodic transactions that can be scheduled,
 and prevent use of polling intervals of less than one frame.</p>
-</section>
-</section>
-<section id="use-by">
+</div>
+</div>
+<div class="section" id="use-by">
 <h2>Use by<a class="headerlink" href="#use-by" title="Permalink to this headline">¶</a></h2>
 <p>Assuming you have an EHCI controller (on a PCI card or motherboard)
 and have compiled this driver as a module, load this like:</p>
@@ -410,8 +412,8 @@ periodic transfers) use different encodings when operating at high speed.</p>
 Those hubs report some failures, such as disconnections, differently when
 transaction translators are in use; some drivers have been seen to behave
 badly when they see different faults than OHCI or UHCI report.</p>
-</section>
-<section id="performance">
+</div>
+<div class="section" id="performance">
 <h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
 <p>USB 2.0 throughput is gated by two main factors:  how fast the host
 controller can process requests, and how fast devices can respond to
@@ -427,7 +429,7 @@ microframes fit in a USB 1.1 frame; a microframe is 1 msec/8 = 125 usec.</p>
 hardware and device driver software allow it.  Periodic transfer modes
 (isochronous and interrupt) allow the larger packet sizes which let you
 approach the quoted 480 MBit/sec transfer rate.</p>
-<section id="hardware-performance">
+<div class="section" id="hardware-performance">
 <h3>Hardware Performance<a class="headerlink" href="#hardware-performance" title="Permalink to this headline">¶</a></h3>
 <p>At this writing, individual USB 2.0 devices tend to max out at around
 20 MByte/sec transfer rates.  This is of course subject to change;
@@ -450,8 +452,8 @@ of requests.  That latency is tunable; there’s a module option.  By
 default ehci-hcd driver uses the minimum latency, which means that if
 you issue a control or bulk request you can often expect to learn that
 it completed in less than 250 usec (depending on transfer size).</p>
-</section>
-<section id="software-performance">
+</div>
+<div class="section" id="software-performance">
 <h3>Software Performance<a class="headerlink" href="#software-performance" title="Permalink to this headline">¶</a></h3>
 <p>To get even 20 MByte/sec transfer rates, Linux-USB device drivers will
 need to keep the EHCI queue full.  That means issuing large requests,
@@ -479,9 +481,9 @@ to trigger “high bandwidth” modes.</p>
 through sysfs uframe_periodic_max parameter. Describe that.</p>
 </dd>
 </dl>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

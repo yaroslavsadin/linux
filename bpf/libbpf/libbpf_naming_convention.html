@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>API naming convention &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -234,7 +236,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="api-naming-convention">
+  <div class="section" id="api-naming-convention">
 <h1>API naming convention<a class="headerlink" href="#api-naming-convention" title="Permalink to this headline">¶</a></h1>
 <p>libbpf API provides access to a few logically separated groups of
 functions and types. Every group has its own naming convention
@@ -243,15 +245,15 @@ new function or type is added to keep libbpf API clean and consistent.</p>
 <p>All types and functions provided by libbpf API should have one of the
 following prefixes: <code class="docutils literal notranslate"><span class="pre">bpf_</span></code>, <code class="docutils literal notranslate"><span class="pre">btf_</span></code>, <code class="docutils literal notranslate"><span class="pre">libbpf_</span></code>, <code class="docutils literal notranslate"><span class="pre">xsk_</span></code>,
 <code class="docutils literal notranslate"><span class="pre">btf_dump_</span></code>, <code class="docutils literal notranslate"><span class="pre">ring_buffer_</span></code>, <code class="docutils literal notranslate"><span class="pre">perf_buffer_</span></code>.</p>
-<section id="system-call-wrappers">
+<div class="section" id="system-call-wrappers">
 <h2>System call wrappers<a class="headerlink" href="#system-call-wrappers" title="Permalink to this headline">¶</a></h2>
 <p>System call wrappers are simple wrappers for commands supported by
 sys_bpf system call. These wrappers should go to <code class="docutils literal notranslate"><span class="pre">bpf.h</span></code> header file
 and map one to one to corresponding commands.</p>
 <p>For example <code class="docutils literal notranslate"><span class="pre">bpf_map_lookup_elem</span></code> wraps <code class="docutils literal notranslate"><span class="pre">BPF_MAP_LOOKUP_ELEM</span></code>
 command of sys_bpf, <code class="docutils literal notranslate"><span class="pre">bpf_prog_attach</span></code> wraps <code class="docutils literal notranslate"><span class="pre">BPF_PROG_ATTACH</span></code>, etc.</p>
-</section>
-<section id="objects">
+</div>
+<div class="section" id="objects">
 <h2>Objects<a class="headerlink" href="#objects" title="Permalink to this headline">¶</a></h2>
 <p>Another class of types and functions provided by libbpf API is “objects”
 and functions to work with them. Objects are high-level abstractions
@@ -273,30 +275,30 @@ purpose of the function to open ELF file and create <code class="docutils litera
 it.</p>
 <p>All objects and corresponding functions other than BTF related should go
 to <code class="docutils literal notranslate"><span class="pre">libbpf.h</span></code>. BTF types and functions should go to <code class="docutils literal notranslate"><span class="pre">btf.h</span></code>.</p>
-</section>
-<section id="auxiliary-functions">
+</div>
+<div class="section" id="auxiliary-functions">
 <h2>Auxiliary functions<a class="headerlink" href="#auxiliary-functions" title="Permalink to this headline">¶</a></h2>
 <p>Auxiliary functions and types that don’t fit well in any of categories
 described above should have <code class="docutils literal notranslate"><span class="pre">libbpf_</span></code> prefix, e.g.
 <code class="docutils literal notranslate"><span class="pre">libbpf_get_error</span></code> or <code class="docutils literal notranslate"><span class="pre">libbpf_prog_type_by_name</span></code>.</p>
-</section>
-<section id="af-xdp-functions">
+</div>
+<div class="section" id="af-xdp-functions">
 <h2>AF_XDP functions<a class="headerlink" href="#af-xdp-functions" title="Permalink to this headline">¶</a></h2>
 <p>AF_XDP functions should have an <code class="docutils literal notranslate"><span class="pre">xsk_</span></code> prefix, e.g.
 <code class="docutils literal notranslate"><span class="pre">xsk_umem__get_data</span></code> or <code class="docutils literal notranslate"><span class="pre">xsk_umem__create</span></code>. The interface consists
 of both low-level ring access functions and high-level configuration
 functions. These can be mixed and matched. Note that these functions
 are not reentrant for performance reasons.</p>
-</section>
-<section id="abi">
+</div>
+<div class="section" id="abi">
 <h2>ABI<a class="headerlink" href="#abi" title="Permalink to this headline">¶</a></h2>
 <p>libbpf can be both linked statically or used as DSO. To avoid possible
 conflicts with other libraries an application is linked with, all
 non-static libbpf symbols should have one of the prefixes mentioned in
 API documentation above. See API naming convention to choose the right
 name for a new symbol.</p>
-</section>
-<section id="symbol-visibility">
+</div>
+<div class="section" id="symbol-visibility">
 <h2>Symbol visibility<a class="headerlink" href="#symbol-visibility" title="Permalink to this headline">¶</a></h2>
 <p>libbpf follow the model when all global symbols have visibility “hidden”
 by default and to make a symbol visible it has to be explicitly
@@ -307,8 +309,8 @@ attributed with <code class="docutils literal notranslate"><span class="pre">LIB
 <p>This prevents from accidentally exporting a symbol, that is not supposed
 to be a part of ABI what, in turn, improves both libbpf developer- and
 user-experiences.</p>
-</section>
-<section id="abi-versionning">
+</div>
+<div class="section" id="abi-versionning">
 <h2>ABI versionning<a class="headerlink" href="#abi-versionning" title="Permalink to this headline">¶</a></h2>
 <p>To make future ABI extensions possible libbpf ABI is versioned.
 Versioning is implemented by <code class="docutils literal notranslate"><span class="pre">libbpf.map</span></code> version script that is
@@ -347,16 +349,16 @@ LIBBPF_0.0.2 {
 <code class="docutils literal notranslate"><span class="pre">LIBBPF_0.0.1</span></code>.</p>
 <p>Format of version script and ways to handle ABI changes, including
 incompatible ones, described in details in [1].</p>
-</section>
-<section id="stand-alone-build">
+</div>
+<div class="section" id="stand-alone-build">
 <h2>Stand-alone build<a class="headerlink" href="#stand-alone-build" title="Permalink to this headline">¶</a></h2>
 <p>Under <a class="reference external" href="https://github.com/libbpf/libbpf">https://github.com/libbpf/libbpf</a> there is a (semi-)automated
 mirror of the mainline’s version of libbpf for a stand-alone build.</p>
 <p>However, all changes to libbpf’s code base must be upstreamed through
 the mainline kernel tree.</p>
-</section>
-</section>
-<section id="api-documentation-convention">
+</div>
+</div>
+<div class="section" id="api-documentation-convention">
 <h1>API documentation convention<a class="headerlink" href="#api-documentation-convention" title="Permalink to this headline">¶</a></h1>
 <p>The libbpf API is documented via comments above definitions in
 header files. These comments can be rendered by doxygen and sphinx
@@ -388,18 +390,18 @@ can be added below the last directive, at the bottom of the comment.</p>
 <p>Parameters are denoted with the &#64;param directive, there should be one for each
 parameter. If this is a function with a non-void return, use the &#64;return directive
 to document it.</p>
-<section id="license">
+<div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
 <p>libbpf is dual-licensed under LGPL 2.1 and BSD 2-Clause.</p>
-</section>
-<section id="links">
+</div>
+<div class="section" id="links">
 <h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>[1] <a class="reference external" href="https://www.akkadia.org/drepper/dsohowto.pdf">https://www.akkadia.org/drepper/dsohowto.pdf</a></dt><dd><p>(Chapter 3. Maintaining APIs and ABIs).</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

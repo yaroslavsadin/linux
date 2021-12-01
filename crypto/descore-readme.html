@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Fast &amp; Portable DES encryption &amp; decryption &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -261,7 +263,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="fast-portable-des-encryption-decryption">
+  <div class="section" id="fast-portable-des-encryption-decryption">
 <h1>Fast &amp; Portable DES encryption &amp; decryption<a class="headerlink" href="#fast-portable-des-encryption-decryption" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -469,7 +471,7 @@ machine-independent.
 </ul>
 </dd>
 </dl>
-<section id="motivation-and-history">
+<div class="section" id="motivation-and-history">
 <h2>motivation and history<a class="headerlink" href="#motivation-and-history" title="Permalink to this headline">¶</a></h2>
 <p>a while ago i wanted some des routines and the routines documented on sun’s
 man pages either didn’t exist or dumped core.  i had heard of kerberos,
@@ -499,8 +501,8 @@ to crypt(3) in his tables - i didn’t check.</p>
 <p>i’m glad that i implemented it the way i did, because this C version is
 portable (the ifdef’s are performance enhancements) and it is faster
 than versions hand-written in assembly for the sparc!</p>
-</section>
-<section id="porting-notes">
+</div>
+<div class="section" id="porting-notes">
 <h2>porting notes<a class="headerlink" href="#porting-notes" title="Permalink to this headline">¶</a></h2>
 <p>one thing i did not want to do was write an enormous mess
 which depended on endedness and other machine quirks,
@@ -526,8 +528,8 @@ i assume sizeof(word) == 4 EVERYWHERE.</p></li>
 in the data loading and storing code surrounding the key iterations
 is less than 12%.  also, there is the added benefit that
 the input and output work areas do not need to be word-aligned.</p>
-</section>
-<section id="optional-performance-optimizations">
+</div>
+<div class="section" id="optional-performance-optimizations">
 <h2>OPTIONAL performance optimizations<a class="headerlink" href="#optional-performance-optimizations" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
 <li><p>you should define one of <code class="docutils literal notranslate"><span class="pre">i386,</span></code> <code class="docutils literal notranslate"><span class="pre">vax,</span></code> <code class="docutils literal notranslate"><span class="pre">mc68000,</span></code> or <code class="docutils literal notranslate"><span class="pre">sparc,</span></code>
@@ -565,8 +567,8 @@ to put everything in registers(!), and generate about 370 instructions apiece
 for the DesQuickCore… routines!</p>
 </li>
 </ol>
-</section>
-<section id="coding-notes">
+</div>
+<div class="section" id="coding-notes">
 <h2>coding notes<a class="headerlink" href="#coding-notes" title="Permalink to this headline">¶</a></h2>
 <p>the en/decryption routines each use 6 necessary register variables,
 with 4 being actively used at once during the inner iterations.
@@ -604,8 +606,8 @@ KEEP THIS MORE SUBTLE POINT IN MIND IF YOU REWRITE ANYTHING.</p>
 <p>(actually, there are some code fragments now which do require two temps,
 but fixing it would either break the structure of the macros or
 require declaring another temporary).</p>
-</section>
-<section id="special-efficient-data-format">
+</div>
+<div class="section" id="special-efficient-data-format">
 <h2>special efficient data format<a class="headerlink" href="#special-efficient-data-format" title="Permalink to this headline">¶</a></h2>
 <p>bits are manipulated in this arrangement most of the time (S7 S5 S3 S1):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>003130292827xxxx242322212019xxxx161514131211xxxx080706050403xxxx
@@ -666,16 +668,16 @@ memory.  Quick is included for programs that do nothing but DES,
 e.g., encryption filters, etc.</p>
 </dd>
 </dl>
-</section>
-<section id="getting-it-to-compile-on-your-machine">
+</div>
+<div class="section" id="getting-it-to-compile-on-your-machine">
 <h2>Getting it to compile on your machine<a class="headerlink" href="#getting-it-to-compile-on-your-machine" title="Permalink to this headline">¶</a></h2>
 <p>there are no machine-dependencies in the code (see porting),
 except perhaps the <code class="docutils literal notranslate"><span class="pre">now()</span></code> macro in desTest.c.
 ALL generated tables are machine independent.
 you should edit the Makefile with the appropriate optimization flags
 for your compiler (MAX optimization).</p>
-</section>
-<section id="speeding-up-kerberos-and-or-its-des-library">
+</div>
+<div class="section" id="speeding-up-kerberos-and-or-its-des-library">
 <h2>Speeding up kerberos (and/or its des library)<a class="headerlink" href="#speeding-up-kerberos-and-or-its-des-library" title="Permalink to this headline">¶</a></h2>
 <p>note that i have included a kerberos-compatible interface in desUtil.c
 through the functions des_key_sched() and des_ecb_encrypt().
@@ -683,13 +685,13 @@ to use these with kerberos or kerberos-compatible code put desCore.a
 ahead of the kerberos-compatible library on your linker’s command line.
 you should not need to #include desCore.h;  just include the header
 file provided with the kerberos library.</p>
-</section>
-<section id="other-uses">
+</div>
+<div class="section" id="other-uses">
 <h2>Other uses<a class="headerlink" href="#other-uses" title="Permalink to this headline">¶</a></h2>
 <p>the macros in desCode.h would be very useful for putting inline des
 functions in more complicated encryption routines.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

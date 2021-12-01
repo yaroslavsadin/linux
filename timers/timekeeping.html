@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Clock sources, Clock events, sched_clock() and delay timers &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -252,7 +254,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="clock-sources-clock-events-sched-clock-and-delay-timers">
+  <div class="section" id="clock-sources-clock-events-sched-clock-and-delay-timers">
 <h1>Clock sources, Clock events, sched_clock() and delay timers<a class="headerlink" href="#clock-sources-clock-events-sched-clock-and-delay-timers" title="Permalink to this headline">¶</a></h1>
 <p>This document tries to briefly explain some basic kernel timekeeping
 abstractions. It partly pertains to the drivers usually found in
@@ -267,7 +269,7 @@ the basic timeline, whereas clock events shoot interrupts on certain points
 on this timeline, providing facilities such as high-resolution timers.
 sched_clock() is used for scheduling and timestamping, and delay timers
 provide an accurate delay source using hardware counters.</p>
-<section id="clock-sources">
+<div class="section" id="clock-sources">
 <h2>Clock sources<a class="headerlink" href="#clock-sources" title="Permalink to this headline">¶</a></h2>
 <p>The purpose of the clock source is to provide a timeline for the system that
 tells you where you are in time. For example issuing the command ‘date’ on
@@ -320,8 +322,8 @@ member telling how many bits of the source are valid. This way the timekeeping
 code knows when the counter will wrap around and can insert the necessary
 compensation code on both sides of the wrap point so that the system timeline
 remains monotonic.</p>
-</section>
-<section id="clock-events">
+</div>
+<div class="section" id="clock-events">
 <h2>Clock events<a class="headerlink" href="#clock-events" title="Permalink to this headline">¶</a></h2>
 <p>Clock events are the conceptual reverse of clock sources: they take a
 desired time specification value and calculate the values to poke into
@@ -339,8 +341,8 @@ arithmetic, and you find the same family of helper functions again for
 assigning these values. The clock event driver does not need a ‘mask’
 attribute however: the system will not try to plan events beyond the time
 horizon of the clock event.</p>
-</section>
-<section id="sched-clock">
+</div>
+<div class="section" id="sched-clock">
 <h2>sched_clock()<a class="headerlink" href="#sched-clock" title="Permalink to this headline">¶</a></h2>
 <p>In addition to the clock sources and clock events there is a special weak
 function in the kernel called sched_clock(). This function shall return the
@@ -381,8 +383,8 @@ Some hardware (such as the x86 TSC) will cause the sched_clock() function to
 drift between the CPUs on the system. The kernel can work around this by
 enabling the CONFIG_HAVE_UNSTABLE_SCHED_CLOCK option. This is another aspect
 that makes sched_clock() different from the ordinary clock source.</p>
-</section>
-<section id="delay-timers-some-architectures-only">
+</div>
+<div class="section" id="delay-timers-some-architectures-only">
 <h2>Delay timers (some architectures only)<a class="headerlink" href="#delay-timers-some-architectures-only" title="Permalink to this headline">¶</a></h2>
 <p>On systems with variable CPU frequency, the various kernel delay() functions
 will sometimes behave strangely. Basically these delays usually use a hard
@@ -398,8 +400,8 @@ a hard-coded loop for providing the desired delay.</p>
 <p>This is done by declaring a struct delay_timer and assigning the appropriate
 function pointers and rate settings for this delay timer.</p>
 <p>This is available on some architectures like OpenRISC or ARM.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

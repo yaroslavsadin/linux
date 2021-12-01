@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Device Power Management Basics &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -352,7 +354,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="device-power-management-basics">
+  <div class="section" id="device-power-management-basics">
 <span id="driverapi-pm-devices"></span><h1>Device Power Management Basics<a class="headerlink" href="#device-power-management-basics" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Copyright</dt>
@@ -376,7 +378,7 @@ phones), will do a lot.</p>
 power management goals, emphasizing the models and interfaces that are
 shared by everything that hooks up to the driver model core.  Read it as
 background for the domain-specific work you’d do with any specific driver.</p>
-<section id="two-models-for-device-power-management">
+<div class="section" id="two-models-for-device-power-management">
 <h2>Two Models for Device Power Management<a class="headerlink" href="#two-models-for-device-power-management" title="Permalink to this headline">¶</a></h2>
 <p>Drivers will use one or both of these models to put devices into low-power
 states:</p>
@@ -430,14 +432,14 @@ requirements though.</p>
 <p>Examples of hardware wakeup events include an alarm from a real time clock,
 network wake-on-LAN packets, keyboard or mouse activity, and media insertion
 or removal (for PCMCIA, MMC/SD, USB, and so on).</p>
-</section>
-<section id="interfaces-for-entering-system-sleep-states">
+</div>
+<div class="section" id="interfaces-for-entering-system-sleep-states">
 <h2>Interfaces for Entering System Sleep States<a class="headerlink" href="#interfaces-for-entering-system-sleep-states" title="Permalink to this headline">¶</a></h2>
 <p>There are programming interfaces provided for subsystems (bus type, device type,
 device class) and device drivers to allow them to participate in the power
 management of devices they are concerned with.  These interfaces cover both
 system sleep and runtime power management.</p>
-<section id="device-power-management-operations">
+<div class="section" id="device-power-management-operations">
 <h3>Device Power Management Operations<a class="headerlink" href="#device-power-management-operations" title="Permalink to this headline">¶</a></h3>
 <p>Device power management operations, at the subsystem level as well as at the
 device driver level, are implemented by defining and populating objects of type
@@ -452,8 +454,8 @@ operations available at least for some subsystems.  This approach does not use
 sleep power management methods in a limited way.  Therefore it is not described
 in this document, so please refer directly to the source code for more
 information about it.</p>
-</section>
-<section id="subsystem-level-methods">
+</div>
+<div class="section" id="subsystem-level-methods">
 <h3>Subsystem-Level Methods<a class="headerlink" href="#subsystem-level-methods" title="Permalink to this headline">¶</a></h3>
 <p>The core methods to suspend and resume devices reside in
 <a class="reference internal" href="types.html#c.dev_pm_ops" title="dev_pm_ops"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dev_pm_ops</span></code></a> pointed to by the <code class="xref c c-member docutils literal notranslate"><span class="pre">ops</span></code> member of
@@ -470,8 +472,8 @@ on top of bus-specific framework code.</p>
 <p>For more information on these driver calls, see the description later;
 they are called in phases for every device, respecting the parent-child
 sequencing in the driver model tree.</p>
-</section>
-<section id="sys-devices-power-wakeup-files">
+</div>
+<div class="section" id="sys-devices-power-wakeup-files">
 <h3><code class="file docutils literal notranslate"><span class="pre">/sys/devices/.../power/wakeup</span></code> files<a class="headerlink" href="#sys-devices-power-wakeup-files" title="Permalink to this headline">¶</a></h3>
 <p>All device objects in the driver model contain fields that control the handling
 of system wakeup events (hardware signals that can force the system out of a
@@ -520,8 +522,8 @@ be used to signal system wakeup events, depending on the hardware design.  On
 some systems it is impossible to trigger them from system sleep states.  In any
 case, remote wakeup should always be enabled for runtime power management for
 all devices and drivers that support it.</p>
-</section>
-<section id="sys-devices-power-control-files">
+</div>
+<div class="section" id="sys-devices-power-control-files">
 <h3><code class="file docutils literal notranslate"><span class="pre">/sys/devices/.../power/control</span></code> files<a class="headerlink" href="#sys-devices-power-control-files" title="Permalink to this headline">¶</a></h3>
 <p>Each device in the driver model has a flag to control whether it is subject to
 runtime power management.  This flag, <code class="xref c c-member docutils literal notranslate"><span class="pre">runtime_auto</span></code>, is initialized
@@ -543,9 +545,9 @@ system-wide transition to a sleep state even though its <code class="xref c c-me
 flag is clear.</p>
 <p>For more information about the runtime power management framework, refer to
 <a class="reference internal" href="../../power/runtime_pm.html"><span class="doc">Runtime Power Management Framework for I/O Devices</span></a>.</p>
-</section>
-</section>
-<section id="calling-drivers-to-enter-and-leave-system-sleep-states">
+</div>
+</div>
+<div class="section" id="calling-drivers-to-enter-and-leave-system-sleep-states">
 <h2>Calling Drivers to Enter and Leave System Sleep States<a class="headerlink" href="#calling-drivers-to-enter-and-leave-system-sleep-states" title="Permalink to this headline">¶</a></h2>
 <p>When the system goes into a sleep state, each device’s driver is asked to
 suspend the device by putting it into a state compatible with the target
@@ -561,7 +563,7 @@ matching resume calls would then completely reinitialize the hardware
 before reactivating its class I/O queues.</p>
 <p>More power-aware drivers might prepare the devices for triggering system wakeup
 events.</p>
-<section id="call-sequence-guarantees">
+<div class="section" id="call-sequence-guarantees">
 <h3>Call Sequence Guarantees<a class="headerlink" href="#call-sequence-guarantees" title="Permalink to this headline">¶</a></h3>
 <p>To ensure that bridges and similar links needing to talk to a device are
 available when the device is suspended or resumed, the device hierarchy is
@@ -577,8 +579,8 @@ the device is suspending (i.e. has been chosen by the PM core as the next
 device to suspend) or has already suspended, as well as after all of the other
 devices have been suspended.  Device drivers must be prepared to cope with such
 situations.</p>
-</section>
-<section id="system-power-management-phases">
+</div>
+<div class="section" id="system-power-management-phases">
 <h3>System Power Management Phases<a class="headerlink" href="#system-power-management-phases" title="Permalink to this headline">¶</a></h3>
 <p>Suspending or resuming the system is done in several phases.  Different phases
 are used for suspend-to-idle, shallow (standby), and deep (“suspend-to-RAM”)
@@ -617,8 +619,8 @@ that.</p>
 <p>If the subsystem callback chosen for execution is not present, the PM core will
 execute the corresponding method from the <code class="docutils literal notranslate"><span class="pre">dev-&gt;driver-&gt;pm</span></code> set instead if
 there is one.</p>
-</section>
-<section id="entering-system-suspend">
+</div>
+<div class="section" id="entering-system-suspend">
 <h3>Entering System Suspend<a class="headerlink" href="#entering-system-suspend" title="Permalink to this headline">¶</a></h3>
 <p>When the system goes into the freeze, standby or memory sleep state,
 the phases are: <code class="docutils literal notranslate"><span class="pre">prepare</span></code>, <code class="docutils literal notranslate"><span class="pre">suspend</span></code>, <code class="docutils literal notranslate"><span class="pre">suspend_late</span></code>, <code class="docutils literal notranslate"><span class="pre">suspend_noirq</span></code>.</p>
@@ -721,8 +723,8 @@ and <a class="reference internal" href="../pci/pci.html#c.pci_enable_wake" title
 <p>If any of these callbacks returns an error, the system won’t enter the desired
 low-power state.  Instead, the PM core will unwind its actions by resuming all
 the devices that were suspended.</p>
-</section>
-<section id="leaving-system-suspend">
+</div>
+<div class="section" id="leaving-system-suspend">
 <h3>Leaving System Suspend<a class="headerlink" href="#leaving-system-suspend" title="Permalink to this headline">¶</a></h3>
 <p>When resuming from freeze, standby or memory sleep, the phases are:
 <code class="docutils literal notranslate"><span class="pre">resume_noirq</span></code>, <code class="docutils literal notranslate"><span class="pre">resume_early</span></code>, <code class="docutils literal notranslate"><span class="pre">resume</span></code>, <code class="docutils literal notranslate"><span class="pre">complete</span></code>.</p>
@@ -795,8 +797,8 @@ involve a separate thread.</p>
 <p>These callbacks may return an error value, but the PM core will ignore such
 errors since there’s nothing it can do about them other than printing them in
 the system log.</p>
-</section>
-<section id="entering-hibernation">
+</div>
+<div class="section" id="entering-hibernation">
 <h3>Entering Hibernation<a class="headerlink" href="#entering-hibernation" title="Permalink to this headline">¶</a></h3>
 <p>Hibernating the system is more complicated than putting it into sleep states,
 because it involves creating and saving a system image.  Therefore there are
@@ -865,8 +867,8 @@ should already have been stored during the <code class="docutils literal notrans
 <code class="docutils literal notranslate"><span class="pre">freeze_noirq</span></code> phases.  Also, on many machines the firmware will power-down
 the entire system, so it is not necessary for the callback to put the device in
 a low-power state.</p>
-</section>
-<section id="leaving-hibernation">
+</div>
+<div class="section" id="leaving-hibernation">
 <h3>Leaving Hibernation<a class="headerlink" href="#leaving-hibernation" title="Permalink to this headline">¶</a></h3>
 <p>Resuming from hibernation is, again, more complicated than resuming from a sleep
 state in which the contents of main memory are preserved, because it requires
@@ -923,9 +925,9 @@ matter, so the <code class="docutils literal notranslate"><span class="pre">-&gt
 method pointers can be set to the same routines.  Nevertheless, different
 callback pointers are used in case there is a situation where it actually does
 matter.</p>
-</section>
-</section>
-<section id="power-management-notifiers">
+</div>
+</div>
+<div class="section" id="power-management-notifiers">
 <h2>Power Management Notifiers<a class="headerlink" href="#power-management-notifiers" title="Permalink to this headline">¶</a></h2>
 <p>There are some operations that cannot be carried out by the power management
 callbacks discussed above, because the callbacks occur too late or too early.
@@ -935,8 +937,8 @@ been thawed.  Generally speaking, the PM notifiers are suitable for performing
 actions that either require user space to be available, or at least won’t
 interfere with user space.</p>
 <p>For details refer to <a class="reference internal" href="notifiers.html"><span class="doc">Suspend/Hibernation Notifiers</span></a>.</p>
-</section>
-<section id="device-low-power-suspend-states">
+</div>
+<div class="section" id="device-low-power-suspend-states">
 <h2>Device Low-Power (suspend) States<a class="headerlink" href="#device-low-power-suspend-states" title="Permalink to this headline">¶</a></h2>
 <p>Device low-power states aren’t standard.  One device might only handle
 “on” and “off”, while another might support a dozen different versions of
@@ -962,8 +964,8 @@ another might require a hard shut down with re-initialization on resume.
 And two different target systems might use the same device in different
 ways; the aforementioned LCD might be active in one product’s “standby”,
 but a different product using the same SOC might work differently.</p>
-</section>
-<section id="device-power-management-domains">
+</div>
+<div class="section" id="device-power-management-domains">
 <h2>Device Power Management Domains<a class="headerlink" href="#device-power-management-domains" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes devices share reference clocks or other power resources.  In those
 cases it generally is not possible to put devices into low-power states
@@ -1002,8 +1004,8 @@ are IRQ-safe. Moreover, if an IRQ-safe domain has a parent domain, the runtime
 PM of the parent is only allowed if the parent itself is IRQ-safe too with the
 additional restriction that all child domains of an IRQ-safe parent must also
 be IRQ-safe.</p>
-</section>
-<section id="runtime-power-management">
+</div>
+<div class="section" id="runtime-power-management">
 <h2>Runtime Power Management<a class="headerlink" href="#runtime-power-management" title="Permalink to this headline">¶</a></h2>
 <p>Many devices are able to dynamically power down while the system is still
 running. This feature is useful for devices that are not being used, and
@@ -1031,7 +1033,7 @@ device’s driver or its subsystem (for example, a bus type or a PM domain).
 However, subsystems must not otherwise change the runtime status of devices
 from their <code class="docutils literal notranslate"><span class="pre">-&gt;prepare</span></code> and <code class="docutils literal notranslate"><span class="pre">-&gt;suspend</span></code> callbacks (or equivalent) <em>before</em>
 invoking device drivers’ <code class="docutils literal notranslate"><span class="pre">-&gt;suspend</span></code> callbacks (or equivalent).</p>
-<section id="the-dpm-flag-smart-suspend-driver-flag">
+<div class="section" id="the-dpm-flag-smart-suspend-driver-flag">
 <span id="smart-suspend-flag"></span><h3>The <code class="docutils literal notranslate"><span class="pre">DPM_FLAG_SMART_SUSPEND</span></code> Driver Flag<a class="headerlink" href="#the-dpm-flag-smart-suspend-driver-flag" title="Permalink to this headline">¶</a></h3>
 <p>Some bus types and PM domains have a policy to resume all devices from runtime
 suspend upfront in their <code class="docutils literal notranslate"><span class="pre">-&gt;suspend</span></code> callbacks, but that may not be really
@@ -1056,8 +1058,8 @@ and <code class="docutils literal notranslate"><span class="pre">-&gt;thaw_early
 in runtime suspend throughout the preceding “freeze” transition.  Again, if the
 middle-layer callbacks are present for the device, they are responsible for
 doing this, otherwise the PM core takes care of it.</p>
-</section>
-<section id="the-dpm-flag-may-skip-resume-driver-flag">
+</div>
+<div class="section" id="the-dpm-flag-may-skip-resume-driver-flag">
 <h3>The <code class="docutils literal notranslate"><span class="pre">DPM_FLAG_MAY_SKIP_RESUME</span></code> Driver Flag<a class="headerlink" href="#the-dpm-flag-may-skip-resume-driver-flag" title="Permalink to this headline">¶</a></h3>
 <p>During system-wide resume from a sleep state it’s easiest to put devices into
 the full-power state, as explained in <a class="reference internal" href="../../power/runtime_pm.html"><span class="doc">Runtime Power Management Framework for I/O Devices</span></a>.
@@ -1127,9 +1129,9 @@ callback back-to-back with its “late” and “noirq” suspend ones.  [For in
 that is not a concern if the driver sets both <code class="docutils literal notranslate"><span class="pre">DPM_FLAG_SMART_SUSPEND</span></code> and
 <code class="docutils literal notranslate"><span class="pre">DPM_FLAG_MAY_SKIP_RESUME</span></code> and uses the same pair of suspend/resume callback
 functions for runtime PM and system-wide suspend/resume.]</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

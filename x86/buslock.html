@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>22. Bus lock detection and handling &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -297,7 +299,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bus-lock-detection-and-handling">
+  <div class="section" id="bus-lock-detection-and-handling">
 <h1><span class="section-number">22. </span>Bus lock detection and handling<a class="headerlink" href="#bus-lock-detection-and-handling" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Copyright</dt>
@@ -310,7 +312,7 @@
 </ul>
 </dd>
 </dl>
-<section id="problem">
+<div class="section" id="problem">
 <h2><span class="section-number">22.1. </span>Problem<a class="headerlink" href="#problem" title="Permalink to this headline">¶</a></h2>
 <p>A split lock is any atomic operation whose operand crosses two cache lines.
 Since the operand spans two cache lines and the operation must be atomic,
@@ -319,24 +321,24 @@ the system locks the bus while the CPU accesses the two cache lines.</p>
 memory or any locked access to non-WB memory. This is typically thousands of
 cycles slower than an atomic operation within a cache line. It also disrupts
 performance on other cores and brings the whole system to its knees.</p>
-</section>
-<section id="detection">
+</div>
+<div class="section" id="detection">
 <h2><span class="section-number">22.2. </span>Detection<a class="headerlink" href="#detection" title="Permalink to this headline">¶</a></h2>
 <p>Intel processors may support either or both of the following hardware
 mechanisms to detect split locks and bus locks.</p>
-<section id="ac-exception-for-split-lock-detection">
+<div class="section" id="ac-exception-for-split-lock-detection">
 <h3><span class="section-number">22.2.1. </span>#AC exception for split lock detection<a class="headerlink" href="#ac-exception-for-split-lock-detection" title="Permalink to this headline">¶</a></h3>
 <p>Beginning with the Tremont Atom CPU split lock operations may raise an
 Alignment Check (#AC) exception when a split lock operation is attemped.</p>
-</section>
-<section id="db-exception-for-bus-lock-detection">
+</div>
+<div class="section" id="db-exception-for-bus-lock-detection">
 <h3><span class="section-number">22.2.2. </span>#DB exception for bus lock detection<a class="headerlink" href="#db-exception-for-bus-lock-detection" title="Permalink to this headline">¶</a></h3>
 <p>Some CPUs have the ability to notify the kernel by an #DB trap after a user
 instruction acquires a bus lock and is executed. This allows the kernel to
 terminate the application or to enforce throttling.</p>
-</section>
-</section>
-<section id="software-handling">
+</div>
+</div>
+<div class="section" id="software-handling">
 <h2><span class="section-number">22.3. </span>Software handling<a class="headerlink" href="#software-handling" title="Permalink to this headline">¶</a></h2>
 <p>The kernel #AC and #DB handlers handle bus lock based on the kernel
 parameter “split_lock_detect”. Here is a summary of different options:</p>
@@ -382,8 +384,8 @@ bus locks.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="usages">
+</div>
+<div class="section" id="usages">
 <h2><span class="section-number">22.4. </span>Usages<a class="headerlink" href="#usages" title="Permalink to this headline">¶</a></h2>
 <p>Detecting and handling bus lock may find usages in various areas:</p>
 <p>It is critical for real time system designers who build consolidated real
@@ -397,25 +399,25 @@ access memory during bus locking.</p>
 <p>It’s also useful for general computing to prevent guests or user
 applications from slowing down the overall system by executing instructions
 with bus lock.</p>
-</section>
-<section id="guidance">
+</div>
+<div class="section" id="guidance">
 <h2><span class="section-number">22.5. </span>Guidance<a class="headerlink" href="#guidance" title="Permalink to this headline">¶</a></h2>
-<section id="off">
+<div class="section" id="off">
 <h3><span class="section-number">22.5.1. </span>off<a class="headerlink" href="#off" title="Permalink to this headline">¶</a></h3>
 <p>Disable checking for split lock and bus lock. This option can be useful if
 there are legacy applications that trigger these events at a low rate so
 that mitigation is not needed.</p>
-</section>
-<section id="warn">
+</div>
+<div class="section" id="warn">
 <h3><span class="section-number">22.5.2. </span>warn<a class="headerlink" href="#warn" title="Permalink to this headline">¶</a></h3>
 <p>A warning is emitted when a bus lock is detected which allows to identify
 the offending application. This is the default behavior.</p>
-</section>
-<section id="fatal">
+</div>
+<div class="section" id="fatal">
 <h3><span class="section-number">22.5.3. </span>fatal<a class="headerlink" href="#fatal" title="Permalink to this headline">¶</a></h3>
 <p>In this case, the bus lock is not tolerated and the process is killed.</p>
-</section>
-<section id="ratelimit">
+</div>
+<div class="section" id="ratelimit">
 <h3><span class="section-number">22.5.4. </span>ratelimit<a class="headerlink" href="#ratelimit" title="Permalink to this headline">¶</a></h3>
 <p>A system wide bus lock rate limit N is specified where 0 &lt; N &lt;= 1000. This
 allows a bus lock rate up to N bus locks per second. When the bus lock rate
@@ -428,9 +430,9 @@ malicious or just badly written.</p>
 <p>Selecting a rate limit of 1000 allows the bus to be locked for up to about
 seven million cycles each second (assuming 7000 cycles for each bus
 lock). On a 2 GHz processor that would be about 0.35% system slowdown.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

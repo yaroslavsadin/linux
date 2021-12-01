@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Function Tracer Design &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -277,7 +279,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="function-tracer-design">
+  <div class="section" id="function-tracer-design">
 <h1>Function Tracer Design<a class="headerlink" href="#function-tracer-design" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -289,7 +291,7 @@
 <p>This document is out of date. Some of the description below doesn’t
 match current implementation now.</p>
 </div>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Here we will cover the architecture pieces that the common function tracing
 code relies on for proper functioning.  Things are broken down into increasing
@@ -299,8 +301,8 @@ want more explanation of a feature in terms of common code, review the common
 <a class="reference internal" href="ftrace.html"><span class="doc">ftrace - Function Tracer</span></a> file.</p>
 <p>Ideally, everyone who wishes to retain performance while supporting tracing in
 their kernel should make it all the way to dynamic ftrace support.</p>
-</section>
-<section id="prerequisites">
+</div>
+<div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Ftrace relies on these features being implemented:</dt><dd><ul class="simple">
@@ -309,8 +311,8 @@ their kernel should make it all the way to dynamic ftrace support.</p>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="have-function-tracer">
+</div>
+<div class="section" id="have-function-tracer">
 <h2>HAVE_FUNCTION_TRACER<a class="headerlink" href="#have-function-tracer" title="Permalink to this headline">¶</a></h2>
 <p>You will need to implement the mcount and the ftrace_stub functions.</p>
 <p>The exact mcount symbol name will depend on your toolchain.  Some call it
@@ -386,8 +388,8 @@ do_trace:
 EXPORT_SYMBOL(mcount);
 </pre></div>
 </div>
-</section>
-<section id="have-function-graph-tracer">
+</div>
+<div class="section" id="have-function-graph-tracer">
 <h2>HAVE_FUNCTION_GRAPH_TRACER<a class="headerlink" href="#have-function-graph-tracer" title="Permalink to this headline">¶</a></h2>
 <p>Deep breath … time to do some real work.  Here you will need to update the
 mcount function to check ftrace graph function pointers, as well as implement
@@ -468,8 +470,8 @@ void return_to_handler(void)
 #endif
 </pre></div>
 </div>
-</section>
-<section id="have-function-graph-fp-test">
+</div>
+<div class="section" id="have-function-graph-fp-test">
 <h2>HAVE_FUNCTION_GRAPH_FP_TEST<a class="headerlink" href="#have-function-graph-fp-test" title="Permalink to this headline">¶</a></h2>
 <p>An arch may pass in a unique value (frame pointer) to both the entering and
 exiting of a function.  On exit, the value is compared and if it does not
@@ -481,8 +483,8 @@ that calls prepare_ftrace_return(), pass the frame pointer as the 3rd argument.
 Then in the C version of that function, do what the x86 port does and pass it
 along to ftrace_push_return_trace() instead of a stub value of 0.</p>
 <p>Similarly, when you call ftrace_return_to_handler(), pass it the frame pointer.</p>
-</section>
-<section id="have-function-graph-ret-addr-ptr">
+</div>
+<div class="section" id="have-function-graph-ret-addr-ptr">
 <h2>HAVE_FUNCTION_GRAPH_RET_ADDR_PTR<a class="headerlink" href="#have-function-graph-ret-addr-ptr" title="Permalink to this headline">¶</a></h2>
 <p>An arch may pass in a pointer to the return address on the stack.  This
 prevents potential stack unwinding issues where the unwinder gets out of
@@ -491,8 +493,8 @@ ftrace_graph_ret_addr().</p>
 <p>Adding support for it is easy: just define the macro in asm/ftrace.h and
 pass the return address pointer as the ‘retp’ argument to
 ftrace_push_return_trace().</p>
-</section>
-<section id="have-syscall-tracepoints">
+</div>
+<div class="section" id="have-syscall-tracepoints">
 <h2>HAVE_SYSCALL_TRACEPOINTS<a class="headerlink" href="#have-syscall-tracepoints" title="Permalink to this headline">¶</a></h2>
 <p>You need very few things to get the syscalls tracing in an arch.</p>
 <blockquote>
@@ -513,14 +515,14 @@ true if the function name corresponds with the symbol name.</p></li>
 <li><p>Tag this arch as HAVE_SYSCALL_TRACEPOINTS.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="have-ftrace-mcount-record">
+</div>
+<div class="section" id="have-ftrace-mcount-record">
 <h2>HAVE_FTRACE_MCOUNT_RECORD<a class="headerlink" href="#have-ftrace-mcount-record" title="Permalink to this headline">¶</a></h2>
 <p>See scripts/recordmcount.pl for more info.  Just fill in the arch-specific
 details for how to locate the addresses of mcount call sites via objdump.
 This option doesn’t make much sense without also implementing dynamic ftrace.</p>
-</section>
-<section id="have-dynamic-ftrace">
+</div>
+<div class="section" id="have-dynamic-ftrace">
 <h2>HAVE_DYNAMIC_FTRACE<a class="headerlink" href="#have-dynamic-ftrace" title="Permalink to this headline">¶</a></h2>
 <p>You will first need HAVE_FTRACE_MCOUNT_RECORD and HAVE_FUNCTION_TRACER, so
 scroll your reader back up if you got over eager.</p>
@@ -654,8 +656,8 @@ people will be using a “call” type instruction while others will be using a
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ftrace_update_ftrace_func()
 </pre></div>
 </div>
-</section>
-<section id="have-dynamic-ftrace-have-function-graph-tracer">
+</div>
+<div class="section" id="have-dynamic-ftrace-have-function-graph-tracer">
 <h2>HAVE_DYNAMIC_FTRACE + HAVE_FUNCTION_GRAPH_TRACER<a class="headerlink" href="#have-dynamic-ftrace-have-function-graph-tracer" title="Permalink to this headline">¶</a></h2>
 <p>The function grapher needs a few tweaks in order to work with dynamic ftrace.
 Basically, you will need to:</p>
@@ -694,8 +696,8 @@ ftrace_graph_call location with a call to ftrace_graph_caller()</p></li>
 ftrace_graph_call location with nops</p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

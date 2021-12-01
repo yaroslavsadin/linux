@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>SipHash - a short input PRF &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -266,7 +268,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="siphash-a-short-input-prf">
+  <div class="section" id="siphash-a-short-input-prf">
 <h1>SipHash - a short input PRF<a class="headerlink" href="#siphash-a-short-input-prf" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -282,7 +284,7 @@ and so forth.</p>
 an input buffer or several input integers. It spits out an integer that is
 indistinguishable from random. You may then use that integer as part of secure
 sequence numbers, secure cookies, or mask it off for use in a hash table.</p>
-<section id="generating-a-key">
+<div class="section" id="generating-a-key">
 <h2>Generating a key<a class="headerlink" href="#generating-a-key" title="Permalink to this headline">¶</a></h2>
 <p>Keys should always be generated from a cryptographically secure source of
 random numbers, either using get_random_bytes or get_random_once:</p>
@@ -291,8 +293,8 @@ get_random_bytes(&amp;key, sizeof(key));
 </pre></div>
 </div>
 <p>If you’re not deriving your key from here, you’re doing it wrong.</p>
-</section>
-<section id="using-the-functions">
+</div>
+<div class="section" id="using-the-functions">
 <h2>Using the functions<a class="headerlink" href="#using-the-functions" title="Permalink to this headline">¶</a></h2>
 <p>There are two variants of the function, one that takes a list of integers, and
 one that takes a buffer:</p>
@@ -331,16 +333,16 @@ static inline hlist_head *some_hashtable_bucket(struct some_hashtable *table, st
 </pre></div>
 </div>
 <p>You may then iterate like usual over the returned hash bucket.</p>
-</section>
-<section id="security">
+</div>
+<div class="section" id="security">
 <h2>Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h2>
 <p>SipHash has a very high security margin, with its 128-bit key. So long as the
 key is kept secret, it is impossible for an attacker to guess the outputs of
 the function, even if being able to observe many outputs, since 2^128 outputs
 is significant.</p>
 <p>Linux implements the “2-4” variant of SipHash.</p>
-</section>
-<section id="struct-passing-pitfalls">
+</div>
+<div class="section" id="struct-passing-pitfalls">
 <h2>Struct-passing Pitfalls<a class="headerlink" href="#struct-passing-pitfalls" title="Permalink to this headline">¶</a></h2>
 <p>Often times the XuY functions will not be large enough, and instead you’ll
 want to pass a pre-filled struct to siphash. When doing this, it’s important
@@ -361,15 +363,15 @@ struct to the right boundary. Here’s an example:</p>
 u64 h = siphash(&amp;combined, offsetofend(typeof(combined), dport), &amp;secret);
 </pre></div>
 </div>
-</section>
-<section id="resources">
+</div>
+<div class="section" id="resources">
 <h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
 <p>Read the SipHash paper if you’re interested in learning more:
 <a class="reference external" href="https://131002.net/siphash/siphash.pdf">https://131002.net/siphash/siphash.pdf</a></p>
-</section>
-</section>
+</div>
+</div>
 <hr class="docutils" />
-<section id="halfsiphash-siphash-s-insecure-younger-cousin">
+<div class="section" id="halfsiphash-siphash-s-insecure-younger-cousin">
 <h1>HalfSipHash - SipHash’s insecure younger cousin<a class="headerlink" href="#halfsiphash-siphash-s-insecure-younger-cousin" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -387,15 +389,15 @@ high-performance <cite>jhash</cite> users.</p>
 then when you can be absolutely certain that the outputs will never be
 transmitted out of the kernel. This is only remotely useful over <cite>jhash</cite> as a
 means of mitigating hashtable flooding denial of service attacks.</p>
-<section id="generating-a-halfsiphash-key">
+<div class="section" id="generating-a-halfsiphash-key">
 <h2>Generating a HalfSipHash key<a class="headerlink" href="#generating-a-halfsiphash-key" title="Permalink to this headline">¶</a></h2>
 <p>Keys should always be generated from a cryptographically secure source of
 random numbers, either using get_random_bytes or get_random_once:</p>
 <p>hsiphash_key_t key;
 get_random_bytes(&amp;key, sizeof(key));</p>
 <p>If you’re not deriving your key from here, you’re doing it wrong.</p>
-</section>
-<section id="using-the-halfsiphash-functions">
+</div>
+<div class="section" id="using-the-halfsiphash-functions">
 <h2>Using the HalfSipHash functions<a class="headerlink" href="#using-the-halfsiphash-functions" title="Permalink to this headline">¶</a></h2>
 <p>There are two variants of the function, one that takes a list of integers, and
 one that takes a buffer:</p>
@@ -412,8 +414,8 @@ u32 hsiphash_4u32(u32, u32, u32, u32, const hsiphash_key_t *key);
 <p>If you pass the generic hsiphash function something of a constant length, it
 will constant fold at compile-time and automatically choose one of the
 optimized functions.</p>
-</section>
-<section id="hashtable-key-function-usage">
+</div>
+<div class="section" id="hashtable-key-function-usage">
 <h2>Hashtable key function usage<a class="headerlink" href="#hashtable-key-function-usage" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct some_hashtable {
         DECLARE_HASHTABLE(hashtable, 8);
@@ -432,15 +434,15 @@ static inline hlist_head *some_hashtable_bucket(struct some_hashtable *table, st
 </pre></div>
 </div>
 <p>You may then iterate like usual over the returned hash bucket.</p>
-</section>
-<section id="performance">
+</div>
+<div class="section" id="performance">
 <h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
 <p>HalfSipHash is roughly 3 times slower than JenkinsHash. For many replacements,
 this will not be a problem, as the hashtable lookup isn’t the bottleneck. And
 in general, this is probably a good sacrifice to make for the security and DoS
 resistance of HalfSipHash.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

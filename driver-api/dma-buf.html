@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Buffer Sharing and Synchronization &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -360,7 +362,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="buffer-sharing-and-synchronization">
+  <div class="section" id="buffer-sharing-and-synchronization">
 <h1>Buffer Sharing and Synchronization<a class="headerlink" href="#buffer-sharing-and-synchronization" title="Permalink to this headline">¶</a></h1>
 <p>The dma-buf subsystem provides the framework for sharing buffers for
 hardware (DMA) access across multiple device drivers and subsystems, and
@@ -372,7 +374,7 @@ sg_table and exposed to userspace as a file descriptor to allow passing
 between devices, (2) fence, which provides a mechanism to signal when
 one device has finished access, and (3) reservation, which manages the
 shared or exclusive fence(s) associated with the buffer.</p>
-<section id="shared-dma-buffers">
+<div class="section" id="shared-dma-buffers">
 <h2>Shared DMA Buffers<a class="headerlink" href="#shared-dma-buffers" title="Permalink to this headline">¶</a></h2>
 <p>This document serves as a guide to device-driver writers on what is the dma-buf
 buffer sharing API, how to use it for exporting and using shared buffers.</p>
@@ -405,7 +407,7 @@ same area of memory. This interface is provided by <a class="reference internal"
 </div></blockquote>
 <p>Any exporters or users of the dma-buf buffer sharing framework must have a
 ‘select DMA_SHARED_BUFFER’ in their respective Kconfigs.</p>
-<section id="userspace-interface-notes">
+<div class="section" id="userspace-interface-notes">
 <h3>Userspace Interface Notes<a class="headerlink" href="#userspace-interface-notes" title="Permalink to this headline">¶</a></h3>
 <p>Mostly a DMA buffer file descriptor is simply an opaque object for userspace,
 and hence the generic interface exposed is very minimal. There’s a few things to
@@ -441,8 +443,8 @@ details.</p></li>
 <li><p>The DMA buffer FD also supports a few dma-buf-specific ioctls, see
 <a class="reference internal" href="#dma-buffer-ioctls">DMA Buffer ioctls</a> below for details.</p></li>
 </ul>
-</section>
-<section id="basic-operation-and-device-dma-access">
+</div>
+<div class="section" id="basic-operation-and-device-dma-access">
 <h3>Basic Operation and Device DMA Access<a class="headerlink" href="#basic-operation-and-device-dma-access" title="Permalink to this headline">¶</a></h3>
 <p>For device DMA access to a shared DMA buffer the usual sequence of operations
 is fairly simple:</p>
@@ -467,8 +469,8 @@ reference acquired with dma_buf_get() by calling dma_buf_put().</p></li>
 </ol>
 <p>For the detailed semantics exporters are expected to implement see
 <a class="reference internal" href="#c.dma_buf_ops" title="dma_buf_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_buf_ops</span></code></a>.</p>
-</section>
-<section id="cpu-access-to-dma-buffer-objects">
+</div>
+<div class="section" id="cpu-access-to-dma-buffer-objects">
 <h3>CPU Access to DMA Buffer Objects<a class="headerlink" href="#cpu-access-to-dma-buffer-objects" title="Permalink to this headline">¶</a></h3>
 <p>There are mutliple reasons for supporting CPU access to a dma buffer object:</p>
 <ul>
@@ -549,8 +551,8 @@ set up a mapping in userspace, calling do_mmap with <a class="reference internal
 equally achieve that for a dma-buf object.</p>
 </li>
 </ul>
-</section>
-<section id="implicit-fence-poll-support">
+</div>
+<div class="section" id="implicit-fence-poll-support">
 <h3>Implicit Fence Poll Support<a class="headerlink" href="#implicit-fence-poll-support" title="Permalink to this headline">¶</a></h3>
 <p>To support cross-device and cross-driver synchronization of buffer access
 implicit fences (represented internally in the kernel with <a class="reference internal" href="#c.dma_fence" title="dma_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_fence</span></code></a>)
@@ -567,8 +569,8 @@ all attached fences, shared and exclusive ones.</p></li>
 <p>Note that this only signals the completion of the respective fences, i.e. the
 DMA transfers are complete. Cache flushing and any other necessary
 preparations before CPU access can begin still need to happen.</p>
-</section>
-<section id="dma-buf-statistics">
+</div>
+<div class="section" id="dma-buf-statistics">
 <h3>DMA-BUF statistics<a class="headerlink" href="#dma-buf-statistics" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/dma_buf/bufinfo</span></code> provides an overview of every DMA-BUF
 in the system. However, since debugfs is not safe to be mounted in
@@ -594,12 +596,12 @@ or other important events to provide a snapshot of DMA-BUF usage.
 It can also be collected periodically by telemetry to monitor various metrics.</p>
 <p>Detailed documentation about the interface is present in
 Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers.</p>
-</section>
-<section id="dma-buffer-ioctls">
+</div>
+<div class="section" id="dma-buffer-ioctls">
 <h3>DMA Buffer ioctls<a class="headerlink" href="#dma-buffer-ioctls" title="Permalink to this headline">¶</a></h3>
 <dl class="c struct">
-<dt id="c.dma_buf_sync">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_buf_sync</span></code><a class="headerlink" href="#c.dma_buf_sync" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_sync">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_sync</span></span></span><a class="headerlink" href="#c.dma_buf_sync" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Synchronize with CPU access.</p>
 </dd></dl>
 
@@ -651,12 +653,12 @@ synchronization, waiting for prior work to complete can be done via
 poll() on the DMA buffer file descriptor.  If the driver or API requires
 explicit synchronization, the client may have to wait on a sync_file or
 other synchronization primitive outside the scope of the DMA buffer API.</p>
-</section>
-<section id="kernel-functions-and-structures-reference">
+</div>
+<div class="section" id="kernel-functions-and-structures-reference">
 <h3>Kernel Functions and Structures Reference<a class="headerlink" href="#kernel-functions-and-structures-reference" title="Permalink to this headline">¶</a></h3>
 <dl class="c struct">
-<dt id="c.dma_buf_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_buf_ops</span></code><a class="headerlink" href="#c.dma_buf_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_ops</span></span></span><a class="headerlink" href="#c.dma_buf_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>operations possible on <a class="reference internal" href="#c.dma_buf" title="dma_buf"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_buf</span></code></a></p>
 </dd></dl>
 
@@ -838,8 +840,8 @@ address space. Same restrictions as for vmap and friends apply.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.dma_buf">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_buf</span></code><a class="headerlink" href="#c.dma_buf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf</span></span></span><a class="headerlink" href="#c.dma_buf" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>shared buffer object</p>
 </dd></dl>
 
@@ -959,8 +961,8 @@ calling dma_buf_fd().</p>
 <a class="reference internal" href="#c.get_dma_buf" title="get_dma_buf"><code class="xref c c-func docutils literal notranslate"><span class="pre">get_dma_buf()</span></code></a>.</p>
 <p>Device DMA access is handled by the separate <a class="reference internal" href="#c.dma_buf_attachment" title="dma_buf_attachment"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_buf_attachment</span></code></a>.</p>
 <dl class="c struct">
-<dt id="c.dma_buf_attach_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_buf_attach_ops</span></code><a class="headerlink" href="#c.dma_buf_attach_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_attach_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_attach_ops</span></span></span><a class="headerlink" href="#c.dma_buf_attach_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>importer operations for an attachment</p>
 </dd></dl>
 
@@ -993,8 +995,8 @@ point to the new location of the DMA-buf.</p>
 <p><strong>Description</strong></p>
 <p>Attachment operations implemented by the importer.</p>
 <dl class="c struct">
-<dt id="c.dma_buf_attachment">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_buf_attachment</span></code><a class="headerlink" href="#c.dma_buf_attachment" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_attachment">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_attachment</span></span></span><a class="headerlink" href="#c.dma_buf_attachment" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>holds device-buffer attachment data</p>
 </dd></dl>
 
@@ -1043,8 +1045,8 @@ calling dma_buf_detach(). The DMA mapping itself needed to initiate a
 transfer is created by dma_buf_map_attachment() and freed again by calling
 dma_buf_unmap_attachment().</p>
 <dl class="c struct">
-<dt id="c.dma_buf_export_info">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_buf_export_info</span></code><a class="headerlink" href="#c.dma_buf_export_info" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_export_info">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_export_info</span></span></span><a class="headerlink" href="#c.dma_buf_export_info" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>holds information needed to export a dma_buf</p>
 </dd></dl>
 
@@ -1081,8 +1083,8 @@ dma_buf_unmap_attachment().</p>
 <p>This structure holds the information required to export the buffer. Used
 with dma_buf_export() only.</p>
 <dl class="c macro">
-<dt id="c.DEFINE_DMA_BUF_EXPORT_INFO">
-<code class="sig-name descname"><span class="pre">DEFINE_DMA_BUF_EXPORT_INFO</span></code><a class="headerlink" href="#c.DEFINE_DMA_BUF_EXPORT_INFO" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DEFINE_DMA_BUF_EXPORT_INFO">
+<span class="sig-name descname"><span class="n"><span class="pre">DEFINE_DMA_BUF_EXPORT_INFO</span></span></span><a class="headerlink" href="#c.DEFINE_DMA_BUF_EXPORT_INFO" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DEFINE_DMA_BUF_EXPORT_INFO</span> <span class="pre">(name)</span></code></p>
@@ -1098,8 +1100,8 @@ with dma_buf_export() only.</p>
 <p>DEFINE_DMA_BUF_EXPORT_INFO macro defines the <a class="reference internal" href="#c.dma_buf_export_info" title="dma_buf_export_info"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_buf_export_info</span></code></a>,
 zeroes it out and pre-populates exp_name in it.</p>
 <dl class="c function">
-<dt id="c.get_dma_buf">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">get_dma_buf</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf" title="dma_buf"><span class="pre">dma_buf</span></a> <span class="pre">*</span><em><span class="pre">dmabuf</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.get_dma_buf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.get_dma_buf">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_dma_buf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf" title="dma_buf"><span class="n"><span class="pre">dma_buf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dmabuf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.get_dma_buf" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>convenience wrapper for get_file.</p>
 </dd></dl>
 
@@ -1114,8 +1116,8 @@ that either need to create additional references to the dmabuf on the
 kernel side.  For example, an exporter that needs to keep a dmabuf ptr
 so that subsequent exports don’t create a new dmabuf.</p>
 <dl class="c function">
-<dt id="c.dma_buf_is_dynamic">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_buf_is_dynamic</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf" title="dma_buf"><span class="pre">dma_buf</span></a> <span class="pre">*</span><em><span class="pre">dmabuf</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_is_dynamic" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_is_dynamic">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_is_dynamic</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf" title="dma_buf"><span class="n"><span class="pre">dma_buf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dmabuf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_is_dynamic" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>check if a DMA-buf uses dynamic mappings.</p>
 </dd></dl>
 
@@ -1129,8 +1131,8 @@ so that subsequent exports don’t create a new dmabuf.</p>
 locked for the map/unmap callbacks, false if it doesn’t wants to be called
 with the lock held.</p>
 <dl class="c function">
-<dt id="c.dma_buf_attachment_is_dynamic">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_buf_attachment_is_dynamic</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf_attachment" title="dma_buf_attachment"><span class="pre">dma_buf_attachment</span></a> <span class="pre">*</span><em><span class="pre">attach</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_attachment_is_dynamic" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_attachment_is_dynamic">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_attachment_is_dynamic</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf_attachment" title="dma_buf_attachment"><span class="n"><span class="pre">dma_buf_attachment</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">attach</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_attachment_is_dynamic" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>check if a DMA-buf attachment uses dynamic mappings</p>
 </dd></dl>
 
@@ -1142,8 +1144,8 @@ with the lock held.</p>
 <p><strong>Description</strong></p>
 <p>Returns true if a DMA-buf importer wants to call the map/unmap functions with
 the dma_resv lock held.</p>
-</section>
-<section id="buffer-mapping-helpers">
+</div>
+<div class="section" id="buffer-mapping-helpers">
 <h3>Buffer Mapping Helpers<a class="headerlink" href="#buffer-mapping-helpers" title="Permalink to this headline">¶</a></h3>
 <p>Calling dma-buf’s vmap operation returns a pointer to the buffer’s memory.
 Depending on the location of the buffer, users may have to access it with
@@ -1222,8 +1224,8 @@ with <a class="reference internal" href="#c.dma_buf_map_memcpy_to" title="dma_bu
 </pre></div>
 </div>
 <dl class="c struct">
-<dt id="c.dma_buf_map">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_buf_map</span></code><a class="headerlink" href="#c.dma_buf_map" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_map">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_map</span></span></span><a class="headerlink" href="#c.dma_buf_map" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Pointer to vmap’ed dma-buf memory.</p>
 </dd></dl>
 
@@ -1250,8 +1252,8 @@ memory, or false otherwise.</p>
 </dd>
 </dl>
 <dl class="c macro">
-<dt id="c.DMA_BUF_MAP_INIT_VADDR">
-<code class="sig-name descname"><span class="pre">DMA_BUF_MAP_INIT_VADDR</span></code><a class="headerlink" href="#c.DMA_BUF_MAP_INIT_VADDR" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DMA_BUF_MAP_INIT_VADDR">
+<span class="sig-name descname"><span class="n"><span class="pre">DMA_BUF_MAP_INIT_VADDR</span></span></span><a class="headerlink" href="#c.DMA_BUF_MAP_INIT_VADDR" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DMA_BUF_MAP_INIT_VADDR</span> <span class="pre">(vaddr_)</span></code></p>
@@ -1264,8 +1266,8 @@ memory, or false otherwise.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.dma_buf_map_set_vaddr">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_buf_map_set_vaddr</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="pre">dma_buf_map</span></a> <span class="pre">*</span><em><span class="pre">map</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">vaddr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_set_vaddr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_map_set_vaddr">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_map_set_vaddr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="n"><span class="pre">dma_buf_map</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">map</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vaddr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_set_vaddr" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Sets a dma-buf mapping structure to an address in system memory</p>
 </dd></dl>
 
@@ -1279,8 +1281,8 @@ memory, or false otherwise.</p>
 <p><strong>Description</strong></p>
 <p>Sets the address and clears the I/O-memory flag.</p>
 <dl class="c function">
-<dt id="c.dma_buf_map_set_vaddr_iomem">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_buf_map_set_vaddr_iomem</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="pre">dma_buf_map</span></a> <span class="pre">*</span><em><span class="pre">map</span></em>, <span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*</span><em><span class="pre">vaddr_iomem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_set_vaddr_iomem" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_map_set_vaddr_iomem">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_map_set_vaddr_iomem</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="n"><span class="pre">dma_buf_map</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">map</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__iomem</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vaddr_iomem</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_set_vaddr_iomem" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Sets a dma-buf mapping structure to an address in I/O memory</p>
 </dd></dl>
 
@@ -1294,8 +1296,8 @@ memory, or false otherwise.</p>
 <p><strong>Description</strong></p>
 <p>Sets the address and the I/O-memory flag.</p>
 <dl class="c function">
-<dt id="c.dma_buf_map_is_equal">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_buf_map_is_equal</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="pre">dma_buf_map</span></a> <span class="pre">*</span><em><span class="pre">lhs</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="pre">dma_buf_map</span></a> <span class="pre">*</span><em><span class="pre">rhs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_is_equal" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_map_is_equal">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_map_is_equal</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="n"><span class="pre">dma_buf_map</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lhs</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="n"><span class="pre">dma_buf_map</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rhs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_is_equal" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compares two dma-buf mapping structures for equality</p>
 </dd></dl>
 
@@ -1312,8 +1314,8 @@ and to the same address within that memory.</p>
 <p><strong>Return</strong></p>
 <p>True is both structures are equal, or false otherwise.</p>
 <dl class="c function">
-<dt id="c.dma_buf_map_is_null">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_buf_map_is_null</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="pre">dma_buf_map</span></a> <span class="pre">*</span><em><span class="pre">map</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_is_null" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_map_is_null">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_map_is_null</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="n"><span class="pre">dma_buf_map</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">map</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_is_null" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Tests for a dma-buf mapping to be NULL</p>
 </dd></dl>
 
@@ -1328,8 +1330,8 @@ mapping is NULL.</p>
 <p><strong>Return</strong></p>
 <p>True if the mapping is NULL, or false otherwise.</p>
 <dl class="c function">
-<dt id="c.dma_buf_map_is_set">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_buf_map_is_set</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="pre">dma_buf_map</span></a> <span class="pre">*</span><em><span class="pre">map</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_is_set" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_map_is_set">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_map_is_set</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="n"><span class="pre">dma_buf_map</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">map</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_is_set" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Tests is the dma-buf mapping has been set</p>
 </dd></dl>
 
@@ -1344,8 +1346,8 @@ mapping has been set.</p>
 <p><strong>Return</strong></p>
 <p>True if the mapping is been set, or false otherwise.</p>
 <dl class="c function">
-<dt id="c.dma_buf_map_clear">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_buf_map_clear</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="pre">dma_buf_map</span></a> <span class="pre">*</span><em><span class="pre">map</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_clear" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_map_clear">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_map_clear</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="n"><span class="pre">dma_buf_map</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">map</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_clear" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Clears a dma-buf mapping structure</p>
 </dd></dl>
 
@@ -1359,8 +1361,8 @@ mapping has been set.</p>
 mapping structures that were set to point to I/O memory are reset for
 system memory. Pointers are cleared to NULL. This is the default.</p>
 <dl class="c function">
-<dt id="c.dma_buf_map_memcpy_to">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_buf_map_memcpy_to</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="pre">dma_buf_map</span></a> <span class="pre">*</span><em><span class="pre">dst</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">src</span></em>, <span class="pre">size_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_memcpy_to" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_map_memcpy_to">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_map_memcpy_to</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="n"><span class="pre">dma_buf_map</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dst</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">src</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_memcpy_to" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Memcpy into dma-buf mapping</p>
 </dd></dl>
 
@@ -1378,8 +1380,8 @@ system memory. Pointers are cleared to NULL. This is the default.</p>
 memory. Depending on the buffer’s location, the helper picks the correct
 method of accessing the memory.</p>
 <dl class="c function">
-<dt id="c.dma_buf_map_incr">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_buf_map_incr</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="pre">dma_buf_map</span></a> <span class="pre">*</span><em><span class="pre">map</span></em>, <span class="pre">size_t</span> <em><span class="pre">incr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_incr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_buf_map_incr">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_buf_map_incr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_buf_map" title="dma_buf_map"><span class="n"><span class="pre">dma_buf_map</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">map</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">incr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_buf_map_incr" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Increments the address stored in a dma-buf mapping</p>
 </dd></dl>
 
@@ -1393,9 +1395,9 @@ method of accessing the memory.</p>
 <p><strong>Description</strong></p>
 <p>Increments the address stored in a dma-buf mapping. Depending on the
 buffer’s location, the correct value will be updated.</p>
-</section>
-</section>
-<section id="reservation-objects">
+</div>
+</div>
+<div class="section" id="reservation-objects">
 <h2>Reservation Objects<a class="headerlink" href="#reservation-objects" title="Permalink to this headline">¶</a></h2>
 <p>The reservation object provides a mechanism to manage shared and
 exclusive fences associated with a buffer.  A reservation object
@@ -1405,8 +1407,8 @@ mechanism is used to protect read access to fences from locked
 write-side updates.</p>
 <p>See <a class="reference internal" href="#c.dma_resv" title="dma_resv"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_resv</span></code></a> for more details.</p>
 <dl class="c function">
-<dt id="c.dma_resv_init">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_resv_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_init">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>initialize a reservation object</p>
 </dd></dl>
 
@@ -1416,8 +1418,8 @@ write-side updates.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.dma_resv_fini">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_resv_fini</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_fini" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_fini">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_fini</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_fini" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>destroys a reservation object</p>
 </dd></dl>
 
@@ -1427,8 +1429,8 @@ write-side updates.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.dma_resv_reserve_shared">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_resv_reserve_shared</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">num_fences</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_reserve_shared" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_reserve_shared">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_reserve_shared</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_fences</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_reserve_shared" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Reserve space to add shared fences to a dma_resv.</p>
 </dd></dl>
 
@@ -1448,8 +1450,8 @@ when CONFIG_DEBUG_MUTEXES is enabled.</p>
 <p>RETURNS
 Zero for success, or -errno</p>
 <dl class="c function">
-<dt id="c.dma_resv_reset_shared_max">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_resv_reset_shared_max</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_reset_shared_max" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_reset_shared_max">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_reset_shared_max</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_reset_shared_max" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>reset shared fences for debugging</p>
 </dd></dl>
 
@@ -1463,8 +1465,8 @@ Zero for success, or -errno</p>
 correct slot allocation using <a class="reference internal" href="#c.dma_resv_reserve_shared" title="dma_resv_reserve_shared"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_resv_reserve_shared()</span></code></a>. See also
 <a class="reference internal" href="#c.dma_resv_list" title="dma_resv_list"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_resv_list.shared_max</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.dma_resv_add_shared_fence">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_resv_add_shared_fence</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_add_shared_fence" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_add_shared_fence">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_add_shared_fence</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_add_shared_fence" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Add a fence to a shared slot</p>
 </dd></dl>
 
@@ -1480,8 +1482,8 @@ correct slot allocation using <a class="reference internal" href="#c.dma_resv_re
 <a class="reference internal" href="#c.dma_resv_reserve_shared" title="dma_resv_reserve_shared"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_resv_reserve_shared()</span></code></a> has been called.</p>
 <p>See also <a class="reference internal" href="#c.dma_resv" title="dma_resv"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_resv.fence</span></code></a> for a discussion of the semantics.</p>
 <dl class="c function">
-<dt id="c.dma_resv_add_excl_fence">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_resv_add_excl_fence</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_add_excl_fence" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_add_excl_fence">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_add_excl_fence</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_add_excl_fence" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Add an exclusive fence.</p>
 </dd></dl>
 
@@ -1497,8 +1499,8 @@ correct slot allocation using <a class="reference internal" href="#c.dma_resv_re
 Note that this function replaces all fences attached to <strong>obj</strong>, see also
 <a class="reference internal" href="#c.dma_resv" title="dma_resv"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_resv.fence_excl</span></code></a> for a discussion of the semantics.</p>
 <dl class="c function">
-<dt id="c.dma_resv_iter_first_unlocked">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_resv_iter_first_unlocked</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="pre">dma_resv_iter</span></a> <span class="pre">*</span><em><span class="pre">cursor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_first_unlocked" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_iter_first_unlocked">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_iter_first_unlocked</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="n"><span class="pre">dma_resv_iter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cursor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_first_unlocked" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>first fence in an unlocked dma_resv obj.</p>
 </dd></dl>
 
@@ -1510,8 +1512,8 @@ Note that this function replaces all fences attached to <strong>obj</strong>, se
 <p><strong>Description</strong></p>
 <p>Returns the first fence from an unlocked dma_resv obj.</p>
 <dl class="c function">
-<dt id="c.dma_resv_iter_next_unlocked">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_resv_iter_next_unlocked</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="pre">dma_resv_iter</span></a> <span class="pre">*</span><em><span class="pre">cursor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_next_unlocked" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_iter_next_unlocked">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_iter_next_unlocked</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="n"><span class="pre">dma_resv_iter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cursor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_next_unlocked" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>next fence in an unlocked dma_resv obj.</p>
 </dd></dl>
 
@@ -1523,8 +1525,8 @@ Note that this function replaces all fences attached to <strong>obj</strong>, se
 <p><strong>Description</strong></p>
 <p>Returns the next fence from an unlocked dma_resv obj.</p>
 <dl class="c function">
-<dt id="c.dma_resv_iter_first">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_resv_iter_first</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="pre">dma_resv_iter</span></a> <span class="pre">*</span><em><span class="pre">cursor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_first" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_iter_first">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_iter_first</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="n"><span class="pre">dma_resv_iter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cursor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_first" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>first fence from a locked dma_resv object</p>
 </dd></dl>
 
@@ -1537,8 +1539,8 @@ Note that this function replaces all fences attached to <strong>obj</strong>, se
 <p>Return the first fence in the dma_resv object while holding the
 <a class="reference internal" href="#c.dma_resv" title="dma_resv"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_resv.lock</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.dma_resv_iter_next">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_resv_iter_next</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="pre">dma_resv_iter</span></a> <span class="pre">*</span><em><span class="pre">cursor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_next" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_iter_next">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_iter_next</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="n"><span class="pre">dma_resv_iter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cursor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_next" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>next fence from a locked dma_resv object</p>
 </dd></dl>
 
@@ -1551,8 +1553,8 @@ Note that this function replaces all fences attached to <strong>obj</strong>, se
 <p>Return the next fences from the dma_resv object while holding the
 <a class="reference internal" href="#c.dma_resv" title="dma_resv"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_resv.lock</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.dma_resv_copy_fences">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_resv_copy_fences</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">dst</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">src</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_copy_fences" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_copy_fences">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_copy_fences</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dst</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">src</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_copy_fences" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Copy all fences from src to dst.</p>
 </dd></dl>
 
@@ -1566,8 +1568,8 @@ Note that this function replaces all fences attached to <strong>obj</strong>, se
 <p><strong>Description</strong></p>
 <p>Copy all fences from src to dst. dst-lock must be held.</p>
 <dl class="c function">
-<dt id="c.dma_resv_get_fences">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_resv_get_fences</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">fence_excl</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">shared_count</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><span class="pre">*</span><span class="pre">*</span><em><span class="pre">shared</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_get_fences" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_get_fences">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_get_fences</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence_excl</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">shared_count</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">shared</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_get_fences" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get an object’s shared and exclusive fences without update side lock held</p>
 </dd></dl>
 
@@ -1588,8 +1590,8 @@ the required size, and must be freed by caller)</p>
 exclusive fence is not specified the fence is put into the array of the
 shared fences as well. Returns either zero or -ENOMEM.</p>
 <dl class="c function">
-<dt id="c.dma_resv_wait_timeout">
-<span class="pre">long</span> <code class="sig-name descname"><span class="pre">dma_resv_wait_timeout</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <span class="pre">bool</span> <em><span class="pre">wait_all</span></em>, <span class="pre">bool</span> <em><span class="pre">intr</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">timeout</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_wait_timeout" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_wait_timeout">
+<span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_wait_timeout</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">wait_all</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">intr</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_wait_timeout" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Wait on reservation’s objects shared and/or exclusive fences.</p>
 </dd></dl>
 
@@ -1611,8 +1613,8 @@ RETURNS
 Returns -ERESTARTSYS if interrupted, 0 if the wait timed out, or
 greater than zer on success.</p>
 <dl class="c function">
-<dt id="c.dma_resv_test_signaled">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_resv_test_signaled</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <span class="pre">bool</span> <em><span class="pre">test_all</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_test_signaled" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_test_signaled">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_test_signaled</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">test_all</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_test_signaled" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Test if a reservation object’s fences have been signaled.</p>
 </dd></dl>
 
@@ -1630,8 +1632,8 @@ fence</p>
 <p>RETURNS</p>
 <p>True if all fences signaled, else false.</p>
 <dl class="c struct">
-<dt id="c.dma_resv_list">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_resv_list</span></code><a class="headerlink" href="#c.dma_resv_list" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_list">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_list</span></span></span><a class="headerlink" href="#c.dma_resv_list" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>a list of shared fences</p>
 </dd></dl>
 
@@ -1655,8 +1657,8 @@ fence</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.dma_resv">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_resv</span></code><a class="headerlink" href="#c.dma_resv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv</span></span></span><a class="headerlink" href="#c.dma_resv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>a reservation object manages fences for a buffer</p>
 </dd></dl>
 
@@ -1729,8 +1731,8 @@ example here, since this is where reservation objects originated from. But
 use in drivers is spreading and some drivers also manage <a class="reference internal" href="../gpu/drm-mm.html#c.drm_gem_object" title="drm_gem_object"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span>
 <span class="pre">drm_gem_object</span></code></a> with the same scheme.</p>
 <dl class="c struct">
-<dt id="c.dma_resv_iter">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_resv_iter</span></code><a class="headerlink" href="#c.dma_resv_iter" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_iter">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_iter</span></span></span><a class="headerlink" href="#c.dma_resv_iter" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>current position into the dma_resv fences</p>
 </dd></dl>
 
@@ -1769,8 +1771,8 @@ use in drivers is spreading and some drivers also manage <a class="reference int
 <p><strong>Description</strong></p>
 <p>Don’t touch this directly in the driver, use the accessor function instead.</p>
 <dl class="c function">
-<dt id="c.dma_resv_iter_begin">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_resv_iter_begin</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="pre">dma_resv_iter</span></a> <span class="pre">*</span><em><span class="pre">cursor</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <span class="pre">bool</span> <em><span class="pre">all_fences</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_begin" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_iter_begin">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_iter_begin</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="n"><span class="pre">dma_resv_iter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cursor</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">all_fences</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_begin" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>initialize a dma_resv_iter object</p>
 </dd></dl>
 
@@ -1784,8 +1786,8 @@ use in drivers is spreading and some drivers also manage <a class="reference int
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.dma_resv_iter_end">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_resv_iter_end</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="pre">dma_resv_iter</span></a> <span class="pre">*</span><em><span class="pre">cursor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_end" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_iter_end">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_iter_end</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="n"><span class="pre">dma_resv_iter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cursor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_end" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>cleanup a dma_resv_iter object</p>
 </dd></dl>
 
@@ -1798,8 +1800,8 @@ use in drivers is spreading and some drivers also manage <a class="reference int
 <p>Make sure that the reference to the fence in the cursor is properly
 dropped.</p>
 <dl class="c function">
-<dt id="c.dma_resv_iter_is_exclusive">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_resv_iter_is_exclusive</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="pre">dma_resv_iter</span></a> <span class="pre">*</span><em><span class="pre">cursor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_is_exclusive" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_iter_is_exclusive">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_iter_is_exclusive</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="n"><span class="pre">dma_resv_iter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cursor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_is_exclusive" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>test if the current fence is the exclusive one</p>
 </dd></dl>
 
@@ -1811,8 +1813,8 @@ dropped.</p>
 <p><strong>Description</strong></p>
 <p>Returns true if the currently returned fence is the exclusive one.</p>
 <dl class="c function">
-<dt id="c.dma_resv_iter_is_restarted">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_resv_iter_is_restarted</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="pre">dma_resv_iter</span></a> <span class="pre">*</span><em><span class="pre">cursor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_is_restarted" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_iter_is_restarted">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_iter_is_restarted</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv_iter" title="dma_resv_iter"><span class="n"><span class="pre">dma_resv_iter</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cursor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_iter_is_restarted" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>test if this is the first fence after a restart</p>
 </dd></dl>
 
@@ -1824,8 +1826,8 @@ dropped.</p>
 <p><strong>Description</strong></p>
 <p>Return true if this is the first fence in an iteration after a restart.</p>
 <dl class="c macro">
-<dt id="c.dma_resv_for_each_fence_unlocked">
-<code class="sig-name descname"><span class="pre">dma_resv_for_each_fence_unlocked</span></code><a class="headerlink" href="#c.dma_resv_for_each_fence_unlocked" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_for_each_fence_unlocked">
+<span class="sig-name descname"><span class="n"><span class="pre">dma_resv_for_each_fence_unlocked</span></span></span><a class="headerlink" href="#c.dma_resv_for_each_fence_unlocked" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">dma_resv_for_each_fence_unlocked</span> <span class="pre">(cursor,</span> <span class="pre">fence)</span></code></p>
@@ -1846,8 +1848,8 @@ with <a class="reference internal" href="#c.dma_resv_iter_begin" title="dma_resv
 the iterator a reference to the dma_fence is held and the RCU lock dropped.
 When the dma_resv is modified the iteration starts over again.</p>
 <dl class="c macro">
-<dt id="c.dma_resv_for_each_fence">
-<code class="sig-name descname"><span class="pre">dma_resv_for_each_fence</span></code><a class="headerlink" href="#c.dma_resv_for_each_fence" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_for_each_fence">
+<span class="sig-name descname"><span class="n"><span class="pre">dma_resv_for_each_fence</span></span></span><a class="headerlink" href="#c.dma_resv_for_each_fence" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">dma_resv_for_each_fence</span> <span class="pre">(cursor,</span> <span class="pre">obj,</span> <span class="pre">all_fences,</span> <span class="pre">fence)</span></code></p>
@@ -1872,8 +1874,8 @@ well. The cursor initialisation is part of the iterator and the fence stays
 valid as long as the lock is held and so no extra reference to the fence is
 taken.</p>
 <dl class="c function">
-<dt id="c.dma_resv_lock">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_resv_lock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ww_acquire_ctx</span> <span class="pre">*</span><em><span class="pre">ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_lock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_lock">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_lock</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ww_acquire_ctx</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_lock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>lock the reservation object</p>
 </dd></dl>
 
@@ -1898,8 +1900,8 @@ object may be locked by itself by passing NULL as <strong>ctx</strong>.</p>
 <p>Unlocked by calling <a class="reference internal" href="#c.dma_resv_unlock" title="dma_resv_unlock"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_resv_unlock()</span></code></a>.</p>
 <p>See also <a class="reference internal" href="#c.dma_resv_lock_interruptible" title="dma_resv_lock_interruptible"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_resv_lock_interruptible()</span></code></a> for the interruptible variant.</p>
 <dl class="c function">
-<dt id="c.dma_resv_lock_interruptible">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_resv_lock_interruptible</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ww_acquire_ctx</span> <span class="pre">*</span><em><span class="pre">ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_lock_interruptible" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_lock_interruptible">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_lock_interruptible</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ww_acquire_ctx</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_lock_interruptible" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>lock the reservation object</p>
 </dd></dl>
 
@@ -1924,8 +1926,8 @@ object may be locked by itself by passing NULL as <strong>ctx</strong>.</p>
 <strong>obj</strong>.</p>
 <p>Unlocked by calling <a class="reference internal" href="#c.dma_resv_unlock" title="dma_resv_unlock"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_resv_unlock()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.dma_resv_lock_slow">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_resv_lock_slow</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ww_acquire_ctx</span> <span class="pre">*</span><em><span class="pre">ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_lock_slow" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_lock_slow">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_lock_slow</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ww_acquire_ctx</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_lock_slow" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>slowpath lock the reservation object</p>
 </dd></dl>
 
@@ -1942,8 +1944,8 @@ will sleep until the lock becomes available. See <a class="reference internal" h
 well.</p>
 <p>See also <a class="reference internal" href="#c.dma_resv_lock_slow_interruptible" title="dma_resv_lock_slow_interruptible"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_resv_lock_slow_interruptible()</span></code></a> for the interruptible variant.</p>
 <dl class="c function">
-<dt id="c.dma_resv_lock_slow_interruptible">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_resv_lock_slow_interruptible</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ww_acquire_ctx</span> <span class="pre">*</span><em><span class="pre">ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_lock_slow_interruptible" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_lock_slow_interruptible">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_lock_slow_interruptible</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ww_acquire_ctx</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_lock_slow_interruptible" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>slowpath lock the reservation object, interruptible</p>
 </dd></dl>
 
@@ -1959,8 +1961,8 @@ well.</p>
 will sleep until the lock becomes available. See
 <a class="reference internal" href="#c.dma_resv_lock_interruptible" title="dma_resv_lock_interruptible"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_resv_lock_interruptible()</span></code></a> as well.</p>
 <dl class="c function">
-<dt id="c.dma_resv_trylock">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_resv_trylock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_trylock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_trylock">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_trylock</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_trylock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>trylock the reservation object</p>
 </dd></dl>
 
@@ -1978,8 +1980,8 @@ if they overlap with a writer.</p>
 possible, which is also not needed for a trylock.</p>
 <p>Returns true if the lock was acquired, false otherwise.</p>
 <dl class="c function">
-<dt id="c.dma_resv_is_locked">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_resv_is_locked</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_is_locked" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_is_locked">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_is_locked</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_is_locked" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>is the reservation object locked</p>
 </dd></dl>
 
@@ -1991,8 +1993,8 @@ possible, which is also not needed for a trylock.</p>
 <p><strong>Description</strong></p>
 <p>Returns true if the mutex is locked, false if unlocked.</p>
 <dl class="c function">
-<dt id="c.dma_resv_locking_ctx">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">ww_acquire_ctx</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_resv_locking_ctx</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_locking_ctx" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_locking_ctx">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ww_acquire_ctx</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_locking_ctx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_locking_ctx" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>returns the context used to lock the object</p>
 </dd></dl>
 
@@ -2009,8 +2011,8 @@ doesn’t pass the struct ww_acquire_ctx around in some very long callchains.
 Everyone else just uses it to check whether they’re holding a reservation or
 not.</p>
 <dl class="c function">
-<dt id="c.dma_resv_unlock">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_resv_unlock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_unlock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_unlock">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_unlock</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_unlock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unlock the reservation object</p>
 </dd></dl>
 
@@ -2022,8 +2024,8 @@ not.</p>
 <p><strong>Description</strong></p>
 <p>Unlocks the reservation object following exclusive access.</p>
 <dl class="c function">
-<dt id="c.dma_resv_excl_fence">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_resv_excl_fence</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_excl_fence" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_excl_fence">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_excl_fence</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_excl_fence" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return the object’s exclusive fence</p>
 </dd></dl>
 
@@ -2039,8 +2041,8 @@ or one of the variants of each</p>
 <p>RETURNS
 The exclusive fence or NULL</p>
 <dl class="c function">
-<dt id="c.dma_resv_get_excl_unlocked">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_resv_get_excl_unlocked</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_get_excl_unlocked" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_get_excl_unlocked">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_get_excl_unlocked</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_get_excl_unlocked" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get the reservation object’s exclusive fence, without lock held.</p>
 </dd></dl>
 
@@ -2055,8 +2057,8 @@ reference count and returns it.</p>
 <p>RETURNS
 The exclusive fence or NULL if none</p>
 <dl class="c function">
-<dt id="c.dma_resv_shared_list">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv_list" title="dma_resv_list"><span class="pre">dma_resv_list</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_resv_shared_list</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_shared_list" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_resv_shared_list">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv_list" title="dma_resv_list"><span class="n"><span class="pre">dma_resv_list</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_resv_shared_list</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_resv" title="dma_resv"><span class="n"><span class="pre">dma_resv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_resv_shared_list" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get the reservation object’s shared fence list</p>
 </dd></dl>
 
@@ -2069,8 +2071,8 @@ The exclusive fence or NULL if none</p>
 <p>Returns the shared fence list. Caller must either hold the objects
 through <a class="reference internal" href="#c.dma_resv_lock" title="dma_resv_lock"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_resv_lock()</span></code></a> or the RCU read side lock through <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_read_lock" title="rcu_read_lock"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_read_lock()</span></code></a>,
 or one of the variants of each</p>
-</section>
-<section id="dma-fences">
+</div>
+<div class="section" id="dma-fences">
 <h2>DMA Fences<a class="headerlink" href="#dma-fences" title="Permalink to this headline">¶</a></h2>
 <p>DMA fences, represented by <a class="reference internal" href="#c.dma_fence" title="dma_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_fence</span></code></a>, are the kernel internal
 synchronization primitive for DMA operations like GPU rendering, video
@@ -2094,7 +2096,7 @@ implicitly passed around as part of shared <a class="reference internal" href="#
 implicit fences are stored in <a class="reference internal" href="#c.dma_resv" title="dma_resv"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_resv</span></code></a> through the
 <a class="reference internal" href="#c.dma_buf" title="dma_buf"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_buf.resv</span></code></a> pointer.</p></li>
 </ul>
-<section id="dma-fence-cross-driver-contract">
+<div class="section" id="dma-fence-cross-driver-contract">
 <h3>DMA Fence Cross-Driver Contract<a class="headerlink" href="#dma-fence-cross-driver-contract" title="Permalink to this headline">¶</a></h3>
 <p>Since <a class="reference internal" href="#c.dma_fence" title="dma_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_fence</span></code></a> provide a cross driver contract, all drivers must follow the
 same rules:</p>
@@ -2132,8 +2134,8 @@ Only GFP_ATOMIC is permissible, which might fail.</p></li>
 <code class="xref c c-type docutils literal notranslate"><span class="pre">mmu_interval_notifier</span></code> and <code class="xref c c-type docutils literal notranslate"><span class="pre">shrinker</span></code> callbacks at the same time as having to
 track asynchronous compute work using <a class="reference internal" href="#c.dma_fence" title="dma_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_fence</span></code></a>. No driver outside of
 drivers/gpu should ever call <a class="reference internal" href="#c.dma_fence_wait" title="dma_fence_wait"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_wait()</span></code></a> in such contexts.</p>
-</section>
-<section id="dma-fence-signalling-annotations">
+</div>
+<div class="section" id="dma-fence-signalling-annotations">
 <h3>DMA Fence Signalling Annotations<a class="headerlink" href="#dma-fence-signalling-annotations" title="Permalink to this headline">¶</a></h3>
 <p>Proving correctness of all the kernel code around <a class="reference internal" href="#c.dma_fence" title="dma_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_fence</span></code></a> through code
 review and testing is tricky for a few reasons:</p>
@@ -2215,12 +2217,12 @@ testing with a single device is enough to validate a driver, at least as
 far as deadlocks with <a class="reference internal" href="#c.dma_fence_wait" title="dma_fence_wait"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_wait()</span></code></a> against <a class="reference internal" href="#c.dma_fence_signal" title="dma_fence_signal"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_signal()</span></code></a> are
 concerned.</p></li>
 </ul>
-</section>
-<section id="dma-fences-functions-reference">
+</div>
+<div class="section" id="dma-fences-functions-reference">
 <h3>DMA Fences Functions Reference<a class="headerlink" href="#dma-fences-functions-reference" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
-<dt id="c.dma_fence_get_stub">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_fence_get_stub</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get_stub" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_get_stub">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_get_stub</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get_stub" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return a signaled fence</p>
 </dd></dl>
 
@@ -2234,8 +2236,8 @@ concerned.</p></li>
 timestamp corresponds to the first time after boot this
 function is called.</p>
 <dl class="c function">
-<dt id="c.dma_fence_allocate_private_stub">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_fence_allocate_private_stub</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_allocate_private_stub" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_allocate_private_stub">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_allocate_private_stub</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_allocate_private_stub" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return a private, signaled fence</p>
 </dd></dl>
 
@@ -2247,8 +2249,8 @@ function is called.</p>
 <p><strong>Description</strong></p>
 <p>Return a newly allocated and signaled stub fence.</p>
 <dl class="c function">
-<dt id="c.dma_fence_context_alloc">
-<span class="pre">u64</span> <code class="sig-name descname"><span class="pre">dma_fence_context_alloc</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <em><span class="pre">num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_context_alloc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_context_alloc">
+<span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_context_alloc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n"><span class="pre">num</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_context_alloc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate an array of fence contexts</p>
 </dd></dl>
 
@@ -2262,8 +2264,8 @@ function is called.</p>
 allocated.  The fence context is used for setting <a class="reference internal" href="#c.dma_fence" title="dma_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_fence.context</span></code></a> to a
 unique number by passing the context to <a class="reference internal" href="#c.dma_fence_init" title="dma_fence_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_init()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.dma_fence_begin_signalling">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_fence_begin_signalling</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_begin_signalling" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_begin_signalling">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_begin_signalling</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_begin_signalling" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>begin a critical DMA fence signalling section</p>
 </dd></dl>
 
@@ -2281,8 +2283,8 @@ required to eventually complete <a class="reference internal" href="#c.dma_fence
 <a class="reference internal" href="#c.dma_fence_end_signalling" title="dma_fence_end_signalling"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_end_signalling()</span></code></a>.</p>
 <p><strong>Return</strong></p>
 <dl class="c function">
-<dt id="c.dma_fence_end_signalling">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_fence_end_signalling</span></code><span class="sig-paren">(</span><span class="pre">bool</span> <em><span class="pre">cookie</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_end_signalling" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_end_signalling">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_end_signalling</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">cookie</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_end_signalling" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end a critical DMA fence signalling section</p>
 </dd></dl>
 
@@ -2294,8 +2296,8 @@ required to eventually complete <a class="reference internal" href="#c.dma_fence
 <p><strong>Description</strong></p>
 <p>Closes a critical section annotation opened by <a class="reference internal" href="#c.dma_fence_begin_signalling" title="dma_fence_begin_signalling"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_begin_signalling()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.dma_fence_signal_timestamp_locked">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_fence_signal_timestamp_locked</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <span class="pre">ktime_t</span> <em><span class="pre">timestamp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_signal_timestamp_locked" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_signal_timestamp_locked">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_signal_timestamp_locked</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="n"><span class="pre">ktime_t</span></span><span class="w"> </span><span class="n"><span class="pre">timestamp</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_signal_timestamp_locked" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>signal completion of a fence</p>
 </dd></dl>
 
@@ -2318,8 +2320,8 @@ signal timestamp.</p>
 <p>Returns 0 on success and a negative error value when <strong>fence</strong> has been
 signalled already.</p>
 <dl class="c function">
-<dt id="c.dma_fence_signal_timestamp">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_fence_signal_timestamp</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <span class="pre">ktime_t</span> <em><span class="pre">timestamp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_signal_timestamp" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_signal_timestamp">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_signal_timestamp</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="n"><span class="pre">ktime_t</span></span><span class="w"> </span><span class="n"><span class="pre">timestamp</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_signal_timestamp" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>signal completion of a fence</p>
 </dd></dl>
 
@@ -2340,8 +2342,8 @@ signal timestamp.</p>
 <p>Returns 0 on success and a negative error value when <strong>fence</strong> has been
 signalled already.</p>
 <dl class="c function">
-<dt id="c.dma_fence_signal_locked">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_fence_signal_locked</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_signal_locked" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_signal_locked">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_signal_locked</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_signal_locked" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>signal completion of a fence</p>
 </dd></dl>
 
@@ -2361,8 +2363,8 @@ held.</p>
 <p>Returns 0 on success and a negative error value when <strong>fence</strong> has been
 signalled already.</p>
 <dl class="c function">
-<dt id="c.dma_fence_signal">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_fence_signal</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_signal" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_signal">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_signal</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_signal" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>signal completion of a fence</p>
 </dd></dl>
 
@@ -2380,8 +2382,8 @@ only be effective the first time.</p>
 <p>Returns 0 on success and a negative error value when <strong>fence</strong> has been
 signalled already.</p>
 <dl class="c function">
-<dt id="c.dma_fence_wait_timeout">
-<span class="pre">signed</span> <span class="pre">long</span> <code class="sig-name descname"><span class="pre">dma_fence_wait_timeout</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <span class="pre">bool</span> <em><span class="pre">intr</span></em>, <span class="pre">signed</span> <span class="pre">long</span> <em><span class="pre">timeout</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_wait_timeout" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_wait_timeout">
+<span class="kt"><span class="pre">signed</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_wait_timeout</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">intr</span></span>, <span class="kt"><span class="pre">signed</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_wait_timeout" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>sleep until the fence gets signaled or until timeout elapses</p>
 </dd></dl>
 
@@ -2404,8 +2406,8 @@ holds a reference to the fence, otherwise the fence might be
 freed before return, resulting in undefined behavior.</p>
 <p>See also <a class="reference internal" href="#c.dma_fence_wait" title="dma_fence_wait"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_wait()</span></code></a> and <a class="reference internal" href="#c.dma_fence_wait_any_timeout" title="dma_fence_wait_any_timeout"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_wait_any_timeout()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.dma_fence_release">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_fence_release</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_release" title="kref"><span class="pre">kref</span></a> <span class="pre">*</span><em><span class="pre">kref</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_release" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_release">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_release</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_release" title="kref"><span class="n"><span class="pre">kref</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">kref</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_release" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>default relese function for fences</p>
 </dd></dl>
 
@@ -2418,8 +2420,8 @@ freed before return, resulting in undefined behavior.</p>
 <p>This is the default release functions for <a class="reference internal" href="#c.dma_fence" title="dma_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_fence</span></code></a>. Drivers shouldn’t call
 this directly, but instead call <a class="reference internal" href="#c.dma_fence_put" title="dma_fence_put"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_put()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.dma_fence_free">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_fence_free</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_free">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>default release function for <a class="reference internal" href="#c.dma_fence" title="dma_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_fence</span></code></a>.</p>
 </dd></dl>
 
@@ -2432,8 +2434,8 @@ this directly, but instead call <a class="reference internal" href="#c.dma_fence
 <p>This is the default implementation for <a class="reference internal" href="#c.dma_fence_ops" title="dma_fence_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_fence_ops.release</span></code></a>. It calls
 <a class="reference internal" href="../core-api/kernel-api.html#c.kfree_rcu" title="kfree_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree_rcu()</span></code></a> on <strong>fence</strong>.</p>
 <dl class="c function">
-<dt id="c.dma_fence_enable_sw_signaling">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_fence_enable_sw_signaling</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_enable_sw_signaling" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_enable_sw_signaling">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_enable_sw_signaling</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_enable_sw_signaling" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enable signaling on fence</p>
 </dd></dl>
 
@@ -2447,8 +2449,8 @@ this directly, but instead call <a class="reference internal" href="#c.dma_fence
 complete as soon as possible. This calls <a class="reference internal" href="#c.dma_fence_ops" title="dma_fence_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_fence_ops.enable_signaling</span></code></a>
 internally.</p>
 <dl class="c function">
-<dt id="c.dma_fence_add_callback">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_fence_add_callback</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_cb" title="dma_fence_cb"><span class="pre">dma_fence_cb</span></a> <span class="pre">*</span><em><span class="pre">cb</span></em>, <span class="pre">dma_fence_func_t</span> <em><span class="pre">func</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_add_callback" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_add_callback">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_add_callback</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_cb" title="dma_fence_cb"><span class="n"><span class="pre">dma_fence_cb</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cb</span></span>, <span class="n"><span class="pre">dma_fence_func_t</span></span><span class="w"> </span><span class="n"><span class="pre">func</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_add_callback" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>add a callback to be called when the fence is signaled</p>
 </dd></dl>
 
@@ -2473,8 +2475,8 @@ to a fence, but a callback can only be registered to one fence at a time.</p>
 <p>Returns 0 in case of success, -ENOENT if the fence is already signaled
 and -EINVAL in case of error.</p>
 <dl class="c function">
-<dt id="c.dma_fence_get_status">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_fence_get_status</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get_status" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_get_status">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_get_status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get_status" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>returns the status upon completion</p>
 </dd></dl>
 
@@ -2491,8 +2493,8 @@ details.</p>
 been signaled without an error condition, or a negative error code
 if the fence has been completed in err.</p>
 <dl class="c function">
-<dt id="c.dma_fence_remove_callback">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_fence_remove_callback</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_cb" title="dma_fence_cb"><span class="pre">dma_fence_cb</span></a> <span class="pre">*</span><em><span class="pre">cb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_remove_callback" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_remove_callback">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_remove_callback</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_cb" title="dma_fence_cb"><span class="n"><span class="pre">dma_fence_cb</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_remove_callback" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>remove a callback from the signaling list</p>
 </dd></dl>
 
@@ -2515,8 +2517,8 @@ with a reference held to the fence.</p>
 <p>Behaviour is undefined if <strong>cb</strong> has not been added to <strong>fence</strong> using
 <a class="reference internal" href="#c.dma_fence_add_callback" title="dma_fence_add_callback"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_add_callback()</span></code></a> beforehand.</p>
 <dl class="c function">
-<dt id="c.dma_fence_default_wait">
-<span class="pre">signed</span> <span class="pre">long</span> <code class="sig-name descname"><span class="pre">dma_fence_default_wait</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <span class="pre">bool</span> <em><span class="pre">intr</span></em>, <span class="pre">signed</span> <span class="pre">long</span> <em><span class="pre">timeout</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_default_wait" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_default_wait">
+<span class="kt"><span class="pre">signed</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_default_wait</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">intr</span></span>, <span class="kt"><span class="pre">signed</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_default_wait" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>default sleep until the fence gets signaled or until timeout elapses</p>
 </dd></dl>
 
@@ -2535,8 +2537,8 @@ remaining timeout in jiffies on success. If timeout is zero the value one is
 returned if the fence is already signaled for consistency with other
 functions taking a jiffies timeout.</p>
 <dl class="c function">
-<dt id="c.dma_fence_wait_any_timeout">
-<span class="pre">signed</span> <span class="pre">long</span> <code class="sig-name descname"><span class="pre">dma_fence_wait_any_timeout</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">fences</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">count</span></em>, <span class="pre">bool</span> <em><span class="pre">intr</span></em>, <span class="pre">signed</span> <span class="pre">long</span> <em><span class="pre">timeout</span></em>, <span class="pre">uint32_t</span> <span class="pre">*</span><em><span class="pre">idx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_wait_any_timeout" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_wait_any_timeout">
+<span class="kt"><span class="pre">signed</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_wait_any_timeout</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fences</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">count</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">intr</span></span>, <span class="kt"><span class="pre">signed</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">timeout</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">idx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_wait_any_timeout" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>sleep until any fence gets signaled or until timeout elapses</p>
 </dd></dl>
 
@@ -2563,8 +2565,8 @@ caller needs to hold a reference to all fences in the array, otherwise a
 fence might be freed before return, resulting in undefined behavior.</p>
 <p>See also <a class="reference internal" href="#c.dma_fence_wait" title="dma_fence_wait"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_wait()</span></code></a> and <a class="reference internal" href="#c.dma_fence_wait_timeout" title="dma_fence_wait_timeout"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_wait_timeout()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.dma_fence_init">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_fence_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_ops" title="dma_fence_ops"><span class="pre">dma_fence_ops</span></a> <span class="pre">*</span><em><span class="pre">ops</span></em>, <span class="pre">spinlock_t</span> <span class="pre">*</span><em><span class="pre">lock</span></em>, <span class="pre">u64</span> <em><span class="pre">context</span></em>, <span class="pre">u64</span> <em><span class="pre">seqno</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_init">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_ops" title="dma_fence_ops"><span class="n"><span class="pre">dma_fence_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span>, <span class="n"><span class="pre">spinlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">context</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">seqno</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Initialize a custom fence.</p>
 </dd></dl>
 
@@ -2588,8 +2590,8 @@ refcount again if <a class="reference internal" href="#c.dma_fence_ops" title="d
 <p>context and seqno are used for easy comparison between fences, allowing
 to check which fence is later by simply using <a class="reference internal" href="#c.dma_fence_later" title="dma_fence_later"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_later()</span></code></a>.</p>
 <dl class="c struct">
-<dt id="c.dma_fence">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_fence</span></code><a class="headerlink" href="#c.dma_fence" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence</span></span></span><a class="headerlink" href="#c.dma_fence" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>software synchronization primitive</p>
 </dd></dl>
 
@@ -2657,8 +2659,8 @@ DMA_FENCE_FLAG_ENABLE_SIGNAL_BIT closes this race, and makes sure that
 after dma_fence_signal was called, any enable_signaling call will have either
 been completed, or never called at all.</p>
 <dl class="c struct">
-<dt id="c.dma_fence_cb">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_fence_cb</span></code><a class="headerlink" href="#c.dma_fence_cb" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_cb">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_cb</span></span></span><a class="headerlink" href="#c.dma_fence_cb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>callback for <a class="reference internal" href="#c.dma_fence_add_callback" title="dma_fence_add_callback"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_add_callback()</span></code></a></p>
 </dd></dl>
 
@@ -2680,8 +2682,8 @@ been completed, or never called at all.</p>
 <p>This struct will be initialized by <a class="reference internal" href="#c.dma_fence_add_callback" title="dma_fence_add_callback"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_add_callback()</span></code></a>, additional
 data can be passed along by embedding dma_fence_cb in another struct.</p>
 <dl class="c struct">
-<dt id="c.dma_fence_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_fence_ops</span></code><a class="headerlink" href="#c.dma_fence_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_ops</span></span></span><a class="headerlink" href="#c.dma_fence_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>operations implemented for fence</p>
 </dd></dl>
 
@@ -2778,8 +2780,8 @@ corresponding timeline structures.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.dma_fence_put">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_fence_put</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_put" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_put">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_put</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_put" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>decreases refcount of the fence</p>
 </dd></dl>
 
@@ -2789,8 +2791,8 @@ corresponding timeline structures.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.dma_fence_get">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_fence_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_get">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>increases refcount of the fence</p>
 </dd></dl>
 
@@ -2802,8 +2804,8 @@ corresponding timeline structures.</p>
 <p><strong>Description</strong></p>
 <p>Returns the same fence, with refcount increased by 1.</p>
 <dl class="c function">
-<dt id="c.dma_fence_get_rcu">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_fence_get_rcu</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get_rcu" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_get_rcu">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_get_rcu</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get_rcu" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get a fence from a dma_resv_list with rcu read lock</p>
 </dd></dl>
 
@@ -2815,8 +2817,8 @@ corresponding timeline structures.</p>
 <p><strong>Description</strong></p>
 <p>Function returns NULL if no refcount could be obtained, or the fence.</p>
 <dl class="c function">
-<dt id="c.dma_fence_get_rcu_safe">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_fence_get_rcu_safe</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">__rcu</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">fencep</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get_rcu_safe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_get_rcu_safe">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_get_rcu_safe</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="pre">__rcu</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fencep</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get_rcu_safe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>acquire a reference to an RCU tracked fence</p>
 </dd></dl>
 
@@ -2836,8 +2838,8 @@ the seqlock must be taken before and checked after a reference to the
 fence is acquired (as shown here).</p>
 <p>The caller is required to hold the RCU read lock.</p>
 <dl class="c function">
-<dt id="c.dma_fence_is_signaled_locked">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_fence_is_signaled_locked</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_is_signaled_locked" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_is_signaled_locked">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_is_signaled_locked</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_is_signaled_locked" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return an indication if the fence is signaled yet.</p>
 </dd></dl>
 
@@ -2854,8 +2856,8 @@ true if <a class="reference internal" href="#c.dma_fence_add_callback" title="dm
 <p>This function requires <a class="reference internal" href="#c.dma_fence" title="dma_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_fence.lock</span></code></a> to be held.</p>
 <p>See also <a class="reference internal" href="#c.dma_fence_is_signaled" title="dma_fence_is_signaled"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_is_signaled()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.dma_fence_is_signaled">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_fence_is_signaled</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_is_signaled" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_is_signaled">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_is_signaled</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_is_signaled" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return an indication if the fence is signaled yet.</p>
 </dd></dl>
 
@@ -2875,8 +2877,8 @@ wraparound between time of issue and time of use by checking the return
 value of this function before calling hardware-specific wait instructions.</p>
 <p>See also <a class="reference internal" href="#c.dma_fence_is_signaled_locked" title="dma_fence_is_signaled_locked"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_is_signaled_locked()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.__dma_fence_is_later">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">__dma_fence_is_later</span></code><span class="sig-paren">(</span><span class="pre">u64</span> <em><span class="pre">f1</span></em>, <span class="pre">u64</span> <em><span class="pre">f2</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_ops" title="dma_fence_ops"><span class="pre">dma_fence_ops</span></a> <span class="pre">*</span><em><span class="pre">ops</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__dma_fence_is_later" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__dma_fence_is_later">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__dma_fence_is_later</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">f1</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">f2</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_ops" title="dma_fence_ops"><span class="n"><span class="pre">dma_fence_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__dma_fence_is_later" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return if f1 is chronologically later than f2</p>
 </dd></dl>
 
@@ -2893,8 +2895,8 @@ value of this function before calling hardware-specific wait instructions.</p>
 <p>Returns true if f1 is chronologically later than f2. Both fences must be
 from the same context, since a seqno is not common across contexts.</p>
 <dl class="c function">
-<dt id="c.dma_fence_is_later">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_fence_is_later</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">f1</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">f2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_is_later" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_is_later">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_is_later</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">f1</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">f2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_is_later" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return if f1 is chronologically later than f2</p>
 </dd></dl>
 
@@ -2909,8 +2911,8 @@ from the same context, since a seqno is not common across contexts.</p>
 <p>Returns true if f1 is chronologically later than f2. Both fences must be
 from the same context, since a seqno is not re-used across contexts.</p>
 <dl class="c function">
-<dt id="c.dma_fence_later">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_fence_later</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">f1</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">f2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_later" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_later">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_later</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">f1</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">f2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_later" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return the chronologically later fence</p>
 </dd></dl>
 
@@ -2926,8 +2928,8 @@ from the same context, since a seqno is not re-used across contexts.</p>
 signaled last. Both fences must be from the same context, since a seqno is
 not re-used across contexts.</p>
 <dl class="c function">
-<dt id="c.dma_fence_get_status_locked">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_fence_get_status_locked</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get_status_locked" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_get_status_locked">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_get_status_locked</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_get_status_locked" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>returns the status upon completion</p>
 </dd></dl>
 
@@ -2946,8 +2948,8 @@ the signal state before reporting the error status.</p>
 been signaled without an error condition, or a negative error code
 if the fence has been completed in err.</p>
 <dl class="c function">
-<dt id="c.dma_fence_set_error">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_fence_set_error</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <span class="pre">int</span> <em><span class="pre">error</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_set_error" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_set_error">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_set_error</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_set_error" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>flag an error condition on the fence</p>
 </dd></dl>
 
@@ -2965,8 +2967,8 @@ rather than success. This must be set before signaling (so that the value
 is visible before any waiters on the signal callback are woken). This
 helper exists to help catching erroneous setting of #dma_fence.error.</p>
 <dl class="c function">
-<dt id="c.dma_fence_wait">
-<span class="pre">signed</span> <span class="pre">long</span> <code class="sig-name descname"><span class="pre">dma_fence_wait</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <span class="pre">bool</span> <em><span class="pre">intr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_wait" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_wait">
+<span class="kt"><span class="pre">signed</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_wait</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">intr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_wait" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>sleep until the fence gets signaled</p>
 </dd></dl>
 
@@ -2985,12 +2987,12 @@ returned on custom implementations.</p>
 directly or indirectly holds a reference to the fence, otherwise the
 fence might be freed before return, resulting in undefined behavior.</p>
 <p>See also <a class="reference internal" href="#c.dma_fence_wait_timeout" title="dma_fence_wait_timeout"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_wait_timeout()</span></code></a> and <a class="reference internal" href="#c.dma_fence_wait_any_timeout" title="dma_fence_wait_any_timeout"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_wait_any_timeout()</span></code></a>.</p>
-</section>
-<section id="dma-fence-array">
+</div>
+<div class="section" id="dma-fence-array">
 <h3>DMA Fence Array<a class="headerlink" href="#dma-fence-array" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
-<dt id="c.dma_fence_array_create">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_array" title="dma_fence_array"><span class="pre">dma_fence_array</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_fence_array_create</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">num_fences</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">fences</span></em>, <span class="pre">u64</span> <em><span class="pre">context</span></em>, <span class="pre">unsigned</span> <em><span class="pre">seqno</span></em>, <span class="pre">bool</span> <em><span class="pre">signal_on_any</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_array_create" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_array_create">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_array" title="dma_fence_array"><span class="n"><span class="pre">dma_fence_array</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_array_create</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_fences</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fences</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">context</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n"><span class="pre">seqno</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">signal_on_any</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_array_create" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a custom fence array</p>
 </dd></dl>
 
@@ -3017,8 +3019,8 @@ array is taken and <a class="reference internal" href="#c.dma_fence_put" title="
 <p>If <strong>signal_on_any</strong> is true the fence array signals if any fence in the array
 signals, otherwise it signals when all fences in the array signal.</p>
 <dl class="c function">
-<dt id="c.dma_fence_match_context">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_fence_match_context</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <span class="pre">u64</span> <em><span class="pre">context</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_match_context" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_match_context">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_match_context</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">context</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_match_context" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check if all fences are from the given context</p>
 </dd></dl>
 
@@ -3034,8 +3036,8 @@ signals, otherwise it signals when all fences in the array signal.</p>
 against the given context. Returns false if any fence is from a different
 context.</p>
 <dl class="c struct">
-<dt id="c.dma_fence_array_cb">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_fence_array_cb</span></code><a class="headerlink" href="#c.dma_fence_array_cb" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_array_cb">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_array_cb</span></span></span><a class="headerlink" href="#c.dma_fence_array_cb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>callback helper for fence array</p>
 </dd></dl>
 
@@ -3054,8 +3056,8 @@ context.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.dma_fence_array">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_fence_array</span></code><a class="headerlink" href="#c.dma_fence_array" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_array">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_array</span></span></span><a class="headerlink" href="#c.dma_fence_array" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>fence to represent an array of fences</p>
 </dd></dl>
 
@@ -3086,8 +3088,8 @@ context.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.dma_fence_is_array">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dma_fence_is_array</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_is_array" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_is_array">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_is_array</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_is_array" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>check if a fence is from the array subsclass</p>
 </dd></dl>
 
@@ -3099,8 +3101,8 @@ context.</p>
 <p><strong>Description</strong></p>
 <p>Return true if it is a dma_fence_array and false otherwise.</p>
 <dl class="c function">
-<dt id="c.to_dma_fence_array">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_array" title="dma_fence_array"><span class="pre">dma_fence_array</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">to_dma_fence_array</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.to_dma_fence_array" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.to_dma_fence_array">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_array" title="dma_fence_array"><span class="n"><span class="pre">dma_fence_array</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">to_dma_fence_array</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.to_dma_fence_array" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>cast a fence to a dma_fence_array</p>
 </dd></dl>
 
@@ -3112,12 +3114,12 @@ context.</p>
 <p><strong>Description</strong></p>
 <p>Returns NULL if the fence is not a dma_fence_array,
 or the dma_fence_array otherwise.</p>
-</section>
-<section id="dma-fence-chain">
+</div>
+<div class="section" id="dma-fence-chain">
 <h3>DMA Fence Chain<a class="headerlink" href="#dma-fence-chain" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
-<dt id="c.dma_fence_chain_walk">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_fence_chain_walk</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_chain_walk" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_chain_walk">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_chain_walk</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_chain_walk" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>chain walking function</p>
 </dd></dl>
 
@@ -3131,8 +3133,8 @@ or the dma_fence_array otherwise.</p>
 the end of the chain. Garbage collects chain nodes which are already
 signaled.</p>
 <dl class="c function">
-<dt id="c.dma_fence_chain_find_seqno">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">dma_fence_chain_find_seqno</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">pfence</span></em>, <span class="pre">uint64_t</span> <em><span class="pre">seqno</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_chain_find_seqno" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_chain_find_seqno">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_chain_find_seqno</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pfence</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">seqno</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_chain_find_seqno" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>find fence chain node by seqno</p>
 </dd></dl>
 
@@ -3149,8 +3151,8 @@ number. If no sequence number is provided then this is a no-op.</p>
 <p>Returns EINVAL if the fence is not a chain node or the sequence number has
 not yet advanced far enough.</p>
 <dl class="c function">
-<dt id="c.dma_fence_chain_init">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_fence_chain_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_chain" title="dma_fence_chain"><span class="pre">dma_fence_chain</span></a> <span class="pre">*</span><em><span class="pre">chain</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">prev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em>, <span class="pre">uint64_t</span> <em><span class="pre">seqno</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_chain_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_chain_init">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_chain_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_chain" title="dma_fence_chain"><span class="n"><span class="pre">dma_fence_chain</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">chain</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">prev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n"><span class="pre">seqno</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_chain_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>initialize a fence chain</p>
 </dd></dl>
 
@@ -3169,8 +3171,8 @@ not yet advanced far enough.</p>
 <p>Initialize a new chain node and either start a new chain or add the node to
 the existing chain of the previous fence.</p>
 <dl class="c struct">
-<dt id="c.dma_fence_chain">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dma_fence_chain</span></code><a class="headerlink" href="#c.dma_fence_chain" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_chain">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_chain</span></span></span><a class="headerlink" href="#c.dma_fence_chain" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>fence to represent an node of a fence chain</p>
 </dd></dl>
 
@@ -3214,8 +3216,8 @@ the callback.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.to_dma_fence_chain">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_chain" title="dma_fence_chain"><span class="pre">dma_fence_chain</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">to_dma_fence_chain</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.to_dma_fence_chain" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.to_dma_fence_chain">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_chain" title="dma_fence_chain"><span class="n"><span class="pre">dma_fence_chain</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">to_dma_fence_chain</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.to_dma_fence_chain" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>cast a fence to a dma_fence_chain</p>
 </dd></dl>
 
@@ -3228,8 +3230,8 @@ the callback.</p>
 <p>Returns NULL if the fence is not a dma_fence_chain,
 or the dma_fence_chain otherwise.</p>
 <dl class="c function">
-<dt id="c.dma_fence_chain_alloc">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_chain" title="dma_fence_chain"><span class="pre">dma_fence_chain</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">dma_fence_chain_alloc</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_chain_alloc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_chain_alloc">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_chain" title="dma_fence_chain"><span class="n"><span class="pre">dma_fence_chain</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_chain_alloc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_chain_alloc" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Parameters</strong></p>
@@ -3240,8 +3242,8 @@ or the dma_fence_chain otherwise.</p>
 <p><strong>Description</strong></p>
 <p>Returns a new <a class="reference internal" href="#c.dma_fence_chain" title="dma_fence_chain"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_fence_chain</span></code></a> object or NULL on failure.</p>
 <dl class="c function">
-<dt id="c.dma_fence_chain_free">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dma_fence_chain_free</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence_chain" title="dma_fence_chain"><span class="pre">dma_fence_chain</span></a> <span class="pre">*</span><em><span class="pre">chain</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_chain_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_chain_free">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dma_fence_chain_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence_chain" title="dma_fence_chain"><span class="n"><span class="pre">dma_fence_chain</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">chain</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dma_fence_chain_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Parameters</strong></p>
@@ -3255,8 +3257,8 @@ doesn’t need an RCU grace period since the fence was never initialized nor
 published. After <a class="reference internal" href="#c.dma_fence_chain_init" title="dma_fence_chain_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_chain_init()</span></code></a> has been called the fence must be
 released by calling <a class="reference internal" href="#c.dma_fence_put" title="dma_fence_put"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_put()</span></code></a>, and not through this function.</p>
 <dl class="c macro">
-<dt id="c.dma_fence_chain_for_each">
-<code class="sig-name descname"><span class="pre">dma_fence_chain_for_each</span></code><a class="headerlink" href="#c.dma_fence_chain_for_each" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dma_fence_chain_for_each">
+<span class="sig-name descname"><span class="n"><span class="pre">dma_fence_chain_for_each</span></span></span><a class="headerlink" href="#c.dma_fence_chain_for_each" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">dma_fence_chain_for_each</span> <span class="pre">(iter,</span> <span class="pre">head)</span></code></p>
@@ -3273,12 +3275,12 @@ released by calling <a class="reference internal" href="#c.dma_fence_put" title=
 <p><strong>Description</strong></p>
 <p>Iterate over all fences in the chain. We keep a reference to the current
 fence while inside the loop which must be dropped when breaking out.</p>
-</section>
-<section id="dma-fence-uabi-sync-file">
+</div>
+<div class="section" id="dma-fence-uabi-sync-file">
 <h3>DMA Fence uABI/Sync File<a class="headerlink" href="#dma-fence-uabi-sync-file" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
-<dt id="c.sync_file_create">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.sync_file" title="sync_file"><span class="pre">sync_file</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">sync_file_create</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.sync_file_create" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sync_file_create">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.sync_file" title="sync_file"><span class="n"><span class="pre">sync_file</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sync_file_create</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fence</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sync_file_create" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>creates a sync file</p>
 </dd></dl>
 
@@ -3293,8 +3295,8 @@ reference of <strong>fence</strong> for the newly-created <a class="reference in
 sync_file can be released with fput(sync_file-&gt;file). Returns the
 sync_file or NULL in case of error.</p>
 <dl class="c function">
-<dt id="c.sync_file_get_fence">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">sync_file_get_fence</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">fd</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.sync_file_get_fence" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sync_file_get_fence">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dma_fence" title="dma_fence"><span class="n"><span class="pre">dma_fence</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">sync_file_get_fence</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">fd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sync_file_get_fence" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get the fence related to the sync_file fd</p>
 </dd></dl>
 
@@ -3307,8 +3309,8 @@ sync_file or NULL in case of error.</p>
 <p>Ensures <strong>fd</strong> references a valid sync_file and returns a fence that
 represents all fence in the sync_file. On error NULL is returned.</p>
 <dl class="c struct">
-<dt id="c.sync_file">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">sync_file</span></code><a class="headerlink" href="#c.sync_file" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sync_file">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sync_file</span></span></span><a class="headerlink" href="#c.sync_file" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>sync file to export to the userspace</p>
 </dd></dl>
 
@@ -3348,8 +3350,8 @@ entire array is 0).</p>
 <p><strong>Description</strong></p>
 <p>flags:
 POLL_ENABLED: whether userspace is currently poll()’ing or not</p>
-</section>
-<section id="indefinite-dma-fences">
+</div>
+<div class="section" id="indefinite-dma-fences">
 <h3>Indefinite DMA Fences<a class="headerlink" href="#indefinite-dma-fences" title="Permalink to this headline">¶</a></h3>
 <p>At various times <a class="reference internal" href="#c.dma_fence" title="dma_fence"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_fence</span></code></a> with an indefinite time until <a class="reference internal" href="#c.dma_fence_wait" title="dma_fence_wait"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_fence_wait()</span></code></a>
 finishes have been proposed. Examples include:</p>
@@ -3382,11 +3384,9 @@ for memory management needs, which means we must support indefinite fences being
 dependent upon DMA fences. If the kernel also support indefinite fences in the
 kernel like a DMA fence, like any of the above proposal would, there is the
 potential for deadlocks.</p>
-<figure class="align-default" id="id1">
-<img alt="Indefinite Fencing Dependency Cycle" src="../_images/DOT-e8ff13d1f6d4fbb7ed4e8bcd73fc8bed4777de4f.svg" /><figcaption>
-<p><span class="caption-text">Indefinite Fencing Dependency Cycle</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+<div class="figure align-default" id="id1">
+<img alt="Indefinite Fencing Dependency Cycle" src="../_images/DOT-e8ff13d1f6d4fbb7ed4e8bcd73fc8bed4777de4f.svg" /><p class="caption"><span class="caption-text">Indefinite Fencing Dependency Cycle</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
 <p>This means that the kernel might accidentally create deadlocks
 through memory management dependencies which userspace is unaware of, which
 randomly hangs workloads until the timeout kicks in. Workloads, which from
@@ -3403,8 +3403,8 @@ userspace is allowed to use userspace fencing or long running compute
 workloads. This also means no implicit fencing for shared buffers in these
 cases.</p></li>
 </ul>
-</section>
-<section id="recoverable-hardware-page-faults-implications">
+</div>
+<div class="section" id="recoverable-hardware-page-faults-implications">
 <h3>Recoverable Hardware Page Faults Implications<a class="headerlink" href="#recoverable-hardware-page-faults-implications" title="Permalink to this headline">¶</a></h3>
 <p>Modern hardware supports recoverable page faults, which has a lot of
 implications for DMA fences.</p>
@@ -3469,9 +3469,9 @@ depend on DMA fences, but not the other way around. And not even the page fault
 problem is new, because some other CPU thread in userspace might
 hit a page fault which holds up a userspace fence - supporting page faults on
 GPUs doesn’t anything fundamentally new.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

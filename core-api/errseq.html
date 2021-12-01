@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The errseq_t datatype &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -267,7 +269,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-errseq-t-datatype">
+  <div class="section" id="the-errseq-t-datatype">
 <h1>The errseq_t datatype<a class="headerlink" href="#the-errseq-t-datatype" title="Permalink to this headline">¶</a></h1>
 <p>An errseq_t is a way of recording errors in one place, and allowing any
 number of “subscribers” to tell whether it has changed since a previous
@@ -313,7 +315,7 @@ can tell whether the value has changed since they last checked it.</p>
 is the special (but common) case where there has never been an error. An all
 zero value thus serves as the “epoch” if one wishes to know whether there
 has ever been an error set since it was first initialized.</p>
-<section id="api-usage">
+<div class="section" id="api-usage">
 <h2>API usage<a class="headerlink" href="#api-usage" title="Permalink to this headline">¶</a></h2>
 <p>Let me tell you a story about a worker drone.  Now, he’s a good worker
 overall, but the company is a little…management heavy.  He has to
@@ -388,8 +390,8 @@ err = errseq_check(&amp;wd.wd_err, since);
 <p>Since he’s just going to discard “since” after that point, he doesn’t
 need to advance it here. He also doesn’t need any locking since it’s
 not usable by anyone else.</p>
-</section>
-<section id="serializing-errseq-t-cursor-updates">
+</div>
+<div class="section" id="serializing-errseq-t-cursor-updates">
 <h2>Serializing errseq_t cursor updates<a class="headerlink" href="#serializing-errseq-t-cursor-updates" title="Permalink to this headline">¶</a></h2>
 <p>Note that the errseq_t API does not protect the errseq_t cursor during a
 check_and_advance_operation. Only the canonical error code is handled
@@ -411,12 +413,12 @@ errseq_check_and_advance after taking the lock. e.g.:</p>
 </div>
 <p>That avoids the spinlock in the common case where nothing has changed
 since the last time it was checked.</p>
-</section>
-<section id="functions">
+</div>
+<div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="c function">
-<dt id="c.errseq_set">
-<span class="pre">errseq_t</span> <code class="sig-name descname"><span class="pre">errseq_set</span></code><span class="sig-paren">(</span><span class="pre">errseq_t</span> <span class="pre">*</span><em><span class="pre">eseq</span></em>, <span class="pre">int</span> <em><span class="pre">err</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.errseq_set" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.errseq_set">
+<span class="n"><span class="pre">errseq_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">errseq_set</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">errseq_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">eseq</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">err</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.errseq_set" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set a errseq_t for later reporting</p>
 </dd></dl>
 
@@ -436,8 +438,8 @@ if the last sequence was sampled at some point in the past.</p>
 return value should not be used as a previously sampled value in later
 calls as it will not have the SEEN flag set.</p>
 <dl class="c function">
-<dt id="c.errseq_sample">
-<span class="pre">errseq_t</span> <code class="sig-name descname"><span class="pre">errseq_sample</span></code><span class="sig-paren">(</span><span class="pre">errseq_t</span> <span class="pre">*</span><em><span class="pre">eseq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.errseq_sample" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.errseq_sample">
+<span class="n"><span class="pre">errseq_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">errseq_sample</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">errseq_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">eseq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.errseq_sample" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Grab current errseq_t value.</p>
 </dd></dl>
 
@@ -456,8 +458,8 @@ see it the next time it checks for an error.</p>
 <p><strong>Return</strong></p>
 <p>The current errseq value.</p>
 <dl class="c function">
-<dt id="c.errseq_check">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">errseq_check</span></code><span class="sig-paren">(</span><span class="pre">errseq_t</span> <span class="pre">*</span><em><span class="pre">eseq</span></em>, <span class="pre">errseq_t</span> <em><span class="pre">since</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.errseq_check" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.errseq_check">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">errseq_check</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">errseq_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">eseq</span></span>, <span class="n"><span class="pre">errseq_t</span></span><span class="w"> </span><span class="n"><span class="pre">since</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.errseq_check" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Has an error occurred since a particular sample point?</p>
 </dd></dl>
 
@@ -475,8 +477,8 @@ is no need to mark the value as seen.</p>
 <p><strong>Return</strong></p>
 <p>The latest error set in the errseq_t or 0 if it hasn’t changed.</p>
 <dl class="c function">
-<dt id="c.errseq_check_and_advance">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">errseq_check_and_advance</span></code><span class="sig-paren">(</span><span class="pre">errseq_t</span> <span class="pre">*</span><em><span class="pre">eseq</span></em>, <span class="pre">errseq_t</span> <span class="pre">*</span><em><span class="pre">since</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.errseq_check_and_advance" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.errseq_check_and_advance">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">errseq_check_and_advance</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">errseq_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">eseq</span></span>, <span class="n"><span class="pre">errseq_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">since</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.errseq_check_and_advance" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check an errseq_t and advance to current value.</p>
 </dd></dl>
 
@@ -500,8 +502,8 @@ this.</p>
 <p><strong>Return</strong></p>
 <p>Negative errno if one has been stored, or 0 if no new error has
 occurred.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

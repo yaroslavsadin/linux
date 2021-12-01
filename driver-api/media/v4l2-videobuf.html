@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>2.14. Videobuf Framework &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -378,7 +380,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="videobuf-framework">
+  <div class="section" id="videobuf-framework">
 <span id="vb-framework"></span><h1><span class="section-number">2.14. </span>Videobuf Framework<a class="headerlink" href="#videobuf-framework" title="Permalink to this headline">¶</a></h1>
 <p>Author: Jonathan Corbet &lt;<a class="reference external" href="mailto:corbet&#37;&#52;&#48;lwn&#46;net">corbet<span>&#64;</span>lwn<span>&#46;</span>net</a>&gt;</p>
 <p>Current as of 2.6.33</p>
@@ -387,7 +389,7 @@
 <p>The videobuf framework was deprecated in favor of videobuf2. Shouldn’t
 be used on new drivers.</p>
 </div>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2><span class="section-number">2.14.1. </span>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The videobuf layer functions as a sort of glue layer between a V4L2 driver
 and user space.  It handles the allocation and management of buffers for
@@ -399,8 +401,8 @@ including buffer allocation, queueing and dequeueing, and streaming
 control.  Using videobuf imposes a few design decisions on the driver
 author, but the payback comes in the form of reduced code in the driver and
 a consistent implementation of the V4L2 user-space API.</p>
-</section>
-<section id="buffer-types">
+</div>
+<div class="section" id="buffer-types">
 <h2><span class="section-number">2.14.2. </span>Buffer types<a class="headerlink" href="#buffer-types" title="Permalink to this headline">¶</a></h2>
 <p>Not all video devices use the same kind of buffers.  In fact, there are (at
 least) three common variations:</p>
@@ -432,8 +434,8 @@ benefits merit the use of this technique.  Overlay buffers can be handled
 as a form of scattered buffer, but there are very few implementations in
 the kernel and a description of this technique is currently beyond the
 scope of this document.]</p>
-</section>
-<section id="data-structures-callbacks-and-initialization">
+</div>
+<div class="section" id="data-structures-callbacks-and-initialization">
 <h2><span class="section-number">2.14.3. </span>Data structures, callbacks, and initialization<a class="headerlink" href="#data-structures-callbacks-and-initialization" title="Permalink to this headline">¶</a></h2>
 <p>Depending on which type of buffers are being used, the driver should
 include one of the following files:</p>
@@ -511,8 +513,8 @@ void videobuf_dma_contig_free(struct videobuf_queue *q,
 <p>Here, vb is the buffer, non_blocking indicates whether non-blocking I/O
 should be used (it should be zero in the buf_release() case), and intr
 controls whether an interruptible wait is used.</p>
-</section>
-<section id="file-operations">
+</div>
+<div class="section" id="file-operations">
 <h2><span class="section-number">2.14.4. </span>File operations<a class="headerlink" href="#file-operations" title="Permalink to this headline">¶</a></h2>
 <p>At this point, much of the work is done; much of the rest is slipping
 videobuf calls into the implementation of the other driver callbacks.  The
@@ -609,8 +611,8 @@ remain mapped, videobuf_mmap_free() returns an error code instead.  The
 purpose is clearly to cause the closing of the file descriptor to fail if
 buffers are still mapped, but every driver in the 2.6.32 kernel cheerfully
 ignores its return value.</p>
-</section>
-<section id="ioctl-operations">
+</div>
+<div class="section" id="ioctl-operations">
 <h2><span class="section-number">2.14.5. </span>ioctl() operations<a class="headerlink" href="#ioctl-operations" title="Permalink to this headline">¶</a></h2>
 <p>The V4L2 API includes a very long list of driver callbacks to respond to
 the many ioctl() commands made available to user space.  A number of these
@@ -634,8 +636,8 @@ boilerplate in a lot of V4L2 drivers.</p>
 <p>The vidioc_streamon() and vidioc_streamoff() functions will be a bit more
 complex, of course, since they will also need to deal with starting and
 stopping the capture engine.</p>
-</section>
-<section id="buffer-allocation">
+</div>
+<div class="section" id="buffer-allocation">
 <h2><span class="section-number">2.14.6. </span>Buffer allocation<a class="headerlink" href="#buffer-allocation" title="Permalink to this headline">¶</a></h2>
 <p>Thus far, we have talked about buffers, but have not looked at how they are
 allocated.  The scatter/gather case is the most complex on this front.  For
@@ -672,8 +674,8 @@ as long as that buffer is physically contiguous.  Normal user-space
 allocations will not meet that criterion, but buffers obtained from other
 kernel drivers, or those contained within huge pages, will work with these
 drivers.</p>
-</section>
-<section id="filling-the-buffers">
+</div>
+<div class="section" id="filling-the-buffers">
 <h2><span class="section-number">2.14.7. </span>Filling the buffers<a class="headerlink" href="#filling-the-buffers" title="Permalink to this headline">¶</a></h2>
 <p>The final part of a videobuf implementation has no direct callback - it’s
 the portion of the code which actually puts frame data into the buffers,
@@ -720,8 +722,8 @@ again.</p>
 header files; there are a few low-level functions declared there which have
 not been talked about here.  Note also that all of these calls are exported
 GPL-only, so they will not be available to non-GPL kernel modules.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

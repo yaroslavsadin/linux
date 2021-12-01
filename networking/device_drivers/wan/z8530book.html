@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Z8530 Programming Guide &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -375,14 +377,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="z8530-programming-guide">
+  <div class="section" id="z8530-programming-guide">
 <h1>Z8530 Programming Guide<a class="headerlink" href="#z8530-programming-guide" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Alan Cox</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The Z85x30 family synchronous/asynchronous controller chips are used on
 a large number of cheap network interface cards. The kernel provides a
@@ -392,8 +394,8 @@ services using this chip.</p>
 asynchronous driver support into this code to allow any Z85x30 device to
 be used as both a tty interface and as a synchronous controller is a
 project for Linux post the 2.4 release</p>
-</section>
-<section id="driver-modes">
+</div>
+<div class="section" id="driver-modes">
 <h2>Driver Modes<a class="headerlink" href="#driver-modes" title="Permalink to this headline">¶</a></h2>
 <p>The Z85230 driver layer can drive Z8530, Z85C30 and Z85230 devices in
 three different modes. Each mode can be applied to an individual channel
@@ -414,8 +416,8 @@ fast enough to hold the ISA bus solid.</p>
 transmission as the transmit FIFO is smaller than the receive FIFO. it
 gives better performance than pure PIO mode but is nowhere near as ideal
 as pure DMA mode.</p>
-</section>
-<section id="using-the-z85230-driver">
+</div>
+<div class="section" id="using-the-z85230-driver">
 <h2>Using the Z85230 driver<a class="headerlink" href="#using-the-z85230-driver" title="Permalink to this headline">¶</a></h2>
 <p>The Z85230 driver provides the back end interface to your board. To
 configure a Z8530 interface you need to detect the board and to identify
@@ -464,8 +466,8 @@ found.</p>
 function <a class="reference internal" href="#c.z8530_describe" title="z8530_describe"><code class="xref c c-func docutils literal notranslate"><span class="pre">z8530_describe()</span></code></a>. This provides a consistent
 reporting format for the Z8530 devices, and allows all the drivers to
 provide consistent reporting.</p>
-</section>
-<section id="attaching-network-interfaces">
+</div>
+<div class="section" id="attaching-network-interfaces">
 <h2>Attaching Network Interfaces<a class="headerlink" href="#attaching-network-interfaces" title="Permalink to this headline">¶</a></h2>
 <p>If you wish to use the network interface facilities of the driver, then
 you need to attach a network device to each channel that is present and
@@ -485,8 +487,8 @@ device.</p>
 <p>Before you register your network device you will also need to provide
 suitable handlers for most of the network device callbacks. See the
 network device documentation for more details on this.</p>
-</section>
-<section id="configuring-and-activating-the-port">
+</div>
+<div class="section" id="configuring-and-activating-the-port">
 <h2>Configuring And Activating The Port<a class="headerlink" href="#configuring-and-activating-the-port" title="Permalink to this headline">¶</a></h2>
 <p>The Z85230 driver provides helper functions and tables to load the port
 registers on the Z8530 chips. When programming the register settings for
@@ -544,8 +546,8 @@ to increase the maximum speed a little. This is activated by calling the
 <code class="docutils literal notranslate"><span class="pre">z8530_sync_txdma_open</span></code>. This returns a non zero error code on failure. The
 <a class="reference internal" href="#c.z8530_sync_txdma_close" title="z8530_sync_txdma_close"><code class="xref c c-func docutils literal notranslate"><span class="pre">z8530_sync_txdma_close()</span></code></a> function closes down the Z8530
 interface from this mode.</p>
-</section>
-<section id="network-layer-functions">
+</div>
+<div class="section" id="network-layer-functions">
 <h2>Network Layer Functions<a class="headerlink" href="#network-layer-functions" title="Permalink to this headline">¶</a></h2>
 <p>The Z8530 layer provides functions to queue packets for transmission.
 The driver internally buffers the frame currently being transmitted and
@@ -562,8 +564,8 @@ of the Z8530 layer and the caller should not free it.</p>
 internally maintained per interface statistics block. This provides most
 of the interface code needed to implement the network layer get_stats
 callback.</p>
-</section>
-<section id="porting-the-z8530-driver">
+</div>
+<div class="section" id="porting-the-z8530-driver">
 <h2>Porting The Z8530 Driver<a class="headerlink" href="#porting-the-z8530-driver" title="Permalink to this headline">¶</a></h2>
 <p>The Z8530 driver is written to be portable. In DMA mode it makes
 assumptions about the use of ISA DMA. These are probably warranted in
@@ -575,8 +577,8 @@ moment these assume PC I/O port accesses. This may not be appropriate
 for all platforms. Replacing <a class="reference internal" href="#c.z8530_read_port" title="z8530_read_port"><code class="xref c c-func docutils literal notranslate"><span class="pre">z8530_read_port()</span></code></a> and
 <code class="docutils literal notranslate"><span class="pre">z8530_write_port</span></code> is intended to be all that is required to port
 this driver layer.</p>
-</section>
-<section id="known-bugs-and-assumptions">
+</div>
+<div class="section" id="known-bugs-and-assumptions">
 <h2>Known Bugs And Assumptions<a class="headerlink" href="#known-bugs-and-assumptions" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Interrupt Locking</dt><dd><p>The locking in the driver is done via the global cli/sti lock. This
@@ -588,12 +590,12 @@ periods of time and the driver starts to receive junk frames. At the
 moment the cause of this is not clear.</p>
 </dd>
 </dl>
-</section>
-<section id="public-functions-provided">
+</div>
+<div class="section" id="public-functions-provided">
 <h2>Public Functions Provided<a class="headerlink" href="#public-functions-provided" title="Permalink to this headline">¶</a></h2>
 <dl class="c function">
-<dt id="c.z8530_interrupt">
-<span class="pre">irqreturn_t</span> <code class="sig-name descname"><span class="pre">z8530_interrupt</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_interrupt" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_interrupt">
+<span class="n"><span class="pre">irqreturn_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_interrupt</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_interrupt" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle an interrupt from a Z8530</p>
 </dd></dl>
 
@@ -613,8 +615,8 @@ channel). c-&gt;lock for both channels points to dev-&gt;lock</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_sync_open">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">z8530_sync_open</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="pre">net_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_open" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_sync_open">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_sync_open</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="n"><span class="pre">net_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_open" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Open a Z8530 channel for PIO</p>
 </dd></dl>
 
@@ -628,8 +630,8 @@ raise the RTS/DTR and commence network operation.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_sync_close">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">z8530_sync_close</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="pre">net_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_close" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_sync_close">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_sync_close</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="n"><span class="pre">net_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_close" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Close a PIO Z8530 channel</p>
 </dd></dl>
 
@@ -643,8 +645,8 @@ to discard future events.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_sync_dma_open">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">z8530_sync_dma_open</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="pre">net_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_dma_open" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_sync_dma_open">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_sync_dma_open</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="n"><span class="pre">net_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_dma_open" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Open a Z8530 for DMA I/O</p>
 </dd></dl>
 
@@ -659,8 +661,8 @@ DMA driven I/O and PC limits on access.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_sync_dma_close">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">z8530_sync_dma_close</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="pre">net_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_dma_close" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_sync_dma_close">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_sync_dma_close</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="n"><span class="pre">net_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_dma_close" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Close down DMA I/O</p>
 </dd></dl>
 
@@ -674,8 +676,8 @@ free the buffers.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_sync_txdma_open">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">z8530_sync_txdma_open</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="pre">net_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_txdma_open" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_sync_txdma_open">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_sync_txdma_open</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="n"><span class="pre">net_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_txdma_open" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Open a Z8530 for TX driven DMA</p>
 </dd></dl>
 
@@ -690,8 +692,8 @@ side is run in PIO mode, but then it has the bigger FIFO.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_sync_txdma_close">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">z8530_sync_txdma_close</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="pre">net_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_txdma_close" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_sync_txdma_close">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_sync_txdma_close</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../kapi.html#c.net_device" title="net_device"><span class="n"><span class="pre">net_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_sync_txdma_close" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Close down a TX driven DMA channel</p>
 </dd></dl>
 
@@ -705,8 +707,8 @@ and  free the buffers.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_describe">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_describe</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">io</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_describe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_describe">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_describe</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mapping</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">io</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_describe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Uniformly describe a Z8530 port</p>
 </dd></dl>
 
@@ -723,8 +725,8 @@ is to try and get a common format of report.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_init">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">z8530_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_init">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Initialise a Z8530 device</p>
 </dd></dl>
 
@@ -743,8 +745,8 @@ in errno form.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_shutdown">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">z8530_shutdown</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_shutdown" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_shutdown">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_shutdown</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_shutdown" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Shutdown a Z8530 device</p>
 </dd></dl>
 
@@ -758,8 +760,8 @@ in case the caller then tries to do stuff.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_channel_load">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">z8530_channel_load</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em>, <span class="pre">u8</span> <span class="pre">*</span><em><span class="pre">rtable</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_channel_load" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_channel_load">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_channel_load</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rtable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_channel_load" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Load channel data</p>
 </dd></dl>
 
@@ -775,8 +777,8 @@ table.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_null_rx">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_null_rx</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../kapi.html#c.sk_buff" title="sk_buff"><span class="pre">sk_buff</span></a> <span class="pre">*</span><em><span class="pre">skb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_null_rx" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_null_rx">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_null_rx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../kapi.html#c.sk_buff" title="sk_buff"><span class="n"><span class="pre">sk_buff</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">skb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_null_rx" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Discard a packet</p>
 </dd></dl>
 
@@ -790,8 +792,8 @@ of processing the frames we get to throw them away.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_queue_xmit">
-<span class="pre">netdev_tx_t</span> <code class="sig-name descname"><span class="pre">z8530_queue_xmit</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../kapi.html#c.sk_buff" title="sk_buff"><span class="pre">sk_buff</span></a> <span class="pre">*</span><em><span class="pre">skb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_queue_xmit" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_queue_xmit">
+<span class="n"><span class="pre">netdev_tx_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_queue_xmit</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../kapi.html#c.sk_buff" title="sk_buff"><span class="n"><span class="pre">sk_buff</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">skb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_queue_xmit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Queue a packet</p>
 </dd></dl>
 
@@ -808,12 +810,12 @@ not in the IRQ.</p>
 point.</p>
 </dd>
 </dl>
-</section>
-<section id="internal-functions">
+</div>
+<div class="section" id="internal-functions">
 <h2>Internal Functions<a class="headerlink" href="#internal-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="c function">
-<dt id="c.z8530_read_port">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">z8530_read_port</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_read_port" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_read_port">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_read_port</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_read_port" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Architecture specific interface function</p>
 </dd></dl>
 
@@ -831,8 +833,8 @@ dread 5uS sanity delay.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_write_port">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_write_port</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">p</span></em>, <span class="pre">u8</span> <em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_write_port" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_write_port">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_write_port</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">p</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">d</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_write_port" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Architecture specific interface function</p>
 </dd></dl>
 
@@ -851,8 +853,8 @@ dread 5uS sanity delay.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.read_zsreg">
-<span class="pre">u8</span> <code class="sig-name descname"><span class="pre">read_zsreg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em>, <span class="pre">u8</span> <em><span class="pre">reg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_zsreg" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_zsreg">
+<span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_zsreg</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">reg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_zsreg" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Read a register from a Z85230</p>
 </dd></dl>
 
@@ -868,8 +870,8 @@ register back.  The caller must hold the lock</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.read_zsdata">
-<span class="pre">u8</span> <code class="sig-name descname"><span class="pre">read_zsdata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_zsdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_zsdata">
+<span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_zsdata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_zsdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Read the data port of a Z8530 channel</p>
 </dd></dl>
 
@@ -881,8 +883,8 @@ have all the 5uS delays to worry about.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.write_zsreg">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">write_zsreg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em>, <span class="pre">u8</span> <em><span class="pre">reg</span></em>, <span class="pre">u8</span> <em><span class="pre">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_zsreg" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_zsreg">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_zsreg</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">reg</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.write_zsreg" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Write to a Z8530 channel register</p>
 </dd></dl>
 
@@ -900,8 +902,8 @@ being fast to access.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.write_zsctrl">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">write_zsctrl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em>, <span class="pre">u8</span> <em><span class="pre">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_zsctrl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_zsctrl">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_zsctrl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.write_zsctrl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Write to a Z8530 control register</p>
 </dd></dl>
 
@@ -914,8 +916,8 @@ being fast to access.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.write_zsdata">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">write_zsdata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em>, <span class="pre">u8</span> <em><span class="pre">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_zsdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_zsdata">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_zsdata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.write_zsdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Write to a Z8530 control register</p>
 </dd></dl>
 
@@ -928,8 +930,8 @@ being fast to access.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_flush_fifo">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_flush_fifo</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_flush_fifo" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_flush_fifo">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_flush_fifo</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_flush_fifo" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Flush on chip RX FIFO</p>
 </dd></dl>
 
@@ -944,8 +946,8 @@ present if it arrived during the flush.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_rtsdtr">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_rtsdtr</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em>, <span class="pre">int</span> <em><span class="pre">set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_rtsdtr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_rtsdtr">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_rtsdtr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_rtsdtr" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Control the outgoing DTS/RTS line</p>
 </dd></dl>
 
@@ -961,8 +963,8 @@ later.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_rx">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_rx</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_rx" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_rx">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_rx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_rx" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle a PIO receive event</p>
 </dd></dl>
 
@@ -989,8 +991,8 @@ ISA DMA</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_tx">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_tx</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_tx" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_tx">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_tx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_tx" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle a PIO transmit event</p>
 </dd></dl>
 
@@ -1004,8 +1006,8 @@ data rate otherwise.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_status">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_status</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">chan</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_status" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_status">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">chan</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_status" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle a PIO status exception</p>
 </dd></dl>
 
@@ -1019,8 +1021,8 @@ change is a line up or down.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_dma_rx">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_dma_rx</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">chan</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_dma_rx" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_dma_rx">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_dma_rx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">chan</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_dma_rx" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle a DMA RX event</p>
 </dd></dl>
 
@@ -1034,8 +1036,8 @@ a frame ended.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_dma_tx">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_dma_tx</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">chan</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_dma_tx" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_dma_tx">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_dma_tx</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">chan</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_dma_tx" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle a DMA TX event</p>
 </dd></dl>
 
@@ -1047,8 +1049,8 @@ shouldn’t happen. Scream loudly if it does.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_dma_status">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_dma_status</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">chan</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_dma_status" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_dma_status">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_dma_status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">chan</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_dma_status" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle a DMA status exception</p>
 </dd></dl>
 
@@ -1061,8 +1063,8 @@ and kick the next packet out. Secondly we may see a DCD change.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_rx_clear">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_rx_clear</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_rx_clear" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_rx_clear">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_rx_clear</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_rx_clear" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle RX events from a stopped chip</p>
 </dd></dl>
 
@@ -1075,8 +1077,8 @@ For machines with PCI Z85x30 cards, or level triggered interrupts
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_tx_clear">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_tx_clear</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_tx_clear" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_tx_clear">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_tx_clear</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_tx_clear" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle TX events from a stopped chip</p>
 </dd></dl>
 
@@ -1089,8 +1091,8 @@ For machines with PCI Z85x30 cards, or level triggered interrupts
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_status_clear">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_status_clear</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">chan</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_status_clear" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_status_clear">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_status_clear</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">chan</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_status_clear" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle status events from a stopped chip</p>
 </dd></dl>
 
@@ -1103,8 +1105,8 @@ For machines with PCI Z85x30 cards, or level triggered interrupts
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_tx_begin">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_tx_begin</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_tx_begin" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_tx_begin">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_tx_begin</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_tx_begin" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Begin packet transmission</p>
 </dd></dl>
 
@@ -1123,8 +1125,8 @@ nothing is queued we idle the sync.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_tx_done">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_tx_done</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_tx_done" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_tx_done">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_tx_done</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_tx_done" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>TX complete callback</p>
 </dd></dl>
 
@@ -1138,8 +1140,8 @@ packet. This code is fairly timing sensitive.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.z8530_rx_done">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">z8530_rx_done</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">z8530_channel</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_rx_done" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.z8530_rx_done">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">z8530_rx_done</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">z8530_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.z8530_rx_done" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Receive completion callback</p>
 </dd></dl>
 
@@ -1155,8 +1157,8 @@ frame can occur while we are copying the previous buffer to an sk_buff</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.spans_boundary">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">spans_boundary</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../kapi.html#c.sk_buff" title="sk_buff"><span class="pre">sk_buff</span></a> <span class="pre">*</span><em><span class="pre">skb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spans_boundary" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.spans_boundary">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">spans_boundary</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../kapi.html#c.sk_buff" title="sk_buff"><span class="n"><span class="pre">sk_buff</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">skb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.spans_boundary" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check a packet can be ISA DMA’d</p>
 </dd></dl>
 
@@ -1167,8 +1169,8 @@ frame can occur while we are copying the previous buffer to an sk_buff</p>
 thing can only DMA within a 64K block not across the edges of it.</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

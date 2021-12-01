@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>HOWTO for the linux packet generator &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -365,7 +367,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="howto-for-the-linux-packet-generator">
+  <div class="section" id="howto-for-the-linux-packet-generator">
 <h1>HOWTO for the linux packet generator<a class="headerlink" href="#howto-for-the-linux-packet-generator" title="Permalink to this headline">¶</a></h1>
 <p>Enable CONFIG_NET_PKTGEN to compile and build pktgen either in-kernel
 or as a module.  A module is preferred; modprobe pktgen if needed.  Once
@@ -384,7 +386,7 @@ root       130  0.3  0.0     0    0 ?        SW    2003 509:50 [kpktgend_1]
 /proc/net/pktgen/ethX
 </pre></div>
 </div>
-<section id="tuning-nic-for-max-performance">
+<div class="section" id="tuning-nic-for-max-performance">
 <h2>Tuning NIC for max performance<a class="headerlink" href="#tuning-nic-for-max-performance" title="Permalink to this headline">¶</a></h2>
 <p>The default NIC settings are (likely) not tuned for pktgen’s artificial
 overload type of benchmarking, as this could hurt the normal use-case.</p>
@@ -408,8 +410,8 @@ of parameter “rx-usecs”.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># ethtool -C ethX rx-usecs 30
 </pre></div>
 </div>
-</section>
-<section id="kernel-threads">
+</div>
+<div class="section" id="kernel-threads">
 <h2>Kernel threads<a class="headerlink" href="#kernel-threads" title="Permalink to this headline">¶</a></h2>
 <p>Pktgen creates a thread for each CPU with affinity to that CPU.
 Which is controlled through procfile /proc/net/pktgen/kpktgend_X.</p>
@@ -435,8 +437,8 @@ with multi queue NICs, the device naming scheme is extended with “&#64;”:
 <a class="reference external" href="mailto:device&#37;&#52;&#48;something">device<span>&#64;</span>something</a></p>
 <p>The part after “&#64;” can be anything, but it is custom to use the thread
 number.</p>
-</section>
-<section id="viewing-devices">
+</div>
+<div class="section" id="viewing-devices">
 <h2>Viewing devices<a class="headerlink" href="#viewing-devices" title="Permalink to this headline">¶</a></h2>
 <p>The Params section holds configured information.  The Current section
 holds running statistics.  The Result is printed after a run or after
@@ -465,8 +467,8 @@ Result: OK: 15430(c15405+d25) usec, 100000 (60byte,0frags)
 6480562pps 3110Mb/sec (3110669760bps) errors: 0
 </pre></div>
 </div>
-</section>
-<section id="configuring-devices">
+</div>
+<div class="section" id="configuring-devices">
 <h2>Configuring devices<a class="headerlink" href="#configuring-devices" title="Permalink to this headline">¶</a></h2>
 <p>This is done via the /proc interface, and most easily done via pgset
 as defined in the sample scripts.
@@ -583,8 +585,8 @@ pgset &quot;xmit_mode netif_receive&quot;  RX inject into stack netif_receive_sk
                                  Default xmit_mode is &quot;start_xmit&quot;.
 </pre></div>
 </div>
-</section>
-<section id="sample-scripts">
+</div>
+<div class="section" id="sample-scripts">
 <h2>Sample scripts<a class="headerlink" href="#sample-scripts" title="Permalink to this headline">¶</a></h2>
 <p>A collection of tutorial scripts and helpers for pktgen is in the
 samples/pktgen directory. The helper parameters.sh file support easy
@@ -616,16 +618,16 @@ and consistent parameter parsing across the sample scripts.</p>
 <p>The global variables being set are also listed.  E.g. the required
 interface/device parameter “-i” sets variable $DEV.  Copy the
 pktgen_sampleXX scripts and modify them to fit your own needs.</p>
-</section>
-<section id="interrupt-affinity">
+</div>
+<div class="section" id="interrupt-affinity">
 <h2>Interrupt affinity<a class="headerlink" href="#interrupt-affinity" title="Permalink to this headline">¶</a></h2>
 <p>Note that when adding devices to a specific CPU it is a good idea to
 also assign /proc/irq/XX/smp_affinity so that the TX interrupts are bound
 to the same CPU.  This reduces cache bouncing when freeing skbs.</p>
 <p>Plus using the device flag QUEUE_MAP_CPU, which maps the SKBs TX queue
 to the running threads CPU (directly from smp_processor_id()).</p>
-</section>
-<section id="enable-ipsec">
+</div>
+<div class="section" id="enable-ipsec">
 <h2>Enable IPsec<a class="headerlink" href="#enable-ipsec" title="Permalink to this headline">¶</a></h2>
 <p>Default IPsec transformation with ESP encapsulation plus transport mode
 can be enabled by simply setting:</p>
@@ -636,8 +638,8 @@ pgset &quot;flows 1&quot;
 <p>To avoid breaking existing testbed scripts for using AH type and tunnel mode,
 you can use “pgset spi SPI_VALUE” to specify which transformation mode
 to employ.</p>
-</section>
-<section id="current-commands-and-configuration-options">
+</div>
+<div class="section" id="current-commands-and-configuration-options">
 <h2>Current commands and configuration options<a class="headerlink" href="#current-commands-and-configuration-options" title="Permalink to this headline">¶</a></h2>
 <p><strong>Pgcontrol commands</strong>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>start
@@ -749,8 +751,8 @@ svlan_p
 <p>Grant Grundler for testing on IA-64 and parisc, Harald Welte,  Lennert Buytenhek
 Stephen Hemminger, Andi Kleen, Dave Miller and many others.</p>
 <p>Good luck with the linux net-development.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

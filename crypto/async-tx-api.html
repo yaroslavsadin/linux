@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Asynchronous Transfers/Transforms API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -271,9 +273,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="asynchronous-transfers-transforms-api">
+  <div class="section" id="asynchronous-transfers-transforms-api">
 <h1>Asynchronous Transfers/Transforms API<a class="headerlink" href="#asynchronous-transfers-transforms-api" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The async_tx API provides methods for describing a chain of asynchronous
 bulk memory transfers/transforms with support for inter-transactional
@@ -282,8 +284,8 @@ the details of different hardware offload engine implementations.  Code
 that is written to the API can optimize for asynchronous operation and
 the API will fit the chain of operations to the available offload
 resources.</p>
-</section>
-<section id="genealogy">
+</div>
+<div class="section" id="genealogy">
 <h2>2.Genealogy<a class="headerlink" href="#genealogy" title="Permalink to this headline">¶</a></h2>
 <p>The API was initially designed to offload the memory copy and
 xor-parity-calculations of the md-raid5 driver using the offload engines
@@ -303,17 +305,17 @@ to another implies a hardware channel switch.</p></li>
 <li><p>dmaengine extensions to support multiple clients and operation types
 beyond ‘memcpy’</p></li>
 </ol>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>3. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<section id="general-format-of-the-api">
+<div class="section" id="general-format-of-the-api">
 <h3>3.1 General format of the API<a class="headerlink" href="#general-format-of-the-api" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct dma_async_tx_descriptor *
 async_&lt;operation&gt;(&lt;op specific parameters&gt;, struct async_submit ctl *submit)
 </pre></div>
 </div>
-</section>
-<section id="supported-operations">
+</div>
+<div class="section" id="supported-operations">
 <h3>3.2 Supported operations<a class="headerlink" href="#supported-operations" title="Permalink to this headline">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
@@ -353,8 +355,8 @@ sources</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="descriptor-management">
+</div>
+<div class="section" id="descriptor-management">
 <h3>3.3 Descriptor management<a class="headerlink" href="#descriptor-management" title="Permalink to this headline">¶</a></h3>
 <p>The return value is non-NULL and points to a ‘descriptor’ when the operation
 has been queued to execute asynchronously.  Descriptors are recycled
@@ -371,8 +373,8 @@ following methods:</p>
 async_tx call will implicitly set the acknowledged state.</p></li>
 <li><p>calling async_tx_ack() on the descriptor.</p></li>
 </ol>
-</section>
-<section id="when-does-the-operation-execute">
+</div>
+<div class="section" id="when-does-the-operation-execute">
 <h3>3.4 When does the operation execute?<a class="headerlink" href="#when-does-the-operation-execute" title="Permalink to this headline">¶</a></h3>
 <p>Operations do not immediately issue after return from the
 async_&lt;operation&gt; call.  Offload engine drivers batch operations to
@@ -382,8 +384,8 @@ automatically issues pending operations.  An application can force this
 event by calling async_tx_issue_pending_all().  This operates on all
 channels since the application has no knowledge of channel to operation
 mapping.</p>
-</section>
-<section id="when-does-the-operation-complete">
+</div>
+<div class="section" id="when-does-the-operation-complete">
 <h3>3.5 When does the operation complete?<a class="headerlink" href="#when-does-the-operation-complete" title="Permalink to this headline">¶</a></h3>
 <p>There are two methods for an application to learn about the completion
 of an operation.</p>
@@ -399,8 +401,8 @@ async_&lt;operation&gt;, or when the application needs to submit a chain of
 unknown length it can use the async_trigger_callback() routine to set a
 completion interrupt/callback at the end of the chain.</p></li>
 </ol>
-</section>
-<section id="constraints">
+</div>
+<div class="section" id="constraints">
 <h3>3.6 Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Calls to async_&lt;operation&gt; are not permitted in IRQ context.  Other
@@ -409,8 +411,8 @@ contexts are permitted provided constraint #2 is not violated.</p></li>
 results in recursion in the synchronous case and spin_locks being
 acquired twice in the asynchronous case.</p></li>
 </ol>
-</section>
-<section id="example">
+</div>
+<div class="section" id="example">
 <h3>3.7 Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p>Perform a xor-&gt;copy-&gt;xor operation where each operation depends on the
 result from the previous operation:</p>
@@ -456,11 +458,11 @@ void run_xor_copy_xor(struct page **xor_srcs,
 <p>See include/linux/async_tx.h for more information on the flags.  See the
 ops_run_* and ops_complete_* routines in drivers/md/raid5.c for more
 implementation examples.</p>
-</section>
-</section>
-<section id="driver-development-notes">
+</div>
+</div>
+<div class="section" id="driver-development-notes">
 <h2>4. Driver Development Notes<a class="headerlink" href="#driver-development-notes" title="Permalink to this headline">¶</a></h2>
-<section id="conformance-points">
+<div class="section" id="conformance-points">
 <h3>4.1 Conformance points<a class="headerlink" href="#conformance-points" title="Permalink to this headline">¶</a></h3>
 <p>There are a few conformance points required in dmaengine drivers to
 accommodate assumptions made by applications using the async_tx API:</p>
@@ -470,8 +472,8 @@ accommodate assumptions made by applications using the async_tx API:</p>
 <li><p>Use async_tx_run_dependencies() in the descriptor clean up path to
 handle submission of dependent operations</p></li>
 </ol>
-</section>
-<section id="my-application-needs-exclusive-control-of-hardware-channels">
+</div>
+<div class="section" id="my-application-needs-exclusive-control-of-hardware-channels">
 <h3>4.2 “My application needs exclusive control of hardware channels”<a class="headerlink" href="#my-application-needs-exclusive-control-of-hardware-channels" title="Permalink to this headline">¶</a></h3>
 <p>Primarily this requirement arises from cases where a DMA engine driver
 is being used to support device-to-memory operations.  A channel that is
@@ -512,8 +514,8 @@ dma_release_channel().</p></li>
 with multiple channels will either have all channels public, or all
 channels private.</p></li>
 </ol>
-</section>
-<section id="source">
+</div>
+<div class="section" id="source">
 <h3>5. Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>include/linux/dmaengine.h:</dt><dd><p>core header file for DMA drivers and api users</p>
@@ -531,9 +533,9 @@ channels private.</p></li>
 <dt>crypto/async_tx/async_xor.c:</dt><dd><p>xor and xor zero sum offload</p>
 </dd>
 </dl>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

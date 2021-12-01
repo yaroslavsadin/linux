@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Pathname lookup &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -269,7 +271,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="pathname-lookup">
+  <div class="section" id="pathname-lookup">
 <h1>Pathname lookup<a class="headerlink" href="#pathname-lookup" title="Permalink to this headline">¶</a></h1>
 <p>This write-up is based on three articles published at lwn.net:</p>
 <ul class="simple">
@@ -284,7 +286,7 @@ including:</p>
 <li><p>per-directory parallel name lookup.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">openat2()</span></code> resolution restriction flags.</p></li>
 </ul>
-<section id="introduction-to-pathname-lookup">
+<div class="section" id="introduction-to-pathname-lookup">
 <h2>Introduction to pathname lookup<a class="headerlink" href="#introduction-to-pathname-lookup" title="Permalink to this headline">¶</a></h2>
 <p>The most obvious aspect of pathname lookup, which very little
 exploration is needed to discover, is that it is complex.  There are
@@ -298,13 +300,13 @@ another major division based on the VFS’s approach to locking which
 will allow us to review “REF-walk” and “RCU-walk” separately.  But we
 are getting ahead of ourselves.  There are some important low level
 distinctions we need to clarify first.</p>
-<section id="there-are-two-sorts-of">
+<div class="section" id="there-are-two-sorts-of">
 <h3>There are two sorts of …<a class="headerlink" href="#there-are-two-sorts-of" title="Permalink to this headline">¶</a></h3>
 <p>Pathnames (sometimes “file names”), used to identify objects in the
 filesystem, will be familiar to most readers.  They contain two sorts
 of elements: “slashes” that are sequences of one or more “<code class="docutils literal notranslate"><span class="pre">/</span></code>”
 characters, and “components” that are sequences of one or more
-non-”<code class="docutils literal notranslate"><span class="pre">/</span></code>” characters.  These form two kinds of paths.  Those that
+non-“<code class="docutils literal notranslate"><span class="pre">/</span></code>” characters.  These form two kinds of paths.  Those that
 start with slashes are “absolute” and start from the filesystem root.
 The others are “relative” and start from the current directory, or
 from some other location specified by a file descriptor given to
@@ -356,8 +358,8 @@ pathname lookup is to prevent them from having damaging effects.  Many
 of the possible races are seen most clearly in the context of the
 “dcache” and an understanding of that is central to understanding
 pathname lookup.</p>
-</section>
-<section id="more-than-just-a-cache">
+</div>
+<div class="section" id="more-than-just-a-cache">
 <h3>More than just a cache<a class="headerlink" href="#more-than-just-a-cache" title="Permalink to this headline">¶</a></h3>
 <p>The “dcache” caches information about names in each filesystem to
 make them quickly available for lookup.  Each entry (known as a
@@ -388,8 +390,8 @@ like ocfs2 or cephfs.  These filesystems allow the VFS to revalidate
 cached information, and must provide their own protection against
 awkward races.  The VFS can detect these filesystems by the
 <code class="docutils literal notranslate"><span class="pre">DCACHE_OP_REVALIDATE</span></code> flag being set in the dentry.</p>
-</section>
-<section id="ref-walk-simple-concurrency-management-with-refcounts-and-spinlocks">
+</div>
+<div class="section" id="ref-walk-simple-concurrency-management-with-refcounts-and-spinlocks">
 <h3>REF-walk: simple concurrency management with refcounts and spinlocks<a class="headerlink" href="#ref-walk-simple-concurrency-management-with-refcounts-and-spinlocks" title="Permalink to this headline">¶</a></h3>
 <p>With all of those divisions carefully classified, we can now start
 looking at the actual process of walking along a path.  In particular
@@ -405,7 +407,7 @@ different concurrency controls.  A background understanding of the
 various primitives is assumed, or can be gleaned from elsewhere such
 as in <a class="reference external" href="https://lwn.net/Articles/453685/">Meet the Lockers</a>.</p>
 <p>The locking mechanisms used by REF-walk include:</p>
-<section id="dentry-d-lockref">
+<div class="section" id="dentry-d-lockref">
 <h4>dentry-&gt;d_lockref<a class="headerlink" href="#dentry-d-lockref" title="Permalink to this headline">¶</a></h4>
 <p>This uses the lockref primitive to provide both a spinlock and a
 reference count.  The special-sauce of this primitive is that the
@@ -431,8 +433,8 @@ use (i.e. if the refcount in <code class="docutils literal notranslate"><span cl
 very common case.</p>
 <p>So as long as a counted reference is held to a dentry, a non-<code class="docutils literal notranslate"><span class="pre">NULL</span></code> <code class="docutils literal notranslate"><span class="pre">-&gt;d_inode</span></code>
 value will never be changed.</p>
-</section>
-<section id="dentry-d-lock">
+</div>
+<div class="section" id="dentry-d-lock">
 <h4>dentry-&gt;d_lock<a class="headerlink" href="#dentry-d-lock" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">d_lock</span></code> is a synonym for the spinlock that is part of <code class="docutils literal notranslate"><span class="pre">d_lockref</span></code> above.
 For our purposes, holding this lock protects against the dentry being
@@ -449,8 +451,8 @@ but it first tries a more lightweight approach.  As seen in
 <code class="docutils literal notranslate"><span class="pre">dget_parent()</span></code>, if a reference can be claimed on the parent, and if
 subsequently <code class="docutils literal notranslate"><span class="pre">d_parent</span></code> can be seen to have not changed, then there is
 no need to actually take the lock on the child.</p>
-</section>
-<section id="rename-lock">
+</div>
+<div class="section" id="rename-lock">
 <h4>rename_lock<a class="headerlink" href="#rename-lock" title="Permalink to this headline">¶</a></h4>
 <p>Looking up a given name in a given directory involves computing a hash
 from the two values (the name and the dentry of the directory),
@@ -474,8 +476,8 @@ the parent directory is moved outside the root, bypassing the <code class="docut
 check). If <code class="docutils literal notranslate"><span class="pre">rename_lock</span></code> is updated during the lookup and the path encounters
 a “..”, a potential attack occurred and <code class="docutils literal notranslate"><span class="pre">handle_dots()</span></code> will bail out with
 <code class="docutils literal notranslate"><span class="pre">-EAGAIN</span></code>.</p>
-</section>
-<section id="inode-i-rwsem">
+</div>
+<div class="section" id="inode-i-rwsem">
 <h4>inode-&gt;i_rwsem<a class="headerlink" href="#inode-i-rwsem" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">i_rwsem</span></code> is a read/write semaphore that serializes all changes to a particular
 directory.  This ensures that, for example, an <code class="docutils literal notranslate"><span class="pre">unlink()</span></code> and a <code class="docutils literal notranslate"><span class="pre">rename()</span></code>
@@ -541,8 +543,8 @@ likely explanation is that some other dentry was added instead using
 <code class="docutils literal notranslate"><span class="pre">d_splice_alias()</span></code>.  In any case, <code class="docutils literal notranslate"><span class="pre">d_alloc_parallel()</span></code> repeats all the
 look ups from the start and will normally return something from the
 primary hash table.</p>
-</section>
-<section id="mnt-mnt-count">
+</div>
+<div class="section" id="mnt-mnt-count">
 <h4>mnt-&gt;mnt_count<a class="headerlink" href="#mnt-mnt-count" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">mnt_count</span></code> is a per-CPU reference counter on “<code class="docutils literal notranslate"><span class="pre">mount</span></code>” structures.
 Per-CPU here means that incrementing the count is cheap as it only
@@ -556,8 +558,8 @@ does, however, ensure that the <code class="docutils literal notranslate"><span 
 and it provides a reference to the root dentry of the mounted
 filesystem.  So a reference through <code class="docutils literal notranslate"><span class="pre">-&gt;mnt_count</span></code> provides a stable
 reference to the mounted dentry, but not the mounted-on dentry.</p>
-</section>
-<section id="mount-lock">
+</div>
+<div class="section" id="mount-lock">
 <h4>mount_lock<a class="headerlink" href="#mount-lock" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">mount_lock</span></code> is a global seqlock, a bit like <code class="docutils literal notranslate"><span class="pre">rename_lock</span></code>.  It can be used to
 check if any change has been made to any mount points.</p>
@@ -581,24 +583,24 @@ the parent directory is moved outside the root, bypassing the <code class="docut
 check). If <code class="docutils literal notranslate"><span class="pre">mount_lock</span></code> is updated during the lookup and the path encounters
 a “..”, a potential attack occurred and <code class="docutils literal notranslate"><span class="pre">handle_dots()</span></code> will bail out with
 <code class="docutils literal notranslate"><span class="pre">-EAGAIN</span></code>.</p>
-</section>
-<section id="rcu">
+</div>
+<div class="section" id="rcu">
 <h4>RCU<a class="headerlink" href="#rcu" title="Permalink to this headline">¶</a></h4>
 <p>Finally the global (but extremely lightweight) RCU read lock is held
 from time to time to ensure certain data structures don’t get freed
 unexpectedly.</p>
 <p>In particular it is held while scanning chains in the dcache hash
 table, and the mount point hash table.</p>
-</section>
-</section>
-<section id="bringing-it-together-with-struct-nameidata">
+</div>
+</div>
+<div class="section" id="bringing-it-together-with-struct-nameidata">
 <h3>Bringing it together with <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">nameidata</span></code><a class="headerlink" href="#bringing-it-together-with-struct-nameidata" title="Permalink to this headline">¶</a></h3>
 <p>Throughout the process of walking a path, the current status is stored
 in a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">nameidata</span></code>, “namei” being the traditional name - dating
 all the way back to <a class="reference external" href="https://minnie.tuhs.org/cgi-bin/utree.pl?file=V1/u2.s">First Edition Unix</a> - of the function that
 converts a “name” to an “inode”.  <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">nameidata</span></code> contains (among
 other fields):</p>
-<section id="struct-path-path">
+<div class="section" id="struct-path-path">
 <h4><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">path</span> <span class="pre">path</span></code><a class="headerlink" href="#struct-path-path" title="Permalink to this headline">¶</a></h4>
 <p>A <code class="docutils literal notranslate"><span class="pre">path</span></code> contains a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">vfsmount</span></code> (which is
 embedded in a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">mount</span></code>) and a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dentry</span></code>.  Together these
@@ -607,18 +609,18 @@ starting point (the current working directory, the root directory, or some other
 directory identified by a file descriptor), and are updated on each
 step.  A reference through <code class="docutils literal notranslate"><span class="pre">d_lockref</span></code> and <code class="docutils literal notranslate"><span class="pre">mnt_count</span></code> is always
 held.</p>
-</section>
-<section id="struct-qstr-last">
+</div>
+<div class="section" id="struct-qstr-last">
 <h4><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">qstr</span> <span class="pre">last</span></code><a class="headerlink" href="#struct-qstr-last" title="Permalink to this headline">¶</a></h4>
 <p>This is a string together with a length (i.e. <em>not</em> <code class="docutils literal notranslate"><span class="pre">nul</span></code> terminated)
 that is the “next” component in the pathname.</p>
-</section>
-<section id="int-last-type">
+</div>
+<div class="section" id="int-last-type">
 <h4><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">last_type</span></code><a class="headerlink" href="#int-last-type" title="Permalink to this headline">¶</a></h4>
 <p>This is one of <code class="docutils literal notranslate"><span class="pre">LAST_NORM</span></code>, <code class="docutils literal notranslate"><span class="pre">LAST_ROOT</span></code>, <code class="docutils literal notranslate"><span class="pre">LAST_DOT</span></code> or <code class="docutils literal notranslate"><span class="pre">LAST_DOTDOT</span></code>.
 The <code class="docutils literal notranslate"><span class="pre">last</span></code> field is only valid if the type is <code class="docutils literal notranslate"><span class="pre">LAST_NORM</span></code>.</p>
-</section>
-<section id="struct-path-root">
+</div>
+<div class="section" id="struct-path-root">
 <h4><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">path</span> <span class="pre">root</span></code><a class="headerlink" href="#struct-path-root" title="Permalink to this headline">¶</a></h4>
 <p>This is used to hold a reference to the effective root of the
 filesystem.  Often that reference won’t be needed, so this field is
@@ -669,9 +671,9 @@ drops the unneeded references.</p>
 dentry before dropping the reference to the previous dentry may
 seem obvious, but is worth pointing out so that we will recognize its
 analogue in the “RCU-walk” version.</p>
-</section>
-</section>
-<section id="handling-the-final-component">
+</div>
+</div>
+<div class="section" id="handling-the-final-component">
 <h3>Handling the final component<a class="headerlink" href="#handling-the-final-component" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">link_path_walk()</span></code> only walks as far as setting <code class="docutils literal notranslate"><span class="pre">nd-&gt;last</span></code> and
 <code class="docutils literal notranslate"><span class="pre">nd-&gt;last_type</span></code> to refer to the final component of the path.  It does
@@ -711,8 +713,8 @@ example if <code class="docutils literal notranslate"><span class="pre">path_par
 won’t try to create that name.  They also check for trailing slashes
 by testing <code class="docutils literal notranslate"><span class="pre">last.name[last.len]</span></code>.  If there is any character beyond
 the final component, it must be a trailing slash.</p>
-</section>
-<section id="revalidation-and-automounts">
+</div>
+<div class="section" id="revalidation-and-automounts">
 <h3>Revalidation and automounts<a class="headerlink" href="#revalidation-and-automounts" title="Permalink to this headline">¶</a></h3>
 <p>Apart from symbolic links, there are only two parts of the “REF-walk”
 process not yet covered.  One is the handling of stale cache entries
@@ -735,7 +737,7 @@ here.</p>
 <p>The Linux VFS has a concept of “managed” dentries.  There are three
 potentially interesting things about these dentries corresponding
 to three different flags that might be set in <code class="docutils literal notranslate"><span class="pre">dentry-&gt;d_flags</span></code>:</p>
-<section id="dcache-manage-transit">
+<div class="section" id="dcache-manage-transit">
 <h4><code class="docutils literal notranslate"><span class="pre">DCACHE_MANAGE_TRANSIT</span></code><a class="headerlink" href="#dcache-manage-transit" title="Permalink to this headline">¶</a></h4>
 <p>If this flag has been set, then the filesystem has requested that the
 <code class="docutils literal notranslate"><span class="pre">d_manage()</span></code> dentry operation be called before handling any possible
@@ -750,8 +752,8 @@ need to access a directory without triggering normal automount
 processing.  That server process can identify itself to the <code class="docutils literal notranslate"><span class="pre">autofs</span></code>
 filesystem, which will then give it a special pass through
 <code class="docutils literal notranslate"><span class="pre">d_manage()</span></code> by returning <code class="docutils literal notranslate"><span class="pre">-EISDIR</span></code>.</p>
-</section>
-<section id="dcache-mounted">
+</div>
+<div class="section" id="dcache-mounted">
 <h4><code class="docutils literal notranslate"><span class="pre">DCACHE_MOUNTED</span></code><a class="headerlink" href="#dcache-mounted" title="Permalink to this headline">¶</a></h4>
 <p>This flag is set on every dentry that is mounted on.  As Linux
 supports multiple filesystem namespaces, it is possible that the
@@ -761,8 +763,8 @@ other.  So this flag is seen as a hint, not a promise.</p>
 <code class="docutils literal notranslate"><span class="pre">lookup_mnt()</span></code> is called to examine the mount hash table (honoring the
 <code class="docutils literal notranslate"><span class="pre">mount_lock</span></code> described earlier) and possibly return a new <code class="docutils literal notranslate"><span class="pre">vfsmount</span></code>
 and a new <code class="docutils literal notranslate"><span class="pre">dentry</span></code> (both with counted references).</p>
-</section>
-<section id="dcache-need-automount">
+</div>
+<div class="section" id="dcache-need-automount">
 <h4><code class="docutils literal notranslate"><span class="pre">DCACHE_NEED_AUTOMOUNT</span></code><a class="headerlink" href="#dcache-need-automount" title="Permalink to this headline">¶</a></h4>
 <p>If <code class="docutils literal notranslate"><span class="pre">d_manage()</span></code> allowed us to get this far, and <code class="docutils literal notranslate"><span class="pre">lookup_mnt()</span></code> didn’t
 find a mount point, then this flag causes the <code class="docutils literal notranslate"><span class="pre">d_automount()</span></code> dentry
@@ -778,10 +780,10 @@ locks (only counted references) are held over this processing due to
 the very real possibility of extended delays.
 This will become more important next time when we examine RCU-walk
 which is particularly sensitive to delays.</p>
-</section>
-</section>
-</section>
-<section id="rcu-walk-faster-pathname-lookup-in-linux">
+</div>
+</div>
+</div>
+<div class="section" id="rcu-walk-faster-pathname-lookup-in-linux">
 <h2>RCU-walk - faster pathname lookup in Linux<a class="headerlink" href="#rcu-walk-faster-pathname-lookup-in-linux" title="Permalink to this headline">¶</a></h2>
 <p>RCU-walk is another algorithm for performing pathname lookup in Linux.
 It is in many ways similar to REF-walk and the two share quite a bit
@@ -794,7 +796,7 @@ REF-walk.  The difficulty with RCU-walk comes from a different
 direction: unfamiliarity.  The locking rules when depending on RCU are
 quite different from traditional locking, so we will spend a little extra
 time when we come to those.</p>
-<section id="clear-demarcation-of-roles">
+<div class="section" id="clear-demarcation-of-roles">
 <h3>Clear demarcation of roles<a class="headerlink" href="#clear-demarcation-of-roles" title="Permalink to this headline">¶</a></h3>
 <p>The easiest way to manage concurrency is to forcibly stop any other
 thread from changing the data structures that a given thread is
@@ -850,8 +852,8 @@ REF-walk, but will never then try to switch back to RCU-walk.  Places
 that trip up RCU-walk are much more likely to be near the leaves and
 so it is very unlikely that there will be much, if any, benefit from
 switching back.</p>
-</section>
-<section id="rcu-and-seqlocks-fast-and-light">
+</div>
+<div class="section" id="rcu-and-seqlocks-fast-and-light">
 <h3>RCU and seqlocks: fast and light<a class="headerlink" href="#rcu-and-seqlocks-fast-and-light" title="Permalink to this headline">¶</a></h3>
 <p>RCU is, unsurprisingly, critical to RCU-walk mode.  The
 <code class="docutils literal notranslate"><span class="pre">rcu_read_lock()</span></code> is held for the entire time that RCU-walk is walking
@@ -900,7 +902,7 @@ isn’t necessary.  A subsequent <code class="docutils literal notranslate"><spa
 sufficient to catch any problem that could occur at this point.</p>
 <p>With that little refresher on seqlocks out of the way we can look at
 the bigger picture of how RCU-walk uses seqlocks.</p>
-<section id="mount-lock-and-nd-m-seq">
+<div class="section" id="mount-lock-and-nd-m-seq">
 <h4><code class="docutils literal notranslate"><span class="pre">mount_lock</span></code> and <code class="docutils literal notranslate"><span class="pre">nd-&gt;m_seq</span></code><a class="headerlink" href="#mount-lock-and-nd-m-seq" title="Permalink to this headline">¶</a></h4>
 <p>We already met the <code class="docutils literal notranslate"><span class="pre">mount_lock</span></code> seqlock when REF-walk used it to
 ensure that crossing a mount point is performed safely.  RCU-walk uses
@@ -924,8 +926,8 @@ REF-walk.</p>
 that, had REF-walk taken counted references on each vfsmount, the
 results would have been the same.  This ensures the invariant holds,
 at least for vfsmount structures.</p>
-</section>
-<section id="dentry-d-seq-and-nd-seq">
+</div>
+<div class="section" id="dentry-d-seq-and-nd-seq">
 <h4><code class="docutils literal notranslate"><span class="pre">dentry-&gt;d_seq</span></code> and <code class="docutils literal notranslate"><span class="pre">nd-&gt;seq</span></code><a class="headerlink" href="#dentry-d-seq-and-nd-seq" title="Permalink to this headline">¶</a></h4>
 <p>In place of taking a count or lock on <code class="docutils literal notranslate"><span class="pre">d_reflock</span></code>, RCU-walk samples
 the per-dentry <code class="docutils literal notranslate"><span class="pre">d_seq</span></code> seqlock, and stores the sequence number in the
@@ -965,8 +967,8 @@ process of getting the <code class="docutils literal notranslate"><span class="p
 checking the <code class="docutils literal notranslate"><span class="pre">seq</span></code> number of the old exactly mirrors the process of
 getting a counted reference to the new dentry before dropping that for
 the old dentry which we saw in REF-walk.</p>
-</section>
-<section id="no-inode-i-rwsem-or-even-rename-lock">
+</div>
+<div class="section" id="no-inode-i-rwsem-or-even-rename-lock">
 <h4>No <code class="docutils literal notranslate"><span class="pre">inode-&gt;i_rwsem</span></code> or even <code class="docutils literal notranslate"><span class="pre">rename_lock</span></code><a class="headerlink" href="#no-inode-i-rwsem-or-even-rename-lock" title="Permalink to this headline">¶</a></h4>
 <p>A semaphore is a fairly heavyweight lock that can only be taken when it is
 permissible to sleep.  As <code class="docutils literal notranslate"><span class="pre">rcu_read_lock()</span></code> forbids sleeping,
@@ -985,9 +987,9 @@ something in the dentry cache, whether it is really there or not, it
 already drops down to REF-walk and tries again with appropriate
 locking.  This neatly handles all cases, so adding extra checks on
 rename_lock would bring no significant value.</p>
-</section>
-</section>
-<section id="unlazy-walk-and-complete-walk">
+</div>
+</div>
+<div class="section" id="unlazy-walk-and-complete-walk">
 <h3><code class="docutils literal notranslate"><span class="pre">unlazy</span> <span class="pre">walk()</span></code> and <code class="docutils literal notranslate"><span class="pre">complete_walk()</span></code><a class="headerlink" href="#unlazy-walk-and-complete-walk" title="Permalink to this headline">¶</a></h3>
 <p>That “dropping down to REF-walk” typically involves a call to
 <code class="docutils literal notranslate"><span class="pre">unlazy_walk()</span></code>, so named because “RCU-walk” is also sometimes
@@ -1030,8 +1032,8 @@ finds that the reference it got might not be safe, checks the
 <code class="docutils literal notranslate"><span class="pre">MNT_SYNC_UMOUNT</span></code> flag to determine if a simple <code class="docutils literal notranslate"><span class="pre">mnt_put()</span></code> is
 correct, or if it should just decrement the count and pretend none of
 this ever happened.</p>
-</section>
-<section id="taking-care-in-filesystems">
+</div>
+<div class="section" id="taking-care-in-filesystems">
 <h3>Taking care in filesystems<a class="headerlink" href="#taking-care-in-filesystems" title="Permalink to this headline">¶</a></h3>
 <p>RCU-walk depends almost entirely on cached information and often will
 not call into the filesystem at all.  However there are two places,
@@ -1057,8 +1059,8 @@ when accessing fields in the dentry.  This “extra care” typically
 involves using  <a class="reference external" href="https://lwn.net/Articles/624126/">READ_ONCE()</a> to access fields, and verifying the
 result is not NULL before using it.  This pattern can be seen in
 <code class="docutils literal notranslate"><span class="pre">nfs_lookup_revalidate()</span></code>.</p>
-</section>
-<section id="a-pair-of-patterns">
+</div>
+<div class="section" id="a-pair-of-patterns">
 <h3>A pair of patterns<a class="headerlink" href="#a-pair-of-patterns" title="Permalink to this headline">¶</a></h3>
 <p>In various places in the details of REF-walk and RCU-walk, and also in
 the big picture, there are a couple of related patterns that are worth
@@ -1081,9 +1083,9 @@ number of things are safe at all.  The most likely cause of errors in
 this whole process is assuming something is safe when in reality it
 isn’t.  Careful consideration of what exactly guarantees the safety of
 each access is sometimes necessary.</p>
-</section>
-</section>
-<section id="a-walk-among-the-symlinks">
+</div>
+</div>
+<div class="section" id="a-walk-among-the-symlinks">
 <h2>A walk among the symlinks<a class="headerlink" href="#a-walk-among-the-symlinks" title="Permalink to this headline">¶</a></h2>
 <p>There are several basic issues that we will examine to understand the
 handling of symbolic links:  the symlink stack, together with cache
@@ -1091,7 +1093,7 @@ lifetimes, will help us understand the overall recursive handling of
 symlinks and lead to the special care needed for the final component.
 Then a consideration of access-time updates and summary of the various
 flags controlling lookup will finish the story.</p>
-<section id="the-symlink-stack">
+<div class="section" id="the-symlink-stack">
 <h3>The symlink stack<a class="headerlink" href="#the-symlink-stack" title="Permalink to this headline">¶</a></h3>
 <p>There are only two sorts of filesystem objects that can usefully
 appear in a path prior to the final component: directories and symlinks.
@@ -1145,8 +1147,8 @@ detected, an error is returned.</p>
 <p>It might seem that the name remnants are all that needs to be stored on
 this stack, but we need a bit more.  To see that, we need to move on to
 cache lifetimes.</p>
-</section>
-<section id="storage-and-lifetime-of-cached-symlinks">
+</div>
+<div class="section" id="storage-and-lifetime-of-cached-symlinks">
 <h3>Storage and lifetime of cached symlinks<a class="headerlink" href="#storage-and-lifetime-of-cached-symlinks" title="Permalink to this headline">¶</a></h3>
 <p>Like other filesystem resources, such as inodes and directory
 entries, symlinks are cached by Linux to avoid repeated costly access
@@ -1218,8 +1220,8 @@ excessive.</p>
 <p>Note that, in a given stack frame, the path remnant (<code class="docutils literal notranslate"><span class="pre">name</span></code>) is not
 part of the symlink that the other fields refer to.  It is the remnant
 to be followed once that symlink has been fully parsed.</p>
-</section>
-<section id="following-the-symlink">
+</div>
+<div class="section" id="following-the-symlink">
 <h3>Following the symlink<a class="headerlink" href="#following-the-symlink" title="Permalink to this headline">¶</a></h3>
 <p>The main loop in <code class="docutils literal notranslate"><span class="pre">link_path_walk()</span></code> iterates seamlessly over all
 components in the path and all of the non-final symlinks.  As symlinks
@@ -1253,7 +1255,7 @@ current symlink, and <code class="docutils literal notranslate"><span class="pre
 component of the lookup, so we will check userspace flag <code class="docutils literal notranslate"><span class="pre">LOOKUP_FOLLOW</span></code> to
 decide whether follow it when it is a symlink and call <code class="docutils literal notranslate"><span class="pre">may_follow_link()</span></code> to
 check if we have privilege to follow it.</p>
-<section id="symlinks-with-no-final-component">
+<div class="section" id="symlinks-with-no-final-component">
 <h4>Symlinks with no final component<a class="headerlink" href="#symlinks-with-no-final-component" title="Permalink to this headline">¶</a></h4>
 <p>A pair of special-case symlinks deserve a little further explanation.
 Both result in a new <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">path</span></code> (with mount and dentry) being set
@@ -1280,9 +1282,9 @@ a string name, but instead calls nd_jump_link() which updates the
 <code class="docutils literal notranslate"><span class="pre">nameidata</span></code> in place to point to that target.  <code class="docutils literal notranslate"><span class="pre">-&gt;get_link()</span></code> then
 returns <code class="docutils literal notranslate"><span class="pre">NULL</span></code>.  Again there is no final component and pick_link()
 returns <code class="docutils literal notranslate"><span class="pre">NULL</span></code>.</p>
-</section>
-</section>
-<section id="following-the-symlink-in-the-final-component">
+</div>
+</div>
+<div class="section" id="following-the-symlink-in-the-final-component">
 <h3>Following the symlink in the final component<a class="headerlink" href="#following-the-symlink-in-the-final-component" title="Permalink to this headline">¶</a></h3>
 <p>All this leads to <code class="docutils literal notranslate"><span class="pre">link_path_walk()</span></code> walking down every component, and
 following all symbolic links it finds, until it reaches the final
@@ -1337,8 +1339,8 @@ returns a non <code class="docutils literal notranslate"><span class="pre">NULL<
 open process continues on the symlink that was found.</p>
 </li>
 </ol>
-</section>
-<section id="updating-the-access-time">
+</div>
+<div class="section" id="updating-the-access-time">
 <h3>Updating the access time<a class="headerlink" href="#updating-the-access-time" title="Permalink to this headline">¶</a></h3>
 <p>We previously said of RCU-walk that it would “take no locks, increment
 no counts, leave no footprints.”  We have since seen that some
@@ -1377,8 +1379,8 @@ mode and, if it isn’t, the update can be skipped and RCU-walk mode
 continues.  Only when an <code class="docutils literal notranslate"><span class="pre">atime</span></code> update is actually required does the
 path walk drop down to REF-walk.  All of this is handled in the
 <code class="docutils literal notranslate"><span class="pre">get_link()</span></code> function.</p>
-</section>
-<section id="a-few-flags">
+</div>
+<div class="section" id="a-few-flags">
 <h3>A few flags<a class="headerlink" href="#a-few-flags" title="Permalink to this headline">¶</a></h3>
 <p>A suitable way to wrap up this tour of pathname walking is to list
 the various flags that can be stored in the <code class="docutils literal notranslate"><span class="pre">nameidata</span></code> to guide the
@@ -1389,7 +1391,7 @@ apply restrictions to all path components encountered in the path lookup.</p>
 the others.  If this is not set, an empty pathname causes an error
 very early on.  If it is set, empty pathnames are not considered to be
 an error.</p>
-<section id="global-state-flags">
+<div class="section" id="global-state-flags">
 <h4>Global state flags<a class="headerlink" href="#global-state-flags" title="Permalink to this headline">¶</a></h4>
 <p>We have already met two global state flags: <code class="docutils literal notranslate"><span class="pre">LOOKUP_RCU</span></code> and
 <code class="docutils literal notranslate"><span class="pre">LOOKUP_REVAL</span></code>.  These select between one of three overall approaches
@@ -1409,8 +1411,8 @@ name (with <code class="docutils literal notranslate"><span class="pre">d_revali
 to be revalidated, so <code class="docutils literal notranslate"><span class="pre">d_op-&gt;d_weak_revalidate()</span></code> is called if
 <code class="docutils literal notranslate"><span class="pre">ND_JUMPED</span></code> is set when the look completes - which may be at the
 final component or, when creating, unlinking, or renaming, at the penultimate component.</p>
-</section>
-<section id="resolution-restriction-flags">
+</div>
+<div class="section" id="resolution-restriction-flags">
 <h4>Resolution-restriction flags<a class="headerlink" href="#resolution-restriction-flags" title="Permalink to this headline">¶</a></h4>
 <p>In order to allow userspace to protect itself against certain race conditions
 and attack scenarios involving changing path components, a series of flags are
@@ -1438,8 +1440,8 @@ were the filesystem root. <code class="docutils literal notranslate"><span class
 the starting point, and “..” at the starting point will act as a no-op. As with
 <code class="docutils literal notranslate"><span class="pre">LOOKUP_BENEATH</span></code>, <code class="docutils literal notranslate"><span class="pre">rename_lock</span></code> and <code class="docutils literal notranslate"><span class="pre">mount_lock</span></code> are used to detect
 attacks against “..” resolution. Magic-links are also blocked.</p>
-</section>
-<section id="final-component-flags">
+</div>
+<div class="section" id="final-component-flags">
 <h4>Final-component flags<a class="headerlink" href="#final-component-flags" title="Permalink to this headline">¶</a></h4>
 <p>Some of these flags are only set when the final component is being
 considered.  Others are only checked for when considering that final
@@ -1465,9 +1467,9 @@ method.  A filesystem can choose not to bother revalidating too hard
 if it knows that it will be asked to open or create the file soon.
 These flags were previously useful for <code class="docutils literal notranslate"><span class="pre">-&gt;lookup()</span></code> too but with the
 introduction of <code class="docutils literal notranslate"><span class="pre">-&gt;atomic_open()</span></code> they are less relevant there.</p>
-</section>
-</section>
-<section id="end-of-the-road">
+</div>
+</div>
+<div class="section" id="end-of-the-road">
 <h3>End of the road<a class="headerlink" href="#end-of-the-road" title="Permalink to this headline">¶</a></h3>
 <p>Despite its complexity, all this pathname lookup code appears to be
 in good shape - various parts are certainly easier to understand now
@@ -1476,9 +1478,9 @@ than even a couple of releases ago.  But that doesn’t mean it is
 symlinks that are stored in the inode so, while it handles many ext4
 symlinks, it doesn’t help with NFS, XFS, or Btrfs.  That support
 is not likely to be long delayed.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

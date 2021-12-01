@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Kernel Electric-Fence (KFENCE) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -266,7 +268,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kernel-electric-fence-kfence">
+  <div class="section" id="kernel-electric-fence-kfence">
 <h1>Kernel Electric-Fence (KFENCE)<a class="headerlink" href="#kernel-electric-fence-kfence" title="Permalink to this headline">¶</a></h1>
 <p>Kernel Electric-Fence (KFENCE) is a low-overhead sampling-based memory safety
 error detector. KFENCE detects heap out-of-bounds access, use-after-free, and
@@ -277,7 +279,7 @@ precision. The main motivation behind KFENCE’s design, is that with enough
 total uptime KFENCE will detect bugs in code paths not typically exercised by
 non-production test workloads. One way to quickly achieve a large enough total
 uptime is when the tool is deployed across a large fleet of machines.</p>
-<section id="usage">
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>To enable KFENCE, configure the kernel with:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CONFIG_KFENCE=y
@@ -291,7 +293,7 @@ CONFIG_KFENCE_SAMPLE_INTERVAL=0
 </div>
 <p>KFENCE provides several other configuration options to customize behaviour (see
 the respective help text in <code class="docutils literal notranslate"><span class="pre">lib/Kconfig.kfence</span></code> for more info).</p>
-<section id="tuning-performance">
+<div class="section" id="tuning-performance">
 <h3>Tuning performance<a class="headerlink" href="#tuning-performance" title="Permalink to this headline">¶</a></h3>
 <p>The most important parameter is KFENCE’s sample interval, which can be set via
 the kernel boot parameter <code class="docutils literal notranslate"><span class="pre">kfence.sample_interval</span></code> in milliseconds. The
@@ -314,8 +316,8 @@ dedicating 2 MiB to the KFENCE memory pool.</p>
 <p>Note: On architectures that support huge pages, KFENCE will ensure that the
 pool is using pages of size <code class="docutils literal notranslate"><span class="pre">PAGE_SIZE</span></code>. This will result in additional page
 tables being allocated.</p>
-</section>
-<section id="error-reports">
+</div>
+<div class="section" id="error-reports">
 <h3>Error reports<a class="headerlink" href="#error-reports" title="Permalink to this headline">¶</a></h3>
 <p>A typical out-of-bounds access looks like this:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>==================================================================
@@ -467,8 +469,8 @@ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
 ==================================================================
 </pre></div>
 </div>
-</section>
-<section id="debugfs-interface">
+</div>
+<div class="section" id="debugfs-interface">
 <h3>DebugFS interface<a class="headerlink" href="#debugfs-interface" title="Permalink to this headline">¶</a></h3>
 <p>Some debugging information is exposed via debugfs:</p>
 <ul class="simple">
@@ -476,9 +478,9 @@ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
 <li><p>The file <code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/kfence/objects</span></code> provides a list of objects
 allocated via KFENCE, including those already freed but protected.</p></li>
 </ul>
-</section>
-</section>
-<section id="implementation-details">
+</div>
+</div>
+<div class="section" id="implementation-details">
 <h2>Implementation Details<a class="headerlink" href="#implementation-details" title="Permalink to this headline">¶</a></h2>
 <p>Guarded allocations are set up based on the sample interval. After expiration
 of the sample interval, the next allocation through the main allocator (SLAB or
@@ -531,14 +533,14 @@ filling up the pool permanently, which is the most common risk for the pool
 becoming full and the sampled allocation rate dropping to zero. The threshold
 at which to start limiting currently covered allocations can be configured via
 the boot parameter <code class="docutils literal notranslate"><span class="pre">kfence.skip_covered_thresh</span></code> (pool usage%).</p>
-</section>
-<section id="interface">
+</div>
+<div class="section" id="interface">
 <h2>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h2>
 <p>The following describes the functions which are used by allocators as well as
 page handling code to set up and deal with KFENCE allocations.</p>
 <dl class="c function">
-<dt id="c.is_kfence_address">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">is_kfence_address</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">addr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.is_kfence_address" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.is_kfence_address">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">is_kfence_address</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">addr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.is_kfence_address" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>check if an address belongs to KFENCE pool</p>
 </dd></dl>
 
@@ -562,8 +564,8 @@ Future changes should take this into account; for instance, we want to avoid
 introducing another load and therefore need to keep KFENCE_POOL_SIZE a
 constant (until immediate patching support is added to the kernel).</p>
 <dl class="c function">
-<dt id="c.kfence_shutdown_cache">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">kfence_shutdown_cache</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">kmem_cache</span> <span class="pre">*</span><em><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_shutdown_cache" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.kfence_shutdown_cache">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kfence_shutdown_cache</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">kmem_cache</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_shutdown_cache" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>handle shutdown_cache() for KFENCE objects</p>
 </dd></dl>
 
@@ -586,8 +588,8 @@ is handled gracefully), but usage will result in showing KFENCE error reports
 which include stack traces to the user of the object, the original allocation
 site, and caller to shutdown_cache().</p>
 <dl class="c function">
-<dt id="c.kfence_alloc">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">kfence_alloc</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">kmem_cache</span> <span class="pre">*</span><em><span class="pre">s</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em>, <a class="reference internal" href="../core-api/mm-api.html#c.gfp_t" title="gfp_t"><span class="pre">gfp_t</span></a> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_alloc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.kfence_alloc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">kfence_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">kmem_cache</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">s</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span>, <a class="reference internal" href="../core-api/mm-api.html#c.gfp_t" title="gfp_t"><span class="n"><span class="pre">gfp_t</span></span></a><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_alloc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate a KFENCE object with a low probability</p>
 </dd></dl>
 
@@ -612,8 +614,8 @@ allowing it to transparently return KFENCE-allocated objects with a low
 probability using a static branch (the probability is controlled by the
 kfence.sample_interval boot parameter).</p>
 <dl class="c function">
-<dt id="c.kfence_ksize">
-<span class="pre">size_t</span> <code class="sig-name descname"><span class="pre">kfence_ksize</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">addr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_ksize" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.kfence_ksize">
+<span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kfence_ksize</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">addr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_ksize" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get actual amount of memory allocated for a KFENCE object</p>
 </dd></dl>
 
@@ -632,8 +634,8 @@ kfence.sample_interval boot parameter).</p>
 allocation time. This number may be less than the object size of the
 corresponding struct kmem_cache.</p>
 <dl class="c function">
-<dt id="c.kfence_object_start">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">kfence_object_start</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">addr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_object_start" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.kfence_object_start">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">kfence_object_start</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">addr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_object_start" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>find the beginning of a KFENCE object</p>
 </dd></dl>
 
@@ -651,8 +653,8 @@ the object size. The same is not true for KFENCE, which places a single
 object at either end of the page. This helper function is used to find the
 beginning of a KFENCE-allocated object.</p>
 <dl class="c function">
-<dt id="c.__kfence_free">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__kfence_free</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">addr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__kfence_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__kfence_free">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__kfence_free</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">addr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__kfence_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>release a KFENCE heap object to KFENCE pool</p>
 </dd></dl>
 
@@ -665,8 +667,8 @@ beginning of a KFENCE-allocated object.</p>
 <p>Requires: is_kfence_address(addr)</p>
 <p>Release a KFENCE object and mark it as freed.</p>
 <dl class="c function">
-<dt id="c.kfence_free">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">kfence_free</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">addr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.kfence_free">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kfence_free</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">addr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>try to release an arbitrary heap object to KFENCE pool</p>
 </dd></dl>
 
@@ -686,8 +688,8 @@ even non-KFENCE objects, to simplify integration of the hooks into the
 allocator’s free codepath. The allocator must check the return value to
 determine if it was a KFENCE object or not.</p>
 <dl class="c function">
-<dt id="c.kfence_handle_page_fault">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">kfence_handle_page_fault</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">addr</span></em>, <span class="pre">bool</span> <em><span class="pre">is_write</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">pt_regs</span> <span class="pre">*</span><em><span class="pre">regs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_handle_page_fault" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.kfence_handle_page_fault">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kfence_handle_page_fault</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">addr</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">is_write</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pt_regs</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.kfence_handle_page_fault" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>perform page fault handling for KFENCE pages</p>
 </dd></dl>
 
@@ -710,8 +712,8 @@ determine if it was a KFENCE object or not.</p>
 out-of-bounds access, a use-after-free or an invalid memory access. In these
 cases KFENCE prints an error message and marks the offending page as
 present, so that the kernel can proceed.</p>
-</section>
-<section id="related-tools">
+</div>
+<div class="section" id="related-tools">
 <h2>Related Tools<a class="headerlink" href="#related-tools" title="Permalink to this headline">¶</a></h2>
 <p>In userspace, a similar approach is taken by <a class="reference external" href="http://llvm.org/docs/GwpAsan.html">GWP-ASan</a>. GWP-ASan also relies on guard pages and
 a sampling strategy to detect memory unsafety bugs at scale. KFENCE’s design is
@@ -728,8 +730,8 @@ where test cases or reproducers exists: due to the lower chance to detect the
 error, it would require more effort using KFENCE to debug. Deployments at scale
 that cannot afford to enable KASAN, however, would benefit from using KFENCE to
 discover bugs due to code paths not exercised by test cases or fuzzers.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

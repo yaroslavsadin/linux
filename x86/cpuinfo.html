@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>3. x86 Feature Flags &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -296,9 +298,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="x86-feature-flags">
+  <div class="section" id="x86-feature-flags">
 <h1><span class="section-number">3. </span>x86 Feature Flags<a class="headerlink" href="#x86-feature-flags" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2><span class="section-number">3.1. </span>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>On x86, flags appearing in /proc/cpuinfo have an X86_FEATURE definition
 in arch/x86/include/asm/cpufeatures.h. If the kernel cares about a feature
@@ -319,10 +321,10 @@ disabled at build or run time, an old kernel is in use, or the kernel does
 not support the feature and thus has not enabled it. In general, /proc/cpuinfo
 shows features which the kernel supports. For a full list of CPUID flags
 which the CPU supports, use tools/arch/x86/kcpuid.</p>
-</section>
-<section id="how-are-feature-flags-created">
+</div>
+<div class="section" id="how-are-feature-flags-created">
 <h2><span class="section-number">3.2. </span>How are feature flags created?<a class="headerlink" href="#how-are-feature-flags-created" title="Permalink to this headline">¶</a></h2>
-<section id="a-feature-flags-can-be-derived-from-the-contents-of-cpuid-leaves">
+<div class="section" id="a-feature-flags-can-be-derived-from-the-contents-of-cpuid-leaves">
 <h3><span class="section-number">3.2.1. </span>a: Feature flags can be derived from the contents of CPUID leaves.<a class="headerlink" href="#a-feature-flags-can-be-derived-from-the-contents-of-cpuid-leaves" title="Permalink to this headline">¶</a></h3>
 <p>These feature definitions are organized mirroring the layout of CPUID
 leaves and grouped in words with offsets as mapped in enum cpuid_leafs
@@ -331,8 +333,8 @@ If a feature is defined with a X86_FEATURE_&lt;name&gt; definition in
 cpufeatures.h, and if it is detected at run time, the flags will be
 displayed accordingly in /proc/cpuinfo. For example, the flag “avx2”
 comes from X86_FEATURE_AVX2 in cpufeatures.h.</p>
-</section>
-<section id="b-flags-can-be-from-scattered-cpuid-based-features">
+</div>
+<div class="section" id="b-flags-can-be-from-scattered-cpuid-based-features">
 <h3><span class="section-number">3.2.2. </span>b: Flags can be from scattered CPUID-based features.<a class="headerlink" href="#b-flags-can-be-from-scattered-cpuid-based-features" title="Permalink to this headline">¶</a></h3>
 <p>Hardware features enumerated in sparsely populated CPUID leaves get
 software-defined values. Still, CPUID needs to be queried to determine
@@ -345,8 +347,8 @@ cpuinfo_x86.x86_capability[] unnecessarily. For instance, the CPUID leaf
 has only one feature and would waste 31 bits of space in the x86_capability[]
 array. Since there is a struct cpuinfo_x86 for each possible CPU, the wasted
 memory is not trivial.</p>
-</section>
-<section id="c-flags-can-be-created-synthetically-under-certain-conditions-for-hardware-features">
+</div>
+<div class="section" id="c-flags-can-be-created-synthetically-under-certain-conditions-for-hardware-features">
 <h3><span class="section-number">3.2.3. </span>c: Flags can be created synthetically under certain conditions for hardware features.<a class="headerlink" href="#c-flags-can-be-created-synthetically-under-certain-conditions-for-hardware-features" title="Permalink to this headline">¶</a></h3>
 <p>Examples of conditions include whether certain features are present in
 MSR_IA32_CORE_CAPS or specific CPU models are identified. If the needed
@@ -355,29 +357,29 @@ setup_force_cpu_cap macros. For example, if bit 5 is set in MSR_IA32_CORE_CAPS,
 the feature X86_FEATURE_SPLIT_LOCK_DETECT will be enabled and
 “split_lock_detect” will be displayed. The flag “ring3mwait” will be
 displayed only when running on INTEL_FAM6_XEON_PHI_[KNL|KNM] processors.</p>
-</section>
-<section id="d-flags-can-represent-purely-software-features">
+</div>
+<div class="section" id="d-flags-can-represent-purely-software-features">
 <h3><span class="section-number">3.2.4. </span>d: Flags can represent purely software features.<a class="headerlink" href="#d-flags-can-represent-purely-software-features" title="Permalink to this headline">¶</a></h3>
 <p>These flags do not represent hardware features. Instead, they represent a
 software feature implemented in the kernel. For example, Kernel Page Table
 Isolation is purely software feature and its feature flag X86_FEATURE_PTI is
 also defined in cpufeatures.h.</p>
-</section>
-</section>
-<section id="naming-of-flags">
+</div>
+</div>
+<div class="section" id="naming-of-flags">
 <h2><span class="section-number">3.3. </span>Naming of Flags<a class="headerlink" href="#naming-of-flags" title="Permalink to this headline">¶</a></h2>
 <p>The script arch/x86/kernel/cpu/mkcapflags.sh processes the
 #define X86_FEATURE_&lt;name&gt; from cpufeatures.h and generates the
 x86_cap/bug_flags[] arrays in kernel/cpu/capflags.c. The names in the
 resulting x86_cap/bug_flags[] are used to populate /proc/cpuinfo. The naming
 of flags in the x86_cap/bug_flags[] are as follows:</p>
-<section id="a-the-name-of-the-flag-is-from-the-string-in-x86-feature-name-by-default">
+<div class="section" id="a-the-name-of-the-flag-is-from-the-string-in-x86-feature-name-by-default">
 <h3><span class="section-number">3.3.1. </span>a: The name of the flag is from the string in X86_FEATURE_&lt;name&gt; by default.<a class="headerlink" href="#a-the-name-of-the-flag-is-from-the-string-in-x86-feature-name-by-default" title="Permalink to this headline">¶</a></h3>
 <p>By default, the flag &lt;name&gt; in /proc/cpuinfo is extracted from the respective
 X86_FEATURE_&lt;name&gt; in cpufeatures.h. For example, the flag “avx2” is from
 X86_FEATURE_AVX2.</p>
-</section>
-<section id="b-the-naming-can-be-overridden">
+</div>
+<div class="section" id="b-the-naming-can-be-overridden">
 <h3><span class="section-number">3.3.2. </span>b: The naming can be overridden.<a class="headerlink" href="#b-the-naming-can-be-overridden" title="Permalink to this headline">¶</a></h3>
 <p>If the comment on the line for the #define X86_FEATURE_* starts with a
 double-quote character (“”), the string inside the double-quote characters
@@ -387,36 +389,36 @@ the comment “sse4_1” following the X86_FEATURE_XMM4_1 definition.</p>
 needed. For instance, /proc/cpuinfo is a userspace interface and must remain
 constant. If, for some reason, the naming of X86_FEATURE_&lt;name&gt; changes, one
 shall override the new naming with the name already used in /proc/cpuinfo.</p>
-</section>
-<section id="c-the-naming-override-can-be-which-means-it-will-not-appear-in-proc-cpuinfo">
+</div>
+<div class="section" id="c-the-naming-override-can-be-which-means-it-will-not-appear-in-proc-cpuinfo">
 <h3><span class="section-number">3.3.3. </span>c: The naming override can be “”, which means it will not appear in /proc/cpuinfo.<a class="headerlink" href="#c-the-naming-override-can-be-which-means-it-will-not-appear-in-proc-cpuinfo" title="Permalink to this headline">¶</a></h3>
 <p>The feature shall be omitted from /proc/cpuinfo if it does not make sense for
 the feature to be exposed to userspace. For example, X86_FEATURE_ALWAYS is
 defined in cpufeatures.h but that flag is an internal kernel feature used
 in the alternative runtime patching functionality. So, its name is overridden
 with “”. Its flag will not appear in /proc/cpuinfo.</p>
-</section>
-</section>
-<section id="flags-are-missing-when-one-or-more-of-these-happen">
+</div>
+</div>
+<div class="section" id="flags-are-missing-when-one-or-more-of-these-happen">
 <h2><span class="section-number">3.4. </span>Flags are missing when one or more of these happen<a class="headerlink" href="#flags-are-missing-when-one-or-more-of-these-happen" title="Permalink to this headline">¶</a></h2>
-<section id="a-the-hardware-does-not-enumerate-support-for-it">
+<div class="section" id="a-the-hardware-does-not-enumerate-support-for-it">
 <h3><span class="section-number">3.4.1. </span>a: The hardware does not enumerate support for it.<a class="headerlink" href="#a-the-hardware-does-not-enumerate-support-for-it" title="Permalink to this headline">¶</a></h3>
 <p>For example, when a new kernel is running on old hardware or the feature is
 not enabled by boot firmware. Even if the hardware is new, there might be a
 problem enabling the feature at run time, the flag will not be displayed.</p>
-</section>
-<section id="b-the-kernel-does-not-know-about-the-flag">
+</div>
+<div class="section" id="b-the-kernel-does-not-know-about-the-flag">
 <h3><span class="section-number">3.4.2. </span>b: The kernel does not know about the flag.<a class="headerlink" href="#b-the-kernel-does-not-know-about-the-flag" title="Permalink to this headline">¶</a></h3>
 <p>For example, when an old kernel is running on new hardware.</p>
-</section>
-<section id="c-the-kernel-disabled-support-for-it-at-compile-time">
+</div>
+<div class="section" id="c-the-kernel-disabled-support-for-it-at-compile-time">
 <h3><span class="section-number">3.4.3. </span>c: The kernel disabled support for it at compile-time.<a class="headerlink" href="#c-the-kernel-disabled-support-for-it-at-compile-time" title="Permalink to this headline">¶</a></h3>
 <p>For example, if 5-level-paging is not enabled when building (i.e.,
 CONFIG_X86_5LEVEL is not selected) the flag “la57” will not show up <a class="footnote-reference brackets" href="#f1" id="id1">1</a>.
 Even though the feature will still be detected via CPUID, the kernel disables
 it by clearing via setup_clear_cpu_cap(X86_FEATURE_LA57).</p>
-</section>
-<section id="d-the-feature-is-disabled-at-boot-time">
+</div>
+<div class="section" id="d-the-feature-is-disabled-at-boot-time">
 <h3><span class="section-number">3.4.4. </span>d: The feature is disabled at boot-time.<a class="headerlink" href="#d-the-feature-is-disabled-at-boot-time" title="Permalink to this headline">¶</a></h3>
 <p>A feature can be disabled either using a command-line parameter or because
 it failed to be enabled. The command-line parameter clearcpuid= can be used
@@ -429,8 +431,8 @@ disable specific features. The list of parameters includes, but is not limited
 to, nofsgsbase, nosmap, and nosmep. 5-level paging can also be disabled using
 “no5lvl”. SMAP and SMEP are disabled with the aforementioned parameters,
 respectively.</p>
-</section>
-<section id="e-the-feature-was-known-to-be-non-functional">
+</div>
+<div class="section" id="e-the-feature-was-known-to-be-non-functional">
 <h3><span class="section-number">3.4.5. </span>e: The feature was known to be non-functional.<a class="headerlink" href="#e-the-feature-was-known-to-be-non-functional" title="Permalink to this headline">¶</a></h3>
 <p>The feature was known to be non-functional because a dependency was
 missing at runtime. For example, AVX flags will not show up if XSAVE feature
@@ -442,9 +444,9 @@ enable a feature.</p>
 <dd><p>5-level paging uses linear address of 57 bits.</p>
 </dd>
 </dl>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

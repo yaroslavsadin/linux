@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Adding a New System Call &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -287,12 +289,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="adding-a-new-system-call">
+  <div class="section" id="adding-a-new-system-call">
 <span id="addsyscalls"></span><h1>Adding a New System Call<a class="headerlink" href="#adding-a-new-system-call" title="Permalink to this headline">¶</a></h1>
 <p>This document describes what’s involved in adding a new system call to the
 Linux kernel, over and above the normal submission advice in
 <a class="reference internal" href="submitting-patches.html#submittingpatches"><span class="std std-ref"><a class="reference internal" href="submitting-patches.html"><span class="doc">Submitting patches: the essential guide to getting your code into the kernel</span></a></span></a>.</p>
-<section id="system-call-alternatives">
+<div class="section" id="system-call-alternatives">
 <h2>System Call Alternatives<a class="headerlink" href="#system-call-alternatives" title="Permalink to this headline">¶</a></h2>
 <p>The first thing to consider when adding a new system call is whether one of
 the alternatives might be suitable instead.  Although system calls are the
@@ -337,8 +339,8 @@ is best reserved for near-analogs of existing <code class="docutils literal notr
 getting/setting a simple flag related to a process.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="designing-the-api-planning-for-extension">
+</div>
+<div class="section" id="designing-the-api-planning-for-extension">
 <h2>Designing the API: Planning for Extension<a class="headerlink" href="#designing-the-api-planning-for-extension" title="Permalink to this headline">¶</a></h2>
 <p>A new system call forms part of the API of the kernel, and has to be supported
 indefinitely.  As such, it’s a very good idea to explicitly discuss the
@@ -386,8 +388,8 @@ setting <code class="docutils literal notranslate"><span class="pre">param_4</sp
 </div></blockquote>
 <p>See <em class="manpage">perf_event_open(2)</em> and the <code class="docutils literal notranslate"><span class="pre">perf_copy_attr()</span></code> function (in
 <code class="docutils literal notranslate"><span class="pre">kernel/events/core.c</span></code>) for an example of this approach.</p>
-</section>
-<section id="designing-the-api-other-considerations">
+</div>
+<div class="section" id="designing-the-api-other-considerations">
 <h2>Designing the API: Other Considerations<a class="headerlink" href="#designing-the-api-other-considerations" title="Permalink to this headline">¶</a></h2>
 <p>If your new system call allows userspace to refer to a kernel object, it
 should use a file descriptor as the handle for that object – don’t invent a
@@ -447,8 +449,8 @@ system call parameters that are explicitly 64-bit fall on odd-numbered
 arguments (i.e. parameter 1, 3, 5), to allow use of contiguous pairs of 32-bit
 registers.  (This concern does not apply if the arguments are part of a
 structure that’s passed in by pointer.)</p>
-</section>
-<section id="proposing-the-api">
+</div>
+<div class="section" id="proposing-the-api">
 <h2>Proposing the API<a class="headerlink" href="#proposing-the-api" title="Permalink to this headline">¶</a></h2>
 <p>To make new system calls easy to review, it’s best to divide up the patchset
 into separate chunks.  These should include at least the following items as
@@ -467,8 +469,8 @@ cover letter, or as a patch to the (separate) man-pages repository.</p></li>
 </div></blockquote>
 <p>New system call proposals, like any change to the kernel’s API, should always
 be cc’ed to <a class="reference external" href="mailto:linux-api&#37;&#52;&#48;vger&#46;kernel&#46;org">linux-api<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a>.</p>
-</section>
-<section id="generic-system-call-implementation">
+</div>
+<div class="section" id="generic-system-call-implementation">
 <h2>Generic System Call Implementation<a class="headerlink" href="#generic-system-call-implementation" title="Permalink to this headline">¶</a></h2>
 <p>The main entry point for your new <em class="manpage">xyzzy(2)</em> system call will be called
 <code class="docutils literal notranslate"><span class="pre">sys_xyzzy()</span></code>, but you add this entry point with the appropriate
@@ -523,8 +525,8 @@ off.</p></li>
 <li><p>fallback stub in <code class="docutils literal notranslate"><span class="pre">kernel/sys_ni.c</span></code></p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="x86-system-call-implementation">
+</div>
+<div class="section" id="x86-system-call-implementation">
 <h2>x86 System Call Implementation<a class="headerlink" href="#x86-system-call-implementation" title="Permalink to this headline">¶</a></h2>
 <p>To wire up your new system call for x86 platforms, you need to update the
 master syscall tables.  Assuming your new system call isn’t special in some
@@ -539,8 +541,8 @@ arch/x86/entry/syscalls/syscall_64.tbl:</p>
 </div>
 <p>Again, these numbers are liable to be changed if there are conflicts in the
 relevant merge window.</p>
-</section>
-<section id="compatibility-system-calls-generic">
+</div>
+<div class="section" id="compatibility-system-calls-generic">
 <h2>Compatibility System Calls (Generic)<a class="headerlink" href="#compatibility-system-calls-generic" title="Permalink to this headline">¶</a></h2>
 <p>For most system calls the same 64-bit implementation can be invoked even when
 the userspace program is itself 32-bit; even if the system call’s parameters
@@ -623,8 +625,8 @@ __SC_COMP(__NR_xyzzy, sys_xyzzy, compat_sys_xyzzy)
 <code class="docutils literal notranslate"><span class="pre">include/uapi/asm-generic/unistd.h</span></code></p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="compatibility-system-calls-x86">
+</div>
+<div class="section" id="compatibility-system-calls-x86">
 <h2>Compatibility System Calls (x86)<a class="headerlink" href="#compatibility-system-calls-x86" title="Permalink to this headline">¶</a></h2>
 <p>To wire up the x86 architecture of a system call with a compatibility version,
 the entries in the syscall tables need to be adjusted.</p>
@@ -652,8 +654,8 @@ arch/x86/entry/syscalls/syscall_64.tbl is unchanged).</p>
 <p>In either case, you should check that the types involved in your argument
 layout do indeed map exactly from x32 (-mx32) to either the 32-bit (-m32) or
 64-bit (-m64) equivalents.</p>
-</section>
-<section id="system-calls-returning-elsewhere">
+</div>
+<div class="section" id="system-calls-returning-elsewhere">
 <h2>System Calls Returning Elsewhere<a class="headerlink" href="#system-calls-returning-elsewhere" title="Permalink to this headline">¶</a></h2>
 <p>For most system calls, once the system call is complete the user program
 continues exactly where it left off – at the next instruction, with the
@@ -696,8 +698,8 @@ simulates registers etc).  Fixing this is as simple as adding a #define to
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#define stub_xyzzy sys_xyzzy
 </pre></div>
 </div>
-</section>
-<section id="other-details">
+</div>
+<div class="section" id="other-details">
 <h2>Other Details<a class="headerlink" href="#other-details" title="Permalink to this headline">¶</a></h2>
 <p>Most of the kernel treats system calls in a generic way, but there is the
 occasional exception that may need updating for your particular system call.</p>
@@ -709,8 +711,8 @@ analogous to one of these, then the audit system should be updated.</p>
 <p>More generally, if there is an existing system call that is analogous to your
 new system call, it’s worth doing a kernel-wide grep for the existing system
 call to check there are no other special cases.</p>
-</section>
-<section id="testing">
+</div>
+<div class="section" id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
 <p>A new system call should obviously be tested; it is also useful to provide
 reviewers with a demonstration of how user space programs will use the system
@@ -732,8 +734,8 @@ for filesystem-related changes.</p>
 <li><p>git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="man-page">
+</div>
+<div class="section" id="man-page">
 <h2>Man Page<a class="headerlink" href="#man-page" title="Permalink to this headline">¶</a></h2>
 <p>All new system calls should come with a complete man page, ideally using groff
 markup, but plain text will do.  If groff is used, it’s helpful to include a
@@ -741,8 +743,8 @@ pre-rendered ASCII version of the man page in the cover email for the
 patchset, for the convenience of reviewers.</p>
 <p>The man page should be cc’ed to <a class="reference external" href="mailto:linux-man&#37;&#52;&#48;vger&#46;kernel&#46;org">linux-man<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a>
 For more details, see <a class="reference external" href="https://www.kernel.org/doc/man-pages/patches.html">https://www.kernel.org/doc/man-pages/patches.html</a></p>
-</section>
-<section id="do-not-call-system-calls-in-the-kernel">
+</div>
+<div class="section" id="do-not-call-system-calls-in-the-kernel">
 <h2>Do not call System Calls in the Kernel<a class="headerlink" href="#do-not-call-system-calls-in-the-kernel" title="Permalink to this headline">¶</a></h2>
 <p>System calls are, as stated above, interaction points between userspace and
 the kernel.  Therefore, system call functions such as <code class="docutils literal notranslate"><span class="pre">sys_xyzzy()</span></code> or
@@ -767,8 +769,8 @@ user data.  This is another reason why calling <code class="docutils literal not
 bad idea.</p>
 <p>Exceptions to this rule are only allowed in architecture-specific overrides,
 architecture-specific compatibility wrappers, or other code in arch/.</p>
-</section>
-<section id="references-and-sources">
+</div>
+<div class="section" id="references-and-sources">
 <h2>References and Sources<a class="headerlink" href="#references-and-sources" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul>
@@ -830,8 +832,8 @@ compatibility with 64-bit versions rather than 32-bit versions:
 <a class="reference external" href="https://lore.kernel.org/r/CA+55aFxfmwfB7jbbrXxa=K7VBYPfAvmu3XOkGrLbB1UFjX1+Ew&#64;mail.gmail.com">https://lore.kernel.org/r/CA+55aFxfmwfB7jbbrXxa=K7VBYPfAvmu3XOkGrLbB1UFjX1+Ew&#64;mail.gmail.com</a></p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

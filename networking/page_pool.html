@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Page Pool API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -365,7 +367,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="page-pool-api">
+  <div class="section" id="page-pool-api">
 <h1>Page Pool API<a class="headerlink" href="#page-pool-api" title="Permalink to this headline">¶</a></h1>
 <p>The page_pool allocator is optimized for the XDP mode that uses one frame
 per-page, but it can fallback on the regular page allocator APIs.</p>
@@ -380,7 +382,7 @@ accounting.</p>
 <p>API user must call page_pool_put_page() once on a page, as it
 will either recycle the page, or in case of refcnt &gt; 1, it will
 release the DMA mapping and inflight state accounting.</p>
-<section id="architecture-overview">
+<div class="section" id="architecture-overview">
 <h2>Architecture overview<a class="headerlink" href="#architecture-overview" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>+------------------+
 |       Driver     |
@@ -412,8 +414,8 @@ release the DMA mapping and inflight state accounting.</p>
                       +-----------------+     +------------------+
 </pre></div>
 </div>
-</section>
-<section id="api-interface">
+</div>
+<div class="section" id="api-interface">
 <h2>API interface<a class="headerlink" href="#api-interface" title="Permalink to this headline">¶</a></h2>
 <p>The number of pools created <strong>must</strong> match the number of hardware queues
 unless hardware restrictions make that impossible. This would otherwise beat the
@@ -460,10 +462,10 @@ completion loop for the XDP_REDIRECT use case.
 Please note the caller must not use data area after running
 page_pool_put_page_bulk(), as this function overwrites it.</p></li>
 </ul>
-</section>
-<section id="coding-examples">
+</div>
+<div class="section" id="coding-examples">
 <h2>Coding examples<a class="headerlink" href="#coding-examples" title="Permalink to this headline">¶</a></h2>
-<section id="registration">
+<div class="section" id="registration">
 <h3>Registration<a class="headerlink" href="#registration" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Page pool registration */</span>
 <span class="k">struct</span> <span class="nc">page_pool_params</span> <span class="n">pp_params</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
@@ -488,8 +490,8 @@ page_pool_put_page_bulk(), as this function overwrites it.</p></li>
     <span class="k">goto</span> <span class="n">err_out</span><span class="p">;</span>
 </pre></div>
 </div>
-</section>
-<section id="napi-poller">
+</div>
+<div class="section" id="napi-poller">
 <h3>NAPI poller<a class="headerlink" href="#napi-poller" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* NAPI Rx poller */</span>
 <span class="k">enum</span> <span class="n">dma_data_direction</span> <span class="n">dma_dir</span><span class="p">;</span>
@@ -508,17 +510,17 @@ page_pool_put_page_bulk(), as this function overwrites it.</p></li>
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="driver-unload">
+</div>
+<div class="section" id="driver-unload">
 <h3>Driver unload<a class="headerlink" href="#driver-unload" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Driver unload */</span>
 <span class="n">page_pool_put_full_page</span><span class="p">(</span><span class="n">page_pool</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
 <span class="n">xdp_rxq_info_unreg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">xdp_rxq</span><span class="p">);</span>
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

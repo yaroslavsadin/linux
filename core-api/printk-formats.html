@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>How to get printk format specifiers right &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -259,7 +261,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="how-to-get-printk-format-specifiers-right">
+  <div class="section" id="how-to-get-printk-format-specifiers-right">
 <h1>How to get printk format specifiers right<a class="headerlink" href="#how-to-get-printk-format-specifiers-right" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple" id="printk-specifiers">
 <dt class="field-odd">Author</dt>
@@ -269,7 +271,7 @@
 <dd class="field-even"><p>Andrew Murray &lt;<a class="reference external" href="mailto:amurray&#37;&#52;&#48;mpc-data&#46;co&#46;uk">amurray<span>&#64;</span>mpc-data<span>&#46;</span>co<span>&#46;</span>uk</a>&gt;</p>
 </dd>
 </dl>
-<section id="integer-types">
+<div class="section" id="integer-types">
 <h2>Integer types<a class="headerlink" href="#integer-types" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>If variable is of Type,         use printk format specifier:
 ------------------------------------------------------------
@@ -307,8 +309,8 @@ specifier of its largest possible type and explicitly cast to it.</p>
 %g, %a) are also not recognized, for obvious reasons. Use of any
 unsupported specifier or length qualifier results in a WARN and early
 return from <a class="reference internal" href="kernel-api.html#c.vsnprintf" title="vsnprintf"><code class="xref c c-func docutils literal notranslate"><span class="pre">vsnprintf()</span></code></a>.</p>
-</section>
-<section id="pointer-types">
+</div>
+<div class="section" id="pointer-types">
 <h2>Pointer types<a class="headerlink" href="#pointer-types" title="Permalink to this headline">¶</a></h2>
 <p>A raw pointer value may be printed with %p which will hash the address
 before printing. The kernel also supports extended specifiers for printing
@@ -321,7 +323,7 @@ might be printed instead of the unreachable information:</p>
 (einval) invalid data on a valid address
 </pre></div>
 </div>
-<section id="plain-pointers">
+<div class="section" id="plain-pointers">
 <h3>Plain Pointers<a class="headerlink" href="#plain-pointers" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%p      abcdef12 or 00000000abcdef12
 </pre></div>
@@ -341,8 +343,8 @@ addresses unmodified. If you <em>really</em> always want the unmodified address,
 <p>If (and only if) you are printing addresses as a content of a virtual file in
 e.g. procfs or sysfs (using e.g. seq_printf(), not <a class="reference internal" href="printk-basics.html#c.printk" title="printk"><code class="xref c c-func docutils literal notranslate"><span class="pre">printk()</span></code></a>) read by a
 userspace process, use the %pK modifier described below instead of %p or %px.</p>
-</section>
-<section id="error-pointers">
+</div>
+<div class="section" id="error-pointers">
 <h3>Error Pointers<a class="headerlink" href="#error-pointers" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pe     -ENOSPC
 </pre></div>
@@ -351,8 +353,8 @@ userspace process, use the %pK modifier described below instead of %p or %px.</p
 as a symbolic error name. Error values for which no symbolic name is
 known are printed in decimal, while a non-ERR_PTR passed as the
 argument to %pe gets treated as ordinary %p.</p>
-</section>
-<section id="symbols-function-pointers">
+</div>
+<div class="section" id="symbols-function-pointers">
 <h3>Symbols/Function Pointers<a class="headerlink" href="#symbols-function-pointers" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pS     versatile_init+0x0/0x110
 %ps     versatile_init
@@ -378,8 +380,8 @@ specifier.</p>
 %pBb    prev_fn_of_versatile_init+0x88/0x88 [module_name ed5019fdf5e53be37cb1ba7899292d7e143b259e]
 </pre></div>
 </div>
-</section>
-<section id="probed-pointers-from-bpf-tracing">
+</div>
+<div class="section" id="probed-pointers-from-bpf-tracing">
 <h3>Probed Pointers from BPF / tracing<a class="headerlink" href="#probed-pointers-from-bpf-tracing" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pks    kernel string
 %pus    user string
@@ -390,8 +392,8 @@ either kernel memory (k) or user memory (u). The subsequent <code class="docutil
 results in printing a string. For direct use in regular <a class="reference internal" href="kernel-api.html#c.vsnprintf" title="vsnprintf"><code class="xref c c-func docutils literal notranslate"><span class="pre">vsnprintf()</span></code></a> the (k)
 and (u) annotation is ignored, however, when used out of BPF’s bpf_trace_printk(),
 for example, it reads the memory it is pointing to without faulting.</p>
-</section>
-<section id="kernel-pointers">
+</div>
+<div class="section" id="kernel-pointers">
 <h3>Kernel Pointers<a class="headerlink" href="#kernel-pointers" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pK     01234567 or 0123456789abcdef
 </pre></div>
@@ -403,8 +405,8 @@ users. The behaviour of %pK depends on the kptr_restrict sysctl - see
 userspace from e.g. procfs or sysfs, not for dmesg. Please refer to the
 section about %p above for discussion about how to manage hashing pointers
 in <a class="reference internal" href="printk-basics.html#c.printk" title="printk"><code class="xref c c-func docutils literal notranslate"><span class="pre">printk()</span></code></a>.</p>
-</section>
-<section id="unmodified-addresses">
+</div>
+<div class="section" id="unmodified-addresses">
 <h3>Unmodified Addresses<a class="headerlink" href="#unmodified-addresses" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%px     01234567 or 0123456789abcdef
 </pre></div>
@@ -421,8 +423,8 @@ description above). One valid scenario for %px might be printing information
 immediately before a panic, which prevents any sensitive information to be
 exploited anyway, and with %px there would be no need to reproduce the panic
 with no_hash_pointers.</p>
-</section>
-<section id="pointer-differences">
+</div>
+<div class="section" id="pointer-differences">
 <h3>Pointer Differences<a class="headerlink" href="#pointer-differences" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%td     2560
 %tx     a00
@@ -433,8 +435,8 @@ with no_hash_pointers.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>printk(&quot;test: difference between pointers: %td\n&quot;, ptr2 - ptr1);
 </pre></div>
 </div>
-</section>
-<section id="struct-resources">
+</div>
+<div class="section" id="struct-resources">
 <h3>Struct Resources<a class="headerlink" href="#struct-resources" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pr     [mem 0x60000000-0x6fffffff flags 0x2200] or
         [mem 0x0000000060000000-0x000000006fffffff flags 0x2200]
@@ -445,8 +447,8 @@ with no_hash_pointers.</p>
 <p>For printing struct resources. The <code class="docutils literal notranslate"><span class="pre">R</span></code> and <code class="docutils literal notranslate"><span class="pre">r</span></code> specifiers result in a
 printed resource with (R) or without (r) a decoded flags member.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="physical-address-types-phys-addr-t">
+</div>
+<div class="section" id="physical-address-types-phys-addr-t">
 <h3>Physical address types phys_addr_t<a class="headerlink" href="#physical-address-types-phys-addr-t" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pa[p]  0x01234567 or 0x0123456789abcdef
 </pre></div>
@@ -455,8 +457,8 @@ printed resource with (R) or without (r) a decoded flags member.</p>
 resource_size_t) which can vary based on build options, regardless of the
 width of the CPU data path.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="dma-address-types-dma-addr-t">
+</div>
+<div class="section" id="dma-address-types-dma-addr-t">
 <h3>DMA address types dma_addr_t<a class="headerlink" href="#dma-address-types-dma-addr-t" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pad    0x01234567 or 0x0123456789abcdef
 </pre></div>
@@ -464,8 +466,8 @@ width of the CPU data path.</p>
 <p>For printing a dma_addr_t type which can vary based on build options,
 regardless of the width of the CPU data path.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="raw-buffer-as-an-escaped-string">
+</div>
+<div class="section" id="raw-buffer-as-an-escaped-string">
 <h3>Raw buffer as an escaped string<a class="headerlink" href="#raw-buffer-as-an-escaped-string" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%*pE[achnops]
 </pre></div>
@@ -499,8 +501,8 @@ details):</p>
 <p>ESCAPE_ANY_NP is the sane choice for many cases, in particularly for
 printing SSIDs.</p>
 <p>If field width is omitted then 1 byte only will be escaped.</p>
-</section>
-<section id="raw-buffer-as-a-hex-string">
+</div>
+<div class="section" id="raw-buffer-as-a-hex-string">
 <h3>Raw buffer as a hex string<a class="headerlink" href="#raw-buffer-as-a-hex-string" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%*ph    00 01 02  ...  3f
 %*phC   00:01:02: ... :3f
@@ -511,8 +513,8 @@ printing SSIDs.</p>
 <p>For printing small buffers (up to 64 bytes long) as a hex string with a
 certain separator. For larger buffers consider using
 <code class="xref c c-func docutils literal notranslate"><span class="pre">print_hex_dump()</span></code>.</p>
-</section>
-<section id="mac-fddi-addresses">
+</div>
+<div class="section" id="mac-fddi-addresses">
 <h3>MAC/FDDI addresses<a class="headerlink" href="#mac-fddi-addresses" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pM     00:01:02:03:04:05
 %pMR    05:04:03:02:01:00
@@ -531,8 +533,8 @@ separator.</p>
 specifier to use reversed byte order suitable for visual interpretation
 of Bluetooth addresses which are in the little endian order.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="ipv4-addresses">
+</div>
+<div class="section" id="ipv4-addresses">
 <h3>IPv4 addresses<a class="headerlink" href="#ipv4-addresses" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pI4    1.2.3.4
 %pi4    001.002.003.004
@@ -546,8 +548,8 @@ zeros.</p>
 host, network, big or little endian order addresses respectively. Where
 no specifier is provided the default network/big endian order is used.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="ipv6-addresses">
+</div>
+<div class="section" id="ipv6-addresses">
 <h3>IPv6 addresses<a class="headerlink" href="#ipv6-addresses" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pI6    0001:0002:0003:0004:0005:0006:0007:0008
 %pi6    00010002000300040005000600070008
@@ -561,8 +563,8 @@ colon-separators. Leading zeros are always used.</p>
 print a compressed IPv6 address as described by
 <a class="reference external" href="https://tools.ietf.org/html/rfc5952">https://tools.ietf.org/html/rfc5952</a></p>
 <p>Passed by reference.</p>
-</section>
-<section id="ipv4-ipv6-addresses-generic-with-port-flowinfo-scope">
+</div>
+<div class="section" id="ipv4-ipv6-addresses-generic-with-port-flowinfo-scope">
 <h3>IPv4/IPv6 addresses (generic, with port, flowinfo, scope)<a class="headerlink" href="#ipv4-ipv6-addresses-generic-with-port-flowinfo-scope" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pIS    1.2.3.4         or 0001:0002:0003:0004:0005:0006:0007:0008
 %piS    001.002.003.004 or 00010002000300040005000600070008
@@ -592,8 +594,8 @@ address.</p>
 %pISpfc         1.2.3.4:12345   or [1:2:3:4:5:6:7:8]:12345/123456789
 </pre></div>
 </div>
-</section>
-<section id="uuid-guid-addresses">
+</div>
+<div class="section" id="uuid-guid-addresses">
 <h3>UUID/GUID addresses<a class="headerlink" href="#uuid-guid-addresses" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pUb    00010203-0405-0607-0809-0a0b0c0d0e0f
 %pUB    00010203-0405-0607-0809-0A0B0C0D0E0F
@@ -608,8 +610,8 @@ or upper case (B) hex notation.</p>
 <p>Where no additional specifiers are used the default big endian
 order with lower case hex notation will be printed.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="dentry-names">
+</div>
+<div class="section" id="dentry-names">
 <h3>dentry names<a class="headerlink" href="#dentry-names" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pd{,2,3,4}
 %pD{,2,3,4}
@@ -620,15 +622,15 @@ be a mix of old and new ones, but it won’t oops.  %pd dentry is a safer
 equivalent of %s dentry-&gt;d_name.name we used to use, %pd&lt;n&gt; prints <code class="docutils literal notranslate"><span class="pre">n</span></code>
 last components.  %pD does the same thing for struct file.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="block-device-names">
+</div>
+<div class="section" id="block-device-names">
 <h3>block_device names<a class="headerlink" href="#block-device-names" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pg     sda, sda1 or loop0p1
 </pre></div>
 </div>
 <p>For printing name of block_device pointers.</p>
-</section>
-<section id="struct-va-format">
+</div>
+<div class="section" id="struct-va-format">
 <h3>struct va_format<a class="headerlink" href="#struct-va-format" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pV
 </pre></div>
@@ -645,8 +647,8 @@ and va_list as follows:</p>
 <p>Do not use this feature without some mechanism to verify the
 correctness of the format string and va_list arguments.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="device-tree-nodes">
+</div>
+<div class="section" id="device-tree-nodes">
 <h3>Device tree nodes<a class="headerlink" href="#device-tree-nodes" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pOF[fnpPcCF]
 </pre></div>
@@ -679,8 +681,8 @@ equivalent to %pOFf.</p>
 </pre></div>
 </div>
 <p>Passed by reference.</p>
-</section>
-<section id="fwnode-handles">
+</div>
+<div class="section" id="fwnode-handles">
 <h3>Fwnode handles<a class="headerlink" href="#fwnode-handles" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pfw[fP]
 </pre></div>
@@ -704,8 +706,8 @@ node name, including the path. The modifiers are functionally equivalent to
 %pfwP   endpoint                                - Node name
 </pre></div>
 </div>
-</section>
-<section id="time-and-date">
+</div>
+<div class="section" id="time-and-date">
 <h3>Time and date<a class="headerlink" href="#time-and-date" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pt[RT]                 YYYY-mm-ddTHH:MM:SS
 %pt[RT]s                YYYY-mm-dd HH:MM:SS
@@ -726,8 +728,8 @@ Use %pt[RT]r (raw) to suppress this behaviour.</p>
 instead of ‘T’ (Capital T) between date and time. It won’t have any effect
 when date or time is omitted.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="struct-clk">
+</div>
+<div class="section" id="struct-clk">
 <h3>struct clk<a class="headerlink" href="#struct-clk" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pC     pll1
 %pCn    pll1
@@ -736,8 +738,8 @@ when date or time is omitted.</p>
 <p>For printing struct clk structures. %pC and %pCn print the name of the clock
 (Common Clock Framework) or a unique 32-bit ID (legacy clock framework).</p>
 <p>Passed by reference.</p>
-</section>
-<section id="bitmap-and-its-derivatives-such-as-cpumask-and-nodemask">
+</div>
+<div class="section" id="bitmap-and-its-derivatives-such-as-cpumask-and-nodemask">
 <h3>bitmap and its derivatives such as cpumask and nodemask<a class="headerlink" href="#bitmap-and-its-derivatives-such-as-cpumask-and-nodemask" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%*pb    0779
 %*pbl   0,3-6,8-10
@@ -749,8 +751,8 @@ output the bitmap as range list with field width as the number of bits.</p>
 <p>The field width is passed by value, the bitmap is passed by reference.
 Helper macros cpumask_pr_args() and nodemask_pr_args() are available to ease
 printing cpumask and nodemask.</p>
-</section>
-<section id="flags-bitfields-such-as-page-flags-gfp-flags">
+</div>
+<div class="section" id="flags-bitfields-such-as-page-flags-gfp-flags">
 <h3>Flags bitfields such as page flags, gfp_flags<a class="headerlink" href="#flags-bitfields-such-as-page-flags-gfp-flags" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pGp    0x17ffffc0002036(referenced|uptodate|lru|active|private|node=0|zone=2|lastcpupid=0x1fffff)
 %pGg    GFP_USER|GFP_DMA32|GFP_NOWARN
@@ -766,16 +768,16 @@ names and print order depends on the particular type.</p>
 <code class="xref c c-func docutils literal notranslate"><span class="pre">TP_printk()</span></code> part of a tracepoint. Instead, use the show_*_flags()
 functions from &lt;trace/events/mmflags.h&gt;.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="network-device-features">
+</div>
+<div class="section" id="network-device-features">
 <h3>Network device features<a class="headerlink" href="#network-device-features" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%pNF    0x000000000000c000
 </pre></div>
 </div>
 <p>For printing netdev_features_t.</p>
 <p>Passed by reference.</p>
-</section>
-<section id="v4l2-and-drm-fourcc-code-pixel-format">
+</div>
+<div class="section" id="v4l2-and-drm-fourcc-code-pixel-format">
 <h3>V4L2 and DRM FourCC code (pixel format)<a class="headerlink" href="#v4l2-and-drm-fourcc-code-pixel-format" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%p4cc
 </pre></div>
@@ -789,15 +791,15 @@ its numerical value as hexadecimal.</p>
 %p4cc   NV12 big-endian (0xb231564e)
 </pre></div>
 </div>
-</section>
-</section>
-<section id="thanks">
+</div>
+</div>
+<div class="section" id="thanks">
 <h2>Thanks<a class="headerlink" href="#thanks" title="Permalink to this headline">¶</a></h2>
 <p>If you add other %p extensions, please extend &lt;lib/test_printf.c&gt; with
 one or more test cases, if at all feasible.</p>
 <p>Thank you for your cooperation and attention.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

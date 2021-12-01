@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Scaling in the Linux Networking Stack &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -381,9 +383,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="scaling-in-the-linux-networking-stack">
+  <div class="section" id="scaling-in-the-linux-networking-stack">
 <h1>Scaling in the Linux Networking Stack<a class="headerlink" href="#scaling-in-the-linux-networking-stack" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This document describes a set of complementary techniques in the Linux
 networking stack to increase parallelism and improve performance for
@@ -396,8 +398,8 @@ multi-processor systems.</p>
 <li><p>Accelerated Receive Flow Steering</p></li>
 <li><p>XPS: Transmit Packet Steering</p></li>
 </ul>
-</section>
-<section id="rss-receive-side-scaling">
+</div>
+<div class="section" id="rss-receive-side-scaling">
 <h2>RSS: Receive Side Scaling<a class="headerlink" href="#rss-receive-side-scaling" title="Permalink to this headline">¶</a></h2>
 <p>Contemporary NICs support multiple receive and transmit descriptor queues
 (multi-queue). On reception, a NIC can send different packets to different
@@ -421,7 +423,7 @@ indirection table and reading the corresponding value.</p>
 programmable filters. For example, webserver bound TCP port 80 packets
 can be directed to their own receive queue. Such “n-tuple” filters can
 be configured from ethtool (–config-ntuple).</p>
-<section id="rss-configuration">
+<div class="section" id="rss-configuration">
 <h3>RSS Configuration<a class="headerlink" href="#rss-configuration" title="Permalink to this headline">¶</a></h3>
 <p>The driver for a multi-queue capable NIC typically provides a kernel
 module parameter for specifying the number of hardware queues to
@@ -437,7 +439,7 @@ indirection table can be retrieved and modified at runtime using ethtool
 commands (–show-rxfh-indir and –set-rxfh-indir). Modifying the
 indirection table could be done to give different queues different
 relative weights.</p>
-<section id="rss-irq-configuration">
+<div class="section" id="rss-irq-configuration">
 <h4>RSS IRQ Configuration<a class="headerlink" href="#rss-irq-configuration" title="Permalink to this headline">¶</a></h4>
 <p>Each receive queue has a separate IRQ associated with it. The NIC triggers
 this to notify a CPU when new packets arrive on the given queue. The
@@ -450,8 +452,8 @@ to spread receive interrupts between CPUs. To manually adjust the IRQ
 affinity of each interrupt see <a class="reference internal" href="../core-api/irq/irq-affinity.html"><span class="doc">SMP IRQ affinity</span></a>. Some systems
 will be running irqbalance, a daemon that dynamically optimizes IRQ
 assignments and as a result may override any manual settings.</p>
-</section>
-<section id="suggested-configuration">
+</div>
+<div class="section" id="suggested-configuration">
 <h4>Suggested Configuration<a class="headerlink" href="#suggested-configuration" title="Permalink to this headline">¶</a></h4>
 <p>RSS should be enabled when latency is a concern or whenever receive
 interrupt processing forms a bottleneck. Spreading load between CPUs
@@ -467,10 +469,10 @@ processors with hyperthreading (HT), each hyperthread is represented as
 a separate CPU. For interrupt handling, HT has shown no benefit in
 initial tests, so limit the number of queues to the number of CPU cores
 in the system.</p>
-</section>
-</section>
-</section>
-<section id="rps-receive-packet-steering">
+</div>
+</div>
+</div>
+<div class="section" id="rps-receive-packet-steering">
 <h2>RPS: Receive Packet Steering<a class="headerlink" href="#rps-receive-packet-steering" title="Permalink to this headline">¶</a></h2>
 <p>Receive Packet Steering (RPS) is logically a software implementation of
 RSS. Being in software, it is necessarily called later in the datapath.
@@ -507,7 +509,7 @@ the end of the bottom half routine, IPIs are sent to any CPUs for which
 packets have been queued to their backlog queue. The IPI wakes backlog
 processing on the remote CPU, and any queued packets are then processed
 up the networking stack.</p>
-<section id="rps-configuration">
+<div class="section" id="rps-configuration">
 <h3>RPS Configuration<a class="headerlink" href="#rps-configuration" title="Permalink to this headline">¶</a></h3>
 <p>RPS requires a kernel compiled with the CONFIG_RPS kconfig symbol (on
 by default for SMP). Even when compiled in, RPS remains disabled until
@@ -520,7 +522,7 @@ can be configured for each receive queue using a sysfs file entry:</p>
 (the default), in which case packets are processed on the interrupting
 CPU. <a class="reference internal" href="../core-api/irq/irq-affinity.html"><span class="doc">SMP IRQ affinity</span></a> explains how CPUs are assigned to
 the bitmap.</p>
-<section id="id1">
+<div class="section" id="id1">
 <h4>Suggested Configuration<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
 <p>For a single queue device, a typical RPS configuration would be to set
 the rps_cpus to the CPUs in the same memory domain of the interrupting
@@ -532,9 +534,9 @@ receive queue is mapped to each CPU, then RPS is probably redundant
 and unnecessary. If there are fewer hardware queues than CPUs, then
 RPS might be beneficial if the rps_cpus for each queue are the ones that
 share the same memory domain as the interrupting CPU for that queue.</p>
-</section>
-</section>
-<section id="rps-flow-limit">
+</div>
+</div>
+<div class="section" id="rps-flow-limit">
 <h3>RPS Flow Limit<a class="headerlink" href="#rps-flow-limit" title="Permalink to this headline">¶</a></h3>
 <p>RPS scales kernel receive processing across CPUs without introducing
 reordering. The trade-off to sending all packets from the same flow
@@ -556,7 +558,7 @@ dropped once the input packet queue reaches netdev_max_backlog.
 No packets are dropped when the input packet queue length is below
 the threshold, so flow limit does not sever connections outright:
 even large flows maintain connectivity.</p>
-<section id="interface">
+<div class="section" id="interface">
 <h4>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h4>
 <p>Flow limit is compiled in by default (CONFIG_NET_FLOW_LIMIT), but not
 turned on. It is implemented for each CPU independently (to avoid lock
@@ -577,8 +579,8 @@ table has 4096 buckets. This value can be modified through sysctl:</p>
 </div>
 <p>The value is only consulted when a new table is allocated. Modifying
 it does not update active tables.</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h4>Suggested Configuration<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
 <p>Flow limit is useful on systems with many concurrent connections,
 where a single connection taking up 50% of a CPU indicates a problem.
@@ -588,10 +590,10 @@ network rx interrupts (as set in /proc/irq/N/smp_affinity).</p>
 the flow limit threshold (50%) + the flow history length (256).
 Setting net.core.netdev_max_backlog to either 1000 or 10000
 performed well in experiments.</p>
-</section>
-</section>
-</section>
-<section id="rfs-receive-flow-steering">
+</div>
+</div>
+</div>
+<div class="section" id="rfs-receive-flow-steering">
 <h2>RFS: Receive Flow Steering<a class="headerlink" href="#rfs-receive-flow-steering" title="Permalink to this headline">¶</a></h2>
 <p>While RPS steers packets solely based on hash, and thus generally
 provides good load distribution, it does not take into account
@@ -655,7 +657,7 @@ CPU. These rules aim to ensure that a flow only moves to a new CPU when
 there are no packets outstanding on the old CPU, as the outstanding
 packets could arrive later than those about to be processed on the new
 CPU.</p>
-<section id="rfs-configuration">
+<div class="section" id="rfs-configuration">
 <h3>RFS Configuration<a class="headerlink" href="#rfs-configuration" title="Permalink to this headline">¶</a></h3>
 <p>RFS is only available if the kconfig symbol CONFIG_RPS is enabled (on
 by default for SMP). The functionality remains disabled until explicitly
@@ -667,7 +669,7 @@ configured. The number of entries in the global flow table is set through:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/sys/class/net/&lt;dev&gt;/queues/rx-&lt;n&gt;/rps_flow_cnt
 </pre></div>
 </div>
-<section id="id3">
+<div class="section" id="id3">
 <h4>Suggested Configuration<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
 <p>Both of these need to be set before RFS is enabled for a receive queue.
 Values for both are rounded up to the nearest power of two. The
@@ -682,10 +684,10 @@ configured as rps_sock_flow_entries / N, where N is the number of
 queues. So for instance, if rps_sock_flow_entries is set to 32768 and there
 are 16 configured receive queues, rps_flow_cnt for each queue might be
 configured as 2048.</p>
-</section>
-</section>
-</section>
-<section id="accelerated-rfs">
+</div>
+</div>
+</div>
+<div class="section" id="accelerated-rfs">
 <h2>Accelerated RFS<a class="headerlink" href="#accelerated-rfs" title="Permalink to this headline">¶</a></h2>
 <p>Accelerated RFS is to RFS what RSS is to RPS: a hardware-accelerated load
 balancing mechanism that uses soft state to steer flows based on where
@@ -707,7 +709,7 @@ the IRQ affinity table shown by /proc/interrupts. Drivers can use
 functions in the cpu_rmap (“CPU affinity reverse map”) kernel library
 to populate the map. For each CPU, the corresponding queue in the map is
 set to be one whose processing CPU is closest in cache locality.</p>
-<section id="accelerated-rfs-configuration">
+<div class="section" id="accelerated-rfs-configuration">
 <h3>Accelerated RFS Configuration<a class="headerlink" href="#accelerated-rfs-configuration" title="Permalink to this headline">¶</a></h3>
 <p>Accelerated RFS is only available if the kernel is compiled with
 CONFIG_RFS_ACCEL and support is provided by the NIC device and driver.
@@ -715,14 +717,14 @@ It also requires that ntuple filtering is enabled via ethtool. The map
 of CPU to queues is automatically deduced from the IRQ affinities
 configured for each receive queue by the driver, so no additional
 configuration should be necessary.</p>
-<section id="id4">
+<div class="section" id="id4">
 <h4>Suggested Configuration<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
 <p>This technique should be enabled whenever one wants to use RFS and the
 NIC supports hardware acceleration.</p>
-</section>
-</section>
-</section>
-<section id="xps-transmit-packet-steering">
+</div>
+</div>
+</div>
+<div class="section" id="xps-transmit-packet-steering">
 <h2>XPS: Transmit Packet Steering<a class="headerlink" href="#xps-transmit-packet-steering" title="Permalink to this headline">¶</a></h2>
 <p>Transmit Packet Steering is a mechanism for intelligently selecting
 which transmit queue to use when transmitting a packet on a multi-queue
@@ -787,7 +789,7 @@ change without the risk of generating out of order packets. The
 transport layer is responsible for setting ooo_okay appropriately. TCP,
 for instance, sets the flag when all data for a connection has been
 acknowledged.</p>
-<section id="xps-configuration">
+<div class="section" id="xps-configuration">
 <h3>XPS Configuration<a class="headerlink" href="#xps-configuration" title="Permalink to this headline">¶</a></h3>
 <p>XPS is only available if the kconfig symbol CONFIG_XPS is enabled (on by
 default for SMP). If compiled in, it is driver dependent whether, and
@@ -801,7 +803,7 @@ to transmit queue can be inspected and configured using sysfs:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/sys/class/net/&lt;dev&gt;/queues/tx-&lt;n&gt;/xps_rxqs
 </pre></div>
 </div>
-<section id="id5">
+<div class="section" id="id5">
 <h4>Suggested Configuration<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
 <p>For a network device with a single transmission queue, XPS configuration
 has no effect, since there is no choice in this case. In a multi-queue
@@ -816,10 +818,10 @@ with the CPU that processes transmit completions for that queue
 explicitly configured mapping receive-queue(s) to transmit queue(s). If the
 user configuration for receive-queue map does not apply, then the transmit
 queue is selected based on the CPUs map.</p>
-</section>
-</section>
-</section>
-<section id="per-tx-queue-rate-limitation">
+</div>
+</div>
+</div>
+<div class="section" id="per-tx-queue-rate-limitation">
 <h2>Per TX Queue rate limitation<a class="headerlink" href="#per-tx-queue-rate-limitation" title="Permalink to this headline">¶</a></h2>
 <p>These are rate-limitation mechanisms implemented by HW, where currently
 a max-rate attribute is supported, by setting a Mbps value to:</p>
@@ -827,8 +829,8 @@ a max-rate attribute is supported, by setting a Mbps value to:</p>
 </pre></div>
 </div>
 <p>A value of zero means disabled, and this is the default.</p>
-</section>
-<section id="further-information">
+</div>
+<div class="section" id="further-information">
 <h2>Further Information<a class="headerlink" href="#further-information" title="Permalink to this headline">¶</a></h2>
 <p>RPS and RFS were introduced in kernel 2.6.35. XPS was incorporated into
 2.6.38. Original patches were submitted by Tom Herbert
@@ -840,8 +842,8 @@ submitted by Ben Hutchings (<a class="reference external" href="mailto:bwh&#37;&
 <li><p>Tom Herbert (<a class="reference external" href="mailto:therbert&#37;&#52;&#48;google&#46;com">therbert<span>&#64;</span>google<span>&#46;</span>com</a>)</p></li>
 <li><p>Willem de Bruijn (<a class="reference external" href="mailto:willemb&#37;&#52;&#48;google&#46;com">willemb<span>&#64;</span>google<span>&#46;</span>com</a>)</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

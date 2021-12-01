@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>A Tour Through TREE_RCU’s Expedited Grace Periods &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -277,9 +279,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="a-tour-through-tree-rcu-s-expedited-grace-periods">
+  <div class="section" id="a-tour-through-tree-rcu-s-expedited-grace-periods">
 <h1>A Tour Through TREE_RCU’s Expedited Grace Periods<a class="headerlink" href="#a-tour-through-tree-rcu-s-expedited-grace-periods" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This document describes RCU’s expedited grace periods.
 Unlike RCU’s normal grace periods, which accept long latencies to attain
@@ -288,8 +290,8 @@ lower efficiency and significant disturbance to attain shorter latencies.</p>
 <p>There are two flavors of RCU (RCU-preempt and RCU-sched), with an earlier
 third RCU-bh flavor having been implemented in terms of the other two.
 Each of the two implementations is covered in its own section.</p>
-</section>
-<section id="expedited-grace-period-design">
+</div>
+<div class="section" id="expedited-grace-period-design">
 <h2>Expedited Grace Period Design<a class="headerlink" href="#expedited-grace-period-design" title="Permalink to this headline">¶</a></h2>
 <p>The expedited RCU grace periods cannot be accused of being subtle,
 given that they for all intents and purposes hammer every CPU that
@@ -307,14 +309,14 @@ state, the expedited grace period has completed.</p>
 <p>The details of the <code class="docutils literal notranslate"><span class="pre">smp_call_function_single()</span></code> handler’s
 operation depend on the RCU flavor, as described in the following
 sections.</p>
-</section>
-<section id="rcu-preempt-expedited-grace-periods">
+</div>
+<div class="section" id="rcu-preempt-expedited-grace-periods">
 <h2>RCU-preempt Expedited Grace Periods<a class="headerlink" href="#rcu-preempt-expedited-grace-periods" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">CONFIG_PREEMPTION=y</span></code> kernels implement RCU-preempt.
 The overall flow of the handling of a given CPU by an RCU-preempt
 expedited grace period is shown in the following diagram:</p>
-<figure class="align-default">
-<img alt="../../../_images/ExpRCUFlow.svg" src="../../../_images/ExpRCUFlow.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/ExpRCUFlow.svg" src="../../../_images/ExpRCUFlow.svg" /></div>
 <p>The solid arrows denote direct action, for example, a function call.
 The dotted arrows denote indirect action, for example, an IPI
 or a state that is reached after some time.</p>
@@ -379,13 +381,13 @@ IPI the CPU.</p>
 <p>Please note that this is just the overall flow: Additional complications
 can arise due to races with CPUs going idle or offline, among other
 things.</p>
-<section id="rcu-sched-expedited-grace-periods">
+<div class="section" id="rcu-sched-expedited-grace-periods">
 <h3>RCU-sched Expedited Grace Periods<a class="headerlink" href="#rcu-sched-expedited-grace-periods" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">CONFIG_PREEMPTION=n</span></code> kernels implement RCU-sched. The overall flow of
 the handling of a given CPU by an RCU-sched expedited grace period is
 shown in the following diagram:</p>
-<figure class="align-default">
-<img alt="../../../_images/ExpSchedFlow.svg" src="../../../_images/ExpSchedFlow.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/ExpSchedFlow.svg" src="../../../_images/ExpSchedFlow.svg" /></div>
 <p>As with RCU-preempt, RCU-sched’s <code class="docutils literal notranslate"><span class="pre">synchronize_rcu_expedited()</span></code> ignores
 offline and idle CPUs, again because they are in remotely detectable
 quiescent states. However, because the <code class="docutils literal notranslate"><span class="pre">rcu_read_lock_sched()</span></code> and
@@ -400,8 +402,8 @@ NEED_RESCHED flag of the current task’s thread flag and the CPU preempt
 counter. At the time of the context switch, the CPU reports the
 quiescent state. Should the CPU go offline first, it will report the
 quiescent state at that time.</p>
-</section>
-<section id="expedited-grace-period-and-cpu-hotplug">
+</div>
+<div class="section" id="expedited-grace-period-and-cpu-hotplug">
 <h3>Expedited Grace Period and CPU Hotplug<a class="headerlink" href="#expedited-grace-period-and-cpu-hotplug" title="Permalink to this headline">¶</a></h3>
 <p>The expedited nature of expedited grace periods require a much tighter
 interaction with CPU hotplug operations than is required for normal
@@ -484,10 +486,10 @@ bitmasks in the <code class="docutils literal notranslate"><span class="pre">rcu
 </tr>
 </tbody>
 </table>
-</section>
-<section id="expedited-grace-period-refinements">
+</div>
+<div class="section" id="expedited-grace-period-refinements">
 <h3>Expedited Grace Period Refinements<a class="headerlink" href="#expedited-grace-period-refinements" title="Permalink to this headline">¶</a></h3>
-<section id="idle-cpu-checks">
+<div class="section" id="idle-cpu-checks">
 <h4>Idle-CPU Checks<a class="headerlink" href="#idle-cpu-checks" title="Permalink to this headline">¶</a></h4>
 <p>Each expedited grace period checks for idle CPUs when initially forming
 the mask of CPUs to be IPIed and again just before IPIing a CPU (both
@@ -509,8 +511,8 @@ being idle.</p>
 <p>In summary, RCU expedited grace periods check for idle when building the
 bitmask of CPUs that must be IPIed, just before sending each IPI, and
 (either explicitly or implicitly) within the IPI handler.</p>
-</section>
-<section id="batching-via-sequence-counter">
+</div>
+<div class="section" id="batching-via-sequence-counter">
 <h4>Batching via Sequence Counter<a class="headerlink" href="#batching-via-sequence-counter" title="Permalink to this headline">¶</a></h4>
 <p>If each grace-period request was carried out separately, expedited grace
 periods would have abysmal scalability and problematic high-load
@@ -544,8 +546,8 @@ identify which of many concurrent reqeusts will initiate the grace
 period, and that there be an efficient way for the remaining requests to
 wait for that grace period to complete. However, that is the topic of
 the next section.</p>
-</section>
-<section id="funnel-locking-and-wait-wakeup">
+</div>
+<div class="section" id="funnel-locking-and-wait-wakeup">
 <h4>Funnel Locking and Wait/Wakeup<a class="headerlink" href="#funnel-locking-and-wait-wakeup" title="Permalink to this headline">¶</a></h4>
 <p>The natural way to sort out which of a batch of updaters will initiate
 the expedited grace period is to use the <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> combining tree, as
@@ -562,21 +564,21 @@ to these fields.</p>
 <p>An empty <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> tree is shown in the following diagram, with the
 white cells representing the <code class="docutils literal notranslate"><span class="pre">-&gt;exp_seq_rq</span></code> field and the red cells
 representing the elements of the <code class="docutils literal notranslate"><span class="pre">-&gt;exp_wq[]</span></code> array.</p>
-<figure class="align-default">
-<img alt="../../../_images/Funnel0.svg" src="../../../_images/Funnel0.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/Funnel0.svg" src="../../../_images/Funnel0.svg" /></div>
 <p>The next diagram shows the situation after the arrival of Task A and
 Task B at the leftmost and rightmost leaf <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> structures,
 respectively. The current value of the <code class="docutils literal notranslate"><span class="pre">rcu_state</span></code> structure’s
 <code class="docutils literal notranslate"><span class="pre">-&gt;expedited_sequence</span></code> field is zero, so adding three and clearing the
 bottom bit results in the value two, which both tasks record in the
 <code class="docutils literal notranslate"><span class="pre">-&gt;exp_seq_rq</span></code> field of their respective <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> structures:</p>
-<figure class="align-default">
-<img alt="../../../_images/Funnel1.svg" src="../../../_images/Funnel1.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/Funnel1.svg" src="../../../_images/Funnel1.svg" /></div>
 <p>Each of Tasks A and B will move up to the root <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> structure.
 Suppose that Task A wins, recording its desired grace-period sequence
 number and resulting in the state shown below:</p>
-<figure class="align-default">
-<img alt="../../../_images/Funnel2.svg" src="../../../_images/Funnel2.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/Funnel2.svg" src="../../../_images/Funnel2.svg" /></div>
 <p>Task A now advances to initiate a new grace period, while Task B moves
 up to the root <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> structure, and, seeing that its desired
 sequence number is already recorded, blocks on <code class="docutils literal notranslate"><span class="pre">-&gt;exp_wq[1]</span></code>.</p>
@@ -607,37 +609,37 @@ desired grace-period sequence number, and see that both leaf
 <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> structures already have that value recorded. They will
 therefore block on their respective <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> structures’
 <code class="docutils literal notranslate"><span class="pre">-&gt;exp_wq[1]</span></code> fields, as shown below:</p>
-<figure class="align-default">
-<img alt="../../../_images/Funnel3.svg" src="../../../_images/Funnel3.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/Funnel3.svg" src="../../../_images/Funnel3.svg" /></div>
 <p>Task A now acquires the <code class="docutils literal notranslate"><span class="pre">rcu_state</span></code> structure’s <code class="docutils literal notranslate"><span class="pre">-&gt;exp_mutex</span></code> and
 initiates the grace period, which increments <code class="docutils literal notranslate"><span class="pre">-&gt;expedited_sequence</span></code>.
 Therefore, if Tasks E and F arrive, they will compute a desired sequence
 number of 4 and will record this value as shown below:</p>
-<figure class="align-default">
-<img alt="../../../_images/Funnel4.svg" src="../../../_images/Funnel4.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/Funnel4.svg" src="../../../_images/Funnel4.svg" /></div>
 <p>Tasks E and F will propagate up the <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> combining tree, with
 Task F blocking on the root <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> structure and Task E wait for
 Task A to finish so that it can start the next grace period. The
 resulting state is as shown below:</p>
-<figure class="align-default">
-<img alt="../../../_images/Funnel5.svg" src="../../../_images/Funnel5.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/Funnel5.svg" src="../../../_images/Funnel5.svg" /></div>
 <p>Once the grace period completes, Task A starts waking up the tasks
 waiting for this grace period to complete, increments the
 <code class="docutils literal notranslate"><span class="pre">-&gt;expedited_sequence</span></code>, acquires the <code class="docutils literal notranslate"><span class="pre">-&gt;exp_wake_mutex</span></code> and then
 releases the <code class="docutils literal notranslate"><span class="pre">-&gt;exp_mutex</span></code>. This results in the following state:</p>
-<figure class="align-default">
-<img alt="../../../_images/Funnel6.svg" src="../../../_images/Funnel6.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/Funnel6.svg" src="../../../_images/Funnel6.svg" /></div>
 <p>Task E can then acquire <code class="docutils literal notranslate"><span class="pre">-&gt;exp_mutex</span></code> and increment
 <code class="docutils literal notranslate"><span class="pre">-&gt;expedited_sequence</span></code> to the value three. If new tasks G and H arrive
 and moves up the combining tree at the same time, the state will be as
 follows:</p>
-<figure class="align-default">
-<img alt="../../../_images/Funnel7.svg" src="../../../_images/Funnel7.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/Funnel7.svg" src="../../../_images/Funnel7.svg" /></div>
 <p>Note that three of the root <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> structure’s waitqueues are now
 occupied. However, at some point, Task A will wake up the tasks blocked
 on the <code class="docutils literal notranslate"><span class="pre">-&gt;exp_wq</span></code> waitqueues, resulting in the following state:</p>
-<figure class="align-default">
-<img alt="../../../_images/Funnel8.svg" src="../../../_images/Funnel8.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/Funnel8.svg" src="../../../_images/Funnel8.svg" /></div>
 <p>Execution will continue with Tasks E and H completing their grace
 periods and carrying out their wakeups.</p>
 <table class="docutils align-default">
@@ -659,8 +661,8 @@ preventing overflow of the <code class="docutils literal notranslate"><span clas
 </tr>
 </tbody>
 </table>
-</section>
-<section id="use-of-workqueues">
+</div>
+<div class="section" id="use-of-workqueues">
 <h4>Use of Workqueues<a class="headerlink" href="#use-of-workqueues" title="Permalink to this headline">¶</a></h4>
 <p>In earlier implementations, the task requesting the expedited grace
 period also drove it to completion. This straightforward approach had
@@ -686,8 +688,8 @@ previous grace period’s wakeups can be carried out while the current
 grace period is in process, but that these wakeups will complete before
 the next grace period starts. This means that only three waitqueues are
 required, guaranteeing that the four that are provided are sufficient.</p>
-</section>
-<section id="stall-warnings">
+</div>
+<div class="section" id="stall-warnings">
 <h4>Stall Warnings<a class="headerlink" href="#stall-warnings" title="Permalink to this headline">¶</a></h4>
 <p>Expediting grace periods does nothing to speed things up when RCU
 readers take too long, and therefore expedited grace periods check for
@@ -717,8 +719,8 @@ RCU CPU stall-warning time. If this time is exceeded, any CPUs or
 <code class="docutils literal notranslate"><span class="pre">rcu_node</span></code> structures blocking the current grace period are printed.
 Each stall warning results in another pass through the loop, but the
 second and subsequent passes use longer stall times.</p>
-</section>
-<section id="mid-boot-operation">
+</div>
+<div class="section" id="mid-boot-operation">
 <h4>Mid-boot operation<a class="headerlink" href="#mid-boot-operation" title="Permalink to this headline">¶</a></h4>
 <p>The use of workqueues has the advantage that the expedited grace-period
 code need not worry about POSIX signals. Unfortunately, it has the
@@ -746,8 +748,8 @@ zone.</p>
 task context pretty much any time during the life of the kernel. That
 is, aside from some points in the suspend, hibernate, or shutdown code
 path.</p>
-</section>
-<section id="summary">
+</div>
+<div class="section" id="summary">
 <h4>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h4>
 <p>Expedited grace periods use a sequence-number approach to promote
 batching, so that a single grace-period operation can serve numerous
@@ -772,10 +774,10 @@ reasonably efficiently. However, for non-time-critical tasks, normal
 grace periods should be used instead because their longer duration
 permits much higher degrees of batching, and thus much lower per-request
 overheads.</p>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>

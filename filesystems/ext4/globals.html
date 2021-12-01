@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>3. Global Structures &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -314,11 +316,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="global-structures">
+  <div class="section" id="global-structures">
 <h1><span class="section-number">3. </span>Global Structures<a class="headerlink" href="#global-structures" title="Permalink to this headline">¶</a></h1>
 <p>The filesystem is sharded into a number of block groups, each of which
 have static metadata at fixed locations.</p>
-<section id="super-block">
+<div class="section" id="super-block">
 <h2><span class="section-number">3.1. </span>Super Block<a class="headerlink" href="#super-block" title="Permalink to this headline">¶</a></h2>
 <p>The superblock records various information about the enclosing
 filesystem, such as block counts, inode counts, supported features,
@@ -1367,8 +1369,8 @@ becoming unused. (EXT4_DEFM_DISCARD)</p></td>
 </tbody>
 </table>
 <p>Total size of the superblock is 1024 bytes.</p>
-</section>
-<section id="block-group-descriptors">
+</div>
+<div class="section" id="block-group-descriptors">
 <h2><span class="section-number">3.2. </span>Block Group Descriptors<a class="headerlink" href="#block-group-descriptors" title="Permalink to this headline">¶</a></h2>
 <p>Each block group on the filesystem has one of these descriptors
 associated with it. As noted in the Layout section above, the group
@@ -1570,8 +1572,8 @@ and set to zero if crc32c checksum is used.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="block-and-inode-bitmaps">
+</div>
+<div class="section" id="block-and-inode-bitmaps">
 <h2><span class="section-number">3.3. </span>Block and inode Bitmaps<a class="headerlink" href="#block-and-inode-bitmaps" title="Permalink to this headline">¶</a></h2>
 <p>The data block bitmap tracks the usage of data blocks within the block
 group.</p>
@@ -1586,15 +1588,15 @@ necessarily the case that no blocks are in use – if <code class="docutils lite
 the bitmaps and group descriptor live inside the group. Unfortunately,
 ext2fs_test_block_bitmap2() will return ‘0’ for those locations,
 which produces confusing debugfs output.</p>
-</section>
-<section id="inode-table">
+</div>
+<div class="section" id="inode-table">
 <h2><span class="section-number">3.4. </span>Inode Table<a class="headerlink" href="#inode-table" title="Permalink to this headline">¶</a></h2>
 <p>Inode tables are statically allocated at mkfs time.  Each block group
 descriptor points to the start of the table, and the superblock records
 the number of inodes per group.  See the section on inodes for more
 information.</p>
-</section>
-<section id="multiple-mount-protection">
+</div>
+<div class="section" id="multiple-mount-protection">
 <h2><span class="section-number">3.5. </span>Multiple Mount Protection<a class="headerlink" href="#multiple-mount-protection" title="Permalink to this headline">¶</a></h2>
 <p>Multiple mount protection (MMP) is a feature that protects the
 filesystem against multiple hosts trying to use the filesystem
@@ -1682,8 +1684,8 @@ The MMP structure (<code class="docutils literal notranslate"><span class="pre">
 </tr>
 </tbody>
 </table>
-</section>
-<section id="journal-jbd2">
+</div>
+<div class="section" id="journal-jbd2">
 <h2><span class="section-number">3.6. </span>Journal (jbd2)<a class="headerlink" href="#journal-jbd2" title="Permalink to this headline">¶</a></h2>
 <p>Introduced in ext3, the ext4 filesystem employs a journal to protect the
 filesystem against metadata inconsistencies in the case of a system crash. Up
@@ -1728,7 +1730,7 @@ opposite of ext4.</p>
 <p>NOTE: Both ext4 and ocfs2 use jbd2.</p>
 <p>The maximum size of a journal embedded in an ext4 filesystem is 2^32
 blocks. jbd2 itself does not seem to care.</p>
-<section id="layout">
+<div class="section" id="layout">
 <h3><span class="section-number">3.6.1. </span>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h3>
 <p>Generally speaking, the journal has this format:</p>
 <table class="colwidths-given docutils align-default">
@@ -1755,8 +1757,8 @@ revocations] commmit_block</p></th>
 or a block revocation list. A finished transaction always ends with a
 commit. If there is no commit record (or the checksums don’t match), the
 transaction will be discarded during replay.</p>
-</section>
-<section id="external-journal">
+</div>
+<div class="section" id="external-journal">
 <h3><span class="section-number">3.6.2. </span>External Journal<a class="headerlink" href="#external-journal" title="Permalink to this headline">¶</a></h3>
 <p>Optionally, an ext4 filesystem can be created with an external journal
 device (as opposed to an internal journal, which uses a reserved inode).
@@ -1791,8 +1793,8 @@ revocations] commmit_block</p></th>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="block-header">
+</div>
+<div class="section" id="block-header">
 <h3><span class="section-number">3.6.3. </span>Block Header<a class="headerlink" href="#block-header" title="Permalink to this headline">¶</a></h3>
 <p>Every block in the journal starts with a common 12-byte header
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">journal_header_s</span></code>:</p>
@@ -1861,8 +1863,8 @@ journal to skip writing blocks that were subsequently rewritten.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="id1">
+</div>
+<div class="section" id="id1">
 <h3><span class="section-number">3.6.4. </span>Super Block<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The super block for the journal is much simpler as compared to ext4’s.
 The key data kept within are size of the journal, and where to find the
@@ -2094,8 +2096,8 @@ most likely choices.</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="descriptor-block">
+</div>
+<div class="section" id="descriptor-block">
 <h3><span class="section-number">3.6.5. </span>Descriptor Block<a class="headerlink" href="#descriptor-block" title="Permalink to this headline">¶</a></h3>
 <p>The descriptor block contains an array of journal block tags that
 describe the final locations of the data blocks that follow in the
@@ -2308,16 +2310,16 @@ to zero.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="data-block">
+</div>
+<div class="section" id="data-block">
 <h3><span class="section-number">3.6.6. </span>Data Block<a class="headerlink" href="#data-block" title="Permalink to this headline">¶</a></h3>
 <p>In general, the data blocks being written to disk through the journal
 are written verbatim into the journal file after the descriptor block.
 However, if the first four bytes of the block match the jbd2 magic
 number then those four bytes are replaced with zeroes and the “escaped”
 flag is set in the descriptor block tag.</p>
-</section>
-<section id="revocation-block">
+</div>
+<div class="section" id="revocation-block">
 <h3><span class="section-number">3.6.7. </span>Revocation Block<a class="headerlink" href="#revocation-block" title="Permalink to this headline">¶</a></h3>
 <p>A revocation block is used to prevent replay of a block in an earlier
 transaction. This is used to mark blocks that were journalled at one
@@ -2393,8 +2395,8 @@ block is a <code class="docutils literal notranslate"><span class="pre">struct</
 </tr>
 </tbody>
 </table>
-</section>
-<section id="commit-block">
+</div>
+<div class="section" id="commit-block">
 <h3><span class="section-number">3.6.8. </span>Commit Block<a class="headerlink" href="#commit-block" title="Permalink to this headline">¶</a></h3>
 <p>The commit block is a sentry that indicates that a transaction has been
 completely written to the journal. Once this commit block reaches the
@@ -2460,8 +2462,8 @@ crc32 of all the blocks already written to the transaction.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="fast-commits">
+</div>
+<div class="section" id="fast-commits">
 <h3><span class="section-number">3.6.9. </span>Fast commits<a class="headerlink" href="#fast-commits" title="Permalink to this headline">¶</a></h3>
 <p>Fast commit area is organized as a log of tag length values. Each TLV has
 a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ext4_fc_tl</span></code> in the beginning which stores the tag and the length
@@ -2528,8 +2530,8 @@ represents the end of</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="fast-commit-replay-idempotence">
+</div>
+<div class="section" id="fast-commit-replay-idempotence">
 <h3><span class="section-number">3.6.10. </span>Fast Commit Replay Idempotence<a class="headerlink" href="#fast-commit-replay-idempotence" title="Permalink to this headline">¶</a></h3>
 <p>Fast commits tags are idempotent in nature provided the recovery code follows
 certain rules. The guiding principle that the commit path follows while
@@ -2575,8 +2577,8 @@ point, the refcount for inode 11 is not reliable, but that gets fixed by the
 replay of last inode 11 tag. Thus, by converting a non-idempotent procedure
 into a series of idempotent outcomes, fast commits ensured idempotence during
 the replay.</p>
-</section>
-<section id="journal-checkpoint">
+</div>
+<div class="section" id="journal-checkpoint">
 <h3><span class="section-number">3.6.11. </span>Journal Checkpoint<a class="headerlink" href="#journal-checkpoint" title="Permalink to this headline">¶</a></h3>
 <p>Checkpointing the journal ensures all transactions and their associated buffers
 are submitted to the disk. In-progress transactions are waited upon and included
@@ -2596,9 +2598,9 @@ discarded or zero-filled, respectively, after the journal checkpoint is
 complete. EXT4_IOC_CHECKPOINT_FLAG_DISCARD and EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT
 cannot both be set. The ioctl may be useful when snapshotting a system or for
 complying with content deletion SLOs.</p>
-</section>
-</section>
-<section id="orphan-file">
+</div>
+</div>
+<div class="section" id="orphan-file">
 <h2><span class="section-number">3.7. </span>Orphan file<a class="headerlink" href="#orphan-file" title="Permalink to this headline">¶</a></h2>
 <p>In unix there can inodes that are unlinked from directory hierarchy but that
 are still alive because they are open. In case of crash the filesystem has to
@@ -2661,8 +2663,8 @@ filesystem, we read the whole orphan file and process all orphan inodes found
 there as usual. When cleanly unmounting the filesystem we remove the
 RO_COMPAT_ORPHAN_PRESENT feature to avoid unnecessary scanning of the orphan
 file and also make the filesystem fully compatible with older kernels.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

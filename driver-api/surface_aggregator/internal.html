@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Core Driver Internals &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -351,7 +353,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="core-driver-internals">
+  <div class="section" id="core-driver-internals">
 <h1>Core Driver Internals<a class="headerlink" href="#core-driver-internals" title="Permalink to this headline">¶</a></h1>
 <p>Architectural overview of the Surface System Aggregator Module (SSAM) core
 and Surface Serial Hub (SSH) driver. For the API documentation, refer to:</p>
@@ -368,7 +370,7 @@ and Surface Serial Hub (SSH) driver. For the API documentation, refer to:</p>
 </li>
 </ul>
 </div>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The SSAM core implementation is structured in layers, somewhat following the
 SSH protocol structure:</p>
@@ -400,12 +402,12 @@ documentation regarding the client device/driver API and interface options
 for other kernel drivers. It is recommended to familiarize oneself with
 that chapter and the <a class="reference internal" href="ssh.html"><span class="doc">Surface Serial Hub Protocol</span></a>
 before continuing with the architectural overview below.</p>
-</section>
-<section id="packet-transport-layer">
+</div>
+<div class="section" id="packet-transport-layer">
 <h2>Packet Transport Layer<a class="headerlink" href="#packet-transport-layer" title="Permalink to this headline">¶</a></h2>
 <p>The packet transport layer is represented via <a class="reference internal" href="internal-api.html#c.ssh_ptl" title="ssh_ptl"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ssh_ptl</span></code></a> and is structured
 around the following key concepts:</p>
-<section id="packets">
+<div class="section" id="packets">
 <h3>Packets<a class="headerlink" href="#packets" title="Permalink to this headline">¶</a></h3>
 <p>Packets are the fundamental transmission unit of the SSH protocol. They are
 managed by the packet transport layer, which is essentially the lowest layer
@@ -447,8 +449,8 @@ the packet queue and cleared when it is dequeued.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SSH_PACKET_SF_PENDING_BIT</span></code>: This bit is set when the packet is added to
 the pending set and cleared when it is removed from it.</p></li>
 </ul>
-</section>
-<section id="packet-queue">
+</div>
+<div class="section" id="packet-queue">
 <h3>Packet Queue<a class="headerlink" href="#packet-queue" title="Permalink to this headline">¶</a></h3>
 <p>The packet queue is the first of the two fundamental collections in the
 packet transport layer. It is a priority queue, with priority of the
@@ -458,8 +460,8 @@ respective packets based on the packet type (major) and number of tries
 this queue via <a class="reference internal" href="internal-api.html#c.ssh_ptl_submit" title="ssh_ptl_submit"><code class="xref c c-func docutils literal notranslate"><span class="pre">ssh_ptl_submit()</span></code></a>. Note that this includes control packets
 sent by the transport layer itself. Internally, data packets can be
 re-submitted to this queue due to timeouts or NAK packets sent by the EC.</p>
-</section>
-<section id="pending-set">
+</div>
+<div class="section" id="pending-set">
 <h3>Pending Set<a class="headerlink" href="#pending-set" title="Permalink to this headline">¶</a></h3>
 <p>The pending set is the second of the two fundamental collections in the
 packet transport layer. It stores references to packets that have already
@@ -468,8 +470,8 @@ packet) by the EC.</p>
 <p>Note that a packet may both be pending and queued if it has been
 re-submitted due to a packet acknowledgment timeout or NAK. On such a
 re-submission, packets are not removed from the pending set.</p>
-</section>
-<section id="transmitter-thread">
+</div>
+<div class="section" id="transmitter-thread">
 <h3>Transmitter Thread<a class="headerlink" href="#transmitter-thread" title="Permalink to this headline">¶</a></h3>
 <p>The transmitter thread is responsible for most of the actual work regarding
 packet transmission. In each iteration, it (waits for and) checks if the
@@ -487,8 +489,8 @@ pending packets, i.e. a limit on how many packets may be waiting for an ACK
 from the EC in parallel. This limit is currently set to one (see
 <a class="reference internal" href="ssh.html"><span class="doc">Surface Serial Hub Protocol</span></a> for the reasoning behind
 this). Control packets (i.e. ACK and NAK) can always be transmitted.</p>
-</section>
-<section id="receiver-thread">
+</div>
+<div class="section" id="receiver-thread">
 <h3>Receiver Thread<a class="headerlink" href="#receiver-thread" title="Permalink to this headline">¶</a></h3>
 <p>Any data received from the EC is put into a FIFO buffer for further
 processing. This processing happens on the receiver thread. The receiver
@@ -505,8 +507,8 @@ receiver thread (whereas any failure-indicating completion will run on the
 process where the failure occurred).</p>
 <p>Any payload data is forwarded via a callback to the next upper layer, i.e.
 the request transport layer.</p>
-</section>
-<section id="timeout-reaper">
+</div>
+<div class="section" id="timeout-reaper">
 <h3>Timeout Reaper<a class="headerlink" href="#timeout-reaper" title="Permalink to this headline">¶</a></h3>
 <p>The packet acknowledgment timeout is a per-packet timeout for sequenced
 packets, started when the respective packet begins (re-)transmission (i.e.
@@ -528,8 +530,8 @@ and the packet remains on the pending set.</p>
 <p>Note that due to transmission and packet acknowledgment timeouts, the packet
 transport layer is always guaranteed to make progress, if only through
 timing out packets, and will never fully block.</p>
-</section>
-<section id="concurrency-and-locking">
+</div>
+<div class="section" id="concurrency-and-locking">
 <h3>Concurrency and Locking<a class="headerlink" href="#concurrency-and-locking" title="Permalink to this headline">¶</a></h3>
 <p>There are two main locks in the packet transport layer: One guarding access
 to the packet queue and one guarding access to the pending set. These
@@ -563,9 +565,9 @@ executed concurrently with respect to each other. Note that packet
 submission may not run concurrently with itself for the same packet.
 Equally, shutdown and data receival may also not run concurrently with
 themselves (but may run concurrently with each other).</p>
-</section>
-</section>
-<section id="request-transport-layer">
+</div>
+</div>
+<div class="section" id="request-transport-layer">
 <h2>Request Transport Layer<a class="headerlink" href="#request-transport-layer" title="Permalink to this headline">¶</a></h2>
 <p>The request transport layer is represented via <a class="reference internal" href="internal-api.html#c.ssh_rtl" title="ssh_rtl"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ssh_rtl</span></code></a> and builds on top
 of the packet transport layer. It deals with requests, i.e. SSH packets sent
@@ -575,7 +577,7 @@ via a <a class="reference internal" href="client-api.html#c.ssh_command" title="
 events are relayed to the next upper layer, i.e. the controller layer, via
 the corresponding callback. The request transport layer is structured around
 the following key concepts:</p>
-<section id="request">
+<div class="section" id="request">
 <h3>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h3>
 <p>Requests are packets with a command-type payload, sent from host to EC to
 query data from or trigger an action on it (or both simultaneously). They
@@ -623,8 +625,8 @@ the request queue and cleared when it is dequeued.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SSH_REQUEST_SF_PENDING_BIT</span></code>: This bit is set when the request is added to
 the pending set and cleared when it is removed from it.</p></li>
 </ul>
-</section>
-<section id="request-queue">
+</div>
+<div class="section" id="request-queue">
 <h3>Request Queue<a class="headerlink" href="#request-queue" title="Permalink to this headline">¶</a></h3>
 <p>The request queue is the first of the two fundamental collections in the
 request transport layer. In contrast to the packet queue of the packet
@@ -636,15 +638,15 @@ not be re-submitted, and will not be re-submitted automatically on timeout.
 Instead, the request is completed with a timeout error. If desired, the
 caller can create and submit a new request for another try, but it must not
 submit the same request again.</p>
-</section>
-<section id="id1">
+</div>
+<div class="section" id="id1">
 <h3>Pending Set<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The pending set is the second of the two fundamental collections in the
 request transport layer. This collection stores references to all pending
 requests, i.e. requests awaiting a response from the EC (similar to what the
 pending set of the packet transport layer does for packets).</p>
-</section>
-<section id="transmitter-task">
+</div>
+<div class="section" id="transmitter-task">
 <h3>Transmitter Task<a class="headerlink" href="#transmitter-task" title="Permalink to this headline">¶</a></h3>
 <p>The transmitter task is scheduled when a new request is available for
 transmission. It checks if the next request on the request queue can be
@@ -653,8 +655,8 @@ transport layer. This check ensures that only a limited number of
 requests can be pending, i.e. waiting for a response, at the same time. If
 the request requires a response, the request is added to the pending set
 before its packet is submitted.</p>
-</section>
-<section id="packet-completion-callback">
+</div>
+<div class="section" id="packet-completion-callback">
 <h3>Packet Completion Callback<a class="headerlink" href="#packet-completion-callback" title="Permalink to this headline">¶</a></h3>
 <p>The packet completion callback is executed once the underlying packet of a
 request has been completed. In case of an error completion, the
@@ -664,8 +666,8 @@ callback.</p>
 If the request expects a response, it is marked as transmitted and the
 request timeout is started. If the request does not expect a response, it is
 completed with success.</p>
-</section>
-<section id="data-received-callback">
+</div>
+<div class="section" id="data-received-callback">
 <h3>Data-Received Callback<a class="headerlink" href="#data-received-callback" title="Permalink to this headline">¶</a></h3>
 <p>The data received callback notifies the request transport layer of data
 being received by the underlying packet transport layer via a data-type
@@ -676,8 +678,8 @@ event callback registered in the request transport layer. If the request ID
 indicates a response to a request, the respective request is looked up in
 the pending set and, if found and marked as transmitted, completed with
 success.</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h3>Timeout Reaper<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>The request-response-timeout is a per-request timeout for requests expecting
 a response. It is used to ensure that a request does not wait indefinitely
@@ -693,8 +695,8 @@ of the request must construct and submit a new request, if so desired.</p>
 <p>Note that this timeout, in combination with packet transmission and
 acknowledgment timeouts, guarantees that the request layer will always make
 progress, even if only through timing out packets, and never fully block.</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h3>Concurrency and Locking<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>Similar to the packet transport layer, there are two main locks in the
 request transport layer: One guarding access to the request queue and one
@@ -714,9 +716,9 @@ shutdown (<a class="reference internal" href="internal-api.html#c.ssh_rtl_shutdo
 respect to each other. Note that request submission may not run concurrently
 with itself for the same request (and also may only be called once per
 request). Equally, shutdown may also not run concurrently with itself.</p>
-</section>
-</section>
-<section id="controller-layer">
+</div>
+</div>
+<div class="section" id="controller-layer">
 <h2>Controller Layer<a class="headerlink" href="#controller-layer" title="Permalink to this headline">¶</a></h2>
 <p>The controller layer extends on the request transport layer to provide an
 easy-to-use interface for client drivers. It is represented by
@@ -725,7 +727,7 @@ take care of transmitting and handling packets and requests, the controller
 layer takes on more of a management role. Specifically, it handles device
 initialization, power management, and event handling, including event
 delivery and registration via the (event) completion system (<a class="reference internal" href="internal-api.html#c.ssam_cplt" title="ssam_cplt"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ssam_cplt</span></code></a>).</p>
-<section id="event-registration">
+<div class="section" id="event-registration">
 <h3>Event Registration<a class="headerlink" href="#event-registration" title="Permalink to this headline">¶</a></h3>
 <p>In general, an event (or rather a class of events) has to be explicitly
 requested by the host before the EC will send it (HID input events seem to
@@ -759,8 +761,8 @@ event ID combinations). See <a class="reference internal" href="internal-api.htm
 <p>This management is done together with notifier registration (described in
 the next section) via the top-level <a class="reference internal" href="client-api.html#c.ssam_notifier_register" title="ssam_notifier_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">ssam_notifier_register()</span></code></a> and
 <a class="reference internal" href="client-api.html#c.ssam_notifier_unregister" title="ssam_notifier_unregister"><code class="xref c c-func docutils literal notranslate"><span class="pre">ssam_notifier_unregister()</span></code></a> functions.</p>
-</section>
-<section id="event-delivery">
+</div>
+<div class="section" id="event-delivery">
 <h3>Event Delivery<a class="headerlink" href="#event-delivery" title="Permalink to this headline">¶</a></h3>
 <p>To receive events, a client driver has to register an event notifier via
 <a class="reference internal" href="client-api.html#c.ssam_notifier_register" title="ssam_notifier_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">ssam_notifier_register()</span></code></a>. This increments the reference counter for that
@@ -793,8 +795,8 @@ This is done to ensure that notifier callbacks are executed in sequence for
 events of the same target ID and target category. Callbacks can be executed
 in parallel for events with a different combination of target ID and target
 category.</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3>Concurrency and Locking<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>Most of the concurrency related safety guarantees of the controller are
 provided by the lower-level request transport layer. In addition to this,
@@ -816,9 +818,9 @@ variable access is ensured by employing <code class="docutils literal notranslat
 all non-initialization and non-shutdown functions may run concurrently with
 each other. This includes <a class="reference internal" href="client-api.html#c.ssam_notifier_register" title="ssam_notifier_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">ssam_notifier_register()</span></code></a>, <a class="reference internal" href="client-api.html#c.ssam_notifier_unregister" title="ssam_notifier_unregister"><code class="xref c c-func docutils literal notranslate"><span class="pre">ssam_notifier_unregister()</span></code></a>,
 <a class="reference internal" href="client-api.html#c.ssam_request_sync_submit" title="ssam_request_sync_submit"><code class="xref c c-func docutils literal notranslate"><span class="pre">ssam_request_sync_submit()</span></code></a>, as well as all functions building on top of those.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

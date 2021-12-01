@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>每任务的统计接口 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -290,7 +292,7 @@
 <dd class="field-even"><p>Yang Yang &lt;<a class="reference external" href="mailto:yang&#46;yang29&#37;&#52;&#48;zte&#46;com&#46;cn">yang<span>&#46;</span>yang29<span>&#64;</span>zte<span>&#46;</span>com<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="id1">
+<div class="section" id="id1">
 <h1>每任务的统计接口<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <p>Taskstats是一个基于netlink的接口，用于从内核向用户空间发送每任务及每进程的
 统计信息。</p>
@@ -300,7 +302,7 @@
 <li><p>统一不同计数子系统的接口</p></li>
 <li><p>支持未来计数系统的扩展</p></li>
 </ul>
-<section id="id2">
+<div class="section" id="id2">
 <h2>术语<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>“pid”、“tid”、“任务”互换使用，用于描述由struct task_struct定义的标准
 Linux任务。“每pid的统计数据”等价于“每任务的统计数据”。</p>
@@ -308,8 +310,8 @@ Linux任务。“每pid的统计数据”等价于“每任务的统计数据”
 也就是传统的Unix进程。尽管使用了tgid这个词，即使一个任务是线程组组长，
 对它的处理也没有什么不同。只要一个进程还有任何归属它的任务，它就被认为
 活着。</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>用法<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>为了在任务生命周期内获得统计信息，用户空间需打开一个单播的netlink套接字
 （NETLINK_GENERIC族）然后发送指定pid或tgid的命令。响应消息中包含单个
@@ -324,8 +326,8 @@ cpu掩码可以限制一个监听者收到的数据，并有助于对netlink接�
 <p>getdelays.c是一个简单的示例，用以演示如何使用taskstats接口获取延迟统计信息。
 用户可注册cpu掩码、发送命令和处理响应、监听每tid/tgid退出数据、将收到的数据
 写入文件、通过增大接收缓冲区进行基本的流量控制。</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h2>接口<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>内核用户接口封装在include/linux/taskstats.h。</p>
 <p>为避免本文档随着接口的演进而过期，本文仅给出当前版本的概要。当本文与taskstats.h
@@ -370,8 +372,8 @@ cpu掩码是以ascii码表示，用逗号分隔的cpu范围。例如若需监听
 <li><p>TASKSTATS_TYPE_TGID：包含任务所属进程的tgid</p></li>
 <li><p>TASKSTATS_TYPE_STATS：包含退出任务所属进程的每tgid统计信息</p></li>
 </ol>
-</section>
-<section id="tgid">
+</div>
+<div class="section" id="tgid">
 <h2>每tgid的统计<a class="headerlink" href="#tgid" title="Permalink to this headline">¶</a></h2>
 <p>除了每任务的统计信息，taskstats还提供每进程的统计信息，因为资源管理通常以进程
 粒度完成，并且仅在用户空间聚合任务统计信息效率低下且可能不准确（缺乏原子性）。</p>
@@ -380,8 +382,8 @@ cpu掩码是以ascii码表示，用逗号分隔的cpu范围。例如若需监听
 当进程最后一个任务退出时，累积的进程级数据也会发送到用户空间（与每任务数据一起）。</p>
 <p>当用户查询每tgid数据时，内核将指定线程组中所有活动线程的统计信息相加，并添加到
 该线程组的累积总数（含之前退出的线程）。</p>
-</section>
-<section id="taskstats">
+</div>
+<div class="section" id="taskstats">
 <h2>扩展taskstats<a class="headerlink" href="#taskstats" title="Permalink to this headline">¶</a></h2>
 <p>有两种方法可在未来修改内核扩展taskstats接口，以导出更多的每任务/进程统计信息：</p>
 <p>1. 在现有struct taskstats末尾增加字段。该结构体中的版本号确保了向后兼容性。
@@ -392,8 +394,8 @@ cpu掩码是以ascii码表示，用逗号分隔的cpu范围。例如若需监听
 首选方法，因为内核和用户空间无需承担处理新netlink属性的开销。但若新字段过多的
 扩展现有结构体，导致不同的用户空间计数程序不必要的接收大型结构体，而对结构体
 字段并不感兴趣，那么2.是值得的。</p>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h2>Taskstats的流量控制<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <p>当退出任务数速率变大，监听者可能跟不上内核发送每tid/tgid退出数据的速率，而导致
 数据丢失。taskstats结构体变大、cpu数量上升，都会导致这种可能性增加。</p>
@@ -406,8 +408,8 @@ cpu掩码是以ascii码表示，用逗号分隔的cpu范围。例如若需监听
 </ul>
 <p>尽管采取了这些措施，若用户空间仍收到指示接收缓存区溢出的ENOBUFS错误消息，
 则应采取其他措施处理数据丢失。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

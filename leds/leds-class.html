@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>LED handling under Linux &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -265,7 +267,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="led-handling-under-linux">
+  <div class="section" id="led-handling-under-linux">
 <h1>LED handling under Linux<a class="headerlink" href="#led-handling-under-linux" title="Permalink to this headline">¶</a></h1>
 <p>In its simplest form, the LED class just allows control of LEDs from
 userspace. LEDs appear in /sys/class/leds/. The maximum brightness of the
@@ -290,13 +292,13 @@ also disable the timer trigger.</p>
 is chosen (via /sys/class/leds/&lt;device&gt;/trigger). Trigger specific
 parameters can appear in /sys/class/leds/&lt;device&gt; once a given trigger is
 selected.</p>
-<section id="design-philosophy">
+<div class="section" id="design-philosophy">
 <h2>Design Philosophy<a class="headerlink" href="#design-philosophy" title="Permalink to this headline">¶</a></h2>
 <p>The underlying design philosophy is simplicity. LEDs are simple devices
 and the aim is to keep a small amount of code giving as much functionality
 as possible.  Please keep this in mind when suggesting enhancements.</p>
-</section>
-<section id="led-device-naming">
+</div>
+<div class="section" id="led-device-naming">
 <h2>LED Device Naming<a class="headerlink" href="#led-device-naming" title="Permalink to this headline">¶</a></h2>
 <p>Is currently of the form:</p>
 <blockquote>
@@ -378,8 +380,8 @@ individual led class attributes. As a solution which doesn’t incur as much
 overhead, I suggest these become part of the device name. The naming scheme
 above leaves scope for further attributes should they be needed. If sections
 of the name don’t apply, just leave that section blank.</p>
-</section>
-<section id="brightness-setting-api">
+</div>
+<div class="section" id="brightness-setting-api">
 <h2>Brightness setting API<a class="headerlink" href="#brightness-setting-api" title="Permalink to this headline">¶</a></h2>
 <p>LED subsystem core exposes following API for setting brightness:</p>
 <blockquote>
@@ -400,8 +402,8 @@ blinking, returns -EBUSY if software blink fallback is enabled.</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="led-registration-api">
+</div>
+<div class="section" id="led-registration-api">
 <h2>LED registration API<a class="headerlink" href="#led-registration-api" title="Permalink to this headline">¶</a></h2>
 <p>A driver wanting to register a LED classdev for use by other drivers /
 userspace needs to allocate and fill a led_classdev struct and then call
@@ -413,8 +415,8 @@ wants to have a brightness_hw_changed attribute then the LED_BRIGHT_HW_CHANGED
 flag must be set in flags before registering. Calling
 led_classdev_notify_brightness_hw_changed on a classdev not registered with
 the LED_BRIGHT_HW_CHANGED flag is a bug and will trigger a WARN_ON.</p>
-</section>
-<section id="hardware-accelerated-blink-of-leds">
+</div>
+<div class="section" id="hardware-accelerated-blink-of-leds">
 <h2>Hardware accelerated blink of LEDs<a class="headerlink" href="#hardware-accelerated-blink-of-leds" title="Permalink to this headline">¶</a></h2>
 <p>Some LEDs can be programmed to blink without any CPU interaction. To
 support this feature, a LED driver can optionally implement the
@@ -431,15 +433,15 @@ delay_off parameters to the leds subsystem.</p>
 <p>Setting the brightness to zero with brightness_set() callback function
 should completely turn off the LED and cancel the previously programmed
 hardware blinking function, if any.</p>
-</section>
-<section id="known-issues">
+</div>
+<div class="section" id="known-issues">
 <h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
 <p>The LED Trigger core cannot be a module as the simple trigger functions
 would cause nightmare dependency issues. I see this as a minor issue
 compared to the benefits the simple trigger functionality brings. The
 rest of the LED subsystem can be modular.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

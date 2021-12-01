@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Histogram Design Notes &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -288,7 +290,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="histogram-design-notes">
+  <div class="section" id="histogram-design-notes">
 <h1>Histogram Design Notes<a class="headerlink" href="#histogram-design-notes" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -308,15 +310,15 @@ tracing_map.c.</p>
 </dl>
 <p>Also, the histogram output displayed for those commands will be
 generally be truncated - only enough to make the point is displayed.</p>
-<section id="hist-debug-trace-event-files">
+<div class="section" id="hist-debug-trace-event-files">
 <h2>‘hist_debug’ trace event files<a class="headerlink" href="#hist-debug-trace-event-files" title="Permalink to this headline">¶</a></h2>
 <p>If the kernel is compiled with CONFIG_HIST_TRIGGERS_DEBUG set, an
 event file named ‘hist_debug’ will appear in each event’s
 subdirectory.  This file can be read at any time and will display some
 of the hist trigger internals described in this document. Specific
 examples and output will be described in test cases below.</p>
-</section>
-<section id="basic-histograms">
+</div>
+<div class="section" id="basic-histograms">
 <h2>Basic histograms<a class="headerlink" href="#basic-histograms" title="Permalink to this headline">¶</a></h2>
 <p>First, basic histograms.  Below is pretty much the simplest thing you
 can do with histograms - create one with a single key on a single
@@ -541,7 +543,7 @@ done and returns.  Note that there are also tracing_map_fields for
 each subkey in the key, but hist_trigger_elt_update() doesn’t look at
 them or update anything - those exist only for sorting, which can
 happen later.</p>
-<section id="basic-histogram-test">
+<div class="section" id="basic-histogram-test">
 <h3>Basic histogram test<a class="headerlink" href="#basic-histogram-test" title="Permalink to this headline">¶</a></h3>
 <p>This is a good example to try.  It produces 3 value fields and 2 key
 fields in the output:</p>
@@ -620,9 +622,9 @@ key fields:
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># echo &#39;!hist:keys=common_pid,call_site.sym:values=bytes_req,bytes_alloc,hitcount&#39; &gt;&gt; events/kmem/kmalloc/trigger
 </pre></div>
 </div>
-</section>
-</section>
-<section id="variables">
+</div>
+</div>
+<div class="section" id="variables">
 <h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
 <p>Variables allow data from one hist trigger to be saved by one hist
 trigger and retrieved by another hist trigger.  For example, a trigger
@@ -975,7 +977,7 @@ using tracing_map_read_var(elt, var.idx), which yields the value of
 the variable for that element, ts0 in the case above.  Note that both
 the hist_fields representing both the variable and the variable
 reference have the same var.idx, so this is straightforward.</p>
-<section id="variable-and-variable-reference-test">
+<div class="section" id="variable-and-variable-reference-test">
 <h3>Variable and variable reference test<a class="headerlink" href="#variable-and-variable-reference-test" title="Permalink to this headline">¶</a></h3>
 <p>This example creates a variable on the sched_waking event, ts0, and
 uses it in the sched_switch trigger.  The sched_switch trigger also
@@ -1110,9 +1112,9 @@ variable reference fields:
 # echo &#39;!hist:keys=pid:ts0=common_timestamp.usecs&#39; &gt;&gt; events/sched/sched_waking/trigger
 </pre></div>
 </div>
-</section>
-</section>
-<section id="actions-and-handlers">
+</div>
+</div>
+<div class="section" id="actions-and-handlers">
 <h2>Actions and Handlers<a class="headerlink" href="#actions-and-handlers" title="Permalink to this headline">¶</a></h2>
 <p>Adding onto the previous example, we will now do something with that
 wakeup_lat variable, namely send it and another field as a synthetic
@@ -1337,7 +1339,7 @@ FL_VAR = HIST_FIELD_FL_VAR
 FL_VAR_REF = HIST_FIELD_FL_VAR_REF
 </pre></div>
 </div>
-<section id="trace-action-field-variable-test">
+<div class="section" id="trace-action-field-variable-test">
 <h3>trace() action field variable test<a class="headerlink" href="#trace-action-field-variable-test" title="Permalink to this headline">¶</a></h3>
 <p>This example adds to the previous test example by finally making use
 of the wakeup_lat variable, but in addition also creates a couple of
@@ -1556,8 +1558,8 @@ action tracking variables (for onmax()/onchange()/onmatch()):
 # echo &#39;!wakeup_latency u64 lat; pid_t pid; char comm[16]&#39; &gt;&gt; synthetic_events
 </pre></div>
 </div>
-</section>
-<section id="action-data-and-the-trace-action">
+</div>
+<div class="section" id="action-data-and-the-trace-action">
 <h3>action_data and the trace() action<a class="headerlink" href="#action-data-and-the-trace-action" title="Permalink to this headline">¶</a></h3>
 <p>As mentioned above, when the trace() action generates a synthetic
 event, all the parameters to the synthetic event either already are
@@ -1593,8 +1595,8 @@ function, trace_event_raw_event_synth(), is as follows:</p>
   val = var_ref_vals[val_idx]
 </pre></div>
 </div>
-</section>
-<section id="action-data-and-the-onxxx-handlers">
+</div>
+<div class="section" id="action-data-and-the-onxxx-handlers">
 <h3>action_data and the onXXX() handlers<a class="headerlink" href="#action-data-and-the-onxxx-handlers" title="Permalink to this headline">¶</a></h3>
 <p>The hist trigger onXXX() actions other than onmatch(), such as onmax()
 and onchange(), also make use of and internally create hidden
@@ -1614,8 +1616,8 @@ with the save() and snapshot() actions.  For example:</p>
         /sys/kernel/debug/tracing/events/sched/sched_switch/trigger
 </pre></div>
 </div>
-</section>
-<section id="save-action-field-variable-test">
+</div>
+<div class="section" id="save-action-field-variable-test">
 <h3>save() action field variable test<a class="headerlink" href="#save-action-field-variable-test" title="Permalink to this headline">¶</a></h3>
 <p>For this example, instead of generating a synthetic event, the save()
 action is used to save field values whenever an onmax() handler
@@ -1846,16 +1848,16 @@ save action variables (save() params):
 # echo &#39;!hist:keys=pid:ts0=common_timestamp.usecs&#39; &gt;&gt; events/sched/sched_waking/trigger
 </pre></div>
 </div>
-</section>
-</section>
-<section id="a-couple-special-cases">
+</div>
+</div>
+<div class="section" id="a-couple-special-cases">
 <h2>A couple special cases<a class="headerlink" href="#a-couple-special-cases" title="Permalink to this headline">¶</a></h2>
 <p>While the above covers the basics of the histogram internals, there
 are a couple of special cases that should be discussed, since they
 tend to create even more confusion.  Those are field variables on other
 histograms, and aliases, both described below through example tests
 using the hist_debug files.</p>
-<section id="test-of-field-variables-on-other-histograms">
+<div class="section" id="test-of-field-variables-on-other-histograms">
 <h3>Test of field variables on other histograms<a class="headerlink" href="#test-of-field-variables-on-other-histograms" title="Permalink to this headline">¶</a></h3>
 <p>This example is similar to the previous examples, but in this case,
 the sched_switch trigger references a hist trigger field on another
@@ -2105,8 +2107,8 @@ action tracking variables (for onmax()/onchange()/onmatch()):
 # echo &#39;!wakeup_latency u64 lat; pid_t pid; int prio&#39; &gt;&gt; synthetic_events
 </pre></div>
 </div>
-</section>
-<section id="alias-test">
+</div>
+<div class="section" id="alias-test">
 <h3>Alias test<a class="headerlink" href="#alias-test" title="Permalink to this headline">¶</a></h3>
 <p>This example is very similar to previous examples, but demonstrates
 the alias flag.</p>
@@ -2347,9 +2349,9 @@ action tracking variables (for onmax()/onchange()/onmatch()):
 # echo &#39;!wakeup_latency u64 lat; pid_t pid; char comm[16]&#39; &gt;&gt; synthetic_events
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

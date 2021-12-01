@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Power allocator governor tunables &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -357,9 +359,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="power-allocator-governor-tunables">
+  <div class="section" id="power-allocator-governor-tunables">
 <h1>Power allocator governor tunables<a class="headerlink" href="#power-allocator-governor-tunables" title="Permalink to this headline">¶</a></h1>
-<section id="trip-points">
+<div class="section" id="trip-points">
 <h2>Trip points<a class="headerlink" href="#trip-points" title="Permalink to this headline">¶</a></h2>
 <p>The governor works optimally with the following two passive trip points:</p>
 <ol class="arabic simple">
@@ -371,8 +373,8 @@ point of the thermal zone.</p></li>
 is controlling for.  This is the last passive trip point of the
 thermal zone.</p></li>
 </ol>
-</section>
-<section id="pid-controller">
+</div>
+<div class="section" id="pid-controller">
 <h2>PID Controller<a class="headerlink" href="#pid-controller" title="Permalink to this headline">¶</a></h2>
 <p>The power allocator governor implements a
 Proportional-Integral-Derivative controller (PID controller) with
@@ -415,8 +417,8 @@ desired_temperature     ^
                     k_po/k_pu
 </pre></div>
 </div>
-</section>
-<section id="sustainable-power">
+</div>
+<div class="section" id="sustainable-power">
 <h2>Sustainable power<a class="headerlink" href="#sustainable-power" title="Permalink to this headline">¶</a></h2>
 <p>An estimate of the sustainable dissipatable power (in mW) should be
 provided while registering the thermal zone.  This estimates the
@@ -453,8 +455,8 @@ will suffice:</p>
 </div>
 <p>and then pass <cite>tz_params</cite> as the 5th parameter to
 <cite>thermal_zone_device_register()</cite></p>
-</section>
-<section id="k-po-and-k-pu">
+</div>
+<div class="section" id="k-po-and-k-pu">
 <h2>k_po and k_pu<a class="headerlink" href="#k-po-and-k-pu" title="Permalink to this headline">¶</a></h2>
 <p>The implementation of the PID controller in the power allocator
 thermal governor allows the configuration of two proportional term
@@ -513,8 +515,8 @@ formula becomes:</p>
 <p>Therefore, the proportional term alone linearly decreases power from
 3 * <cite>sustainable_power</cite> to <cite>sustainable_power</cite> as the temperature
 rises from the switch on temperature to the desired temperature.</p>
-</section>
-<section id="k-i-and-integral-cutoff">
+</div>
+<div class="section" id="k-i-and-integral-cutoff">
 <h2>k_i and integral_cutoff<a class="headerlink" href="#k-i-and-integral-cutoff" title="Permalink to this headline">¶</a></h2>
 <p><cite>k_i</cite> configures the PID loop’s integral term constant.  This term
 allows the PID controller to compensate for long term drift and for
@@ -524,12 +526,12 @@ error is below <cite>integral_cutoff</cite>, errors are accumulated in the
 integral term.  This term is then multiplied by <cite>k_i</cite> and the result
 added to the output of the controller.  Typically <cite>k_i</cite> is set low (1
 or 2) and <cite>integral_cutoff</cite> is 0.</p>
-</section>
-<section id="k-d">
+</div>
+<div class="section" id="k-d">
 <h2>k_d<a class="headerlink" href="#k-d" title="Permalink to this headline">¶</a></h2>
 <p><cite>k_d</cite> configures the PID loop’s derivative term constant.  It’s
 recommended to leave it as the default: 0.</p>
-<section id="cooling-device-power-api">
+<div class="section" id="cooling-device-power-api">
 <h3>Cooling device power API<a class="headerlink" href="#cooling-device-power-api" title="Permalink to this headline">¶</a></h3>
 <p>Cooling devices controlled by this governor must supply the additional
 “power” API in their <cite>cooling_device_ops</cite>.  It consists on three ops:</p>
@@ -597,9 +599,9 @@ a given power set by the power allocator governor to a state that the
 cooling device can set.  It is a function because this conversion may
 depend on external factors that may change so this function should the
 best conversion given “current circumstances”.</p>
-</section>
-</section>
-<section id="cooling-device-weights">
+</div>
+</div>
+<div class="section" id="cooling-device-weights">
 <h2>Cooling device weights<a class="headerlink" href="#cooling-device-weights" title="Permalink to this headline">¶</a></h2>
 <p>Weights are a mechanism to bias the allocation among cooling
 devices.  They express the relative power efficiency of different
@@ -614,7 +616,7 @@ a system with two different types of processors.</p>
 are passed as part of the thermal zone’s <cite>thermal_bind_parameters</cite>.
 If the platform is registered using device tree, then they are passed
 as the <cite>contribution</cite> property of each map in the <cite>cooling-maps</cite> node.</p>
-<section id="limitations-of-the-power-allocator-governor">
+<div class="section" id="limitations-of-the-power-allocator-governor">
 <h3>Limitations of the power allocator governor<a class="headerlink" href="#limitations-of-the-power-allocator-governor" title="Permalink to this headline">¶</a></h3>
 <p>The power allocator governor’s PID controller works best if there is a
 periodic tick.  If you have a driver that calls
@@ -624,16 +626,16 @@ won’t be very good.  Note that this is not particular to this
 governor, step-wise will also misbehave if you call its throttle()
 faster than the normal thermal framework tick (due to interrupts for
 example) as it will overreact.</p>
-</section>
-<section id="energy-model-requirements">
+</div>
+<div class="section" id="energy-model-requirements">
 <h3>Energy Model requirements<a class="headerlink" href="#energy-model-requirements" title="Permalink to this headline">¶</a></h3>
 <p>Another important thing is the consistent scale of the power values
 provided by the cooling devices. All of the cooling devices in a single
 thermal zone should have power values reported either in milli-Watts
 or scaled to the same ‘abstract scale’.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

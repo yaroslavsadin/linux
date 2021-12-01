@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Voltage and current regulator API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -354,7 +356,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="voltage-and-current-regulator-api">
+  <div class="section" id="voltage-and-current-regulator-api">
 <h1>Voltage and current regulator API<a class="headerlink" href="#voltage-and-current-regulator-api" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -364,7 +366,7 @@
 <dd class="field-even"><p>Mark Brown</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This framework is designed to provide a standard kernel interface to
 control voltage and current regulators.</p>
@@ -375,7 +377,7 @@ current sinks (where current limit is controllable).</p>
 <p>Note that additional (and currently more complete) documentation is
 available in the Linux kernel source under
 <code class="docutils literal notranslate"><span class="pre">Documentation/power/regulator</span></code>.</p>
-<section id="glossary">
+<div class="section" id="glossary">
 <h3>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h3>
 <p>The regulator API uses a number of terms which may not be familiar:</p>
 <p>Regulator</p>
@@ -402,9 +404,9 @@ is shared between all the components in the circuit.</p>
 subsystems. In an embedded system the primary PMIC is often equivalent
 to a combination of the PSU and southbridge in a desktop system.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="consumer-driver-interface">
+</div>
+</div>
+<div class="section" id="consumer-driver-interface">
 <h2>Consumer driver interface<a class="headerlink" href="#consumer-driver-interface" title="Permalink to this headline">¶</a></h2>
 <p>This offers a similar API to the kernel clock framework. Consumer
 drivers use <a class="reference external" href="#API-regulator-get">get</a> and
@@ -417,7 +419,7 @@ supplies, such as “Vcc”, which are mapped into actual regulator devices
 by the machine interface.</p>
 <p>A stub version of this API is provided when the regulator framework is
 not in use in order to minimise the need to use ifdefs.</p>
-<section id="enabling-and-disabling">
+<div class="section" id="enabling-and-disabling">
 <h3>Enabling and disabling<a class="headerlink" href="#enabling-and-disabling" title="Permalink to this headline">¶</a></h3>
 <p>The regulator API provides reference counted enabling and disabling of
 regulators. Consumer devices use the <a class="reference internal" href="#c.regulator_enable" title="regulator_enable"><code class="xref c c-func docutils literal notranslate"><span class="pre">regulator_enable()</span></code></a> and
@@ -428,8 +430,8 @@ constraints may not allow the regulator to be disabled there is no
 guarantee that calling <a class="reference internal" href="#c.regulator_disable" title="regulator_disable"><code class="xref c c-func docutils literal notranslate"><span class="pre">regulator_disable()</span></code></a> will actually
 cause the supply provided by the regulator to be disabled. Consumer
 drivers should assume that the regulator may be enabled at all times.</p>
-</section>
-<section id="configuration">
+</div>
+<div class="section" id="configuration">
 <h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
 <p>Some consumer devices may need to be able to dynamically configure their
 supplies. For example, MMC drivers may need to select the correct
@@ -443,13 +445,13 @@ normally permits the CPU to use a wider range of supply voltages at lower
 frequencies but does not require that the supply voltage be lowered). Where
 an exact value is required both minimum and maximum values should be
 identical.</p>
-</section>
-<section id="callbacks">
+</div>
+<div class="section" id="callbacks">
 <h3>Callbacks<a class="headerlink" href="#callbacks" title="Permalink to this headline">¶</a></h3>
 <p>Callbacks may also be registered for events such as regulation failures.</p>
-</section>
-</section>
-<section id="regulator-driver-interface">
+</div>
+</div>
+<div class="section" id="regulator-driver-interface">
 <h2>Regulator driver interface<a class="headerlink" href="#regulator-driver-interface" title="Permalink to this headline">¶</a></h2>
 <p>Drivers for regulator chips register the regulators with the regulator
 core, providing operations structures to the core. A notifier interface
@@ -457,19 +459,19 @@ allows error conditions to be reported to the core.</p>
 <p>Registration should be triggered by explicit setup done by the platform,
 supplying a <a class="reference internal" href="#c.regulator_init_data" title="regulator_init_data"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">regulator_init_data</span></code></a> for the regulator
 containing constraint and supply information.</p>
-</section>
-<section id="machine-interface">
+</div>
+<div class="section" id="machine-interface">
 <h2>Machine interface<a class="headerlink" href="#machine-interface" title="Permalink to this headline">¶</a></h2>
 <p>This interface provides a way to define how regulators are connected to
 consumers on a given system and what the valid operating parameters are
 for the system.</p>
-<section id="supplies">
+<div class="section" id="supplies">
 <h3>Supplies<a class="headerlink" href="#supplies" title="Permalink to this headline">¶</a></h3>
 <p>Regulator supplies are specified using struct
 <a class="reference internal" href="#c.regulator_consumer_supply" title="regulator_consumer_supply"><code class="xref c c-type docutils literal notranslate"><span class="pre">regulator_consumer_supply</span></code></a>. This is done at driver registration
 time as part of the machine constraints.</p>
-</section>
-<section id="constraints">
+</div>
+<div class="section" id="constraints">
 <h3>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h3>
 <p>As well as defining the connections the machine interface also provides
 constraints defining the operations that clients are allowed to perform
@@ -482,16 +484,16 @@ consumers are rated for.</p>
 <p>The constraints may also specify an initial configuration for the
 regulator in the constraints, which is particularly useful for use with
 static consumers.</p>
-</section>
-</section>
-<section id="api-reference">
+</div>
+</div>
+<div class="section" id="api-reference">
 <h2>API reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
 <p>Due to limitations of the kernel documentation framework and the
 existing layout of the source code the entire regulator API is
 documented here.</p>
 <dl class="c struct">
-<dt id="c.pre_voltage_change_data">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">pre_voltage_change_data</span></code><a class="headerlink" href="#c.pre_voltage_change_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.pre_voltage_change_data">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pre_voltage_change_data</span></span></span><a class="headerlink" href="#c.pre_voltage_change_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Data sent with PRE_VOLTAGE_CHANGE event</p>
 </dd></dl>
 
@@ -513,8 +515,8 @@ documented here.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.regulator_bulk_data">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulator_bulk_data</span></code><a class="headerlink" href="#c.regulator_bulk_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_bulk_data">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_bulk_data</span></span></span><a class="headerlink" href="#c.regulator_bulk_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Data used for bulk regulator operations.</p>
 </dd></dl>
 
@@ -539,8 +541,8 @@ by the bulk API.</p>
 a convenience to consumers which require multiple supplies.  This
 structure is used to manage data for these calls.</p>
 <dl class="c struct">
-<dt id="c.regulator_state">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulator_state</span></code><a class="headerlink" href="#c.regulator_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_state">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_state</span></span></span><a class="headerlink" href="#c.regulator_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>regulator state during low power system states</p>
 </dd></dl>
 
@@ -579,8 +581,8 @@ among &lt;min_uV, max_uV&gt;.</p>
 state.  One of enabled or disabled must be set for the
 configuration to be applied.</p>
 <dl class="c struct">
-<dt id="c.regulation_constraints">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulation_constraints</span></code><a class="headerlink" href="#c.regulation_constraints" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulation_constraints">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulation_constraints</span></span></span><a class="headerlink" href="#c.regulation_constraints" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>regulator operating constraints.</p>
 </dd></dl>
 
@@ -722,8 +724,8 @@ applied.</p>
 <p><strong>Description</strong></p>
 <p>This struct describes regulator and board/machine specific constraints.</p>
 <dl class="c struct">
-<dt id="c.regulator_consumer_supply">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulator_consumer_supply</span></code><a class="headerlink" href="#c.regulator_consumer_supply" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_consumer_supply">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_consumer_supply</span></span></span><a class="headerlink" href="#c.regulator_consumer_supply" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>supply -&gt; device mapping</p>
 </dd></dl>
 
@@ -745,8 +747,8 @@ applied.</p>
 <p>This maps a supply name to a device. Use of dev_name allows support for
 buses which make <a class="reference internal" href="infrastructure.html#c.device" title="device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span></code></a> available late such as I2C.</p>
 <dl class="c struct">
-<dt id="c.regulator_init_data">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulator_init_data</span></code><a class="headerlink" href="#c.regulator_init_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_init_data">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_init_data</span></span></span><a class="headerlink" href="#c.regulator_init_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>regulator platform initialisation data.</p>
 </dd></dl>
 
@@ -782,8 +784,8 @@ be usable.</p>
 <p><strong>Description</strong></p>
 <p>Initialisation constraints, our supply and consumers supplies.</p>
 <dl class="c struct">
-<dt id="c.regulator_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulator_ops</span></code><a class="headerlink" href="#c.regulator_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_ops</span></span></span><a class="headerlink" href="#c.regulator_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>regulator operations.</p>
 </dd></dl>
 
@@ -952,8 +954,8 @@ is disabled.</p>
 <p>This struct describes regulator operations which can be implemented by
 regulator chip drivers.</p>
 <dl class="c struct">
-<dt id="c.regulator_desc">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulator_desc</span></code><a class="headerlink" href="#c.regulator_desc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_desc">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_desc</span></span></span><a class="headerlink" href="#c.regulator_desc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Static regulator descriptor</p>
 </dd></dl>
 
@@ -1182,8 +1184,8 @@ structure of this type and a <a class="reference internal" href="#c.regulator_co
 structure contains the non-varying parts of the regulator
 description.</p>
 <dl class="c struct">
-<dt id="c.regulator_config">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulator_config</span></code><a class="headerlink" href="#c.regulator_config" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_config">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_config</span></span></span><a class="headerlink" href="#c.regulator_config" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Dynamic regulator descriptor</p>
 </dd></dl>
 
@@ -1220,8 +1222,8 @@ insufficient.</p>
 structure of this type and a <a class="reference internal" href="#c.regulator_desc" title="regulator_desc"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">regulator_desc</span></code></a>.  This structure
 contains the runtime variable parts of the regulator description.</p>
 <dl class="c struct">
-<dt id="c.regulator_err_state">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulator_err_state</span></code><a class="headerlink" href="#c.regulator_err_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_err_state">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_err_state</span></span></span><a class="headerlink" href="#c.regulator_err_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>regulator error/notification status</p>
 </dd></dl>
 
@@ -1246,8 +1248,8 @@ contains the runtime variable parts of the regulator description.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.regulator_irq_data">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulator_irq_data</span></code><a class="headerlink" href="#c.regulator_irq_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_irq_data">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_irq_data</span></span></span><a class="headerlink" href="#c.regulator_irq_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>regulator error/notification status data</p>
 </dd></dl>
 
@@ -1281,8 +1283,8 @@ notifications also for the new issues.</p>
 <p>This structure is passed to ‘map_event’ and ‘renable’ callbacks for
 reporting regulator status to core.</p>
 <dl class="c struct">
-<dt id="c.regulator_irq_desc">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">regulator_irq_desc</span></code><a class="headerlink" href="#c.regulator_irq_desc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_irq_desc">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_irq_desc</span></span></span><a class="headerlink" href="#c.regulator_irq_desc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>notification sender for IRQ based events.</p>
 </dd></dl>
 
@@ -1371,8 +1373,8 @@ re-evaluated and re-sent.</p>
 <p><strong>Description</strong></p>
 <p>This structure is used for registering regulator IRQ notification helper.</p>
 <dl class="c function">
-<dt id="c.regulator_get">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">regulator</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">regulator_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_get">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">regulator</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">regulator_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>lookup and obtain a reference to a regulator.</p>
 </dd></dl>
 
@@ -1391,8 +1393,8 @@ strongly encouraged.  It is recommended that the supply name used
 should match the name used for the supply and/or the relevant
 device pins in the datasheet.</p>
 <dl class="c function">
-<dt id="c.regulator_get_exclusive">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">regulator</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">regulator_get_exclusive</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_exclusive" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_get_exclusive">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">regulator</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">regulator_get_exclusive</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_exclusive" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>obtain exclusive access to a regulator.</p>
 </dd></dl>
 
@@ -1418,8 +1420,8 @@ strongly encouraged.  It is recommended that the supply name used
 should match the name used for the supply and/or the relevant
 device pins in the datasheet.</p>
 <dl class="c function">
-<dt id="c.regulator_get_optional">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">regulator</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">regulator_get_optional</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_optional" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_get_optional">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">regulator</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">regulator_get_optional</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_optional" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>obtain optional access to a regulator.</p>
 </dd></dl>
 
@@ -1444,8 +1446,8 @@ strongly encouraged.  It is recommended that the supply name used
 should match the name used for the supply and/or the relevant
 device pins in the datasheet.</p>
 <dl class="c function">
-<dt id="c.regulator_put">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">regulator_put</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_put" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_put" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_put">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_put</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_put" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_put" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>“free” the regulator source</p>
 </dd></dl>
 
@@ -1459,8 +1461,8 @@ device pins in the datasheet.</p>
 regulator source are balanced by regulator_disable calls prior to calling
 this function.</p>
 <dl class="c function">
-<dt id="c.regulator_register_supply_alias">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_register_supply_alias</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">alias_dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">alias_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_register_supply_alias" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_register_supply_alias">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_register_supply_alias</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">alias_dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">alias_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_register_supply_alias" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Provide device alias for supply lookup</p>
 </dd></dl>
 
@@ -1480,8 +1482,8 @@ supply</p>
 <p>All lookups for id on dev will instead be conducted for alias_id on
 alias_dev.</p>
 <dl class="c function">
-<dt id="c.regulator_unregister_supply_alias">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">regulator_unregister_supply_alias</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_unregister_supply_alias" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_unregister_supply_alias">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_unregister_supply_alias</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_unregister_supply_alias" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Remove device alias</p>
 </dd></dl>
 
@@ -1495,8 +1497,8 @@ alias_dev.</p>
 <p><strong>Description</strong></p>
 <p>Remove a lookup alias if one exists for id on dev.</p>
 <dl class="c function">
-<dt id="c.regulator_bulk_register_supply_alias">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_bulk_register_supply_alias</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em class="property"><span class="pre">const</span></em> <span class="pre">*</span><em><span class="pre">id</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">alias_dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em class="property"><span class="pre">const</span></em> <span class="pre">*</span><em><span class="pre">alias_id</span></em>, <span class="pre">int</span> <em><span class="pre">num_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_register_supply_alias" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_bulk_register_supply_alias">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_bulk_register_supply_alias</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">alias_dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">alias_id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_register_supply_alias" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>register multiple aliases</p>
 </dd></dl>
 
@@ -1521,8 +1523,8 @@ aliases in one operation.  If any of the aliases cannot be
 registered any aliases that were registered will be removed
 before returning to the caller.</p>
 <dl class="c function">
-<dt id="c.regulator_bulk_unregister_supply_alias">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">regulator_bulk_unregister_supply_alias</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em class="property"><span class="pre">const</span></em> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">num_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_unregister_supply_alias" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_bulk_unregister_supply_alias">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_bulk_unregister_supply_alias</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_unregister_supply_alias" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unregister multiple aliases</p>
 </dd></dl>
 
@@ -1539,8 +1541,8 @@ before returning to the caller.</p>
 <p>This helper function allows drivers to unregister several supply
 aliases in one operation.</p>
 <dl class="c function">
-<dt id="c.regulator_enable">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_enable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_enable" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_enable" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_enable">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_enable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_enable" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_enable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enable regulator output</p>
 </dd></dl>
 
@@ -1557,8 +1559,8 @@ must be balanced with calls to <a class="reference internal" href="#c.regulator_
 <p>the output value can be set by other drivers, boot loader or may be
 hardwired in the regulator.</p>
 <dl class="c function">
-<dt id="c.regulator_disable">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_disable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_disable" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_disable" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_disable">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_disable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_disable" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_disable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>disable regulator output</p>
 </dd></dl>
 
@@ -1576,8 +1578,8 @@ hardwired in the regulator.</p>
 devices have it enabled, the regulator device supports disabling and
 machine constraints permit this operation.</p>
 <dl class="c function">
-<dt id="c.regulator_force_disable">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_force_disable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_force_disable" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_force_disable" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_force_disable">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_force_disable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_force_disable" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_force_disable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>force disable regulator output</p>
 </dd></dl>
 
@@ -1593,8 +1595,8 @@ machine constraints permit this operation.</p>
 devices have it enabled. This should be used for situations when device
 damage will likely occur if the regulator is not disabled (e.g. over temp).</p>
 <dl class="c function">
-<dt id="c.regulator_disable_deferred">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_disable_deferred</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_disable_deferred" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">int</span> <em><span class="pre">ms</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_disable_deferred" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_disable_deferred">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_disable_deferred</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_disable_deferred" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">ms</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_disable_deferred" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>disable regulator output with delay</p>
 </dd></dl>
 
@@ -1613,8 +1615,8 @@ is intended for use with devices that require some time to quiesce.</p>
 devices have it enabled, the regulator device supports disabling and
 machine constraints permit this operation.</p>
 <dl class="c function">
-<dt id="c.regulator_is_enabled">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_is_enabled</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_is_enabled" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_is_enabled" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_is_enabled">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_is_enabled</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_is_enabled" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_is_enabled" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>is the regulator output enabled</p>
 </dd></dl>
 
@@ -1631,8 +1633,8 @@ negative errno code.</p>
 users, so it might be enabled even if <a class="reference internal" href="#c.regulator_enable" title="regulator_enable"><code class="xref c c-func docutils literal notranslate"><span class="pre">regulator_enable()</span></code></a> was never
 called for this particular source.</p>
 <dl class="c function">
-<dt id="c.regulator_count_voltages">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_count_voltages</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_count_voltages" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_count_voltages" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_count_voltages">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_count_voltages</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_count_voltages" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_count_voltages" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>count <a class="reference internal" href="#c.regulator_list_voltage" title="regulator_list_voltage"><code class="xref c c-func docutils literal notranslate"><span class="pre">regulator_list_voltage()</span></code></a> selectors</p>
 </dd></dl>
 
@@ -1646,8 +1648,8 @@ called for this particular source.</p>
 numbered starting at zero, and typically correspond to bitfields
 in hardware registers.</p>
 <dl class="c function">
-<dt id="c.regulator_list_voltage">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_list_voltage</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_list_voltage" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">unsigned</span> <em><span class="pre">selector</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_list_voltage" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_list_voltage">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_list_voltage</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_list_voltage" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n"><span class="pre">selector</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_list_voltage" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enumerate supported voltages</p>
 </dd></dl>
 
@@ -1665,8 +1667,8 @@ in hardware registers.</p>
 zero if this selector code can’t be used on this system, or a
 negative errno.</p>
 <dl class="c function">
-<dt id="c.regulator_get_hardware_vsel_register">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_get_hardware_vsel_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_get_hardware_vsel_register" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">unsigned</span> <span class="pre">*</span><em><span class="pre">vsel_reg</span></em>, <span class="pre">unsigned</span> <span class="pre">*</span><em><span class="pre">vsel_mask</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_hardware_vsel_register" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_get_hardware_vsel_register">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_get_hardware_vsel_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_get_hardware_vsel_register" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vsel_reg</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vsel_mask</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_hardware_vsel_register" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get the HW voltage selector register</p>
 </dd></dl>
 
@@ -1687,8 +1689,8 @@ for example.</p>
 <p>On success, the output parameters <strong>vsel_reg</strong> and <strong>vsel_mask</strong> are filled in
 and 0 is returned, otherwise a negative errno is returned.</p>
 <dl class="c function">
-<dt id="c.regulator_list_hardware_vsel">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_list_hardware_vsel</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_list_hardware_vsel" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">unsigned</span> <em><span class="pre">selector</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_list_hardware_vsel" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_list_hardware_vsel">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_list_hardware_vsel</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_list_hardware_vsel" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n"><span class="pre">selector</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_list_hardware_vsel" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get the HW-specific register value for a selector</p>
 </dd></dl>
 
@@ -1705,8 +1707,8 @@ directly written to the regulator registers. The address of the voltage
 register can be determined by calling <strong>regulator_get_hardware_vsel_register</strong>.</p>
 <p>On error a negative errno is returned.</p>
 <dl class="c function">
-<dt id="c.regulator_get_linear_step">
-<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_get_linear_step</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_get_linear_step" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_linear_step" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_get_linear_step">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_get_linear_step</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_get_linear_step" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_linear_step" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return the voltage step size between VSEL values</p>
 </dd></dl>
 
@@ -1719,8 +1721,8 @@ register can be determined by calling <strong>regulator_get_hardware_vsel_regist
 <p>Returns the voltage step size between VSEL values for linear
 regulators, or return 0 if the regulator isn’t a linear regulator.</p>
 <dl class="c function">
-<dt id="c.regulator_is_supported_voltage">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_is_supported_voltage</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_is_supported_voltage" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">int</span> <em><span class="pre">min_uV</span></em>, <span class="pre">int</span> <em><span class="pre">max_uV</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_is_supported_voltage" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_is_supported_voltage">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_is_supported_voltage</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_is_supported_voltage" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">min_uV</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">max_uV</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_is_supported_voltage" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>check if a voltage range can be supported</p>
 </dd></dl>
 
@@ -1736,8 +1738,8 @@ regulators, or return 0 if the regulator isn’t a linear regulator.</p>
 <p><strong>Description</strong></p>
 <p>Returns a boolean.</p>
 <dl class="c function">
-<dt id="c.regulator_set_voltage">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_set_voltage</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_set_voltage" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">int</span> <em><span class="pre">min_uV</span></em>, <span class="pre">int</span> <em><span class="pre">max_uV</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_voltage" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_set_voltage">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_set_voltage</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_set_voltage" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">min_uV</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">max_uV</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_voltage" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set regulator output voltage</p>
 </dd></dl>
 
@@ -1762,8 +1764,8 @@ request voltage that meets the system constraints will be used.
 Regulator system constraints must be set for this regulator before
 calling this function otherwise this call will fail.</p>
 <dl class="c function">
-<dt id="c.regulator_set_voltage_time">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_set_voltage_time</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_set_voltage_time" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">int</span> <em><span class="pre">old_uV</span></em>, <span class="pre">int</span> <em><span class="pre">new_uV</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_voltage_time" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_set_voltage_time">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_set_voltage_time</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_set_voltage_time" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">old_uV</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">new_uV</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_voltage_time" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get raise/fall time</p>
 </dd></dl>
 
@@ -1781,8 +1783,8 @@ calling this function otherwise this call will fail.</p>
 calculate the time in microseconds required to rise or fall to this new
 voltage.</p>
 <dl class="c function">
-<dt id="c.regulator_set_voltage_time_sel">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_set_voltage_time_sel</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">regulator_dev</span> <span class="pre">*</span><em><span class="pre">rdev</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">old_selector</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">new_selector</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_voltage_time_sel" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_set_voltage_time_sel">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_set_voltage_time_sel</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">regulator_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rdev</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">old_selector</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">new_selector</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_voltage_time_sel" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get raise/fall time</p>
 </dd></dl>
 
@@ -1801,8 +1803,8 @@ returns time in microseconds required to rise or fall to this new voltage</p>
 <p>Drivers providing ramp_delay in regulation_constraints can use this as their
 set_voltage_time_sel() operation.</p>
 <dl class="c function">
-<dt id="c.regulator_sync_voltage">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_sync_voltage</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_sync_voltage" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_sync_voltage" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_sync_voltage">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_sync_voltage</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_sync_voltage" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_sync_voltage" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>re-apply last regulator output voltage</p>
 </dd></dl>
 
@@ -1816,8 +1818,8 @@ set_voltage_time_sel() operation.</p>
 where some external control source the consumer is cooperating with
 has caused the configured voltage to change.</p>
 <dl class="c function">
-<dt id="c.regulator_get_voltage">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_get_voltage</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_get_voltage" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_voltage" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_get_voltage">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_get_voltage</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_get_voltage" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_voltage" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get regulator output voltage</p>
 </dd></dl>
 
@@ -1832,8 +1834,8 @@ has caused the configured voltage to change.</p>
 <p>If the regulator is disabled it will return the voltage value. This
 function should not be used to determine regulator state.</p>
 <dl class="c function">
-<dt id="c.regulator_set_current_limit">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_set_current_limit</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_set_current_limit" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">int</span> <em><span class="pre">min_uA</span></em>, <span class="pre">int</span> <em><span class="pre">max_uA</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_current_limit" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_set_current_limit">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_set_current_limit</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_set_current_limit" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">min_uA</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">max_uA</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_current_limit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set regulator output current limit</p>
 </dd></dl>
 
@@ -1856,8 +1858,8 @@ output at the new current when enabled.</p>
 <p>Regulator system constraints must be set for this regulator before
 calling this function otherwise this call will fail.</p>
 <dl class="c function">
-<dt id="c.regulator_get_current_limit">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_get_current_limit</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_get_current_limit" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_current_limit" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_get_current_limit">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_get_current_limit</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_get_current_limit" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_current_limit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get regulator output current</p>
 </dd></dl>
 
@@ -1872,8 +1874,8 @@ calling this function otherwise this call will fail.</p>
 <p>If the regulator is disabled it will return the current value. This
 function should not be used to determine regulator state.</p>
 <dl class="c function">
-<dt id="c.regulator_set_mode">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_set_mode</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_set_mode" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">mode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_mode" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_set_mode">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_set_mode</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_set_mode" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">mode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_mode" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set regulator operating mode</p>
 </dd></dl>
 
@@ -1891,8 +1893,8 @@ regulation performance.</p>
 <p>Regulator system constraints must be set for this regulator before
 calling this function otherwise this call will fail.</p>
 <dl class="c function">
-<dt id="c.regulator_get_mode">
-<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_get_mode</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_get_mode" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_mode" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_get_mode">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_get_mode</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_get_mode" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_mode" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get regulator operating mode</p>
 </dd></dl>
 
@@ -1904,8 +1906,8 @@ calling this function otherwise this call will fail.</p>
 <p><strong>Description</strong></p>
 <p>Get the current regulator operating mode.</p>
 <dl class="c function">
-<dt id="c.regulator_get_error_flags">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_get_error_flags</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_get_error_flags" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_error_flags" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_get_error_flags">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_get_error_flags</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_get_error_flags" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_error_flags" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get regulator error information</p>
 </dd></dl>
 
@@ -1919,8 +1921,8 @@ calling this function otherwise this call will fail.</p>
 <p><strong>Description</strong></p>
 <p>Get the current regulator error information.</p>
 <dl class="c function">
-<dt id="c.regulator_set_load">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_set_load</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_set_load" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">int</span> <em><span class="pre">uA_load</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_load" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_set_load">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_set_load</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_set_load" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">uA_load</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_load" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set regulator load</p>
 </dd></dl>
 
@@ -1957,8 +1959,8 @@ disabled then any load that consumer requested no longer counts
 toward the total requested load.  If the regulator is re-enabled
 then the previously requested load will start counting again.</p>
 <dl class="c function">
-<dt id="c.regulator_allow_bypass">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_allow_bypass</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_allow_bypass" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">bool</span> <em><span class="pre">enable</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_allow_bypass" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_allow_bypass">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_allow_bypass</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_allow_bypass" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">enable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_allow_bypass" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allow the regulator to go into bypass mode</p>
 </dd></dl>
 
@@ -1975,8 +1977,8 @@ for the regulator also enable bypass mode and the machine
 constraints allow this.  Bypass mode means that the regulator is
 simply passing the input directly to the output with no regulation.</p>
 <dl class="c function">
-<dt id="c.regulator_register_notifier">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_register_notifier</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_register_notifier" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">notifier_block</span> <span class="pre">*</span><em><span class="pre">nb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_register_notifier" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_register_notifier">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_register_notifier</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_register_notifier" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">notifier_block</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">nb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_register_notifier" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>register regulator event notifier</p>
 </dd></dl>
 
@@ -1990,8 +1992,8 @@ simply passing the input directly to the output with no regulation.</p>
 <p><strong>Description</strong></p>
 <p>Register notifier block to receive regulator events.</p>
 <dl class="c function">
-<dt id="c.regulator_unregister_notifier">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_unregister_notifier</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_unregister_notifier" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">notifier_block</span> <span class="pre">*</span><em><span class="pre">nb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_unregister_notifier" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_unregister_notifier">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_unregister_notifier</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_unregister_notifier" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">notifier_block</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">nb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_unregister_notifier" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unregister regulator event notifier</p>
 </dd></dl>
 
@@ -2005,8 +2007,8 @@ simply passing the input directly to the output with no regulation.</p>
 <p><strong>Description</strong></p>
 <p>Unregister regulator event notifier block.</p>
 <dl class="c function">
-<dt id="c.regulator_bulk_get">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_bulk_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">int</span> <em><span class="pre">num_consumers</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_bulk_data" title="regulator_bulk_data"><span class="pre">regulator_bulk_data</span></a> <span class="pre">*</span><em><span class="pre">consumers</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_get" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_bulk_get">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_bulk_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_consumers</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_bulk_data" title="regulator_bulk_data"><span class="n"><span class="pre">regulator_bulk_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">consumers</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_get" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get multiple regulator consumers</p>
 </dd></dl>
 
@@ -2026,8 +2028,8 @@ consumers in one operation.  If any of the regulators cannot be
 acquired then any regulators that were allocated will be freed
 before returning to the caller.</p>
 <dl class="c function">
-<dt id="c.regulator_bulk_enable">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_bulk_enable</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">num_consumers</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_bulk_data" title="regulator_bulk_data"><span class="pre">regulator_bulk_data</span></a> <span class="pre">*</span><em><span class="pre">consumers</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_enable" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_bulk_enable">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_bulk_enable</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_consumers</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_bulk_data" title="regulator_bulk_data"><span class="n"><span class="pre">regulator_bulk_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">consumers</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_enable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enable multiple regulator consumers</p>
 </dd></dl>
 
@@ -2045,8 +2047,8 @@ clients in a single API call.  If any consumers cannot be enabled
 then any others that were enabled will be disabled again prior to
 return.</p>
 <dl class="c function">
-<dt id="c.regulator_bulk_disable">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_bulk_disable</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">num_consumers</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_bulk_data" title="regulator_bulk_data"><span class="pre">regulator_bulk_data</span></a> <span class="pre">*</span><em><span class="pre">consumers</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_disable" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_bulk_disable">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_bulk_disable</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_consumers</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_bulk_data" title="regulator_bulk_data"><span class="n"><span class="pre">regulator_bulk_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">consumers</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_disable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>disable multiple regulator consumers</p>
 </dd></dl>
 
@@ -2064,8 +2066,8 @@ clients in a single API call.  If any consumers cannot be disabled
 then any others that were disabled will be enabled again prior to
 return.</p>
 <dl class="c function">
-<dt id="c.regulator_bulk_force_disable">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_bulk_force_disable</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">num_consumers</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_bulk_data" title="regulator_bulk_data"><span class="pre">regulator_bulk_data</span></a> <span class="pre">*</span><em><span class="pre">consumers</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_force_disable" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_bulk_force_disable">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_bulk_force_disable</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_consumers</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_bulk_data" title="regulator_bulk_data"><span class="n"><span class="pre">regulator_bulk_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">consumers</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_force_disable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>force disable multiple regulator consumers</p>
 </dd></dl>
 
@@ -2086,8 +2088,8 @@ likely occur if the regulators are not disabled (e.g. over temp).
 Although regulator_force_disable function call for some consumers can
 return error numbers, the function is called for all consumers.</p>
 <dl class="c function">
-<dt id="c.regulator_bulk_free">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">regulator_bulk_free</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">num_consumers</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_bulk_data" title="regulator_bulk_data"><span class="pre">regulator_bulk_data</span></a> <span class="pre">*</span><em><span class="pre">consumers</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_bulk_free">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_bulk_free</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_consumers</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_bulk_data" title="regulator_bulk_data"><span class="n"><span class="pre">regulator_bulk_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">consumers</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_bulk_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free multiple regulator consumers</p>
 </dd></dl>
 
@@ -2102,8 +2104,8 @@ return error numbers, the function is called for all consumers.</p>
 <p>This convenience API allows consumers to free multiple regulator
 clients in a single API call.</p>
 <dl class="c function">
-<dt id="c.regulator_notifier_call_chain">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_notifier_call_chain</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">regulator_dev</span> <span class="pre">*</span><em><span class="pre">rdev</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">event</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_notifier_call_chain" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_notifier_call_chain">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_notifier_call_chain</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">regulator_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rdev</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">event</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_notifier_call_chain" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>call regulator event notifier</p>
 </dd></dl>
 
@@ -2120,8 +2122,8 @@ clients in a single API call.</p>
 <p>Called by regulator drivers to notify clients a regulator event has
 occurred.</p>
 <dl class="c function">
-<dt id="c.regulator_mode_to_status">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">regulator_mode_to_status</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">mode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_mode_to_status" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_mode_to_status">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_mode_to_status</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">mode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_mode_to_status" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>convert a regulator mode into a status</p>
 </dd></dl>
 
@@ -2133,8 +2135,8 @@ occurred.</p>
 <p><strong>Description</strong></p>
 <p>Convert a regulator mode into a status.</p>
 <dl class="c function">
-<dt id="c.regulator_register">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">regulator_dev</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">regulator_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_register" title="regulator_desc"><span class="pre">regulator_desc</span></a> <span class="pre">*</span><em><span class="pre">regulator_desc</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_config" title="regulator_config"><span class="pre">regulator_config</span></a> <span class="pre">*</span><em><span class="pre">cfg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_register" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_register">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">regulator_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">regulator_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_register" title="regulator_desc"><span class="n"><span class="pre">regulator_desc</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator_desc</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_config" title="regulator_config"><span class="n"><span class="pre">regulator_config</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cfg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_register" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>register regulator</p>
 </dd></dl>
 
@@ -2150,8 +2152,8 @@ occurred.</p>
 Returns a valid pointer to struct regulator_dev on success
 or an ERR_PTR() on error.</p>
 <dl class="c function">
-<dt id="c.regulator_unregister">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">regulator_unregister</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">regulator_dev</span> <span class="pre">*</span><em><span class="pre">rdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_unregister" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_unregister">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_unregister</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">regulator_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_unregister" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unregister regulator</p>
 </dd></dl>
 
@@ -2163,8 +2165,8 @@ or an ERR_PTR() on error.</p>
 <p><strong>Description</strong></p>
 <p>Called by regulator drivers to unregister a regulator.</p>
 <dl class="c function">
-<dt id="c.regulator_has_full_constraints">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">regulator_has_full_constraints</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_has_full_constraints" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_has_full_constraints">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_has_full_constraints</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_has_full_constraints" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>the system has fully specified constraints</p>
 </dd></dl>
 
@@ -2181,8 +2183,8 @@ constraint in a late_initcall.</p>
 future kernel release so users are encouraged to use this facility
 now.</p>
 <dl class="c function">
-<dt id="c.rdev_get_drvdata">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">rdev_get_drvdata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">regulator_dev</span> <span class="pre">*</span><em><span class="pre">rdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.rdev_get_drvdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.rdev_get_drvdata">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">rdev_get_drvdata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">regulator_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.rdev_get_drvdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get rdev regulator driver data</p>
 </dd></dl>
 
@@ -2195,8 +2197,8 @@ now.</p>
 <p>Get rdev regulator driver private data. This call can be used in the
 regulator driver context.</p>
 <dl class="c function">
-<dt id="c.regulator_get_drvdata">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">regulator_get_drvdata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_get_drvdata" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_drvdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_get_drvdata">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">regulator_get_drvdata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_get_drvdata" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_get_drvdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get regulator driver data</p>
 </dd></dl>
 
@@ -2209,8 +2211,8 @@ regulator driver context.</p>
 <p>Get regulator driver private data. This call can be used in the consumer
 driver context when non API regulator specific functions need to be called.</p>
 <dl class="c function">
-<dt id="c.regulator_set_drvdata">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">regulator_set_drvdata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.regulator_set_drvdata" title="regulator"><span class="pre">regulator</span></a> <span class="pre">*</span><em><span class="pre">regulator</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_drvdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.regulator_set_drvdata">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">regulator_set_drvdata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.regulator_set_drvdata" title="regulator"><span class="n"><span class="pre">regulator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regulator</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.regulator_set_drvdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set regulator driver data</p>
 </dd></dl>
 
@@ -2222,8 +2224,8 @@ driver context when non API regulator specific functions need to be called.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.rdev_get_id">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">rdev_get_id</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">regulator_dev</span> <span class="pre">*</span><em><span class="pre">rdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.rdev_get_id" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.rdev_get_id">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rdev_get_id</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">regulator_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.rdev_get_id" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get regulator ID</p>
 </dd></dl>
 
@@ -2232,8 +2234,8 @@ driver context when non API regulator specific functions need to be called.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">regulator_dev</span> <span class="pre">*rdev</span></code></dt><dd><p>regulator</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

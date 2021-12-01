@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>从FS/IO上下文中使用的GFP掩码 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -293,7 +295,7 @@
 <dd class="field-odd"><p>时奎亮 &lt;<a class="reference external" href="mailto:alexs&#37;&#52;&#48;kernel&#46;org">alexs<span>&#64;</span>kernel<span>&#46;</span>org</a>&gt;</p>
 </dd>
 </dl>
-<section id="fs-iogfp">
+<div class="section" id="fs-iogfp">
 <span id="cn-core-api-gfp-mask-from-fs-io"></span><h1>从FS/IO上下文中使用的GFP掩码<a class="headerlink" href="#fs-iogfp" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">日期</dt>
@@ -303,7 +305,7 @@
 <dd class="field-even"><p>Michal Hocko &lt;<a class="reference external" href="mailto:mhocko&#37;&#52;&#48;kernel&#46;org">mhocko<span>&#64;</span>kernel<span>&#46;</span>org</a>&gt;</p>
 </dd>
 </dl>
-<section id="id1">
+<div class="section" id="id1">
 <h2>简介<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>文件系统和IO栈中的代码路径在分配内存时必须小心，以防止因直接调用FS或IO路径的内
 存回收和阻塞已经持有的资源（例如锁–最常见的是用于事务上下文的锁）而造成递归死
@@ -313,8 +315,8 @@
 实证明，上述方法导致了滥用，当限制性的gfp掩码被用于“万一”时，没有更深入的考虑，
 这导致了问题，因为过度使用GFP_NOFS/GFP_NOIO会导致内存过度回收或其他内存回收的问
 题。</p>
-</section>
-<section id="api">
+</div>
+<div class="section" id="api">
 <h2>新API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p>从4.12开始，我们为NOFS和NOIO上下文提供了一个通用的作用域API，分别是
 <code class="docutils literal notranslate"><span class="pre">memalloc_nofs_save</span></code> , <code class="docutils literal notranslate"><span class="pre">memalloc_nofs_restore</span></code> 和 <code class="docutils literal notranslate"><span class="pre">memalloc_noio_save</span></code> ,
@@ -329,8 +331,8 @@
 方便维护。</p>
 <p>请注意，保存/恢复函数的正确配对允许嵌套，所以从现有的NOIO或NOFS范围分别调
 用 <code class="docutils literal notranslate"><span class="pre">memalloc_noio_save</span></code> 或 <code class="docutils literal notranslate"><span class="pre">memalloc_noio_restore</span></code> 是安全的。</p>
-</section>
-<section id="vmalloc-gfp-nofs">
+</div>
+<div class="section" id="vmalloc-gfp-nofs">
 <h2>那么__vmalloc(GFP_NOFS)呢？<a class="headerlink" href="#vmalloc-gfp-nofs" title="Permalink to this headline">¶</a></h2>
 <p>vmalloc不支持GFP_NOFS语义，因为在分配器的深处有硬编码的GFP_KERNEL分配，要修
 复这些分配是相当不容易的。这意味着用GFP_NOFS/GFP_NOIO调用 <code class="docutils literal notranslate"><span class="pre">vmalloc</span></code> 几乎
@@ -338,8 +340,8 @@
 <p>在理想的世界中，上层应该已经标记了危险的上下文，因此不需要特别的照顾， <code class="docutils literal notranslate"><span class="pre">vmalloc</span></code>
 的调用应该没有任何问题。有时，如果上下文不是很清楚，或者有叠加的违规行为，那么
 推荐的方法是用范围API包装vmalloc，并加上注释来解释问题。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

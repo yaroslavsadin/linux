@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>RCU and Unloadable Modules &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -277,7 +279,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="rcu-and-unloadable-modules">
+  <div class="section" id="rcu-and-unloadable-modules">
 <span id="rcu-barrier"></span><h1>RCU and Unloadable Modules<a class="headerlink" href="#rcu-and-unloadable-modules" title="Permalink to this headline">¶</a></h1>
 <p>[Originally published in LWN Jan. 14, 2007: <a class="reference external" href="http://lwn.net/Articles/217484/">http://lwn.net/Articles/217484/</a>]</p>
 <p>RCU (read-copy update) is a synchronization mechanism that can be thought
@@ -323,7 +325,7 @@ IRQ context. The function p_callback() might be defined as follows:</p>
 }
 </pre></div>
 </div>
-<section id="unloading-modules-that-use-call-rcu">
+<div class="section" id="unloading-modules-that-use-call-rcu">
 <h2>Unloading Modules That Use call_rcu()<a class="headerlink" href="#unloading-modules-that-use-call-rcu" title="Permalink to this headline">¶</a></h2>
 <p>But what if p_callback is defined in an unloadable module?</p>
 <p>If we unload the module while some RCU callbacks are pending,
@@ -338,8 +340,8 @@ calls, but this is still not guaranteed to work. If there is a very
 heavy RCU-callback load, then some of the callbacks might be deferred
 in order to allow other processing to proceed. Such deferral is required
 in realtime kernels in order to avoid excessive scheduling latencies.</p>
-</section>
-<section id="id1">
+</div>
+<div class="section" id="id1">
 <h2>rcu_barrier()<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>We instead need the <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_barrier" title="rcu_barrier"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_barrier()</span></code></a> primitive.  Rather than waiting for
 a grace period to elapse, <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_barrier" title="rcu_barrier"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_barrier()</span></code></a> waits for all outstanding RCU
@@ -461,8 +463,8 @@ RCU callbacks to complete.</p>
 and on the same srcu_struct structure.  If your module uses <a class="reference internal" href="../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a>
 <strong>and</strong> <a class="reference internal" href="../core-api/kernel-api.html#c.call_srcu" title="call_srcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_srcu()</span></code></a>, then you will need to invoke <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_barrier" title="rcu_barrier"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_barrier()</span></code></a> <strong>and</strong>
 <a class="reference internal" href="../core-api/kernel-api.html#c.srcu_barrier" title="srcu_barrier"><code class="xref c c-func docutils literal notranslate"><span class="pre">srcu_barrier()</span></code></a>.</p>
-</section>
-<section id="implementing-rcu-barrier">
+</div>
+<div class="section" id="implementing-rcu-barrier">
 <h2>Implementing rcu_barrier()<a class="headerlink" href="#implementing-rcu-barrier" title="Permalink to this headline">¶</a></h2>
 <p>Dipankar Sarma’s implementation of <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_barrier" title="rcu_barrier"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_barrier()</span></code></a> makes use of the fact
 that RCU callbacks are never reordered once queued on one of the per-CPU
@@ -535,15 +537,15 @@ are delayed for a full grace period? Couldn’t this result in
 to avoid disturbing idle CPUs (especially on battery-powered systems)
 and the need to minimally disturb non-idle CPUs in real-time systems.
 However, the code above illustrates the concepts.</p>
-</section>
-<section id="rcu-barrier-summary">
+</div>
+<div class="section" id="rcu-barrier-summary">
 <h2>rcu_barrier() Summary<a class="headerlink" href="#rcu-barrier-summary" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_barrier" title="rcu_barrier"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_barrier()</span></code></a> primitive has seen relatively little use, since most
 code using RCU is in the core kernel rather than in modules. However, if
 you are using RCU from an unloadable module, you need to use <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_barrier" title="rcu_barrier"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_barrier()</span></code></a>
 so that your module may be safely unloaded.</p>
-</section>
-<section id="answers-to-quick-quizzes">
+</div>
+<div class="section" id="answers-to-quick-quizzes">
 <h2>Answers to Quick Quizzes<a class="headerlink" href="#answers-to-quick-quizzes" title="Permalink to this headline">¶</a></h2>
 <dl id="answer-rcubarrier-quiz-1">
 <dt>Quick Quiz #1:</dt><dd><p>Is there any other situation where <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_barrier" title="rcu_barrier"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_barrier()</span></code></a> might
@@ -592,8 +594,8 @@ you can think of a better change, please let me know!</p>
 </dd>
 </dl>
 <p><a class="reference internal" href="#rcubarrier-quiz-2"><span class="std std-ref">Back to Quick Quiz #2</span></a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

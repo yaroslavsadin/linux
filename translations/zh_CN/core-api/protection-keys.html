@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>内存保护密钥 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -293,7 +295,7 @@
 <dd class="field-odd"><p>吴想成 Wu XiangCheng &lt;<a class="reference external" href="mailto:bobwxc&#37;&#52;&#48;email&#46;cn">bobwxc<span>&#64;</span>email<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="cn-core-api-protection-keys">
+<div class="section" id="cn-core-api-protection-keys">
 <span id="id1"></span><h1>内存保护密钥<a class="headerlink" href="#cn-core-api-protection-keys" title="Permalink to this headline">¶</a></h1>
 <p>用户空间的内存保护密钥（Memory Protection Keys for Userspace，PKU，亦
 即PKEYs）是英特尔Skylake（及以后）“可扩展处理器”服务器CPU上的一项功能。
@@ -309,7 +311,7 @@
 <p>有两条新指令（RDPKRU/WRPKRU）用于读取和写入新的寄存器。该功能仅在64位
 模式下可用，尽管物理地址扩展页表中理论上有空间。这些权限只在数据访问上
 强制执行，对指令获取没有影响。</p>
-<section id="id2">
+<div class="section" id="id2">
 <h2>系统调用<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>有3个系统调用可以直接与pkeys进行交互:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int pkey_alloc(unsigned long flags, unsigned long init_access_rights)
@@ -345,8 +347,8 @@ pkey_free(pkey);
 <p>pkey_set()是RDPKRU和WRPKRU指令的一个封装器。在tools/testing/selftests/x86/protection_keys.c中可以找到一个实现实例。
 tools/testing/selftests/x86/protection_keys.c.</p>
 </div>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>行为<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>内核试图使保护密钥与普通的mprotect()的行为一致。例如，如果你这样做:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mprotect(ptr, size, PROT_NONE);
@@ -370,8 +372,8 @@ something(ptr);
 </div>
 <p>在这两种情况下，内核都会发送一个SIGSEGV，但当违反保护密钥时，si_code
 将被设置为SEGV_PKERR，而当违反普通的mprotect()权限时，则是SEGV_ACCERR。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

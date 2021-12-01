@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>NO_HZ: Reducing Scheduling-Clock Ticks &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -254,7 +256,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="no-hz-reducing-scheduling-clock-ticks">
+  <div class="section" id="no-hz-reducing-scheduling-clock-ticks">
 <h1>NO_HZ: Reducing Scheduling-Clock Ticks<a class="headerlink" href="#no-hz-reducing-scheduling-clock-ticks" title="Permalink to this headline">¶</a></h1>
 <p>This document describes Kconfig options and boot parameters that can
 reduce the number of scheduling-clock interrupts, thereby improving energy
@@ -278,7 +280,7 @@ workloads, you will normally -not- want this option.</p></li>
 <p>These three cases are described in the following three sections, followed
 by a third section on RCU-specific considerations, a fourth section
 discussing testing, and a fifth and final section listing known issues.</p>
-<section id="never-omit-scheduling-clock-ticks">
+<div class="section" id="never-omit-scheduling-clock-ticks">
 <h2>Never Omit Scheduling-Clock Ticks<a class="headerlink" href="#never-omit-scheduling-clock-ticks" title="Permalink to this headline">¶</a></h2>
 <p>Very old versions of Linux from the 1990s and the very early 2000s
 are incapable of omitting scheduling-clock ticks.  It turns out that
@@ -304,8 +306,8 @@ section.</p>
 workload with short iterations, the scheduling-clock interrupts can
 degrade your applications performance.  If this describes your workload,
 you should read the following two sections.</p>
-</section>
-<section id="omit-scheduling-clock-ticks-for-idle-cpus">
+</div>
+<div class="section" id="omit-scheduling-clock-ticks-for-idle-cpus">
 <h2>Omit Scheduling-Clock Ticks For Idle CPUs<a class="headerlink" href="#omit-scheduling-clock-ticks-for-idle-cpus" title="Permalink to this headline">¶</a></h2>
 <p>If a CPU is idle, there is little point in sending it a scheduling-clock
 interrupt.  After all, the primary purpose of a scheduling-clock interrupt
@@ -337,8 +339,8 @@ in order to avoid degrading from-idle transition latencies.</p>
 dyntick-idle mode in CONFIG_NO_HZ_IDLE=y kernels by specifying “nohz=off”.
 By default, CONFIG_NO_HZ_IDLE=y kernels boot with “nohz=on”, enabling
 dyntick-idle mode.</p>
-</section>
-<section id="omit-scheduling-clock-ticks-for-cpus-with-only-one-runnable-task">
+</div>
+<div class="section" id="omit-scheduling-clock-ticks-for-cpus-with-only-one-runnable-task">
 <h2>Omit Scheduling-Clock Ticks For CPUs With Only One Runnable Task<a class="headerlink" href="#omit-scheduling-clock-ticks-for-cpus-with-only-one-runnable-task" title="Permalink to this headline">¶</a></h2>
 <p>If a CPU has only one runnable task, there is little point in sending it
 a scheduling-clock interrupt because there is no other task to switch to.
@@ -402,8 +404,8 @@ This might in turn perturb load-balancing of real-time tasks.</p></li>
 useful for many types of real-time and compute-intensive applications.
 However, the drawbacks listed above mean that adaptive ticks should not
 (yet) be enabled by default.</p>
-</section>
-<section id="rcu-implications">
+</div>
+<div class="section" id="rcu-implications">
 <h2>RCU Implications<a class="headerlink" href="#rcu-implications" title="Permalink to this headline">¶</a></h2>
 <p>There are situations in which idle CPUs cannot be permitted to
 enter either dyntick-idle mode or adaptive-tick mode, the most
@@ -423,8 +425,8 @@ or adaptive-tick mode.  That said, note that it is up to userspace to
 pin the “rcuo” kthreads to specific CPUs if desired.  Otherwise, the
 scheduler will decide where to run them, which might or might not be
 where you want them to run.</p>
-</section>
-<section id="testing">
+</div>
+<div class="section" id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
 <p>So you enable all the OS-jitter features described in this document,
 but do not see any change in your workload’s behavior.  Is this because
@@ -442,8 +444,8 @@ sensitive to OS jitter.</p>
 <p>Note: this test requires that your system have at least two CPUs.
 We do not currently have a good way to remove OS jitter from single-CPU
 systems.</p>
-</section>
-<section id="known-issues">
+</div>
+<div class="section" id="known-issues">
 <h2>Known Issues<a class="headerlink" href="#known-issues" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>Dyntick-idle slows transitions to and from idle slightly.
@@ -531,8 +533,8 @@ currently accommodated by scheduling-clock tick every second
 or so.  On-going work will eliminate the need even for these
 infrequent scheduling-clock ticks.</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

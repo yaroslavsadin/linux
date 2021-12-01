@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>High resolution timers and dynamic ticks design notes &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -253,7 +255,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="high-resolution-timers-and-dynamic-ticks-design-notes">
+  <div class="section" id="high-resolution-timers-and-dynamic-ticks-design-notes">
 <h1>High resolution timers and dynamic ticks design notes<a class="headerlink" href="#high-resolution-timers-and-dynamic-ticks-design-notes" title="Permalink to this headline">¶</a></h1>
 <p>Further information can be found in the paper of the OLS 2006 talk “hrtimers
 and beyond”. The paper is part of the OLS 2006 Proceedings Volume 1, which can
@@ -275,7 +277,7 @@ switched to the name “clock event devices” in meantime.</p>
 <li><p>high resolution timer functionality</p></li>
 <li><p>dynamic ticks</p></li>
 </ul>
-<section id="hrtimer-base-infrastructure">
+<div class="section" id="hrtimer-base-infrastructure">
 <h2>hrtimer base infrastructure<a class="headerlink" href="#hrtimer-base-infrastructure" title="Permalink to this headline">¶</a></h2>
 <p>The hrtimer base infrastructure was merged into the 2.6.16 kernel. Details of
 the base implementation are covered in <a class="reference internal" href="hrtimers.html"><span class="doc">hrtimers - subsystem for high-resolution kernel timers</span></a>. See
@@ -288,8 +290,8 @@ timers are:</p>
 <li><p>independent of ticks (the processing is based on nanoseconds)</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="timeofday-and-clock-source-management">
+</div>
+<div class="section" id="timeofday-and-clock-source-management">
 <h2>timeofday and clock source management<a class="headerlink" href="#timeofday-and-clock-source-management" title="Permalink to this headline">¶</a></h2>
 <p>John Stultz’s Generic Time Of Day (GTOD) framework moves a large portion of
 code out of the architecture-specific areas into a generic management
@@ -309,8 +311,8 @@ OLS 2005 Proceedings Volume 1:</p>
 <p>The paper “We Are Not Getting Any Younger: A New Approach to Time and
 Timers” was written by J. Stultz, D.V. Hart, &amp; N. Aravamudan.</p>
 <p>Figure #3 (OLS slides p.18) illustrates the transformation.</p>
-</section>
-<section id="clock-event-management">
+</div>
+<div class="section" id="clock-event-management">
 <h2>clock event management<a class="headerlink" href="#clock-event-management" title="Permalink to this headline">¶</a></h2>
 <p>While clock sources provide read access to the monotonically increasing time
 value, clock event devices are used to schedule the next event
@@ -374,8 +376,8 @@ adding the kernel/time/Kconfig file to the architecture specific Kconfig and
 adding the dynamic tick specific calls to the idle routine (a total of 3 lines
 added to the idle function and the Kconfig file)</p>
 <p>Figure #4 (OLS slides p.20) illustrates the transformation.</p>
-</section>
-<section id="high-resolution-timer-functionality">
+</div>
+<div class="section" id="high-resolution-timer-functionality">
 <h2>high resolution timer functionality<a class="headerlink" href="#high-resolution-timer-functionality" title="Permalink to this headline">¶</a></h2>
 <p>During system boot it is not possible to use the high resolution timer
 functionality, while making it possible would be difficult and would serve no
@@ -431,8 +433,8 @@ resolution timer signals which are used by itimer and POSIX interval
 timers. The execution of this softirq can still be delayed by other softirqs,
 but the overall latencies have been significantly improved by this separation.</p>
 <p>Figure #5 (OLS slides p.22) illustrates the transformation.</p>
-</section>
-<section id="dynamic-ticks">
+</div>
+<div class="section" id="dynamic-ticks">
 <h2>dynamic ticks<a class="headerlink" href="#dynamic-ticks" title="Permalink to this headline">¶</a></h2>
 <p>Dynamic ticks are the logical consequence of the hrtimer based periodic tick
 replacement (sched_tick). The functionality of the sched_tick hrtimer is
@@ -469,8 +471,8 @@ available for MIPS and PowerPC.</p>
 <blockquote>
 <div><p>Thomas, Ingo</p>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>PCI Power Management &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -289,7 +291,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="pci-power-management">
+  <div class="section" id="pci-power-management">
 <h1>PCI Power Management<a class="headerlink" href="#pci-power-management" title="Permalink to this headline">¶</a></h1>
 <p>Copyright (c) 2010 Rafael J. Wysocki &lt;<a class="reference external" href="mailto:rjw&#37;&#52;&#48;sisk&#46;pl">rjw<span>&#64;</span>sisk<span>&#46;</span>pl</a>&gt;, Novell Inc.</p>
 <p>An overview of concepts and the Linux kernel’s interfaces related to PCI power
@@ -299,9 +301,9 @@ management.  Based on previous work by Patrick Mochel &lt;<a class="reference ex
 devices.  For general description of the kernel’s interfaces related to device
 power management refer to <a class="reference internal" href="../driver-api/pm/devices.html"><span class="doc">Device Power Management Basics</span></a> and
 <a class="reference internal" href="runtime_pm.html"><span class="doc">Runtime Power Management Framework for I/O Devices</span></a>.</p>
-<section id="hardware-and-platform-support-for-pci-power-management">
+<div class="section" id="hardware-and-platform-support-for-pci-power-management">
 <h2>1. Hardware and Platform Support for PCI Power Management<a class="headerlink" href="#hardware-and-platform-support-for-pci-power-management" title="Permalink to this headline">¶</a></h2>
-<section id="native-and-platform-based-power-management">
+<div class="section" id="native-and-platform-based-power-management">
 <h3>1.1. Native and Platform-Based Power Management<a class="headerlink" href="#native-and-platform-based-power-management" title="Permalink to this headline">¶</a></h3>
 <p>In general, power management is a feature allowing one to save energy by putting
 devices into states in which they draw less power (low-power states) at the
@@ -338,8 +340,8 @@ native PCI PM mechanism, because the method provided by the platform depends on
 that.</p>
 <p>Thus in many situations both the native and the platform-based power management
 mechanisms have to be used simultaneously to obtain the desired result.</p>
-</section>
-<section id="native-pci-power-management">
+</div>
+<div class="section" id="native-pci-power-management">
 <h3>1.2. Native PCI Power Management<a class="headerlink" href="#native-pci-power-management" title="Permalink to this headline">¶</a></h3>
 <p>The PCI Bus Power Management Interface Specification (PCI PM Spec) was
 introduced between the PCI 2.1 and PCI 2.2 Specifications.  It defined a
@@ -402,8 +404,8 @@ of generating PMEs from all supported power states.  In particular, the
 capability of generating PMEs from D3cold is optional and depends on the
 presence of additional voltage (3.3Vaux) allowing the device to remain
 sufficiently active to generate a wakeup signal.</p>
-</section>
-<section id="acpi-device-power-management">
+</div>
+<div class="section" id="acpi-device-power-management">
 <h3>1.3. ACPI Device Power Management<a class="headerlink" href="#acpi-device-power-management" title="Permalink to this headline">¶</a></h3>
 <p>The platform firmware support for the power management of PCI devices is
 system-specific.  However, if the system in question is compliant with the
@@ -457,8 +459,8 @@ target state of the system.  The kernel is then supposed to use the device’s
 _SxW control method to obtain the number of that state.  It also is supposed to
 use the device’s _PRW control method to learn which power resources need to be
 enabled for the device to be able to generate wakeup signals.</p>
-</section>
-<section id="wakeup-signaling">
+</div>
+<div class="section" id="wakeup-signaling">
 <h3>1.4. Wakeup Signaling<a class="headerlink" href="#wakeup-signaling" title="Permalink to this headline">¶</a></h3>
 <p>Wakeup signals generated by PCI devices, either as native PCI PMEs, or as
 a result of the execution of the _DSW (or _PSW) ACPI control method before
@@ -518,11 +520,11 @@ ACPI BIOS to release control of root port configuration registers.  The ACPI
 BIOS, however, is not required to allow the kernel to control these registers
 and if it doesn’t do that, the kernel must not modify their contents.  Of course
 the native PCI Express PME signaling cannot be used by the kernel in that case.</p>
-</section>
-</section>
-<section id="pci-subsystem-and-device-power-management">
+</div>
+</div>
+<div class="section" id="pci-subsystem-and-device-power-management">
 <h2>2. PCI Subsystem and Device Power Management<a class="headerlink" href="#pci-subsystem-and-device-power-management" title="Permalink to this headline">¶</a></h2>
-<section id="device-power-management-callbacks">
+<div class="section" id="device-power-management-callbacks">
 <h3>2.1. Device Power Management Callbacks<a class="headerlink" href="#device-power-management-callbacks" title="Permalink to this headline">¶</a></h3>
 <p>The PCI Subsystem participates in the power management of PCI devices in a
 number of ways.  First of all, it provides an intermediate code layer between
@@ -577,8 +579,8 @@ that these callbacks operate on:</p>
 </div>
 <p>They also indirectly use some fields of the <a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span></code></a> that is embedded in
 struct pci_dev.</p>
-</section>
-<section id="device-initialization">
+</div>
+<div class="section" id="device-initialization">
 <h3>2.2. Device Initialization<a class="headerlink" href="#device-initialization" title="Permalink to this headline">¶</a></h3>
 <p>The PCI subsystem’s first task related to device power management is to
 prepare the device for power management and initialize the fields of struct
@@ -600,8 +602,8 @@ device from signaling wakeup.</p>
 <p>At this point the device is ready for power management.  For driverless devices,
 however, this functionality is limited to a few basic operations carried out
 during system-wide transitions to a sleep state and back to the working state.</p>
-</section>
-<section id="runtime-device-power-management">
+</div>
+<div class="section" id="runtime-device-power-management">
 <h3>2.3. Runtime Device Power Management<a class="headerlink" href="#runtime-device-power-management" title="Permalink to this headline">¶</a></h3>
 <p>The PCI subsystem plays a vital role in the runtime power management of PCI
 devices.  For this purpose it uses the general runtime power management
@@ -662,8 +664,8 @@ cases it is expected to suspend the device if that makes sense.  Usually,
 however, the PCI subsystem doesn’t really know if the device really can be
 suspended, so it lets the device’s driver decide by running its
 pm-&gt;runtime_idle() callback.</p>
-</section>
-<section id="system-wide-power-transitions">
+</div>
+<div class="section" id="system-wide-power-transitions">
 <h3>2.4. System-Wide Power Transitions<a class="headerlink" href="#system-wide-power-transitions" title="Permalink to this headline">¶</a></h3>
 <p>There are a few different types of system-wide power transitions, described in
 <a class="reference internal" href="../driver-api/pm/devices.html"><span class="doc">Device Power Management Basics</span></a>.  Each of them requires devices to be
@@ -672,7 +674,7 @@ management callbacks for this purpose.  They are executed in phases such that
 each phase involves executing the same subsystem-level callback for every device
 belonging to the given subsystem before the next phase begins.  These phases
 always run after tasks have been frozen.</p>
-<section id="system-suspend">
+<div class="section" id="system-suspend">
 <h4>2.4.1. System Suspend<a class="headerlink" href="#system-suspend" title="Permalink to this headline">¶</a></h4>
 <p>When the system is going into a sleep state in which the contents of memory will
 be preserved, such as one of the ACPI sleep states S1-S3, the phases are:</p>
@@ -733,8 +735,8 @@ to signal wakeup and put into a low-power state by the driver (the driver is
 then assumed to have used the helper functions provided by the PCI subsystem for
 this purpose).  PCI device drivers are not encouraged to do that, but in some
 rare cases doing that in the driver may be the optimum approach.</p>
-</section>
-<section id="system-resume">
+</div>
+<div class="section" id="system-resume">
 <h4>2.4.2. System Resume<a class="headerlink" href="#system-resume" title="Permalink to this headline">¶</a></h4>
 <p>When the system is undergoing a transition from a sleep state in which the
 contents of memory have been preserved, such as one of the ACPI sleep states
@@ -777,8 +779,8 @@ on each other in a known way, the pci_pm_resume() routine may be executed for
 the both of them in parallel.</p>
 <p>The pci_pm_complete() routine only executes the device driver’s pm-&gt;complete()
 callback, if defined.</p>
-</section>
-<section id="system-hibernation">
+</div>
+<div class="section" id="system-hibernation">
 <h4>2.4.3. System Hibernation<a class="headerlink" href="#system-hibernation" title="Permalink to this headline">¶</a></h4>
 <p>System hibernation is more complicated than system suspend, because it requires
 a system image to be created and written into a persistent storage medium.  The
@@ -848,8 +850,8 @@ pci_pm_poweroff_noirq()
 <p>work in analogy with pci_pm_suspend() and pci_pm_poweroff_noirq(), respectively,
 although they don’t attempt to save the device’s standard configuration
 registers.</p>
-</section>
-<section id="system-restore">
+</div>
+<div class="section" id="system-restore">
 <h4>2.4.4. System Restore<a class="headerlink" href="#system-restore" title="Permalink to this headline">¶</a></h4>
 <p>System restore requires a hibernation image to be loaded into memory and the
 pre-hibernation memory contents to be restored before the pre-hibernation system
@@ -892,12 +894,12 @@ respectively, but they execute the device driver’s pm-&gt;restore_noirq() and
 pm-&gt;restore() callbacks, if available.</p>
 <p>The complete phase is carried out in exactly the same way as during system
 resume.</p>
-</section>
-</section>
-</section>
-<section id="pci-device-drivers-and-power-management">
+</div>
+</div>
+</div>
+<div class="section" id="pci-device-drivers-and-power-management">
 <h2>3. PCI Device Drivers and Power Management<a class="headerlink" href="#pci-device-drivers-and-power-management" title="Permalink to this headline">¶</a></h2>
-<section id="power-management-callbacks">
+<div class="section" id="power-management-callbacks">
 <h3>3.1. Power Management Callbacks<a class="headerlink" href="#power-management-callbacks" title="Permalink to this headline">¶</a></h3>
 <p>PCI device drivers participate in power management by providing callbacks to be
 executed by the PCI subsystem’s power management routines described above and by
@@ -921,7 +923,7 @@ defined (i.e. the respective fields of <a class="reference internal" href="../dr
 subsystem will handle the device in a simplified default manner.  If they are
 defined, though, they are expected to behave as described in the following
 subsections.</p>
-<section id="prepare">
+<div class="section" id="prepare">
 <h4>3.1.1. prepare()<a class="headerlink" href="#prepare" title="Permalink to this headline">¶</a></h4>
 <p>The prepare() callback is executed during system suspend, during hibernation
 (when a hibernation image is about to be created), during power-off after
@@ -936,8 +938,8 @@ preparing the device to be suspended, although it should not allocate memory
 (if additional memory is required to suspend the device, it has to be
 preallocated earlier, for example in a suspend/hibernate notifier as described
 in <a class="reference internal" href="../driver-api/pm/notifiers.html"><span class="doc">Suspend/Hibernation Notifiers</span></a>).</p>
-</section>
-<section id="suspend">
+</div>
+<div class="section" id="suspend">
 <h4>3.1.2. suspend()<a class="headerlink" href="#suspend" title="Permalink to this headline">¶</a></h4>
 <p>The suspend() callback is only executed during system suspend, after prepare()
 callbacks have been executed for all devices in the system.</p>
@@ -959,8 +961,8 @@ handling the device as appropriate.</p>
 can be invoked to handle an interrupt from the device, so all suspend-related
 operations relying on the driver’s ability to handle interrupts should be
 carried out in this callback.</p>
-</section>
-<section id="suspend-noirq">
+</div>
+<div class="section" id="suspend-noirq">
 <h4>3.1.3. suspend_noirq()<a class="headerlink" href="#suspend-noirq" title="Permalink to this headline">¶</a></h4>
 <p>The suspend_noirq() callback is only executed during system suspend, after
 suspend() callbacks have been executed for all devices in the system and
@@ -969,8 +971,8 @@ after device interrupts have been disabled by the PM core.</p>
 interrupt handler will not be invoked while suspend_noirq() is running.  Thus
 suspend_noirq() can carry out operations that would cause race conditions to
 arise if they were performed in suspend().</p>
-</section>
-<section id="freeze">
+</div>
+<div class="section" id="freeze">
 <h4>3.1.4. freeze()<a class="headerlink" href="#freeze" title="Permalink to this headline">¶</a></h4>
 <p>The freeze() callback is hibernation-specific and is executed in two situations,
 during hibernation, after prepare() callbacks have been executed for all devices
@@ -984,8 +986,8 @@ state.</p>
 <p>In that cases the freeze() callback should not prepare the device system wakeup
 or put it into a low-power state.  Still, either it or freeze_noirq() should
 save the device’s standard configuration registers using <a class="reference internal" href="../driver-api/pci/pci.html#c.pci_save_state" title="pci_save_state"><code class="xref c c-func docutils literal notranslate"><span class="pre">pci_save_state()</span></code></a>.</p>
-</section>
-<section id="freeze-noirq">
+</div>
+<div class="section" id="freeze-noirq">
 <h4>3.1.5. freeze_noirq()<a class="headerlink" href="#freeze-noirq" title="Permalink to this headline">¶</a></h4>
 <p>The freeze_noirq() callback is hibernation-specific.  It is executed during
 hibernation, after prepare() and freeze() callbacks have been executed for all
@@ -998,8 +1000,8 @@ callback described above and it very rarely is necessary to define
 freeze_noirq().</p>
 <p>The difference between freeze_noirq() and freeze() is analogous to the
 difference between suspend_noirq() and suspend().</p>
-</section>
-<section id="poweroff">
+</div>
+<div class="section" id="poweroff">
 <h4>3.1.6. poweroff()<a class="headerlink" href="#poweroff" title="Permalink to this headline">¶</a></h4>
 <p>The poweroff() callback is hibernation-specific.  It is executed when the system
 is about to be powered off after saving a hibernation image to a persistent
@@ -1013,8 +1015,8 @@ the poweroff() callback should use <a class="reference internal" href="../driver
 <a class="reference internal" href="../driver-api/pci/pci.html#c.pci_set_power_state" title="pci_set_power_state"><code class="xref c c-func docutils literal notranslate"><span class="pre">pci_set_power_state()</span></code></a> to prepare the device for system wakeup and to put it
 into a low-power state, respectively, but it need not save the device’s standard
 configuration registers.</p>
-</section>
-<section id="poweroff-noirq">
+</div>
+<div class="section" id="poweroff-noirq">
 <h4>3.1.7. poweroff_noirq()<a class="headerlink" href="#poweroff-noirq" title="Permalink to this headline">¶</a></h4>
 <p>The poweroff_noirq() callback is hibernation-specific.  It is executed after
 poweroff() callbacks have been executed for all devices in the system.</p>
@@ -1023,8 +1025,8 @@ freeze_noirq() callbacks described above, but it does not need to save the
 contents of the device’s registers.</p>
 <p>The difference between poweroff_noirq() and poweroff() is analogous to the
 difference between suspend_noirq() and suspend().</p>
-</section>
-<section id="resume-noirq">
+</div>
+<div class="section" id="resume-noirq">
 <h4>3.1.8. resume_noirq()<a class="headerlink" href="#resume-noirq" title="Permalink to this headline">¶</a></h4>
 <p>The resume_noirq() callback is only executed during system resume, after the
 PM core has enabled the non-boot CPUs.  The driver’s interrupt handler will not
@@ -1035,8 +1037,8 @@ state in the resume_noirq phase of system resume and restores their standard
 configuration registers, resume_noirq() is usually not necessary.  In general
 it should only be used for performing operations that would lead to race
 conditions if carried out by resume().</p>
-</section>
-<section id="resume">
+</div>
+<div class="section" id="resume">
 <h4>3.1.9. resume()<a class="headerlink" href="#resume" title="Permalink to this headline">¶</a></h4>
 <p>The resume() callback is only executed during system resume, after
 resume_noirq() callbacks have been executed for all devices in the system and
@@ -1044,8 +1046,8 @@ device interrupts have been enabled by the PM core.</p>
 <p>This callback is responsible for restoring the pre-suspend configuration of the
 device and bringing it back to the fully functional state.  The device should be
 able to process I/O in a usual way after resume() has returned.</p>
-</section>
-<section id="thaw-noirq">
+</div>
+<div class="section" id="thaw-noirq">
 <h4>3.1.10. thaw_noirq()<a class="headerlink" href="#thaw-noirq" title="Permalink to this headline">¶</a></h4>
 <p>The thaw_noirq() callback is hibernation-specific.  It is executed after a
 system image has been created and the non-boot CPUs have been enabled by the PM
@@ -1057,16 +1059,16 @@ invoked while thaw_noirq() is running.</p>
 difference between these two callbacks is that thaw_noirq() is executed after
 freeze() and freeze_noirq(), so in general it does not need to modify the
 contents of the device’s registers.</p>
-</section>
-<section id="thaw">
+</div>
+<div class="section" id="thaw">
 <h4>3.1.11. thaw()<a class="headerlink" href="#thaw" title="Permalink to this headline">¶</a></h4>
 <p>The thaw() callback is hibernation-specific.  It is executed after thaw_noirq()
 callbacks have been executed for all devices in the system and after device
 interrupts have been enabled by the PM core.</p>
 <p>This callback is responsible for restoring the pre-freeze configuration of
 the device, so that it will work in a usual way after thaw() has returned.</p>
-</section>
-<section id="restore-noirq">
+</div>
+<div class="section" id="restore-noirq">
 <h4>3.1.12. restore_noirq()<a class="headerlink" href="#restore-noirq" title="Permalink to this headline">¶</a></h4>
 <p>The restore_noirq() callback is hibernation-specific.  It is executed in the
 restore_noirq phase of hibernation, when the boot kernel has passed control to
@@ -1078,8 +1080,8 @@ generally the platform firmware) is known to preserve that state over a
 suspend-resume cycle.</p>
 <p>For the vast majority of PCI device drivers there is no difference between
 resume_noirq() and restore_noirq().</p>
-</section>
-<section id="restore">
+</div>
+<div class="section" id="restore">
 <h4>3.1.13. restore()<a class="headerlink" href="#restore" title="Permalink to this headline">¶</a></h4>
 <p>The restore() callback is hibernation-specific.  It is executed after
 restore_noirq() callbacks have been executed for all devices in the system and
@@ -1089,8 +1091,8 @@ to resume_noirq().  Consequently, the difference between restore_noirq() and
 restore() is analogous to the difference between resume_noirq() and resume().</p>
 <p>For the vast majority of PCI device drivers there is no difference between
 resume() and restore().</p>
-</section>
-<section id="complete">
+</div>
+<div class="section" id="complete">
 <h4>3.1.14. complete()<a class="headerlink" href="#complete" title="Permalink to this headline">¶</a></h4>
 <p>The complete() callback is executed in the following situations:</p>
 <blockquote>
@@ -1108,8 +1110,8 @@ state, after restore() callbacks have been executed for all devices.</p></li>
 devices that have drivers in the boot kernel).</p>
 <p>This callback is entirely optional, although it may be necessary if the
 prepare() callback performs operations that need to be reversed.</p>
-</section>
-<section id="runtime-suspend">
+</div>
+<div class="section" id="runtime-suspend">
 <h4>3.1.15. runtime_suspend()<a class="headerlink" href="#runtime-suspend" title="Permalink to this headline">¶</a></h4>
 <p>The runtime_suspend() callback is specific to device runtime power management
 (runtime PM).  It is executed by the PM core’s runtime PM framework when the
@@ -1118,8 +1120,8 @@ at run time.</p>
 <p>This callback is responsible for freezing the device and preparing it to be
 put into a low-power state, but it must allow the PCI subsystem to perform all
 of the PCI-specific actions necessary for suspending the device.</p>
-</section>
-<section id="runtime-resume">
+</div>
+<div class="section" id="runtime-resume">
 <h4>3.1.16. runtime_resume()<a class="headerlink" href="#runtime-resume" title="Permalink to this headline">¶</a></h4>
 <p>The runtime_resume() callback is specific to device runtime PM.  It is executed
 by the PM core’s runtime PM framework when the device is about to be resumed
@@ -1129,8 +1131,8 @@ run time.</p>
 device after it has been put into the full-power state by the PCI subsystem.
 The device is expected to be able to process I/O in the usual way after
 runtime_resume() has returned.</p>
-</section>
-<section id="runtime-idle">
+</div>
+<div class="section" id="runtime-idle">
 <h4>3.1.17. runtime_idle()<a class="headerlink" href="#runtime-idle" title="Permalink to this headline">¶</a></h4>
 <p>The runtime_idle() callback is specific to device runtime PM.  It is executed
 by the PM core’s runtime PM framework whenever it may be desirable to suspend
@@ -1140,8 +1142,8 @@ resume of the device has happened as a result of a spurious event.</p>
 <p>This callback is optional, but if it is not implemented or if it returns 0, the
 PCI subsystem will call pm_runtime_suspend() for the device, which in turn will
 cause the driver’s runtime_suspend() callback to be executed.</p>
-</section>
-<section id="pointing-multiple-callback-pointers-to-one-routine">
+</div>
+<div class="section" id="pointing-multiple-callback-pointers-to-one-routine">
 <h4>3.1.18. Pointing Multiple Callback Pointers to One Routine<a class="headerlink" href="#pointing-multiple-callback-pointers-to-one-routine" title="Permalink to this headline">¶</a></h4>
 <p>Although in principle each of the callbacks described in the previous
 subsections can be defined as a separate function, it often is convenient to
@@ -1160,8 +1162,8 @@ the same value as .suspend() (and .freeze() and .poweroff()).</p>
 <span class="pre">dev_pm_ops</span></code></a> to indicate that one suspend routine is to be pointed to by the
 .suspend(), .freeze(), and .poweroff() members and one resume routine is to
 be pointed to by the .resume(), .thaw(), and .restore() members.</p>
-</section>
-<section id="driver-flags-for-power-management">
+</div>
+<div class="section" id="driver-flags-for-power-management">
 <h4>3.1.19. Driver Flags for Power Management<a class="headerlink" href="#driver-flags-for-power-management" title="Permalink to this headline">¶</a></h4>
 <p>The PM core allows device drivers to set flags that influence the handling of
 power management for the devices by the core itself and by middle layer code
@@ -1198,9 +1200,9 @@ resume callbacks should be skipped, the dev_pm_skip_resume() helper function
 will return “true” and that will cause pci_pm_resume_noirq() and
 pci_pm_resume_early() to return upfront without touching the device and
 executing the driver callbacks.</p>
-</section>
-</section>
-<section id="device-runtime-power-management">
+</div>
+</div>
+<div class="section" id="device-runtime-power-management">
 <h3>3.2. Device Runtime Power Management<a class="headerlink" href="#device-runtime-power-management" title="Permalink to this headline">¶</a></h3>
 <p>In addition to providing device power management callbacks PCI device drivers
 are responsible for controlling the runtime power management (runtime PM) of
@@ -1266,9 +1268,9 @@ request into pm_wq.  In the majority of cases this also is done by their
 drivers that use helper functions provided by the PM core for this purpose.</p>
 <p>For more information on the runtime PM of devices refer to
 <a class="reference internal" href="runtime_pm.html"><span class="doc">Runtime Power Management Framework for I/O Devices</span></a>.</p>
-</section>
-</section>
-<section id="resources">
+</div>
+</div>
+<div class="section" id="resources">
 <h2>4. Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
 <p>PCI Local Bus Specification, Rev. 3.0</p>
 <p>PCI Bus Power Management Interface Specification, Rev. 1.2</p>
@@ -1276,8 +1278,8 @@ drivers that use helper functions provided by the PM core for this purpose.</p>
 <p>PCI Express Base Specification, Rev. 2.0</p>
 <p><a class="reference internal" href="../driver-api/pm/devices.html"><span class="doc">Device Power Management Basics</span></a></p>
 <p><a class="reference internal" href="runtime_pm.html"><span class="doc">Runtime Power Management Framework for I/O Devices</span></a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

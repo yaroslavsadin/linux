@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>(How to avoid) Botching up ioctls &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -279,7 +281,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="how-to-avoid-botching-up-ioctls">
+  <div class="section" id="how-to-avoid-botching-up-ioctls">
 <h1>(How to avoid) Botching up ioctls<a class="headerlink" href="#how-to-avoid-botching-up-ioctls" title="Permalink to this headline">¶</a></h1>
 <p>From: <a class="reference external" href="https://blog.ffwll.ch/2013/11/botching-up-ioctls.html">https://blog.ffwll.ch/2013/11/botching-up-ioctls.html</a></p>
 <p>By: Daniel Vetter, Copyright © 2013 Intel Corporation</p>
@@ -295,7 +297,7 @@ lessons learned while botching the job for the drm/i915 driver. Most of these
 only cover technicalities and not the big-picture issues like what the command
 submission ioctl exactly should look like. Learning these lessons is probably
 something every GPU driver has to do on its own.</p>
-<section id="prerequisites">
+<div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <p>First the prerequisites. Without these you have already failed, because you
 will need to add a 32-bit compat layer:</p>
@@ -320,8 +322,8 @@ u64_to_user_ptr can be used in the kernel to avoid warnings about integers
 and pointers of different sizes.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="basics">
+</div>
+<div class="section" id="basics">
 <h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h2>
 <p>With the joys of writing a compat layer avoided we can take a look at the basic
 fumbles. Neglecting these will make backward and forward compatibility a real
@@ -350,8 +352,8 @@ might insert could contain garbage.</p></li>
 <li><p>Have simple testcases for all of the above.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="fun-with-error-paths">
+</div>
+<div class="section" id="fun-with-error-paths">
 <h2>Fun with Error Paths<a class="headerlink" href="#fun-with-error-paths" title="Permalink to this headline">¶</a></h2>
 <p>Nowadays we don’t have any excuse left any more for drm drivers being neat
 little root exploits. This means we both need full input validation and solid
@@ -390,8 +392,8 @@ effort in case the hardware has gone bananas.</p></li>
 waiters.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="time-waiting-and-missing-it">
+</div>
+<div class="section" id="time-waiting-and-missing-it">
 <h2>Time, Waiting and Missing it<a class="headerlink" href="#time-waiting-and-missing-it" title="Permalink to this headline">¶</a></h2>
 <p>GPUs do most everything asynchronously, so we have a need to time operations and
 wait for outstanding ones. This is really tricky business; at the moment none of
@@ -427,8 +429,8 @@ already-completed events, successful waits and timed-out waits are all sane
 and suiting to your needs.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="leaking-resources-not">
+</div>
+<div class="section" id="leaking-resources-not">
 <h2>Leaking Resources, Not<a class="headerlink" href="#leaking-resources-not" title="Permalink to this headline">¶</a></h2>
 <p>A full-blown drm driver essentially implements a little OS, but specialized to
 the given GPU platforms. This means a driver needs to expose tons of handles
@@ -459,8 +461,8 @@ as unique identifiers - it’s how real files are told apart, too.
 Unfortunately this requires a full-blown virtual filesystem in the kernel.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="last-but-not-least">
+</div>
+<div class="section" id="last-but-not-least">
 <h2>Last, but not Least<a class="headerlink" href="#last-but-not-least" title="Permalink to this headline">¶</a></h2>
 <p>Not every problem needs a new ioctl:</p>
 <blockquote>
@@ -484,8 +486,8 @@ be stuck with a given ioctl essentially forever. You can try to deprecate
 horrible ioctls on newer iterations of your hardware, but generally it takes
 years to accomplish this. And then again years until the last user able to
 complain about regressions disappears, too.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

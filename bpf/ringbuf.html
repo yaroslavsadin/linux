@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>BPF ring buffer &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -259,7 +261,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bpf-ring-buffer">
+  <div class="section" id="bpf-ring-buffer">
 <h1>BPF ring buffer<a class="headerlink" href="#bpf-ring-buffer" title="Permalink to this headline">¶</a></h1>
 <p>This document describes BPF ring buffer design, API, and implementation details.</p>
 <div class="contents local topic" id="contents">
@@ -269,7 +271,7 @@
 <li><p><a class="reference internal" href="#design-and-implementation" id="id3">Design and Implementation</a></p></li>
 </ul>
 </div>
-<section id="motivation">
+<div class="section" id="motivation">
 <h2><a class="toc-backref" href="#id1">Motivation</a><a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
 <p>There are two distinctive motivators for this work, which are not satisfied by
 existing perf buffer, which prompted creation of a new ring buffer
@@ -285,8 +287,8 @@ also solved by having an MPSC implementation of ring buffer. The ordering
 problem could technically be solved for perf buffer with some in-kernel
 counting, but given the first one requires an MPSC buffer, the same solution
 would solve the second problem automatically.</p>
-</section>
-<section id="semantics-and-apis">
+</div>
+<div class="section" id="semantics-and-apis">
 <h2><a class="toc-backref" href="#id2">Semantics and APIs</a><a class="headerlink" href="#semantics-and-apis" title="Permalink to this headline">¶</a></h2>
 <p>Single ring buffer is presented to BPF programs as an instance of BPF map of
 type <code class="docutils literal notranslate"><span class="pre">BPF_MAP_TYPE_RINGBUF</span></code>. Two other alternatives considered, but
@@ -388,8 +390,8 @@ helpers, it allows BPF program a high degree of control and, e.g., more
 efficient batched notifications. Default self-balancing strategy, though,
 should be adequate for most applications and will work reliable and efficiently
 already.</p>
-</section>
-<section id="design-and-implementation">
+</div>
+<div class="section" id="design-and-implementation">
 <h2><a class="toc-backref" href="#id3">Design and Implementation</a><a class="headerlink" href="#design-and-implementation" title="Permalink to this headline">¶</a></h2>
 <p>This reserve/commit schema allows a natural way for multiple producers, either
 on different CPUs or even on the same CPU/in the same BPF program, to reserve
@@ -448,8 +450,8 @@ buffer. For extreme cases, when BPF program wants more manual control of
 notifications, commit/discard/output helpers accept <code class="docutils literal notranslate"><span class="pre">BPF_RB_NO_WAKEUP</span></code> and
 <code class="docutils literal notranslate"><span class="pre">BPF_RB_FORCE_WAKEUP</span></code> flags, which give full control over notifications of
 data availability, but require extra caution and diligence in using this API.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

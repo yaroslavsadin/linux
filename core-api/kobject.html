@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Everything you never wanted to know about kobjects, ksets, and ktypes &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -273,7 +275,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="everything-you-never-wanted-to-know-about-kobjects-ksets-and-ktypes">
+  <div class="section" id="everything-you-never-wanted-to-know-about-kobjects-ksets-and-ktypes">
 <h1>Everything you never wanted to know about kobjects, ksets, and ktypes<a class="headerlink" href="#everything-you-never-wanted-to-know-about-kobjects-ksets-and-ktypes" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -320,7 +322,7 @@ of those directories corresponds to a kobject in the same kset.</p>
 </div></blockquote>
 <p>We’ll look at how to create and manipulate all of these types. A bottom-up
 approach will be taken, so we’ll go back to kobjects.</p>
-<section id="embedding-kobjects">
+<div class="section" id="embedding-kobjects">
 <h2>Embedding kobjects<a class="headerlink" href="#embedding-kobjects" title="Permalink to this headline">¶</a></h2>
 <p>It is rare for kernel code to create a standalone kobject, with one major
 exception explained below.  Instead, kobjects are used to control access to
@@ -384,8 +386,8 @@ question.  That macro is subsequently invoked with:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct uio_map *map = to_map(kobj);
 </pre></div>
 </div>
-</section>
-<section id="initialization-of-kobjects">
+</div>
+<div class="section" id="initialization-of-kobjects">
 <h2>Initialization of kobjects<a class="headerlink" href="#initialization-of-kobjects" title="Permalink to this headline">¶</a></h2>
 <p>Code which creates a kobject must, of course, initialize that object. Some
 of the internal fields are setup with a (mandatory) call to <a class="reference internal" href="../driver-api/basics.html#c.kobject_init" title="kobject_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">kobject_init()</span></code></a>:</p>
@@ -430,8 +432,8 @@ kernel at the same time, called surprisingly enough <a class="reference internal
 </div>
 <p>The arguments are the same as the individual <a class="reference internal" href="../driver-api/basics.html#c.kobject_init" title="kobject_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">kobject_init()</span></code></a> and
 <a class="reference internal" href="../driver-api/basics.html#c.kobject_add" title="kobject_add"><code class="xref c c-func docutils literal notranslate"><span class="pre">kobject_add()</span></code></a> functions described above.</p>
-</section>
-<section id="uevents">
+</div>
+<div class="section" id="uevents">
 <h2>Uevents<a class="headerlink" href="#uevents" title="Permalink to this headline">¶</a></h2>
 <p>After a kobject has been registered with the kobject core, you need to
 announce to the world that it has been created.  This can be done with a
@@ -447,8 +449,8 @@ for them when this call happens.</p>
 below), the uevent for <strong>KOBJ_REMOVE</strong> will be automatically created by the
 kobject core, so the caller does not have to worry about doing that by
 hand.</p>
-</section>
-<section id="reference-counts">
+</div>
+<div class="section" id="reference-counts">
 <h2>Reference counts<a class="headerlink" href="#reference-counts" title="Permalink to this headline">¶</a></h2>
 <p>One of the key functions of a kobject is to serve as a reference counter
 for the object in which it is embedded. As long as references to the object
@@ -472,8 +474,8 @@ statically and will warn the developer of this improper usage.</p>
 for your structure, please use the struct kref instead; a kobject would be
 overkill.  For more information on how to use struct kref, please see the
 file <a class="reference internal" href="kref.html"><span class="doc">Adding reference counters (krefs) to kernel objects</span></a> in the Linux kernel source tree.</p>
-</section>
-<section id="creating-simple-kobjects">
+</div>
+<div class="section" id="creating-simple-kobjects">
 <h2>Creating “simple” kobjects<a class="headerlink" href="#creating-simple-kobjects" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes all that a developer wants is a way to create a simple directory
 in the sysfs hierarchy, and not have to mess with the whole complication of
@@ -498,8 +500,8 @@ with the <a class="reference internal" href="../driver-api/basics.html#c.kobject
 special custom attribute is needed to be created.</p>
 <p>See the example module, <code class="docutils literal notranslate"><span class="pre">samples/kobject/kobject-example.c</span></code> for an
 implementation of a simple kobject and attributes.</p>
-</section>
-<section id="ktypes-and-release-methods">
+</div>
+<div class="section" id="ktypes-and-release-methods">
 <h2>ktypes and release methods<a class="headerlink" href="#ktypes-and-release-methods" title="Permalink to this headline">¶</a></h2>
 <p>One important thing still missing from the discussion is what happens to a
 kobject when its reference count reaches zero. The code which created the
@@ -565,8 +567,8 @@ and default_attrs) control how objects of this type are represented in
 sysfs; they are beyond the scope of this document.</p>
 <p>The default_attrs pointer is a list of default attributes that will be
 automatically created for any kobject that is registered with this ktype.</p>
-</section>
-<section id="ksets">
+</div>
+<div class="section" id="ksets">
 <h2>ksets<a class="headerlink" href="#ksets" title="Permalink to this headline">¶</a></h2>
 <p>A kset is merely a collection of kobjects that want to be associated with
 each other.  There is no restriction that they be of the same ktype, but be
@@ -637,8 +639,8 @@ added to the kset’s directory.  Not all members of a kset do necessarily
 live in the kset directory.  If an explicit parent kobject is assigned
 before the kobject is added, the kobject is registered with the kset, but
 added below the parent kobject.</p>
-</section>
-<section id="kobject-removal">
+</div>
+<div class="section" id="kobject-removal">
 <h2>Kobject removal<a class="headerlink" href="#kobject-removal" title="Permalink to this headline">¶</a></h2>
 <p>After a kobject has been registered with the kobject core successfully, it
 must be cleaned up when the code is finished with it.  To do that, call
@@ -657,14 +659,14 @@ circular references are constructed.  It is valid in some cases, that a
 parent objects references a child.  Circular references _must_ be broken
 with an explicit call to <a class="reference internal" href="../driver-api/basics.html#c.kobject_del" title="kobject_del"><code class="xref c c-func docutils literal notranslate"><span class="pre">kobject_del()</span></code></a>, so that a release functions will be
 called, and the objects in the former circle release each other.</p>
-</section>
-<section id="example-code-to-copy-from">
+</div>
+<div class="section" id="example-code-to-copy-from">
 <h2>Example code to copy from<a class="headerlink" href="#example-code-to-copy-from" title="Permalink to this headline">¶</a></h2>
 <p>For a more complete example of using ksets and kobjects properly, see the
 example programs <code class="docutils literal notranslate"><span class="pre">samples/kobject/{kobject-example.c,kset-example.c}</span></code>,
 which will be built as loadable modules if you select <code class="docutils literal notranslate"><span class="pre">CONFIG_SAMPLE_KOBJECT</span></code>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

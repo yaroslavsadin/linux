@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The UCAN Protocol &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -382,7 +384,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-ucan-protocol">
+  <div class="section" id="the-ucan-protocol">
 <h1>The UCAN Protocol<a class="headerlink" href="#the-ucan-protocol" title="Permalink to this headline">¶</a></h1>
 <p>UCAN is the protocol used by the microcontroller-based USB-CAN
 adapter that is integrated on System-on-Modules from Theobroma Systems
@@ -392,7 +394,7 @@ It is modeled closely after how Linux represents CAN devices
 internally. All multi-byte integers are encoded as Little Endian.</p>
 <p>All structures mentioned in this document are defined in
 <code class="docutils literal notranslate"><span class="pre">drivers/net/can/usb/ucan.c</span></code>.</p>
-<section id="usb-endpoints">
+<div class="section" id="usb-endpoints">
 <h2>USB Endpoints<a class="headerlink" href="#usb-endpoints" title="Permalink to this headline">¶</a></h2>
 <p>UCAN devices use three USB endpoints:</p>
 <dl class="simple">
@@ -403,8 +405,8 @@ internally. All multi-byte integers are encoded as Little Endian.</p>
 <dt>OUT endpoint</dt><dd><p>The driver sends CAN data frames on the out endpoint</p>
 </dd>
 </dl>
-</section>
-<section id="control-messages">
+</div>
+<div class="section" id="control-messages">
 <h2>CONTROL Messages<a class="headerlink" href="#control-messages" title="Permalink to this headline">¶</a></h2>
 <p>UCAN devices are configured using vendor requests on the control pipe.</p>
 <p>To support multiple CAN interfaces in a single USB device all
@@ -412,7 +414,7 @@ configuration commands target the corresponding interface in the USB
 descriptor.</p>
 <p>The driver uses <code class="docutils literal notranslate"><span class="pre">ucan_ctrl_command_in/out</span></code> and
 <code class="docutils literal notranslate"><span class="pre">ucan_device_request_in</span></code> to deliver commands to the device.</p>
-<section id="setup-packet">
+<div class="section" id="setup-packet">
 <h3>Setup Packet<a class="headerlink" href="#setup-packet" title="Permalink to this headline">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
@@ -443,23 +445,23 @@ semantics are used.</p></li>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="error-handling">
+</div>
+<div class="section" id="error-handling">
 <h3>Error Handling<a class="headerlink" href="#error-handling" title="Permalink to this headline">¶</a></h3>
 <p>The device indicates failed control commands by stalling the
 pipe.</p>
-</section>
-<section id="device-commands">
+</div>
+<div class="section" id="device-commands">
 <h3>Device Commands<a class="headerlink" href="#device-commands" title="Permalink to this headline">¶</a></h3>
-<section id="ucan-device-get-fw-string">
+<div class="section" id="ucan-device-get-fw-string">
 <h4>UCAN_DEVICE_GET_FW_STRING<a class="headerlink" href="#ucan-device-get-fw-string" title="Permalink to this headline">¶</a></h4>
 <p><em>Dev2Host; optional</em></p>
 <p>Request the device firmware string.</p>
-</section>
-</section>
-<section id="interface-commands">
+</div>
+</div>
+<div class="section" id="interface-commands">
 <h3>Interface Commands<a class="headerlink" href="#interface-commands" title="Permalink to this headline">¶</a></h3>
-<section id="ucan-command-start">
+<div class="section" id="ucan-command-start">
 <h4>UCAN_COMMAND_START<a class="headerlink" href="#ucan-command-start" title="Permalink to this headline">¶</a></h4>
 <p><em>Host2Dev; mandatory</em></p>
 <p>Bring the CAN interface up.</p>
@@ -478,8 +480,8 @@ pipe.</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="ucan-command-stop">
+</div>
+<div class="section" id="ucan-command-stop">
 <h4>UCAN_COMMAND_STOP<a class="headerlink" href="#ucan-command-stop" title="Permalink to this headline">¶</a></h4>
 <p><em>Host2Dev; mandatory</em></p>
 <p>Stop the CAN interface</p>
@@ -487,8 +489,8 @@ pipe.</p>
 <dt>Payload Format</dt><dd><p><em>empty</em></p>
 </dd>
 </dl>
-</section>
-<section id="ucan-command-reset">
+</div>
+<div class="section" id="ucan-command-reset">
 <h4>UCAN_COMMAND_RESET<a class="headerlink" href="#ucan-command-reset" title="Permalink to this headline">¶</a></h4>
 <p><em>Host2Dev; mandatory</em></p>
 <p>Reset the CAN controller (including error counters)</p>
@@ -496,12 +498,12 @@ pipe.</p>
 <dt>Payload Format</dt><dd><p><em>empty</em></p>
 </dd>
 </dl>
-</section>
-<section id="ucan-command-get">
+</div>
+<div class="section" id="ucan-command-get">
 <h4>UCAN_COMMAND_GET<a class="headerlink" href="#ucan-command-get" title="Permalink to this headline">¶</a></h4>
 <p><em>Host2Dev; mandatory</em></p>
 <p>Get Information from the Device</p>
-<section id="subcommands">
+<div class="section" id="subcommands">
 <h5>Subcommands<a class="headerlink" href="#subcommands" title="Permalink to this headline">¶</a></h5>
 <dl>
 <dt>UCAN_COMMAND_GET_INFO</dt><dd><p>Request the device information structure <code class="docutils literal notranslate"><span class="pre">ucan_ctl_payload_t.device_info</span></code>.</p>
@@ -528,9 +530,9 @@ pipe.</p>
 <p>Devices that do not implement this command use the old
 protocol version 1</p>
 </div>
-</section>
-</section>
-<section id="ucan-command-set-bittiming">
+</div>
+</div>
+<div class="section" id="ucan-command-set-bittiming">
 <h4>UCAN_COMMAND_SET_BITTIMING<a class="headerlink" href="#ucan-command-set-bittiming" title="Permalink to this headline">¶</a></h4>
 <p><em>Host2Dev; mandatory</em></p>
 <p>Setup bittiming by sending the structure
@@ -540,19 +542,19 @@ details)</p>
 <dt>Payload Format</dt><dd><p><code class="docutils literal notranslate"><span class="pre">ucan_ctl_payload_t.cmd_set_bittiming</span></code>.</p>
 </dd>
 </dl>
-</section>
-<section id="ucan-sleep-wake">
+</div>
+<div class="section" id="ucan-sleep-wake">
 <h4>UCAN_SLEEP/WAKE<a class="headerlink" href="#ucan-sleep-wake" title="Permalink to this headline">¶</a></h4>
 <p><em>Host2Dev; optional</em></p>
 <p>Configure sleep and wake modes. Not yet supported by the driver.</p>
-</section>
-<section id="ucan-filter">
+</div>
+<div class="section" id="ucan-filter">
 <h4>UCAN_FILTER<a class="headerlink" href="#ucan-filter" title="Permalink to this headline">¶</a></h4>
 <p><em>Host2Dev; optional</em></p>
 <p>Setup hardware CAN filters. Not yet supported by the driver.</p>
-</section>
-</section>
-<section id="allowed-interface-commands">
+</div>
+</div>
+<div class="section" id="allowed-interface-commands">
 <h3>Allowed interface commands<a class="headerlink" href="#allowed-interface-commands" title="Permalink to this headline">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
@@ -593,16 +595,16 @@ details)</p>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-<section id="in-message-format">
+</div>
+</div>
+<div class="section" id="in-message-format">
 <h2>IN Message Format<a class="headerlink" href="#in-message-format" title="Permalink to this headline">¶</a></h2>
 <p>A data packet on the USB IN endpoint contains one or more
 <code class="docutils literal notranslate"><span class="pre">ucan_message_in</span></code> values. If multiple messages are batched in a USB
 data packet, the <code class="docutils literal notranslate"><span class="pre">len</span></code> field can be used to jump to the next
 <code class="docutils literal notranslate"><span class="pre">ucan_message_in</span></code> value (take care to sanity-check the <code class="docutils literal notranslate"><span class="pre">len</span></code> value
 against the actual data size).</p>
-<section id="len-field">
+<div class="section" id="len-field">
 <span id="can-ucan-in-message-len"></span><h3><code class="docutils literal notranslate"><span class="pre">len</span></code> field<a class="headerlink" href="#len-field" title="Permalink to this headline">¶</a></h3>
 <p>Each <code class="docutils literal notranslate"><span class="pre">ucan_message_in</span></code> must be aligned to a 4-byte boundary (relative
 to the start of the start of the data buffer). That means that there
@@ -621,19 +623,19 @@ may be padding bytes between multiple <code class="docutils literal notranslate"
             [...]
 </pre></div>
 </div>
-</section>
-<section id="type-field">
+</div>
+<div class="section" id="type-field">
 <h3><code class="docutils literal notranslate"><span class="pre">type</span></code> field<a class="headerlink" href="#type-field" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">type</span></code> field specifies the type of the message.</p>
-<section id="ucan-in-rx">
+<div class="section" id="ucan-in-rx">
 <h4>UCAN_IN_RX<a class="headerlink" href="#ucan-in-rx" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">subtype</span></code></dt><dd><p>zero</p>
 </dd>
 </dl>
 <p>Data received from the CAN bus (ID + payload).</p>
-</section>
-<section id="ucan-in-tx-complete">
+</div>
+<div class="section" id="ucan-in-tx-complete">
 <h4>UCAN_IN_TX_COMPLETE<a class="headerlink" href="#ucan-in-tx-complete" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">subtype</span></code></dt><dd><p>zero</p>
@@ -645,18 +647,18 @@ list of tuples &lt;echo-ids, flags&gt;.</p>
 UCAN_OUT_TX message). The flag indicates the result of the
 transmission. Whereas a set Bit 0 indicates success. All other bits
 are reserved and set to zero.</p>
-</section>
-</section>
-<section id="flow-control">
+</div>
+</div>
+<div class="section" id="flow-control">
 <h3>Flow Control<a class="headerlink" href="#flow-control" title="Permalink to this headline">¶</a></h3>
 <p>When receiving CAN messages there is no flow control on the USB
 buffer. The driver has to handle inbound message quickly enough to
 avoid drops. I case the device buffer overflow the condition is
 reported by sending corresponding error frames (see
 <a class="reference internal" href="#can-ucan-error-handling"><span class="std std-ref">CAN Error Handling</span></a>)</p>
-</section>
-</section>
-<section id="out-message-format">
+</div>
+</div>
+<div class="section" id="out-message-format">
 <h2>OUT Message Format<a class="headerlink" href="#out-message-format" title="Permalink to this headline">¶</a></h2>
 <p>A data packet on the USB OUT endpoint contains one or more <code class="docutils literal notranslate"><span class="pre">struct</span>
 <span class="pre">ucan_message_out</span></code> values. If multiple messages are batched into one
@@ -678,27 +680,27 @@ same as described in <a class="reference internal" href="#can-ucan-in-message-le
             [...]
 </pre></div>
 </div>
-<section id="id1">
+<div class="section" id="id1">
 <h3><code class="docutils literal notranslate"><span class="pre">type</span></code> field<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>In protocol version 3 only <code class="docutils literal notranslate"><span class="pre">UCAN_OUT_TX</span></code> is defined, others are used
 only by legacy devices (protocol version 1).</p>
-<section id="ucan-out-tx">
+<div class="section" id="ucan-out-tx">
 <h4>UCAN_OUT_TX<a class="headerlink" href="#ucan-out-tx" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">subtype</span></code></dt><dd><p>echo id to be replied within a CAN_IN_TX_COMPLETE message</p>
 </dd>
 </dl>
 <p>Transmit a CAN frame. (parameters: <code class="docutils literal notranslate"><span class="pre">id</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code>)</p>
-</section>
-</section>
-<section id="id2">
+</div>
+</div>
+<div class="section" id="id2">
 <h3>Flow Control<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>When the device outbound buffers are full it starts sending <em>NAKs</em> on
 the <em>OUT</em> pipe until more buffers are available. The driver stops the
 queue when a certain threshold of out packets are incomplete.</p>
-</section>
-</section>
-<section id="can-error-handling">
+</div>
+</div>
+<div class="section" id="can-error-handling">
 <span id="can-ucan-error-handling"></span><h2>CAN Error Handling<a class="headerlink" href="#can-error-handling" title="Permalink to this headline">¶</a></h2>
 <p>If error reporting is turned on the device encodes errors into CAN
 error frames (see <code class="docutils literal notranslate"><span class="pre">uapi/linux/can/error.h</span></code>) and sends it using the
@@ -708,7 +710,7 @@ it.</p>
 the driver is always interested. Hence, the device is always started with
 the <code class="docutils literal notranslate"><span class="pre">UCAN_MODE_BERR_REPORT</span></code> set. Filtering those messages for the
 user space is done by the driver.</p>
-<section id="bus-off">
+<div class="section" id="bus-off">
 <h3>Bus OFF<a class="headerlink" href="#bus-off" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The device does not recover from bus of automatically.</p></li>
@@ -720,9 +722,9 @@ indicating that it is on ERROR-ACTIVE state.</p></li>
 <li><p>During Bus OFF transmission requests from the host are completed
 immediately with the success bit left unset.</p></li>
 </ul>
-</section>
-</section>
-<section id="example-conversation">
+</div>
+</div>
+<div class="section" id="example-conversation">
 <h2>Example Conversation<a class="headerlink" href="#example-conversation" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>Device is connected to USB</p></li>
@@ -732,8 +734,8 @@ immediately with the success bit left unset.</p></li>
 <li><p>Host sends command <code class="docutils literal notranslate"><span class="pre">UCAN_OUT_SET_BITTIMING</span></code></p></li>
 <li><p>Host sends command <code class="docutils literal notranslate"><span class="pre">UCAN_COMMAND_START</span></code>, subcmd 0, mode <code class="docutils literal notranslate"><span class="pre">UCAN_MODE_BERR_REPORT</span></code></p></li>
 </ol>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

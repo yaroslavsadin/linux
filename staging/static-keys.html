@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Static Keys &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -255,7 +257,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="static-keys">
+  <div class="section" id="static-keys">
 <h1>Static Keys<a class="headerlink" href="#static-keys" title="Permalink to this headline">¶</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -278,7 +280,7 @@ static_branch_unlikely()
 </pre></div>
 </div>
 </div>
-<section id="abstract">
+<div class="section" id="abstract">
 <h2>Abstract<a class="headerlink" href="#abstract" title="Permalink to this headline">¶</a></h2>
 <p>Static keys allows the inclusion of seldom used features in
 performance-sensitive fast-path kernel code, via a GCC feature and a code
@@ -301,8 +303,8 @@ static_branch_disable(&amp;key);
 </div>
 <p>The static_branch_unlikely() branch will be generated into the code with as little
 impact to the likely code path as possible.</p>
-</section>
-<section id="motivation">
+</div>
+<div class="section" id="motivation">
 <h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
 <p>Currently, tracepoints are implemented using a conditional branch. The
 conditional check requires checking a global variable for each tracepoint.
@@ -314,8 +316,8 @@ tracepoints are often dormant (disabled) and provide no direct kernel
 functionality. Thus, it is highly desirable to reduce their impact as much as
 possible. Although tracepoints are the original motivation for this work, other
 kernel code paths should be able to make use of the static keys facility.</p>
-</section>
-<section id="solution">
+</div>
+<div class="section" id="solution">
 <h2>Solution<a class="headerlink" href="#solution" title="Permalink to this headline">¶</a></h2>
 <p>gcc (v4.5) adds a new ‘asm goto’ statement that allows branching to a label:</p>
 <p><a class="reference external" href="https://gcc.gnu.org/ml/gcc-patches/2009-07/msg01556.html">https://gcc.gnu.org/ml/gcc-patches/2009-07/msg01556.html</a></p>
@@ -336,8 +338,8 @@ branch selection is basically ‘free’. That is the basic tradeoff of this
 optimization.</p>
 <p>This lowlevel patching mechanism is called ‘jump label patching’, and it gives
 the basis for the static keys facility.</p>
-</section>
-<section id="static-key-label-api-usage-and-examples">
+</div>
+<div class="section" id="static-key-label-api-usage-and-examples">
 <h2>Static key label API, usage and examples<a class="headerlink" href="#static-key-label-api-usage-and-examples" title="Permalink to this headline">¶</a></h2>
 <p>In order to make use of this optimization you must first define a key:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DEFINE_STATIC_KEY_TRUE(key);
@@ -577,8 +579,8 @@ performance improvement. Testing done on 3.3.0-rc2:</p>
 ‘branch-misses’. This is where we would expect to get the most savings, since
 this optimization is about reducing the number of branches. In addition, we’ve
 saved .2% on instructions, and 2.8% on cycles and 1.4% on elapsed time.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

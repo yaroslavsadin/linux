@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Split page table lock &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -276,7 +278,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="split-page-table-lock">
+  <div class="section" id="split-page-table-lock">
 <span id="id1"></span><h1>Split page table lock<a class="headerlink" href="#split-page-table-lock" title="Permalink to this headline">¶</a></h1>
 <p>Originally, mm-&gt;page_table_lock spinlock protected all page tables of the
 mm_struct. But this approach leads to poor page fault scalability of
@@ -327,7 +329,7 @@ CONFIG_SPLIT_PTLOCK_CPUS (usually 4) is less or equal to NR_CPUS.
 If split lock is disabled, all tables are guarded by mm-&gt;page_table_lock.</p>
 <p>Split page table lock for PMD tables is enabled, if it’s enabled for PTE
 tables and the architecture supports it (see below).</p>
-<section id="hugetlb-and-split-page-table-lock">
+<div class="section" id="hugetlb-and-split-page-table-lock">
 <h2>Hugetlb and split page table lock<a class="headerlink" href="#hugetlb-and-split-page-table-lock" title="Permalink to this headline">¶</a></h2>
 <p>Hugetlb can support several page sizes. We use split lock only for PMD
 level, but not for PUD.</p>
@@ -347,8 +349,8 @@ otherwise;</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="support-of-split-page-table-lock-by-an-architecture">
+</div>
+<div class="section" id="support-of-split-page-table-lock-by-an-architecture">
 <h2>Support of split page table lock by an architecture<a class="headerlink" href="#support-of-split-page-table-lock-by-an-architecture" title="Permalink to this headline">¶</a></h2>
 <p>There’s no need in special enabling of PTE split page table lock: everything
 required is done by pgtable_pte_page_ctor() and pgtable_pte_page_dtor(), which
@@ -366,8 +368,8 @@ paths: i.e X86_PAE preallocate few PMDs on pgd_alloc().</p>
 <p>With everything in place you can set CONFIG_ARCH_ENABLE_SPLIT_PMD_PTLOCK.</p>
 <p>NOTE: pgtable_pte_page_ctor() and pgtable_pmd_page_ctor() can fail – it must
 be handled properly.</p>
-</section>
-<section id="page-ptl">
+</div>
+<div class="section" id="page-ptl">
 <h2>page-&gt;ptl<a class="headerlink" href="#page-ptl" title="Permalink to this headline">¶</a></h2>
 <p>page-&gt;ptl is used to access split page table lock, where ‘page’ is struct
 page of page containing the table. It shares storage with page-&gt;private
@@ -387,8 +389,8 @@ one more cache line for indirect access;</p></li>
 <p>The spinlock_t allocated in pgtable_pte_page_ctor() for PTE table and in
 pgtable_pmd_page_ctor() for PMD table.</p>
 <p>Please, never access page-&gt;ptl directly – use appropriate helper.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

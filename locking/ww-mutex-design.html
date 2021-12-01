@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Wound/Wait Deadlock-Proof Mutex Design &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -267,10 +269,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="wound-wait-deadlock-proof-mutex-design">
+  <div class="section" id="wound-wait-deadlock-proof-mutex-design">
 <h1>Wound/Wait Deadlock-Proof Mutex Design<a class="headerlink" href="#wound-wait-deadlock-proof-mutex-design" title="Permalink to this headline">¶</a></h1>
 <p>Please read <a class="reference internal" href="mutex-design.html"><span class="doc">Generic Mutex Subsystem</span></a> first, as it applies to wait/wound mutexes too.</p>
-<section id="motivation-for-ww-mutexes">
+<div class="section" id="motivation-for-ww-mutexes">
 <h2>Motivation for WW-Mutexes<a class="headerlink" href="#motivation-for-ww-mutexes" title="Permalink to this headline">¶</a></h2>
 <p>GPU’s do operations that commonly involve many buffers.  Those buffers
 can be shared across contexts/processes, exist in different memory
@@ -316,8 +318,8 @@ requires a reliable way to pick up the wounded condition and preempt the
 running transaction. Note that this is not the same as process preemption. A
 Wound-Wait transaction is considered preempted when it dies (returning
 -EDEADLK) following a wound.</p>
-</section>
-<section id="concepts">
+</div>
+<div class="section" id="concepts">
 <h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline">¶</a></h2>
 <p>Compared to normal mutexes two additional concepts/objects show up in the lock
 interface for w/w mutexes:</p>
@@ -364,8 +366,8 @@ better to avoid grabbing a deadlock avoidance ticket).</p>
 </ul>
 <p>Of course, all the usual variants for handling wake-ups due to signals are also
 provided.</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The algorithm (Wait-Die vs Wound-Wait) is chosen by using either
 DEFINE_WW_CLASS() (Wound-Wait) or DEFINE_WD_CLASS() (Wait-Die)
@@ -583,10 +585,10 @@ void unlock_objs(struct list_head *list, struct ww_acquire_ctx *ctx)
 prevention is obviously overkill, since with grabbing just one lock you can’t
 produce a deadlock within just one class. To simplify this case the w/w mutex
 api can be used with a NULL context.</p>
-</section>
-<section id="implementation-details">
+</div>
+<div class="section" id="implementation-details">
 <h2>Implementation Details<a class="headerlink" href="#implementation-details" title="Permalink to this headline">¶</a></h2>
-<section id="design">
+<div class="section" id="design">
 <h3>Design:<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>ww_mutex currently encapsulates a struct mutex, this means no extra overhead for
@@ -613,8 +615,8 @@ it would have to back off again.</p>
 serialize access to resources for devices, and optimization focus should
 therefore be directed towards the uncontended cases.</p>
 </div></blockquote>
-</section>
-<section id="lockdep">
+</div>
+<div class="section" id="lockdep">
 <h3>Lockdep:<a class="headerlink" href="#lockdep" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Special care has been taken to warn for as many cases of api abuse
@@ -648,9 +650,9 @@ having called ww_acquire_fini on the first.</p></li>
 implemented.</p>
 </dd>
 </dl>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

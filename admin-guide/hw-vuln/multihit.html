@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>iTLB multihit &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -342,7 +344,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="itlb-multihit">
+  <div class="section" id="itlb-multihit">
 <h1>iTLB multihit<a class="headerlink" href="#itlb-multihit" title="Permalink to this headline">¶</a></h1>
 <p>iTLB multihit is an erratum where some processors may incur a machine check
 error, possibly resulting in an unrecoverable CPU lockup, when an
@@ -350,7 +352,7 @@ instruction fetch hits multiple entries in the instruction TLB. This can
 occur when the page size is changed along with either the physical address
 or cache type. A malicious guest running on a virtualized system can
 exploit this erratum to perform a denial of service attack.</p>
-<section id="affected-processors">
+<div class="section" id="affected-processors">
 <h2>Affected processors<a class="headerlink" href="#affected-processors" title="Permalink to this headline">¶</a></h2>
 <p>Variations of this erratum are present on most Intel Core and Xeon processor
 models. The erratum is not present on:</p>
@@ -362,8 +364,8 @@ models. The erratum is not present on:</p>
 IA32_ARCH_CAPABILITIES MSR.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="related-cves">
+</div>
+<div class="section" id="related-cves">
 <h2>Related CVEs<a class="headerlink" href="#related-cves" title="Permalink to this headline">¶</a></h2>
 <p>The following CVE entry is related to this issue:</p>
 <blockquote>
@@ -379,8 +381,8 @@ IA32_ARCH_CAPABILITIES MSR.</p></li>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="problem">
+</div>
+<div class="section" id="problem">
 <h2>Problem<a class="headerlink" href="#problem" title="Permalink to this headline">¶</a></h2>
 <p>Privileged software, including OS and virtual machine managers (VMM), are in
 charge of memory management. A key component in memory management is the control
@@ -398,13 +400,13 @@ MB, 1 GB) with a different physical address or memory type.  After the page
 structure modification but before the software invalidates any iTLB entries for
 the linear address, a code fetch that happens on the same linear address may
 cause a machine-check error which can result in a system hang or shutdown.</p>
-</section>
-<section id="attack-scenarios">
+</div>
+<div class="section" id="attack-scenarios">
 <h2>Attack scenarios<a class="headerlink" href="#attack-scenarios" title="Permalink to this headline">¶</a></h2>
 <p>Attacks against the iTLB multihit erratum can be mounted from malicious
 guests in a virtualized system.</p>
-</section>
-<section id="itlb-multihit-system-information">
+</div>
+<div class="section" id="itlb-multihit-system-information">
 <h2>iTLB multihit system information<a class="headerlink" href="#itlb-multihit-system-information" title="Permalink to this headline">¶</a></h2>
 <p>The Linux kernel provides a sysfs interface to enumerate the current iTLB
 multihit status of the system:whether the system is vulnerable and which
@@ -434,8 +436,8 @@ mitigations are active. The relevant sysfs file is:</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="enumeration-of-the-erratum">
+</div>
+<div class="section" id="enumeration-of-the-erratum">
 <h2>Enumeration of the erratum<a class="headerlink" href="#enumeration-of-the-erratum" title="Permalink to this headline">¶</a></h2>
 <p>A new bit has been allocated in the IA32_ARCH_CAPABILITIES (PSCHANGE_MC_NO) msr
 and will be set on CPU’s which are mitigated against this issue.</p>
@@ -462,8 +464,8 @@ and will be set on CPU’s which are mitigated against this issue.</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="mitigation-mechanism">
+</div>
+<div class="section" id="mitigation-mechanism">
 <h2>Mitigation mechanism<a class="headerlink" href="#mitigation-mechanism" title="Permalink to this headline">¶</a></h2>
 <p>This erratum can be mitigated by restricting the use of large page sizes to
 non-executable pages.  This forces all iTLB entries to be 4K, and removes
@@ -477,8 +479,8 @@ EPT paging mechanism used by nested virtualization is vulnerable, because
 the nested guest can trigger multiple iTLB hits by modifying its own
 (non-nested) page tables.  For simplicity, KVM will make large pages
 non-executable in all shadow paging modes.</p>
-</section>
-<section id="mitigation-control-on-the-kernel-command-line-and-kvm-module-parameter">
+</div>
+<div class="section" id="mitigation-control-on-the-kernel-command-line-and-kvm-module-parameter">
 <h2>Mitigation control on the kernel command line and KVM - module parameter<a class="headerlink" href="#mitigation-control-on-the-kernel-command-line-and-kvm-module-parameter" title="Permalink to this headline">¶</a></h2>
 <p>The KVM hypervisor mitigation mechanism for marking huge pages as
 non-executable can be controlled with a module parameter “nx_huge_pages=”.
@@ -510,34 +512,34 @@ This is the default option.</p></td>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="mitigation-selection-guide">
+</div>
+<div class="section" id="mitigation-selection-guide">
 <h2>Mitigation selection guide<a class="headerlink" href="#mitigation-selection-guide" title="Permalink to this headline">¶</a></h2>
-<section id="no-virtualization-in-use">
+<div class="section" id="no-virtualization-in-use">
 <h3>1. No virtualization in use<a class="headerlink" href="#no-virtualization-in-use" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The system is protected by the kernel unconditionally and no further
 action is required.</p>
 </div></blockquote>
-</section>
-<section id="virtualization-with-trusted-guests">
+</div>
+<div class="section" id="virtualization-with-trusted-guests">
 <h3>2. Virtualization with trusted guests<a class="headerlink" href="#virtualization-with-trusted-guests" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>If the guest comes from a trusted source, you may assume that the guest will
 not attempt to maliciously exploit these errata and no further action is
 required.</p>
 </div></blockquote>
-</section>
-<section id="virtualization-with-untrusted-guests">
+</div>
+<div class="section" id="virtualization-with-untrusted-guests">
 <h3>3. Virtualization with untrusted guests<a class="headerlink" href="#virtualization-with-untrusted-guests" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>If the guest comes from an untrusted source, the guest host kernel will need
 to apply iTLB multihit mitigation via the kernel command line or kvm
 module parameter.</p>
 </div></blockquote>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

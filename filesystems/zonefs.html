@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>ZoneFS - Zone filesystem for Zoned block devices &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -311,9 +313,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="zonefs-zone-filesystem-for-zoned-block-devices">
+  <div class="section" id="zonefs-zone-filesystem-for-zoned-block-devices">
 <h1>ZoneFS - Zone filesystem for Zoned block devices<a class="headerlink" href="#zonefs-zone-filesystem-for-zoned-block-devices" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>zonefs is a very simple file system exposing each zone of a zoned block device
 as a file. Unlike a regular POSIX-compliant file system with native zoned block
@@ -333,7 +335,7 @@ system rather than as a range of sectors of the entire disk. The introduction
 of the higher level construct “one file is one zone” can help reducing the
 amount of changes needed in the application as well as introducing support for
 different application programming languages.</p>
-<section id="zoned-block-devices">
+<div class="section" id="zoned-block-devices">
 <h3>Zoned block devices<a class="headerlink" href="#zoned-block-devices" title="Permalink to this headline">¶</a></h3>
 <p>Zoned storage devices belong to a class of storage devices with an address
 space that is divided into zones. A zone is a group of consecutive LBAs and all
@@ -357,16 +359,16 @@ Magnetic Recording (SMR) HDDs.</p>
 to, for instance, reduce internal write amplification due to garbage collection.
 The NVMe Zoned NameSpace (ZNS) is a technical proposal of the NVMe standard
 committee aiming at adding a zoned storage interface to the NVMe protocol.</p>
-</section>
-</section>
-<section id="zonefs-overview">
+</div>
+</div>
+<div class="section" id="zonefs-overview">
 <h2>Zonefs Overview<a class="headerlink" href="#zonefs-overview" title="Permalink to this headline">¶</a></h2>
 <p>Zonefs exposes the zones of a zoned block device as files. The files
 representing zones are grouped by zone type, which are themselves represented
 by sub-directories. This file structure is built entirely using zone information
 provided by the device and so does not require any complex on-disk metadata
 structure.</p>
-<section id="on-disk-metadata">
+<div class="section" id="on-disk-metadata">
 <h3>On-disk metadata<a class="headerlink" href="#on-disk-metadata" title="Permalink to this headline">¶</a></h3>
 <p>zonefs on-disk metadata is reduced to an immutable super block which
 persistently stores a magic number and optional feature flags and values. On
@@ -379,8 +381,8 @@ device storing the super block is never exposed as a zone file by zonefs. If
 the zone containing the super block is a sequential zone, the mkzonefs format
 tool always “finishes” the zone, that is, it transitions the zone to a full
 state to make it read-only, preventing any data write.</p>
-</section>
-<section id="zone-type-sub-directories">
+</div>
+<div class="section" id="zone-type-sub-directories">
 <h3>Zone type sub-directories<a class="headerlink" href="#zone-type-sub-directories" title="Permalink to this headline">¶</a></h3>
 <p>Files representing zones of the same type are grouped together under the same
 sub-directory automatically created on mount.</p>
@@ -396,8 +398,8 @@ cannot create other directories and cannot rename nor delete the “cnv” and
 <p>The size of the directories indicated by the st_size field of struct stat,
 obtained with the stat() or fstat() system calls, indicates the number of files
 existing under the directory.</p>
-</section>
-<section id="zone-files">
+</div>
+<div class="section" id="zone-files">
 <h3>Zone files<a class="headerlink" href="#zone-files" title="Permalink to this headline">¶</a></h3>
 <p>Zone files are named using the number of the zone they represent within the set
 of zones of a particular type. That is, both the “cnv” and “seq” directories
@@ -410,16 +412,16 @@ capacity is failed with the -EFBIG error.</p>
 sub-directories is not allowed.</p>
 <p>The number of blocks of a file as reported by stat() and fstat() indicates the
 capacity of the zone file, or in other words, the maximum file size.</p>
-</section>
-<section id="conventional-zone-files">
+</div>
+<div class="section" id="conventional-zone-files">
 <h3>Conventional zone files<a class="headerlink" href="#conventional-zone-files" title="Permalink to this headline">¶</a></h3>
 <p>The size of conventional zone files is fixed to the size of the zone they
 represent. Conventional zone files cannot be truncated.</p>
 <p>These files can be randomly read and written using any type of I/O operation:
 buffered I/Os, direct I/Os, memory mapped I/Os (mmap), etc. There are no I/O
 constraint for these files beyond the file size limit mentioned above.</p>
-</section>
-<section id="sequential-zone-files">
+</div>
+<div class="section" id="sequential-zone-files">
 <h3>Sequential zone files<a class="headerlink" href="#sequential-zone-files" title="Permalink to this headline">¶</a></h3>
 <p>The size of sequential zone files grouped in the “seq” sub-directory represents
 the file’s zone write pointer position relative to the zone start sector.</p>
@@ -443,8 +445,8 @@ all accepted.</p>
 zone is reset to rewind the file zone write pointer position to the start of
 the zone, or up to the zone capacity, in which case the file’s zone is
 transitioned to the FULL state (finish zone operation).</p>
-</section>
-<section id="format-options">
+</div>
+<div class="section" id="format-options">
 <h3>Format options<a class="headerlink" href="#format-options" title="Permalink to this headline">¶</a></h3>
 <p>Several optional features of zonefs can be enabled at format time.</p>
 <ul class="simple">
@@ -454,8 +456,8 @@ aggregated into a single larger file instead of the default one file per zone.</
 but can be changed to any valid UID/GID.</p></li>
 <li><p>File access permissions: the default 640 access permissions can be changed.</p></li>
 </ul>
-</section>
-<section id="io-error-handling">
+</div>
+<div class="section" id="io-error-handling">
 <h3>IO error handling<a class="headerlink" href="#io-error-handling" title="Permalink to this headline">¶</a></h3>
 <p>Zoned block devices may fail I/O requests for reasons similar to regular block
 devices, e.g. due to bad sectors. However, in addition to such known I/O
@@ -581,8 +583,8 @@ actions, that is, file size fixes for zones in a good condition. Zones
 indicated as being read-only or offline by the device still imply changes to
 the zone file access permissions as noted in the table above.</p></li>
 </ul>
-</section>
-<section id="mount-options">
+</div>
+<div class="section" id="mount-options">
 <h3>Mount options<a class="headerlink" href="#mount-options" title="Permalink to this headline">¶</a></h3>
 <p>zonefs define the “errors=&lt;behavior&gt;” mount option to allow the user to specify
 zonefs behavior in response to I/O errors, inode size inconsistencies or zone
@@ -616,16 +618,16 @@ guaranteed that write requests can be processed. Conversely, the
 “explicit-open” mount option will result in a zone close command being issued
 to the device on the last close() of a zone file if the zone is not full nor
 empty.</p>
-</section>
-</section>
-<section id="zonefs-user-space-tools">
+</div>
+</div>
+<div class="section" id="zonefs-user-space-tools">
 <h2>Zonefs User Space Tools<a class="headerlink" href="#zonefs-user-space-tools" title="Permalink to this headline">¶</a></h2>
 <p>The mkzonefs tool is used to format zoned block devices for use with zonefs.
 This tool is available on Github at:</p>
 <p><a class="reference external" href="https://github.com/damien-lemoal/zonefs-tools">https://github.com/damien-lemoal/zonefs-tools</a></p>
 <p>zonefs-tools also includes a test suite which can be run against any zoned
 block device, including null_blk block device created with zoned mode.</p>
-<section id="examples">
+<div class="section" id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p>The following formats a 15TB host-managed SMR HDD with 256 MB zones
 with the conventional zones aggregation feature enabled:</p>
@@ -707,9 +709,9 @@ maximum file size of 524288 * 512 B = 256 MB, corresponding to the device zone
 capacity in this example. Of note is that the “IO block” field always
 indicates the minimum I/O size for writes and corresponds to the device
 physical sector size.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

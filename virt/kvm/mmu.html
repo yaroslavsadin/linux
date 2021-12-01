@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The x86 kvm shadow mmu &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -284,7 +286,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-x86-kvm-shadow-mmu">
+  <div class="section" id="the-x86-kvm-shadow-mmu">
 <h1>The x86 kvm shadow mmu<a class="headerlink" href="#the-x86-kvm-shadow-mmu" title="Permalink to this headline">¶</a></h1>
 <p>The mmu (in arch/x86/kvm, files mmu.[ch] and paging_tmpl.h) is responsible
 for presenting a standard x86 mmu to the guest, while translating guest
@@ -345,7 +347,7 @@ should be shrinkable)</p>
 </dl>
 </li>
 </ul>
-<section id="acronyms">
+<div class="section" id="acronyms">
 <h2>Acronyms<a class="headerlink" href="#acronyms" title="Permalink to this headline">¶</a></h2>
 <table class="docutils align-default">
 <colgroup>
@@ -392,8 +394,8 @@ entries)</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="virtual-and-real-hardware-supported">
+</div>
+<div class="section" id="virtual-and-real-hardware-supported">
 <h2>Virtual and real hardware supported<a class="headerlink" href="#virtual-and-real-hardware-supported" title="Permalink to this headline">¶</a></h2>
 <p>The mmu supports first-generation mmu hardware, which allows an atomic switch
 of the current paging mode and cr3 during guest entry, as well as
@@ -401,8 +403,8 @@ two-dimensional paging (AMD’s NPT and Intel’s EPT).  The emulated hardware
 it exposes is the traditional 2/3/4 level x86 mmu, with support for global
 pages, pae, pse, pse36, cr0.wp, and 1GB pages. Emulated hardware also
 able to expose NPT capable hardware on NPT capable hosts.</p>
-</section>
-<section id="translation">
+</div>
+<div class="section" id="translation">
 <h2>Translation<a class="headerlink" href="#translation" title="Permalink to this headline">¶</a></h2>
 <p>The primary job of the mmu is to program the processor’s mmu to translate
 addresses for the guest.  Different translations are required at different
@@ -420,8 +422,8 @@ addresses, to host physical addresses (ngva-&gt;ngpa-&gt;gpa-&gt;hpa)</p></li>
 that support only 1 (traditional) and 2 (tdp) translations.  When the
 number of required translations matches the hardware, the mmu operates in
 direct mode; otherwise it operates in shadow mode (see below).</p>
-</section>
-<section id="memory">
+</div>
+<div class="section" id="memory">
 <h2>Memory<a class="headerlink" href="#memory" title="Permalink to this headline">¶</a></h2>
 <p>Guest memory (gpa) is part of the user address space of the process that is
 using kvm.  Userspace defines the translation between guest addresses and user
@@ -430,8 +432,8 @@ vice versa.</p>
 <p>These hvas may be backed using any method available to the host: anonymous
 memory, file backed memory, and device memory.  Memory might be paged by the
 host at any time.</p>
-</section>
-<section id="events">
+</div>
+<div class="section" id="events">
 <h2>Events<a class="headerlink" href="#events" title="Permalink to this headline">¶</a></h2>
 <p>The mmu is driven by events, some from the guest, some from the host.</p>
 <p>Guest generated events:</p>
@@ -446,8 +448,8 @@ host at any time.</p>
 through hva-&gt;hpa changes)</p></li>
 <li><p>memory pressure (the shrinker)</p></li>
 </ul>
-</section>
-<section id="shadow-pages">
+</div>
+<div class="section" id="shadow-pages">
 <h2>Shadow pages<a class="headerlink" href="#shadow-pages" title="Permalink to this headline">¶</a></h2>
 <p>The principal data structure is the shadow page, ‘struct kvm_mmu_page’.  A
 shadow page contains 512 sptes, which can be either leaf or nonleaf sptes.  A
@@ -590,13 +592,13 @@ to avoid emulation in the future.</p>
 </dl>
 </dd>
 </dl>
-</section>
-<section id="reverse-map">
+</div>
+<div class="section" id="reverse-map">
 <h2>Reverse map<a class="headerlink" href="#reverse-map" title="Permalink to this headline">¶</a></h2>
 <p>The mmu maintains a reverse mapping whereby all ptes mapping a page can be
 reached given its gfn.  This is used, for example, when swapping out a page.</p>
-</section>
-<section id="synchronized-and-unsynchronized-pages">
+</div>
+<div class="section" id="synchronized-and-unsynchronized-pages">
 <h2>Synchronized and unsynchronized pages<a class="headerlink" href="#synchronized-and-unsynchronized-pages" title="Permalink to this headline">¶</a></h2>
 <p>The guest uses two events to synchronize its tlb and page tables: tlb flushes
 and page invalidations (invlpg).</p>
@@ -613,8 +615,8 @@ or when the a guest page is no longer used as a page table and is used for
 random guest data.</p>
 <p>As a side effect we have to resynchronize all reachable unsynchronized shadow
 pages on a tlb flush.</p>
-</section>
-<section id="reaction-to-events">
+</div>
+<div class="section" id="reaction-to-events">
 <h2>Reaction to events<a class="headerlink" href="#reaction-to-events" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>guest page fault (or npt page fault, or ept violation)</p></li>
@@ -711,8 +713,8 @@ guest will use it in the near future</p></li>
 <li><p>drop (or update) translations</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="emulating-cr0-wp">
+</div>
+<div class="section" id="emulating-cr0-wp">
 <h2>Emulating cr0.wp<a class="headerlink" href="#emulating-cr0-wp" title="Permalink to this headline">¶</a></h2>
 <p>If tdp is not enabled, the host must keep cr0.wp=1 so page write protection
 works for the guest kernel, not guest guest userspace.  When the guest
@@ -749,8 +751,8 @@ it will simply be missed by the shadow page lookup code.  A similar issue
 exists when an spte created with cr0.wp=0 and cr4.smep=0 is used after
 changing cr4.smep to 1.  To avoid this, the value of !cr0.wp &amp;&amp; cr4.smep
 is also made a part of the page role.</p>
-</section>
-<section id="large-pages">
+</div>
+<div class="section" id="large-pages">
 <h2>Large pages<a class="headerlink" href="#large-pages" title="Permalink to this headline">¶</a></h2>
 <p>The mmu supports all combinations of large and small guest and host pages.
 Supported page sizes include 4k, 2M, 4M, and 1G.  4M pages are treated as
@@ -770,8 +772,8 @@ arrays for each memory slot and large page size.  Every write protected page
 causes its disallow_lpage to be incremented, thus preventing instantiation of
 a large spte.  The frames at the end of an unaligned memory slot have
 artificially inflated -&gt;disallow_lpages so they can never be instantiated.</p>
-</section>
-<section id="fast-invalidation-of-mmio-sptes">
+</div>
+<div class="section" id="fast-invalidation-of-mmio-sptes">
 <h2>Fast invalidation of MMIO sptes<a class="headerlink" href="#fast-invalidation-of-mmio-sptes" title="Permalink to this headline">¶</a></h2>
 <p>As mentioned in “Reaction to events” above, kvm will cache MMIO
 information in leaf sptes.  When a new memslot is added or an existing
@@ -803,15 +805,15 @@ spte while an update is in-progress, the next access to the spte will always be
 a cache miss.  For example, a subsequent access during the update window will
 miss due to the in-progress flag diverging, while an access after the update
 window closes will have a higher generation number (as compared to the spte).</p>
-</section>
-<section id="further-reading">
+</div>
+<div class="section" id="further-reading">
 <h2>Further reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>NPT presentation from KVM Forum 2008
 <a class="reference external" href="https://www.linux-kvm.org/images/c/c8/KvmForum2008%24kdf2008_21.pdf">https://www.linux-kvm.org/images/c/c8/KvmForum2008%24kdf2008_21.pdf</a></p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

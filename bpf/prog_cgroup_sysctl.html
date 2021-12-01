@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>BPF_PROG_TYPE_CGROUP_SYSCTL &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -265,18 +267,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bpf-prog-type-cgroup-sysctl">
+  <div class="section" id="bpf-prog-type-cgroup-sysctl">
 <h1>BPF_PROG_TYPE_CGROUP_SYSCTL<a class="headerlink" href="#bpf-prog-type-cgroup-sysctl" title="Permalink to this headline">¶</a></h1>
 <p>This document describes <code class="docutils literal notranslate"><span class="pre">BPF_PROG_TYPE_CGROUP_SYSCTL</span></code> program type that
 provides cgroup-bpf hook for sysctl.</p>
 <p>The hook has to be attached to a cgroup and will be called every time a
 process inside that cgroup tries to read from or write to sysctl knob in proc.</p>
-<section id="attach-type">
+<div class="section" id="attach-type">
 <h2>1. Attach type<a class="headerlink" href="#attach-type" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">BPF_CGROUP_SYSCTL</span></code> attach type has to be used to attach
 <code class="docutils literal notranslate"><span class="pre">BPF_PROG_TYPE_CGROUP_SYSCTL</span></code> program to a cgroup.</p>
-</section>
-<section id="context">
+</div>
+<div class="section" id="context">
 <h2>2. Context<a class="headerlink" href="#context" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">BPF_PROG_TYPE_CGROUP_SYSCTL</span></code> provides access to the following context from
 BPF program:</p>
@@ -301,8 +303,8 @@ specified <code class="docutils literal notranslate"><span class="pre">file_pos<
 <code class="docutils literal notranslate"><span class="pre">0</span></code>. See also <code class="docutils literal notranslate"><span class="pre">kernel.sysctl_writes_strict</span></code> sysctl.</p></li>
 </ul>
 <p>See <a class="reference external" href="../../include/uapi/linux/bpf.h">linux/bpf.h</a> for more details on how context field can be accessed.</p>
-</section>
-<section id="return-code">
+</div>
+<div class="section" id="return-code">
 <h2>3. Return code<a class="headerlink" href="#return-code" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">BPF_PROG_TYPE_CGROUP_SYSCTL</span></code> program must return one of the following
 return codes:</p>
@@ -312,8 +314,8 @@ return codes:</p>
 </ul>
 <p>If program returns <code class="docutils literal notranslate"><span class="pre">0</span></code> user space will get <code class="docutils literal notranslate"><span class="pre">-1</span></code> from <code class="docutils literal notranslate"><span class="pre">read(2)</span></code> or
 <code class="docutils literal notranslate"><span class="pre">write(2)</span></code> and <code class="docutils literal notranslate"><span class="pre">errno</span></code> will be set to <code class="docutils literal notranslate"><span class="pre">EPERM</span></code>.</p>
-</section>
-<section id="helpers">
+</div>
+<div class="section" id="helpers">
 <h2>4. Helpers<a class="headerlink" href="#helpers" title="Permalink to this headline">¶</a></h2>
 <p>Since sysctl knob is represented by a name and a value, sysctl specific BPF
 helpers focus on providing access to these properties:</p>
@@ -345,14 +347,14 @@ similar to user space <a class="reference external" href="http://man7.org/linux/
 integer similar to user space <a class="reference external" href="http://man7.org/linux/man-pages/man3/strtoul.3p.html">strtoul(3)</a>;</p></li>
 </ul>
 <p>See <a class="reference external" href="../../include/uapi/linux/bpf.h">linux/bpf.h</a> for more details on helpers described here.</p>
-</section>
-<section id="examples">
+</div>
+<div class="section" id="examples">
 <h2>5. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>See <a class="reference external" href="../../tools/testing/selftests/bpf/progs/test_sysctl_prog.c">test_sysctl_prog.c</a> for an example of BPF program in C that access
 sysctl name and value, parses string value to get vector of integers and uses
 the result to make decision whether to allow or deny access to sysctl.</p>
-</section>
-<section id="notes">
+</div>
+<div class="section" id="notes">
 <h2>6. Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">BPF_PROG_TYPE_CGROUP_SYSCTL</span></code> is intended to be used in <strong>trusted</strong> root
 environment, for example to monitor sysctl usage or catch unreasonable values
@@ -366,8 +368,8 @@ security mechanism to limit sysctl usage.</p>
 <p>As with any cgroup-bpf program additional care should be taken if an
 application running as root in a cgroup should not be allowed to
 detach/replace BPF program attached by administrator.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>追蹤缺陷 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -285,7 +287,7 @@
 胡皓文 Hu Haowen &lt;<a class="reference external" href="mailto:src&#46;res&#37;&#52;&#48;email&#46;cn">src<span>&#46;</span>res<span>&#64;</span>email<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="id1">
+<div class="section" id="id1">
 <h1>追蹤缺陷<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <p>內核錯誤報告通常附帶如下堆棧轉儲:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>------------[ cut here ]------------
@@ -336,13 +338,13 @@ Oops: 0002 [#1] PREEMPT SMP
 陷。在本章中，我們將參考「Oops」來了解需要分析的各種堆棧跟蹤。</p>
 <p>如果內核是用 <code class="docutils literal notranslate"><span class="pre">CONFIG_DEBUG_INFO</span></code> 編譯的，那麼可以使用文件：
 <cite>scripts/decode_stacktrace.sh</cite> 。</p>
-<section id="id2">
+<div class="section" id="id2">
 <h2>連結的模塊<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>受到汙染或正在加載/卸載的模塊用「（…）」標記，汙染標誌在
 <cite><a class="reference internal" href="../../../admin-guide/tainted-kernels.html"><span class="doc">Tainted kernels</span></a></cite> 文件中進行了描述，「正在被加
 載」用「+」標註，「正在被卸載」用「-」標註。</p>
-</section>
-<section id="oops">
+</div>
+<div class="section" id="oops">
 <h2>Oops消息在哪？<a class="headerlink" href="#oops" title="Permalink to this headline">¶</a></h2>
 <p>通常，Oops文本由klogd從內核緩衝區讀取，然後交給 <code class="docutils literal notranslate"><span class="pre">syslogd</span></code> ，後者將其寫入
 syslog文件，通常是 <code class="docutils literal notranslate"><span class="pre">/var/log/messages</span></code> （取決於 <code class="docutils literal notranslate"><span class="pre">/etc/syslog.conf</span></code> ）。
@@ -366,12 +368,12 @@ Minicom運行良好。</p></li>
 Documentation/admin-guide/kdump/gdbmacros.txt 中的dmesg gdbmacro從舊內存
 中提取內核環形緩衝區。</p></li>
 </ol>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>找到缺陷位置<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>如果你能指出缺陷在內核原始碼中的位置，則報告缺陷的效果會非常好。這有兩種方法。
 通常來說使用 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 會比較容易，不過內核需要用調試信息來預編譯。</p>
-<section id="gdb">
+<div class="section" id="gdb">
 <h3>gdb<a class="headerlink" href="#gdb" title="Permalink to this headline">¶</a></h3>
 <p>GNU 調試器（GNU debugger， <code class="docutils literal notranslate"><span class="pre">gdb</span></code> ）是從 <code class="docutils literal notranslate"><span class="pre">vmlinux</span></code> 文件中找出OOPS的確切
 文件和行號的最佳方法。</p>
@@ -448,8 +450,8 @@ $ gdb drivers/tty/vt/vt_ioctl.o
 </pre></div>
 </div>
 </div>
-</section>
-<section id="objdump">
+</div>
+<div class="section" id="objdump">
 <h3>objdump<a class="headerlink" href="#objdump" title="Permalink to this headline">¶</a></h3>
 <p>要調試內核，請使用objdump並從崩潰輸出中查找十六進位偏移，以找到有效的代碼/匯
 編行。如果沒有調試符號，您將看到所示例程的彙編程序代碼，但是如果內核有調試
@@ -494,9 +496,9 @@ ip_queue_xmit:
 </div>
 <p><cite>scripts/decodecode</cite> 文件可以用來自動完成大部分工作，這取決於正在調試的CPU
 體系結構。</p>
-</section>
-</section>
-<section id="id4">
+</div>
+</div>
+<div class="section" id="id4">
 <h2>報告缺陷<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>一旦你通過定位缺陷找到了其發生的地方，你可以嘗試自己修復它或者向上游報告它。</p>
 <p>爲了向上游報告，您應該找出用於開發受影響代碼的郵件列表。這可以使用 <code class="docutils literal notranslate"><span class="pre">get_maintainer.pl</span></code> 。</p>
@@ -524,8 +526,8 @@ ML），抄送驅動程序維護者（Hans）。</p>
 <p>如果你完全不知道該把報告寄給誰，且 <code class="docutils literal notranslate"><span class="pre">get_maintainer.pl</span></code> 也沒有提供任何有用
 的信息，請發送到linux-<a class="reference external" href="mailto:kernel&#37;&#52;&#48;vger&#46;kernel&#46;org">kernel<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a>。</p>
 <p>感謝您的幫助，這使Linux儘可能穩定:-)</p>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h2>修復缺陷<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <p>如果你懂得編程，你不僅可以通過報告錯誤來幫助我們，還可以提供一個解決方案。
 畢竟，開源就是分享你的工作，你不想因爲你的天才而被認可嗎？</p>
@@ -533,9 +535,9 @@ ML），抄送驅動程序維護者（Hans）。</p>
 <p>請務必閱讀
 <a class="reference internal" href="../../../process/submitting-patches.html#submittingpatches"><span class="std std-ref"><a class="reference internal" href="../../../process/submitting-patches.html"><span class="doc">Submitting patches: the essential guide to getting your code into the kernel</span></a></span></a> ，
 以幫助您的代碼被接受。</p>
-</section>
+</div>
 <hr class="docutils" />
-<section id="klogd-oops">
+<div class="section" id="klogd-oops">
 <h2>用 <code class="docutils literal notranslate"><span class="pre">klogd</span></code> 進行Oops跟蹤的注意事項<a class="headerlink" href="#klogd-oops" title="Permalink to this headline">¶</a></h2>
 <p>爲了幫助Linus和其他內核開發人員， <code class="docutils literal notranslate"><span class="pre">klogd</span></code> 對保護故障的處理提供了大量支持。
 爲了完整支持地址解析，至少應該使用 <code class="docutils literal notranslate"><span class="pre">sysklogd</span></code> 包的1.3-pl3版本。</p>
@@ -585,8 +587,8 @@ Fargo, ND  58122
 Phone: 701-234-7556
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

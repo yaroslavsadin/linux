@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>zram: Compressed RAM-based block devices &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -346,9 +348,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="zram-compressed-ram-based-block-devices">
+  <div class="section" id="zram-compressed-ram-based-block-devices">
 <h1>zram: Compressed RAM-based block devices<a class="headerlink" href="#zram-compressed-ram-based-block-devices" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The zram module creates RAM-based block devices named /dev/zram&lt;id&gt;
 (&lt;id&gt; = 0, 1, …). Pages written to these disks are compressed and stored
@@ -357,8 +359,8 @@ good amounts of memory savings. Some of the use cases include /tmp storage,
 use as swap disks, various caches under /var and maybe many more. :)</p>
 <p>Statistics for individual zram devices are exported through sysfs nodes at
 /sys/block/zram&lt;id&gt;/</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>There are several ways to configure and manage zram device(-s):</p>
 <ol class="loweralpha simple">
@@ -372,8 +374,8 @@ documentation, zramctl man-page or <cite>zramctl –help</cite>. Please be infor
 that zram maintainers do not develop/maintain util-linux or zramctl, should
 you have any questions please contact <a class="reference external" href="mailto:util-linux&#37;&#52;&#48;vger&#46;kernel&#46;org">util-linux<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a></p>
 <p>Following shows a typical sequence of steps for using zram.</p>
-</section>
-<section id="warning">
+</div>
+<div class="section" id="warning">
 <h2>WARNING<a class="headerlink" href="#warning" title="Permalink to this headline">¶</a></h2>
 <p>For the sake of simplicity we skip error checking parts in most of the
 examples below. However, it is your sole responsibility to handle errors.</p>
@@ -407,8 +409,8 @@ fi
 </pre></div>
 </div>
 <p>should suffice.</p>
-</section>
-<section id="load-module">
+</div>
+<div class="section" id="load-module">
 <h2>1) Load Module<a class="headerlink" href="#load-module" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>modprobe zram num_devices=4
 </pre></div>
@@ -416,8 +418,8 @@ fi
 <p>This creates 4 devices: /dev/zram{0,1,2,3}</p>
 <p>num_devices parameter is optional and tells zram how many devices should be
 pre-created. Default: 1.</p>
-</section>
-<section id="set-max-number-of-compression-streams">
+</div>
+<div class="section" id="set-max-number-of-compression-streams">
 <h2>2) Set max number of compression streams<a class="headerlink" href="#set-max-number-of-compression-streams" title="Permalink to this headline">¶</a></h2>
 <p>Regardless of the value passed to this attribute, ZRAM will always
 allocate multiple compression streams - one per online CPU - thus
@@ -429,8 +431,8 @@ unless you are running a UP system or have only 1 CPU online.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cat /sys/block/zram0/max_comp_streams
 </pre></div>
 </div>
-</section>
-<section id="select-compression-algorithm">
+</div>
+<div class="section" id="select-compression-algorithm">
 <h2>3) Select compression algorithm<a class="headerlink" href="#select-compression-algorithm" title="Permalink to this headline">¶</a></h2>
 <p>Using comp_algorithm device attribute one can see available and
 currently selected (shown in square brackets) compression algorithms,
@@ -454,8 +456,8 @@ and, if some of the algorithms were built as modules, it’s impossible
 to list all of them using, for instance, /proc/crypto or any other
 method. This, however, has an advantage of permitting the usage of
 custom crypto compression modules (implementing S/W or H/W compression).</p>
-</section>
-<section id="set-disksize">
+</div>
+<div class="section" id="set-disksize">
 <h2>4) Set Disksize<a class="headerlink" href="#set-disksize" title="Permalink to this headline">¶</a></h2>
 <p>Set disk size by writing the value to sysfs node ‘disksize’.
 The value can be either in bytes or you can use mem suffixes.
@@ -473,8 +475,8 @@ echo 1G &gt; /sys/block/zram0/disksize
 There is little point creating a zram of greater than twice the size of memory
 since we expect a 2:1 compression ratio. Note that zram uses about 0.1% of the
 size of the disk when not in use so a huge zram is wasteful.</p>
-</section>
-<section id="set-memory-limit-optional">
+</div>
+<div class="section" id="set-memory-limit-optional">
 <h2>5) Set memory limit: Optional<a class="headerlink" href="#set-memory-limit-optional" title="Permalink to this headline">¶</a></h2>
 <p>Set memory limit by writing the value to sysfs node ‘mem_limit’.
 The value can be either in bytes or you can use mem suffixes.
@@ -492,8 +494,8 @@ echo 1G &gt; /sys/block/zram0/mem_limit
 echo 0 &gt; /sys/block/zram0/mem_limit
 </pre></div>
 </div>
-</section>
-<section id="activate">
+</div>
+<div class="section" id="activate">
 <h2>6) Activate<a class="headerlink" href="#activate" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mkswap /dev/zram0
 swapon /dev/zram0
@@ -502,8 +504,8 @@ mkfs.ext4 /dev/zram1
 mount /dev/zram1 /tmp
 </pre></div>
 </div>
-</section>
-<section id="add-remove-zram-devices">
+</div>
+<div class="section" id="add-remove-zram-devices">
 <h2>7) Add/remove zram devices<a class="headerlink" href="#add-remove-zram-devices" title="Permalink to this headline">¶</a></h2>
 <p>zram provides a control interface, which enables dynamic (on-demand) device
 addition and removal.</p>
@@ -520,8 +522,8 @@ execute:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>echo X &gt; /sys/class/zram-control/hot_remove
 </pre></div>
 </div>
-</section>
-<section id="stats">
+</div>
+<div class="section" id="stats">
 <h2>8) Stats<a class="headerlink" href="#stats" title="Permalink to this headline">¶</a></h2>
 <p>Per-device statistics are exported as various nodes under /sys/block/zram&lt;id&gt;/</p>
 <p>A brief description of exported device attributes follows. For more details
@@ -712,15 +714,15 @@ Unit: 4K bytes</p></td>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="deactivate">
+</div>
+<div class="section" id="deactivate">
 <h2>9) Deactivate<a class="headerlink" href="#deactivate" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>swapoff /dev/zram0
 umount /dev/zram1
 </pre></div>
 </div>
-</section>
-<section id="reset">
+</div>
+<div class="section" id="reset">
 <h2>10) Reset<a class="headerlink" href="#reset" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Write any positive value to ‘reset’ sysfs node:</p>
@@ -732,10 +734,10 @@ echo 1 &gt; /sys/block/zram1/reset
 resets the disksize to zero. You must set the disksize again
 before reusing the device.</p>
 </div></blockquote>
-</section>
-<section id="optional-feature">
+</div>
+<div class="section" id="optional-feature">
 <h2>Optional Feature<a class="headerlink" href="#optional-feature" title="Permalink to this headline">¶</a></h2>
-<section id="writeback">
+<div class="section" id="writeback">
 <h3>writeback<a class="headerlink" href="#writeback" title="Permalink to this headline">¶</a></h3>
 <p>With CONFIG_ZRAM_WRITEBACK, zram can write idle/incompressible page
 to backing storage rather than keeping it in memory.
@@ -817,9 +819,9 @@ writeback happened until you reset the zram to allocate extra writeback
 budget in next setting is user’s job.</p>
 <p>If admin wants to measure writeback count in a certain period, he could
 know it via /sys/block/zram0/bd_stat’s 3rd column.</p>
-</section>
-</section>
-<section id="memory-tracking">
+</div>
+</div>
+<div class="section" id="memory-tracking">
 <h2>memory tracking<a class="headerlink" href="#memory-tracking" title="Permalink to this headline">¶</a></h2>
 <p>With CONFIG_ZRAM_MEMORY_TRACKING, user can know information of the
 zram block. It could be useful to catch cold or incompressible
@@ -855,8 +857,8 @@ storage. It’s a debugging feature so anyone shouldn’t rely on it to work
 properly.</p>
 <p>Nitin Gupta
 <a class="reference external" href="mailto:ngupta&#37;&#52;&#48;vflare&#46;org">ngupta<span>&#64;</span>vflare<span>&#46;</span>org</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>PA-RISC Debugging &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -268,19 +270,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="pa-risc-debugging">
+  <div class="section" id="pa-risc-debugging">
 <h1>PA-RISC Debugging<a class="headerlink" href="#pa-risc-debugging" title="Permalink to this headline">¶</a></h1>
 <p>okay, here are some hints for debugging the lower-level parts of
 linux/parisc.</p>
-<section id="absolute-addresses">
+<div class="section" id="absolute-addresses">
 <h2>1. Absolute addresses<a class="headerlink" href="#absolute-addresses" title="Permalink to this headline">¶</a></h2>
 <p>A lot of the assembly code currently runs in real mode, which means
 absolute addresses are used instead of virtual addresses as in the
 rest of the kernel.  To translate an absolute address to a virtual
 address you can lookup in System.map, add __PAGE_OFFSET (0x10000000
 currently).</p>
-</section>
-<section id="hpmcs">
+</div>
+<div class="section" id="hpmcs">
 <h2>2. HPMCs<a class="headerlink" href="#hpmcs" title="Permalink to this headline">¶</a></h2>
 <p>When real-mode code tries to access non-existent memory, you’ll get
 an HPMC instead of a kernel oops.  To debug an HPMC, try to find
@@ -292,8 +294,8 @@ code tried to access.</p>
 than __PAGE_OFFSET (0x10000000) which mean a virtual address didn’t
 get translated to a physical address before real-mode code tried to
 access it.</p>
-</section>
-<section id="q-bit-fun">
+</div>
+<div class="section" id="q-bit-fun">
 <h2>3. Q bit fun<a class="headerlink" href="#q-bit-fun" title="Permalink to this headline">¶</a></h2>
 <p>Certain, very critical code has to clear the Q bit in the PSW.  What
 happens when the Q bit is cleared is the CPU does not update the
@@ -304,8 +306,8 @@ where exactly it happened.  If you’re lucky the IAOQ will point to the
 instruction that cleared the Q bit, if you’re not it points anywhere
 at all.  Usually Q bit problems will show themselves in unexplainable
 system hangs or running off the end of physical memory.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

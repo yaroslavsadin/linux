@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Sequence counters and sequential locks &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -267,9 +269,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="sequence-counters-and-sequential-locks">
+  <div class="section" id="sequence-counters-and-sequential-locks">
 <h1>Sequence counters and sequential locks<a class="headerlink" href="#sequence-counters-and-sequential-locks" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Sequence counters are a reader-writer consistency mechanism with
 lockless readers (read-only retry loops), and no writer starvation. They
@@ -294,8 +296,8 @@ interrupted writer. If that reader belongs to a real-time scheduling
 class, it can spin forever and the kernel will livelock.</p>
 <p>This mechanism cannot be used if the protected data contains pointers,
 as the writer can invalidate a pointer that the reader is following.</p>
-</section>
-<section id="sequence-counters-seqcount-t">
+</div>
+<div class="section" id="sequence-counters-seqcount-t">
 <span id="seqcount-t"></span><h2>Sequence counters (<code class="docutils literal notranslate"><span class="pre">seqcount_t</span></code>)<a class="headerlink" href="#sequence-counters-seqcount-t" title="Permalink to this headline">¶</a></h2>
 <p>This is the the raw counting mechanism, which does not protect against
 multiple writers.  Write side critical sections must thus be serialized
@@ -341,7 +343,7 @@ write_seqcount_end(&amp;foo_seqcount);
 } while (read_seqcount_retry(&amp;foo_seqcount, seq));
 </pre></div>
 </div>
-<section id="sequence-counters-with-associated-locks-seqcount-lockname-t">
+<div class="section" id="sequence-counters-with-associated-locks-seqcount-lockname-t">
 <span id="seqcount-locktype-t"></span><h3>Sequence counters with associated locks (<code class="docutils literal notranslate"><span class="pre">seqcount_LOCKNAME_t</span></code>)<a class="headerlink" href="#sequence-counters-with-associated-locks-seqcount-lockname-t" title="Permalink to this headline">¶</a></h3>
 <p>As discussed at <a class="reference internal" href="#seqcount-t"><span class="std std-ref">Sequence counters (seqcount_t)</span></a>, sequence count write side critical
 sections must be serialized and non-preemptible. This variant of
@@ -385,8 +387,8 @@ struct {
 <p>Write path: same as in <a class="reference internal" href="#seqcount-t"><span class="std std-ref">Sequence counters (seqcount_t)</span></a>, while running from a context
 with the associated write serialization lock acquired.</p>
 <p>Read path: same as in <a class="reference internal" href="#seqcount-t"><span class="std std-ref">Sequence counters (seqcount_t)</span></a>.</p>
-</section>
-<section id="latch-sequence-counters-seqcount-latch-t">
+</div>
+<div class="section" id="latch-sequence-counters-seqcount-latch-t">
 <span id="seqcount-latch-t"></span><h3>Latch sequence counters (<code class="docutils literal notranslate"><span class="pre">seqcount_latch_t</span></code>)<a class="headerlink" href="#latch-sequence-counters-seqcount-latch-t" title="Permalink to this headline">¶</a></h3>
 <p>Latch sequence counters are a multiversion concurrency control mechanism
 where the embedded seqcount_t counter even/odd value is used to switch
@@ -396,9 +398,9 @@ read path to safely interrupt its own write side critical section.</p>
 from interruption by readers. This is typically the case when the read
 side can be invoked from NMI handlers.</p>
 <p>Check <cite><a class="reference internal" href="#c.raw_write_seqcount_latch" title="raw_write_seqcount_latch"><code class="xref c c-func docutils literal notranslate"><span class="pre">raw_write_seqcount_latch()</span></code></a></cite> for more information.</p>
-</section>
-</section>
-<section id="sequential-locks-seqlock-t">
+</div>
+</div>
+<div class="section" id="sequential-locks-seqlock-t">
 <span id="seqlock-t"></span><h2>Sequential locks (<code class="docutils literal notranslate"><span class="pre">seqlock_t</span></code>)<a class="headerlink" href="#sequential-locks-seqlock-t" title="Permalink to this headline">¶</a></h2>
 <p>This contains the <a class="reference internal" href="#seqcount-t"><span class="std std-ref">Sequence counters (seqcount_t)</span></a> mechanism earlier discussed, plus an
 embedded spinlock for writer serialization and non-preemptibility.</p>
@@ -473,12 +475,12 @@ done_seqretry(&amp;foo_seqlock, seq);
 </div>
 </li>
 </ol>
-</section>
-<section id="api-documentation">
+</div>
+<div class="section" id="api-documentation">
 <h2>API documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h2>
 <dl class="c macro">
-<dt id="c.seqcount_init">
-<code class="sig-name descname"><span class="pre">seqcount_init</span></code><a class="headerlink" href="#c.seqcount_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.seqcount_init">
+<span class="sig-name descname"><span class="n"><span class="pre">seqcount_init</span></span></span><a class="headerlink" href="#c.seqcount_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">seqcount_init</span> <span class="pre">(s)</span></code></p>
@@ -491,8 +493,8 @@ done_seqretry(&amp;foo_seqlock, seq);
 </dd>
 </dl>
 <dl class="c macro">
-<dt id="c.SEQCNT_ZERO">
-<code class="sig-name descname"><span class="pre">SEQCNT_ZERO</span></code><a class="headerlink" href="#c.SEQCNT_ZERO" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.SEQCNT_ZERO">
+<span class="sig-name descname"><span class="n"><span class="pre">SEQCNT_ZERO</span></span></span><a class="headerlink" href="#c.SEQCNT_ZERO" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">SEQCNT_ZERO</span> <span class="pre">(name)</span></code></p>
@@ -505,8 +507,8 @@ done_seqretry(&amp;foo_seqlock, seq);
 </dd>
 </dl>
 <dl class="c macro">
-<dt id="c.__read_seqcount_begin">
-<code class="sig-name descname"><span class="pre">__read_seqcount_begin</span></code><a class="headerlink" href="#c.__read_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__read_seqcount_begin">
+<span class="sig-name descname"><span class="n"><span class="pre">__read_seqcount_begin</span></span></span><a class="headerlink" href="#c.__read_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">__read_seqcount_begin</span> <span class="pre">(s)</span></code></p>
@@ -528,8 +530,8 @@ provided.</p>
 <p><strong>Return</strong></p>
 <p>count to be passed to <a class="reference internal" href="#c.read_seqcount_retry" title="read_seqcount_retry"><code class="xref c c-func docutils literal notranslate"><span class="pre">read_seqcount_retry()</span></code></a></p>
 <dl class="c macro">
-<dt id="c.raw_read_seqcount_begin">
-<code class="sig-name descname"><span class="pre">raw_read_seqcount_begin</span></code><a class="headerlink" href="#c.raw_read_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.raw_read_seqcount_begin">
+<span class="sig-name descname"><span class="n"><span class="pre">raw_read_seqcount_begin</span></span></span><a class="headerlink" href="#c.raw_read_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">raw_read_seqcount_begin</span> <span class="pre">(s)</span></code></p>
@@ -544,8 +546,8 @@ provided.</p>
 <p><strong>Return</strong></p>
 <p>count to be passed to <a class="reference internal" href="#c.read_seqcount_retry" title="read_seqcount_retry"><code class="xref c c-func docutils literal notranslate"><span class="pre">read_seqcount_retry()</span></code></a></p>
 <dl class="c macro">
-<dt id="c.read_seqcount_begin">
-<code class="sig-name descname"><span class="pre">read_seqcount_begin</span></code><a class="headerlink" href="#c.read_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqcount_begin">
+<span class="sig-name descname"><span class="n"><span class="pre">read_seqcount_begin</span></span></span><a class="headerlink" href="#c.read_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">read_seqcount_begin</span> <span class="pre">(s)</span></code></p>
@@ -560,8 +562,8 @@ provided.</p>
 <p><strong>Return</strong></p>
 <p>count to be passed to <a class="reference internal" href="#c.read_seqcount_retry" title="read_seqcount_retry"><code class="xref c c-func docutils literal notranslate"><span class="pre">read_seqcount_retry()</span></code></a></p>
 <dl class="c macro">
-<dt id="c.raw_read_seqcount">
-<code class="sig-name descname"><span class="pre">raw_read_seqcount</span></code><a class="headerlink" href="#c.raw_read_seqcount" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.raw_read_seqcount">
+<span class="sig-name descname"><span class="n"><span class="pre">raw_read_seqcount</span></span></span><a class="headerlink" href="#c.raw_read_seqcount" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">raw_read_seqcount</span> <span class="pre">(s)</span></code></p>
@@ -581,8 +583,8 @@ handling that.</p>
 <p><strong>Return</strong></p>
 <p>count to be passed to <a class="reference internal" href="#c.read_seqcount_retry" title="read_seqcount_retry"><code class="xref c c-func docutils literal notranslate"><span class="pre">read_seqcount_retry()</span></code></a></p>
 <dl class="c macro">
-<dt id="c.raw_seqcount_begin">
-<code class="sig-name descname"><span class="pre">raw_seqcount_begin</span></code><a class="headerlink" href="#c.raw_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.raw_seqcount_begin">
+<span class="sig-name descname"><span class="n"><span class="pre">raw_seqcount_begin</span></span></span><a class="headerlink" href="#c.raw_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">raw_seqcount_begin</span> <span class="pre">(s)</span></code></p>
@@ -606,8 +608,8 @@ means. It will save a single branching instruction.</p>
 <p><strong>Return</strong></p>
 <p>count to be passed to <a class="reference internal" href="#c.read_seqcount_retry" title="read_seqcount_retry"><code class="xref c c-func docutils literal notranslate"><span class="pre">read_seqcount_retry()</span></code></a></p>
 <dl class="c macro">
-<dt id="c.__read_seqcount_retry">
-<code class="sig-name descname"><span class="pre">__read_seqcount_retry</span></code><a class="headerlink" href="#c.__read_seqcount_retry" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__read_seqcount_retry">
+<span class="sig-name descname"><span class="n"><span class="pre">__read_seqcount_retry</span></span></span><a class="headerlink" href="#c.__read_seqcount_retry" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">__read_seqcount_retry</span> <span class="pre">(s,</span> <span class="pre">start)</span></code></p>
@@ -631,8 +633,8 @@ provided.</p>
 <p><strong>Return</strong></p>
 <p>true if a read section retry is required, else false</p>
 <dl class="c macro">
-<dt id="c.read_seqcount_retry">
-<code class="sig-name descname"><span class="pre">read_seqcount_retry</span></code><a class="headerlink" href="#c.read_seqcount_retry" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqcount_retry">
+<span class="sig-name descname"><span class="n"><span class="pre">read_seqcount_retry</span></span></span><a class="headerlink" href="#c.read_seqcount_retry" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">read_seqcount_retry</span> <span class="pre">(s,</span> <span class="pre">start)</span></code></p>
@@ -653,8 +655,8 @@ seqcount_t.  If the critical section was invalid, it must be ignored
 <p><strong>Return</strong></p>
 <p>true if a read section retry is required, else false</p>
 <dl class="c macro">
-<dt id="c.raw_write_seqcount_begin">
-<code class="sig-name descname"><span class="pre">raw_write_seqcount_begin</span></code><a class="headerlink" href="#c.raw_write_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.raw_write_seqcount_begin">
+<span class="sig-name descname"><span class="n"><span class="pre">raw_write_seqcount_begin</span></span></span><a class="headerlink" href="#c.raw_write_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">raw_write_seqcount_begin</span> <span class="pre">(s)</span></code></p>
@@ -669,8 +671,8 @@ seqcount_t.  If the critical section was invalid, it must be ignored
 <p><strong>Context</strong></p>
 <p>check <a class="reference internal" href="#c.write_seqcount_begin" title="write_seqcount_begin"><code class="xref c c-func docutils literal notranslate"><span class="pre">write_seqcount_begin()</span></code></a></p>
 <dl class="c macro">
-<dt id="c.raw_write_seqcount_end">
-<code class="sig-name descname"><span class="pre">raw_write_seqcount_end</span></code><a class="headerlink" href="#c.raw_write_seqcount_end" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.raw_write_seqcount_end">
+<span class="sig-name descname"><span class="n"><span class="pre">raw_write_seqcount_end</span></span></span><a class="headerlink" href="#c.raw_write_seqcount_end" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">raw_write_seqcount_end</span> <span class="pre">(s)</span></code></p>
@@ -685,8 +687,8 @@ seqcount_t.  If the critical section was invalid, it must be ignored
 <p><strong>Context</strong></p>
 <p>check <a class="reference internal" href="#c.write_seqcount_end" title="write_seqcount_end"><code class="xref c c-func docutils literal notranslate"><span class="pre">write_seqcount_end()</span></code></a></p>
 <dl class="c macro">
-<dt id="c.write_seqcount_begin_nested">
-<code class="sig-name descname"><span class="pre">write_seqcount_begin_nested</span></code><a class="headerlink" href="#c.write_seqcount_begin_nested" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_seqcount_begin_nested">
+<span class="sig-name descname"><span class="n"><span class="pre">write_seqcount_begin_nested</span></span></span><a class="headerlink" href="#c.write_seqcount_begin_nested" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">write_seqcount_begin_nested</span> <span class="pre">(s,</span> <span class="pre">subclass)</span></code></p>
@@ -705,8 +707,8 @@ seqcount_t.  If the critical section was invalid, it must be ignored
 <p><strong>Context</strong></p>
 <p>check <a class="reference internal" href="#c.write_seqcount_begin" title="write_seqcount_begin"><code class="xref c c-func docutils literal notranslate"><span class="pre">write_seqcount_begin()</span></code></a></p>
 <dl class="c macro">
-<dt id="c.write_seqcount_begin">
-<code class="sig-name descname"><span class="pre">write_seqcount_begin</span></code><a class="headerlink" href="#c.write_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_seqcount_begin">
+<span class="sig-name descname"><span class="n"><span class="pre">write_seqcount_begin</span></span></span><a class="headerlink" href="#c.write_seqcount_begin" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">write_seqcount_begin</span> <span class="pre">(s)</span></code></p>
@@ -725,8 +727,8 @@ only if the seqcount write serialization lock is associated, and
 preemptible.  If readers can be invoked from hardirq or softirq
 context, interrupts or bottom halves must be respectively disabled.</p>
 <dl class="c macro">
-<dt id="c.write_seqcount_end">
-<code class="sig-name descname"><span class="pre">write_seqcount_end</span></code><a class="headerlink" href="#c.write_seqcount_end" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_seqcount_end">
+<span class="sig-name descname"><span class="n"><span class="pre">write_seqcount_end</span></span></span><a class="headerlink" href="#c.write_seqcount_end" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">write_seqcount_end</span> <span class="pre">(s)</span></code></p>
@@ -742,8 +744,8 @@ context, interrupts or bottom halves must be respectively disabled.</p>
 <p>Preemption will be automatically re-enabled if and only if
 the seqcount write serialization lock is associated, and preemptible.</p>
 <dl class="c macro">
-<dt id="c.raw_write_seqcount_barrier">
-<code class="sig-name descname"><span class="pre">raw_write_seqcount_barrier</span></code><a class="headerlink" href="#c.raw_write_seqcount_barrier" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.raw_write_seqcount_barrier">
+<span class="sig-name descname"><span class="n"><span class="pre">raw_write_seqcount_barrier</span></span></span><a class="headerlink" href="#c.raw_write_seqcount_barrier" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">raw_write_seqcount_barrier</span> <span class="pre">(s)</span></code></p>
@@ -793,8 +795,8 @@ void write(void)
 </pre></div>
 </div>
 <dl class="c macro">
-<dt id="c.write_seqcount_invalidate">
-<code class="sig-name descname"><span class="pre">write_seqcount_invalidate</span></code><a class="headerlink" href="#c.write_seqcount_invalidate" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_seqcount_invalidate">
+<span class="sig-name descname"><span class="n"><span class="pre">write_seqcount_invalidate</span></span></span><a class="headerlink" href="#c.write_seqcount_invalidate" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">write_seqcount_invalidate</span> <span class="pre">(s)</span></code></p>
@@ -810,8 +812,8 @@ void write(void)
 <p>After write_seqcount_invalidate, no seqcount_t read side operations
 will complete successfully and see data older than this.</p>
 <dl class="c macro">
-<dt id="c.SEQCNT_LATCH_ZERO">
-<code class="sig-name descname"><span class="pre">SEQCNT_LATCH_ZERO</span></code><a class="headerlink" href="#c.SEQCNT_LATCH_ZERO" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.SEQCNT_LATCH_ZERO">
+<span class="sig-name descname"><span class="n"><span class="pre">SEQCNT_LATCH_ZERO</span></span></span><a class="headerlink" href="#c.SEQCNT_LATCH_ZERO" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">SEQCNT_LATCH_ZERO</span> <span class="pre">(seq_name)</span></code></p>
@@ -824,8 +826,8 @@ will complete successfully and see data older than this.</p>
 </dd>
 </dl>
 <dl class="c macro">
-<dt id="c.seqcount_latch_init">
-<code class="sig-name descname"><span class="pre">seqcount_latch_init</span></code><a class="headerlink" href="#c.seqcount_latch_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.seqcount_latch_init">
+<span class="sig-name descname"><span class="n"><span class="pre">seqcount_latch_init</span></span></span><a class="headerlink" href="#c.seqcount_latch_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">seqcount_latch_init</span> <span class="pre">(s)</span></code></p>
@@ -838,8 +840,8 @@ will complete successfully and see data older than this.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.raw_read_seqcount_latch">
-<span class="pre">unsigned</span> <code class="sig-name descname"><span class="pre">raw_read_seqcount_latch</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">seqcount_latch_t</span> <span class="pre">*</span><em><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.raw_read_seqcount_latch" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.raw_read_seqcount_latch">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">raw_read_seqcount_latch</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">seqcount_latch_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.raw_read_seqcount_latch" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>pick even/odd latch data copy</p>
 </dd></dl>
 
@@ -856,8 +858,8 @@ usage example.</p>
 picking which data copy to read. The full counter must then be checked
 with <a class="reference internal" href="#c.read_seqcount_latch_retry" title="read_seqcount_latch_retry"><code class="xref c c-func docutils literal notranslate"><span class="pre">read_seqcount_latch_retry()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.read_seqcount_latch_retry">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">read_seqcount_latch_retry</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">seqcount_latch_t</span> <span class="pre">*</span><em><span class="pre">s</span></em>, <span class="pre">unsigned</span> <em><span class="pre">start</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqcount_latch_retry" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqcount_latch_retry">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_seqcount_latch_retry</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">seqcount_latch_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">s</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n"><span class="pre">start</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqcount_latch_retry" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end a seqcount_latch_t read section</p>
 </dd></dl>
 
@@ -871,8 +873,8 @@ with <a class="reference internal" href="#c.read_seqcount_latch_retry" title="re
 <p><strong>Return</strong></p>
 <p>true if a read section retry is required, else false</p>
 <dl class="c function">
-<dt id="c.raw_write_seqcount_latch">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">raw_write_seqcount_latch</span></code><span class="sig-paren">(</span><span class="pre">seqcount_latch_t</span> <span class="pre">*</span><em><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.raw_write_seqcount_latch" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.raw_write_seqcount_latch">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">raw_write_seqcount_latch</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqcount_latch_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.raw_write_seqcount_latch" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>redirect latch readers to even/odd copy</p>
 </dd></dl>
 
@@ -955,8 +957,8 @@ to miss an entire modification sequence, once it resumes it might
 observe the new entry.</p>
 </div></blockquote>
 <dl class="c macro">
-<dt id="c.seqlock_init">
-<code class="sig-name descname"><span class="pre">seqlock_init</span></code><a class="headerlink" href="#c.seqlock_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.seqlock_init">
+<span class="sig-name descname"><span class="n"><span class="pre">seqlock_init</span></span></span><a class="headerlink" href="#c.seqlock_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">seqlock_init</span> <span class="pre">(sl)</span></code></p>
@@ -969,8 +971,8 @@ observe the new entry.</p>
 </dd>
 </dl>
 <dl class="c macro">
-<dt id="c.DEFINE_SEQLOCK">
-<code class="sig-name descname"><span class="pre">DEFINE_SEQLOCK</span></code><a class="headerlink" href="#c.DEFINE_SEQLOCK" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DEFINE_SEQLOCK">
+<span class="sig-name descname"><span class="n"><span class="pre">DEFINE_SEQLOCK</span></span></span><a class="headerlink" href="#c.DEFINE_SEQLOCK" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DEFINE_SEQLOCK</span> <span class="pre">(sl)</span></code></p>
@@ -983,8 +985,8 @@ observe the new entry.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.read_seqbegin">
-<span class="pre">unsigned</span> <code class="sig-name descname"><span class="pre">read_seqbegin</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqbegin" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqbegin">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_seqbegin</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqbegin" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start a seqlock_t read side critical section</p>
 </dd></dl>
 
@@ -996,8 +998,8 @@ observe the new entry.</p>
 <p><strong>Return</strong></p>
 <p>count, to be passed to <a class="reference internal" href="#c.read_seqretry" title="read_seqretry"><code class="xref c c-func docutils literal notranslate"><span class="pre">read_seqretry()</span></code></a></p>
 <dl class="c function">
-<dt id="c.read_seqretry">
-<span class="pre">unsigned</span> <code class="sig-name descname"><span class="pre">read_seqretry</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em>, <span class="pre">unsigned</span> <em><span class="pre">start</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqretry" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqretry">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_seqretry</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n"><span class="pre">start</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqretry" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end a seqlock_t read side section</p>
 </dd></dl>
 
@@ -1015,8 +1017,8 @@ retried).</p>
 <p><strong>Return</strong></p>
 <p>true if a read section retry is required, else false</p>
 <dl class="c function">
-<dt id="c.write_seqlock">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">write_seqlock</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_seqlock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_seqlock">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_seqlock</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.write_seqlock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start a seqlock_t write side critical section</p>
 </dd></dl>
 
@@ -1035,8 +1037,8 @@ automatically serialized and non-preemptible.</p>
 sections, can be invoked from hardirq or softirq contexts, use the
 _irqsave or _bh variants of this function instead.</p>
 <dl class="c function">
-<dt id="c.write_sequnlock">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">write_sequnlock</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_sequnlock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_sequnlock">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_sequnlock</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.write_sequnlock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end a seqlock_t write side critical section</p>
 </dd></dl>
 
@@ -1049,8 +1051,8 @@ _irqsave or _bh variants of this function instead.</p>
 <p>write_sequnlock closes the (serialized and non-preemptible) write side
 critical section of given seqlock_t.</p>
 <dl class="c function">
-<dt id="c.write_seqlock_bh">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">write_seqlock_bh</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_seqlock_bh" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_seqlock_bh">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_seqlock_bh</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.write_seqlock_bh" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start a softirqs-disabled seqlock_t write section</p>
 </dd></dl>
 
@@ -1063,8 +1065,8 @@ critical section of given seqlock_t.</p>
 <p>_bh variant of <a class="reference internal" href="#c.write_seqlock" title="write_seqlock"><code class="xref c c-func docutils literal notranslate"><span class="pre">write_seqlock()</span></code></a>. Use only if the read side section, or
 other write side sections, can be invoked from softirq contexts.</p>
 <dl class="c function">
-<dt id="c.write_sequnlock_bh">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">write_sequnlock_bh</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_sequnlock_bh" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_sequnlock_bh">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_sequnlock_bh</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.write_sequnlock_bh" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end a softirqs-disabled seqlock_t write section</p>
 </dd></dl>
 
@@ -1078,8 +1080,8 @@ other write side sections, can be invoked from softirq contexts.</p>
 softirqs-disabled, seqlock_t write side critical section opened with
 <a class="reference internal" href="#c.write_seqlock_bh" title="write_seqlock_bh"><code class="xref c c-func docutils literal notranslate"><span class="pre">write_seqlock_bh()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.write_seqlock_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">write_seqlock_irq</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_seqlock_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_seqlock_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_seqlock_irq</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.write_seqlock_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start a non-interruptible seqlock_t write section</p>
 </dd></dl>
 
@@ -1092,8 +1094,8 @@ softirqs-disabled, seqlock_t write side critical section opened with
 <p>_irq variant of <a class="reference internal" href="#c.write_seqlock" title="write_seqlock"><code class="xref c c-func docutils literal notranslate"><span class="pre">write_seqlock()</span></code></a>. Use only if the read side section, or
 other write sections, can be invoked from hardirq contexts.</p>
 <dl class="c function">
-<dt id="c.write_sequnlock_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">write_sequnlock_irq</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_sequnlock_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_sequnlock_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_sequnlock_irq</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.write_sequnlock_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end a non-interruptible seqlock_t write section</p>
 </dd></dl>
 
@@ -1106,8 +1108,8 @@ other write sections, can be invoked from hardirq contexts.</p>
 <p>write_sequnlock_irq closes the serialized and non-interruptible
 seqlock_t write side section opened with <a class="reference internal" href="#c.write_seqlock_irq" title="write_seqlock_irq"><code class="xref c c-func docutils literal notranslate"><span class="pre">write_seqlock_irq()</span></code></a>.</p>
 <dl class="c macro">
-<dt id="c.write_seqlock_irqsave">
-<code class="sig-name descname"><span class="pre">write_seqlock_irqsave</span></code><a class="headerlink" href="#c.write_seqlock_irqsave" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_seqlock_irqsave">
+<span class="sig-name descname"><span class="n"><span class="pre">write_seqlock_irqsave</span></span></span><a class="headerlink" href="#c.write_seqlock_irqsave" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">write_seqlock_irqsave</span> <span class="pre">(lock,</span> <span class="pre">flags)</span></code></p>
@@ -1126,8 +1128,8 @@ state, to be passed to <a class="reference internal" href="#c.write_sequnlock_ir
 <p>_irqsave variant of <a class="reference internal" href="#c.write_seqlock" title="write_seqlock"><code class="xref c c-func docutils literal notranslate"><span class="pre">write_seqlock()</span></code></a>. Use it only if the read side
 section, or other write sections, can be invoked from hardirq context.</p>
 <dl class="c function">
-<dt id="c.write_sequnlock_irqrestore">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">write_sequnlock_irqrestore</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_sequnlock_irqrestore" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.write_sequnlock_irqrestore">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write_sequnlock_irqrestore</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.write_sequnlock_irqrestore" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end non-interruptible seqlock_t write section</p>
 </dd></dl>
 
@@ -1142,8 +1144,8 @@ section, or other write sections, can be invoked from hardirq context.</p>
 <p>write_sequnlock_irqrestore closes the serialized and non-interruptible
 seqlock_t write section previously opened with <a class="reference internal" href="#c.write_seqlock_irqsave" title="write_seqlock_irqsave"><code class="xref c c-func docutils literal notranslate"><span class="pre">write_seqlock_irqsave()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.read_seqlock_excl">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">read_seqlock_excl</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqlock_excl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqlock_excl">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_seqlock_excl</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqlock_excl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>begin a seqlock_t locking reader section</p>
 </dd></dl>
 
@@ -1163,8 +1165,8 @@ locking readers, but it does not update the embedded sequence number.</p>
 be invoked from hardirq or softirq contexts, use the _irqsave or _bh
 variant of this function instead.</p>
 <dl class="c function">
-<dt id="c.read_sequnlock_excl">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">read_sequnlock_excl</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_sequnlock_excl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_sequnlock_excl">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_sequnlock_excl</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_sequnlock_excl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end a seqlock_t locking reader critical section</p>
 </dd></dl>
 
@@ -1174,8 +1176,8 @@ variant of this function instead.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.read_seqlock_excl_bh">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">read_seqlock_excl_bh</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqlock_excl_bh" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqlock_excl_bh">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_seqlock_excl_bh</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqlock_excl_bh" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start a seqlock_t locking reader section with softirqs disabled</p>
 </dd></dl>
 
@@ -1189,8 +1191,8 @@ variant of this function instead.</p>
 seqlock_t write side section, <em>or other read sections</em>, can be invoked
 from softirq contexts.</p>
 <dl class="c function">
-<dt id="c.read_sequnlock_excl_bh">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">read_sequnlock_excl_bh</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_sequnlock_excl_bh" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_sequnlock_excl_bh">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_sequnlock_excl_bh</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_sequnlock_excl_bh" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>stop a seqlock_t softirq-disabled locking reader section</p>
 </dd></dl>
 
@@ -1200,8 +1202,8 @@ from softirq contexts.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.read_seqlock_excl_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">read_seqlock_excl_irq</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqlock_excl_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqlock_excl_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_seqlock_excl_irq</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqlock_excl_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start a non-interruptible seqlock_t locking reader section</p>
 </dd></dl>
 
@@ -1215,8 +1217,8 @@ from softirq contexts.</p>
 write side section, <em>or other read sections</em>, can be invoked from a
 hardirq context.</p>
 <dl class="c function">
-<dt id="c.read_sequnlock_excl_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">read_sequnlock_excl_irq</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_sequnlock_excl_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_sequnlock_excl_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_sequnlock_excl_irq</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_sequnlock_excl_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end an interrupts-disabled seqlock_t locking reader section</p>
 </dd></dl>
 
@@ -1226,8 +1228,8 @@ hardirq context.</p>
 </dd>
 </dl>
 <dl class="c macro">
-<dt id="c.read_seqlock_excl_irqsave">
-<code class="sig-name descname"><span class="pre">read_seqlock_excl_irqsave</span></code><a class="headerlink" href="#c.read_seqlock_excl_irqsave" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqlock_excl_irqsave">
+<span class="sig-name descname"><span class="n"><span class="pre">read_seqlock_excl_irqsave</span></span></span><a class="headerlink" href="#c.read_seqlock_excl_irqsave" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">read_seqlock_excl_irqsave</span> <span class="pre">(lock,</span> <span class="pre">flags)</span></code></p>
@@ -1247,8 +1249,8 @@ state, to be passed to <a class="reference internal" href="#c.read_sequnlock_exc
 write side section, <em>or other read sections</em>, can be invoked from a
 hardirq context.</p>
 <dl class="c function">
-<dt id="c.read_sequnlock_excl_irqrestore">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">read_sequnlock_excl_irqrestore</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">sl</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_sequnlock_excl_irqrestore" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_sequnlock_excl_irqrestore">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_sequnlock_excl_irqrestore</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sl</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_sequnlock_excl_irqrestore" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end non-interruptible seqlock_t locking reader section</p>
 </dd></dl>
 
@@ -1260,8 +1262,8 @@ hardirq context.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.read_seqbegin_or_lock">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">read_seqbegin_or_lock</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">lock</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">seq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqbegin_or_lock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqbegin_or_lock">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_seqbegin_or_lock</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">seq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqbegin_or_lock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>begin a seqlock_t lockless or locking reader</p>
 </dd></dl>
 
@@ -1297,8 +1299,8 @@ value must be checked with <a class="reference internal" href="#c.need_seqretry"
 be retried, this returned value must also be passed as the <strong>seq</strong>
 parameter of the next <a class="reference internal" href="#c.read_seqbegin_or_lock" title="read_seqbegin_or_lock"><code class="xref c c-func docutils literal notranslate"><span class="pre">read_seqbegin_or_lock()</span></code></a> iteration.</p>
 <dl class="c function">
-<dt id="c.need_seqretry">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">need_seqretry</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">lock</span></em>, <span class="pre">int</span> <em><span class="pre">seq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.need_seqretry" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.need_seqretry">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">need_seqretry</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">seq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.need_seqretry" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>validate seqlock_t “locking or lockless” read section</p>
 </dd></dl>
 
@@ -1312,8 +1314,8 @@ parameter of the next <a class="reference internal" href="#c.read_seqbegin_or_lo
 <p><strong>Return</strong></p>
 <p>true if a read section retry is required, false otherwise</p>
 <dl class="c function">
-<dt id="c.done_seqretry">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">done_seqretry</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">lock</span></em>, <span class="pre">int</span> <em><span class="pre">seq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.done_seqretry" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.done_seqretry">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">done_seqretry</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">seq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.done_seqretry" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end seqlock_t “locking or lockless” reader section</p>
 </dd></dl>
 
@@ -1328,8 +1330,8 @@ parameter of the next <a class="reference internal" href="#c.read_seqbegin_or_lo
 <p>done_seqretry finishes the seqlock_t read side critical section started
 with <a class="reference internal" href="#c.read_seqbegin_or_lock" title="read_seqbegin_or_lock"><code class="xref c c-func docutils literal notranslate"><span class="pre">read_seqbegin_or_lock()</span></code></a> and validated by <a class="reference internal" href="#c.need_seqretry" title="need_seqretry"><code class="xref c c-func docutils literal notranslate"><span class="pre">need_seqretry()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.read_seqbegin_or_lock_irqsave">
-<span class="pre">unsigned</span> <span class="pre">long</span> <code class="sig-name descname"><span class="pre">read_seqbegin_or_lock_irqsave</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">lock</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">seq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqbegin_or_lock_irqsave" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.read_seqbegin_or_lock_irqsave">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read_seqbegin_or_lock_irqsave</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">seq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.read_seqbegin_or_lock_irqsave" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>begin a seqlock_t lockless reader, or a non-interruptible locking reader</p>
 </dd></dl>
 
@@ -1356,8 +1358,8 @@ overloaded as a return parameter. Check <a class="reference internal" href="#c.r
 </ol>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.done_seqretry_irqrestore">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">done_seqretry_irqrestore</span></code><span class="sig-paren">(</span><span class="pre">seqlock_t</span> <span class="pre">*</span><em><span class="pre">lock</span></em>, <span class="pre">int</span> <em><span class="pre">seq</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.done_seqretry_irqrestore" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.done_seqretry_irqrestore">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">done_seqretry_irqrestore</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">seqlock_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">seq</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.done_seqretry_irqrestore" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end a seqlock_t lockless reader, or a non-interruptible locking reader section</p>
 </dd></dl>
 
@@ -1375,8 +1377,8 @@ reader, also from <a class="reference internal" href="#c.read_seqbegin_or_lock_i
 <p>This is the _irqrestore variant of <a class="reference internal" href="#c.done_seqretry" title="done_seqretry"><code class="xref c c-func docutils literal notranslate"><span class="pre">done_seqretry()</span></code></a>. The read section
 must’ve been opened with <a class="reference internal" href="#c.read_seqbegin_or_lock_irqsave" title="read_seqbegin_or_lock_irqsave"><code class="xref c c-func docutils literal notranslate"><span class="pre">read_seqbegin_or_lock_irqsave()</span></code></a>, and validated
 by <a class="reference internal" href="#c.need_seqretry" title="need_seqretry"><code class="xref c c-func docutils literal notranslate"><span class="pre">need_seqretry()</span></code></a>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

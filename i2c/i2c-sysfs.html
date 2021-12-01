@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Linux I2C Sysfs &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -263,9 +265,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-i2c-sysfs">
+  <div class="section" id="linux-i2c-sysfs">
 <h1>Linux I2C Sysfs<a class="headerlink" href="#linux-i2c-sysfs" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>I2C topology can be complex because of the existence of I2C MUX
 (I2C Multiplexer). The Linux
@@ -277,20 +279,20 @@ the concept of logical I2C buses in the kernel, by knowing the physical I2C
 topology and navigating through the I2C sysfs in Linux shell. This knowledge is
 useful and essential to use <code class="docutils literal notranslate"><span class="pre">i2c-tools</span></code> for the purpose of development and
 debugging.</p>
-<section id="target-audience">
+<div class="section" id="target-audience">
 <h3>Target audience<a class="headerlink" href="#target-audience" title="Permalink to this headline">¶</a></h3>
 <p>People who need to use Linux shell to interact with I2C subsystem on a system
 which the Linux is running on.</p>
-</section>
-<section id="prerequisites">
+</div>
+<div class="section" id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Knowledge of general Linux shell file system commands and operations.</p></li>
 <li><p>General knowledge of I2C, I2C MUX and I2C topology.</p></li>
 </ol>
-</section>
-</section>
-<section id="location-of-i2c-sysfs">
+</div>
+</div>
+<div class="section" id="location-of-i2c-sysfs">
 <h2>Location of I2C Sysfs<a class="headerlink" href="#location-of-i2c-sysfs" title="Permalink to this headline">¶</a></h2>
 <p>Typically, the Linux Sysfs filesystem is mounted at the <code class="docutils literal notranslate"><span class="pre">/sys</span></code> directory,
 so you can find the I2C Sysfs under <code class="docutils literal notranslate"><span class="pre">/sys/bus/i2c/devices</span></code>
@@ -307,12 +309,12 @@ the first number is I2C bus number, and the second number is I2C address.</p>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">i2c-2</span></code> is an I2C bus whose number is 2, and <code class="docutils literal notranslate"><span class="pre">2-0049</span></code> is an I2C device
 on bus 2 address 0x49 bound with a kernel driver.</p>
-</section>
-<section id="terminologies">
+</div>
+<div class="section" id="terminologies">
 <h2>Terminologies<a class="headerlink" href="#terminologies" title="Permalink to this headline">¶</a></h2>
 <p>First, let us define a couple of terminologies to avoid confusions in the later
 sections.</p>
-<section id="physical-i2c-bus-controller">
+<div class="section" id="physical-i2c-bus-controller">
 <h3>(Physical) I2C Bus Controller<a class="headerlink" href="#physical-i2c-bus-controller" title="Permalink to this headline">¶</a></h3>
 <p>The hardware system that the Linux kernel is running on may have multiple
 physical I2C bus controllers. The controllers are hardware and physical, and the
@@ -321,14 +323,14 @@ controllers. Linux kernel has I2C bus drivers under source directory
 <code class="docutils literal notranslate"><span class="pre">drivers/i2c/busses</span></code> to translate kernel I2C API into register
 operations for different systems. This terminology is not limited to Linux
 kernel only.</p>
-</section>
-<section id="i2c-bus-physical-number">
+</div>
+<div class="section" id="i2c-bus-physical-number">
 <h3>I2C Bus Physical Number<a class="headerlink" href="#i2c-bus-physical-number" title="Permalink to this headline">¶</a></h3>
 <p>For each physical I2C bus controller, the system vendor may assign a physical
 number to each controller. For example, the first I2C bus controller which has
 the lowest register addresses may be called <code class="docutils literal notranslate"><span class="pre">I2C-0</span></code>.</p>
-</section>
-<section id="logical-i2c-bus">
+</div>
+<div class="section" id="logical-i2c-bus">
 <h3>Logical I2C Bus<a class="headerlink" href="#logical-i2c-bus" title="Permalink to this headline">¶</a></h3>
 <p>Every I2C bus number you see in Linux I2C Sysfs is a logical I2C bus with a
 number assigned. This is similar to the fact that software code is usually
@@ -338,13 +340,13 @@ an abstraction of a channel behind an I2C MUX. In case it is an abstraction of a
 MUX channel, whenever we access an I2C device via a such logical bus, the kernel
 will switch the I2C MUX for you to the proper channel as part of the
 abstraction.</p>
-</section>
-<section id="physical-i2c-bus">
+</div>
+<div class="section" id="physical-i2c-bus">
 <h3>Physical I2C Bus<a class="headerlink" href="#physical-i2c-bus" title="Permalink to this headline">¶</a></h3>
 <p>If the logical I2C bus is a direct abstraction of a physical I2C bus controller,
 let us call it a physical I2C bus.</p>
-</section>
-<section id="caveat">
+</div>
+<div class="section" id="caveat">
 <h3>Caveat<a class="headerlink" href="#caveat" title="Permalink to this headline">¶</a></h3>
 <p>This may be a confusing part for people who only know about the physical I2C
 design of a board. It is actually possible to rename the I2C bus physical number
@@ -358,9 +360,9 @@ instead of renaming or mapping them, so that it may be less confusing to other
 users. These physical I2C buses can be served as good starting points for I2C
 MUX fanouts. For the following examples, we will assume that the physical I2C
 bus has a number same as their I2C bus physical number.</p>
-</section>
-</section>
-<section id="walk-through-logical-i2c-bus">
+</div>
+</div>
+<div class="section" id="walk-through-logical-i2c-bus">
 <h2>Walk through Logical I2C Bus<a class="headerlink" href="#walk-through-logical-i2c-bus" title="Permalink to this headline">¶</a></h2>
 <p>For the following content, we will use a more complex I2C topology as an
 example. Here is a brief graph for the I2C topology. If you do not understand
@@ -380,7 +382,7 @@ and review it when you finish reading.</p>
     `-- i2c-203 (channel-3)
 </pre></div>
 </div>
-<section id="distinguish-physical-and-logical-i2c-bus">
+<div class="section" id="distinguish-physical-and-logical-i2c-bus">
 <h3>Distinguish Physical and Logical I2C Bus<a class="headerlink" href="#distinguish-physical-and-logical-i2c-bus" title="Permalink to this headline">¶</a></h3>
 <p>One simple way to distinguish between a physical I2C bus and a logical I2C bus,
 is to read the symbolic link <code class="docutils literal notranslate"><span class="pre">device</span></code> under the I2C bus directory by using
@@ -419,8 +421,8 @@ whose I2C address is 0x71.
 Whenever we access an I2C device with bus 73, the kernel will always
 switch the I2C MUX addressed 0x71 to the proper channel for you as part of the
 abstraction.</p>
-</section>
-<section id="finding-out-logical-i2c-bus-number">
+</div>
+<div class="section" id="finding-out-logical-i2c-bus-number">
 <h3>Finding out Logical I2C Bus Number<a class="headerlink" href="#finding-out-logical-i2c-bus-number" title="Permalink to this headline">¶</a></h3>
 <p>In this section, we will describe how to find out the logical I2C bus number
 representing certain I2C MUX channels based on the knowledge of physical
@@ -511,8 +513,8 @@ i2c-84  i2c             i2c-73-mux (chan_id 6)                  I2C adapter
 i2c-85  i2c             i2c-73-mux (chan_id 7)                  I2C adapter
 </pre></div>
 </div>
-</section>
-<section id="pinned-logical-i2c-bus-number">
+</div>
+<div class="section" id="pinned-logical-i2c-bus-number">
 <h3>Pinned Logical I2C Bus Number<a class="headerlink" href="#pinned-logical-i2c-bus-number" title="Permalink to this headline">¶</a></h3>
 <p>If not specified in DTS, when an I2C MUX driver is applied and the MUX device is
 successfully probed, the kernel will assign the MUX channels with a logical bus
@@ -533,16 +535,16 @@ can be easily remembered by humans or calculated arithmetically. For example, we
 can pin the fanout channels of a MUX on bus 3 to start at 30. So 30 will be the
 logical bus number of the channel 0 of the MUX on bus 3, and 37 will be the
 logical bus number of the channel 7 of the MUX on bus 3.</p>
-</section>
-</section>
-<section id="i2c-devices">
+</div>
+</div>
+<div class="section" id="i2c-devices">
 <h2>I2C Devices<a class="headerlink" href="#i2c-devices" title="Permalink to this headline">¶</a></h2>
 <p>In previous sections, we mostly covered the I2C bus. In this section, let us see
 what we can learn from the I2C device directory whose link name is in the format
 of <code class="docutils literal notranslate"><span class="pre">${bus}-${addr}</span></code>. The <code class="docutils literal notranslate"><span class="pre">${bus}</span></code> part in the name is a logical I2C bus
 decimal number, while the <code class="docutils literal notranslate"><span class="pre">${addr}</span></code> part is a hex number of the I2C address
 of each device.</p>
-<section id="i2c-device-directory-content">
+<div class="section" id="i2c-device-directory-content">
 <h3>I2C Device Directory Content<a class="headerlink" href="#i2c-device-directory-content" title="Permalink to this headline">¶</a></h3>
 <p>Inside each I2C device directory, there is a file named <code class="docutils literal notranslate"><span class="pre">name</span></code>.
 This file tells what device name it was used for the kernel driver to
@@ -575,8 +577,8 @@ pca954x 73-0070: probe failed
 </div>
 <p>Depending on what the I2C device is and what kernel driver was used to probe the
 device, we may have different content in the device directory.</p>
-</section>
-<section id="i2c-mux-device">
+</div>
+<div class="section" id="i2c-mux-device">
 <h3>I2C MUX Device<a class="headerlink" href="#i2c-mux-device" title="Permalink to this headline">¶</a></h3>
 <p>While you may be already aware of this in previous sections, an I2C MUX device
 will have symbolic link <code class="docutils literal notranslate"><span class="pre">channel-*</span></code> inside its device directory.
@@ -592,8 +594,8 @@ lrwxrwxrwx ... 73-0072/channel-6 -&gt; ../i2c-84
 lrwxrwxrwx ... 73-0072/channel-7 -&gt; ../i2c-85
 </pre></div>
 </div>
-</section>
-<section id="i2c-sensor-device-hwmon">
+</div>
+<div class="section" id="i2c-sensor-device-hwmon">
 <h3>I2C Sensor Device / Hwmon<a class="headerlink" href="#i2c-sensor-device-hwmon" title="Permalink to this headline">¶</a></h3>
 <p>I2C sensor device is also common to see. If they are bound by a kernel hwmon
 (Hardware Monitoring) driver successfully, you will see a <code class="docutils literal notranslate"><span class="pre">hwmon</span></code> directory
@@ -610,14 +612,14 @@ in0_lcrit          in1_lcrit_alarm    shunt_resistor
 </div>
 <p>For more info on the Hwmon Sysfs, refer to the doc:</p>
 <p><a class="reference external" href="../hwmon/sysfs-interface.rst">Naming and data format standards for sysfs files</a></p>
-</section>
-<section id="instantiate-i2c-devices-in-i2c-sysfs">
+</div>
+<div class="section" id="instantiate-i2c-devices-in-i2c-sysfs">
 <h3>Instantiate I2C Devices in I2C Sysfs<a class="headerlink" href="#instantiate-i2c-devices-in-i2c-sysfs" title="Permalink to this headline">¶</a></h3>
 <p>Refer to the doc:</p>
 <p><a class="reference external" href="instantiating-devices.rst#method-4-instantiate-from-user-space">How to instantiate I2C devices, Method 4: Instantiate from user-space</a></p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

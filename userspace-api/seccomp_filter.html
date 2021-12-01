@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Seccomp BPF (SECure COMPuting with filters) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -265,9 +267,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="seccomp-bpf-secure-computing-with-filters">
+  <div class="section" id="seccomp-bpf-secure-computing-with-filters">
 <h1>Seccomp BPF (SECure COMPuting with filters)<a class="headerlink" href="#seccomp-bpf-secure-computing-with-filters" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>A large number of system calls are exposed to every userland process
 with many of them going unused for the entire lifetime of the process.
@@ -288,8 +290,8 @@ to time-of-check-time-of-use (TOCTOU) attacks that are common in system
 call interposition frameworks.  BPF programs may not dereference
 pointers which constrains all filters to solely evaluating the system
 call arguments directly.</p>
-</section>
-<section id="what-it-isn-t">
+</div>
+<div class="section" id="what-it-isn-t">
 <h2>What it isn’t<a class="headerlink" href="#what-it-isn-t" title="Permalink to this headline">¶</a></h2>
 <p>System call filtering isn’t a sandbox.  It provides a clearly defined
 mechanism for minimizing the exposed kernel surface.  It is meant to be
@@ -300,8 +302,8 @@ choosing.  Expressive, dynamic filters provide further options down this
 path (avoiding pathological sizes or selecting which of the multiplexed
 system calls in socketcall() is allowed, for instance) which could be
 construed, incorrectly, as a more complete sandboxing solution.</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>An additional seccomp mode is added and is enabled using the same
 prctl(2) call as the strict seccomp.  If the architecture has
@@ -336,8 +338,8 @@ execution of a process.</p>
 </dd>
 </dl>
 <p>The above call returns 0 on success and non-zero on error.</p>
-</section>
-<section id="return-values">
+</div>
+<div class="section" id="return-values">
 <h2>Return values<a class="headerlink" href="#return-values" title="Permalink to this headline">¶</a></h2>
 <p>A seccomp filter may return any of the following values. If multiple
 filters exist, the return value for the evaluation of a given system
@@ -410,8 +412,8 @@ given system call will always use the highest precedent value.</p>
 multiple filters return values of the same precedence, only the
 <code class="docutils literal notranslate"><span class="pre">SECCOMP_RET_DATA</span></code> from the most recently installed filter will be
 returned.</p>
-</section>
-<section id="pitfalls">
+</div>
+<div class="section" id="pitfalls">
 <h2>Pitfalls<a class="headerlink" href="#pitfalls" title="Permalink to this headline">¶</a></h2>
 <p>The biggest pitfall to avoid during use is filtering on system call
 number without checking the architecture value.  Why?  On any
@@ -419,14 +421,14 @@ architecture that supports multiple system call invocation conventions,
 the system call numbers may vary based on the specific invocation.  If
 the numbers in the different calling conventions overlap, then checks in
 the filters may be abused.  Always check the arch value!</p>
-</section>
-<section id="example">
+</div>
+<div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">samples/seccomp/</span></code> directory contains both an x86-specific example
 and a more generic example of a higher level macro interface for BPF
 program generation.</p>
-</section>
-<section id="userspace-notification">
+</div>
+<div class="section" id="userspace-notification">
 <h2>Userspace Notification<a class="headerlink" href="#userspace-notification" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">SECCOMP_RET_USER_NOTIF</span></code> return code lets seccomp filters pass a
 particular syscall to userspace to be handled. This may be useful for
@@ -503,8 +505,8 @@ memory is accessible to suitably privileged traces via <code class="docutils lit
 above in this document: all arguments being read from the tracee’s memory
 should be read into the tracer’s memory before any policy decisions are made.
 This allows for an atomic decision on syscall arguments.</p>
-</section>
-<section id="sysctls">
+</div>
+<div class="section" id="sysctls">
 <h2>Sysctls<a class="headerlink" href="#sysctls" title="Permalink to this headline">¶</a></h2>
 <p>Seccomp’s sysctl files can be found in the <code class="docutils literal notranslate"><span class="pre">/proc/sys/kernel/seccomp/</span></code>
 directory. Here’s a description of each file in that directory:</p>
@@ -529,16 +531,16 @@ to write <code class="docutils literal notranslate"><span class="pre">allow</spa
 returned.</p>
 </dd>
 </dl>
-</section>
-<section id="adding-architecture-support">
+</div>
+<div class="section" id="adding-architecture-support">
 <h2>Adding architecture support<a class="headerlink" href="#adding-architecture-support" title="Permalink to this headline">¶</a></h2>
 <p>See <code class="docutils literal notranslate"><span class="pre">arch/Kconfig</span></code> for the authoritative requirements.  In general, if an
 architecture supports both ptrace_event and seccomp, it will be able to
 support seccomp filter with minor fixup: <code class="docutils literal notranslate"><span class="pre">SIGSYS</span></code> support and seccomp return
 value checking.  Then it must just add <code class="docutils literal notranslate"><span class="pre">CONFIG_HAVE_ARCH_SECCOMP_FILTER</span></code>
 to its arch-specific Kconfig.</p>
-</section>
-<section id="caveats">
+</div>
+<div class="section" id="caveats">
 <h2>Caveats<a class="headerlink" href="#caveats" title="Permalink to this headline">¶</a></h2>
 <p>The vDSO can cause some system calls to run entirely in userspace,
 leading to surprises when you run programs on different machines that
@@ -579,8 +581,8 @@ cases.</p>
 are a legacy feature and they are considerably slower than standard
 syscalls.  New code will use the vDSO, and vDSO-issued system calls
 are indistinguishable from normal system calls.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

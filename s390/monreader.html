@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Linux API for read access to z/VM Monitor Records &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -279,17 +281,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-api-for-read-access-to-z-vm-monitor-records">
+  <div class="section" id="linux-api-for-read-access-to-z-vm-monitor-records">
 <h1>Linux API for read access to z/VM Monitor Records<a class="headerlink" href="#linux-api-for-read-access-to-z-vm-monitor-records" title="Permalink to this headline">¶</a></h1>
 <p>Date  : 2004-Nov-26</p>
 <p>Author: Gerald Schaefer (<a class="reference external" href="mailto:geraldsc&#37;&#52;&#48;de&#46;ibm&#46;com">geraldsc<span>&#64;</span>de<span>&#46;</span>ibm<span>&#46;</span>com</a>)</p>
-<section id="description">
+<div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>This item delivers a new Linux API in the form of a misc char device that is
 usable from user space and allows read access to the z/VM Monitor Records
 collected by the <cite>*MONITOR</cite> System Service of z/VM.</p>
-</section>
-<section id="user-requirements">
+</div>
+<div class="section" id="user-requirements">
 <h2>User Requirements<a class="headerlink" href="#user-requirements" title="Permalink to this headline">¶</a></h2>
 <p>The z/VM guest on which you want to access this API needs to be configured in
 order to allow IUCV connections to the <cite>*MONITOR</cite> service, i.e. it needs the
@@ -304,7 +306,7 @@ location of the monitor DCSS with the Class E privileged CP command Q NSS MAP
 <p>See also “CP Command and Utility Reference” (SC24-6081-00) for more information
 on the DEF STOR and Q NSS MAP commands, as well as “Saved Segments Planning
 and Administration” (SC24-6116-00) for more information on DCSSes.</p>
-<section id="st-option">
+<div class="section" id="st-option">
 <h3>1st option:<a class="headerlink" href="#st-option" title="Permalink to this headline">¶</a></h3>
 <p>You can use the CP command DEF STOR CONFIG to define a “memory hole” in your
 guest virtual storage around the address range of the DCSS.</p>
@@ -313,8 +315,8 @@ guest virtual storage around the address range of the DCSS.</p>
 address 0MB, the second is 200MB in size and begins at address 200MB,
 resulting in a total storage of 340MB. Note that the first block should
 always start at 0 and be at least 64MB in size.</p>
-</section>
-<section id="nd-option">
+</div>
+<div class="section" id="nd-option">
 <h3>2nd option:<a class="headerlink" href="#nd-option" title="Permalink to this headline">¶</a></h3>
 <p>Your guest virtual storage has to end below the starting address of the DCSS
 and you have to specify the “mem=” kernel parameter in your parmfile with a
@@ -325,9 +327,9 @@ value greater than the ending address of the DCSS.</p>
 </div>
 <p>This defines 140MB storage size for your guest, the parameter “mem=160M” is
 added to the parmfile.</p>
-</section>
-</section>
-<section id="user-interface">
+</div>
+</div>
+<div class="section" id="user-interface">
 <h2>User Interface<a class="headerlink" href="#user-interface" title="Permalink to this headline">¶</a></h2>
 <p>The char device is implemented as a kernel module named “monreader”,
 which can be loaded via the modprobe command, or it can be compiled into the
@@ -344,25 +346,25 @@ of the monitor DCSS, if already defined, and the users connected to the
 Refer to the “z/VM Performance” book (SC24-6109-00) on how to create a monitor
 DCSS if your z/VM doesn’t have one already, you need Class E privileges to
 define and save a DCSS.</p>
-<section id="example">
+<div class="section" id="example">
 <h3>Example:<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>modprobe monreader mondcss=MYDCSS
 </pre></div>
 </div>
 <p>This loads the module and sets the DCSS name to “MYDCSS”.</p>
-</section>
-<section id="note">
+</div>
+<div class="section" id="note">
 <h3>NOTE:<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h3>
 <p>This API provides no interface to control the <cite>*MONITOR</cite> service, e.g. specify
 which data should be collected. This can be done by the CP command MONITOR
 (Class E privileged), see “CP Command and Utility Reference”.</p>
-</section>
-<section id="device-nodes-with-udev">
+</div>
+<div class="section" id="device-nodes-with-udev">
 <h3>Device nodes with udev:<a class="headerlink" href="#device-nodes-with-udev" title="Permalink to this headline">¶</a></h3>
 <p>After loading the module, a char device will be created along with the device
 node /&lt;udev directory&gt;/monreader.</p>
-</section>
-<section id="device-nodes-without-udev">
+</div>
+<div class="section" id="device-nodes-without-udev">
 <h3>Device nodes without udev:<a class="headerlink" href="#device-nodes-without-udev" title="Permalink to this headline">¶</a></h3>
 <p>If your distribution does not support udev, a device node will not be created
 automatically and you have to create it manually after loading the module.
@@ -372,8 +374,8 @@ numbers can be found in /sys/class/misc/monreader/dev.</p>
 &lt;major&gt;:&lt;minor&gt;. The device node can be created via the mknod command, enter
 mknod &lt;name&gt; c &lt;major&gt; &lt;minor&gt;, where &lt;name&gt; is the name of the device node
 to be created.</p>
-</section>
-<section id="id1">
+</div>
+<div class="section" id="id1">
 <h3>Example:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># modprobe monreader
 # cat /sys/class/misc/monreader/dev
@@ -383,15 +385,15 @@ to be created.</p>
 </div>
 <p>This loads the module with the default monitor DCSS (MONDCSS) and creates a
 device node.</p>
-</section>
-<section id="file-operations">
+</div>
+<div class="section" id="file-operations">
 <h3>File operations:<a class="headerlink" href="#file-operations" title="Permalink to this headline">¶</a></h3>
 <p>The following file operations are supported: open, release, read, poll.
 There are two alternative methods for reading: either non-blocking read in
 conjunction with polling, or blocking read without polling. IOCTLs are not
 supported.</p>
-</section>
-<section id="read">
+</div>
+<div class="section" id="read">
 <h3>Read:<a class="headerlink" href="#read" title="Permalink to this headline">¶</a></h3>
 <p>Reading from the device provides a 12 Byte monitor control element (MCE),
 followed by a set of one or more contiguous monitor records (similar to the
@@ -450,8 +452,8 @@ read with 0 size is valid but subsequent records may be missing.</p>
 <p>In the last case (EOVERFLOW) there may be missing data, in the first two cases
 (EIO, EFAULT) there will be missing data. It’s up to the application if it will
 continue reading subsequent data or rather exit.</p>
-</section>
-<section id="open">
+</div>
+<div class="section" id="open">
 <h3>Open:<a class="headerlink" href="#open" title="Permalink to this headline">¶</a></h3>
 <p>Only one user is allowed to open the char device. If it is already in use, the
 open function will fail (return a negative value) and set errno to EBUSY.
@@ -459,16 +461,16 @@ The open function may also fail if an IUCV connection to the <cite>*MONITOR</cit
 cannot be established. In this case errno will be set to EIO and an error
 message with an IPUSER SEVER code will be printed into syslog. The IPUSER SEVER
 codes are described in the “z/VM Performance” book, Appendix A.</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h3>NOTE:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>As soon as the device is opened, incoming messages will be accepted and they
 will account for the message limit, i.e. opening the device without reading
 from it will provoke the “message limit reached” error (EOVERFLOW error code)
 eventually.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

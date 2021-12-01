@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>PSI——压力阻塞信息 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -290,7 +292,7 @@
 <dd class="field-even"><p>Yang Yang &lt;<a class="reference external" href="mailto:yang&#46;yang29&#37;&#52;&#48;zte&#46;com&#46;cn">yang<span>&#46;</span>yang29<span>&#64;</span>zte<span>&#46;</span>com<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="psi">
+<div class="section" id="psi">
 <span id="cn-psi-rst"></span><h1>PSI——压力阻塞信息<a class="headerlink" href="#psi" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">日期</dt>
@@ -312,7 +314,7 @@
 卸载、迁移、策略性的停止或杀死低优先级或可重启的批处理任务。</p>
 <p>psi帮助用户实现硬件资源利用率的最大化。同时无需牺牲业务负载健康度，也无需
 面临OOM等造成业务中断的风险。</p>
-<section id="id1">
+<div class="section" id="id1">
 <h2>压力接口<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>压力信息可通过/proc/pressure/ –cpu、memory、io文件分别获取。</p>
 <p>CPU相关信息格式如下：</p>
@@ -332,8 +334,8 @@ full avg10=0.00 avg60=0.00 avg300=0.00 total=0</p>
 <p>avg代表阻塞时间占比（百分比），为最近10秒、60秒、300秒内的均值。这样我们
 既可观察到短期事件的影响，也可看到中等及长时间内的趋势。total代表总阻塞
 时间（单位微秒），可用于观察时延毛刺，这种毛刺可能在均值中无法体现。</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h2>监控压力门限<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>用户可注册触发器，通过poll()监控资源压力是否超过门限。</p>
 <p>触发器定义：指定时间窗口期内累积阻塞时间的最大值。比如可定义500ms内积累
@@ -358,8 +360,8 @@ psi接口提供的均值即可。</p>
 <p>监控器在激活后，至少在跟踪窗口期间将保持活动状态。以避免随着系统进入和退出
 阻塞状态，监控器过于频繁的进入和退出活动状态。</p>
 <p>用户态通知在监控窗口内会受到速率限制。当对应的文件描述符关闭，触发器会自动注销。</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>用户态监控器使用示例<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#include &lt;errno.h&gt;
 #include &lt;fcntl.h&gt;
@@ -411,15 +413,15 @@ int main() {
 }
 </pre></div>
 </div>
-</section>
-<section id="cgroup2">
+</div>
+<div class="section" id="cgroup2">
 <h2>Cgroup2接口<a class="headerlink" href="#cgroup2" title="Permalink to this headline">¶</a></h2>
 <p>对于CONFIG_CGROUP=y及挂载了cgroup2文件系统的系统，能够获取cgroups内任务的psi。
 此场景下cgroupfs挂载点的子目录包含cpu.pressure、memory.pressure、io.pressure文件，
 内容格式与/proc/pressure/下的文件相同。</p>
 <p>可设置基于cgroup的psi监控器，方法与系统级psi监控器相同。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

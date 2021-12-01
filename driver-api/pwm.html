@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Pulse Width Modulation (PWM) interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -343,7 +345,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="pulse-width-modulation-pwm-interface">
+  <div class="section" id="pulse-width-modulation-pwm-interface">
 <h1>Pulse Width Modulation (PWM) interface<a class="headerlink" href="#pulse-width-modulation-pwm-interface" title="Permalink to this headline">¶</a></h1>
 <p>This provides an overview about the Linux PWM interface</p>
 <p>PWMs are commonly used for controlling LEDs, fans or vibrators in
@@ -352,7 +354,7 @@ the Linux PWM API (although they could). However, PWMs are often
 found as discrete devices on SoCs which have no fixed purpose. It’s
 up to the board designer to connect them to LEDs or fans. To provide
 this kind of flexibility the generic PWM API exists.</p>
-<section id="identifying-pwms">
+<div class="section" id="identifying-pwms">
 <h2>Identifying PWMs<a class="headerlink" href="#identifying-pwms" title="Permalink to this headline">¶</a></h2>
 <p>Users of the legacy PWM API use unique IDs to refer to PWM devices.</p>
 <p>Instead of referring to a PWM device via its unique ID, board setup code
@@ -371,8 +373,8 @@ static void __init board_init(void)
 }
 </pre></div>
 </div>
-</section>
-<section id="using-pwms">
+</div>
+<div class="section" id="using-pwms">
 <h2>Using PWMs<a class="headerlink" href="#using-pwms" title="Permalink to this headline">¶</a></h2>
 <p>Legacy users can request a PWM device using <a class="reference internal" href="miscellaneous.html#c.pwm_request" title="pwm_request"><code class="xref c c-func docutils literal notranslate"><span class="pre">pwm_request()</span></code></a> and free it
 after usage with <a class="reference internal" href="miscellaneous.html#c.pwm_free" title="pwm_free"><code class="xref c c-func docutils literal notranslate"><span class="pre">pwm_free()</span></code></a>.</p>
@@ -410,8 +412,8 @@ of the PWM user). PWM arguments are retrieved with pwm_get_args().</p>
 <p>All consumers should really be reconfiguring the PWM upon resume as
 appropriate. This is the only way to ensure that everything is resumed in
 the proper order.</p>
-</section>
-<section id="using-pwms-with-the-sysfs-interface">
+</div>
+<div class="section" id="using-pwms-with-the-sysfs-interface">
 <h2>Using PWMs with the sysfs interface<a class="headerlink" href="#using-pwms-with-the-sysfs-interface" title="Permalink to this headline">¶</a></h2>
 <p>If CONFIG_SYSFS is enabled in your kernel configuration a simple sysfs
 interface is provided to use the PWMs from userspace. It is exposed at
@@ -456,8 +458,8 @@ enabled. Value is the string “normal” or “inversed”.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="implementing-a-pwm-driver">
+</div>
+<div class="section" id="implementing-a-pwm-driver">
 <h2>Implementing a PWM driver<a class="headerlink" href="#implementing-a-pwm-driver" title="Permalink to this headline">¶</a></h2>
 <p>Currently there are two ways to implement pwm drivers. Traditionally
 there only has been the barebone API meaning that each driver has
@@ -484,22 +486,22 @@ state) is also encouraged for the same reason: letting the PWM user know
 about the current PWM state would allow him to avoid glitches.</p>
 <p>Drivers should not implement any power management. In other words,
 consumers should implement it as described in the “Using PWMs” section.</p>
-</section>
-<section id="locking">
+</div>
+<div class="section" id="locking">
 <h2>Locking<a class="headerlink" href="#locking" title="Permalink to this headline">¶</a></h2>
 <p>The PWM core list manipulations are protected by a mutex, so <a class="reference internal" href="miscellaneous.html#c.pwm_request" title="pwm_request"><code class="xref c c-func docutils literal notranslate"><span class="pre">pwm_request()</span></code></a>
 and <a class="reference internal" href="miscellaneous.html#c.pwm_free" title="pwm_free"><code class="xref c c-func docutils literal notranslate"><span class="pre">pwm_free()</span></code></a> may not be called from an atomic context. Currently the
 PWM core does not enforce any locking to <a class="reference internal" href="miscellaneous.html#c.pwm_enable" title="pwm_enable"><code class="xref c c-func docutils literal notranslate"><span class="pre">pwm_enable()</span></code></a>, <a class="reference internal" href="miscellaneous.html#c.pwm_disable" title="pwm_disable"><code class="xref c c-func docutils literal notranslate"><span class="pre">pwm_disable()</span></code></a> and
 <a class="reference internal" href="miscellaneous.html#c.pwm_config" title="pwm_config"><code class="xref c c-func docutils literal notranslate"><span class="pre">pwm_config()</span></code></a>, so the calling context is currently driver specific. This
 is an issue derived from the former barebone API and should be fixed soon.</p>
-</section>
-<section id="helpers">
+</div>
+<div class="section" id="helpers">
 <h2>Helpers<a class="headerlink" href="#helpers" title="Permalink to this headline">¶</a></h2>
 <p>Currently a PWM can only be configured with period_ns and duty_ns. For several
 use cases freq_hz and duty_percent might be better. Instead of calculating
 this in your driver please consider adding appropriate helpers to the framework.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

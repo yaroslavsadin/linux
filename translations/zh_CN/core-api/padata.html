@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>padata并行执行机制 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -290,7 +292,7 @@
 <dd class="field-even"><p>司延腾 Yanteng Si &lt;<a class="reference external" href="mailto:siyanteng&#37;&#52;&#48;loongson&#46;cn">siyanteng<span>&#64;</span>loongson<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="padata">
+<div class="section" id="padata">
 <span id="cn-core-api-padata-rst"></span><h1>padata并行执行机制<a class="headerlink" href="#padata" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">日期</dt>
@@ -302,9 +304,9 @@
 <p>它最初是为IPsec开发的，它需要在不对这些数据包重新排序的其前提下，为大量的数
 据包进行加密和解密。这是目前padata的序列化作业支持的唯一用途。</p>
 <p>Padata还支持多线程作业，将作业平均分割，同时在线程之间进行负载均衡和协调。</p>
-<section id="id1">
+<div class="section" id="id1">
 <h2>执行序列化作业<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<section id="id2">
+<div class="section" id="id2">
 <h3>初始化<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>使用padata执行序列化作业的第一步是建立一个padata_instance结构体，以全面
 控制作业的运行方式:</p>
@@ -321,8 +323,8 @@ struct padata_instance *padata_alloc(const char *name);
 <p>一个padata_shell用于向padata提交一个作业，并允许一系列这样的作业被独立地
 序列化。一个padata_instance可以有一个或多个padata_shell与之相关联，每个
 都允许一系列独立的作业。</p>
-</section>
-<section id="cpumasks">
+</div>
+<div class="section" id="cpumasks">
 <h3>修改cpumasks<a class="headerlink" href="#cpumasks" title="Permalink to this headline">¶</a></h3>
 <p>用于运行作业的CPU可以通过两种方式改变，通过<a class="reference internal" href="../../../core-api/padata.html#c.padata_set_cpumask" title="padata_set_cpumask"><code class="xref c c-func docutils literal notranslate"><span class="pre">padata_set_cpumask()</span></code></a>编程或通
 过sysfs。前者的定义是:</p>
@@ -348,8 +350,8 @@ struct padata_instance *padata_alloc(const char *name);
 供一个包含离线CPU的cpumask是合法的。一旦用户提供的cpumask中的一个离线CPU上线，
 padata就会使用它。</p>
 <p>改变CPU掩码的操作代价很高，所以不应频繁更改。</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h3>运行一个作业<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>实际上向padata实例提交工作需要创建一个padata_priv结构体，它代表一个作业:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct padata_priv {
@@ -379,8 +381,8 @@ serial()函数。在完成工作的过程中，这些函数将被调用，我们
 <p>请注意，parallel()没有返回值；padata子系统假定parallel()将从此时开始负责这项工
 作。作业不需要在这次调用中完成，但是，如果parallel()留下了未完成的工作，它应该准
 备在前一个作业完成之前，被以新的作业再次调用</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3>序列化作业<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>当一个作业完成时，parallel()（或任何实际完成该工作的函数）应该通过调用通知padata此
 事:</p>
@@ -392,8 +394,8 @@ serial()函数。在完成工作的过程中，这些函数将被调用，我们
 被禁用的情况下运行的。
 请注意，这个调用可能会被推迟一段时间，因为padata代码会努力确保作业按照提交的顺序完
 成。</p>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h3>销毁<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>清理一个padata实例时，可以预见的是调用两个free函数，这两个函数对应于分配的逆过程:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void padata_free_shell(struct padata_shell *ps);
@@ -401,9 +403,9 @@ void padata_free(struct padata_instance *pinst);
 </pre></div>
 </div>
 <p>用户有责任确保在调用上述任何一项之前，所有未完成的工作都已完成。</p>
-</section>
-</section>
-<section id="id6">
+</div>
+</div>
+<div class="section" id="id6">
 <h2>运行多线程作业<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <p>一个多线程作业有一个主线程和零个或多个辅助线程，主线程参与作业，然后等待所有辅助线
 程完成。padata将作业分割成称为chunk的单元，其中chunk是一个线程在一次调用线程函数
@@ -414,14 +416,14 @@ void padata_free(struct padata_instance *pinst);
 其中前两个参数限定了线程操作的范围，最后一个是指向作业共享状态的指针，如果有的话。
 准备好共享状态，它通常被分配在主线程的堆栈中。最后，调用<a class="reference internal" href="../../../core-api/padata.html#c.padata_do_multithreaded" title="padata_do_multithreaded"><code class="xref c c-func docutils literal notranslate"><span class="pre">padata_do_multithreaded()</span></code></a>，
 它将在作业完成后返回。</p>
-</section>
-<section id="id7">
+</div>
+<div class="section" id="id7">
 <h2>接口<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <p>该API在以下内核代码中:</p>
 <p>include/linux/padata.h</p>
 <p>kernel/padata.c</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

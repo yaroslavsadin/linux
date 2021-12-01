@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>1. Creating an input device driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -263,9 +265,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="creating-an-input-device-driver">
+  <div class="section" id="creating-an-input-device-driver">
 <h1><span class="section-number">1. </span>Creating an input device driver<a class="headerlink" href="#creating-an-input-device-driver" title="Permalink to this headline">¶</a></h1>
-<section id="the-simplest-example">
+<div class="section" id="the-simplest-example">
 <h2><span class="section-number">1.1. </span>The simplest example<a class="headerlink" href="#the-simplest-example" title="Permalink to this headline">¶</a></h2>
 <p>Here comes a very simple example of an input device driver. The device has
 just one button and the button is accessible at i/o port BUTTON_PORT. When
@@ -330,8 +332,8 @@ module_init(button_init);
 module_exit(button_exit);
 </pre></div>
 </div>
-</section>
-<section id="what-the-example-does">
+</div>
+<div class="section" id="what-the-example-does">
 <h2><span class="section-number">1.2. </span>What the example does<a class="headerlink" href="#what-the-example-does" title="Permalink to this headline">¶</a></h2>
 <p>First it has to include the &lt;linux/input.h&gt; file, which interfaces to the
 input subsystem. This provides all the definitions needed.</p>
@@ -379,8 +381,8 @@ themselves.</p>
 This doesn’t seem important in the one button case, but is quite important
 for example for mouse movement, where you don’t want the X and Y values
 to be interpreted separately, because that’d result in a different movement.</p>
-</section>
-<section id="dev-open-and-dev-close">
+</div>
+<div class="section" id="dev-open-and-dev-close">
 <h2><span class="section-number">1.3. </span>dev-&gt;open() and dev-&gt;close()<a class="headerlink" href="#dev-open-and-dev-close" title="Permalink to this headline">¶</a></h2>
 <p>In case the driver has to repeatedly poll the device, because it doesn’t
 have an interrupt coming from it and the polling is too expensive to be done
@@ -418,8 +420,8 @@ to the device and that dev-&gt;close() is called when the very last user
 disconnects. Calls to both callbacks are serialized.</p>
 <p>The open() callback should return a 0 in case of success or any non-zero value
 in case of failure. The close() callback (which is void) must always succeed.</p>
-</section>
-<section id="inhibiting-input-devices">
+</div>
+<div class="section" id="inhibiting-input-devices">
 <h2><span class="section-number">1.4. </span>Inhibiting input devices<a class="headerlink" href="#inhibiting-input-devices" title="Permalink to this headline">¶</a></h2>
 <p>Inhibiting a device means ignoring input events from it. As such it is about
 maintaining relationships with input handlers - either already existing
@@ -456,8 +458,8 @@ must be taken when programming its suspend(), as it might need to call device’
 open(). Depending on what close() means for the device in question, not
 opening() it before going to sleep might make it impossible to provide any
 wakeup events. The device is going to sleep anyway.</p>
-</section>
-<section id="basic-event-types">
+</div>
+<div class="section" id="basic-event-types">
 <h2><span class="section-number">1.5. </span>Basic event types<a class="headerlink" href="#basic-event-types" title="Permalink to this headline">¶</a></h2>
 <p>The most simple event type is EV_KEY, which is used for keys and buttons.
 It’s reported to the input system via:</p>
@@ -503,8 +505,8 @@ position of size 8.</p>
 <p>If you don’t need absfuzz and absflat, you can set them to zero, which mean
 that the thing is precise and always returns to exactly the center position
 (if it has any).</p>
-</section>
-<section id="bits-to-longs-bit-word-bit-mask">
+</div>
+<div class="section" id="bits-to-longs-bit-word-bit-mask">
 <h2><span class="section-number">1.6. </span>BITS_TO_LONGS(), BIT_WORD(), BIT_MASK()<a class="headerlink" href="#bits-to-longs-bit-word-bit-mask" title="Permalink to this headline">¶</a></h2>
 <p>These three macros from bitops.h help some bitfield computations:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>BITS_TO_LONGS(x) - returns the length of a bitfield array in longs for
@@ -513,8 +515,8 @@ BIT_WORD(x)      - returns the index in the array in longs for bit x
 BIT_MASK(x)      - returns the index in a long for bit x
 </pre></div>
 </div>
-</section>
-<section id="the-id-and-name-fields">
+</div>
+<div class="section" id="the-id-and-name-fields">
 <h2><span class="section-number">1.7. </span>The id* and name fields<a class="headerlink" href="#the-id-and-name-fields" title="Permalink to this headline">¶</a></h2>
 <p>The dev-&gt;name should be set before registering the input device by the input
 device driver. It’s a string like ‘Generic button device’ containing a
@@ -526,8 +528,8 @@ should be set by the input device driver before registering it.</p>
 <p>The idtype field can be used for specific information for the input device
 driver.</p>
 <p>The id and name fields can be passed to userland via the evdev interface.</p>
-</section>
-<section id="the-keycode-keycodemax-keycodesize-fields">
+</div>
+<div class="section" id="the-keycode-keycodemax-keycodesize-fields">
 <h2><span class="section-number">1.8. </span>The keycode, keycodemax, keycodesize fields<a class="headerlink" href="#the-keycode-keycodemax-keycodesize-fields" title="Permalink to this headline">¶</a></h2>
 <p>These three fields should be used by input devices that have dense keymaps.
 The keycode is an array used to map from scancodes to input system keycodes.
@@ -538,22 +540,22 @@ EVIOCGKEYCODE and EVIOCSKEYCODE ioctls on corresponding evdev interface.
 When a device has all 3 aforementioned fields filled in, the driver may
 rely on kernel’s default implementation of setting and querying keycode
 mappings.</p>
-</section>
-<section id="dev-getkeycode-and-dev-setkeycode">
+</div>
+<div class="section" id="dev-getkeycode-and-dev-setkeycode">
 <h2><span class="section-number">1.9. </span>dev-&gt;getkeycode() and dev-&gt;setkeycode()<a class="headerlink" href="#dev-getkeycode-and-dev-setkeycode" title="Permalink to this headline">¶</a></h2>
 <p>getkeycode() and setkeycode() callbacks allow drivers to override default
 keycode/keycodesize/keycodemax mapping mechanism provided by input core
 and implement sparse keycode maps.</p>
-</section>
-<section id="key-autorepeat">
+</div>
+<div class="section" id="key-autorepeat">
 <h2><span class="section-number">1.10. </span>Key autorepeat<a class="headerlink" href="#key-autorepeat" title="Permalink to this headline">¶</a></h2>
 <p>… is simple. It is handled by the input.c module. Hardware autorepeat is
 not used, because it’s not present in many devices and even where it is
 present, it is broken sometimes (at keyboards: Toshiba notebooks). To enable
 autorepeat for your device, just set EV_REP in dev-&gt;evbit. All will be
 handled by the input system.</p>
-</section>
-<section id="other-event-types-handling-output-events">
+</div>
+<div class="section" id="other-event-types-handling-output-events">
 <h2><span class="section-number">1.11. </span>Other event types, handling output events<a class="headerlink" href="#other-event-types-handling-output-events" title="Permalink to this headline">¶</a></h2>
 <p>The other event types up to now are:</p>
 <ul class="simple">
@@ -579,8 +581,8 @@ int button_event(struct input_dev *dev, unsigned int type,
 </div>
 <p>This callback routine can be called from an interrupt or a BH (although that
 isn’t a rule), and thus must not sleep, and must not take too long to finish.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

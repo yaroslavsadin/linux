@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Linux kernel driver for Compute Engine Virtual Ethernet (gve): &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
@@ -416,9 +418,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-kernel-driver-for-compute-engine-virtual-ethernet-gve">
+  <div class="section" id="linux-kernel-driver-for-compute-engine-virtual-ethernet-gve">
 <h1>Linux kernel driver for Compute Engine Virtual Ethernet (gve):<a class="headerlink" href="#linux-kernel-driver-for-compute-engine-virtual-ethernet-gve" title="Permalink to this headline">¶</a></h1>
-<section id="supported-hardware">
+<div class="section" id="supported-hardware">
 <h2>Supported Hardware<a class="headerlink" href="#supported-hardware" title="Permalink to this headline">¶</a></h2>
 <p>The GVE driver binds to a single PCI device id used by the virtual
 Ethernet device found in some Compute Engine VMs.</p>
@@ -461,15 +463,15 @@ Ethernet device found in some Compute Engine VMs.</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="pci-bars">
+</div>
+<div class="section" id="pci-bars">
 <h2>PCI Bars<a class="headerlink" href="#pci-bars" title="Permalink to this headline">¶</a></h2>
 <p>The gVNIC PCI device exposes three 32-bit memory BARS:
 - Bar0 - Device configuration and status registers.
 - Bar1 - MSI-X vector table
 - Bar2 - IRQ, RX and TX doorbells</p>
-</section>
-<section id="device-interactions">
+</div>
+<div class="section" id="device-interactions">
 <h2>Device Interactions<a class="headerlink" href="#device-interactions" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>The driver interacts with the device in the following ways:</dt><dd><ul class="simple">
@@ -512,26 +514,26 @@ Ethernet device found in some Compute Engine VMs.</p>
 </ul>
 </dd>
 </dl>
-<section id="descriptor-formats">
+<div class="section" id="descriptor-formats">
 <h3>Descriptor Formats<a class="headerlink" href="#descriptor-formats" title="Permalink to this headline">¶</a></h3>
 <p>GVE supports two descriptor formats: GQI and DQO. These two formats have
 entirely different descriptors, which will be described below.</p>
-</section>
-<section id="registers">
+</div>
+<div class="section" id="registers">
 <h3>Registers<a class="headerlink" href="#registers" title="Permalink to this headline">¶</a></h3>
 <p>All registers are MMIO.</p>
 <p>The registers are used for initializing and configuring the device as well as
 querying device status in response to management interrupts.</p>
-</section>
-<section id="endianness">
+</div>
+<div class="section" id="endianness">
 <h3>Endianness<a class="headerlink" href="#endianness" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Admin Queue messages and registers are all Big Endian.</p></li>
 <li><p>GQI descriptors and datapath registers are Big Endian.</p></li>
 <li><p>DQO descriptors and datapath registers are Little Endian.</p></li>
 </ul>
-</section>
-<section id="admin-queue-aq">
+</div>
+<div class="section" id="admin-queue-aq">
 <h3>Admin Queue (AQ)<a class="headerlink" href="#admin-queue-aq" title="Permalink to this headline">¶</a></h3>
 <p>The Admin Queue is a PAGE_SIZE memory block, treated as an array of AQ
 commands, used by the driver to issue commands to the device and set up
@@ -547,32 +549,32 @@ the value written to the doorbell, or until a timeout.</p></li>
 </ol>
 <p>The device will update the status field in each AQ command reported as
 executed through the ADMIN_QUEUE_EVENT_COUNTER register.</p>
-</section>
-<section id="device-resets">
+</div>
+<div class="section" id="device-resets">
 <h3>Device Resets<a class="headerlink" href="#device-resets" title="Permalink to this headline">¶</a></h3>
 <p>A device reset is triggered by writing 0x0 to the AQ PFN register.
 This causes the device to release all resources allocated by the
 driver, including the AQ itself.</p>
-</section>
-<section id="interrupts">
+</div>
+<div class="section" id="interrupts">
 <h3>Interrupts<a class="headerlink" href="#interrupts" title="Permalink to this headline">¶</a></h3>
 <p>The following interrupts are supported by the driver:</p>
-<section id="management-interrupt">
+<div class="section" id="management-interrupt">
 <h4>Management Interrupt<a class="headerlink" href="#management-interrupt" title="Permalink to this headline">¶</a></h4>
 <p>The management interrupt is used by the device to tell the driver to
 look at the GVE_DEVICE_STATUS register.</p>
 <p>The handler for the management irq simply queues the service task in
 the workqueue to check the register and acks the irq.</p>
-</section>
-<section id="notification-block-interrupts">
+</div>
+<div class="section" id="notification-block-interrupts">
 <h4>Notification Block Interrupts<a class="headerlink" href="#notification-block-interrupts" title="Permalink to this headline">¶</a></h4>
 <p>The notification block interrupts are used to tell the driver to poll
 the queues associated with that interrupt.</p>
 <p>The handler for these irqs schedule the napi for that block to run
 and poll the queues.</p>
-</section>
-</section>
-<section id="gqi-traffic-queues">
+</div>
+</div>
+<div class="section" id="gqi-traffic-queues">
 <h3>GQI Traffic Queues<a class="headerlink" href="#gqi-traffic-queues" title="Permalink to this headline">¶</a></h3>
 <p>GQI queues are composed of a descriptor ring and a buffer and are assigned to a
 notification block.</p>
@@ -583,19 +585,19 @@ descriptors in-order and updating a __be32 counter. Both the doorbell
 and the counter overflow to zero.</p>
 <p>Each queue’s buffers must be registered in advance with the device as a
 queue page list, and packet data can only be put in those pages.</p>
-<section id="transmit">
+<div class="section" id="transmit">
 <h4>Transmit<a class="headerlink" href="#transmit" title="Permalink to this headline">¶</a></h4>
 <p>gve maps the buffers for transmit rings into a FIFO and copies the packets
 into the FIFO before sending them to the NIC.</p>
-</section>
-<section id="receive">
+</div>
+<div class="section" id="receive">
 <h4>Receive<a class="headerlink" href="#receive" title="Permalink to this headline">¶</a></h4>
 <p>The buffers for receive rings are put into a data ring that is the same
 length as the descriptor ring and the head and tail pointers advance over
 the rings together.</p>
-</section>
-</section>
-<section id="dqo-traffic-queues">
+</div>
+</div>
+<div class="section" id="dqo-traffic-queues">
 <h3>DQO Traffic Queues<a class="headerlink" href="#dqo-traffic-queues" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Every TX and RX queue is assigned a notification block.</p></li>
@@ -614,19 +616,19 @@ descriptors posted to HW.</p></li>
 buffer_id. These will be returned on the TX completion and RX queues
 respectively to let the driver know which packet/buffer was completed.</p></li>
 </ul>
-<section id="id1">
+<div class="section" id="id1">
 <h4>Transmit<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
 <p>A packet’s buffers are DMA mapped for the device to access before transmission.
 After the packet was successfully transmitted, the buffers are unmapped.</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h4>Receive<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
 <p>The driver posts fixed sized buffers to HW on the RX buffer queue. The packet
 received on the associated RX queue may span multiple descriptors.</p>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>

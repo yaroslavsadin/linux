@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>J1939 Documentation &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -374,9 +376,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="j1939-documentation">
+  <div class="section" id="j1939-documentation">
 <h1>J1939 Documentation<a class="headerlink" href="#j1939-documentation" title="Permalink to this headline">¶</a></h1>
-<section id="overview-what-is-j1939">
+<div class="section" id="overview-what-is-j1939">
 <h2>Overview / What Is J1939<a class="headerlink" href="#overview-what-is-j1939" title="Permalink to this headline">¶</a></h2>
 <p>SAE J1939 defines a higher layer protocol on CAN. It implements a more
 sophisticated addressing scheme and extends the maximum packet size above 8
@@ -385,16 +387,16 @@ J1939 on the application level, like MilCAN A, NMEA2000, and especially
 ISO-11783 (ISOBUS). This last one specifies the so-called ETP (Extended
 Transport Protocol), which has been included in this implementation. This
 results in a maximum packet size of ((2 ^ 24) - 1) * 7 bytes == 111 MiB.</p>
-<section id="specifications-used">
+<div class="section" id="specifications-used">
 <h3>Specifications used<a class="headerlink" href="#specifications-used" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>SAE J1939-21 : data link layer</p></li>
 <li><p>SAE J1939-81 : network management</p></li>
 <li><p>ISO 11783-6  : Virtual Terminal (Extended Transport Protocol)</p></li>
 </ul>
-</section>
-</section>
-<section id="motivation">
+</div>
+</div>
+<div class="section" id="motivation">
 <span id="j1939-motivation"></span><h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
 <p>Given the fact there’s something like SocketCAN with an API similar to BSD
 sockets, we found some reasons to justify a kernel implementation for the
@@ -428,10 +430,10 @@ Since such a library does not communicate with the in-kernel implementation, car
 must be taken that these two do not interfere. In practice, this means they
 cannot share ECU addresses. A single ECU (or virtual ECU) address is used by
 the library exclusively, or by the in-kernel system exclusively.</p>
-</section>
-<section id="j1939-concepts">
+</div>
+<div class="section" id="j1939-concepts">
 <h2>J1939 concepts<a class="headerlink" href="#j1939-concepts" title="Permalink to this headline">¶</a></h2>
-<section id="pgn">
+<div class="section" id="pgn">
 <h3>PGN<a class="headerlink" href="#pgn" title="Permalink to this headline">¶</a></h3>
 <p>The J1939 protocol uses the 29-bit CAN identifier with the following structure:</p>
 <blockquote>
@@ -542,8 +544,8 @@ of the PGN shall be set to zero. The Destination Address shall be set
 elsewhere.</p>
 <p>Regarding PGN mapping to 29-bit CAN identifier, the Destination Address shall
 be get/set from/to the appropriate bits of the identifier by the kernel.</p>
-</section>
-<section id="addressing">
+</div>
+<div class="section" id="addressing">
 <h3>Addressing<a class="headerlink" href="#addressing" title="Permalink to this headline">¶</a></h3>
 <p>Both static and dynamic addressing methods can be used.</p>
 <p>For static addresses, no extra checks are made by the kernel and provided
@@ -557,8 +559,8 @@ packets with a destination that is not locally will be rejected.</p>
 <p>Mixed mode packets (from a static to a dynamic address or vice versa) are
 allowed. The BSD sockets define separate API calls for getting/setting the
 local &amp; remote address and are applicable for J1939 sockets.</p>
-</section>
-<section id="filtering">
+</div>
+<div class="section" id="filtering">
 <h3>Filtering<a class="headerlink" href="#filtering" title="Permalink to this headline">¶</a></h3>
 <p>J1939 defines white list filters per socket that a user can set in order to
 receive a subset of the J1939 traffic. Filtering can be based on:</p>
@@ -570,11 +572,11 @@ receive a subset of the J1939 traffic. Filtering can be based on:</p>
 <p>When multiple filters are in place for a single socket, and a packet comes in
 that matches several of those filters, the packet is only received once for
 that socket.</p>
-</section>
-</section>
-<section id="how-to-use-j1939">
+</div>
+</div>
+<div class="section" id="how-to-use-j1939">
 <h2>How to Use J1939<a class="headerlink" href="#how-to-use-j1939" title="Permalink to this headline">¶</a></h2>
-<section id="api-calls">
+<div class="section" id="api-calls">
 <h3>API Calls<a class="headerlink" href="#api-calls" title="Permalink to this headline">¶</a></h3>
 <p>On CAN, you first need to open a socket for communicating over a CAN network.
 To use J1939, <code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&lt;linux/can/j1939.h&gt;</span></code>. From there, <code class="docutils literal notranslate"><span class="pre">&lt;linux/can.h&gt;</span></code> will be
@@ -687,15 +689,15 @@ receiving broadcast packets use the socket option <code class="docutils literal 
 </div>
 <p>TX path related options:
 <code class="docutils literal notranslate"><span class="pre">SO_J1939_SEND_PRIO</span></code> - change default send priority for the socket</p>
-<section id="message-flags-during-send-and-related-system-calls">
+<div class="section" id="message-flags-during-send-and-related-system-calls">
 <h4>Message Flags during send() and Related System Calls<a class="headerlink" href="#message-flags-during-send-and-related-system-calls" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">send(2)</span></code>, <code class="docutils literal notranslate"><span class="pre">sendto(2)</span></code> and <code class="docutils literal notranslate"><span class="pre">sendmsg(2)</span></code> take a ‘flags’ argument. Currently
 supported flags are:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">MSG_DONTWAIT</span></code>, i.e. non-blocking operation.</p></li>
 </ul>
-</section>
-<section id="recvmsg-2">
+</div>
+<div class="section" id="recvmsg-2">
 <h4>recvmsg(2)<a class="headerlink" href="#recvmsg-2" title="Permalink to this headline">¶</a></h4>
 <p>In most cases <code class="docutils literal notranslate"><span class="pre">recvmsg(2)</span></code> is needed if you want to extract more information than
 <code class="docutils literal notranslate"><span class="pre">recvfrom(2)</span></code> can provide. For example package priority and timestamp. The
@@ -721,9 +723,9 @@ with <code class="docutils literal notranslate"><span class="pre">cmsg_level</sp
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="dynamic-addressing">
+</div>
+</div>
+<div class="section" id="dynamic-addressing">
 <h3>Dynamic Addressing<a class="headerlink" href="#dynamic-addressing" title="Permalink to this headline">¶</a></h3>
 <p>Distinction has to be made between using the claimed address and doing an
 address claim. To use an already claimed address, one has to fill in the
@@ -794,10 +796,10 @@ packet. This restarts the state machine in the kernel (and any other
 participant on the bus) for this NAME.</p>
 <p><code class="docutils literal notranslate"><span class="pre">can-utils</span></code> also include the <code class="docutils literal notranslate"><span class="pre">j1939acd</span></code> tool, so it can be used as code example or as
 default Address Claiming daemon.</p>
-</section>
-<section id="send-examples">
+</div>
+<div class="section" id="send-examples">
 <h3>Send Examples<a class="headerlink" href="#send-examples" title="Permalink to this headline">¶</a></h3>
-<section id="static-addressing">
+<div class="section" id="static-addressing">
 <h4>Static Addressing<a class="headerlink" href="#static-addressing" title="Permalink to this headline">¶</a></h4>
 <p>This example will send a PGN (0x12300) from SA 0x20 to DA 0x30.</p>
 <p>Bind:</p>
@@ -829,10 +831,10 @@ at this point we can use only <code class="docutils literal notranslate"><span c
 <span class="n">sendto</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">dat</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">dat</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">saddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">saddr</span><span class="p">));</span>
 </pre></div>
 </div>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>

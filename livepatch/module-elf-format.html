@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Livepatch module Elf format &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -269,7 +271,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="livepatch-module-elf-format">
+  <div class="section" id="livepatch-module-elf-format">
 <h1>Livepatch module Elf format<a class="headerlink" href="#livepatch-module-elf-format" title="Permalink to this headline">¶</a></h1>
 <p>This document outlines the Elf format requirements that livepatch modules must follow.</p>
 <div class="contents local topic" id="contents">
@@ -300,7 +302,7 @@
 <li><p><a class="reference internal" href="#symbol-table-and-elf-section-access" id="id13">5. Symbol table and Elf section access</a></p></li>
 </ul>
 </div>
-<section id="background-and-motivation">
+<div class="section" id="background-and-motivation">
 <h2><a class="toc-backref" href="#id2">1. Background and motivation</a><a class="headerlink" href="#background-and-motivation" title="Permalink to this headline">¶</a></h2>
 <p>Formerly, livepatch required separate architecture-specific code to write
 relocations. However, arch-specific code to write relocations already
@@ -320,7 +322,7 @@ preserved for livepatch modules (see section 5). Livepatch manages its own
 relocation sections and symbols, which are described in this document. The
 Elf constants used to mark livepatch symbols and relocation sections were
 selected from OS-specific ranges according to the definitions from glibc.</p>
-<section id="why-does-livepatch-need-to-write-its-own-relocations">
+<div class="section" id="why-does-livepatch-need-to-write-its-own-relocations">
 <h3><a class="toc-backref" href="#id3">Why does livepatch need to write its own relocations?</a><a class="headerlink" href="#why-does-livepatch-need-to-write-its-own-relocations" title="Permalink to this headline">¶</a></h3>
 <p>A typical livepatch module contains patched versions of functions that can
 reference non-exported global symbols and non-included local symbols.
@@ -339,16 +341,16 @@ relocation sections in place of dynrela sections, and the symbols that the
 relas reference are special livepatch symbols (see section 2 and 3). The
 arch-specific livepatch relocation code is replaced by a call to
 apply_relocate_add().</p>
-</section>
-</section>
-<section id="livepatch-modinfo-field">
+</div>
+</div>
+<div class="section" id="livepatch-modinfo-field">
 <h2><a class="toc-backref" href="#id4">2. Livepatch modinfo field</a><a class="headerlink" href="#livepatch-modinfo-field" title="Permalink to this headline">¶</a></h2>
 <p>Livepatch modules are required to have the “livepatch” modinfo attribute.
 See the sample livepatch module in samples/livepatch/ for how this is done.</p>
 <p>Livepatch modules can be identified by users by using the ‘modinfo’ command
 and looking for the presence of the “livepatch” field. This field is also
 used by the kernel module loader to identify livepatch modules.</p>
-<section id="example">
+<div class="section" id="example">
 <h3><a class="toc-backref" href="#id5">Example:</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p><strong>Modinfo output:</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>% modinfo livepatch-meminfo.ko
@@ -359,9 +361,9 @@ depends:
 vermagic:               4.3.0+ SMP mod_unload
 </pre></div>
 </div>
-</section>
-</section>
-<section id="livepatch-relocation-sections">
+</div>
+</div>
+<div class="section" id="livepatch-relocation-sections">
 <h2><a class="toc-backref" href="#id6">3. Livepatch relocation sections</a><a class="headerlink" href="#livepatch-relocation-sections" title="Permalink to this headline">¶</a></h2>
 <p>A livepatch module manages its own Elf relocation sections to apply
 relocations to modules as well as to the kernel (vmlinux) at the
@@ -383,8 +385,8 @@ access the relocation section and apply the relocations.</p>
 <p>Every symbol referenced by a rela in a livepatch relocation section is a
 livepatch symbol. These must be resolved before livepatch can call
 apply_relocate_add(). See Section 3 for more information.</p>
-</section>
-<section id="livepatch-relocation-section-format">
+</div>
+<div class="section" id="livepatch-relocation-section-format">
 <h2><a class="toc-backref" href="#id7">3.1 Livepatch relocation section format</a><a class="headerlink" href="#livepatch-relocation-section-format" title="Permalink to this headline">¶</a></h2>
 <p>Livepatch relocation sections must be marked with the SHF_RELA_LIVEPATCH
 section flag. See include/uapi/linux/elf.h for the definition. The module
@@ -409,7 +411,7 @@ which the relocation section belongs follows immediately after the prefix.</p>
 <dt>[C]</dt><dd><p>The actual name of the section to which this relocation section applies.</p>
 </dd>
 </dl>
-<section id="examples">
+<div class="section" id="examples">
 <h3><a class="toc-backref" href="#id8">Examples:</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <p><strong>Livepatch relocation section names:</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.klp.rela.ext4.text.ext4_attr_store
@@ -456,9 +458,9 @@ SHF_RELA_LIVEPATCH flag (“o” - for OS-specific).</p>
 <dt>[*]</dt><dd><p>Every symbol referenced by a relocation is a livepatch symbol.</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="livepatch-symbols">
+</div>
+</div>
+<div class="section" id="livepatch-symbols">
 <h2><a class="toc-backref" href="#id9">4. Livepatch symbols</a><a class="headerlink" href="#livepatch-symbols" title="Permalink to this headline">¶</a></h2>
 <p>Livepatch symbols are symbols referred to by livepatch relocation sections.
 These are symbols accessed from new versions of functions for patched
@@ -477,8 +479,8 @@ that reloc section.</p>
 loader can identify and ignore them. Livepatch modules keep these symbols
 in their symbol tables, and the symbol table is made accessible through
 module-&gt;symtab.</p>
-</section>
-<section id="a-livepatch-module-s-symbol-table">
+</div>
+<div class="section" id="a-livepatch-module-s-symbol-table">
 <h2><a class="toc-backref" href="#id10">4.1 A livepatch module’s symbol table</a><a class="headerlink" href="#a-livepatch-module-s-symbol-table" title="Permalink to this headline">¶</a></h2>
 <p>Normally, a stripped down copy of a module’s symbol table (containing only
 “core” symbols) is made available through module-&gt;symtab (See layout_symtab()
@@ -502,8 +504,8 @@ And in this patch module&#39;s corresponding symbol table, symbol index 94 refer
 [ snip ]
 </pre></div>
 </div>
-</section>
-<section id="livepatch-symbol-format">
+</div>
+<div class="section" id="livepatch-symbol-format">
 <h2><a class="toc-backref" href="#id11">4.2 Livepatch symbol format</a><a class="headerlink" href="#livepatch-symbol-format" title="Permalink to this headline">¶</a></h2>
 <p>Livepatch symbols must have their section index marked as SHN_LIVEPATCH, so
 that the module loader can identify them and not attempt to resolve them.
@@ -529,7 +531,7 @@ object. The symbol position is expressed numerically (0, 1, 2…).
 The symbol position of a unique symbol is 0.</p>
 </dd>
 </dl>
-<section id="id1">
+<div class="section" id="id1">
 <h3><a class="toc-backref" href="#id12">Examples:</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p><strong>Livepatch symbol names:</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.klp.sym.vmlinux.snprintf,0
@@ -555,9 +557,9 @@ The symbol position of a unique symbol is 0.</p>
 “OS” means OS-specific.</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="symbol-table-and-elf-section-access">
+</div>
+</div>
+<div class="section" id="symbol-table-and-elf-section-access">
 <h2><a class="toc-backref" href="#id13">5. Symbol table and Elf section access</a><a class="headerlink" href="#symbol-table-and-elf-section-access" title="Permalink to this headline">¶</a></h2>
 <p>A livepatch module’s symbol table is accessible through module-&gt;symtab.</p>
 <p>Since apply_relocate_add() requires access to a module’s section headers,
@@ -573,8 +575,8 @@ this struct is filled in by the module loader. Its fields are documented below:<
 };
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

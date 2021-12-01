@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Low Level Serial API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -351,21 +353,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="low-level-serial-api">
+  <div class="section" id="low-level-serial-api">
 <h1>Low Level Serial API<a class="headerlink" href="#low-level-serial-api" title="Permalink to this headline">¶</a></h1>
 <p>This document is meant as a brief overview of some aspects of the new serial
 driver.  It is not complete, any questions you have should be directed to
 &lt;<a class="reference external" href="mailto:rmk&#37;&#52;&#48;arm&#46;linux&#46;org&#46;uk">rmk<span>&#64;</span>arm<span>&#46;</span>linux<span>&#46;</span>org<span>&#46;</span>uk</a>&gt;</p>
 <p>The reference implementation is contained within amba-pl011.c.</p>
-<section id="low-level-serial-hardware-driver">
+<div class="section" id="low-level-serial-hardware-driver">
 <h2>Low Level Serial Hardware Driver<a class="headerlink" href="#low-level-serial-hardware-driver" title="Permalink to this headline">¶</a></h2>
 <p>The low level serial hardware driver is responsible for supplying port
 information (defined by uart_port) and a set of control methods (defined
 by uart_ops) to the core serial driver.  The low level driver is also
 responsible for handling interrupts for the port, and providing any
 console support.</p>
-</section>
-<section id="console-support">
+</div>
+<div class="section" id="console-support">
 <h2>Console Support<a class="headerlink" href="#console-support" title="Permalink to this headline">¶</a></h2>
 <p>The serial core provides a few helper functions.  This includes identifing
 the correct port structure (via uart_get_console) and decoding command line
@@ -374,8 +376,8 @@ arguments (uart_parse_options).</p>
 character by character write, translating newlines to CRLF sequences.
 Driver writers are recommended to use this function rather than implementing
 their own version.</p>
-</section>
-<section id="locking">
+</div>
+<div class="section" id="locking">
 <h2>Locking<a class="headerlink" href="#locking" title="Permalink to this headline">¶</a></h2>
 <p>It is the responsibility of the low level hardware driver to perform the
 necessary locking using port-&gt;lock.  There are some exceptions (which
@@ -395,8 +397,8 @@ locking.</p>
 removed or reconfigured at inappropriate times. Since v2.6.27, this
 semaphore has been the ‘mutex’ member of the tty_port struct, and
 commonly referred to as the port mutex.</p>
-</section>
-<section id="uart-ops">
+</div>
+<div class="section" id="uart-ops">
 <h2>uart_ops<a class="headerlink" href="#uart-ops" title="Permalink to this headline">¶</a></h2>
 <p>The uart_ops structure is the main interface between serial_core and the
 hardware specific driver.  It contains all the methods to control the
@@ -716,8 +718,8 @@ the function should return NO_POLL_CHAR immediately.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="other-functions">
+</div>
+<div class="section" id="other-functions">
 <h2>Other functions<a class="headerlink" href="#other-functions" title="Permalink to this headline">¶</a></h2>
 <dl>
 <dt>uart_update_timeout(port,cflag,baud)</dt><dd><p>Update the FIFO drain timeout, port-&gt;timeout, according to the
@@ -771,8 +773,8 @@ level driver must have removed all its ports via the
 <p><strong>uart_resume_port()</strong></p>
 <p><strong><a class="reference internal" href="../miscellaneous.html#c.uart_add_one_port" title="uart_add_one_port"><code class="xref c c-func docutils literal notranslate"><span class="pre">uart_add_one_port()</span></code></a></strong></p>
 <p><strong><a class="reference internal" href="../miscellaneous.html#c.uart_remove_one_port" title="uart_remove_one_port"><code class="xref c c-func docutils literal notranslate"><span class="pre">uart_remove_one_port()</span></code></a></strong></p>
-</section>
-<section id="other-notes">
+</div>
+<div class="section" id="other-notes">
 <h2>Other notes<a class="headerlink" href="#other-notes" title="Permalink to this headline">¶</a></h2>
 <p>It is intended some day to drop the ‘unused’ entries from uart_port, and
 allow low level drivers to register their own individual uart_port’s with
@@ -785,8 +787,8 @@ thus:</p>
 };
 </pre></div>
 </div>
-</section>
-<section id="modem-control-lines-via-gpio">
+</div>
+<div class="section" id="modem-control-lines-via-gpio">
 <h2>Modem control lines via GPIO<a class="headerlink" href="#modem-control-lines-via-gpio" title="Permalink to this headline">¶</a></h2>
 <p>Some helpers are provided in order to set/get modem control lines via GPIO.</p>
 <dl class="simple">
@@ -813,8 +815,8 @@ index.</p>
 <dt>mctrl_gpio_disable_ms(gpios):</dt><dd><p>Disables irqs and handling of changes to the ms lines.</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

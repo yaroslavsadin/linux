@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>XFS Self Describing Metadata &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -313,9 +315,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="xfs-self-describing-metadata">
+  <div class="section" id="xfs-self-describing-metadata">
 <h1>XFS Self Describing Metadata<a class="headerlink" href="#xfs-self-describing-metadata" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The largest scalability problem facing XFS is not one of algorithmic
 scalability, but of verification of the filesystem structure. Scalabilty of the
@@ -341,8 +343,8 @@ Most of the analysis work is slow and tedious, so as the amount of analysis goes
 up, the more likely that the cause will be lost in the noise.  Hence the primary
 concern for supporting PB scale filesystems is minimising the time and effort
 required for basic forensic analysis of the filesystem structure.</p>
-</section>
-<section id="self-describing-metadata">
+</div>
+<div class="section" id="self-describing-metadata">
 <h2>Self Describing Metadata<a class="headerlink" href="#self-describing-metadata" title="Permalink to this headline">¶</a></h2>
 <p>One of the problems with the current metadata format is that apart from the
 magic number in the metadata block, we have no other way of identifying what it
@@ -436,8 +438,8 @@ checkpoint and hence have some idea of how much modification occurred between
 the first and last instance of corrupt metadata on disk and, further, how much
 modification occurred between the corruption being written and when it was
 detected.</p>
-</section>
-<section id="runtime-validation">
+</div>
+<div class="section" id="runtime-validation">
 <h2>Runtime Validation<a class="headerlink" href="#runtime-validation" title="Permalink to this headline">¶</a></h2>
 <p>Validation of self-describing metadata takes place at runtime in two places:</p>
 <blockquote>
@@ -475,8 +477,8 @@ modification made to the object, After this, we calculate the CRC and insert it
 into the object. Once this is done the write IO is allowed to continue. If any
 error occurs during this process, the buffer is again marked with a EFSCORRUPTED
 error for the higher layers to catch.</p>
-</section>
-<section id="structures">
+</div>
+<div class="section" id="structures">
 <h2>Structures<a class="headerlink" href="#structures" title="Permalink to this headline">¶</a></h2>
 <p>A typical on-disk structure needs to contain the following information:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct xfs_ondisk_hdr {
@@ -614,8 +616,8 @@ further, detecting corruptions that have occurred as the metadata has been
 modified in memory. If the metadata verifies OK, and CRCs are enabled, we then
 update the LSN field (when it was last modified) and calculate the CRC on the
 metadata. Once this is done, we can issue the IO.</p>
-</section>
-<section id="inodes-and-dquots">
+</div>
+<div class="section" id="inodes-and-dquots">
 <h2>Inodes and Dquots<a class="headerlink" href="#inodes-and-dquots" title="Permalink to this headline">¶</a></h2>
 <p>Inodes and dquots are special snowflakes. They have per-object CRC and
 self-identifiers, but they are packed so that there are multiple objects per
@@ -636,8 +638,8 @@ into the buffer.</p>
 the unlinked list modifications check or update CRCs, neither during unlink nor
 log recovery. So, it’s gone unnoticed until now. This won’t matter immediately -
 repair will probably complain about it - but it needs to be fixed.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

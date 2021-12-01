@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Segmentation Offloads &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -365,9 +367,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="segmentation-offloads">
+  <div class="section" id="segmentation-offloads">
 <h1>Segmentation Offloads<a class="headerlink" href="#segmentation-offloads" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This document describes a set of techniques in the Linux networking stack
 to take advantage of segmentation offload capabilities of various NICs.</p>
@@ -383,8 +385,8 @@ to take advantage of segmentation offload capabilities of various NICs.</p>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="tcp-segmentation-offload">
+</div>
+<div class="section" id="tcp-segmentation-offload">
 <h2>TCP Segmentation Offload<a class="headerlink" href="#tcp-segmentation-offload" title="Permalink to this headline">¶</a></h2>
 <p>TCP segmentation allows a device to segment a single frame into multiple
 frames with a data payload size specified in skb_shinfo()-&gt;gso_size.
@@ -406,8 +408,8 @@ ID and all segments will use the same IP ID.  If a device has
 NETIF_F_TSO_MANGLEID set then the IP ID can be ignored when performing TSO
 and we will either increment the IP ID for all frames, or leave it at a
 static value based on driver preference.</p>
-</section>
-<section id="udp-fragmentation-offload">
+</div>
+<div class="section" id="udp-fragmentation-offload">
 <h2>UDP Fragmentation Offload<a class="headerlink" href="#udp-fragmentation-offload" title="Permalink to this headline">¶</a></h2>
 <p>UDP fragmentation offload allows a device to fragment an oversized UDP
 datagram into multiple IPv4 fragments.  Many of the requirements for UDP
@@ -416,8 +418,8 @@ fragments should not increment as a single IPv4 datagram is fragmented.</p>
 <p>UFO is deprecated: modern kernels will no longer generate UFO skbs, but can
 still receive them from tuntap and similar devices. Offload of UDP-based
 tunnel protocols is still supported.</p>
-</section>
-<section id="ipip-sit-gre-udp-tunnel-and-remote-checksum-offloads">
+</div>
+<div class="section" id="ipip-sit-gre-udp-tunnel-and-remote-checksum-offloads">
 <h2>IPIP, SIT, GRE, UDP Tunnel, and Remote Checksum Offloads<a class="headerlink" href="#ipip-sit-gre-udp-tunnel-and-remote-checksum-offloads" title="Permalink to this headline">¶</a></h2>
 <p>In addition to the offloads described above it is possible for a frame to
 contain additional headers such as an outer tunnel.  In order to account
@@ -453,8 +455,8 @@ included in the outer header.</p>
 header has requested a remote checksum offload.  In this case the inner
 headers will be left with a partial checksum and only the outer header
 checksum will be computed.</p>
-</section>
-<section id="generic-segmentation-offload">
+</div>
+<div class="section" id="generic-segmentation-offload">
 <h2>Generic Segmentation Offload<a class="headerlink" href="#generic-segmentation-offload" title="Permalink to this headline">¶</a></h2>
 <p>Generic segmentation offload is a pure software offload that is meant to
 deal with cases where device drivers cannot perform the offloads described
@@ -464,8 +466,8 @@ via skb_shinfo()-&gt;gso_size.</p>
 <p>Before enabling any hardware segmentation offload a corresponding software
 offload is required in GSO.  Otherwise it becomes possible for a frame to
 be re-routed between devices and end up being unable to be transmitted.</p>
-</section>
-<section id="generic-receive-offload">
+</div>
+<div class="section" id="generic-receive-offload">
 <h2>Generic Receive Offload<a class="headerlink" href="#generic-receive-offload" title="Permalink to this headline">¶</a></h2>
 <p>Generic receive offload is the complement to GSO.  Ideally any frame
 assembled by GRO should be segmented to create an identical sequence of
@@ -474,8 +476,8 @@ able to be reassembled back to the original by GRO.  The only exception to
 this is IPv4 ID in the case that the DF bit is set for a given IP header.
 If the value of the IPv4 ID is not sequentially incrementing it will be
 altered so that it is when a frame assembled via GRO is segmented via GSO.</p>
-</section>
-<section id="partial-generic-segmentation-offload">
+</div>
+<div class="section" id="partial-generic-segmentation-offload">
 <h2>Partial Generic Segmentation Offload<a class="headerlink" href="#partial-generic-segmentation-offload" title="Permalink to this headline">¶</a></h2>
 <p>Partial generic segmentation offload is a hybrid between TSO and GSO.  What
 it effectively does is take advantage of certain traits of TCP and tunnels
@@ -489,8 +491,8 @@ values for if the header was simply duplicated.  The one exception to this
 is the outer IPv4 ID field.  It is up to the device drivers to guarantee
 that the IPv4 ID field is incremented in the case that a given header does
 not have the DF bit set.</p>
-</section>
-<section id="sctp-acceleration-with-gso">
+</div>
+<div class="section" id="sctp-acceleration-with-gso">
 <h2>SCTP acceleration with GSO<a class="headerlink" href="#sctp-acceleration-with-gso" title="Permalink to this headline">¶</a></h2>
 <p>SCTP - despite the lack of hardware support - can still take advantage of
 GSO to pass one large packet through the network stack, rather than
@@ -517,8 +519,8 @@ will check for GSO_BY_FRAGS and WARN if asked to manipulate these skbs.</p></li>
 </ul>
 <p>This also affects drivers with the NETIF_F_FRAGLIST &amp; NETIF_F_GSO_SCTP bits
 set. Note also that NETIF_F_GSO_SCTP is included in NETIF_F_GSO_SOFTWARE.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

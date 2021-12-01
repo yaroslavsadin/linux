@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>在Linux内核里使用gcov做代码覆盖率检查 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -287,7 +289,7 @@
 <dd class="field-even"><p>赵军奎 Bernard Zhao &lt;<a class="reference external" href="mailto:bernard&#37;&#52;&#48;vivo&#46;com">bernard<span>&#64;</span>vivo<span>&#46;</span>com</a>&gt;</p>
 </dd>
 </dl>
-<section id="linuxgcov">
+<div class="section" id="linuxgcov">
 <h1>在Linux内核里使用gcov做代码覆盖率检查<a class="headerlink" href="#linuxgcov" title="Permalink to this headline">¶</a></h1>
 <p>gcov分析核心支持在Linux内核中启用GCC的覆盖率测试工具 <a class="reference external" href="https://gcc.gnu.org/onlinedocs/gcc/Gcov.html">gcov</a> ，Linux内核
 运行时的代码覆盖率数据会以gcov兼容的格式导出到“gcov”debugfs目录中，可
@@ -307,7 +309,7 @@
 <li><p>内核最小化配置（对于某一个选项配置，如果关联的代码从来没有运行过，
 是否还需要这个配置）</p></li>
 </ul>
-<section id="id1">
+<div class="section" id="id1">
 <h2>准备<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>内核打开如下配置:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CONFIG_DEBUG_FS=y
@@ -325,8 +327,8 @@ CONFIG_GCOV_KERNEL=y
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mount -t debugfs none /sys/kernel/debug
 </pre></div>
 </div>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h2>定制化<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>如果要单独针对某一个路径或者文件进行代码覆盖率统计，可以在内核相应路
 径的Makefile中增加如下的配置:</p>
@@ -352,8 +354,8 @@ CONFIG_GCOV_KERNEL=y
 </pre></div>
 </div>
 <p>此机制仅支持链接到内核镜像或编译为内核模块的文件。</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>相关文件<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>gcov功能需要在debugfs中创建如下文件:</p>
 <dl class="simple">
@@ -370,8 +372,8 @@ CONFIG_GCOV_KERNEL=y
 在gcc编译时如果配置了选项 <code class="docutils literal notranslate"><span class="pre">-ftest-coverage</span></code> 时生成的。</p>
 </dd>
 </dl>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h2>针对模块的统计<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>内核中的模块会动态的加载和卸载，模块卸载时对应的数据会被清除掉。
 gcov提供了一种机制，通过保留相关数据的副本来收集这部分卸载模块的覆盖率数据。
@@ -383,8 +385,8 @@ gcov提供了一种机制，通过保留相关数据的副本来收集这部分�
 </div>
 <p>在运行时，用户还可以通过写入模块的数据文件或者写入gcov复位文件来丢弃已卸
 载模块的数据。</p>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h2>编译机和测试机分离<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <p>gcov的内核分析插桩支持内核的编译和运行是在同一台机器上，也可以编译和运
 行是在不同的机器上。
@@ -439,16 +441,16 @@ gcov提供了一种机制，通过保留相关数据的副本来收集这部分�
 </div></blockquote>
 </li>
 </ol>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h2>关于编译器的注意事项<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <p>GCC和LLVM gcov工具不一定兼容。
 如果编译器是GCC，使用 <a class="reference external" href="https://gcc.gnu.org/onlinedocs/gcc/Gcov.html">gcov</a> 来处理.gcno和.gcda文件，如果是Clang编译器，
 则使用 <a class="reference external" href="https://llvm.org/docs/CommandGuide/llvm-cov.html">llvm-cov</a> 。</p>
 <p>GCC和Clang gcov之间的版本差异由Kconfig处理的。
 kconfig会根据编译工具链的检查自动选择合适的gcov格式。</p>
-</section>
-<section id="id8">
+</div>
+<div class="section" id="id8">
 <h2>问题定位<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>可能出现的问题1</dt><dd><p>编译到链接阶段报错终止</p>
@@ -467,8 +469,8 @@ sysfs复制文件。</p>
 中所示的机制。</p>
 </dd>
 </dl>
-</section>
-<section id="a-collect-on-build-sh">
+</div>
+<div class="section" id="a-collect-on-build-sh">
 <h2>附录A：collect_on_build.sh<a class="headerlink" href="#a-collect-on-build-sh" title="Permalink to this headline">¶</a></h2>
 <p>用于在编译机上收集覆盖率元文件的示例脚本
 （见 <a class="reference internal" href="#gcov-test-zh"><span class="std std-ref">编译机和测试机分离 a.</span></a> ）</p>
@@ -497,8 +499,8 @@ find <span class="nv">$KSRC</span> <span class="nv">$KOBJ</span> <span class="se
 <span class="k">fi</span>
 </pre></div>
 </div>
-</section>
-<section id="b-collect-on-test-sh">
+</div>
+<div class="section" id="b-collect-on-test-sh">
 <h2>附录B：collect_on_test.sh<a class="headerlink" href="#b-collect-on-test-sh" title="Permalink to this headline">¶</a></h2>
 <p>用于在测试机上收集覆盖率数据文件的示例脚本
 （见 <a class="reference internal" href="#gcov-build-zh"><span class="std std-ref">编译机和测试机分离 b.</span></a> ）</p>
@@ -524,8 +526,8 @@ rm -rf <span class="nv">$TEMPDIR</span>
 <span class="nb">echo</span> <span class="s2">&quot;  tar xfz </span><span class="nv">$DEST</span><span class="s2">&quot;</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

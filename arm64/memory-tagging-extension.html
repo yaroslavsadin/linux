@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Memory Tagging Extension (MTE) in AArch64 Linux &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -283,7 +285,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="memory-tagging-extension-mte-in-aarch64-linux">
+  <div class="section" id="memory-tagging-extension-mte-in-aarch64-linux">
 <h1>Memory Tagging Extension (MTE) in AArch64 Linux<a class="headerlink" href="#memory-tagging-extension-mte-in-aarch64-linux" title="Permalink to this headline">¶</a></h1>
 <dl class="simple">
 <dt>Authors: Vincenzo Frascino &lt;<a class="reference external" href="mailto:vincenzo&#46;frascino&#37;&#52;&#48;arm&#46;com">vincenzo<span>&#46;</span>frascino<span>&#64;</span>arm<span>&#46;</span>com</a>&gt;</dt><dd><p>Catalin Marinas &lt;<a class="reference external" href="mailto:catalin&#46;marinas&#37;&#52;&#48;arm&#46;com">catalin<span>&#46;</span>marinas<span>&#64;</span>arm<span>&#46;</span>com</a>&gt;</p>
@@ -292,7 +294,7 @@
 <p>Date: 2020-02-25</p>
 <p>This document describes the provision of the Memory Tagging Extension
 functionality in AArch64 Linux.</p>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>ARMv8.5 based processors introduce the Memory Tagging Extension (MTE)
 feature. MTE is built on top of the ARMv8.0 virtual address tagging TBI
@@ -303,13 +305,13 @@ attribute. A logical tag is derived from bits 59-56 of the virtual
 address used for the memory access. A CPU with MTE enabled will compare
 the logical tag against the allocation tag and potentially raise an
 exception on mismatch, subject to system registers configuration.</p>
-</section>
-<section id="userspace-support">
+</div>
+<div class="section" id="userspace-support">
 <h2>Userspace Support<a class="headerlink" href="#userspace-support" title="Permalink to this headline">¶</a></h2>
 <p>When <code class="docutils literal notranslate"><span class="pre">CONFIG_ARM64_MTE</span></code> is selected and Memory Tagging Extension is
 supported by the hardware, the kernel advertises the feature to
 userspace via <code class="docutils literal notranslate"><span class="pre">HWCAP2_MTE</span></code>.</p>
-<section id="prot-mte">
+<div class="section" id="prot-mte">
 <h3>PROT_MTE<a class="headerlink" href="#prot-mte" title="Permalink to this headline">¶</a></h3>
 <p>To access the allocation tags, a user process must enable the Tagged
 memory attribute on an address range using a new <code class="docutils literal notranslate"><span class="pre">prot</span></code> flag for
@@ -327,8 +329,8 @@ be cleared by <code class="docutils literal notranslate"><span class="pre">mprot
 <p><strong>Note</strong>: <code class="docutils literal notranslate"><span class="pre">madvise()</span></code> memory ranges with <code class="docutils literal notranslate"><span class="pre">MADV_DONTNEED</span></code> and
 <code class="docutils literal notranslate"><span class="pre">MADV_FREE</span></code> may have the allocation tags cleared (set to 0) at any
 point after the system call.</p>
-</section>
-<section id="tag-check-faults">
+</div>
+<div class="section" id="tag-check-faults">
 <h3>Tag Check Faults<a class="headerlink" href="#tag-check-faults" title="Permalink to this headline">¶</a></h3>
 <p>When <code class="docutils literal notranslate"><span class="pre">PROT_MTE</span></code> is enabled on an address range and a mismatch between
 the logical and allocation tags occurs on access, there are three
@@ -379,8 +381,8 @@ system call) are not checked if the user thread tag checking mode is
 address accesses, however it cannot always guarantee it. Kernel accesses
 to user addresses are always performed with an effective <code class="docutils literal notranslate"><span class="pre">PSTATE.TCO</span></code>
 value of zero, regardless of the user configuration.</p>
-</section>
-<section id="excluding-tags-in-the-irg-addg-and-subg-instructions">
+</div>
+<div class="section" id="excluding-tags-in-the-irg-addg-and-subg-instructions">
 <h3>Excluding Tags in the <code class="docutils literal notranslate"><span class="pre">IRG</span></code>, <code class="docutils literal notranslate"><span class="pre">ADDG</span></code> and <code class="docutils literal notranslate"><span class="pre">SUBG</span></code> instructions<a class="headerlink" href="#excluding-tags-in-the-irg-addg-and-subg-instructions" title="Permalink to this headline">¶</a></h3>
 <p>The architecture allows excluding certain tags to be randomly generated
 via the <code class="docutils literal notranslate"><span class="pre">GCR_EL1.Exclude</span></code> register bit-field. By default, Linux
@@ -391,8 +393,8 @@ in the <code class="docutils literal notranslate"><span class="pre">PR_MTE_TAG_M
 <p><strong>Note</strong>: The hardware uses an exclude mask but the <code class="docutils literal notranslate"><span class="pre">prctl()</span></code>
 interface provides an include mask. An include mask of <code class="docutils literal notranslate"><span class="pre">0</span></code> (exclusion
 mask <code class="docutils literal notranslate"><span class="pre">0xffff</span></code>) results in the CPU always generating tag <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
-</section>
-<section id="per-cpu-preferred-tag-checking-mode">
+</div>
+<div class="section" id="per-cpu-preferred-tag-checking-mode">
 <h3>Per-CPU preferred tag checking mode<a class="headerlink" href="#per-cpu-preferred-tag-checking-mode" title="Permalink to this headline">¶</a></h3>
 <p>On some CPUs the performance of MTE in stricter tag checking modes
 is similar to that of less strict tag checking modes. This makes it
@@ -414,8 +416,8 @@ always be the case at present because the kernel only supports two
 tag checking modes, but future kernels may support more modes), that
 mode will be selected. Otherwise, one of the modes in the task’s mode
 set will be selected in a currently unspecified manner.</p>
-</section>
-<section id="initial-process-state">
+</div>
+<div class="section" id="initial-process-state">
 <h3>Initial process state<a class="headerlink" href="#initial-process-state" title="Permalink to this headline">¶</a></h3>
 <p>On <code class="docutils literal notranslate"><span class="pre">execve()</span></code>, the new process has the following configuration:</p>
 <ul class="simple">
@@ -429,8 +431,8 @@ set will be selected in a currently unspecified manner.</p>
 memory map attributes with the exception of the <code class="docutils literal notranslate"><span class="pre">madvise()</span></code> ranges
 with <code class="docutils literal notranslate"><span class="pre">MADV_WIPEONFORK</span></code> which will have the data and tags cleared (set
 to 0).</p>
-</section>
-<section id="the-ptrace-interface">
+</div>
+<div class="section" id="the-ptrace-interface">
 <h3>The <code class="docutils literal notranslate"><span class="pre">ptrace()</span></code> interface<a class="headerlink" href="#the-ptrace-interface" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">PTRACE_PEEKMTETAGS</span></code> and <code class="docutils literal notranslate"><span class="pre">PTRACE_POKEMTETAGS</span></code> allow a tracer to read
 the tags from or set the tags to a tracee’s address space. The
@@ -470,9 +472,9 @@ address ABI control and MTE configuration of a process as per the
 <code class="docutils literal notranslate"><span class="pre">prctl()</span></code> options described in
 <a class="reference internal" href="tagged-address-abi.html"><span class="doc">AArch64 TAGGED ADDRESS ABI</span></a> and above. The corresponding
 <code class="docutils literal notranslate"><span class="pre">regset</span></code> is 1 element of 8 bytes (<code class="docutils literal notranslate"><span class="pre">sizeof(long))</span></code>).</p>
-</section>
-</section>
-<section id="example-of-correct-usage">
+</div>
+</div>
+<div class="section" id="example-of-correct-usage">
 <h2>Example of correct usage<a class="headerlink" href="#example-of-correct-usage" title="Permalink to this headline">¶</a></h2>
 <p><em>MTE Example code</em></p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
@@ -596,8 +598,8 @@ address ABI control and MTE configuration of a process as per the
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

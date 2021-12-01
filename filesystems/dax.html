@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Direct Access for files &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -318,9 +320,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="direct-access-for-files">
+  <div class="section" id="direct-access-for-files">
 <h1>Direct Access for files<a class="headerlink" href="#direct-access-for-files" title="Permalink to this headline">¶</a></h1>
-<section id="motivation">
+<div class="section" id="motivation">
 <h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
 <p>The page cache is usually used to buffer reads and writes to files.
 It is also used to provide the pages which are mapped into userspace
@@ -329,8 +331,8 @@ by a call to mmap.</p>
 unnecessary copies of the original storage.  The <cite>DAX</cite> code removes the
 extra copy by performing reads and writes directly to the storage device.
 For file mappings, the storage device is mapped directly into userspace.</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>If you have a block device which supports <cite>DAX</cite>, you can make a filesystem
 on it as usual.  The <cite>DAX</cite> code currently only supports files with a block
@@ -338,17 +340,17 @@ size equal to your kernel’s <cite>PAGE_SIZE</cite>, so you may need to specify
 size when creating the filesystem.</p>
 <p>Currently 3 filesystems support <cite>DAX</cite>: ext2, ext4 and xfs.  Enabling <cite>DAX</cite> on them
 is different.</p>
-</section>
-<section id="enabling-dax-on-ext2">
+</div>
+<div class="section" id="enabling-dax-on-ext2">
 <h2>Enabling DAX on ext2<a class="headerlink" href="#enabling-dax-on-ext2" title="Permalink to this headline">¶</a></h2>
 <p>When mounting the filesystem, use the <code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">dax</span></code> option on the command line or
 add ‘dax’ to the options in <code class="docutils literal notranslate"><span class="pre">/etc/fstab</span></code>.  This works to enable <cite>DAX</cite> on all files
 within the filesystem.  It is equivalent to the <code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">dax=always</span></code> behavior below.</p>
-</section>
-<section id="enabling-dax-on-xfs-and-ext4">
+</div>
+<div class="section" id="enabling-dax-on-xfs-and-ext4">
 <h2>Enabling DAX on xfs and ext4<a class="headerlink" href="#enabling-dax-on-xfs-and-ext4" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="summary">
+</div>
+<div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ol class="arabic">
@@ -398,8 +400,8 @@ flag, the change to existing regular files won’t take effect until the
 files are closed by all processes.</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="details">
+</div>
+<div class="section" id="details">
 <h2>Details<a class="headerlink" href="#details" title="Permalink to this headline">¶</a></h2>
 <p>There are 2 per-file dax flags.  One is a persistent inode setting (<cite>FS_XFLAG_DAX</cite>)
 and the other is a volatile flag indicating the active state of the feature
@@ -458,8 +460,8 @@ will never indicate that <cite>S_DAX</cite> is set on directories.</p>
 <p>Setting the <cite>FS_XFLAG_DAX</cite> flag (specifically or through inheritance) occurs even
 if the underlying media does not support dax and/or the filesystem is
 overridden with a mount option.</p>
-</section>
-<section id="implementation-tips-for-block-driver-writers">
+</div>
+<div class="section" id="implementation-tips-for-block-driver-writers">
 <h2>Implementation Tips for Block Driver Writers<a class="headerlink" href="#implementation-tips-for-block-driver-writers" title="Permalink to this headline">¶</a></h2>
 <p>To support <cite>DAX</cite> in your block driver, implement the ‘direct_access’
 block device operation.  It is used to translate the sector number
@@ -480,8 +482,8 @@ implement direct_access.</p>
 - brd: RAM backed block device driver
 - dcssblk: s390 dcss block device driver
 - pmem: NVDIMM persistent memory driver</p>
-</section>
-<section id="implementation-tips-for-filesystem-writers">
+</div>
+<div class="section" id="implementation-tips-for-filesystem-writers">
 <h2>Implementation Tips for Filesystem Writers<a class="headerlink" href="#implementation-tips-for-filesystem-writers" title="Permalink to this headline">¶</a></h2>
 <p>Filesystem support consists of:</p>
 <ul class="simple">
@@ -515,8 +517,8 @@ exposure of uninitialized data through mmap.</p>
 <p class="admonition-title">See also</p>
 <p>ext4: see Documentation/filesystems/ext4/</p>
 </div>
-</section>
-<section id="handling-media-errors">
+</div>
+<div class="section" id="handling-media-errors">
 <h2>Handling Media Errors<a class="headerlink" href="#handling-media-errors" title="Permalink to this headline">¶</a></h2>
 <p>The libnvdimm subsystem stores a record of known media error locations for
 each pmem block device (in gendisk-&gt;badblocks). If we fault at such location,
@@ -543,8 +545,8 @@ provided at the block layer through DM, or additionally, at the filesystem
 level. These would have to rely on the above two tenets, that error clearing
 can happen either by sending an IO through the driver, or zeroing (also through
 the driver).</p>
-</section>
-<section id="shortcomings">
+</div>
+<div class="section" id="shortcomings">
 <h2>Shortcomings<a class="headerlink" href="#shortcomings" title="Permalink to this headline">¶</a></h2>
 <p>Even if the kernel or its modules are stored on a filesystem that supports
 <cite>DAX</cite> on a block device that supports <cite>DAX</cite>, they will still be copied into RAM.</p>
@@ -564,8 +566,8 @@ is being accessed that is key here).  Other things that will not work in
 the non struct page case include RDMA, <code class="xref c c-func docutils literal notranslate"><span class="pre">sendfile()</span></code> and
 <code class="xref c c-func docutils literal notranslate"><span class="pre">splice()</span></code>.</p>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

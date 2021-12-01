@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>1.28. Image Cropping, Insertion and Scaling – the CROP API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -287,7 +289,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="image-cropping-insertion-and-scaling-the-crop-api">
+  <div class="section" id="image-cropping-insertion-and-scaling-the-crop-api">
 <span id="crop"></span><h1><span class="section-number">1.28. </span>Image Cropping, Insertion and Scaling – the CROP API<a class="headerlink" href="#image-cropping-insertion-and-scaling-the-crop-api" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -331,16 +333,14 @@ where applicable) will be fixed in this case.</p>
 API will also support the <a class="reference internal" href="vidioc-cropcap.html#vidioc-cropcap"><span class="std std-ref">VIDIOC_CROPCAP</span></a>
 ioctl.</p>
 </div>
-<section id="cropping-structures">
+<div class="section" id="cropping-structures">
 <h2><span class="section-number">1.28.1. </span>Cropping Structures<a class="headerlink" href="#cropping-structures" title="Permalink to this headline">¶</a></h2>
-<figure class="align-center" id="id1">
-<img alt="crop.svg" src="../../../_images/crop.svg" /><figcaption>
-<p><span class="caption-text">Image Cropping, Insertion and Scaling</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<div class="figure align-center" id="id1">
+<img alt="crop.svg" src="../../../_images/crop.svg" /><p class="caption"><span class="caption-text">Image Cropping, Insertion and Scaling</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 <div class="legend">
 <p>The cropping, insertion and scaling process</p>
 </div>
-</figcaption>
-</figure>
+</div>
 <p>For capture devices the coordinates of the top left corner, width and
 height of the area which can be sampled is given by the <code class="docutils literal notranslate"><span class="pre">bounds</span></code>
 substructure of the struct <code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_cropcap</span></code> returned
@@ -370,8 +370,8 @@ is first loaded, but not later.</p>
 <p>For output devices these structures and ioctls are used accordingly,
 defining the <em>target</em> rectangle where the images will be inserted into
 the video signal.</p>
-</section>
-<section id="scaling-adjustments">
+</div>
+<div class="section" id="scaling-adjustments">
 <h2><span class="section-number">1.28.2. </span>Scaling Adjustments<a class="headerlink" href="#scaling-adjustments" title="Permalink to this headline">¶</a></h2>
 <p>Video hardware can have various cropping, insertion and scaling
 limitations. It may only scale up or down, support only discrete scaling
@@ -408,8 +408,8 @@ aspect ratio closer to the original request, so it asks for a cropping
 rectangle of 608 × 456 pixels. The present scaling factors limit
 cropping to 640 × 384, so the driver returns the cropping size 608 × 384
 and adjusts the image size to closest possible 304 × 192.</p>
-</section>
-<section id="examples">
+</div>
+<div class="section" id="examples">
 <h2><span class="section-number">1.28.3. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>Source and target rectangles shall remain unchanged across closing and
 reopening a device, such that piping data into or out of a device will
@@ -420,8 +420,8 @@ ensure the parameters are suitable before starting I/O.</p>
 <p>On the next two examples, a video capture device is assumed;
 change <code class="docutils literal notranslate"><span class="pre">V4L2_BUF_TYPE_VIDEO_CAPTURE</span></code> for other types of device.</p>
 </div>
-</section>
-<section id="example-resetting-the-cropping-parameters">
+</div>
+<div class="section" id="example-resetting-the-cropping-parameters">
 <h2><span class="section-number">1.28.4. </span>Example: Resetting the cropping parameters<a class="headerlink" href="#example-resetting-the-cropping-parameters" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">v4l2_cropcap</span> <span class="n">cropcap</span><span class="p">;</span>
 <span class="k">struct</span> <span class="nc">v4l2_crop</span> <span class="n">crop</span><span class="p">;</span>
@@ -447,8 +447,8 @@ change <code class="docutils literal notranslate"><span class="pre">V4L2_BUF_TYP
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="example-simple-downscaling">
+</div>
+<div class="section" id="example-simple-downscaling">
 <h2><span class="section-number">1.28.5. </span>Example: Simple downscaling<a class="headerlink" href="#example-simple-downscaling" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">v4l2_cropcap</span> <span class="n">cropcap</span><span class="p">;</span>
 <span class="k">struct</span> <span class="nc">v4l2_format</span> <span class="n">format</span><span class="p">;</span>
@@ -474,8 +474,8 @@ change <code class="docutils literal notranslate"><span class="pre">V4L2_BUF_TYP
 <span class="cm">   or if the driver can scale at all. */</span>
 </pre></div>
 </div>
-</section>
-<section id="example-selecting-an-output-area">
+</div>
+<div class="section" id="example-selecting-an-output-area">
 <h2><span class="section-number">1.28.6. </span>Example: Selecting an output area<a class="headerlink" href="#example-selecting-an-output-area" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -514,8 +514,8 @@ change <code class="docutils literal notranslate"><span class="pre">V4L2_BUF_TYP
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="example-current-scaling-factor-and-pixel-aspect">
+</div>
+<div class="section" id="example-current-scaling-factor-and-pixel-aspect">
 <h2><span class="section-number">1.28.7. </span>Example: Current scaling factor and pixel aspect<a class="headerlink" href="#example-current-scaling-factor-and-pixel-aspect" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -574,8 +574,8 @@ change <code class="docutils literal notranslate"><span class="pre">V4L2_BUF_TYP
 <span class="n">dheight</span> <span class="o">=</span> <span class="n">format</span><span class="p">.</span><span class="n">fmt</span><span class="p">.</span><span class="n">pix</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

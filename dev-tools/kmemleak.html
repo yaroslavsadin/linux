@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Kernel Memory Leak Detector &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -265,7 +267,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kernel-memory-leak-detector">
+  <div class="section" id="kernel-memory-leak-detector">
 <h1>Kernel Memory Leak Detector<a class="headerlink" href="#kernel-memory-leak-detector" title="Permalink to this headline">¶</a></h1>
 <p>Kmemleak provides a way of detecting possible kernel memory leaks in a
 way similar to a <a class="reference external" href="https://en.wikipedia.org/wiki/Tracing_garbage_collection">tracing garbage collector</a>,
@@ -273,7 +275,7 @@ with the difference that the orphan objects are not freed but only
 reported via /sys/kernel/debug/kmemleak. A similar method is used by the
 Valgrind tool (<code class="docutils literal notranslate"><span class="pre">memcheck</span> <span class="pre">--leak-check</span></code>) to detect the memory leaks in
 user-space applications.</p>
-<section id="usage">
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>CONFIG_DEBUG_KMEMLEAK in “Kernel hacking” has to be enabled. A kernel
 thread scans the memory every 10 minutes (by default) and prints the
@@ -361,8 +363,8 @@ disabled by default. Passing <code class="docutils literal notranslate"><span cl
 line enables the function.</p>
 <p>If you are getting errors like “Error while writing to stdout” or “write_loop:
 Invalid argument”, make sure kmemleak is properly enabled.</p>
-</section>
-<section id="basic-algorithm">
+</div>
+<div class="section" id="basic-algorithm">
 <h2>Basic Algorithm<a class="headerlink" href="#basic-algorithm" title="Permalink to this headline">¶</a></h2>
 <p>The memory allocations via <a class="reference internal" href="../core-api/mm-api.html#c.kmalloc" title="kmalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">kmalloc()</span></code></a>, <a class="reference internal" href="../core-api/mm-api.html#c.vmalloc" title="vmalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">vmalloc()</span></code></a>,
 <a class="reference internal" href="../core-api/mm-api.html#c.kmem_cache_alloc" title="kmem_cache_alloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">kmem_cache_alloc()</span></code></a> and
@@ -397,8 +399,8 @@ internal data structures and they cannot be detected as orphans. To
 avoid this, kmemleak can also store the number of values pointing to an
 address inside the block address range that need to be found so that the
 block is not considered a leak. One example is __vmalloc().</p>
-</section>
-<section id="testing-specific-sections-with-kmemleak">
+</div>
+<div class="section" id="testing-specific-sections-with-kmemleak">
 <h2>Testing specific sections with kmemleak<a class="headerlink" href="#testing-specific-sections-with-kmemleak" title="Permalink to this headline">¶</a></h2>
 <p>Upon initial bootup your /sys/kernel/debug/kmemleak output page may be
 quite extensive. This can also be the case if you have very buggy code
@@ -417,8 +419,8 @@ specific sections of code.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># cat /sys/kernel/debug/kmemleak
 </pre></div>
 </div>
-</section>
-<section id="freeing-kmemleak-internal-objects">
+</div>
+<div class="section" id="freeing-kmemleak-internal-objects">
 <h2>Freeing kmemleak internal objects<a class="headerlink" href="#freeing-kmemleak-internal-objects" title="Permalink to this headline">¶</a></h2>
 <p>To allow access to previously found memory leaks after kmemleak has been
 disabled by the user or due to an fatal error, internal kmemleak objects
@@ -428,8 +430,8 @@ a large part of physical memory.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># echo clear &gt; /sys/kernel/debug/kmemleak
 </pre></div>
 </div>
-</section>
-<section id="kmemleak-api">
+</div>
+<div class="section" id="kmemleak-api">
 <h2>Kmemleak API<a class="headerlink" href="#kmemleak-api" title="Permalink to this headline">¶</a></h2>
 <p>See the include/linux/kmemleak.h header for the functions prototype.</p>
 <ul class="simple">
@@ -458,8 +460,8 @@ mapping:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">kmemleak_not_leak_phys</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">kmemleak_ignore_phys</span></code></p></li>
 </ul>
-</section>
-<section id="dealing-with-false-positives-negatives">
+</div>
+<div class="section" id="dealing-with-false-positives-negatives">
 <h2>Dealing with false positives/negatives<a class="headerlink" href="#dealing-with-false-positives-negatives" title="Permalink to this headline">¶</a></h2>
 <p>The false negatives are real memory leaks (orphan objects) but not
 reported by kmemleak because values found during the memory scanning
@@ -476,8 +478,8 @@ longer be scanned.</p>
 systems, because of pointers temporarily stored in CPU registers or
 stacks. Kmemleak defines MSECS_MIN_AGE (defaulting to 1000) representing
 the minimum age of an object to be reported as a memory leak.</p>
-</section>
-<section id="limitations-and-drawbacks">
+</div>
+<div class="section" id="limitations-and-drawbacks">
 <h2>Limitations and Drawbacks<a class="headerlink" href="#limitations-and-drawbacks" title="Permalink to this headline">¶</a></h2>
 <p>The main drawback is the reduced performance of memory allocation and
 freeing. To avoid other penalties, the memory scanning is only performed
@@ -497,8 +499,8 @@ block doesn’t need to be freed (some cases in the init_call functions),
 the pointer is calculated by other methods than the usual container_of
 macro or the pointer is stored in a location not scanned by kmemleak.</p>
 <p>Page allocations and ioremap are not tracked.</p>
-</section>
-<section id="testing-with-kmemleak-test">
+</div>
+<div class="section" id="testing-with-kmemleak-test">
 <h2>Testing with kmemleak-test<a class="headerlink" href="#testing-with-kmemleak-test" title="Permalink to this headline">¶</a></h2>
 <p>To check if you have all set up to use kmemleak, you can use the kmemleak-test
 module, a module that deliberately leaks memory. Set CONFIG_DEBUG_KMEMLEAK_TEST
@@ -530,8 +532,8 @@ unreferenced object 0xffff89862ca702e8 (size 32):
 </div>
 <p>Removing the module with <code class="docutils literal notranslate"><span class="pre">rmmod</span> <span class="pre">kmemleak_test</span></code> should also trigger some
 kmemleak results.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>MMC Asynchronous Request &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -351,9 +353,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="mmc-asynchronous-request">
+  <div class="section" id="mmc-asynchronous-request">
 <h1>MMC Asynchronous Request<a class="headerlink" href="#mmc-asynchronous-request" title="Permalink to this headline">¶</a></h1>
-<section id="rationale">
+<div class="section" id="rationale">
 <h2>Rationale<a class="headerlink" href="#rationale" title="Permalink to this headline">¶</a></h2>
 <p>How significant is the cache maintenance overhead?</p>
 <p>It depends. Fast eMMC and multiple cache levels with speculative cache
@@ -366,8 +368,8 @@ time between when an MMC request ends and another MMC request begins.</p>
 dma_unmap_sg are processing. Using non-blocking MMC requests makes it
 possible to prepare the caches for next job in parallel with an active
 MMC request.</p>
-</section>
-<section id="mmc-block-driver">
+</div>
+<div class="section" id="mmc-block-driver">
 <h2>MMC block driver<a class="headerlink" href="#mmc-block-driver" title="Permalink to this headline">¶</a></h2>
 <p>The mmc_blk_issue_rw_rq() in the MMC block driver is made non-blocking.</p>
 <p>The increase in throughput is proportional to the time it takes to
@@ -378,12 +380,12 @@ performance gain is 5% for large writes and 10% on large reads on a L2 cache
 platform. In power save mode, when clocks run on a lower frequency, the DMA
 preparation may cost even more. As long as these slower preparations are run
 in parallel with the transfer performance won’t be affected.</p>
-</section>
-<section id="details-on-measurements-from-iozone-and-mmc-test">
+</div>
+<div class="section" id="details-on-measurements-from-iozone-and-mmc-test">
 <h2>Details on measurements from IOZone and mmc_test<a class="headerlink" href="#details-on-measurements-from-iozone-and-mmc-test" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://wiki.linaro.org/WorkingGroups/Kernel/Specs/StoragePerfMMC-async-req">https://wiki.linaro.org/WorkingGroups/Kernel/Specs/StoragePerfMMC-async-req</a></p>
-</section>
-<section id="mmc-core-api-extension">
+</div>
+<div class="section" id="mmc-core-api-extension">
 <h2>MMC core API extension<a class="headerlink" href="#mmc-core-api-extension" title="Permalink to this headline">¶</a></h2>
 <p>There is one new public function mmc_start_req().</p>
 <p>It starts a new MMC command request for a host. The function isn’t
@@ -391,16 +393,16 @@ truly non-blocking. If there is an ongoing async request it waits
 for completion of that request and starts the new one and returns. It
 doesn’t wait for the new request to complete. If there is no ongoing
 request it starts the new request and returns immediately.</p>
-</section>
-<section id="mmc-host-extensions">
+</div>
+<div class="section" id="mmc-host-extensions">
 <h2>MMC host extensions<a class="headerlink" href="#mmc-host-extensions" title="Permalink to this headline">¶</a></h2>
 <p>There are two optional members in the mmc_host_ops – pre_req() and
 post_req() – that the host driver may implement in order to move work
 to before and after the actual mmc_host_ops.request() function is called.</p>
 <p>In the DMA case pre_req() may do dma_map_sg() and prepare the DMA
 descriptor, and post_req() runs the dma_unmap_sg().</p>
-</section>
-<section id="optimize-for-the-first-request">
+</div>
+<div class="section" id="optimize-for-the-first-request">
 <h2>Optimize for the first request<a class="headerlink" href="#optimize-for-the-first-request" title="Permalink to this headline">¶</a></h2>
 <p>The first request in a series of requests can’t be prepared in parallel
 with the previous transfer, since there is no previous request.</p>
@@ -434,8 +436,8 @@ and finally prepare the second chunk and start the transfer.</p>
     dma_issue_pending(req-&gt;dma_desc);
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

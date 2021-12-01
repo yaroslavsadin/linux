@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>2.7. V4L2 sub-devices &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -378,7 +380,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="v4l2-sub-devices">
+  <div class="section" id="v4l2-sub-devices">
 <h1><span class="section-number">2.7. </span>V4L2 sub-devices<a class="headerlink" href="#v4l2-sub-devices" title="Permalink to this headline">¶</a></h1>
 <p>Many drivers need to communicate with sub-devices. These devices can do all
 sort of tasks, but most commonly they handle audio and/or video muxing,
@@ -490,7 +492,7 @@ between sub-devices and video nodes.</p>
 ensures that width, height and the media bus pixel code are equal on both source
 and sink of the link. Subdev drivers are also free to use this function to
 perform the checks mentioned above in addition to their own checks.</p>
-<section id="subdev-registration">
+<div class="section" id="subdev-registration">
 <h2><span class="section-number">2.7.1. </span>Subdev registration<a class="headerlink" href="#subdev-registration" title="Permalink to this headline">¶</a></h2>
 <p>There are currently two ways to register subdevices with the V4L2 core. The
 first (traditional) possibility is to have subdevices registered by bridge
@@ -582,8 +584,8 @@ registered subdevices to them. If a match is detected the <code class="docutils 
 notifier callback is called. After all subdevices have been located the
 .complete() callback is called. When a subdevice is removed from the
 system the .unbind() method is called. All three callbacks are optional.</p>
-</section>
-<section id="calling-subdev-operations">
+</div>
+<div class="section" id="calling-subdev-operations">
 <h2><span class="section-number">2.7.2. </span>Calling subdev operations<a class="headerlink" href="#calling-subdev-operations" title="Permalink to this headline">¶</a></h2>
 <p>The advantage of using <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_subdev</span></code></a> is that it is a generic struct and
 does not contain any knowledge about the underlying hardware. So a driver might
@@ -631,9 +633,9 @@ that needs it.</p>
 it can call <code class="docutils literal notranslate"><span class="pre">v4l2_subdev_notify(sd,</span> <span class="pre">notification,</span> <span class="pre">arg)</span></code>. This macro checks
 whether there is a <code class="docutils literal notranslate"><span class="pre">notify()</span></code> callback defined and returns <code class="docutils literal notranslate"><span class="pre">-ENODEV</span></code> if not.
 Otherwise the result of the <code class="docutils literal notranslate"><span class="pre">notify()</span></code> call is returned.</p>
-</section>
-</section>
-<section id="v4l2-sub-device-userspace-api">
+</div>
+</div>
+<div class="section" id="v4l2-sub-device-userspace-api">
 <h1><span class="section-number">2.8. </span>V4L2 sub-device userspace API<a class="headerlink" href="#v4l2-sub-device-userspace-api" title="Permalink to this headline">¶</a></h1>
 <p>Bridge drivers traditionally expose one or multiple video nodes to userspace,
 and control subdevices through the <a class="reference internal" href="#c.v4l2_subdev_ops" title="v4l2_subdev_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_subdev_ops</span></code></a> operations in
@@ -685,8 +687,8 @@ implemented.</p>
 <div><p>All ioctls not in the above list are passed directly to the sub-device
 driver through the core::ioctl operation.</p>
 </div></blockquote>
-</section>
-<section id="read-only-sub-device-userspace-api">
+</div>
+<div class="section" id="read-only-sub-device-userspace-api">
 <h1><span class="section-number">2.9. </span>Read-only sub-device userspace API<a class="headerlink" href="#read-only-sub-device-userspace-api" title="Permalink to this headline">¶</a></h1>
 <p>Bridge drivers that control their connected subdevices through direct calls to
 the kernel API realized by <a class="reference internal" href="#c.v4l2_subdev_ops" title="v4l2_subdev_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_subdev_ops</span></code></a> structure do not usually
@@ -724,8 +726,8 @@ formats and selection rectangles.</p>
 <p>In case the ioctl is not allowed, or the format to modify is set to
 <code class="docutils literal notranslate"><span class="pre">V4L2_SUBDEV_FORMAT_ACTIVE</span></code>, the core returns a negative error code and
 the errno variable is set to <code class="docutils literal notranslate"><span class="pre">-EPERM</span></code>.</p>
-</section>
-<section id="i2c-sub-device-drivers">
+</div>
+<div class="section" id="i2c-sub-device-drivers">
 <h1><span class="section-number">2.10. </span>I2C sub-device drivers<a class="headerlink" href="#i2c-sub-device-drivers" title="Permalink to this headline">¶</a></h1>
 <p>Since these drivers are so common, special helper functions are available to
 ease the use of these drivers (<code class="docutils literal notranslate"><span class="pre">v4l2-common.h</span></code>).</p>
@@ -806,12 +808,12 @@ the irq and platform_data arguments after the subdev was setup.</p>
 <a class="reference internal" href="v4l2-common.html#c.v4l2_i2c_new_subdev_board" title="v4l2_i2c_new_subdev_board"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_i2c_new_subdev_board()</span></code></a>, internally filling a
 <a class="reference internal" href="../i2c.html#c.i2c_board_info" title="i2c_board_info"><code class="xref c c-type docutils literal notranslate"><span class="pre">i2c_board_info</span></code></a> structure using the <code class="docutils literal notranslate"><span class="pre">client_type</span></code> and the
 <code class="docutils literal notranslate"><span class="pre">addr</span></code> to fill it.</p>
-</section>
-<section id="v4l2-sub-device-functions-and-data-structures">
+</div>
+<div class="section" id="v4l2-sub-device-functions-and-data-structures">
 <h1><span class="section-number">2.11. </span>V4L2 sub-device functions and data structures<a class="headerlink" href="#v4l2-sub-device-functions-and-data-structures" title="Permalink to this headline">¶</a></h1>
 <dl class="c struct">
-<dt id="c.v4l2_decode_vbi_line">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_decode_vbi_line</span></code><a class="headerlink" href="#c.v4l2_decode_vbi_line" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_decode_vbi_line">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_decode_vbi_line</span></span></span><a class="headerlink" href="#c.v4l2_decode_vbi_line" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>used to decode_vbi_line</p>
 </dd></dl>
 
@@ -838,8 +840,8 @@ the start of the payload.</p>
 </dd>
 </dl>
 <dl class="c enum">
-<dt id="c.v4l2_subdev_io_pin_bits">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_io_pin_bits</span></code><a class="headerlink" href="#c.v4l2_subdev_io_pin_bits" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_io_pin_bits">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_io_pin_bits</span></span></span><a class="headerlink" href="#c.v4l2_subdev_io_pin_bits" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Subdevice external IO pin configuration bits</p>
 </dd></dl>
 
@@ -859,8 +861,8 @@ Otherwise, ACTIVE HIGH is assumed.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_io_pin_config">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_io_pin_config</span></code><a class="headerlink" href="#c.v4l2_subdev_io_pin_config" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_io_pin_config">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_io_pin_config</span></span></span><a class="headerlink" href="#c.v4l2_subdev_io_pin_config" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Subdevice external IO pin configuration</p>
 </dd></dl>
 
@@ -889,8 +891,8 @@ Otherwise, ACTIVE HIGH is assumed.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_core_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_core_ops</span></code><a class="headerlink" href="#c.v4l2_subdev_core_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_core_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_core_ops</span></span></span><a class="headerlink" href="#c.v4l2_subdev_core_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Define core ops callbacks for subdevs</p>
 </dd></dl>
 
@@ -970,8 +972,8 @@ for it to be warned when the value of a control changes.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_tuner_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_tuner_ops</span></code><a class="headerlink" href="#c.v4l2_subdev_tuner_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_tuner_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_tuner_ops</span></span></span><a class="headerlink" href="#c.v4l2_subdev_tuner_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Callbacks used when v4l device was opened in radio mode.</p>
 </dd></dl>
 
@@ -1043,8 +1045,8 @@ that would require it. An example of such usage is:</p>
 </div>
 </div>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_audio_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_audio_ops</span></code><a class="headerlink" href="#c.v4l2_subdev_audio_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_audio_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_audio_ops</span></span></span><a class="headerlink" href="#c.v4l2_subdev_audio_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Callbacks used for audio-related settings</p>
 </dd></dl>
 
@@ -1084,8 +1086,8 @@ stopped.</p>
 </dd>
 </dl>
 <dl class="c enum">
-<dt id="c.v4l2_mbus_frame_desc_flags">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">v4l2_mbus_frame_desc_flags</span></code><a class="headerlink" href="#c.v4l2_mbus_frame_desc_flags" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_mbus_frame_desc_flags">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_mbus_frame_desc_flags</span></span></span><a class="headerlink" href="#c.v4l2_mbus_frame_desc_flags" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>media bus frame description flags</p>
 </dd></dl>
 
@@ -1101,8 +1103,8 @@ specifies maximum data length.</p>
 the receiver should use 1D DMA.</p>
 </div></blockquote>
 <dl class="c struct">
-<dt id="c.v4l2_mbus_frame_desc_entry">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_mbus_frame_desc_entry</span></code><a class="headerlink" href="#c.v4l2_mbus_frame_desc_entry" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_mbus_frame_desc_entry">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_mbus_frame_desc_entry</span></span></span><a class="headerlink" href="#c.v4l2_mbus_frame_desc_entry" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>media bus frame description structure</p>
 </dd></dl>
 
@@ -1126,8 +1128,8 @@ the receiver should use 1D DMA.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_mbus_frame_desc">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_mbus_frame_desc</span></code><a class="headerlink" href="#c.v4l2_mbus_frame_desc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_mbus_frame_desc">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_mbus_frame_desc</span></span></span><a class="headerlink" href="#c.v4l2_mbus_frame_desc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>media bus data frame description</p>
 </dd></dl>
 
@@ -1146,8 +1148,8 @@ the receiver should use 1D DMA.</p>
 </dd>
 </dl>
 <dl class="c enum">
-<dt id="c.v4l2_subdev_pre_streamon_flags">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_pre_streamon_flags</span></code><a class="headerlink" href="#c.v4l2_subdev_pre_streamon_flags" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_pre_streamon_flags">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_pre_streamon_flags</span></span></span><a class="headerlink" href="#c.v4l2_subdev_pre_streamon_flags" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Flags for pre_streamon subdev core op</p>
 </dd></dl>
 
@@ -1158,8 +1160,8 @@ or LP-111 mode before call to s_stream().</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_video_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_video_ops</span></code><a class="headerlink" href="#c.v4l2_subdev_video_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_video_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_video_ops</span></span></span><a class="headerlink" href="#c.v4l2_subdev_video_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Callbacks used when v4l device was opened in video mode.</p>
 </dd></dl>
 
@@ -1256,8 +1258,8 @@ pre_streamon was called earlier.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_vbi_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_vbi_ops</span></code><a class="headerlink" href="#c.v4l2_subdev_vbi_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_vbi_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_vbi_ops</span></span></span><a class="headerlink" href="#c.v4l2_subdev_vbi_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Callbacks used when v4l device was opened in video mode via the vbi device node.</p>
 </dd></dl>
 
@@ -1308,8 +1310,8 @@ code.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_sensor_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_sensor_ops</span></code><a class="headerlink" href="#c.v4l2_subdev_sensor_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_sensor_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_sensor_ops</span></span></span><a class="headerlink" href="#c.v4l2_subdev_sensor_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>v4l2-subdev sensor operations</p>
 </dd></dl>
 
@@ -1333,8 +1335,8 @@ turned on.</p>
 </dd>
 </dl>
 <dl class="c enum">
-<dt id="c.v4l2_subdev_ir_mode">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_ir_mode</span></code><a class="headerlink" href="#c.v4l2_subdev_ir_mode" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_ir_mode">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_ir_mode</span></span></span><a class="headerlink" href="#c.v4l2_subdev_ir_mode" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>describes the type of IR supported</p>
 </dd></dl>
 
@@ -1344,8 +1346,8 @@ turned on.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_ir_parameters">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_ir_parameters</span></code><a class="headerlink" href="#c.v4l2_subdev_ir_parameters" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_ir_parameters">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_ir_parameters</span></span></span><a class="headerlink" href="#c.v4l2_subdev_ir_parameters" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Parameters for IR TX or TX</p>
 </dd></dl>
 
@@ -1406,8 +1408,8 @@ signal. Used only for RX.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_ir_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_ir_ops</span></code><a class="headerlink" href="#c.v4l2_subdev_ir_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_ir_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_ir_ops</span></span></span><a class="headerlink" href="#c.v4l2_subdev_ir_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>operations for IR subdevices</p>
 </dd></dl>
 
@@ -1462,8 +1464,8 @@ processing when shutdown is true.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_pad_config">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_pad_config</span></code><a class="headerlink" href="#c.v4l2_subdev_pad_config" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_pad_config">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_pad_config</span></span></span><a class="headerlink" href="#c.v4l2_subdev_pad_config" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Used for storing subdev pad information.</p>
 </dd></dl>
 
@@ -1489,8 +1491,8 @@ processing when shutdown is true.</p>
 of the main argument is set to <code class="docutils literal notranslate"><span class="pre">V4L2_SUBDEV_FORMAT_TRY</span></code>. For
 <code class="docutils literal notranslate"><span class="pre">V4L2_SUBDEV_FORMAT_ACTIVE</span></code> it is safe to pass <code class="docutils literal notranslate"><span class="pre">NULL</span></code>.</p>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_state">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_state</span></code><a class="headerlink" href="#c.v4l2_subdev_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_state">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_state</span></span></span><a class="headerlink" href="#c.v4l2_subdev_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Used for storing subdev state information.</p>
 </dd></dl>
 
@@ -1510,8 +1512,8 @@ of the main argument is set to <code class="docutils literal notranslate"><span 
 of the main argument is set to <code class="docutils literal notranslate"><span class="pre">V4L2_SUBDEV_FORMAT_TRY</span></code>. For
 <code class="docutils literal notranslate"><span class="pre">V4L2_SUBDEV_FORMAT_ACTIVE</span></code> it is safe to pass <code class="docutils literal notranslate"><span class="pre">NULL</span></code>.</p>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_pad_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_pad_ops</span></code><a class="headerlink" href="#c.v4l2_subdev_pad_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_pad_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_pad_ops</span></span></span><a class="headerlink" href="#c.v4l2_subdev_pad_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>v4l2-subdev pad level operations</p>
 </dd></dl>
 
@@ -1604,8 +1606,8 @@ unrecoverable failures.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_ops</span></code><a class="headerlink" href="#c.v4l2_subdev_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_ops</span></span></span><a class="headerlink" href="#c.v4l2_subdev_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Subdev operations</p>
 </dd></dl>
 
@@ -1642,8 +1644,8 @@ unrecoverable failures.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_internal_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_internal_ops</span></code><a class="headerlink" href="#c.v4l2_subdev_internal_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_internal_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_internal_ops</span></span></span><a class="headerlink" href="#c.v4l2_subdev_internal_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>V4L2 subdev internal ops</p>
 </dd></dl>
 
@@ -1687,8 +1689,8 @@ sub-device that sets the V4L2_SUBDEV_FL_HAS_DEVNODE flag.</p>
 these ops.</p>
 </div>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_platform_data">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_platform_data</span></code><a class="headerlink" href="#c.v4l2_subdev_platform_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_platform_data">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_platform_data</span></span></span><a class="headerlink" href="#c.v4l2_subdev_platform_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>regulators config struct</p>
 </dd></dl>
 
@@ -1710,8 +1712,8 @@ these ops.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev</span></code><a class="headerlink" href="#c.v4l2_subdev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev</span></span></span><a class="headerlink" href="#c.v4l2_subdev" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>describes a V4L2 sub-device</p>
 </dd></dl>
 
@@ -1806,8 +1808,8 @@ stand-alone or embedded in a larger struct.</p>
 <p>This structure should be initialized by <a class="reference internal" href="#c.v4l2_subdev_init" title="v4l2_subdev_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_subdev_init()</span></code></a> or one of
 its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_subdev_init" title="v4l2_spi_subdev_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_spi_subdev_init()</span></code></a>, <a class="reference internal" href="v4l2-common.html#c.v4l2_i2c_subdev_init" title="v4l2_i2c_subdev_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_i2c_subdev_init()</span></code></a>.</p>
 <dl class="c macro">
-<dt id="c.media_entity_to_v4l2_subdev">
-<code class="sig-name descname"><span class="pre">media_entity_to_v4l2_subdev</span></code><a class="headerlink" href="#c.media_entity_to_v4l2_subdev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.media_entity_to_v4l2_subdev">
+<span class="sig-name descname"><span class="n"><span class="pre">media_entity_to_v4l2_subdev</span></span></span><a class="headerlink" href="#c.media_entity_to_v4l2_subdev" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">media_entity_to_v4l2_subdev</span> <span class="pre">(ent)</span></code></p>
@@ -1820,8 +1822,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 </dd>
 </dl>
 <dl class="c macro">
-<dt id="c.vdev_to_v4l2_subdev">
-<code class="sig-name descname"><span class="pre">vdev_to_v4l2_subdev</span></code><a class="headerlink" href="#c.vdev_to_v4l2_subdev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.vdev_to_v4l2_subdev">
+<span class="sig-name descname"><span class="n"><span class="pre">vdev_to_v4l2_subdev</span></span></span><a class="headerlink" href="#c.vdev_to_v4l2_subdev" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">vdev_to_v4l2_subdev</span> <span class="pre">(vdev)</span></code></p>
@@ -1834,8 +1836,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subdev_fh">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subdev_fh</span></code><a class="headerlink" href="#c.v4l2_subdev_fh" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_fh">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_fh</span></span></span><a class="headerlink" href="#c.v4l2_subdev_fh" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Used for storing subdev information per file handle</p>
 </dd></dl>
 
@@ -1859,8 +1861,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 </dd>
 </dl>
 <dl class="c macro">
-<dt id="c.to_v4l2_subdev_fh">
-<code class="sig-name descname"><span class="pre">to_v4l2_subdev_fh</span></code><a class="headerlink" href="#c.to_v4l2_subdev_fh" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.to_v4l2_subdev_fh">
+<span class="sig-name descname"><span class="n"><span class="pre">to_v4l2_subdev_fh</span></span></span><a class="headerlink" href="#c.to_v4l2_subdev_fh" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">to_v4l2_subdev_fh</span> <span class="pre">(fh)</span></code></p>
@@ -1873,8 +1875,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_subdev_get_try_format">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../userspace-api/media/v4l/subdev-formats.html#c.v4l2_mbus_framefmt" title="v4l2_mbus_framefmt"><span class="pre">v4l2_mbus_framefmt</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_subdev_get_try_format</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev_state" title="v4l2_subdev_state"><span class="pre">v4l2_subdev_state</span></a> <span class="pre">*</span><em><span class="pre">state</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">pad</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_get_try_format" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_get_try_format">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../userspace-api/media/v4l/subdev-formats.html#c.v4l2_mbus_framefmt" title="v4l2_mbus_framefmt"><span class="n"><span class="pre">v4l2_mbus_framefmt</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_get_try_format</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev_state" title="v4l2_subdev_state"><span class="n"><span class="pre">v4l2_subdev_state</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">state</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">pad</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_get_try_format" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>ancillary routine to call <a class="reference internal" href="#c.v4l2_subdev_pad_config" title="v4l2_subdev_pad_config"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">v4l2_subdev_pad_config</span></code></a>-&gt;try_fmt</p>
 </dd></dl>
 
@@ -1888,8 +1890,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_subdev_get_try_crop">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../userspace-api/media/v4l/dev-overlay.html#c.v4l2_rect" title="v4l2_rect"><span class="pre">v4l2_rect</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_subdev_get_try_crop</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev_state" title="v4l2_subdev_state"><span class="pre">v4l2_subdev_state</span></a> <span class="pre">*</span><em><span class="pre">state</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">pad</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_get_try_crop" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_get_try_crop">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../userspace-api/media/v4l/dev-overlay.html#c.v4l2_rect" title="v4l2_rect"><span class="n"><span class="pre">v4l2_rect</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_get_try_crop</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev_state" title="v4l2_subdev_state"><span class="n"><span class="pre">v4l2_subdev_state</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">state</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">pad</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_get_try_crop" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>ancillary routine to call <a class="reference internal" href="#c.v4l2_subdev_pad_config" title="v4l2_subdev_pad_config"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">v4l2_subdev_pad_config</span></code></a>-&gt;try_crop</p>
 </dd></dl>
 
@@ -1903,8 +1905,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_subdev_get_try_compose">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../userspace-api/media/v4l/dev-overlay.html#c.v4l2_rect" title="v4l2_rect"><span class="pre">v4l2_rect</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_subdev_get_try_compose</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev_state" title="v4l2_subdev_state"><span class="pre">v4l2_subdev_state</span></a> <span class="pre">*</span><em><span class="pre">state</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">pad</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_get_try_compose" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_get_try_compose">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../../userspace-api/media/v4l/dev-overlay.html#c.v4l2_rect" title="v4l2_rect"><span class="n"><span class="pre">v4l2_rect</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_get_try_compose</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev_state" title="v4l2_subdev_state"><span class="n"><span class="pre">v4l2_subdev_state</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">state</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">pad</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_get_try_compose" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>ancillary routine to call <a class="reference internal" href="#c.v4l2_subdev_pad_config" title="v4l2_subdev_pad_config"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">v4l2_subdev_pad_config</span></code></a>-&gt;try_compose</p>
 </dd></dl>
 
@@ -1918,8 +1920,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_set_subdevdata">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_set_subdevdata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_set_subdevdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_set_subdevdata">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_set_subdevdata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_set_subdevdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Sets V4L2 dev private device data</p>
 </dd></dl>
 
@@ -1931,8 +1933,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_get_subdevdata">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_get_subdevdata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_get_subdevdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_get_subdevdata">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_get_subdevdata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_get_subdevdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Gets V4L2 dev private device data</p>
 </dd></dl>
 
@@ -1944,8 +1946,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 <p><strong>Description</strong></p>
 <p>Returns the pointer to the private device data to be stored.</p>
 <dl class="c function">
-<dt id="c.v4l2_set_subdev_hostdata">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_set_subdev_hostdata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_set_subdev_hostdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_set_subdev_hostdata">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_set_subdev_hostdata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_set_subdev_hostdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Sets V4L2 dev private host data</p>
 </dd></dl>
 
@@ -1957,8 +1959,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_get_subdev_hostdata">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_get_subdev_hostdata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_get_subdev_hostdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_get_subdev_hostdata">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_get_subdev_hostdata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_get_subdev_hostdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Gets V4L2 dev private data</p>
 </dd></dl>
 
@@ -1970,8 +1972,8 @@ its variants: <a class="reference internal" href="v4l2-common.html#c.v4l2_spi_su
 <p><strong>Description</strong></p>
 <p>Returns the pointer to the private host data to be stored.</p>
 <dl class="c function">
-<dt id="c.v4l2_subdev_get_fwnode_pad_1_to_1">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_subdev_get_fwnode_pad_1_to_1</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="mc-core.html#c.media_entity" title="media_entity"><span class="pre">media_entity</span></a> <span class="pre">*</span><em><span class="pre">entity</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">fwnode_endpoint</span> <span class="pre">*</span><em><span class="pre">endpoint</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_get_fwnode_pad_1_to_1" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_get_fwnode_pad_1_to_1">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_get_fwnode_pad_1_to_1</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="mc-core.html#c.media_entity" title="media_entity"><span class="n"><span class="pre">media_entity</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">entity</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fwnode_endpoint</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">endpoint</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_get_fwnode_pad_1_to_1" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get pad number from a subdev fwnode endpoint, assuming 1:1 port:pad</p>
 </dd></dl>
 
@@ -1989,8 +1991,8 @@ is owned by the subdevice, the function returns the endpoint port
 number.</p>
 <p>Returns the endpoint port number on success or a negative error code.</p>
 <dl class="c function">
-<dt id="c.v4l2_subdev_link_validate_default">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_subdev_link_validate_default</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="mc-core.html#c.media_link" title="media_link"><span class="pre">media_link</span></a> <span class="pre">*</span><em><span class="pre">link</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_subdev_format</span> <span class="pre">*</span><em><span class="pre">source_fmt</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_subdev_format</span> <span class="pre">*</span><em><span class="pre">sink_fmt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_link_validate_default" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_link_validate_default">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_link_validate_default</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="mc-core.html#c.media_link" title="media_link"><span class="n"><span class="pre">media_link</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">link</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_subdev_format</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source_fmt</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_subdev_format</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sink_fmt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_link_validate_default" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>validates a media link</p>
 </dd></dl>
 
@@ -2009,8 +2011,8 @@ number.</p>
 <p>This function ensures that width, height and the media bus pixel
 code are equal on both source and sink of the link.</p>
 <dl class="c function">
-<dt id="c.v4l2_subdev_link_validate">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_subdev_link_validate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="mc-core.html#c.media_link" title="media_link"><span class="pre">media_link</span></a> <span class="pre">*</span><em><span class="pre">link</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_link_validate" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_link_validate">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_link_validate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="mc-core.html#c.media_link" title="media_link"><span class="n"><span class="pre">media_link</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">link</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_link_validate" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>validates a media link</p>
 </dd></dl>
 
@@ -2026,8 +2028,8 @@ calls <a class="reference internal" href="#c.v4l2_subdev_link_validate_default" 
 width, height and the media bus pixel code are equal on both
 source and sink of the link.</p>
 <dl class="c function">
-<dt id="c.v4l2_subdev_alloc_state">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev_state" title="v4l2_subdev_state"><span class="pre">v4l2_subdev_state</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_subdev_alloc_state</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_alloc_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_alloc_state">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev_state" title="v4l2_subdev_state"><span class="n"><span class="pre">v4l2_subdev_state</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_alloc_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_alloc_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate v4l2_subdev_state</p>
 </dd></dl>
 
@@ -2039,8 +2041,8 @@ source and sink of the link.</p>
 <p><strong>Description</strong></p>
 <p>Must call <a class="reference internal" href="#c.v4l2_subdev_free_state" title="v4l2_subdev_free_state"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_subdev_free_state()</span></code></a> when state is no longer needed.</p>
 <dl class="c function">
-<dt id="c.v4l2_subdev_free_state">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_subdev_free_state</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev_state" title="v4l2_subdev_state"><span class="pre">v4l2_subdev_state</span></a> <span class="pre">*</span><em><span class="pre">state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_free_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_free_state">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_free_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev_state" title="v4l2_subdev_state"><span class="n"><span class="pre">v4l2_subdev_state</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_free_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free a v4l2_subdev_state</p>
 </dd></dl>
 
@@ -2050,8 +2052,8 @@ source and sink of the link.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_subdev_init">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_subdev_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev_ops" title="v4l2_subdev_ops"><span class="pre">v4l2_subdev_ops</span></a> <span class="pre">*</span><em><span class="pre">ops</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_init">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev_ops" title="v4l2_subdev_ops"><span class="n"><span class="pre">v4l2_subdev_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>initializes the sub-device struct</p>
 </dd></dl>
 
@@ -2063,8 +2065,8 @@ source and sink of the link.</p>
 </dd>
 </dl>
 <dl class="c macro">
-<dt id="c.v4l2_subdev_call">
-<code class="sig-name descname"><span class="pre">v4l2_subdev_call</span></code><a class="headerlink" href="#c.v4l2_subdev_call" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_call">
+<span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_call</span></span></span><a class="headerlink" href="#c.v4l2_subdev_call" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">v4l2_subdev_call</span> <span class="pre">(sd,</span> <span class="pre">o,</span> <span class="pre">f,</span> <span class="pre">args...)</span></code></p>
@@ -2088,8 +2090,8 @@ each element at <a class="reference internal" href="#c.v4l2_subdev_ops" title="v
 <p><strong>Example</strong></p>
 <p>err = v4l2_subdev_call(sd, video, s_std, norm);</p>
 <dl class="c macro">
-<dt id="c.v4l2_subdev_has_op">
-<code class="sig-name descname"><span class="pre">v4l2_subdev_has_op</span></code><a class="headerlink" href="#c.v4l2_subdev_has_op" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_has_op">
+<span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_has_op</span></span></span><a class="headerlink" href="#c.v4l2_subdev_has_op" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">v4l2_subdev_has_op</span> <span class="pre">(sd,</span> <span class="pre">o,</span> <span class="pre">f)</span></code></p>
@@ -2107,8 +2109,8 @@ which <strong>f</strong> is a part of.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_subdev_notify_event">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_subdev_notify_event</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event</span> <span class="pre">*</span><em><span class="pre">ev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_notify_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subdev_notify_event">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subdev_notify_event</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_subdev_notify_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Delivers event notification for subdevice</p>
 </dd></dl>
 
@@ -2124,7 +2126,7 @@ which <strong>f</strong> is a part of.</p>
 subscribed to the v42l subdev event queue as well as to the bridge driver
 using the notify callback. The notification type for the notify callback
 will be <code class="docutils literal notranslate"><span class="pre">V4L2_DEVICE_NOTIFY_EVENT</span></code>.</p>
-</section>
+</div>
 
 
            </div>

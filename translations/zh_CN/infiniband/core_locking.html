@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>infiniband中间层锁 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -294,13 +296,13 @@
 时奎亮 Alex Shi &lt;<a class="reference external" href="mailto:alexs&#37;&#52;&#48;kernel&#46;org">alexs<span>&#64;</span>kernel<span>&#46;</span>org</a>&gt;</p>
 </dd>
 </dl>
-<section id="infiniband">
+<div class="section" id="infiniband">
 <span id="cn-infiniband-core-locking"></span><h1>infiniband中间层锁<a class="headerlink" href="#infiniband" title="Permalink to this headline">¶</a></h1>
 <blockquote>
 <div><p>本指南试图明确infiniband中间层的锁假设。它描述了对位于中间层以下的低
 级驱动程序和使用中间层的上层协议的要求。</p>
 </div></blockquote>
-<section id="id1">
+<div class="section" id="id1">
 <h2>睡眠和中断环境<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>除了以下异常情况，ib_device结构体中所有方法的低级驱动实现都可以睡眠。
@@ -338,7 +340,7 @@
 <p>被底层驱动用来通过中间层调度异步事件的“A”，也可以从任何上下文中安全调
 用。</p>
 </div></blockquote>
-<section id="id2">
+<div class="section" id="id2">
 <h3>可重入性<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>由低级驱动程序导出的ib_device结构体中的所有方法必须是完全可重入的。
@@ -350,8 +352,8 @@
 CPU上同时安全地调用ib_poll_cq()。然而，不同的ib_poll_cq()调用之间
 的工作完成信息的顺序没有被定义。</p>
 </div></blockquote>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h3>回调<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>低级驱动程序不得直接从与ib_device方法调用相同的调用链中执行回调。例
@@ -376,8 +378,8 @@ low-level driver -&gt;
 <p>完成事件和异步事件回调的运行环境没有被定义。 根据低级别的驱动程序，它可能是
 进程上下文、softirq上下文或中断上下文。上层协议使用者可能不会在回调中睡眠。</p>
 </div></blockquote>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3>热插拔<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>当一个低级驱动程序调用<a class="reference internal" href="../../../driver-api/infiniband.html#c.ib_register_device" title="ib_register_device"><code class="xref c c-func docutils literal notranslate"><span class="pre">ib_register_device()</span></code></a>时，它宣布一个设备已经
@@ -391,9 +393,9 @@ low-level driver -&gt;
 与设备相关的所有资源。</p>
 <p>使用者被允许在其添加和删除方法中睡眠。</p>
 </div></blockquote>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

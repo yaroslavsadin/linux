@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>LC-trie implementation notes &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -362,9 +364,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="lc-trie-implementation-notes">
+  <div class="section" id="lc-trie-implementation-notes">
 <h1>LC-trie implementation notes<a class="headerlink" href="#lc-trie-implementation-notes" title="Permalink to this headline">¶</a></h1>
-<section id="node-types">
+<div class="section" id="node-types">
 <h2>Node types<a class="headerlink" href="#node-types" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>leaf</dt><dd><p>An end node with data. This has a copy of the relevant key, along
@@ -375,8 +377,8 @@ See struct leaf and struct leaf_info.</p>
 indexed through a subset of the key. See Level Compression.</p>
 </dd>
 </dl>
-</section>
-<section id="a-few-concepts-explained">
+</div>
+<div class="section" id="a-few-concepts-explained">
 <h2>A few concepts explained<a class="headerlink" href="#a-few-concepts-explained" title="Permalink to this headline">¶</a></h2>
 <dl>
 <dt>Bits (tnode)</dt><dd><p>The number of bits in the key segment used for indexing into the
@@ -413,8 +415,8 @@ to this tnode’s “pos”+”bits”).</p>
 as the opposite of “empty”, which might be a tad confusing.)</p>
 </dd>
 </dl>
-</section>
-<section id="comments">
+</div>
+<div class="section" id="comments">
 <h2>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h2>
 <p>We have tried to keep the structure of the code as close to fib_hash as
 possible to allow verification and help up reviewing.</p>
@@ -455,15 +457,15 @@ entire trie for each prefix length. In comparison, fib_hash is organized
 as one “zone”/hash per prefix length.</p>
 </dd>
 </dl>
-</section>
-<section id="locking">
+</div>
+<div class="section" id="locking">
 <h2>Locking<a class="headerlink" href="#locking" title="Permalink to this headline">¶</a></h2>
 <p>fib_lock is used for an RW-lock in the same way that this is done in fib_hash.
 However, the functions are somewhat separated for other possible locking
 scenarios. It might conceivably be possible to run trie_rebalance via RCU
 to avoid read_lock in the fn_trie_lookup() function.</p>
-</section>
-<section id="main-lookup-mechanism">
+</div>
+<div class="section" id="main-lookup-mechanism">
 <h2>Main lookup mechanism<a class="headerlink" href="#main-lookup-mechanism" title="Permalink to this headline">¶</a></h2>
 <p>fn_trie_lookup() is the main lookup function.</p>
 <p>The lookup is in its simplest form just like fib_find_node(). We descend the
@@ -487,8 +489,8 @@ descending into dead ends. Look for “HL_OPTIMIZE” sections in the code.</p>
 <p>To alleviate any doubts about the correctness of the route selection process,
 a new netlink operation has been added. Look for NETLINK_FIB_LOOKUP, which
 gives userland access to fib_lookup().</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Virtual Accelerator Switchboard (VAS) userspace API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -301,9 +303,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="virtual-accelerator-switchboard-vas-userspace-api">
+  <div class="section" id="virtual-accelerator-switchboard-vas-userspace-api">
 <span id="vas-api"></span><h1>Virtual Accelerator Switchboard (VAS) userspace API<a class="headerlink" href="#virtual-accelerator-switchboard-vas-userspace-api" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Power9 processor introduced Virtual Accelerator Switchboard (VAS) which
 allows both userspace and kernel communicate to co-processor
@@ -323,8 +325,8 @@ High. Only Normal requests are supported from userspace right now.</p>
 <p>This document explains userspace API that is used to interact with
 kernel to setup channel / window which can be used to send compression
 requests directly to NX accelerator.</p>
-</section>
-<section id="overview">
+</div>
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Application access to the GZIP engine is provided through
 /dev/crypto/nx-gzip device node implemented by the VAS/NX device driver.
@@ -343,8 +345,8 @@ established connection or send window by closing the file descriptior
 can establish multiple windows, but one window for each file descriptor.</p>
 <p>Following sections provide additional details and references about the
 individual steps.</p>
-</section>
-<section id="nx-gzip-device-node">
+</div>
+<div class="section" id="nx-gzip-device-node">
 <h2>NX-GZIP Device Node<a class="headerlink" href="#nx-gzip-device-node" title="Permalink to this headline">¶</a></h2>
 <p>There is one /dev/crypto/nx-gzip node in the system and it provides
 access to all GZIP engines in the system. The only valid operations on
@@ -378,8 +380,8 @@ the vas_id field in the VAS_TX_WIN_OPEN ioctl as detailed below.</p>
 </div></blockquote>
 <p>Applications that use inflate / deflate calls can link with libnxz
 instead of libz and use NX GZIP compression without any modification.</p>
-</section>
-<section id="open-dev-crypto-nx-gzip">
+</div>
+<div class="section" id="open-dev-crypto-nx-gzip">
 <h2>Open /dev/crypto/nx-gzip<a class="headerlink" href="#open-dev-crypto-nx-gzip" title="Permalink to this headline">¶</a></h2>
 <p>The nx-gzip device should be opened for read and write. No special
 privileges are needed to open the device. Each window corresponds to one
@@ -387,8 +389,8 @@ file descriptor. So if the userspace process needs multiple windows,
 several open calls have to be issued.</p>
 <p>See open(2) system call man pages for other details such as return values,
 error codes and restrictions.</p>
-</section>
-<section id="vas-tx-win-open-ioctl">
+</div>
+<div class="section" id="vas-tx-win-open-ioctl">
 <h2>VAS_TX_WIN_OPEN ioctl<a class="headerlink" href="#vas-tx-win-open-ioctl" title="Permalink to this headline">¶</a></h2>
 <p>Applications should use the VAS_TX_WIN_OPEN ioctl as follows to establish
 a connection with NX co-processor engine:</p>
@@ -462,8 +464,8 @@ opened</p></td>
 <p>See the ioctl(2) man page for more details, error codes and
 restrictions.</p>
 </div></blockquote>
-</section>
-<section id="mmap-nx-gzip-device">
+</div>
+<div class="section" id="mmap-nx-gzip-device">
 <h2>mmap() NX-GZIP device<a class="headerlink" href="#mmap-nx-gzip-device" title="Permalink to this headline">¶</a></h2>
 <p>The mmap() system call for a NX-GZIP device fd returns a paste_address
 that the application can use to copy/paste its CRB to the hardware engines.</p>
@@ -500,28 +502,28 @@ to the VAS_TX_WIN_OPEN ioctl).</p></td>
 </table>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="discovery-of-available-vas-engines">
+</div>
+<div class="section" id="discovery-of-available-vas-engines">
 <h2>Discovery of available VAS engines<a class="headerlink" href="#discovery-of-available-vas-engines" title="Permalink to this headline">¶</a></h2>
 <p>Each available VAS instance in the system will have a device tree node
 like /proc/device-tree/vas&#64;* or /proc/device-tree/xscom&#64;*/vas&#64;*.
 Determine the chip or VAS instance and use the corresponding ibm,vas-id
 property value in this node to select specific VAS instance.</p>
-</section>
-<section id="copy-paste-operations">
+</div>
+<div class="section" id="copy-paste-operations">
 <h2>Copy/Paste operations<a class="headerlink" href="#copy-paste-operations" title="Permalink to this headline">¶</a></h2>
 <p>Applications should use the copy and paste instructions to send CRB to NX.
 Refer section 4.4 in PowerISA for Copy/Paste instructions:
 <a class="reference external" href="https://openpowerfoundation.org/?resource_lib=power-isa-version-3-0">https://openpowerfoundation.org/?resource_lib=power-isa-version-3-0</a></p>
-</section>
-<section id="crb-specification-and-use-nx">
+</div>
+<div class="section" id="crb-specification-and-use-nx">
 <h2>CRB Specification and use NX<a class="headerlink" href="#crb-specification-and-use-nx" title="Permalink to this headline">¶</a></h2>
 <p>Applications should format requests to the co-processor using the
 co-processor Request Block (CRBs). Refer NX-GZIP user’s manual for the format
 of CRB and use NX from userspace such as sending requests and checking
 request status.</p>
-</section>
-<section id="nx-fault-handling">
+</div>
+<div class="section" id="nx-fault-handling">
 <h2>NX Fault handling<a class="headerlink" href="#nx-fault-handling" title="Permalink to this headline">¶</a></h2>
 <p>Applications send requests to NX and wait for the status by polling on
 co-processor Status Block (CSB) flags. NX updates status in CSB after each
@@ -562,8 +564,8 @@ using this window. the signal will be issued to the thread group leader
 signals.</p>
 <p>NX-GZIP User’s Manual:
 <a class="reference external" href="https://github.com/libnxz/power-gzip/blob/master/doc/power_nx_gzip_um.pdf">https://github.com/libnxz/power-gzip/blob/master/doc/power_nx_gzip_um.pdf</a></p>
-</section>
-<section id="simple-example">
+</div>
+<div class="section" id="simple-example">
 <h2>Simple example<a class="headerlink" href="#simple-example" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int use_nx_gzip()
@@ -610,8 +612,8 @@ signals.</p>
 <p>Refer <a class="reference external" href="https://github.com/libnxz/power-gzip">https://github.com/libnxz/power-gzip</a> for tests or more
 use cases.</p>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

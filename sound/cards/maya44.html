@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Notes on Maya44 USB Audio Support &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -270,7 +272,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="notes-on-maya44-usb-audio-support">
+  <div class="section" id="notes-on-maya44-usb-audio-support">
 <h1>Notes on Maya44 USB Audio Support<a class="headerlink" href="#notes-on-maya44-usb-audio-support" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -280,7 +282,7 @@ keep here as reference – tiwai</p>
 </div>
 <p>Feb 14, 2008</p>
 <p>Rainer Zimmermann &lt;<a class="reference external" href="mailto:mail&#37;&#52;&#48;lightshed&#46;de">mail<span>&#64;</span>lightshed<span>&#46;</span>de</a>&gt;</p>
-<section id="state-of-development">
+<div class="section" id="state-of-development">
 <h2>STATE OF DEVELOPMENT<a class="headerlink" href="#state-of-development" title="Permalink to this headline">¶</a></h2>
 <p>This driver is being developed on the initiative of Piotr Makowski (<a class="reference external" href="mailto:oponek&#37;&#52;&#48;gmail&#46;com">oponek<span>&#64;</span>gmail<span>&#46;</span>com</a>) and financed by Lars Bergmann.
 Development is carried out by Rainer Zimmermann (<a class="reference external" href="mailto:mail&#37;&#52;&#48;lightshed&#46;de">mail<span>&#64;</span>lightshed<span>&#46;</span>de</a>).</p>
@@ -309,8 +311,8 @@ Development is carried out by Rainer Zimmermann (<a class="reference external" h
 <li><p>The level meters (“multi track”) in ‘alsamixer’ do not seem to react to signals in (if this is a bug, it would probably be in the existing ICE1724 code).</p></li>
 <li><p>Ardour 2.1 seems to work only via JACK, not using ALSA directly or via OSS. This still needs to be tracked down.</p></li>
 </ul>
-</section>
-<section id="driver-details">
+</div>
+<div class="section" id="driver-details">
 <h2>DRIVER DETAILS<a class="headerlink" href="#driver-details" title="Permalink to this headline">¶</a></h2>
 <p>the following files were added:</p>
 <ul class="simple">
@@ -340,8 +342,8 @@ This is done in maya44.c, mainly because some of the WM8776 controls are used in
 <li><p>prodigy_hifi.h</p></li>
 </ul>
 <p><em>I hope this is the correct way to do things.</em></p>
-</section>
-<section id="sampling-rates">
+</div>
+<div class="section" id="sampling-rates">
 <h2>SAMPLING RATES<a class="headerlink" href="#sampling-rates" title="Permalink to this headline">¶</a></h2>
 <p>The Maya44 card (or more exactly, the Wolfson WM8776 codecs) allow a maximum sampling rate of 192 kHz for playback and 92 kHz for capture.</p>
 <p>As the ICE1724 chip only allows one global sampling rate, this is handled as follows:</p>
@@ -352,8 +354,8 @@ This is done in maya44.c, mainly because some of the WM8776 controls are used in
 <p><em>AVOID CAPTURING AT RATES ABOVE 96kHz</em>, even though it may appear to work. The codec cannot actually capture at such rates, meaning poor quality.</p>
 <p>I propose some additional code for limiting the sampling rate when setting on a capture pcm device. However because of the global sampling rate, this logic would be somewhat problematic.</p>
 <p>The proposed code (currently deactivated) is in ice1712.h.patch, ice1724.c and maya44.c (in pci/ice1712).</p>
-</section>
-<section id="sound-devices">
+</div>
+<div class="section" id="sound-devices">
 <h2>SOUND DEVICES<a class="headerlink" href="#sound-devices" title="Permalink to this headline">¶</a></h2>
 <p>PCM devices correspond to inputs/outputs as follows (assuming Maya44 is card #0):</p>
 <ul class="simple">
@@ -362,8 +364,8 @@ This is done in maya44.c, mainly because some of the WM8776 controls are used in
 <li><p>hw:0,1 input - stereo, analog input 3+4 OR S/PDIF input</p></li>
 <li><p>hw:0,1 output - stereo, analog output 3+4 (and SPDIF out)</p></li>
 </ul>
-</section>
-<section id="naming-of-mixer-controls">
+</div>
+<div class="section" id="naming-of-mixer-controls">
 <h2>NAMING OF MIXER CONTROLS<a class="headerlink" href="#naming-of-mixer-controls" title="Permalink to this headline">¶</a></h2>
 <p>(for more information about the signal flow, please refer to the block diagram on p.24 of the ESI Maya44 manual, or in the ESI windows software).</p>
 <dl>
@@ -414,8 +416,8 @@ If these turn out to be unused, they will go away in later driver versions.</p>
 <dt>Input 1 … Input 4</dt><dd><p>direct routing from ADC output of the selected input channel</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

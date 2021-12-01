@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Device links &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -344,7 +346,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="device-links">
+  <div class="section" id="device-links">
 <span id="device-link"></span><h1>Device links<a class="headerlink" href="#device-links" title="Permalink to this headline">¶</a></h1>
 <p>By default, the driver core only enforces dependencies between devices
 that are borne out of a parent/child relationship within the device
@@ -375,7 +377,7 @@ enforcing driver presence on the supplier is optional.</p>
 <code class="docutils literal notranslate"><span class="pre">DL_FLAG_PM_RUNTIME</span></code> flag on addition of the device link, the PM core
 is instructed to runtime resume the supplier and keep it active
 whenever and for as long as the consumer is runtime resumed.</p>
-<section id="usage">
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The earliest point in time when device links can be added is after
 <a class="reference internal" href="infrastructure.html#c.device_add" title="device_add"><code class="xref c c-func docutils literal notranslate"><span class="pre">device_add()</span></code></a> has been called for the supplier and
@@ -427,8 +429,8 @@ a driver has been bound to the supplier device.</p>
 <p>Note, however, that any combinations of <code class="docutils literal notranslate"><span class="pre">DL_FLAG_AUTOREMOVE_CONSUMER</span></code>,
 <code class="docutils literal notranslate"><span class="pre">DL_FLAG_AUTOREMOVE_SUPPLIER</span></code> or <code class="docutils literal notranslate"><span class="pre">DL_FLAG_AUTOPROBE_CONSUMER</span></code> with
 <code class="docutils literal notranslate"><span class="pre">DL_FLAG_STATELESS</span></code> are invalid and cannot be used.</p>
-</section>
-<section id="limitations">
+</div>
+<div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <p>Driver authors should be aware that a driver presence dependency for managed
 device links (i.e. when <code class="docutils literal notranslate"><span class="pre">DL_FLAG_STATELESS</span></code> is not specified on link addition)
@@ -469,8 +471,8 @@ for drivers as switching between modes of operation at runtime based on the
 availability of such resources would be much more complex than a mechanism
 based on probe deferral.  In any case optional resources are beyond the
 scope of device links.</p>
-</section>
-<section id="examples">
+</div>
+<div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>An MMU device exists alongside a busmaster device, both are in the same
@@ -512,8 +514,8 @@ management of the device in question to work.</p></li>
 video processing IP cores on transparent memory access IP cores that handle
 burst access and compression/decompression.</p></li>
 </ul>
-</section>
-<section id="alternatives">
+</div>
+<div class="section" id="alternatives">
 <h2>Alternatives<a class="headerlink" href="#alternatives" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>A <a class="reference internal" href="pm/types.html#c.dev_pm_domain" title="dev_pm_domain"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dev_pm_domain</span></code></a> can be used to override the bus,
@@ -528,8 +530,8 @@ ordering or a driver presence dependency.</p></li>
 device link and does not allow for shutdown ordering or driver presence
 dependencies.  It also cannot be used on ACPI systems.</p></li>
 </ul>
-</section>
-<section id="implementation">
+</div>
+<div class="section" id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p>The device hierarchy, which – as the name implies – is a tree,
 becomes a directed acyclic graph once device links are added.</p>
@@ -562,12 +564,12 @@ carefully if a device link is at all the right tool for the purpose.
 A more suitable approach might be to simply use deferred probing or
 add a device flag causing the parent driver to be probed before the
 child one.</p>
-</section>
-<section id="state-machine">
+</div>
+<div class="section" id="state-machine">
 <h2>State machine<a class="headerlink" href="#state-machine" title="Permalink to this headline">¶</a></h2>
 <dl class="c enum">
-<dt id="c.device_link_state">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">device_link_state</span></code><a class="headerlink" href="#c.device_link_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.device_link_state">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">device_link_state</span></span></span><a class="headerlink" href="#c.device_link_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Device link states.</p>
 </dd></dl>
 
@@ -638,12 +640,12 @@ the supplier driver is released and the links revert to <code class="docutils li
 (Call to <code class="xref c c-func docutils literal notranslate"><span class="pre">device_links_driver_cleanup()</span></code> from
 <code class="xref c c-func docutils literal notranslate"><span class="pre">__device_release_driver()</span></code>.)</p></li>
 </ul>
-</section>
-<section id="api">
+</div>
+<div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p>See <a class="reference internal" href="infrastructure.html#c.device_link_add" title="device_link_add"><code class="xref c c-func docutils literal notranslate"><span class="pre">device_link_add()</span></code></a>, <a class="reference internal" href="infrastructure.html#c.device_link_del" title="device_link_del"><code class="xref c c-func docutils literal notranslate"><span class="pre">device_link_del()</span></code></a> and <a class="reference internal" href="infrastructure.html#c.device_link_remove" title="device_link_remove"><code class="xref c c-func docutils literal notranslate"><span class="pre">device_link_remove()</span></code></a>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

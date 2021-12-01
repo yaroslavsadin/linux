@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Capacity Aware Scheduling &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -281,11 +283,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="capacity-aware-scheduling">
+  <div class="section" id="capacity-aware-scheduling">
 <h1>Capacity Aware Scheduling<a class="headerlink" href="#capacity-aware-scheduling" title="Permalink to this headline">¶</a></h1>
-<section id="cpu-capacity">
+<div class="section" id="cpu-capacity">
 <h2>1. CPU Capacity<a class="headerlink" href="#cpu-capacity" title="Permalink to this headline">¶</a></h2>
-<section id="introduction">
+<div class="section" id="introduction">
 <h3>1.1 Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h3>
 <p>Conventional, homogeneous SMP platforms are composed of purely identical
 CPUs. Heterogeneous platforms on the other hand are composed of CPUs with
@@ -311,8 +313,8 @@ per Hz, leading to:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>capacity(cpu) = work_per_hz(cpu) * max_freq(cpu)
 </pre></div>
 </div>
-</section>
-<section id="scheduler-terms">
+</div>
+<div class="section" id="scheduler-terms">
 <h3>1.2 Scheduler terms<a class="headerlink" href="#scheduler-terms" title="Permalink to this headline">¶</a></h3>
 <p>Two different capacity values are used within the scheduler. A CPU’s
 <code class="docutils literal notranslate"><span class="pre">capacity_orig</span></code> is its maximum attainable capacity, i.e. its maximum
@@ -323,10 +325,10 @@ subtracted.</p>
 while <code class="docutils literal notranslate"><span class="pre">capacity_orig</span></code> is class-agnostic. The rest of this document will use
 the term <code class="docutils literal notranslate"><span class="pre">capacity</span></code> interchangeably with <code class="docutils literal notranslate"><span class="pre">capacity_orig</span></code> for the sake of
 brevity.</p>
-</section>
-<section id="platform-examples">
+</div>
+<div class="section" id="platform-examples">
 <h3>1.3 Platform examples<a class="headerlink" href="#platform-examples" title="Permalink to this headline">¶</a></h3>
-<section id="identical-opps">
+<div class="section" id="identical-opps">
 <h4>1.3.1 Identical OPPs<a class="headerlink" href="#identical-opps" title="Permalink to this headline">¶</a></h4>
 <p>Consider an hypothetical dual-core asymmetric CPU capacity system where</p>
 <ul class="simple">
@@ -357,8 +359,8 @@ CPU1 work ^
 <p>CPU0 has the highest capacity in the system (C), and completes a fixed amount of
 work W in T units of time. On the other hand, CPU1 has half the capacity of
 CPU0, and thus only completes W/2 in T.</p>
-</section>
-<section id="different-max-opps">
+</div>
+<div class="section" id="different-max-opps">
 <h4>1.3.2 Different max OPPs<a class="headerlink" href="#different-max-opps" title="Permalink to this headline">¶</a></h4>
 <p>Usually, CPUs of different capacity values also have different maximum
 OPPs. Consider the same CPUs as above (i.e. same work_per_hz()) with:</p>
@@ -385,20 +387,20 @@ CPU1 work ^
           +----+----+----+----+----+----+----+----+----+----+-&gt; time
 </pre></div>
 </div>
-</section>
-</section>
-<section id="representation-caveat">
+</div>
+</div>
+<div class="section" id="representation-caveat">
 <h3>1.4 Representation caveat<a class="headerlink" href="#representation-caveat" title="Permalink to this headline">¶</a></h3>
 <p>It should be noted that having a <em>single</em> value to represent differences in CPU
 performance is somewhat of a contentious point. The relative performance
 difference between two different µarchs could be X% on integer operations, Y% on
 floating point operations, Z% on branches, and so on. Still, results using this
 simple approach have been satisfactory for now.</p>
-</section>
-</section>
-<section id="task-utilization">
+</div>
+</div>
+<div class="section" id="task-utilization">
 <h2>2. Task utilization<a class="headerlink" href="#task-utilization" title="Permalink to this headline">¶</a></h2>
-<section id="id1">
+<div class="section" id="id1">
 <h3>2.1 Introduction<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>Capacity aware scheduling requires an expression of a task’s requirements with
 regards to CPU capacity. Each scheduler class can express this differently, and
@@ -414,8 +416,8 @@ busy loop. Conversely, 10% utilization hints it is a small periodic task that
 spends more time sleeping than executing. Variable CPU frequencies and
 asymmetric CPU capacities complexify this somewhat; the following sections will
 expand on these.</p>
-</section>
-<section id="frequency-invariance">
+</div>
+<div class="section" id="frequency-invariance">
 <h3>2.2 Frequency invariance<a class="headerlink" href="#frequency-invariance" title="Permalink to this headline">¶</a></h3>
 <p>One issue that needs to be taken into account is that a workload’s duty cycle is
 directly impacted by the current OPP the CPU is running at. Consider running a
@@ -443,8 +445,8 @@ formula:</p>
 </div>
 <p>Applying this formula to the two examples above yields a frequency invariant
 task utilization of 25%.</p>
-</section>
-<section id="cpu-invariance">
+</div>
+<div class="section" id="cpu-invariance">
 <h3>2.3 CPU invariance<a class="headerlink" href="#cpu-invariance" title="Permalink to this headline">¶</a></h3>
 <p>CPU capacity has a similar effect on task utilization in that running an
 identical workload on CPUs of different capacity values will yield different
@@ -480,8 +482,8 @@ formula:</p>
 <p>with <code class="docutils literal notranslate"><span class="pre">max_capacity</span></code> being the highest CPU capacity value in the
 system. Applying this formula to the above example above yields a CPU
 invariant task utilization of 25%.</p>
-</section>
-<section id="invariant-task-utilization">
+</div>
+<div class="section" id="invariant-task-utilization">
 <h3>2.4 Invariant task utilization<a class="headerlink" href="#invariant-task-utilization" title="Permalink to this headline">¶</a></h3>
 <p>Both frequency and CPU invariance need to be applied to task utilization in
 order to obtain a truly invariant signal. The pseudo-formula for a task
@@ -497,8 +499,8 @@ if it were running on the highest-capacity CPU in the system, running at its
 maximum frequency.</p>
 <p>Any mention of task utilization in the following sections will imply its
 invariant form.</p>
-</section>
-<section id="utilization-estimation">
+</div>
+<div class="section" id="utilization-estimation">
 <h3>2.5 Utilization estimation<a class="headerlink" href="#utilization-estimation" title="Permalink to this headline">¶</a></h3>
 <p>Without a crystal ball, task behaviour (and thus task utilization) cannot
 accurately be predicted the moment a task first becomes runnable. The CFS class
@@ -508,11 +510,11 @@ opposed to instantaneous).</p>
 <p>This means that while the capacity aware scheduling criteria will be written
 considering a “true” task utilization (using a crystal ball), the implementation
 will only ever be able to use an estimator thereof.</p>
-</section>
-</section>
-<section id="capacity-aware-scheduling-requirements">
+</div>
+</div>
+<div class="section" id="capacity-aware-scheduling-requirements">
 <h2>3. Capacity aware scheduling requirements<a class="headerlink" href="#capacity-aware-scheduling-requirements" title="Permalink to this headline">¶</a></h2>
-<section id="id2">
+<div class="section" id="id2">
 <h3>3.1 CPU capacity<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>Linux cannot currently figure out CPU capacity on its own, this information thus
 needs to be handed to it. Architectures must define arch_scale_cpu_capacity()
@@ -520,8 +522,8 @@ for that purpose.</p>
 <p>The arm and arm64 architectures directly map this to the arch_topology driver
 CPU scaling data, which is derived from the capacity-dmips-mhz CPU binding; see
 Documentation/devicetree/bindings/arm/cpu-capacity.txt.</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h3>3.2 Frequency invariance<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>As stated in 2.2, capacity-aware scheduling requires a frequency-invariant task
 utilization. Architectures must define arch_scale_freq_capacity(cpu) for that
@@ -532,9 +534,9 @@ whose increment rate scale with a CPU’s current frequency (APERF/MPERF on x86,
 AMU on arm64). Another is to directly hook into cpufreq frequency transitions,
 when the kernel is aware of the switched-to frequency (also employed by
 arm/arm64).</p>
-</section>
-</section>
-<section id="scheduler-topology">
+</div>
+</div>
+<div class="section" id="scheduler-topology">
 <h2>4. Scheduler topology<a class="headerlink" href="#scheduler-topology" title="Permalink to this headline">¶</a></h2>
 <p>During the construction of the sched domains, the scheduler will figure out
 whether the system exhibits asymmetric CPU capacities. Should that be the
@@ -581,12 +583,12 @@ asymmetric CPU capacities is to:</p>
 the sched_domain hierarchy (if relevant, i.e. the codepath targets a specific
 CPU or group thereof)</p></li>
 </ul>
-</section>
-<section id="capacity-aware-scheduling-implementation">
+</div>
+<div class="section" id="capacity-aware-scheduling-implementation">
 <h2>5. Capacity aware scheduling implementation<a class="headerlink" href="#capacity-aware-scheduling-implementation" title="Permalink to this headline">¶</a></h2>
-<section id="cfs">
+<div class="section" id="cfs">
 <h3>5.1 CFS<a class="headerlink" href="#cfs" title="Permalink to this headline">¶</a></h3>
-<section id="capacity-fitness">
+<div class="section" id="capacity-fitness">
 <h4>5.1.1 Capacity fitness<a class="headerlink" href="#capacity-fitness" title="Permalink to this headline">¶</a></h4>
 <p>The main capacity scheduling criterion of CFS is:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>task_util(p) &lt; capacity(task_cpu(p))
@@ -599,8 +601,8 @@ work than what its CPU can provide: it will be CPU-bound.</p>
 value for a task, either via sched_setattr() or via the cgroup interface (see
 <a class="reference internal" href="../admin-guide/cgroup-v2.html"><span class="doc">Control Group v2</span></a>). As its name imply, this can be used to
 clamp task_util() in the previous criterion.</p>
-</section>
-<section id="wakeup-cpu-selection">
+</div>
+<div class="section" id="wakeup-cpu-selection">
 <h4>5.1.2 Wakeup CPU selection<a class="headerlink" href="#wakeup-cpu-selection" title="Permalink to this headline">¶</a></h4>
 <p>CFS task wakeup CPU selection follows the capacity fitness criterion described
 above. On top of that, uclamp is used to clamp the task utilization values,
@@ -618,8 +620,8 @@ giving it a high uclamp.min value.</p>
 <p>Wakeup CPU selection in CFS can be eclipsed by Energy Aware Scheduling
 (EAS), which is described in <a class="reference internal" href="sched-energy.html"><span class="doc">Energy Aware Scheduling</span></a>.</p>
 </div>
-</section>
-<section id="load-balancing">
+</div>
+<div class="section" id="load-balancing">
 <h4>5.1.3 Load balancing<a class="headerlink" href="#load-balancing" title="Permalink to this headline">¶</a></h4>
 <p>A pathological case in the wakeup CPU selection occurs when a task rarely
 sleeps, if at all - it thus rarely wakes up, if at all. Consider:</p>
@@ -659,11 +661,11 @@ leverages the CFS load balancer, more specifically the active load balance part
 (which caters to migrating currently running tasks). When load balance happens,
 a misfit active load balance will be triggered if a misfit task can be migrated
 to a CPU with more capacity than its current one.</p>
-</section>
-</section>
-<section id="rt">
+</div>
+</div>
+<div class="section" id="rt">
 <h3>5.2 RT<a class="headerlink" href="#rt" title="Permalink to this headline">¶</a></h3>
-<section id="id4">
+<div class="section" id="id4">
 <h4>5.2.1 Wakeup CPU selection<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
 <p>RT task wakeup CPU selection searches for a CPU that satisfies:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>task_uclamp_min(p) &lt;= capacity(task_cpu(cpu))
@@ -672,11 +674,11 @@ to a CPU with more capacity than its current one.</p>
 <p>while still following the usual priority constraints. If none of the candidate
 CPUs can satisfy this capacity criterion, then strict priority based scheduling
 is followed and CPU capacities are ignored.</p>
-</section>
-</section>
-<section id="dl">
+</div>
+</div>
+<div class="section" id="dl">
 <h3>5.3 DL<a class="headerlink" href="#dl" title="Permalink to this headline">¶</a></h3>
-<section id="id5">
+<div class="section" id="id5">
 <h4>5.3.1 Wakeup CPU selection<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
 <p>DL task wakeup CPU selection searches for a CPU that satisfies:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>task_bandwidth(p) &lt; capacity(task_cpu(p))
@@ -685,10 +687,10 @@ is followed and CPU capacities are ignored.</p>
 <p>while still respecting the usual bandwidth and deadline constraints. If
 none of the candidate CPUs can satisfy this capacity criterion, then the
 task will remain on its current CPU.</p>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>

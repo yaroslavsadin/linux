@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Adding reference counters (krefs) to kernel objects &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -268,7 +270,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="adding-reference-counters-krefs-to-kernel-objects">
+  <div class="section" id="adding-reference-counters-krefs-to-kernel-objects">
 <h1>Adding reference counters (krefs) to kernel objects<a class="headerlink" href="#adding-reference-counters-krefs-to-kernel-objects" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -286,7 +288,7 @@ presentation on krefs, which can be found at:</p>
 <li><p><a class="reference external" href="http://www.kroah.com/linux/talks/ols_2004_kref_talk/">http://www.kroah.com/linux/talks/ols_2004_kref_talk/</a></p></li>
 </ul>
 </div></blockquote>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>krefs allow you to add reference counters to your objects.  If you
 have objects that are used in multiple places and passed around, and
@@ -304,8 +306,8 @@ you want refcounts, krefs are the way to go.</p>
 </pre></div>
 </div>
 <p>The kref can occur anywhere within the data structure.</p>
-</section>
-<section id="initialization">
+</div>
+<div class="section" id="initialization">
 <h2>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
 <p>You must initialize the kref after you allocate it.  To do this, call
 kref_init as so:</p>
@@ -318,8 +320,8 @@ kref_init(&amp;data-&gt;refcount);
 </pre></div>
 </div>
 <p>This sets the refcount in the kref to 1.</p>
-</section>
-<section id="kref-rules">
+</div>
+<div class="section" id="kref-rules">
 <h2>Kref rules<a class="headerlink" href="#kref-rules" title="Permalink to this headline">¶</a></h2>
 <p>Once you have an initialized kref, you must follow the following
 rules:</p>
@@ -539,8 +541,8 @@ otherwise kref_get_unless_zero may reference already freed memory.
 Note that it is illegal to use kref_get_unless_zero without checking its
 return value. If you are sure (by already having a valid pointer) that
 kref_get_unless_zero() will return true, then use kref_get() instead.</p>
-</section>
-<section id="krefs-and-rcu">
+</div>
+<div class="section" id="krefs-and-rcu">
 <h2>Krefs and RCU<a class="headerlink" href="#krefs-and-rcu" title="Permalink to this headline">¶</a></h2>
 <p>The function kref_get_unless_zero also makes it possible to use rcu
 locking for lookups in the above example:</p>
@@ -587,8 +589,8 @@ rcu grace period after release_entry_rcu was called. That can be accomplished
 by using kfree_rcu(entry, rhead) as done above, or by calling <a class="reference internal" href="kernel-api.html#c.synchronize_rcu" title="synchronize_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">synchronize_rcu()</span></code></a>
 before using kfree, but note that <a class="reference internal" href="kernel-api.html#c.synchronize_rcu" title="synchronize_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">synchronize_rcu()</span></code></a> may sleep for a
 substantial amount of time.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

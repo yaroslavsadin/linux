@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>SNMP counter &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -396,10 +398,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="snmp-counter">
+  <div class="section" id="snmp-counter">
 <h1>SNMP counter<a class="headerlink" href="#snmp-counter" title="Permalink to this headline">¶</a></h1>
 <p>This document explains the meaning of SNMP counters.</p>
-<section id="general-ipv4-counters">
+<div class="section" id="general-ipv4-counters">
 <h2>General IPv4 counters<a class="headerlink" href="#general-ipv4-counters" title="Permalink to this headline">¶</a></h2>
 <p>All layer 4 packets and ICMP packets will change these counters, but
 these counters won’t be changed by layer 2 packets (such as STP) or
@@ -494,8 +496,8 @@ dropped in the IP sending path and due to kernel internal reasons.</p>
 </ul>
 <p>Defined in <a class="reference external" href="https://tools.ietf.org/html/rfc1213#page-29">RFC1213 ipOutNoRoutes</a>. It indicates the packet is
 dropped in the IP sending path and no route is found for it.</p>
-</section>
-<section id="icmp-counters">
+</div>
+<div class="section" id="icmp-counters">
 <h2>ICMP counters<a class="headerlink" href="#icmp-counters" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>IcmpInMsgs and IcmpOutMsgs</p></li>
@@ -563,7 +565,7 @@ IcmpInMsgs would be updated but none of IcmpMsgInType[N] would be updated.</p>
 counters would be updated. The receiving packet path use IcmpInErrors
 and the sending packet path use IcmpOutErrors. When IcmpInCsumErrors
 is increased, IcmpInErrors would always be increased too.</p>
-<section id="relationship-of-the-icmp-counters">
+<div class="section" id="relationship-of-the-icmp-counters">
 <h3>relationship of the ICMP counters<a class="headerlink" href="#relationship-of-the-icmp-counters" title="Permalink to this headline">¶</a></h3>
 <p>The sum of IcmpMsgOutType[N] is always equal to IcmpOutMsgs, as they
 are updated at the same time. The sum of IcmpMsgInType[N] plus
@@ -582,9 +584,9 @@ step (4), IcmpInMsgs should be equal to the sum of
 IcmpMsgOutType[N]. If the errors occur in both step (2) and step (4),
 IcmpInMsgs should be less than the sum of IcmpMsgOutType[N] plus
 IcmpInErrors.</p>
-</section>
-</section>
-<section id="general-tcp-counters">
+</div>
+</div>
+<div class="section" id="general-tcp-counters">
 <h2>General TCP counters<a class="headerlink" href="#general-tcp-counters" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>TcpInSegs</p></li>
@@ -689,8 +691,8 @@ queue is still full, if it is not full, moves the socket to the accept
 queue, if it is full, keeps the socket in the half-open queue, at next
 time client replies ACK, this socket will get another chance to move
 to the accept queue.</p>
-</section>
-<section id="tcp-fast-open">
+</div>
+<div class="section" id="tcp-fast-open">
 <h2>TCP Fast Open<a class="headerlink" href="#tcp-fast-open" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>TcpEstabResets</p></li>
@@ -730,8 +732,8 @@ setting the SO_KEEPALIVE socket option.</p>
 </ul>
 <p>The spurious retransmission timeout detected by the <a class="reference external" href="https://tools.ietf.org/html/rfc5682">F-RTO</a>
 algorithm.</p>
-</section>
-<section id="tcp-fast-path">
+</div>
+<div class="section" id="tcp-fast-path">
 <h2>TCP Fast Path<a class="headerlink" href="#tcp-fast-path" title="Permalink to this headline">¶</a></h2>
 <p>When kernel receives a TCP packet, it has two paths to handler the
 packet, one is fast path, another is slow path. The comment in kernel
@@ -776,8 +778,8 @@ increase 1.</p>
 <p>If a TCP packet has data (which means it is not a pure ACK packet),
 and this packet is handled in the fast path, TcpExtTCPHPHits will
 increase 1.</p>
-</section>
-<section id="tcp-abort">
+</div>
+<div class="section" id="tcp-abort">
 <h2>TCP abort<a class="headerlink" href="#tcp-abort" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>TcpExtTCPAbortOnData</p></li>
@@ -839,8 +841,8 @@ you could let kernel follow this behavior.</p>
 <p>The kernel TCP layer will send RST if the <a class="reference external" href="https://tools.ietf.org/html/rfc2525#page-50">RFC2525 2.17 section</a> is
 satisfied. If an internal error occurs during this process,
 TcpExtTCPAbortFailed will be increased.</p>
-</section>
-<section id="tcp-hybrid-slow-start">
+</div>
+<div class="section" id="tcp-hybrid-slow-start">
 <h2>TCP Hybrid Slow Start<a class="headerlink" href="#tcp-hybrid-slow-start" title="Permalink to this headline">¶</a></h2>
 <p>The Hybrid Slow Start algorithm is an enhancement of the traditional
 TCP congestion window Slow Start algorithm. It uses two pieces of
@@ -873,8 +875,8 @@ ACK train length.</p>
 <p>The sum of CWND detected by packet delay. Dividing this value by
 TcpExtTCPHystartDelayDetect is the average CWND which detected by the
 packet delay.</p>
-</section>
-<section id="tcp-retransmission-and-congestion-control">
+</div>
+<div class="section" id="tcp-retransmission-and-congestion-control">
 <h2>TCP retransmission and congestion control<a class="headerlink" href="#tcp-retransmission-and-congestion-control" title="Permalink to this headline">¶</a></h2>
 <p>The TCP protocol has two retransmission mechanisms: SACK and fast
 recovery. They are exclusive with each other. When SACK is enabled,
@@ -963,8 +965,8 @@ but the lower layers return an error.</p>
 <li><p>TcpExtTCPSynRetrans</p></li>
 </ul>
 <p>The TCP stack retransmits a SYN packet.</p>
-</section>
-<section id="dsack">
+</div>
+<div class="section" id="dsack">
 <h2>DSACK<a class="headerlink" href="#dsack" title="Permalink to this headline">¶</a></h2>
 <p>The DSACK is defined in <a class="reference external" href="https://tools.ietf.org/html/rfc2883">RFC2883</a>. The receiver uses DSACK to report
 duplicate packets to the sender. There are two kinds of
@@ -992,8 +994,8 @@ duplicate packet is received.</p>
 </ul>
 <p>The TCP stack receives a DSACK, which indicate an out of order
 duplicate packet is received.</p>
-</section>
-<section id="invalid-sack-and-dsack">
+</div>
+<div class="section" id="invalid-sack-and-dsack">
 <h2>invalid SACK and DSACK<a class="headerlink" href="#invalid-sack-and-dsack" title="Permalink to this headline">¶</a></h2>
 <p>When a SACK (or DSACK) block is invalid, a corresponding counter would
 be updated. The validation method is base on the start/end sequence
@@ -1021,8 +1023,8 @@ DSACK block, the reason might be that the packet is duplicated in the
 middle of the network. In such scenario, TcpExtTCPDSACKIgnoredNoUndo
 will be updated. If the undo_marker is set, TcpExtTCPDSACKIgnoredOld
 will be updated. As implied in its name, it might be an old packet.</p>
-</section>
-<section id="sack-shift">
+</div>
+<div class="section" id="sack-shift">
 <h2>SACK shift<a class="headerlink" href="#sack-shift" title="Permalink to this headline">¶</a></h2>
 <p>The linux networking stack stores data in sk_buff struct (skb for
 short). If a SACK block acrosses multiple skb, the TCP stack will try
@@ -1045,8 +1047,8 @@ discard, this operation is ‘merge’.</p>
 </ul>
 <p>A skb should be shifted or merged, but the TCP stack doesn’t do it for
 some reasons.</p>
-</section>
-<section id="tcp-out-of-order">
+</div>
+<div class="section" id="tcp-out-of-order">
 <h2>TCP out of order<a class="headerlink" href="#tcp-out-of-order" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>TcpExtTCPOFOQueue</p></li>
@@ -1065,8 +1067,8 @@ TcpExtTCPOFOQueue.</p>
 <p>The received out of order packet has an overlay with the previous
 packet. the overlay part will be dropped. All of TcpExtTCPOFOMerge
 packets will also be counted into TcpExtTCPOFOQueue.</p>
-</section>
-<section id="tcp-paws">
+</div>
+<div class="section" id="tcp-paws">
 <h2>TCP PAWS<a class="headerlink" href="#tcp-paws" title="Permalink to this headline">¶</a></h2>
 <p>PAWS (Protection Against Wrapped Sequence numbers) is an algorithm
 which is used to drop old packets. It depends on the TCP
@@ -1080,8 +1082,8 @@ and the <a class="reference external" href="https://tools.ietf.org/html/rfc1323#
 <li><p>TcpExtPAWSEstab</p></li>
 </ul>
 <p>Packets are dropped by PAWS in any status other than Syn-Sent.</p>
-</section>
-<section id="tcp-ack-skip">
+</div>
+<div class="section" id="tcp-ack-skip">
 <h2>TCP ACK skip<a class="headerlink" href="#tcp-ack-skip" title="Permalink to this headline">¶</a></h2>
 <p>In some scenarios, kernel would avoid sending duplicate ACKs too
 frequently. Please find more details in the tcp_invalid_ratelimit
@@ -1136,8 +1138,8 @@ PAWS check failed or the received sequence number is out of window.</p>
 three scenarios, In some TCP status, the linux TCP stack would also
 send challenge ACKs if the ACK number is before the first
 unacknowledged number (more strict than <a class="reference external" href="https://tools.ietf.org/html/rfc5961#page-11">RFC 5961 section 5.2</a>).</p>
-</section>
-<section id="tcp-receive-window">
+</div>
+<div class="section" id="tcp-receive-window">
 <h2>TCP receive window<a class="headerlink" href="#tcp-receive-window" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>TcpExtTCPWantZeroWindowAdv</p></li>
@@ -1155,8 +1157,8 @@ window size calculated by the memory usage is zero.</p>
 <li><p>TcpExtTCPFromZeroWindowAdv</p></li>
 </ul>
 <p>The TCP receive window is set to no-zero value from zero.</p>
-</section>
-<section id="delayed-ack">
+</div>
+<div class="section" id="delayed-ack">
 <h2>Delayed ACK<a class="headerlink" href="#delayed-ack" title="Permalink to this headline">¶</a></h2>
 <p>The TCP Delayed ACK is a technique which is used for reducing the
 packet count in the network. For more details, please refer the
@@ -1182,8 +1184,8 @@ mode.</p>
 ACKed. A Delayed ACK loss might cause this issue, but it would also be
 triggered by other reasons, such as a packet is duplicated in the
 network.</p>
-</section>
-<section id="tail-loss-probe-tlp">
+</div>
+<div class="section" id="tail-loss-probe-tlp">
 <h2>Tail Loss Probe (TLP)<a class="headerlink" href="#tail-loss-probe-tlp" title="Permalink to this headline">¶</a></h2>
 <p>TLP is an algorithm which is used to detect TCP packet loss. For more
 details, please refer the <a class="reference external" href="https://tools.ietf.org/html/draft-dukkipati-tcpm-tcp-loss-probe-01">TLP paper</a>.</p>
@@ -1195,8 +1197,8 @@ details, please refer the <a class="reference external" href="https://tools.ietf
 <li><p>TcpExtTCPLossProbeRecovery</p></li>
 </ul>
 <p>A packet loss is detected and recovered by TLP.</p>
-</section>
-<section id="tcp-fast-open-description">
+</div>
+<div class="section" id="tcp-fast-open-description">
 <h2>TCP Fast Open description<a class="headerlink" href="#tcp-fast-open-description" title="Permalink to this headline">¶</a></h2>
 <p>TCP Fast Open is a technology which allows data transfer before the
 3-way handshake complete. Please refer the <a class="reference external" href="https://en.wikipedia.org/wiki/TCP_Fast_Open">TCP Fast Open wiki</a> for a
@@ -1245,8 +1247,8 @@ net.core.somaxconn. For example:</p>
 </ul>
 <p>This counter indicates how many times a client wants to request a TFO
 cookie.</p>
-</section>
-<section id="syn-cookies">
+</div>
+<div class="section" id="syn-cookies">
 <h2>SYN cookies<a class="headerlink" href="#syn-cookies" title="Permalink to this headline">¶</a></h2>
 <p>SYN cookies are used to mitigate SYN flood, for details, please refer
 the <a class="reference external" href="https://en.wikipedia.org/wiki/SYN_cookies">SYN cookies wiki</a>.</p>
@@ -1264,8 +1266,8 @@ the <a class="reference external" href="https://en.wikipedia.org/wiki/SYN_cookie
 <p>The MSS decoded from the SYN cookie is invalid. When this counter is
 updated, the received packet won’t be treated as a SYN cookie and the
 TcpExtSyncookiesRecv counter wont be updated.</p>
-</section>
-<section id="challenge-ack">
+</div>
+<div class="section" id="challenge-ack">
 <h2>Challenge ACK<a class="headerlink" href="#challenge-ack" title="Permalink to this headline">¶</a></h2>
 <p>For details of challenge ACK, please refer the explanation of
 TcpExtTCPACKSkippedChallenge.</p>
@@ -1280,8 +1282,8 @@ TcpExtTCPACKSkippedChallenge.</p>
 updates this counter, the TCP stack might send a challenge ACK and
 update the TcpExtTCPChallengeACK counter, or it might also skip to
 send the challenge and update the TcpExtTCPACKSkippedChallenge.</p>
-</section>
-<section id="prune">
+</div>
+<div class="section" id="prune">
 <h2>prune<a class="headerlink" href="#prune" title="Permalink to this headline">¶</a></h2>
 <p>When a socket is under memory pressure, the TCP stack will try to
 reclaim memory from the receiving queue and out of order queue. One of
@@ -1310,10 +1312,10 @@ this counter will be updated. It means the ‘prune’ fails.</p>
 <li><p>TcpExtTCPRcvCollapsed</p></li>
 </ul>
 <p>This counter indicates how many skbs are freed during ‘collapse’.</p>
-</section>
-<section id="examples">
+</div>
+<div class="section" id="examples">
 <h2>examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
-<section id="ping-test">
+<div class="section" id="ping-test">
 <h3>ping test<a class="headerlink" href="#ping-test" title="Permalink to this headline">¶</a></h3>
 <p>Run the ping command against the public dns server 8.8.8.8:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nstatuser@nstat-a:~$ ping 8.8.8.8 -c 1
@@ -1356,8 +1358,8 @@ and its corresponding Echo Reply packet are constructed by:</p>
 <li><p>48 bytes data (default value of the ping command)</p></li>
 </ul>
 <p>So the IpExtInOctets and IpExtOutOctets are 20+16+48=84.</p>
-</section>
-<section id="tcp-3-way-handshake">
+</div>
+<div class="section" id="tcp-3-way-handshake">
 <h3>tcp 3-way handshake<a class="headerlink" href="#tcp-3-way-handshake" title="Permalink to this headline">¶</a></h3>
 <p>On server side, we run:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nstatuser@nstat-b:~$ nc -lknv 0.0.0.0 9000
@@ -1396,8 +1398,8 @@ TcpExtTCPPureAcks increased 1.</p>
 TcpActiveOpens increased 1, the client sent SYN, received SYN+ACK, sent
 ACK, so client sent 2 packets, received 1 packet, TcpInSegs increased
 1, TcpOutSegs increased 2.</p>
-</section>
-<section id="tcp-normal-traffic">
+</div>
+<div class="section" id="tcp-normal-traffic">
 <h3>TCP normal traffic<a class="headerlink" href="#tcp-normal-traffic" title="Permalink to this headline">¶</a></h3>
 <p>Run nc on server:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nstatuser@nstat-b:~$ nc -lkv 0.0.0.0 9000
@@ -1514,8 +1516,8 @@ so there was no ‘TcpExtTCPHPHits’.</p>
 <p>In the second nstat output of server side, the fast path was enabled,
 and the packet received from client qualified for fast path, so it
 was counted into ‘TcpExtTCPHPHits’.</p>
-</section>
-<section id="tcpexttcpabortonclose">
+</div>
+<div class="section" id="tcpexttcpabortonclose">
 <h3>TcpExtTCPAbortOnClose<a class="headerlink" href="#tcpexttcpabortonclose" title="Permalink to this headline">¶</a></h3>
 <p>On the server side, we run below python script:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import socket
@@ -1547,8 +1549,8 @@ TcpExtTCPAbortOnClose           1                  0.0
 </div>
 <p>If we run tcpdump on the server side, we could find the server sent a
 RST after we type Ctrl-C.</p>
-</section>
-<section id="tcpexttcpabortonmemory-and-tcpexttcpabortontimeout">
+</div>
+<div class="section" id="tcpexttcpabortonmemory-and-tcpexttcpabortontimeout">
 <h3>TcpExtTCPAbortOnMemory and TcpExtTCPAbortOnTimeout<a class="headerlink" href="#tcpexttcpabortonmemory-and-tcpexttcpabortontimeout" title="Permalink to this headline">¶</a></h3>
 <p>Below is an example which let the orphan socket count be higher than
 net.ipv4.tcp_max_orphans.
@@ -1666,8 +1668,8 @@ FIN_WAIT_1 state finally. So we wait for a few minutes, we could find
 TcpExtTCPAbortOnTimeout         10                 0.0
 </pre></div>
 </div>
-</section>
-<section id="tcpexttcpabortonlinger">
+</div>
+<div class="section" id="tcpexttcpabortonlinger">
 <h3>TcpExtTCPAbortOnLinger<a class="headerlink" href="#tcpexttcpabortonlinger" title="Permalink to this headline">¶</a></h3>
 <p>The server side code:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nstatuser@nstat-b:~$ cat server_linger.py
@@ -1712,8 +1714,8 @@ s.close()
 TcpExtTCPAbortOnLinger          1                  0.0
 </pre></div>
 </div>
-</section>
-<section id="tcpexttcprcvcoalesce">
+</div>
+<div class="section" id="tcpexttcprcvcoalesce">
 <h3>TcpExtTCPRcvCoalesce<a class="headerlink" href="#tcpexttcprcvcoalesce" title="Permalink to this headline">¶</a></h3>
 <p>On the server, we run a program which listen on TCP port 9000, but
 doesn’t read any data:</p>
@@ -1772,8 +1774,8 @@ IpExtInNoECTPkts                2                  0.0
 the second packet arrived at server, the first packet was still in
 the receiving queue. So the TCP layer merged the two packets, and we
 could find the TcpExtTCPRcvCoalesce increased 1.</p>
-</section>
-<section id="tcpextlistenoverflows-and-tcpextlistendrops">
+</div>
+<div class="section" id="tcpextlistenoverflows-and-tcpextlistendrops">
 <h3>TcpExtListenOverflows and TcpExtListenDrops<a class="headerlink" href="#tcpextlistenoverflows-and-tcpextlistendrops" title="Permalink to this headline">¶</a></h3>
 <p>On server, run the nc command, listen on port 9000:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nstatuser@nstat-b:~$ nc -lkv 0.0.0.0 9000
@@ -1819,8 +1821,8 @@ IpExtInNoECTPkts                4                  0.0
 between the 4th nc and the nstat was longer, the value of
 TcpExtListenOverflows and TcpExtListenDrops would be larger, because
 the SYN of the 4th nc was dropped, the client was retrying.</p>
-</section>
-<section id="ipinaddrerrors-ipextinnoroutes-and-ipoutnoroutes">
+</div>
+<div class="section" id="ipinaddrerrors-ipextinnoroutes-and-ipoutnoroutes">
 <h3>IpInAddrErrors, IpExtInNoRoutes and IpOutNoRoutes<a class="headerlink" href="#ipinaddrerrors-ipextinnoroutes-and-ipoutnoroutes" title="Permalink to this headline">¶</a></h3>
 <p>server A IP address: 192.168.122.250
 server B IP address: 192.168.122.251
@@ -1911,8 +1913,8 @@ IpOutNoRoutes                   1                  0.0
 <p>We have deleted the default route on server B. Server B couldn’t find
 a route for the 8.8.8.8 IP address, so server B increased
 IpOutNoRoutes.</p>
-</section>
-<section id="tcpexttcpackskippedsynrecv">
+</div>
+<div class="section" id="tcpexttcpackskippedsynrecv">
 <h3>TcpExtTCPACKSkippedSynRecv<a class="headerlink" href="#tcpexttcpackskippedsynrecv" title="Permalink to this headline">¶</a></h3>
 <p>In this test, we send 3 same SYN packets from client to server. The
 first SYN will let server create a socket, set it to Syn-Recv status,
@@ -1958,8 +1960,8 @@ TcpExtTCPACKSkippedSynRecv      1                  0.0
 </pre></div>
 </div>
 <p>As we expected, TcpExtTCPACKSkippedSynRecv is 1.</p>
-</section>
-<section id="tcpexttcpackskippedpaws">
+</div>
+<div class="section" id="tcpexttcpackskippedpaws">
 <h3>TcpExtTCPACKSkippedPAWS<a class="headerlink" href="#tcpexttcpackskippedpaws" title="Permalink to this headline">¶</a></h3>
 <p>To trigger PAWS, we could send an old SYN.</p>
 <p>On nstat-b, let nc listen on port 9000:</p>
@@ -1994,8 +1996,8 @@ TcpExtTCPACKSkippedPAWS         1                  0.0
 <p>We sent two SYN via tcpreplay, both of them would let PAWS check
 failed, the nstat-b replied an ACK for the first SYN, skipped the ACK
 for the second SYN, and updated TcpExtTCPACKSkippedPAWS.</p>
-</section>
-<section id="tcpexttcpackskippedseq">
+</div>
+<div class="section" id="tcpexttcpackskippedseq">
 <h3>TcpExtTCPACKSkippedSeq<a class="headerlink" href="#tcpexttcpackskippedseq" title="Permalink to this headline">¶</a></h3>
 <p>To trigger TcpExtTCPACKSkippedSeq, we send packets which have valid
 timestamp (to pass PAWS check) but the sequence number is out of
@@ -2057,9 +2059,9 @@ port 50208:</p>
 TcpExtTCPACKSkippedSeq          1                  0.0
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

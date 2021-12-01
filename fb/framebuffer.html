@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The Frame Buffer Device &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -291,10 +293,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-frame-buffer-device">
+  <div class="section" id="the-frame-buffer-device">
 <h1>The Frame Buffer Device<a class="headerlink" href="#the-frame-buffer-device" title="Permalink to this headline">¶</a></h1>
 <p>Last revised: May 10, 2001</p>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>0. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The frame buffer device provides an abstraction for the graphics hardware. It
 represents the frame buffer of some video hardware and allows application
@@ -303,8 +305,8 @@ the software doesn’t need to know anything about the low-level (hardware
 register) stuff.</p>
 <p>The device is accessed through special device nodes, usually located in the
 /dev directory, i.e. /dev/fb*.</p>
-</section>
-<section id="user-s-view-of-dev-fb">
+</div>
+<div class="section" id="user-s-view-of-dev-fb">
 <h2>1. User’s View of /dev/fb*<a class="headerlink" href="#user-s-view-of-dev-fb" title="Permalink to this headline">¶</a></h2>
 <p>From the user’s point of view, the frame buffer device looks just like any
 other device in /dev. It’s a character device using major 29; the minor
@@ -345,8 +347,8 @@ users):</p>
 </pre></div>
 </div>
 <p>After this the X server will use the second frame buffer.</p>
-</section>
-<section id="programmer-s-view-of-dev-fb">
+</div>
+<div class="section" id="programmer-s-view-of-dev-fb">
 <h2>2. Programmer’s View of /dev/fb*<a class="headerlink" href="#programmer-s-view-of-dev-fb" title="Permalink to this headline">¶</a></h2>
 <p>As you already know, a frame buffer device is a memory device like /dev/mem and
 it has the same features. You can read it, write it, seek to some location in
@@ -386,8 +388,8 @@ the like can be implemented as kernel modules that are loaded at runtime. Such
 a driver just has to call <a class="reference internal" href="../driver-api/frame-buffer.html#c.register_framebuffer" title="register_framebuffer"><code class="xref c c-func docutils literal notranslate"><span class="pre">register_framebuffer()</span></code></a> and supply some functions.
 Writing and distributing such drivers independently from the kernel will save
 much trouble…</p>
-</section>
-<section id="frame-buffer-resolution-maintenance">
+</div>
+<div class="section" id="frame-buffer-resolution-maintenance">
 <h2>3. Frame Buffer Resolution Maintenance<a class="headerlink" href="#frame-buffer-resolution-maintenance" title="Permalink to this headline">¶</a></h2>
 <p>Frame buffer resolutions are maintained using the utility <cite>fbset</cite>. It can
 change the video mode properties of a frame buffer device. Its main usage is
@@ -395,8 +397,8 @@ to change the current video mode, e.g. during boot up in one of your <cite>/etc/
 or <cite>/etc/init.d/*</cite> files.</p>
 <p>Fbset uses a video mode database stored in a configuration file, so you can
 easily add your own modes and refer to them with a simple identifier.</p>
-</section>
-<section id="the-x-server">
+</div>
+<div class="section" id="the-x-server">
 <h2>4. The X Server<a class="headerlink" href="#the-x-server" title="Permalink to this headline">¶</a></h2>
 <p>The X server (XF68_FBDev) is the most notable application program for the frame
 buffer device. Starting with XFree86 release 3.2, the X server is part of
@@ -425,8 +427,8 @@ specify the timings in a different format (but <cite>fbset -x</cite> may help).<
 </div></blockquote>
 <p>To tune a video mode, you can use fbset or xvidtune. Note that xvidtune doesn’t
 work 100% with XF68_FBDev: the reported clock values are always incorrect.</p>
-</section>
-<section id="video-mode-timings">
+</div>
+<div class="section" id="video-mode-timings">
 <h2>5. Video Mode Timings<a class="headerlink" href="#video-mode-timings" title="Permalink to this headline">¶</a></h2>
 <p>A monitor draws an image on the screen by using an electron beam (3 electron
 beams for color models, 1 electron beam for monochrome monitors). The front of
@@ -519,8 +521,8 @@ vsync length:</p>
 </div>
 <p>The frame buffer device expects all horizontal timings in number of dotclocks
 (in picoseconds, 1E-12 s), and vertical timings in number of scanlines.</p>
-</section>
-<section id="converting-xfree86-timing-values-info-frame-buffer-device-timings">
+</div>
+<div class="section" id="converting-xfree86-timing-values-info-frame-buffer-device-timings">
 <h2>6. Converting XFree86 timing values info frame buffer device timings<a class="headerlink" href="#converting-xfree86-timing-values-info-frame-buffer-device-timings" title="Permalink to this headline">¶</a></h2>
 <p>An XFree86 mode line consists of the following fields:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&quot;800x600&quot;     50      800  856  976 1040    600  637  643  666
@@ -558,8 +560,8 @@ vsync length:</p>
 </ol>
 <p>Good examples for VESA timings can be found in the XFree86 source tree,
 under “xc/programs/Xserver/hw/xfree86/doc/modeDB.txt”.</p>
-</section>
-<section id="references">
+</div>
+<div class="section" id="references">
 <h2>7. References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <p>For more specific information about the frame buffer device and its
 applications, please refer to the Linux-fbdev website:</p>
@@ -582,15 +584,15 @@ applications, please refer to the Linux-fbdev website:</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="mailing-list">
+</div>
+<div class="section" id="mailing-list">
 <h2>8. Mailing list<a class="headerlink" href="#mailing-list" title="Permalink to this headline">¶</a></h2>
 <p>There is a frame buffer device related mailing list at kernel.org:
 <a class="reference external" href="mailto:linux-fbdev&#37;&#52;&#48;vger&#46;kernel&#46;org">linux-fbdev<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a>.</p>
 <p>Point your web browser to <a class="reference external" href="http://sourceforge.net/projects/linux-fbdev/">http://sourceforge.net/projects/linux-fbdev/</a> for
 subscription information and archive browsing.</p>
-</section>
-<section id="downloading">
+</div>
+<div class="section" id="downloading">
 <h2>9. Downloading<a class="headerlink" href="#downloading" title="Permalink to this headline">¶</a></h2>
 <p>All necessary files can be found at</p>
 <blockquote>
@@ -601,15 +603,15 @@ subscription information and archive browsing.</p>
 <blockquote>
 <div><p><a class="reference external" href="http://www.linux-fbdev.org/">http://www.linux-fbdev.org/</a></p>
 </div></blockquote>
-</section>
-<section id="credits">
+</div>
+<div class="section" id="credits">
 <h2>10. Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
 <p>This readme was written by Geert Uytterhoeven, partly based on the original
 <cite>X-framebuffer.README</cite> by Roman Hodek and Martin Schaller. Section 6 was
 provided by Frank Neumann.</p>
 <p>The frame buffer device abstraction was designed by Martin Schaller.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

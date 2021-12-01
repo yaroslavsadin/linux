@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>4. The MSI Driver Guide HOWTO &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -270,7 +272,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-msi-driver-guide-howto">
+  <div class="section" id="the-msi-driver-guide-howto">
 <h1><span class="section-number">4. </span>The MSI Driver Guide HOWTO<a class="headerlink" href="#the-msi-driver-guide-howto" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Authors</dt>
@@ -280,14 +282,14 @@
 <dd class="field-even"><p>2003, 2008 Intel Corporation</p>
 </dd>
 </dl>
-<section id="about-this-guide">
+<div class="section" id="about-this-guide">
 <h2><span class="section-number">4.1. </span>About this guide<a class="headerlink" href="#about-this-guide" title="Permalink to this headline">¶</a></h2>
 <p>This guide describes the basics of Message Signaled Interrupts (MSIs),
 the advantages of using MSI over traditional interrupt mechanisms, how
 to change your driver to use MSI or MSI-X and some basic diagnostics to
 try if a device doesn’t support MSIs.</p>
-</section>
-<section id="what-are-msis">
+</div>
+<div class="section" id="what-are-msis">
 <h2><span class="section-number">4.2. </span>What are MSIs?<a class="headerlink" href="#what-are-msis" title="Permalink to this headline">¶</a></h2>
 <p>A Message Signaled Interrupt is a write from the device to a special
 address which causes an interrupt to be received by the CPU.</p>
@@ -297,8 +299,8 @@ capability was also introduced with PCI 3.0.  It supports more interrupts
 per device than MSI and allows interrupts to be independently configured.</p>
 <p>Devices may support both MSI and MSI-X, but only one can be enabled at
 a time.</p>
-</section>
-<section id="why-use-msis">
+</div>
+<div class="section" id="why-use-msis">
 <h2><span class="section-number">4.3. </span>Why use MSIs?<a class="headerlink" href="#why-use-msis" title="Permalink to this headline">¶</a></h2>
 <p>There are three reasons why using MSIs can give an advantage over
 traditional pin-based interrupts.</p>
@@ -325,22 +327,22 @@ infrequent conditions (such as errors) their own interrupt which allows
 the driver to handle the normal interrupt handling path more efficiently.
 Other possible designs include giving one interrupt to each packet queue
 in a network card or each port in a storage controller.</p>
-</section>
-<section id="how-to-use-msis">
+</div>
+<div class="section" id="how-to-use-msis">
 <h2><span class="section-number">4.4. </span>How to use MSIs<a class="headerlink" href="#how-to-use-msis" title="Permalink to this headline">¶</a></h2>
 <p>PCI devices are initialised to use pin-based interrupts.  The device
 driver has to set up the device to use MSI or MSI-X.  Not all machines
 support MSIs correctly, and for those machines, the APIs described below
 will simply fail and the device will continue to use pin-based interrupts.</p>
-<section id="include-kernel-support-for-msis">
+<div class="section" id="include-kernel-support-for-msis">
 <h3><span class="section-number">4.4.1. </span>Include kernel support for MSIs<a class="headerlink" href="#include-kernel-support-for-msis" title="Permalink to this headline">¶</a></h3>
 <p>To support MSI or MSI-X, the kernel must be built with the CONFIG_PCI_MSI
 option enabled.  This option is only available on some architectures,
 and it may depend on some other options also being set.  For example,
 on x86, you must also enable X86_UP_APIC or SMP in order to see the
 CONFIG_PCI_MSI option.</p>
-</section>
-<section id="using-msi">
+</div>
+<div class="section" id="using-msi">
 <h3><span class="section-number">4.4.2. </span>Using MSI<a class="headerlink" href="#using-msi" title="Permalink to this headline">¶</a></h3>
 <p>Most of the hard work is done for the driver in the PCI layer.  The driver
 simply has to request that the PCI layer set up the MSI capability for this
@@ -415,8 +417,8 @@ if (nvec &lt; 0)
         goto out_err;
 </pre></div>
 </div>
-</section>
-<section id="legacy-apis">
+</div>
+<div class="section" id="legacy-apis">
 <h3><span class="section-number">4.4.3. </span>Legacy APIs<a class="headerlink" href="#legacy-apis" title="Permalink to this headline">¶</a></h3>
 <p>The following old APIs to enable and disable MSI or MSI-X interrupts should
 not be used in new code:</p>
@@ -433,10 +435,10 @@ should be avoided in favor of letting pci_alloc_irq_vectors() cap the
 number of vectors.  If you have a legitimate special use case for the count
 of vectors we might have to revisit that decision and add a
 pci_nr_irq_vectors() helper that handles MSI and MSI-X transparently.</p>
-</section>
-<section id="considerations-when-using-msis">
+</div>
+<div class="section" id="considerations-when-using-msis">
 <h3><span class="section-number">4.4.4. </span>Considerations when using MSIs<a class="headerlink" href="#considerations-when-using-msis" title="Permalink to this headline">¶</a></h3>
-<section id="spinlocks">
+<div class="section" id="spinlocks">
 <h4><span class="section-number">4.4.4.1. </span>Spinlocks<a class="headerlink" href="#spinlocks" title="Permalink to this headline">¶</a></h4>
 <p>Most device drivers have a per-device spinlock which is taken in the
 interrupt handler.  With pin-based interrupts or a single MSI, it is not
@@ -447,17 +449,17 @@ a different interrupt, the driver will deadlock trying to recursively
 acquire the spinlock.  Such deadlocks can be avoided by using
 spin_lock_irqsave() or spin_lock_irq() which disable local interrupts
 and acquire the lock (see <a class="reference internal" href="../kernel-hacking/locking.html"><span class="doc">Unreliable Guide To Locking</span></a>).</p>
-</section>
-</section>
-<section id="how-to-tell-whether-msi-msi-x-is-enabled-on-a-device">
+</div>
+</div>
+<div class="section" id="how-to-tell-whether-msi-msi-x-is-enabled-on-a-device">
 <h3><span class="section-number">4.4.5. </span>How to tell whether MSI/MSI-X is enabled on a device<a class="headerlink" href="#how-to-tell-whether-msi-msi-x-is-enabled-on-a-device" title="Permalink to this headline">¶</a></h3>
 <p>Using ‘lspci -v’ (as root) may show some devices with “MSI”, “Message
 Signalled Interrupts” or “MSI-X” capabilities.  Each of these capabilities
 has an ‘Enable’ flag which is followed with either “+” (enabled)
 or “-” (disabled).</p>
-</section>
-</section>
-<section id="msi-quirks">
+</div>
+</div>
+<div class="section" id="msi-quirks">
 <h2><span class="section-number">4.5. </span>MSI quirks<a class="headerlink" href="#msi-quirks" title="Permalink to this headline">¶</a></h2>
 <p>Several PCI chipsets or devices are known not to support MSIs.
 The PCI stack provides three ways to disable MSIs:</p>
@@ -466,7 +468,7 @@ The PCI stack provides three ways to disable MSIs:</p>
 <li><p>on all devices behind a specific bridge</p></li>
 <li><p>on a single device</p></li>
 </ol>
-<section id="disabling-msis-globally">
+<div class="section" id="disabling-msis-globally">
 <h3><span class="section-number">4.5.1. </span>Disabling MSIs globally<a class="headerlink" href="#disabling-msis-globally" title="Permalink to this headline">¶</a></h3>
 <p>Some host chipsets simply don’t support MSIs properly.  If we’re
 lucky, the manufacturer knows this and has indicated it in the ACPI
@@ -478,8 +480,8 @@ quirk_disable_all_msi() function in drivers/pci/quirks.c.</p>
 on the kernel command line to disable MSIs on all devices.  It would be
 in your best interests to report the problem to <a class="reference external" href="mailto:linux-pci&#37;&#52;&#48;vger&#46;kernel&#46;org">linux-pci<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a>
 including a full ‘lspci -v’ so we can add the quirks to the kernel.</p>
-</section>
-<section id="disabling-msis-below-a-bridge">
+</div>
+<div class="section" id="disabling-msis-below-a-bridge">
 <h3><span class="section-number">4.5.2. </span>Disabling MSIs below a bridge<a class="headerlink" href="#disabling-msis-below-a-bridge" title="Permalink to this headline">¶</a></h3>
 <p>Some PCI bridges are not able to route MSIs between busses properly.
 In this case, MSIs must be disabled on all devices behind the bridge.</p>
@@ -500,16 +502,16 @@ done with caution as it could break interrupt handling for all devices
 below this bridge.</p>
 <p>Again, please notify <a class="reference external" href="mailto:linux-pci&#37;&#52;&#48;vger&#46;kernel&#46;org">linux-pci<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a> of any bridges that need
 special handling.</p>
-</section>
-<section id="disabling-msis-on-a-single-device">
+</div>
+<div class="section" id="disabling-msis-on-a-single-device">
 <h3><span class="section-number">4.5.3. </span>Disabling MSIs on a single device<a class="headerlink" href="#disabling-msis-on-a-single-device" title="Permalink to this headline">¶</a></h3>
 <p>Some devices are known to have faulty MSI implementations.  Usually this
 is handled in the individual device driver, but occasionally it’s necessary
 to handle this with a quirk.  Some drivers have an option to disable use
 of MSI.  While this is a convenient workaround for the driver author,
 it is not good practice, and should not be emulated.</p>
-</section>
-<section id="finding-why-msis-are-disabled-on-a-device">
+</div>
+<div class="section" id="finding-why-msis-are-disabled-on-a-device">
 <h3><span class="section-number">4.5.4. </span>Finding why MSIs are disabled on a device<a class="headerlink" href="#finding-why-msis-are-disabled-on-a-device" title="Permalink to this headline">¶</a></h3>
 <p>From the above three sections, you can see that there are many reasons
 why MSIs may not be enabled for a given device.  Your first step should
@@ -523,9 +525,9 @@ to bridges between the PCI root and the device, MSIs are disabled.</p>
 <p>It is also worth checking the device driver to see whether it supports MSIs.
 For example, it may contain calls to pci_alloc_irq_vectors() with the
 PCI_IRQ_MSI or PCI_IRQ_MSIX flags.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

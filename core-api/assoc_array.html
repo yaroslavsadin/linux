@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Generic Associative Array Implementation &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -267,9 +269,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="generic-associative-array-implementation">
+  <div class="section" id="generic-associative-array-implementation">
 <h1>Generic Associative Array Implementation<a class="headerlink" href="#generic-associative-array-implementation" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This associative array implementation is an object container with the following
 properties:</p>
@@ -308,8 +310,8 @@ tree.  To improve memory efficiency, shortcuts can be emplaced to skip over
 what would otherwise be a series of single-occupancy nodes.  Further, nodes
 pack leaf object pointers into spare space in the node rather than making an
 extra branch until as such time an object needs to be added to a full node.</p>
-</section>
-<section id="the-public-api">
+</div>
+<div class="section" id="the-public-api">
 <h2>The Public API<a class="headerlink" href="#the-public-api" title="Permalink to this headline">¶</a></h2>
 <p>The public API can be found in <code class="docutils literal notranslate"><span class="pre">&lt;linux/assoc_array.h&gt;</span></code>.  The associative
 array is rooted on the following structure:</p>
@@ -322,7 +324,7 @@ array is rooted on the following structure:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./script/config -e ASSOCIATIVE_ARRAY
 </pre></div>
 </div>
-<section id="edit-script">
+<div class="section" id="edit-script">
 <h3>Edit Script<a class="headerlink" href="#edit-script" title="Permalink to this headline">¶</a></h3>
 <p>The insertion and deletion functions produce an ‘edit script’ that can later be
 applied to effect the changes without risking <code class="docutils literal notranslate"><span class="pre">ENOMEM</span></code>. This retains the
@@ -360,8 +362,8 @@ to.</p>
 this was for insertion, the new object is _not_ released by this function,
 but must rather be released by the caller.</p>
 <p>These functions are guaranteed not to fail.</p>
-</section>
-<section id="operations-table">
+</div>
+<div class="section" id="operations-table">
 <h3>Operations Table<a class="headerlink" href="#operations-table" title="Permalink to this headline">¶</a></h3>
 <p>Various functions take a table of operations:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct assoc_array_ops {
@@ -418,8 +420,8 @@ differs from the given index key or -1 if they are the same.</p>
 <p>Free the specified object.  Note that this may be called an RCU grace period
 after <code class="docutils literal notranslate"><span class="pre">assoc_array_apply_edit()</span></code> was called, so <code class="docutils literal notranslate"><span class="pre">synchronize_rcu()</span></code> may be
 necessary on module unloading.</p>
-</section>
-<section id="manipulation-functions">
+</div>
+<div class="section" id="manipulation-functions">
 <h3>Manipulation Functions<a class="headerlink" href="#manipulation-functions" title="Permalink to this headline">¶</a></h3>
 <p>There are a number of functions for manipulating an associative array:</p>
 <ol class="arabic">
@@ -524,8 +526,8 @@ enough memory.</p>
 <p>It is possible for other threads to iterate over or search the array under
 the RCU read lock while this function is in progress.  The caller should
 lock exclusively against other modifiers of the array.</p>
-</section>
-<section id="access-functions">
+</div>
+<div class="section" id="access-functions">
 <h3>Access Functions<a class="headerlink" href="#access-functions" title="Permalink to this headline">¶</a></h3>
 <p>There are two functions for accessing an associative array:</p>
 <ol class="arabic">
@@ -564,8 +566,8 @@ specified by the index key..</p>
 modified, provided the RCU read lock is held.</p>
 <p>The function will return the object if found (and set <code class="docutils literal notranslate"><span class="pre">*_type</span></code> to the object
 type) or will return <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if the object was not found.</p>
-</section>
-<section id="index-key-form">
+</div>
+<div class="section" id="index-key-form">
 <h3>Index Key Form<a class="headerlink" href="#index-key-form" title="Permalink to this headline">¶</a></h3>
 <p>The index key can be of any form, but since the algorithms aren’t told how long
 the key is, it is strongly recommended that the index key includes its length
@@ -583,9 +585,9 @@ one nibble (4 bits) per level, so on a 32-bit CPU this is good for 8 levels and
 on a 64-bit CPU, 16 levels.  Unless the scattering is really poor, it is
 unlikely that more than one word of any particular index key will have to be
 used.</p>
-</section>
-</section>
-<section id="internal-workings">
+</div>
+</div>
+<div class="section" id="internal-workings">
 <h2>Internal Workings<a class="headerlink" href="#internal-workings" title="Permalink to this headline">¶</a></h2>
 <p>The associative array data structure has an internal tree.  This tree is
 constructed of two types of metadata blocks: nodes and shortcuts.</p>
@@ -596,7 +598,7 @@ constructed of two types of metadata blocks: nodes and shortcuts.</p>
 <li><p>A pointer to a node at the next level.</p></li>
 <li><p>A pointer to a shortcut.</p></li>
 </ul>
-<section id="basic-internal-tree-layout">
+<div class="section" id="basic-internal-tree-layout">
 <h3>Basic Internal Tree Layout<a class="headerlink" href="#basic-internal-tree-layout" title="Permalink to this headline">¶</a></h3>
 <p>Ignoring shortcuts for the moment, the nodes form a multilevel tree.  The index
 key space is strictly subdivided by the nodes in the tree and nodes occur on
@@ -689,8 +691,8 @@ any     LEAF            f3842239082
 any LEAF            1458952489
 </pre></div>
 </div>
-</section>
-<section id="shortcuts">
+</div>
+<div class="section" id="shortcuts">
 <h3>Shortcuts<a class="headerlink" href="#shortcuts" title="Permalink to this headline">¶</a></h3>
 <p>Shortcuts are metadata records that jump over a piece of keyspace.  A shortcut
 is a replacement for a series of single-occupancy nodes ascending through the
@@ -700,8 +702,8 @@ the tree contains at least 17 nodes all with key prefix <code class="docutils li
 insertion algorithm will insert a shortcut to skip over the <code class="docutils literal notranslate"><span class="pre">1111</span></code> keyspace
 in a single bound and get to the fourth level where these actually become
 different.</p>
-</section>
-<section id="splitting-and-collapsing-nodes">
+</div>
+<div class="section" id="splitting-and-collapsing-nodes">
 <h3>Splitting And Collapsing Nodes<a class="headerlink" href="#splitting-and-collapsing-nodes" title="Permalink to this headline">¶</a></h3>
 <p>Each node has a maximum capacity of 16 leaves and metadata pointers.  If the
 insertion algorithm finds that it is trying to insert a 17th object into a
@@ -713,16 +715,16 @@ sufficiently similar, then a shortcut will be inserted into the tree.</p>
 <p>When the number of objects in the subtree rooted at a node falls to 16 or
 fewer, then the subtree will be collapsed down to a single node - and this will
 ripple towards the root if possible.</p>
-</section>
-<section id="non-recursive-iteration">
+</div>
+<div class="section" id="non-recursive-iteration">
 <h3>Non-Recursive Iteration<a class="headerlink" href="#non-recursive-iteration" title="Permalink to this headline">¶</a></h3>
 <p>Each node and shortcut contains a back pointer to its parent and the number of
 slot in that parent that points to it.  None-recursive iteration uses these to
 proceed rootwards through the tree, going to the parent node, slot N + 1 to
 make sure progress is made without the need for a stack.</p>
 <p>The backpointers, however, make simultaneous alteration and iteration tricky.</p>
-</section>
-<section id="simultaneous-alteration-and-iteration">
+</div>
+<div class="section" id="simultaneous-alteration-and-iteration">
 <h3>Simultaneous Alteration And Iteration<a class="headerlink" href="#simultaneous-alteration-and-iteration" title="Permalink to this headline">¶</a></h3>
 <p>There are a number of cases to consider:</p>
 <ol class="arabic">
@@ -768,9 +770,9 @@ the parent slot number is read after the back pointer.</p>
 <p>Obsolete blocks and leaves are freed up after an RCU grace period has passed,
 so as long as anyone doing walking or iteration holds the RCU read lock, the
 old superstructure should not go away on them.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>如何讓你的改動進入內核 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -290,7 +292,7 @@
                胡皓文 Hu Haowen &lt;src.res@email.cn&gt;
 </pre></div>
 </div>
-<section id="id1">
+<div class="section" id="id1">
 <h1>如何讓你的改動進入內核<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <p>對於想要將改動提交到 Linux 內核的個人或者公司來說，如果不熟悉「規矩」，
 提交的流程會讓人畏懼。本文檔收集了一系列建議，這些建議可以大大的提高你
@@ -304,7 +306,7 @@
 <p>其中許多步驟描述了Git版本控制系統的默認行爲；如果您使用Git來準備補丁，
 您將發現它爲您完成的大部分機械工作，儘管您仍然需要準備和記錄一組合理的
 補丁。一般來說，使用git將使您作爲內核開發人員的生活更輕鬆。</p>
-<section id="id2">
+<div class="section" id="id2">
 <h2>0) 獲取當前源碼樹<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>如果您沒有一個可以使用當前內核原始碼的存儲庫，請使用git獲取一個。您將要
 從主線存儲庫開始，它可以通過以下方式獲取:</p>
@@ -316,8 +318,8 @@
 統的 <strong>T:</strong> 項以查找該樹，或者簡單地詢問維護者該樹是否未在其中列出。</p>
 <p>仍然可以通過tarballs下載內核版本（如下一節所述），但這是進行內核開發的
 一種困難的方式。</p>
-</section>
-<section id="diff-up">
+</div>
+<div class="section" id="diff-up">
 <h2>1) “diff -up”<a class="headerlink" href="#diff-up" title="Permalink to this headline">¶</a></h2>
 <p>使用 “diff -up” 或者 “diff -uprN” 來創建補丁。</p>
 <p>所有內核的改動，都是以補丁的形式呈現的，補丁由 diff(1) 生成。創建補丁的
@@ -356,8 +358,8 @@ diff -uprN -X linux-3.19-vanilla/Documentation/dontdiff \
 <a class="reference internal" href="#tw-split-changes"><span class="std std-ref">3) 拆分你的改動</span></a></p>
 <p>如果你用 <code class="docutils literal notranslate"><span class="pre">git</span></code> , <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">rebase</span> <span class="pre">-i</span></code> 可以幫助你這一點。如果你不用 <code class="docutils literal notranslate"><span class="pre">git</span></code>,
 <code class="docutils literal notranslate"><span class="pre">quilt</span></code> &lt;<a class="reference external" href="https://savannah.nongnu.org/projects/quilt">https://savannah.nongnu.org/projects/quilt</a>&gt; 另外一個流行的選擇。</p>
-</section>
-<section id="tw-describe-changes">
+</div>
+<div class="section" id="tw-describe-changes">
 <span id="id3"></span><h2>2) 描述你的改動<a class="headerlink" href="#tw-describe-changes" title="Permalink to this headline">¶</a></h2>
 <p>描述你的問題。無論您的補丁是一行錯誤修復還是5000行新功能，都必須有一個潛在
 的問題激勵您完成這項工作。讓審稿人相信有一個問題值得解決，讓他們讀完第一段
@@ -413,8 +415,8 @@ delete it.
         fixes = Fixes: %h (\&quot;%s\&quot;)
 </pre></div>
 </div>
-</section>
-<section id="tw-split-changes">
+</div>
+<div class="section" id="tw-split-changes">
 <span id="id4"></span><h2>3) 拆分你的改動<a class="headerlink" href="#tw-split-changes" title="Permalink to this headline">¶</a></h2>
 <p>將每個邏輯更改分隔成一個單獨的補丁。</p>
 <p>例如，如果你的改動里同時有bug修正和性能優化，那麼把這些改動拆分到兩個或
@@ -429,8 +431,8 @@ delete it.
 候分割你的補丁系列；如果你在中間引入錯誤，他們不會感謝你。</p>
 <p>如果你不能將補丁濃縮成更少的文件，那麼每次大約發送出15個，然後等待審查
 和集成。</p>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h2>4) 檢查你的更改風格<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <p>檢查您的補丁是否存在基本樣式衝突，詳細信息可在
 <a class="reference internal" href="coding-style.html#tw-codingstyle"><span class="std std-ref"><a class="reference internal" href="coding-style.html"><span class="doc">Linux 內核代碼風格</span></a></span></a>
@@ -451,8 +453,8 @@ delete it.
 </ul>
 </div></blockquote>
 <p>您應該能夠判斷您的補丁中存在的所有違規行爲。</p>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h2>5) 選擇補丁收件人<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <p>您應該總是在任何補丁上複製相應的子系統維護人員，以獲得他們維護的代碼；查看
 維護人員文件和原始碼修訂歷史記錄，以了解這些維護人員是誰。腳本
@@ -510,8 +512,8 @@ scripts/get_Maintainer.pl在這個步驟中非常有用。如果您找不到正�
 「simple, localized &amp; easy to verify」，也就是說簡單的，局部的和易於檢驗的。
 <a class="reference external" href="mailto:trivial&#37;&#52;&#48;kernel">trivial<span>&#64;</span>kernel</a>.org郵件列表的目的是針對這樣的補丁，爲提交者提供一個中心，來
 降低提交的門檻。)</p>
-</section>
-<section id="mime">
+</div>
+<div class="section" id="mime">
 <h2>6) 沒有 MIME 編碼，沒有連結，沒有壓縮，沒有附件，只有純文本<a class="headerlink" href="#mime" title="Permalink to this headline">¶</a></h2>
 <p>Linus 和其他的內核開發者需要閱讀和評論你提交的改動。對於內核開發者來說
 ，可以「引用」你的改動很重要，使用一般的 e-mail 工具，他們就可以在你的
@@ -528,15 +530,15 @@ scripts/get_Maintainer.pl在這個步驟中非常有用。如果您找不到正�
 <p>例外：如果你的郵遞員弄壞了補丁，那麼有人可能會要求你使用mime重新發送補丁</p>
 <p>請參閱 <a class="reference internal" href="email-clients.html#tw-email-clients"><span class="std std-ref"><a class="reference internal" href="email-clients.html"><span class="doc">Linux郵件客戶端配置信息</span></a></span></a>
 以獲取有關配置電子郵件客戶端以使其不受影響地發送修補程序的提示。</p>
-</section>
-<section id="e-mail">
+</div>
+<div class="section" id="e-mail">
 <h2>7) e-mail 的大小<a class="headerlink" href="#e-mail" title="Permalink to this headline">¶</a></h2>
 <p>大的改動對郵件列表不合適，對某些維護者也不合適。如果你的補丁，在不壓縮
 的情況下，超過了300kB，那麼你最好將補丁放在一個能通過 internet 訪問的服
 務器上，然後用指向你的補丁的 URL 替代。但是請注意，如果您的補丁超過了
 300kb，那麼它幾乎肯定需要被破壞。</p>
-</section>
-<section id="id7">
+</div>
+<div class="section" id="id7">
 <h2>8）回複評審意見<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <p>你的補丁幾乎肯定會得到評審者對補丁改進方法的評論。您必須對這些評論作出
 回應；讓補丁被忽略的一個好辦法就是忽略審閱者的意見。不會導致代碼更改的
@@ -545,27 +547,27 @@ scripts/get_Maintainer.pl在這個步驟中非常有用。如果您找不到正�
 <p>一定要告訴審稿人你在做什麼改變，並感謝他們的時間。代碼審查是一個累人且
 耗時的過程，審查人員有時會變得暴躁。即使在這種情況下，也要禮貌地回應並
 解決他們指出的問題。</p>
-</section>
-<section id="id8">
+</div>
+<div class="section" id="id8">
 <h2>9）不要洩氣或不耐煩<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
 <p>提交更改後，請耐心等待。審閱者是忙碌的人，可能無法立即訪問您的修補程序。</p>
 <p>曾幾何時，補丁曾在沒有評論的情況下消失在空白中，但開發過程比現在更加順利。
 您應該在一周左右的時間內收到評論；如果沒有收到評論，請確保您已將補丁發送
 到正確的位置。在重新提交或聯繫審閱者之前至少等待一周-在諸如合併窗口之類的
 繁忙時間可能更長。</p>
-</section>
-<section id="patch">
+</div>
+<div class="section" id="patch">
 <h2>10）主題中包含 PATCH<a class="headerlink" href="#patch" title="Permalink to this headline">¶</a></h2>
 <p>由於到linus和linux內核的電子郵件流量很高，通常會在主題行前面加上[PATCH]
 前綴. 這使Linus和其他內核開發人員更容易將補丁與其他電子郵件討論區分開。</p>
-</section>
-<section id="id9">
+</div>
+<div class="section" id="id9">
 <h2>11）簽署你的作品-開發者原始認證<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
 <p>爲了加強對誰做了何事的追蹤，尤其是對那些透過好幾層的維護者的補丁，我們
 建議在發送出去的補丁上加一個 「sign-off」 的過程。</p>
 <p>“sign-off” 是在補丁的注釋的最後的簡單的一行文字，認證你編寫了它或者其他
 人有權力將它作爲開放原始碼的補丁傳遞。規則很簡單：如果你能認證如下信息:</p>
-<section id="id10">
+<div class="section" id="id10">
 <h3>開發者來源證書 1.1<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>對於本項目的貢獻，我認證如下信息：</p>
 <blockquote>
@@ -623,9 +625,9 @@ Signed-off-by: Lucky K Maintainer &lt;lucky@maintainer.example.org&gt;
     [backport of 2.6 commit b7acbdfbd1f277c1eb23f344f899cfa4cd0bf36a]
 </pre></div>
 </div>
-</section>
-</section>
-<section id="acked-by-cc-co-developed-by">
+</div>
+</div>
+<div class="section" id="acked-by-cc-co-developed-by">
 <h2>12）何時使用Acked-by:，CC:，和Co-Developed by:<a class="headerlink" href="#acked-by-cc-co-developed-by" title="Permalink to this headline">¶</a></h2>
 <p>Singed-off-by: 標記表示簽名者參與了補丁的開發，或者他/她在補丁的傳遞路徑中。</p>
 <p>如果一個人沒有直接參與補丁的準備或處理，但希望表示並記錄他們對補丁的批准，
@@ -669,8 +671,8 @@ Co-developed-by: Submitting Co-Author &lt;sub@coauthor.example.org&gt;
 Signed-off-by: Submitting Co-Author &lt;sub@coauthor.example.org&gt;
 </pre></div>
 </div>
-</section>
-<section id="id11">
+</div>
+<div class="section" id="id11">
 <h2>13）使用報告人：、測試人：、審核人：、建議人：、修復人：<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
 <p>Reported-by: 給那些發現錯誤並報告錯誤的人致謝，它希望激勵他們在將來再次幫助
 我們。請注意，如果bug是以私有方式報告的，那麼在使用Reported-by標記之前，請
@@ -679,7 +681,7 @@ Signed-off-by: Submitting Co-Author &lt;sub@coauthor.example.org&gt;
 維護人員已經執行了一些測試，爲將來的補丁提供了一種定位測試人員的方法，並確
 保測試人員的信譽。</p>
 <p>Reviewed-by：相反，根據審查人的聲明，表明該補丁已被審查並被認爲是可接受的：</p>
-<section id="id12">
+<div class="section" id="id12">
 <h3>審查人的監督聲明<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <p>通過提供我的 Reviewed-by，我聲明：</p>
 <blockquote>
@@ -708,9 +710,9 @@ Reviewed-by: 當由已知了解主題區域並執行徹底檢查的審閱者提�
 這有助於檢查錯誤修復。這個標記還幫助穩定內核團隊確定應該接收修復的穩定內核
 版本。這是指示補丁修復的錯誤的首選方法。請參閱 <a class="reference internal" href="#tw-describe-changes"><span class="std std-ref">2) 描述你的改動</span></a>
 描述您的更改以了解更多詳細信息。</p>
-</section>
-</section>
-<section id="tw-the-canonical-patch-format">
+</div>
+</div>
+<div class="section" id="tw-the-canonical-patch-format">
 <span id="id13"></span><h2>12）標準補丁格式<a class="headerlink" href="#tw-the-canonical-patch-format" title="Permalink to this headline">¶</a></h2>
 <p>本節描述如何格式化補丁本身。請注意，如果您的補丁存儲在 <code class="docutils literal notranslate"><span class="pre">Git</span></code> 存儲庫中，則
 可以使用 <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">format-patch</span></code> 進行正確的補丁格式設置。但是，這些工具無法創建
@@ -775,8 +777,8 @@ Subject: [PATCHv2 001/207] x86: fix eflags tracking
 使用 diffstat的選項 “-p 1 -w 70” 這樣文件名就會從內核原始碼樹的目錄開始
 ，不會占用太寬的空間（很容易適合80列的寬度，也許會有一些縮進。）</p>
 <p>在後面的參考資料中能看到適當的補丁格式的更多細節。</p>
-</section>
-<section id="in-reply-to">
+</div>
+<div class="section" id="in-reply-to">
 <span id="tw-explicit-in-reply-to"></span><h2>15) 明確回覆郵件頭(In-Reply-To)<a class="headerlink" href="#in-reply-to" title="Permalink to this headline">¶</a></h2>
 <p>手動添加回復補丁的的標題頭(In-Reply_To:) 是有幫助的（例如，使用 <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">send-email</span></code> ）
 將補丁與以前的相關討論關聯起來，例如，將bug修復程序連結到電子郵件和bug報告。
@@ -784,8 +786,8 @@ Subject: [PATCHv2 001/207] x86: fix eflags tracking
 補丁的多個版本就不會成爲電子郵件客戶端中無法管理的引用序列。如果連結有用，
 可以使用 <a class="reference external" href="https://lore.kernel.org/">https://lore.kernel.org/</a> 重定向器（例如，在封面電子郵件文本中）
 連結到補丁系列的早期版本。</p>
-</section>
-<section id="git-pull">
+</div>
+<div class="section" id="git-pull">
 <h2>16) 發送git pull請求<a class="headerlink" href="#git-pull" title="Permalink to this headline">¶</a></h2>
 <p>如果您有一系列補丁，那麼讓維護人員通過git pull操作將它們直接拉入子系統存儲
 庫可能是最方便的。但是，請注意，從開發人員那裡獲取補丁比從郵件列表中獲取補
@@ -820,8 +822,8 @@ to get these changes:
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git request-pull master git://my.public.tree/linux.git my-signed-tag
 </pre></div>
 </div>
-</section>
-<section id="id14">
+</div>
+<div class="section" id="id14">
 <h2>參考文獻<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h2>
 <dl>
 <dt>Andrew Morton, “The perfect patch” (tpp).</dt><dd><p>&lt;<a class="reference external" href="https://www.ozlabs.org/~akpm/stuff/tpp.txt">https://www.ozlabs.org/~akpm/stuff/tpp.txt</a>&gt;</p>
@@ -845,8 +847,8 @@ to get these changes:
 <p><a class="reference external" href="http://halobates.de/on-submitting-patches.pdf">http://halobates.de/on-submitting-patches.pdf</a></p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>DAMON-based Reclamation &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -349,13 +351,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="damon-based-reclamation">
+  <div class="section" id="damon-based-reclamation">
 <h1>DAMON-based Reclamation<a class="headerlink" href="#damon-based-reclamation" title="Permalink to this headline">¶</a></h1>
 <p>DAMON-based Reclamation (DAMON_RECLAIM) is a static kernel module that aimed to
 be used for proactive and lightweight reclamation under light memory pressure.
 It doesn’t aim to replace the LRU-list based page_granularity reclamation, but
 to be selectively used for different level of memory pressure and requirements.</p>
-<section id="where-proactive-reclamation-is-required">
+<div class="section" id="where-proactive-reclamation-is-required">
 <h2>Where Proactive Reclamation is Required?<a class="headerlink" href="#where-proactive-reclamation-is-required" title="Permalink to this headline">¶</a></h2>
 <p>On general memory over-committed systems, proactively reclaiming cold pages
 helps saving memory and reducing latency spikes that incurred by the direct
@@ -370,8 +372,8 @@ user-space applications are designed to use as much memory as available.  Then,
 guests could report only small amount of memory as free to host, results in
 memory utilization drop of the systems.  Running the proactive reclamation in
 guests could mitigate this problem.</p>
-</section>
-<section id="how-it-works">
+</div>
+<div class="section" id="how-it-works">
 <h2>How It Works?<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
 <p>DAMON_RECLAIM finds memory regions that didn’t accessed for specific time
 duration and page out.  To avoid it consuming too much CPU for the paging out
@@ -379,8 +381,8 @@ operation, a speed limit can be configured.  Under the speed limit, it pages
 out memory regions that didn’t accessed longer time first.  System
 administrators can also configure under what situation this scheme should
 automatically activated and deactivated with three memory pressure watermarks.</p>
-</section>
-<section id="interface-module-parameters">
+</div>
+<div class="section" id="interface-module-parameters">
 <h2>Interface: Module Parameters<a class="headerlink" href="#interface-module-parameters" title="Permalink to this headline">¶</a></h2>
 <p>To use this feature, you should first ensure your system is running on a kernel
 that is built with <code class="docutils literal notranslate"><span class="pre">CONFIG_DAMON_RECLAIM=y</span></code>.</p>
@@ -394,22 +396,22 @@ runtime and DAMON_RECLAIM is already enabled, you should disable and re-enable
 it via <code class="docutils literal notranslate"><span class="pre">enabled</span></code> parameter file.  Writing of the new values to proper
 parameter values should be done before the re-enablement.</p>
 <p>Below are the description of each parameter.</p>
-<section id="enabled">
+<div class="section" id="enabled">
 <h3>enabled<a class="headerlink" href="#enabled" title="Permalink to this headline">¶</a></h3>
 <p>Enable or disable DAMON_RECLAIM.</p>
 <p>You can enable DAMON_RCLAIM by setting the value of this parameter as <code class="docutils literal notranslate"><span class="pre">Y</span></code>.
 Setting it as <code class="docutils literal notranslate"><span class="pre">N</span></code> disables DAMON_RECLAIM.  Note that DAMON_RECLAIM could do
 no real monitoring and reclamation due to the watermarks-based activation
 condition.  Refer to below descriptions for the watermarks parameter for this.</p>
-</section>
-<section id="min-age">
+</div>
+<div class="section" id="min-age">
 <h3>min_age<a class="headerlink" href="#min-age" title="Permalink to this headline">¶</a></h3>
 <p>Time threshold for cold memory regions identification in microseconds.</p>
 <p>If a memory region is not accessed for this or longer time, DAMON_RECLAIM
 identifies the region as cold, and reclaims it.</p>
 <p>120 seconds by default.</p>
-</section>
-<section id="quota-ms">
+</div>
+<div class="section" id="quota-ms">
 <h3>quota_ms<a class="headerlink" href="#quota-ms" title="Permalink to this headline">¶</a></h3>
 <p>Limit of time for the reclamation in milliseconds.</p>
 <p>DAMON_RECLAIM tries to use only up to this time within a time window
@@ -417,8 +419,8 @@ identifies the region as cold, and reclaims it.</p>
 used for limiting CPU consumption of DAMON_RECLAIM.  If the value is zero, the
 limit is disabled.</p>
 <p>10 ms by default.</p>
-</section>
-<section id="quota-sz">
+</div>
+<div class="section" id="quota-sz">
 <h3>quota_sz<a class="headerlink" href="#quota-sz" title="Permalink to this headline">¶</a></h3>
 <p>Limit of size of memory for the reclamation in bytes.</p>
 <p>DAMON_RECLAIM charges amount of memory which it tried to reclaim within a time
@@ -426,8 +428,8 @@ window (quota_reset_interval_ms) and makes no more than this limit is tried.
 This can be used for limiting consumption of CPU and IO.  If this value is
 zero, the limit is disabled.</p>
 <p>128 MiB by default.</p>
-</section>
-<section id="quota-reset-interval-ms">
+</div>
+<div class="section" id="quota-reset-interval-ms">
 <h3>quota_reset_interval_ms<a class="headerlink" href="#quota-reset-interval-ms" title="Permalink to this headline">¶</a></h3>
 <p>The time/size quota charge reset interval in milliseconds.</p>
 <p>The charget reset interval for the quota of time (quota_ms) and size
@@ -435,84 +437,84 @@ zero, the limit is disabled.</p>
 quota_ms milliseconds or quota_sz bytes within quota_reset_interval_ms
 milliseconds.</p>
 <p>1 second by default.</p>
-</section>
-<section id="wmarks-interval">
+</div>
+<div class="section" id="wmarks-interval">
 <h3>wmarks_interval<a class="headerlink" href="#wmarks-interval" title="Permalink to this headline">¶</a></h3>
 <p>Minimal time to wait before checking the watermarks, when DAMON_RECLAIM is
 enabled but inactive due to its watermarks rule.</p>
-</section>
-<section id="wmarks-high">
+</div>
+<div class="section" id="wmarks-high">
 <h3>wmarks_high<a class="headerlink" href="#wmarks-high" title="Permalink to this headline">¶</a></h3>
 <p>Free memory rate (per thousand) for the high watermark.</p>
 <p>If free memory of the system in bytes per thousand bytes is higher than this,
 DAMON_RECLAIM becomes inactive, so it does nothing but only periodically checks
 the watermarks.</p>
-</section>
-<section id="wmarks-mid">
+</div>
+<div class="section" id="wmarks-mid">
 <h3>wmarks_mid<a class="headerlink" href="#wmarks-mid" title="Permalink to this headline">¶</a></h3>
 <p>Free memory rate (per thousand) for the middle watermark.</p>
 <p>If free memory of the system in bytes per thousand bytes is between this and
 the low watermark, DAMON_RECLAIM becomes active, so starts the monitoring and
 the reclaiming.</p>
-</section>
-<section id="wmarks-low">
+</div>
+<div class="section" id="wmarks-low">
 <h3>wmarks_low<a class="headerlink" href="#wmarks-low" title="Permalink to this headline">¶</a></h3>
 <p>Free memory rate (per thousand) for the low watermark.</p>
 <p>If free memory of the system in bytes per thousand bytes is lower than this,
 DAMON_RECLAIM becomes inactive, so it does nothing but periodically checks the
 watermarks.  In the case, the system falls back to the LRU-list based page
 granularity reclamation logic.</p>
-</section>
-<section id="sample-interval">
+</div>
+<div class="section" id="sample-interval">
 <h3>sample_interval<a class="headerlink" href="#sample-interval" title="Permalink to this headline">¶</a></h3>
 <p>Sampling interval for the monitoring in microseconds.</p>
 <p>The sampling interval of DAMON for the cold memory monitoring.  Please refer to
 the DAMON documentation (<a class="reference internal" href="usage.html"><span class="doc">Detailed Usages</span></a>) for more detail.</p>
-</section>
-<section id="aggr-interval">
+</div>
+<div class="section" id="aggr-interval">
 <h3>aggr_interval<a class="headerlink" href="#aggr-interval" title="Permalink to this headline">¶</a></h3>
 <p>Aggregation interval for the monitoring in microseconds.</p>
 <p>The aggregation interval of DAMON for the cold memory monitoring.  Please
 refer to the DAMON documentation (<a class="reference internal" href="usage.html"><span class="doc">Detailed Usages</span></a>) for more detail.</p>
-</section>
-<section id="min-nr-regions">
+</div>
+<div class="section" id="min-nr-regions">
 <h3>min_nr_regions<a class="headerlink" href="#min-nr-regions" title="Permalink to this headline">¶</a></h3>
 <p>Minimum number of monitoring regions.</p>
 <p>The minimal number of monitoring regions of DAMON for the cold memory
 monitoring.  This can be used to set lower-bound of the monitoring quality.
 But, setting this too high could result in increased monitoring overhead.
 Please refer to the DAMON documentation (<a class="reference internal" href="usage.html"><span class="doc">Detailed Usages</span></a>) for more detail.</p>
-</section>
-<section id="max-nr-regions">
+</div>
+<div class="section" id="max-nr-regions">
 <h3>max_nr_regions<a class="headerlink" href="#max-nr-regions" title="Permalink to this headline">¶</a></h3>
 <p>Maximum number of monitoring regions.</p>
 <p>The maximum number of monitoring regions of DAMON for the cold memory
 monitoring.  This can be used to set upper-bound of the monitoring overhead.
 However, setting this too low could result in bad monitoring quality.  Please
 refer to the DAMON documentation (<a class="reference internal" href="usage.html"><span class="doc">Detailed Usages</span></a>) for more detail.</p>
-</section>
-<section id="monitor-region-start">
+</div>
+<div class="section" id="monitor-region-start">
 <h3>monitor_region_start<a class="headerlink" href="#monitor-region-start" title="Permalink to this headline">¶</a></h3>
 <p>Start of target memory region in physical address.</p>
 <p>The start physical address of memory region that DAMON_RECLAIM will do work
 against.  That is, DAMON_RECLAIM will find cold memory regions in this region
 and reclaims.  By default, biggest System RAM is used as the region.</p>
-</section>
-<section id="monitor-region-end">
+</div>
+<div class="section" id="monitor-region-end">
 <h3>monitor_region_end<a class="headerlink" href="#monitor-region-end" title="Permalink to this headline">¶</a></h3>
 <p>End of target memory region in physical address.</p>
 <p>The end physical address of memory region that DAMON_RECLAIM will do work
 against.  That is, DAMON_RECLAIM will find cold memory regions in this region
 and reclaims.  By default, biggest System RAM is used as the region.</p>
-</section>
-<section id="kdamond-pid">
+</div>
+<div class="section" id="kdamond-pid">
 <h3>kdamond_pid<a class="headerlink" href="#kdamond-pid" title="Permalink to this headline">¶</a></h3>
 <p>PID of the DAMON thread.</p>
 <p>If DAMON_RECLAIM is enabled, this becomes the PID of the worker thread.  Else,
 -1.</p>
-</section>
-</section>
-<section id="example">
+</div>
+</div>
+<div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>Below runtime example commands make DAMON_RECLAIM to find memory regions that
 not accessed for 30 seconds or more and pages out.  The reclamation is limited
@@ -544,8 +546,8 @@ granularity reclamation.</p>
 <dd><p><a class="reference external" href="https://www.kernel.org/doc/html/latest/vm/free_page_reporting.html">https://www.kernel.org/doc/html/latest/vm/free_page_reporting.html</a></p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

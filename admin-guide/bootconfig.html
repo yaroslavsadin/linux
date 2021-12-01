@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Boot Configuration &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -334,20 +336,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="boot-configuration">
+  <div class="section" id="boot-configuration">
 <span id="bootconfig"></span><h1>Boot Configuration<a class="headerlink" href="#boot-configuration" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Masami Hiramatsu &lt;<a class="reference external" href="mailto:mhiramat&#37;&#52;&#48;kernel&#46;org">mhiramat<span>&#64;</span>kernel<span>&#46;</span>org</a>&gt;</p>
 </dd>
 </dl>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The boot configuration expands the current kernel command line to support
 additional key-value data when booting the kernel in an efficient way.
 This allows administrators to pass a structured-Key config file.</p>
-</section>
-<section id="config-file-syntax">
+</div>
+<div class="section" id="config-file-syntax">
 <h2>Config File Syntax<a class="headerlink" href="#config-file-syntax" title="Permalink to this headline">¶</a></h2>
 <p>The boot config syntax is a simple structured key-value. Each key consists
 of dot-connected-words, and key and value are connected by <code class="docutils literal notranslate"><span class="pre">=</span></code>. The value
@@ -366,7 +368,7 @@ quotes (<code class="docutils literal notranslate"><span class="pre">&quot;VALUE
 you can not escape these quotes.</p>
 <p>There can be a key which doesn’t have value or has an empty value. Those keys
 are used for checking if the key exists or not (like a boolean).</p>
-<section id="key-value-syntax">
+<div class="section" id="key-value-syntax">
 <h3>Key-Value Syntax<a class="headerlink" href="#key-value-syntax" title="Permalink to this headline">¶</a></h3>
 <p>The boot config file syntax allows user to merge partially same word keys
 by brace. For example:</p>
@@ -387,8 +389,8 @@ foo.bar.qux.quux = value2
 </div>
 <p>In both styles, same key words are automatically merged when parsing it
 at boot time. So you can append similar trees or key-values.</p>
-</section>
-<section id="same-key-values">
+</div>
+<div class="section" id="same-key-values">
 <h3>Same-key Values<a class="headerlink" href="#same-key-values" title="Permalink to this headline">¶</a></h3>
 <p>It is prohibited that two or more values or arrays share a same-key.
 For example,:</p>
@@ -442,11 +444,11 @@ foo = value2
 foo.bar = value1
 </pre></div>
 </div>
-</section>
-<section id="comments">
+</div>
+<div class="section" id="comments">
 <h3>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h3>
 <p>The config syntax accepts shell-script style comments. The comments starting
-with hash (“#”) until newline (”n”) will be ignored.</p>
+with hash (“#”) until newline (“n”) will be ignored.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># comment line
 foo = value # value is set to foo.
 bar = 1, # 1st element
@@ -465,9 +467,9 @@ bar = 1, 2, 3
       ,2
 </pre></div>
 </div>
-</section>
-</section>
-<section id="proc-bootconfig">
+</div>
+</div>
+<div class="section" id="proc-bootconfig">
 <h2>/proc/bootconfig<a class="headerlink" href="#proc-bootconfig" title="Permalink to this headline">¶</a></h2>
 <p>/proc/bootconfig is a user-space interface of the boot config.
 Unlike /proc/cmdline, this file shows the key-value style list.
@@ -475,8 +477,8 @@ Each key-value pair is shown in each line with following style:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>KEY[.WORDS...] = &quot;[VALUE]&quot;[,&quot;VALUE2&quot;...]
 </pre></div>
 </div>
-</section>
-<section id="boot-kernel-with-a-boot-config">
+</div>
+<div class="section" id="boot-kernel-with-a-boot-config">
 <h2>Boot Kernel With a Boot Config<a class="headerlink" href="#boot-kernel-with-a-boot-config" title="Permalink to this headline">¶</a></h2>
 <p>Since the boot configuration file is loaded with initrd, it will be added
 to the end of the initrd (initramfs) image file with padding, size,
@@ -510,8 +512,8 @@ to/from initrd image. You can build it by the following command:</p>
 </div>
 <p>Then add “bootconfig” on the normal kernel command line to tell the
 kernel to look for the bootconfig at the end of the initrd file.</p>
-</section>
-<section id="kernel-parameters-via-boot-config">
+</div>
+<div class="section" id="kernel-parameters-via-boot-config">
 <h2>Kernel parameters via Boot Config<a class="headerlink" href="#kernel-parameters-via-boot-config" title="Permalink to this headline">¶</a></h2>
 <p>In addition to the kernel command line, the boot config can be used for
 passing the kernel parameters. All the key-value pairs under <code class="docutils literal notranslate"><span class="pre">kernel</span></code>
@@ -545,8 +547,8 @@ init {
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>root=&quot;01234567-89ab-cdef-0123-456789abcd&quot; ro bootconfig -- splash quiet
 </pre></div>
 </div>
-</section>
-<section id="config-file-limitation">
+</div>
+<div class="section" id="config-file-limitation">
 <h2>Config File Limitation<a class="headerlink" href="#config-file-limitation" title="Permalink to this headline">¶</a></h2>
 <p>Currently the maximum config size size is 32KB and the total key-words (not
 key-value entries) must be under 1024 nodes.
@@ -560,8 +562,8 @@ size is smaller than 32KB. (Note that this maximum size is not including
 the padding null characters.)
 Anyway, since bootconfig command verifies it when appending a boot config
 to initrd image, user can notice it before boot.</p>
-</section>
-<section id="bootconfig-apis">
+</div>
+<div class="section" id="bootconfig-apis">
 <h2>Bootconfig APIs<a class="headerlink" href="#bootconfig-apis" title="Permalink to this headline">¶</a></h2>
 <p>User can query or loop on key-value pairs, also it is possible to find
 a root (prefix) key node and find key-values under that node.</p>
@@ -595,12 +597,12 @@ xbc_node_for_each_array_value(root, &quot;array-option&quot;, value, anode) {
 “key.prefix.array-option”.</p>
 <p>Locking is not needed, since after initialization, the config becomes
 read-only. All data and keys must be copied if you need to modify it.</p>
-</section>
-<section id="functions-and-structures">
+</div>
+<div class="section" id="functions-and-structures">
 <h2>Functions and structures<a class="headerlink" href="#functions-and-structures" title="Permalink to this headline">¶</a></h2>
 <dl class="c function">
-<dt id="c.xbc_calc_checksum">
-<span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">xbc_calc_checksum</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_calc_checksum" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_calc_checksum">
+<span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_calc_checksum</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_calc_checksum" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Calculate checksum of bootconfig</p>
 </dd></dl>
 
@@ -616,8 +618,8 @@ read-only. All data and keys must be copied if you need to modify it.</p>
 The checksum will be used with the BOOTCONFIG_MAGIC and the size for
 embedding the bootconfig in the initrd image.</p>
 <dl class="c function">
-<dt id="c.xbc_node_is_value">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">xbc_node_is_value</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_is_value" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_is_value">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_is_value</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_is_value" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Test the node is a value node</p>
 </dd></dl>
 
@@ -629,8 +631,8 @@ embedding the bootconfig in the initrd image.</p>
 <p><strong>Description</strong></p>
 <p>Test the <strong>node</strong> is a value node and return true if a value node, false if not.</p>
 <dl class="c function">
-<dt id="c.xbc_node_is_key">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">xbc_node_is_key</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_is_key" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_is_key">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_is_key</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_is_key" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Test the node is a key node</p>
 </dd></dl>
 
@@ -642,8 +644,8 @@ embedding the bootconfig in the initrd image.</p>
 <p><strong>Description</strong></p>
 <p>Test the <strong>node</strong> is a key node and return true if a key node, false if not.</p>
 <dl class="c function">
-<dt id="c.xbc_node_is_array">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">xbc_node_is_array</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_is_array" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_is_array">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_is_array</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_is_array" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Test the node is an arraied value node</p>
 </dd></dl>
 
@@ -655,8 +657,8 @@ embedding the bootconfig in the initrd image.</p>
 <p><strong>Description</strong></p>
 <p>Test the <strong>node</strong> is an arraied value node.</p>
 <dl class="c function">
-<dt id="c.xbc_node_is_leaf">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">xbc_node_is_leaf</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_is_leaf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_is_leaf">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_is_leaf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_is_leaf" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Test the node is a leaf key node</p>
 </dd></dl>
 
@@ -671,8 +673,8 @@ or no child. Returns true if it is a leaf node, or false if not.
 Note that the leaf node can have subkey nodes in addition to the
 value node.</p>
 <dl class="c function">
-<dt id="c.xbc_find_value">
-<em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_find_value</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">key</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">vnode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_find_value" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_find_value">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_find_value</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vnode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_find_value" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Find a value which matches the key</p>
 </dd></dl>
 
@@ -689,8 +691,8 @@ the value if found. Found value node is stored in <strong>*vnode</strong>.
 Note that this can return 0-length string and store NULL in <strong>*vnode</strong> for
 key-only (non-value) entry.</p>
 <dl class="c function">
-<dt id="c.xbc_find_node">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_find_node</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_find_node" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_find_node">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_find_node</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_find_node" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Find a node which matches the key</p>
 </dd></dl>
 
@@ -703,8 +705,8 @@ key-only (non-value) entry.</p>
 <p>Search a (key) node whose key matches <strong>key</strong> from whole of XBC tree and
 return the node if found. If not found, returns NULL.</p>
 <dl class="c function">
-<dt id="c.xbc_node_get_subkey">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_node_get_subkey</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_get_subkey" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_get_subkey">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_get_subkey</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_get_subkey" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return the first subkey node if exists</p>
 </dd></dl>
 
@@ -717,8 +719,8 @@ return the node if found. If not found, returns NULL.</p>
 <p>Return the first subkey node of the <strong>node</strong>. If the <strong>node</strong> has no child
 or only value node, this will return NULL.</p>
 <dl class="c macro">
-<dt id="c.xbc_array_for_each_value">
-<code class="sig-name descname"><span class="pre">xbc_array_for_each_value</span></code><a class="headerlink" href="#c.xbc_array_for_each_value" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_array_for_each_value">
+<span class="sig-name descname"><span class="n"><span class="pre">xbc_array_for_each_value</span></span></span><a class="headerlink" href="#c.xbc_array_for_each_value" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">xbc_array_for_each_value</span> <span class="pre">(anode,</span> <span class="pre">value)</span></code></p>
@@ -737,8 +739,8 @@ or only value node, this will return NULL.</p>
 be used with <a class="reference internal" href="#c.xbc_find_value" title="xbc_find_value"><code class="xref c c-func docutils literal notranslate"><span class="pre">xbc_find_value()</span></code></a> and <a class="reference internal" href="#c.xbc_node_find_value" title="xbc_node_find_value"><code class="xref c c-func docutils literal notranslate"><span class="pre">xbc_node_find_value()</span></code></a>, so that user can
 process each array entry node.</p>
 <dl class="c macro">
-<dt id="c.xbc_node_for_each_child">
-<code class="sig-name descname"><span class="pre">xbc_node_for_each_child</span></code><a class="headerlink" href="#c.xbc_node_for_each_child" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_for_each_child">
+<span class="sig-name descname"><span class="n"><span class="pre">xbc_node_for_each_child</span></span></span><a class="headerlink" href="#c.xbc_node_for_each_child" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">xbc_node_for_each_child</span> <span class="pre">(parent,</span> <span class="pre">child)</span></code></p>
@@ -756,8 +758,8 @@ process each array entry node.</p>
 <p>Iterate child nodes of <strong>parent</strong>. Each child nodes are stored to <strong>child</strong>.
 The <strong>child</strong> can be mixture of a value node and subkey nodes.</p>
 <dl class="c macro">
-<dt id="c.xbc_node_for_each_subkey">
-<code class="sig-name descname"><span class="pre">xbc_node_for_each_subkey</span></code><a class="headerlink" href="#c.xbc_node_for_each_subkey" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_for_each_subkey">
+<span class="sig-name descname"><span class="n"><span class="pre">xbc_node_for_each_subkey</span></span></span><a class="headerlink" href="#c.xbc_node_for_each_subkey" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">xbc_node_for_each_subkey</span> <span class="pre">(parent,</span> <span class="pre">child)</span></code></p>
@@ -775,8 +777,8 @@ The <strong>child</strong> can be mixture of a value node and subkey nodes.</p>
 <p>Iterate subkey nodes of <strong>parent</strong>. Each child nodes are stored to <strong>child</strong>.
 The <strong>child</strong> is only the subkey node.</p>
 <dl class="c macro">
-<dt id="c.xbc_node_for_each_array_value">
-<code class="sig-name descname"><span class="pre">xbc_node_for_each_array_value</span></code><a class="headerlink" href="#c.xbc_node_for_each_array_value" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_for_each_array_value">
+<span class="sig-name descname"><span class="n"><span class="pre">xbc_node_for_each_array_value</span></span></span><a class="headerlink" href="#c.xbc_node_for_each_array_value" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">xbc_node_for_each_array_value</span> <span class="pre">(node,</span> <span class="pre">key,</span> <span class="pre">anode,</span> <span class="pre">value)</span></code></p>
@@ -803,8 +805,8 @@ this executes block once. However, if the found key node has no value
 (key-only node), this does nothing. So don’t use this for testing the
 key-value pair existence.</p>
 <dl class="c macro">
-<dt id="c.xbc_node_for_each_key_value">
-<code class="sig-name descname"><span class="pre">xbc_node_for_each_key_value</span></code><a class="headerlink" href="#c.xbc_node_for_each_key_value" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_for_each_key_value">
+<span class="sig-name descname"><span class="n"><span class="pre">xbc_node_for_each_key_value</span></span></span><a class="headerlink" href="#c.xbc_node_for_each_key_value" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">xbc_node_for_each_key_value</span> <span class="pre">(node,</span> <span class="pre">knode,</span> <span class="pre">value)</span></code></p>
@@ -824,8 +826,8 @@ key-value pair existence.</p>
 <p>Iterate key-value pairs under <strong>node</strong>. Each key node and value string are
 stored in <strong>knode</strong> and <strong>value</strong> respectively.</p>
 <dl class="c macro">
-<dt id="c.xbc_for_each_key_value">
-<code class="sig-name descname"><span class="pre">xbc_for_each_key_value</span></code><a class="headerlink" href="#c.xbc_for_each_key_value" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_for_each_key_value">
+<span class="sig-name descname"><span class="n"><span class="pre">xbc_for_each_key_value</span></span></span><a class="headerlink" href="#c.xbc_for_each_key_value" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">xbc_for_each_key_value</span> <span class="pre">(knode,</span> <span class="pre">value)</span></code></p>
@@ -843,8 +845,8 @@ stored in <strong>knode</strong> and <strong>value</strong> respectively.</p>
 <p>Iterate key-value pairs in whole XBC tree. Each key node and value string
 are stored in <strong>knode</strong> and <strong>value</strong> respectively.</p>
 <dl class="c function">
-<dt id="c.xbc_node_compose_key">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">xbc_node_compose_key</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">buf</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_compose_key" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_compose_key">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_compose_key</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_compose_key" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compose full key string of the XBC node</p>
 </dd></dl>
 
@@ -862,8 +864,8 @@ are stored in <strong>knode</strong> and <strong>value</strong> respectively.</p
 length of the key stored in <strong>buf</strong>. Or returns -EINVAL if <strong>node</strong> is NULL,
 and -ERANGE if the key depth is deeper than max depth.</p>
 <dl class="c function">
-<dt id="c.xbc_get_info">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">xbc_get_info</span></code><span class="sig-paren">(</span><span class="pre">int</span> <span class="pre">*</span><em><span class="pre">node_size</span></em>, <span class="pre">size_t</span> <span class="pre">*</span><em><span class="pre">data_size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_get_info" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_get_info">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_get_info</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node_size</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data_size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_get_info" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the information of loaded boot config</p>
 </dd></dl>
 
@@ -879,8 +881,8 @@ and -ERANGE if the key depth is deeper than max depth.</p>
 and the size of bootconfig data in <strong>data_size</strong> if it is not NULL.
 Return 0 if the boot config is initialized, or return -ENODEV.</p>
 <dl class="c function">
-<dt id="c.xbc_root_node">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_root_node</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_root_node" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_root_node">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_root_node</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_root_node" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the root node of extended boot config</p>
 </dd></dl>
 
@@ -893,8 +895,8 @@ Return 0 if the boot config is initialized, or return -ENODEV.</p>
 <p>Return the address of root node of extended boot config. If the
 extended boot config is not initiized, return NULL.</p>
 <dl class="c function">
-<dt id="c.xbc_node_index">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">xbc_node_index</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_index" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_index">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_index</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_index" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the index of XBC node</p>
 </dd></dl>
 
@@ -906,8 +908,8 @@ extended boot config is not initiized, return NULL.</p>
 <p><strong>Description</strong></p>
 <p>Return the index number of <strong>node</strong> in XBC node list.</p>
 <dl class="c function">
-<dt id="c.xbc_node_get_parent">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_node_get_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_get_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_get_parent">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_get_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_get_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the parent XBC node</p>
 </dd></dl>
 
@@ -920,8 +922,8 @@ extended boot config is not initiized, return NULL.</p>
 <p>Return the parent node of <strong>node</strong>. If the node is top node of the tree,
 return NULL.</p>
 <dl class="c function">
-<dt id="c.xbc_node_get_child">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_node_get_child</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_get_child" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_get_child">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_get_child</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_get_child" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the child XBC node</p>
 </dd></dl>
 
@@ -934,8 +936,8 @@ return NULL.</p>
 <p>Return the first child node of <strong>node</strong>. If the node has no child, return
 NULL.</p>
 <dl class="c function">
-<dt id="c.xbc_node_get_next">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_node_get_next</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_get_next" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_get_next">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_get_next</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_get_next" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the next sibling XBC node</p>
 </dd></dl>
 
@@ -950,8 +952,8 @@ return NULL. Note that even if this returns NULL, it doesn’t mean <strong>node
 has no siblings. (You also has to check whether the parent’s child node
 is <strong>node</strong> or not.)</p>
 <dl class="c function">
-<dt id="c.xbc_node_get_data">
-<em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_node_get_data</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_get_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_get_data">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_get_data</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_get_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the data of XBC node</p>
 </dd></dl>
 
@@ -964,8 +966,8 @@ is <strong>node</strong> or not.)</p>
 <p>Return the data (which is always a null terminated string) of <strong>node</strong>.
 If the node has invalid data, warn and return NULL.</p>
 <dl class="c function">
-<dt id="c.xbc_node_find_subkey">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_node_find_subkey</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">parent</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_find_subkey" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_find_subkey">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_find_subkey</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_find_subkey" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Find a subkey node which matches given key</p>
 </dd></dl>
 
@@ -981,8 +983,8 @@ If the node has invalid data, warn and return NULL.</p>
 several words jointed with ‘.’. If <strong>parent</strong> is NULL, this searches the
 node from whole tree. Return NULL if no node is matched.</p>
 <dl class="c function">
-<dt id="c.xbc_node_find_value">
-<em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_node_find_value</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">parent</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">key</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">vnode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_find_value" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_find_value">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_find_value</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vnode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_find_value" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Find a value node which matches given key</p>
 </dd></dl>
 
@@ -1005,8 +1007,8 @@ Note that this returns 0-length string and stores NULL in <strong>*vnode</strong
 key has no value. And also it will return the value of the first entry if
 the value is an array.</p>
 <dl class="c function">
-<dt id="c.xbc_node_compose_key_after">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">xbc_node_compose_key_after</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">root</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">buf</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_compose_key_after" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_compose_key_after">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_compose_key_after</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">root</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_compose_key_after" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compose partial key string of the XBC node</p>
 </dd></dl>
 
@@ -1031,8 +1033,8 @@ or returns -ERANGE if the key depth is deeper than max depth.
 This is expected to be used with <a class="reference internal" href="#c.xbc_find_node" title="xbc_find_node"><code class="xref c c-func docutils literal notranslate"><span class="pre">xbc_find_node()</span></code></a> to list up all (child)
 keys under given key.</p>
 <dl class="c function">
-<dt id="c.xbc_node_find_next_leaf">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_node_find_next_leaf</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">root</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_find_next_leaf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_find_next_leaf">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_find_next_leaf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">root</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">node</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_find_next_leaf" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Find the next leaf node under given node</p>
 </dd></dl>
 
@@ -1048,8 +1050,8 @@ keys under given key.</p>
 under <strong>root</strong> node (including <strong>root</strong> node itself).
 Return the next node or NULL if next leaf node is not found.</p>
 <dl class="c function">
-<dt id="c.xbc_node_find_next_key_value">
-<em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_node_find_next_key_value</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><em><span class="pre">root</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">leaf</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_find_next_key_value" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_node_find_next_key_value">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">xbc_node_find_next_key_value</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">root</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">xbc_node</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">leaf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_node_find_next_key_value" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Find the next key-value pair nodes</p>
 </dd></dl>
 
@@ -1067,8 +1069,8 @@ is found, or NULL if no next leaf node is found.
 Note that this returns 0-length string if the key has no value, or
 the value of the first entry if the value is an array.</p>
 <dl class="c function">
-<dt id="c.xbc_exit">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">xbc_exit</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_exit" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_exit">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_exit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_exit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Clean up all parsed bootconfig</p>
 </dd></dl>
 
@@ -1082,8 +1084,8 @@ the value of the first entry if the value is an array.</p>
 If you need to reuse <a class="reference internal" href="#c.xbc_init" title="xbc_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">xbc_init()</span></code></a> with new boot config, you can
 use this.</p>
 <dl class="c function">
-<dt id="c.xbc_init">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">xbc_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">emsg</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">epos</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xbc_init">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xbc_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">emsg</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">epos</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Parse given XBC file and build XBC internal tree</p>
 </dd></dl>
 
@@ -1106,8 +1108,8 @@ if there is any error.
 In error cases, <strong>emsg</strong> will be updated with an error message and
 <strong>epos</strong> will be updated with the error position which is the byte offset
 of <strong>buf</strong>. If the error is not a parser error, <strong>epos</strong> will be -1.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

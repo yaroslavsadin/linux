@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>USB Anchors &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -363,9 +365,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="usb-anchors">
+  <div class="section" id="usb-anchors">
 <h1>USB Anchors<a class="headerlink" href="#usb-anchors" title="Permalink to this headline">¶</a></h1>
-<section id="what-is-anchor">
+<div class="section" id="what-is-anchor">
 <h2>What is anchor?<a class="headerlink" href="#what-is-anchor" title="Permalink to this headline">¶</a></h2>
 <p>A USB driver needs to support some callbacks requiring
 a driver to cease all IO to an interface. To do so, a
@@ -374,19 +376,19 @@ to know they’ve all completed or to call usb_kill_urb
 for them. The anchor is a data structure takes care of
 keeping track of URBs and provides methods to deal with
 multiple URBs.</p>
-</section>
-<section id="allocation-and-initialisation">
+</div>
+<div class="section" id="allocation-and-initialisation">
 <h2>Allocation and Initialisation<a class="headerlink" href="#allocation-and-initialisation" title="Permalink to this headline">¶</a></h2>
 <p>There’s no API to allocate an anchor. It is simply declared
 as struct usb_anchor. <code class="xref c c-func docutils literal notranslate"><span class="pre">init_usb_anchor()</span></code> must be called to
 initialise the data structure.</p>
-</section>
-<section id="deallocation">
+</div>
+<div class="section" id="deallocation">
 <h2>Deallocation<a class="headerlink" href="#deallocation" title="Permalink to this headline">¶</a></h2>
 <p>Once it has no more URBs associated with it, the anchor can be
 freed with normal memory management operations.</p>
-</section>
-<section id="association-and-disassociation-of-urbs-with-anchors">
+</div>
+<div class="section" id="association-and-disassociation-of-urbs-with-anchors">
 <h2>Association and disassociation of URBs with anchors<a class="headerlink" href="#association-and-disassociation-of-urbs-with-anchors" title="Permalink to this headline">¶</a></h2>
 <p>An association of URBs to an anchor is made by an explicit
 call to <a class="reference internal" href="usb.html#c.usb_anchor_urb" title="usb_anchor_urb"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_anchor_urb()</span></code></a>. The association is maintained until
@@ -394,16 +396,16 @@ an URB is finished by (successful) completion. Thus disassociation
 is automatic. A function is provided to forcibly finish (kill)
 all URBs associated with an anchor.
 Furthermore, disassociation can be made with <a class="reference internal" href="usb.html#c.usb_unanchor_urb" title="usb_unanchor_urb"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_unanchor_urb()</span></code></a></p>
-</section>
-<section id="operations-on-multitudes-of-urbs">
+</div>
+<div class="section" id="operations-on-multitudes-of-urbs">
 <h2>Operations on multitudes of URBs<a class="headerlink" href="#operations-on-multitudes-of-urbs" title="Permalink to this headline">¶</a></h2>
-<section id="usb-kill-anchored-urbs">
+<div class="section" id="usb-kill-anchored-urbs">
 <h3><a class="reference internal" href="usb.html#c.usb_kill_anchored_urbs" title="usb_kill_anchored_urbs"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_kill_anchored_urbs()</span></code></a><a class="headerlink" href="#usb-kill-anchored-urbs" title="Permalink to this headline">¶</a></h3>
 <p>This function kills all URBs associated with an anchor. The URBs
 are called in the reverse temporal order they were submitted.
 This way no data can be reordered.</p>
-</section>
-<section id="usb-unlink-anchored-urbs">
+</div>
+<div class="section" id="usb-unlink-anchored-urbs">
 <h3><a class="reference internal" href="usb.html#c.usb_unlink_anchored_urbs" title="usb_unlink_anchored_urbs"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_unlink_anchored_urbs()</span></code></a><a class="headerlink" href="#usb-unlink-anchored-urbs" title="Permalink to this headline">¶</a></h3>
 <p>This function unlinks all URBs associated with an anchor. The URBs
 are processed in the reverse temporal order they were submitted.
@@ -411,31 +413,31 @@ This is similar to <a class="reference internal" href="usb.html#c.usb_kill_ancho
 Therefore no guarantee is made that the URBs have been unlinked when
 the call returns. They may be unlinked later but will be unlinked in
 finite time.</p>
-</section>
-<section id="usb-scuttle-anchored-urbs">
+</div>
+<div class="section" id="usb-scuttle-anchored-urbs">
 <h3><a class="reference internal" href="usb.html#c.usb_scuttle_anchored_urbs" title="usb_scuttle_anchored_urbs"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_scuttle_anchored_urbs()</span></code></a><a class="headerlink" href="#usb-scuttle-anchored-urbs" title="Permalink to this headline">¶</a></h3>
 <p>All URBs of an anchor are unanchored en masse.</p>
-</section>
-<section id="usb-wait-anchor-empty-timeout">
+</div>
+<div class="section" id="usb-wait-anchor-empty-timeout">
 <h3><a class="reference internal" href="usb.html#c.usb_wait_anchor_empty_timeout" title="usb_wait_anchor_empty_timeout"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_wait_anchor_empty_timeout()</span></code></a><a class="headerlink" href="#usb-wait-anchor-empty-timeout" title="Permalink to this headline">¶</a></h3>
 <p>This function waits for all URBs associated with an anchor to finish
 or a timeout, whichever comes first. Its return value will tell you
 whether the timeout was reached.</p>
-</section>
-<section id="usb-anchor-empty">
+</div>
+<div class="section" id="usb-anchor-empty">
 <h3><a class="reference internal" href="usb.html#c.usb_anchor_empty" title="usb_anchor_empty"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_anchor_empty()</span></code></a><a class="headerlink" href="#usb-anchor-empty" title="Permalink to this headline">¶</a></h3>
 <p>Returns true if no URBs are associated with an anchor. Locking
 is the caller’s responsibility.</p>
-</section>
-<section id="usb-get-from-anchor">
+</div>
+<div class="section" id="usb-get-from-anchor">
 <h3><a class="reference internal" href="usb.html#c.usb_get_from_anchor" title="usb_get_from_anchor"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_get_from_anchor()</span></code></a><a class="headerlink" href="#usb-get-from-anchor" title="Permalink to this headline">¶</a></h3>
 <p>Returns the oldest anchored URB of an anchor. The URB is unanchored
 and returned with a reference. As you may mix URBs to several
 destinations in one anchor you have no guarantee the chronologically
 first submitted URB is returned.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

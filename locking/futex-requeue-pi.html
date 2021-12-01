@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Futex Requeue PI &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -261,7 +263,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="futex-requeue-pi">
+  <div class="section" id="futex-requeue-pi">
 <h1>Futex Requeue PI<a class="headerlink" href="#futex-requeue-pi" title="Permalink to this headline">¶</a></h1>
 <p>Requeueing of tasks from a non-PI futex to a PI futex requires
 special handling in order to ensure the underlying rt_mutex is never
@@ -270,7 +272,7 @@ boosting logic [see <a class="reference internal" href="rt-mutex-design.html"><s
 brevity, this action will be referred to as “requeue_pi” throughout
 this document.  Priority inheritance is abbreviated throughout as
 “PI”.</p>
-<section id="motivation">
+<div class="section" id="motivation">
 <h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
 <p>Without requeue_pi, the glibc implementation of
 pthread_cond_broadcast() must resort to waking all the tasks waiting
@@ -338,8 +340,8 @@ pthread_cond_broadcast_pi(cond)
 necessary changes inside the existing calls rather than creating new
 calls for the PI cases.  Similar changes are needed for
 pthread_cond_timedwait() and pthread_cond_signal().</p>
-</section>
-<section id="implementation">
+</div>
+<div class="section" id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p>In order to ensure the rt_mutex has an owner if it has waiters, it
 is necessary for both the requeue code, as well as the waiting code,
@@ -381,8 +383,8 @@ either pthread_cond_broadcast() or pthread_cond_signal() acquire the
 mutex prior to making the call. FUTEX_CMP_REQUEUE_PI requires that
 nr_wake=1.  nr_requeue should be INT_MAX for broadcast and 0 for
 signal.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

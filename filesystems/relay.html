@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>relay interface (formerly relayfs) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -314,7 +316,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="relay-interface-formerly-relayfs">
+  <div class="section" id="relay-interface-formerly-relayfs">
 <h1>relay interface (formerly relayfs)<a class="headerlink" href="#relay-interface-formerly-relayfs" title="Permalink to this headline">¶</a></h1>
 <p>The relay interface provides a means for kernel applications to
 efficiently log and transfer large quantities of data from the kernel
@@ -337,7 +339,7 @@ keep things as simple as possible.</p>
 <p>This document provides an overview of the relay interface API.  The
 details of the function parameters are documented along with the
 functions in the relay interface code - please see that for details.</p>
-<section id="semantics">
+<div class="section" id="semantics">
 <h2>Semantics<a class="headerlink" href="#semantics" title="Permalink to this headline">¶</a></h2>
 <p>Each relay channel has one buffer per CPU, each buffer has one or more
 sub-buffers.  Messages are written to the first sub-buffer until it is
@@ -367,8 +369,8 @@ overhead mechanism for conveying kernel data to userspace.  While the
 read() interface is easy to use, it’s not as efficient as the mmap()
 approach; the example code attempts to make the tradeoff between the
 two approaches as small as possible.</p>
-</section>
-<section id="klog-and-relay-apps-example-code">
+</div>
+<div class="section" id="klog-and-relay-apps-example-code">
 <h2>klog and relay-apps example code<a class="headerlink" href="#klog-and-relay-apps-example-code" title="Permalink to this headline">¶</a></h2>
 <p>The relay interface itself is ready to use, but to make things easier,
 a couple simple utility functions and a set of examples are provided.</p>
@@ -399,8 +401,8 @@ such as buffer-full conditions would still need to be communicated via
 some channel though.</p>
 <p>klog and the relay-apps examples can be found in the relay-apps
 tarball on <a class="reference external" href="http://relayfs.sourceforge.net">http://relayfs.sourceforge.net</a></p>
-</section>
-<section id="the-relay-interface-user-space-api">
+</div>
+<div class="section" id="the-relay-interface-user-space-api">
 <h2>The relay interface user space API<a class="headerlink" href="#the-relay-interface-user-space-api" title="Permalink to this headline">¶</a></h2>
 <p>The relay interface implements basic file operations for user space
 access to relay channel buffer data.  Here are the file operations
@@ -460,8 +462,8 @@ clients to create or use channels - it only needs to be
 mounted when user space applications need access to the buffer
 data.</p>
 </div>
-</section>
-<section id="the-relay-interface-kernel-api">
+</div>
+<div class="section" id="the-relay-interface-kernel-api">
 <h2>The relay interface kernel API<a class="headerlink" href="#the-relay-interface-kernel-api" title="Permalink to this headline">¶</a></h2>
 <p>Here’s a summary of the API the relay interface provides to in-kernel clients:</p>
 <dl>
@@ -498,7 +500,7 @@ subbuf_start_reserve(buf, length)
 </div>
 </dd>
 </dl>
-<section id="creating-a-channel">
+<div class="section" id="creating-a-channel">
 <h3>Creating a channel<a class="headerlink" href="#creating-a-channel" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="../core-api/kernel-api.html#c.relay_open" title="relay_open"><code class="xref c c-func docutils literal notranslate"><span class="pre">relay_open()</span></code></a> is used to create a channel, along with its per-cpu
 channel buffers.  Each channel buffer will have an associated file
@@ -598,8 +600,8 @@ creating a local version that internally does the proper locking.</p>
 user-defined data with a channel, and is immediately available
 (including in create_buf_file()) via chan-&gt;private_data or
 buf-&gt;chan-&gt;private_data.</p>
-</section>
-<section id="buffer-only-channels">
+</div>
+<div class="section" id="buffer-only-channels">
 <h3>Buffer-only channels<a class="headerlink" href="#buffer-only-channels" title="Permalink to this headline">¶</a></h3>
 <p>These channels have no files associated and can be created with
 relay_open(NULL, NULL, …). Such channels are useful in scenarios such
@@ -607,8 +609,8 @@ as when doing early tracing in the kernel, before the VFS is up. In these
 cases, one may open a buffer-only channel and then call
 <a class="reference internal" href="../core-api/kernel-api.html#c.relay_late_setup_files" title="relay_late_setup_files"><code class="xref c c-func docutils literal notranslate"><span class="pre">relay_late_setup_files()</span></code></a> when the kernel is ready to handle files,
 to expose the buffered data to the userspace.</p>
-</section>
-<section id="channel-modes">
+</div>
+<div class="section" id="channel-modes">
 <h3>Channel ‘modes’<a class="headerlink" href="#channel-modes" title="Permalink to this headline">¶</a></h3>
 <p>relay channels can be used in either of two modes - ‘overwrite’ or
 ‘no-overwrite’.  The mode is entirely determined by the implementation
@@ -708,8 +710,8 @@ give the client a chance to reserve space in it.  In this case the
 previous sub-buffer pointer passed into the callback will be NULL, so
 the client should check the value of the prev_subbuf pointer before
 writing into the previous sub-buffer.</p>
-</section>
-<section id="writing-to-a-channel">
+</div>
+<div class="section" id="writing-to-a-channel">
 <h3>Writing to a channel<a class="headerlink" href="#writing-to-a-channel" title="Permalink to this headline">¶</a></h3>
 <p>Kernel clients write data into the current cpu’s channel buffer using
 relay_write() or __relay_write().  relay_write() is the main logging
@@ -736,8 +738,8 @@ done.  Because the write is under control of the client and is
 separated from the reserve, relay_reserve() doesn’t protect the buffer
 at all - it’s up to the client to provide the appropriate
 synchronization when using relay_reserve().</p>
-</section>
-<section id="closing-a-channel">
+</div>
+<div class="section" id="closing-a-channel">
 <h3>Closing a channel<a class="headerlink" href="#closing-a-channel" title="Permalink to this headline">¶</a></h3>
 <p>The client calls <a class="reference internal" href="../core-api/kernel-api.html#c.relay_close" title="relay_close"><code class="xref c c-func docutils literal notranslate"><span class="pre">relay_close()</span></code></a> when it’s finished using the channel.
 The channel and its associated buffers are destroyed when there are no
@@ -745,8 +747,8 @@ longer any references to any of the channel buffers.  <a class="reference intern
 forces a sub-buffer switch on all the channel buffers, and can be used
 to finalize and process the last sub-buffers before the channel is
 closed.</p>
-</section>
-<section id="misc">
+</div>
+<div class="section" id="misc">
 <h3>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h3>
 <p>Some applications may want to keep a channel around and re-use it
 rather than open and close a new channel for each use.  <a class="reference internal" href="../core-api/kernel-api.html#c.relay_reset" title="relay_reset"><code class="xref c c-func docutils literal notranslate"><span class="pre">relay_reset()</span></code></a>
@@ -760,16 +762,16 @@ is mmapped from user space and buf_unmapped() is called when it’s
 unmapped.  The client can use this notification to trigger actions
 within the kernel application, such as enabling/disabling logging to
 the channel.</p>
-</section>
-</section>
-<section id="resources">
+</div>
+</div>
+<div class="section" id="resources">
 <h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
 <p>For news, example code, mailing list, etc. see the relay interface homepage:</p>
 <blockquote>
 <div><p><a class="reference external" href="http://relayfs.sourceforge.net">http://relayfs.sourceforge.net</a></p>
 </div></blockquote>
-</section>
-<section id="credits">
+</div>
+<div class="section" id="credits">
 <h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
 <p>The ideas and specs for the relay interface came about as a result of
 discussions on tracing involving the following:</p>
@@ -780,8 +782,8 @@ Karim Yaghmour          &lt;<a class="reference external" href="mailto:karim&#37
 Tom Zanussi             &lt;<a class="reference external" href="mailto:zanussi&#37;&#52;&#48;us&#46;ibm&#46;com">zanussi<span>&#64;</span>us<span>&#46;</span>ibm<span>&#46;</span>com</a>&gt;</p>
 <p>Also thanks to Hubertus Franke for a lot of useful suggestions and bug
 reports.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

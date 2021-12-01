@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Writing an ALSA Driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -273,14 +275,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="writing-an-alsa-driver">
+  <div class="section" id="writing-an-alsa-driver">
 <h1>Writing an ALSA Driver<a class="headerlink" href="#writing-an-alsa-driver" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Takashi Iwai &lt;<a class="reference external" href="mailto:tiwai&#37;&#52;&#48;suse&#46;de">tiwai<span>&#64;</span>suse<span>&#46;</span>de</a>&gt;</p>
 </dd>
 </dl>
-<section id="preface">
+<div class="section" id="preface">
 <h2>Preface<a class="headerlink" href="#preface" title="Permalink to this headline">¶</a></h2>
 <p>This document describes how to write an <a class="reference external" href="http://www.alsa-project.org/">ALSA (Advanced Linux Sound
 Architecture)</a> driver. The document
@@ -294,10 +296,10 @@ low-level driver implementation details. It only describes the standard
 way to write a PCI sound driver on ALSA.</p>
 <p>This document is still a draft version. Any feedback and corrections,
 please!!</p>
-</section>
-<section id="file-tree-structure">
+</div>
+<div class="section" id="file-tree-structure">
 <h2>File Tree Structure<a class="headerlink" href="#file-tree-structure" title="Permalink to this headline">¶</a></h2>
-<section id="general">
+<div class="section" id="general">
 <h3>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h3>
 <p>The file tree structure of ALSA driver is depicted below.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sound
@@ -325,113 +327,113 @@ please!!</p>
         /oss
 </pre></div>
 </div>
-</section>
-<section id="core-directory">
+</div>
+<div class="section" id="core-directory">
 <h3>core directory<a class="headerlink" href="#core-directory" title="Permalink to this headline">¶</a></h3>
 <p>This directory contains the middle layer which is the heart of ALSA
 drivers. In this directory, the native ALSA modules are stored. The
 sub-directories contain different modules and are dependent upon the
 kernel config.</p>
-<section id="core-oss">
+<div class="section" id="core-oss">
 <h4>core/oss<a class="headerlink" href="#core-oss" title="Permalink to this headline">¶</a></h4>
 <p>The codes for PCM and mixer OSS emulation modules are stored in this
 directory. The rawmidi OSS emulation is included in the ALSA rawmidi
 code since it’s quite small. The sequencer code is stored in
 <code class="docutils literal notranslate"><span class="pre">core/seq/oss</span></code> directory (see <a class="reference internal" href="#core-seq-oss">below</a>).</p>
-</section>
-<section id="core-seq">
+</div>
+<div class="section" id="core-seq">
 <h4>core/seq<a class="headerlink" href="#core-seq" title="Permalink to this headline">¶</a></h4>
 <p>This directory and its sub-directories are for the ALSA sequencer. This
 directory contains the sequencer core and primary sequencer modules such
 like snd-seq-midi, snd-seq-virmidi, etc. They are compiled only when
 <code class="docutils literal notranslate"><span class="pre">CONFIG_SND_SEQUENCER</span></code> is set in the kernel config.</p>
-</section>
-<section id="core-seq-oss">
+</div>
+<div class="section" id="core-seq-oss">
 <h4>core/seq/oss<a class="headerlink" href="#core-seq-oss" title="Permalink to this headline">¶</a></h4>
 <p>This contains the OSS sequencer emulation codes.</p>
-</section>
-</section>
-<section id="include-directory">
+</div>
+</div>
+<div class="section" id="include-directory">
 <h3>include directory<a class="headerlink" href="#include-directory" title="Permalink to this headline">¶</a></h3>
 <p>This is the place for the public header files of ALSA drivers, which are
 to be exported to user-space, or included by several files at different
 directories. Basically, the private header files should not be placed in
 this directory, but you may still find files there, due to historical
 reasons :)</p>
-</section>
-<section id="drivers-directory">
+</div>
+<div class="section" id="drivers-directory">
 <h3>drivers directory<a class="headerlink" href="#drivers-directory" title="Permalink to this headline">¶</a></h3>
 <p>This directory contains code shared among different drivers on different
 architectures. They are hence supposed not to be architecture-specific.
 For example, the dummy pcm driver and the serial MIDI driver are found
 in this directory. In the sub-directories, there is code for components
 which are independent from bus and cpu architectures.</p>
-<section id="drivers-mpu401">
+<div class="section" id="drivers-mpu401">
 <h4>drivers/mpu401<a class="headerlink" href="#drivers-mpu401" title="Permalink to this headline">¶</a></h4>
 <p>The MPU401 and MPU401-UART modules are stored here.</p>
-</section>
-<section id="drivers-opl3-and-opl4">
+</div>
+<div class="section" id="drivers-opl3-and-opl4">
 <h4>drivers/opl3 and opl4<a class="headerlink" href="#drivers-opl3-and-opl4" title="Permalink to this headline">¶</a></h4>
 <p>The OPL3 and OPL4 FM-synth stuff is found here.</p>
-</section>
-</section>
-<section id="i2c-directory">
+</div>
+</div>
+<div class="section" id="i2c-directory">
 <h3>i2c directory<a class="headerlink" href="#i2c-directory" title="Permalink to this headline">¶</a></h3>
 <p>This contains the ALSA i2c components.</p>
 <p>Although there is a standard i2c layer on Linux, ALSA has its own i2c
 code for some cards, because the soundcard needs only a simple operation
 and the standard i2c API is too complicated for such a purpose.</p>
-</section>
-<section id="synth-directory">
+</div>
+<div class="section" id="synth-directory">
 <h3>synth directory<a class="headerlink" href="#synth-directory" title="Permalink to this headline">¶</a></h3>
 <p>This contains the synth middle-level modules.</p>
 <p>So far, there is only Emu8000/Emu10k1 synth driver under the
 <code class="docutils literal notranslate"><span class="pre">synth/emux</span></code> sub-directory.</p>
-</section>
-<section id="pci-directory">
+</div>
+<div class="section" id="pci-directory">
 <h3>pci directory<a class="headerlink" href="#pci-directory" title="Permalink to this headline">¶</a></h3>
 <p>This directory and its sub-directories hold the top-level card modules
 for PCI soundcards and the code specific to the PCI BUS.</p>
 <p>The drivers compiled from a single file are stored directly in the pci
 directory, while the drivers with several source files are stored on
 their own sub-directory (e.g. emu10k1, ice1712).</p>
-</section>
-<section id="isa-directory">
+</div>
+<div class="section" id="isa-directory">
 <h3>isa directory<a class="headerlink" href="#isa-directory" title="Permalink to this headline">¶</a></h3>
 <p>This directory and its sub-directories hold the top-level card modules
 for ISA soundcards.</p>
-</section>
-<section id="arm-ppc-and-sparc-directories">
+</div>
+<div class="section" id="arm-ppc-and-sparc-directories">
 <h3>arm, ppc, and sparc directories<a class="headerlink" href="#arm-ppc-and-sparc-directories" title="Permalink to this headline">¶</a></h3>
 <p>They are used for top-level card modules which are specific to one of
 these architectures.</p>
-</section>
-<section id="usb-directory">
+</div>
+<div class="section" id="usb-directory">
 <h3>usb directory<a class="headerlink" href="#usb-directory" title="Permalink to this headline">¶</a></h3>
 <p>This directory contains the USB-audio driver. In the latest version, the
 USB MIDI driver is integrated in the usb-audio driver.</p>
-</section>
-<section id="pcmcia-directory">
+</div>
+<div class="section" id="pcmcia-directory">
 <h3>pcmcia directory<a class="headerlink" href="#pcmcia-directory" title="Permalink to this headline">¶</a></h3>
 <p>The PCMCIA, especially PCCard drivers will go here. CardBus drivers will
 be in the pci directory, because their API is identical to that of
 standard PCI cards.</p>
-</section>
-<section id="soc-directory">
+</div>
+<div class="section" id="soc-directory">
 <h3>soc directory<a class="headerlink" href="#soc-directory" title="Permalink to this headline">¶</a></h3>
 <p>This directory contains the codes for ASoC (ALSA System on Chip)
 layer including ASoC core, codec and machine drivers.</p>
-</section>
-<section id="oss-directory">
+</div>
+<div class="section" id="oss-directory">
 <h3>oss directory<a class="headerlink" href="#oss-directory" title="Permalink to this headline">¶</a></h3>
 <p>Here contains OSS/Lite codes.
 All codes have been deprecated except for dmasound on m68k as of
 writing this.</p>
-</section>
-</section>
-<section id="basic-flow-for-pci-drivers">
+</div>
+</div>
+<div class="section" id="basic-flow-for-pci-drivers">
 <h2>Basic Flow for PCI Drivers<a class="headerlink" href="#basic-flow-for-pci-drivers" title="Permalink to this headline">¶</a></h2>
-<section id="outline">
+<div class="section" id="outline">
 <h3>Outline<a class="headerlink" href="#outline" title="Permalink to this headline">¶</a></h3>
 <p>The minimum flow for PCI soundcards is as follows:</p>
 <ul class="simple">
@@ -446,8 +448,8 @@ table defined above.</p></li>
 <li><p>create an <code class="docutils literal notranslate"><span class="pre">exit</span></code> function to call the
 <a class="reference internal" href="../../driver-api/pci/pci.html#c.pci_unregister_driver" title="pci_unregister_driver"><code class="xref c c-func docutils literal notranslate"><span class="pre">pci_unregister_driver()</span></code></a> function.</p></li>
 </ul>
-</section>
-<section id="full-code-example">
+</div>
+<div class="section" id="full-code-example">
 <h3>Full Code Example<a class="headerlink" href="#full-code-example" title="Permalink to this headline">¶</a></h3>
 <p>The code example is shown below. Some parts are kept unimplemented at
 this moment but will be filled in the next sections. The numbers in the
@@ -590,15 +592,15 @@ static void snd_mychip_remove(struct pci_dev *pci)
 }
 </pre></div>
 </div>
-</section>
-<section id="driver-constructor">
+</div>
+<div class="section" id="driver-constructor">
 <h3>Driver Constructor<a class="headerlink" href="#driver-constructor" title="Permalink to this headline">¶</a></h3>
 <p>The real constructor of PCI drivers is the <code class="docutils literal notranslate"><span class="pre">probe</span></code> callback. The
 <code class="docutils literal notranslate"><span class="pre">probe</span></code> callback and other component-constructors which are called
 from the <code class="docutils literal notranslate"><span class="pre">probe</span></code> callback cannot be used with the <code class="docutils literal notranslate"><span class="pre">__init</span></code> prefix
 because any PCI device could be a hotplug device.</p>
 <p>In the <code class="docutils literal notranslate"><span class="pre">probe</span></code> callback, the following scheme is often used.</p>
-<section id="check-and-increment-the-device-index">
+<div class="section" id="check-and-increment-the-device-index">
 <h4>1) Check and increment the device index.<a class="headerlink" href="#check-and-increment-the-device-index" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int dev;
 ....
@@ -614,8 +616,8 @@ if (!enable[dev]) {
 <p>Each time the <code class="docutils literal notranslate"><span class="pre">probe</span></code> callback is called, check the availability of
 the device. If not available, simply increment the device index and
 returns. dev will be incremented also later (<a class="reference internal" href="#set-the-pci-driver-data-and-return-zero">step 7</a>).</p>
-</section>
-<section id="create-a-card-instance">
+</div>
+<div class="section" id="create-a-card-instance">
 <h4>2) Create a card instance<a class="headerlink" href="#create-a-card-instance" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct snd_card *card;
 int err;
@@ -626,8 +628,8 @@ err = snd_card_new(&amp;pci-&gt;dev, index[dev], id[dev], THIS_MODULE,
 </div>
 <p>The details will be explained in the section <a class="reference internal" href="#management-of-cards-and-components">Management of Cards and
 Components</a>.</p>
-</section>
-<section id="create-a-main-component">
+</div>
+<div class="section" id="create-a-main-component">
 <h4>3) Create a main component<a class="headerlink" href="#create-a-main-component" title="Permalink to this headline">¶</a></h4>
 <p>In this part, the PCI resources are allocated.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct mychip *chip;
@@ -649,8 +651,8 @@ at the end of the function.</p>
 </div>
 <p>Since each component can be properly freed, the single
 <a class="reference internal" href="alsa-driver-api.html#c.snd_card_free" title="snd_card_free"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_card_free()</span></code></a> call should suffice in most cases.</p>
-</section>
-<section id="set-the-driver-id-and-name-strings">
+</div>
+<div class="section" id="set-the-driver-id-and-name-strings">
 <h4>4) Set the driver ID and name strings.<a class="headerlink" href="#set-the-driver-id-and-name-strings" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>strcpy(card-&gt;driver, &quot;My Chip&quot;);
 strcpy(card-&gt;shortname, &quot;My Own Chip 123&quot;);
@@ -664,16 +666,16 @@ same driver can have different driver IDs to distinguish the
 functionality of each chip type.</p>
 <p>The shortname field is a string shown as more verbose name. The longname
 field contains the information shown in <code class="docutils literal notranslate"><span class="pre">/proc/asound/cards</span></code>.</p>
-</section>
-<section id="create-other-components-such-as-mixer-midi-etc">
+</div>
+<div class="section" id="create-other-components-such-as-mixer-midi-etc">
 <h4>5) Create other components, such as mixer, MIDI, etc.<a class="headerlink" href="#create-other-components-such-as-mixer-midi-etc" title="Permalink to this headline">¶</a></h4>
 <p>Here you define the basic components such as <a class="reference internal" href="#pcm-interface">PCM</a>,
 mixer (e.g. <a class="reference internal" href="#api-for-ac97-codec">AC97</a>), MIDI (e.g.
 <a class="reference internal" href="#midi-mpu401-uart-interface">MPU-401</a>), and other interfaces.
 Also, if you want a <a class="reference internal" href="#proc-interface">proc file</a>, define it here,
 too.</p>
-</section>
-<section id="register-the-card-instance">
+</div>
+<div class="section" id="register-the-card-instance">
 <h4>6) Register the card instance.<a class="headerlink" href="#register-the-card-instance" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>err = snd_card_register(card);
 if (err &lt; 0)
@@ -682,8 +684,8 @@ if (err &lt; 0)
 </div>
 <p>Will be explained in the section <a class="reference internal" href="#management-of-cards-and-components">Management of Cards and
 Components</a>, too.</p>
-</section>
-<section id="set-the-pci-driver-data-and-return-zero">
+</div>
+<div class="section" id="set-the-pci-driver-data-and-return-zero">
 <h4>7) Set the PCI driver data and return zero.<a class="headerlink" href="#set-the-pci-driver-data-and-return-zero" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pci_set_drvdata(pci, card);
 dev++;
@@ -692,9 +694,9 @@ return 0;
 </div>
 <p>In the above, the card record is stored. This pointer is used in the
 remove callback and power-management callbacks, too.</p>
-</section>
-</section>
-<section id="destructor">
+</div>
+</div>
+<div class="section" id="destructor">
 <h3>Destructor<a class="headerlink" href="#destructor" title="Permalink to this headline">¶</a></h3>
 <p>The destructor, remove callback, simply releases the card instance. Then
 the ALSA middle layer will release all the attached components
@@ -708,8 +710,8 @@ automatically.</p>
 </div>
 <p>The above code assumes that the card pointer is set to the PCI driver
 data.</p>
-</section>
-<section id="header-files">
+</div>
+<div class="section" id="header-files">
 <h3>Header Files<a class="headerlink" href="#header-files" title="Permalink to this headline">¶</a></h3>
 <p>For the above example, at least the following include files are
 necessary.</p>
@@ -730,11 +732,11 @@ to include <code class="docutils literal notranslate"><span class="pre">&lt;linu
 <p>The ALSA interfaces like the PCM and control APIs are defined in other
 <code class="docutils literal notranslate"><span class="pre">&lt;sound/xxx.h&gt;</span></code> header files. They have to be included after
 <code class="docutils literal notranslate"><span class="pre">&lt;sound/core.h&gt;</span></code>.</p>
-</section>
-</section>
-<section id="management-of-cards-and-components">
+</div>
+</div>
+<div class="section" id="management-of-cards-and-components">
 <h2>Management of Cards and Components<a class="headerlink" href="#management-of-cards-and-components" title="Permalink to this headline">¶</a></h2>
-<section id="card-instance">
+<div class="section" id="card-instance">
 <h3>Card Instance<a class="headerlink" href="#card-instance" title="Permalink to this headline">¶</a></h3>
 <p>For each soundcard, a “card” record must be allocated.</p>
 <p>A card record is the headquarters of the soundcard. It manages the whole
@@ -759,8 +761,8 @@ card-&gt;private_data for the chip-specific data. Note that these data are
 allocated by <a class="reference internal" href="alsa-driver-api.html#c.snd_card_new" title="snd_card_new"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_card_new()</span></code></a>.</p>
 <p>The first argument, the pointer of <a class="reference internal" href="../../driver-api/infrastructure.html#c.device" title="device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span></code></a>, specifies the parent
 device. For PCI devices, typically <code class="docutils literal notranslate"><span class="pre">&amp;pci-&gt;</span></code> is passed there.</p>
-</section>
-<section id="components">
+</div>
+<div class="section" id="components">
 <h3>Components<a class="headerlink" href="#components" title="Permalink to this headline">¶</a></h3>
 <p>After the card is created, you can attach the components (devices) to
 the card instance. In an ALSA driver, a component is represented as a
@@ -790,8 +792,8 @@ need to take care of calling a destructor for such a component.</p>
 function to the dev_free callback in the <code class="docutils literal notranslate"><span class="pre">ops</span></code>, so that it can be
 released automatically via <a class="reference internal" href="alsa-driver-api.html#c.snd_card_free" title="snd_card_free"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_card_free()</span></code></a>. The next
 example will show an implementation of chip-specific data.</p>
-</section>
-<section id="chip-specific-data">
+</div>
+<div class="section" id="chip-specific-data">
 <h3>Chip-Specific Data<a class="headerlink" href="#chip-specific-data" title="Permalink to this headline">¶</a></h3>
 <p>Chip-specific information, e.g. the I/O port address, its resource
 pointer, or the irq number, is stored in the chip-specific record.</p>
@@ -801,7 +803,7 @@ pointer, or the irq number, is stored in the chip-specific record.</p>
 </pre></div>
 </div>
 <p>In general, there are two ways of allocating the chip record.</p>
-<section id="allocating-via-snd-card-new">
+<div class="section" id="allocating-via-snd-card-new">
 <h4>1. Allocating via <a class="reference internal" href="alsa-driver-api.html#c.snd_card_new" title="snd_card_new"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_card_new()</span></code></a>.<a class="headerlink" href="#allocating-via-snd-card-new" title="Permalink to this headline">¶</a></h4>
 <p>As mentioned above, you can pass the extra-data-length to the 5th
 argument of <a class="reference internal" href="alsa-driver-api.html#c.snd_card_new" title="snd_card_new"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_card_new()</span></code></a>, i.e.</p>
@@ -816,8 +818,8 @@ argument of <a class="reference internal" href="alsa-driver-api.html#c.snd_card_
 </div>
 <p>With this method, you don’t have to allocate twice. The record is
 released together with the card instance.</p>
-</section>
-<section id="allocating-an-extra-device">
+</div>
+<div class="section" id="allocating-an-extra-device">
 <h4>2. Allocating an extra device.<a class="headerlink" href="#allocating-an-extra-device" title="Permalink to this headline">¶</a></h4>
 <p>After allocating a card instance via <a class="reference internal" href="alsa-driver-api.html#c.snd_card_new" title="snd_card_new"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_card_new()</span></code></a>
 (with <code class="docutils literal notranslate"><span class="pre">0</span></code> on the 4th arg), call <a class="reference internal" href="../../core-api/mm-api.html#c.kzalloc" title="kzalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">kzalloc()</span></code></a>.</p>
@@ -863,9 +865,9 @@ The merit is, however, you can trigger the own callback at registering
 and disconnecting the card via setting in snd_device_ops.
 About the registering and disconnecting the card, see the subsections
 below.</p>
-</section>
-</section>
-<section id="registration-and-release">
+</div>
+</div>
+<div class="section" id="registration-and-release">
 <h3>Registration and Release<a class="headerlink" href="#registration-and-release" title="Permalink to this headline">¶</a></h3>
 <p>After all components are assigned, register the card instance by calling
 <a class="reference internal" href="alsa-driver-api.html#c.snd_card_register" title="snd_card_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_card_register()</span></code></a>. Access to the device files is
@@ -879,11 +881,11 @@ are released automatically by this call.</p>
 <p>For a device which allows hotplugging, you can use
 <a class="reference internal" href="alsa-driver-api.html#c.snd_card_free_when_closed" title="snd_card_free_when_closed"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_card_free_when_closed()</span></code></a>. This one will postpone
 the destruction until all devices are closed.</p>
-</section>
-</section>
-<section id="pci-resource-management">
+</div>
+</div>
+<div class="section" id="pci-resource-management">
 <h2>PCI Resource Management<a class="headerlink" href="#pci-resource-management" title="Permalink to this headline">¶</a></h2>
-<section id="id1">
+<div class="section" id="id1">
 <h3>Full Code Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>In this section, we’ll complete the chip-specific constructor,
 destructor and PCI entries. Example code is shown first, below.</p>
@@ -1013,8 +1015,8 @@ module_exit(alsa_card_mychip_exit)
 EXPORT_NO_SYMBOLS; /* for old kernels only */
 </pre></div>
 </div>
-</section>
-<section id="some-hafta-s">
+</div>
+<div class="section" id="some-hafta-s">
 <h3>Some Hafta’s<a class="headerlink" href="#some-hafta-s" title="Permalink to this headline">¶</a></h3>
 <p>The allocation of PCI resources is done in the <code class="docutils literal notranslate"><span class="pre">probe</span></code> function, and
 usually an extra <code class="xref c c-func docutils literal notranslate"><span class="pre">xxx_create()</span></code> function is written for this
@@ -1036,8 +1038,8 @@ if (pci_set_dma_mask(pci, DMA_BIT_MASK(28)) &lt; 0 ||
 }
 </pre></div>
 </div>
-</section>
-<section id="resource-allocation">
+</div>
+<div class="section" id="resource-allocation">
 <h3>Resource Allocation<a class="headerlink" href="#resource-allocation" title="Permalink to this headline">¶</a></h3>
 <p>The allocation of I/O ports and irqs is done via standard kernel
 functions.  These resources must be released in the destructor
@@ -1204,8 +1206,8 @@ chip-&gt;iobase_virt = pci_iomap(pci, 0, 0);
 </pre></div>
 </div>
 <p>which is paired with <code class="xref c c-func docutils literal notranslate"><span class="pre">pci_iounmap()</span></code> at destructor.</p>
-</section>
-<section id="pci-entries">
+</div>
+<div class="section" id="pci-entries">
 <h3>PCI Entries<a class="headerlink" href="#pci-entries" title="Permalink to this headline">¶</a></h3>
 <p>So far, so good. Let’s finish the missing PCI stuff. At first, we need a
 <a class="reference internal" href="../../PCI/pci.html#c.pci_device_id" title="pci_device_id"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pci_device_id</span></code></a> table for
@@ -1260,11 +1262,11 @@ module_exit(alsa_card_mychip_exit)
 <p>Note that these module entries are tagged with <code class="docutils literal notranslate"><span class="pre">__init</span></code> and <code class="docutils literal notranslate"><span class="pre">__exit</span></code>
 prefixes.</p>
 <p>That’s all!</p>
-</section>
-</section>
-<section id="pcm-interface">
+</div>
+</div>
+<div class="section" id="pcm-interface">
 <h2>PCM Interface<a class="headerlink" href="#pcm-interface" title="Permalink to this headline">¶</a></h2>
-<section id="id2">
+<div class="section" id="id2">
 <h3>General<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>The PCM middle layer of ALSA is quite powerful and it is only necessary
 for each driver to implement the low-level functions to access its
@@ -1286,8 +1288,8 @@ only one substream exists and it was already opened, the successful open
 will either block or error with <code class="docutils literal notranslate"><span class="pre">EAGAIN</span></code> according to the file open
 mode. But you don’t have to care about such details in your driver. The
 PCM middle layer will take care of such work.</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h3>Full Code Example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>The example code below does not include any hardware access routines but
 shows only the skeleton, how to build up the PCM interfaces.</p>
@@ -1492,8 +1494,8 @@ static int snd_mychip_new_pcm(struct mychip *chip)
 }
 </pre></div>
 </div>
-</section>
-<section id="pcm-constructor">
+</div>
+<div class="section" id="pcm-constructor">
 <h3>PCM Constructor<a class="headerlink" href="#pcm-constructor" title="Permalink to this headline">¶</a></h3>
 <p>A pcm instance is allocated by the <a class="reference internal" href="alsa-driver-api.html#c.snd_pcm_new" title="snd_pcm_new"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_pcm_new()</span></code></a>
 function. It would be better to create a constructor for pcm, namely,</p>
@@ -1572,8 +1574,8 @@ half-duplex, specify like this:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pcm-&gt;info_flags = SNDRV_PCM_INFO_HALF_DUPLEX;
 </pre></div>
 </div>
-</section>
-<section id="and-the-destructor">
+</div>
+<div class="section" id="and-the-destructor">
 <h3>… And the Destructor?<a class="headerlink" href="#and-the-destructor" title="Permalink to this headline">¶</a></h3>
 <p>The destructor for a pcm instance is not always necessary. Since the pcm
 device will be released by the middle layer code automatically, you
@@ -1603,8 +1605,8 @@ static int snd_mychip_new_pcm(struct mychip *chip)
 }
 </pre></div>
 </div>
-</section>
-<section id="runtime-pointer-the-chest-of-pcm-information">
+</div>
+<div class="section" id="runtime-pointer-the-chest-of-pcm-information">
 <h3>Runtime Pointer - The Chest of PCM Information<a class="headerlink" href="#runtime-pointer-the-chest-of-pcm-information" title="Permalink to this headline">¶</a></h3>
 <p>When the PCM substream is opened, a PCM runtime instance is allocated
 and assigned to the substream. This pointer is accessible via
@@ -1699,7 +1701,7 @@ buffer information and the private data. Besides, if you use the
 standard managed buffer allocation mode, you don’t need to set the
 DMA buffer information by yourself.</p>
 <p>In the sections below, important records are explained.</p>
-<section id="hardware-description">
+<div class="section" id="hardware-description">
 <h4>Hardware Description<a class="headerlink" href="#hardware-description" title="Permalink to this headline">¶</a></h4>
 <p>The hardware descriptor (struct snd_pcm_hardware) contains the definitions of
 the fundamental hardware configuration. Above all, you’ll need to define this
@@ -1797,8 +1799,8 @@ output latency for the playback direction.</p>
 hardware FIFO, but currently it is neither used in the driver nor
 in the alsa-lib. So, you can ignore this field.</p></li>
 </ul>
-</section>
-<section id="pcm-configurations">
+</div>
+<div class="section" id="pcm-configurations">
 <h4>PCM Configurations<a class="headerlink" href="#pcm-configurations" title="Permalink to this headline">¶</a></h4>
 <p>Ok, let’s go back again to the PCM runtime records. The most
 frequently referred records in the runtime instance are the PCM
@@ -1820,8 +1822,8 @@ you can use the <a class="reference internal" href="alsa-driver-api.html#c.frame
 Please check the type of the field. <code class="docutils literal notranslate"><span class="pre">snd_pcm_uframes_t</span></code> is for the
 frames as unsigned integer while <code class="docutils literal notranslate"><span class="pre">snd_pcm_sframes_t</span></code> is for the
 frames as signed integer.</p>
-</section>
-<section id="dma-buffer-information">
+</div>
+<div class="section" id="dma-buffer-information">
 <h4>DMA Buffer Information<a class="headerlink" href="#dma-buffer-information" title="Permalink to this headline">¶</a></h4>
 <p>The DMA buffer is defined by the following four fields, <code class="docutils literal notranslate"><span class="pre">dma_area</span></code>,
 <code class="docutils literal notranslate"><span class="pre">dma_addr</span></code>, <code class="docutils literal notranslate"><span class="pre">dma_bytes</span></code> and <code class="docutils literal notranslate"><span class="pre">dma_private</span></code>. The <code class="docutils literal notranslate"><span class="pre">dma_area</span></code>
@@ -1840,8 +1842,8 @@ mandatory. <code class="docutils literal notranslate"><span class="pre">dma_area
 your driver doesn’t support mmap, this field is not
 necessary. <code class="docutils literal notranslate"><span class="pre">dma_addr</span></code> is also optional. You can use dma_private as
 you like, too.</p>
-</section>
-<section id="running-status">
+</div>
+<div class="section" id="running-status">
 <h4>Running Status<a class="headerlink" href="#running-status" title="Permalink to this headline">¶</a></h4>
 <p>The running status can be referred via <code class="docutils literal notranslate"><span class="pre">runtime-&gt;status</span></code>. This is
 the pointer to the struct snd_pcm_mmap_status record.
@@ -1850,8 +1852,8 @@ DMA hardware pointer via <code class="docutils literal notranslate"><span class=
 <p>The DMA application pointer can be referred via <code class="docutils literal notranslate"><span class="pre">runtime-&gt;control</span></code>,
 which points to the struct snd_pcm_mmap_control record.
 However, accessing directly to this value is not recommended.</p>
-</section>
-<section id="private-data">
+</div>
+<div class="section" id="private-data">
 <h4>Private Data<a class="headerlink" href="#private-data" title="Permalink to this headline">¶</a></h4>
 <p>You can allocate a record for the substream and store it in
 <code class="docutils literal notranslate"><span class="pre">runtime-&gt;private_data</span></code>. Usually, this is done in the <a class="reference internal" href="#pcm-open-callback">PCM open
@@ -1871,9 +1873,9 @@ callback.</p>
 </pre></div>
 </div>
 <p>The allocated object must be released in the <a class="reference internal" href="#close-callback">close callback</a>.</p>
-</section>
-</section>
-<section id="operators">
+</div>
+</div>
+<div class="section" id="operators">
 <h3>Operators<a class="headerlink" href="#operators" title="Permalink to this headline">¶</a></h3>
 <p>OK, now let me give details about each pcm callback (<code class="docutils literal notranslate"><span class="pre">ops</span></code>). In
 general, every callback must return 0 if successful, or a negative
@@ -1896,7 +1898,7 @@ assign different data records per PCM substream. For example, the
 cmi8330 driver assigns different <code class="docutils literal notranslate"><span class="pre">private_data</span></code> for playback and
 capture directions, because it uses two different codecs (SB- and
 AD-compatible) for different directions.</p>
-<section id="pcm-open-callback">
+<div class="section" id="pcm-open-callback">
 <h4>PCM open callback<a class="headerlink" href="#pcm-open-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int snd_xxx_open(struct snd_pcm_substream *substream);
 </pre></div>
@@ -1920,8 +1922,8 @@ description.</p>
 <a class="reference internal" href="#private-data">Private Data</a> section.</p>
 <p>If the hardware configuration needs more constraints, set the hardware
 constraints here, too. See <a class="reference internal" href="#constraints">Constraints</a> for more details.</p>
-</section>
-<section id="close-callback">
+</div>
+<div class="section" id="close-callback">
 <h4>close callback<a class="headerlink" href="#close-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int snd_xxx_close(struct snd_pcm_substream *substream);
 </pre></div>
@@ -1937,16 +1939,16 @@ callback will be released here.</p>
 }
 </pre></div>
 </div>
-</section>
-<section id="ioctl-callback">
+</div>
+<div class="section" id="ioctl-callback">
 <h4>ioctl callback<a class="headerlink" href="#ioctl-callback" title="Permalink to this headline">¶</a></h4>
 <p>This is used for any special call to pcm ioctls. But usually you can
 leave it as NULL, then PCM core calls the generic ioctl callback
 function <a class="reference internal" href="alsa-driver-api.html#c.snd_pcm_lib_ioctl" title="snd_pcm_lib_ioctl"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_pcm_lib_ioctl()</span></code></a>.  If you need to deal with the
 unique setup of channel info or reset procedure, you can pass your own
 callback function here.</p>
-</section>
-<section id="hw-params-callback">
+</div>
+<div class="section" id="hw-params-callback">
 <h4>hw_params callback<a class="headerlink" href="#hw-params-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int snd_xxx_hw_params(struct snd_pcm_substream *substream,
                              struct snd_pcm_hw_params *hw_params);
@@ -1982,8 +1984,8 @@ because the <code class="docutils literal notranslate"><span class="pre">trigger
 mutexes or any schedule-related functions are not available in
 <code class="docutils literal notranslate"><span class="pre">trigger</span></code> callback. Please see the subsection <a class="reference internal" href="#atomicity">Atomicity</a> for
 details.</p>
-</section>
-<section id="hw-free-callback">
+</div>
+<div class="section" id="hw-free-callback">
 <h4>hw_free callback<a class="headerlink" href="#hw-free-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int snd_xxx_hw_free(struct snd_pcm_substream *substream);
 </pre></div>
@@ -2002,8 +2004,8 @@ pre-allocated pool, you can use the standard API function
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>snd_pcm_lib_free_pages(substream);
 </pre></div>
 </div>
-</section>
-<section id="prepare-callback">
+</div>
+<div class="section" id="prepare-callback">
 <h4>prepare callback<a class="headerlink" href="#prepare-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int snd_xxx_prepare(struct snd_pcm_substream *substream);
 </pre></div>
@@ -2024,8 +2026,8 @@ physical address of the allocated buffer is set to
 <code class="docutils literal notranslate"><span class="pre">runtime-&gt;buffer_size</span></code> and <code class="docutils literal notranslate"><span class="pre">runtime-&gt;period_size</span></code>, respectively.</p>
 <p>Be careful that this callback will be called many times at each setup,
 too.</p>
-</section>
-<section id="trigger-callback">
+</div>
+<div class="section" id="trigger-callback">
 <h4>trigger callback<a class="headerlink" href="#trigger-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int snd_xxx_trigger(struct snd_pcm_substream *substream, int cmd);
 </pre></div>
@@ -2062,8 +2064,8 @@ flag set, and you cannot call functions which may sleep. The
 <code class="docutils literal notranslate"><span class="pre">trigger</span></code> callback should be as minimal as possible, just really
 triggering the DMA. The other stuff should be initialized
 <code class="docutils literal notranslate"><span class="pre">hw_params</span></code> and <code class="docutils literal notranslate"><span class="pre">prepare</span></code> callbacks properly beforehand.</p>
-</section>
-<section id="sync-stop-callback">
+</div>
+<div class="section" id="sync-stop-callback">
 <h4>sync_stop callback<a class="headerlink" href="#sync-stop-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int snd_xxx_sync_stop(struct snd_pcm_substream *substream);
 </pre></div>
@@ -2089,8 +2091,8 @@ So, usually you’ll need to add just a single line for assigning
 the IRQ.  When the driver frees and re-acquires the IRQ dynamically
 (e.g. for suspend/resume), it needs to clear and re-set
 <code class="docutils literal notranslate"><span class="pre">card-&gt;sync_irq</span></code> again appropriately.</p>
-</section>
-<section id="pointer-callback">
+</div>
+<div class="section" id="pointer-callback">
 <h4>pointer callback<a class="headerlink" href="#pointer-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static snd_pcm_uframes_t snd_xxx_pointer(struct snd_pcm_substream *substream)
 </pre></div>
@@ -2104,8 +2106,8 @@ is called in the interrupt routine. Then the pcm middle layer updates
 the position and calculates the available space, and wakes up the
 sleeping poll threads, etc.</p>
 <p>This callback is also atomic as default.</p>
-</section>
-<section id="copy-user-copy-kernel-and-fill-silence-ops">
+</div>
+<div class="section" id="copy-user-copy-kernel-and-fill-silence-ops">
 <h4>copy_user, copy_kernel and fill_silence ops<a class="headerlink" href="#copy-user-copy-kernel-and-fill-silence-ops" title="Permalink to this headline">¶</a></h4>
 <p>These callbacks are not mandatory, and can be omitted in most cases.
 These callbacks are used when the hardware buffer cannot be in the
@@ -2117,33 +2119,33 @@ these callbacks must be defined, too.</p>
 <p>If these two callbacks are defined, copy and set-silence operations
 are done by them. The detailed will be described in the later section
 <a class="reference internal" href="#buffer-and-memory-management">Buffer and Memory Management</a>.</p>
-</section>
-<section id="ack-callback">
+</div>
+<div class="section" id="ack-callback">
 <h4>ack callback<a class="headerlink" href="#ack-callback" title="Permalink to this headline">¶</a></h4>
 <p>This callback is also not mandatory. This callback is called when the
 <code class="docutils literal notranslate"><span class="pre">appl_ptr</span></code> is updated in read or write operations. Some drivers like
 emu10k1-fx and cs46xx need to track the current <code class="docutils literal notranslate"><span class="pre">appl_ptr</span></code> for the
 internal buffer, and this callback is useful only for such a purpose.</p>
 <p>This callback is atomic as default.</p>
-</section>
-<section id="page-callback">
+</div>
+<div class="section" id="page-callback">
 <h4>page callback<a class="headerlink" href="#page-callback" title="Permalink to this headline">¶</a></h4>
 <p>This callback is optional too. The mmap calls this callback to get the
 page fault address.</p>
 <p>Since the recent changes, you need no special callback any longer for
 the standard SG-buffer or vmalloc-buffer. Hence this callback should
 be rarely used.</p>
-</section>
-<section id="mmap-calllback">
+</div>
+<div class="section" id="mmap-calllback">
 <h4>mmap calllback<a class="headerlink" href="#mmap-calllback" title="Permalink to this headline">¶</a></h4>
 <p>This is another optional callback for controlling mmap behavior.
 Once when defined, PCM core calls this callback when a page is
 memory-mapped instead of dealing via the standard helper.
 If you need special handling (due to some architecture or
 device-specific issues), implement everything here as you like.</p>
-</section>
-</section>
-<section id="pcm-interrupt-handler">
+</div>
+</div>
+<div class="section" id="pcm-interrupt-handler">
 <h3>PCM Interrupt Handler<a class="headerlink" href="#pcm-interrupt-handler" title="Permalink to this headline">¶</a></h3>
 <p>The rest of pcm stuff is the PCM interrupt handler. The role of PCM
 interrupt handler in the sound driver is to update the buffer position
@@ -2151,7 +2153,7 @@ and to tell the PCM middle layer when the buffer position goes across
 the prescribed period size. To inform this, call the
 <a class="reference internal" href="alsa-driver-api.html#c.snd_pcm_period_elapsed" title="snd_pcm_period_elapsed"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_pcm_period_elapsed()</span></code></a> function.</p>
 <p>There are several types of sound chips to generate the interrupts.</p>
-<section id="interrupts-at-the-period-fragment-boundary">
+<div class="section" id="interrupts-at-the-period-fragment-boundary">
 <h4>Interrupts at the period (fragment) boundary<a class="headerlink" href="#interrupts-at-the-period-fragment-boundary" title="Permalink to this headline">¶</a></h4>
 <p>This is the most frequently found type: the hardware generates an
 interrupt at each period boundary. In this case, you can call
@@ -2185,8 +2187,8 @@ inside.</p>
 }
 </pre></div>
 </div>
-</section>
-<section id="high-frequency-timer-interrupts">
+</div>
+<div class="section" id="high-frequency-timer-interrupts">
 <h4>High frequency timer interrupts<a class="headerlink" href="#high-frequency-timer-interrupts" title="Permalink to this headline">¶</a></h4>
 <p>This happens when the hardware doesn’t generate interrupts at the period
 boundary but issues timer interrupts at a fixed timer rate (e.g. es1968
@@ -2233,16 +2235,16 @@ When the accumulated size exceeds the period size, call
 }
 </pre></div>
 </div>
-</section>
-<section id="on-calling-snd-pcm-period-elapsed">
+</div>
+<div class="section" id="on-calling-snd-pcm-period-elapsed">
 <h4>On calling <a class="reference internal" href="alsa-driver-api.html#c.snd_pcm_period_elapsed" title="snd_pcm_period_elapsed"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_pcm_period_elapsed()</span></code></a><a class="headerlink" href="#on-calling-snd-pcm-period-elapsed" title="Permalink to this headline">¶</a></h4>
 <p>In both cases, even if more than one period are elapsed, you don’t have
 to call <a class="reference internal" href="alsa-driver-api.html#c.snd_pcm_period_elapsed" title="snd_pcm_period_elapsed"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_pcm_period_elapsed()</span></code></a> many times. Call only
 once. And the pcm layer will check the current hardware pointer and
 update to the latest status.</p>
-</section>
-</section>
-<section id="atomicity">
+</div>
+</div>
+<div class="section" id="atomicity">
 <h3>Atomicity<a class="headerlink" href="#atomicity" title="Permalink to this headline">¶</a></h3>
 <p>One of the most important (and thus difficult to debug) problems in
 kernel programming are race conditions. In the Linux kernel, they are
@@ -2275,8 +2277,8 @@ after creating it. When this flag is set, mutex and rwsem are used internally
 in the PCM core instead of spin and rwlocks, so that you can call all PCM
 functions safely in a non-atomic
 context.</p>
-</section>
-<section id="constraints">
+</div>
+<div class="section" id="constraints">
 <h3>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h3>
 <p>If your chip supports unconventional sample rates, or only the limited
 samples, you need to set a constraint for the condition.</p>
@@ -2380,11 +2382,11 @@ size is aligned with the period size.</p>
 preferred PCM configuration, and there are relevant helpers.
 I won’t give more details here, rather I would like to say, “Luke, use
 the source.”</p>
-</section>
-</section>
-<section id="control-interface">
+</div>
+</div>
+<div class="section" id="control-interface">
 <h2>Control Interface<a class="headerlink" href="#control-interface" title="Permalink to this headline">¶</a></h2>
-<section id="id4">
+<div class="section" id="id4">
 <h3>General<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>The control interface is used widely for many switches, sliders, etc.
 which are accessed from user-space. Its most important use is the mixer
@@ -2394,8 +2396,8 @@ implemented on the control kernel API.</p>
 the AC97 and nothing else, you can skip this section.</p>
 <p>The control API is defined in <code class="docutils literal notranslate"><span class="pre">&lt;sound/control.h&gt;</span></code>. Include this file
 if you want to add your own controls.</p>
-</section>
-<section id="definition-of-controls">
+</div>
+<div class="section" id="definition-of-controls">
 <h3>Definition of Controls<a class="headerlink" href="#definition-of-controls" title="Permalink to this headline">¶</a></h3>
 <p>To create a new control, you need to define the following three
 callbacks: <code class="docutils literal notranslate"><span class="pre">info</span></code>, <code class="docutils literal notranslate"><span class="pre">get</span></code> and <code class="docutils literal notranslate"><span class="pre">put</span></code>. Then, define a
@@ -2441,8 +2443,8 @@ this field, too.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">tlv</span></code> field can be used to provide metadata about the control;
 see the <a class="reference internal" href="#metadata">Metadata</a> subsection.</p>
 <p>The other three are <a class="reference internal" href="#control-callbacks">Control Callbacks</a>.</p>
-</section>
-<section id="control-names">
+</div>
+<div class="section" id="control-names">
 <h3>Control Names<a class="headerlink" href="#control-names" title="Permalink to this headline">¶</a></h3>
 <p>There are some standards to define the control names. A control is
 usually defined from the three parts as “SOURCE DIRECTION FUNCTION”.</p>
@@ -2458,32 +2460,32 @@ the function of the control: “Switch”, “Volume” and “Route”.</p>
 <p>The example of control names are, thus, “Master Capture Switch” or “PCM
 Playback Volume”.</p>
 <p>There are some exceptions:</p>
-<section id="global-capture-and-playback">
+<div class="section" id="global-capture-and-playback">
 <h4>Global capture and playback<a class="headerlink" href="#global-capture-and-playback" title="Permalink to this headline">¶</a></h4>
 <p>“Capture Source”, “Capture Switch” and “Capture Volume” are used for the
 global capture (input) source, switch and volume. Similarly, “Playback
 Switch” and “Playback Volume” are used for the global output gain switch
 and volume.</p>
-</section>
-<section id="tone-controls">
+</div>
+<div class="section" id="tone-controls">
 <h4>Tone-controls<a class="headerlink" href="#tone-controls" title="Permalink to this headline">¶</a></h4>
 <p>tone-control switch and volumes are specified like “Tone Control - XXX”,
 e.g. “Tone Control - Switch”, “Tone Control - Bass”, “Tone Control -
 Center”.</p>
-</section>
-<section id="d-controls">
+</div>
+<div class="section" id="d-controls">
 <h4>3D controls<a class="headerlink" href="#d-controls" title="Permalink to this headline">¶</a></h4>
 <p>3D-control switches and volumes are specified like “3D Control - XXX”,
 e.g. “3D Control - Switch”, “3D Control - Center”, “3D Control - Space”.</p>
-</section>
-<section id="mic-boost">
+</div>
+<div class="section" id="mic-boost">
 <h4>Mic boost<a class="headerlink" href="#mic-boost" title="Permalink to this headline">¶</a></h4>
 <p>Mic-boost switch is set as “Mic Boost” or “Mic Boost (6dB)”.</p>
 <p>More precise information can be found in
 <code class="docutils literal notranslate"><span class="pre">Documentation/sound/designs/control-names.rst</span></code>.</p>
-</section>
-</section>
-<section id="access-flags">
+</div>
+</div>
+<div class="section" id="access-flags">
 <h3>Access Flags<a class="headerlink" href="#access-flags" title="Permalink to this headline">¶</a></h3>
 <p>The access flag is the bitmask which specifies the access type of the
 given control. The default access type is
@@ -2501,10 +2503,10 @@ changed without <a class="reference internal" href="#change-notification">Change
 a control constantly.</p>
 <p>When the control is inactive, set the <code class="docutils literal notranslate"><span class="pre">INACTIVE</span></code> flag, too. There are
 <code class="docutils literal notranslate"><span class="pre">LOCK</span></code> and <code class="docutils literal notranslate"><span class="pre">OWNER</span></code> flags to change the write permissions.</p>
-</section>
-<section id="control-callbacks">
+</div>
+<div class="section" id="control-callbacks">
 <h3>Control Callbacks<a class="headerlink" href="#control-callbacks" title="Permalink to this headline">¶</a></h3>
-<section id="info-callback">
+<div class="section" id="info-callback">
 <h4>info callback<a class="headerlink" href="#info-callback" title="Permalink to this headline">¶</a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">info</span></code> callback is used to get detailed information on this
 control. This must store the values of the given
@@ -2566,8 +2568,8 @@ it’s a matter of taste.)</p>
 is an info callback for a mono channel boolean item, just like
 <code class="xref c c-func docutils literal notranslate"><span class="pre">snd_myctl_mono_info()</span></code> above, and the latter is for a
 stereo channel boolean item.</p>
-</section>
-<section id="get-callback">
+</div>
+<div class="section" id="get-callback">
 <h4>get callback<a class="headerlink" href="#get-callback" title="Permalink to this headline">¶</a></h4>
 <p>This callback is used to read the current value of the control and to
 return to user-space.</p>
@@ -2603,8 +2605,8 @@ field is set as follows:</p>
 control has more than one elements, i.e. <code class="docutils literal notranslate"><span class="pre">count</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>. In the example
 above, we filled only one element (<code class="docutils literal notranslate"><span class="pre">value.integer.value[0]</span></code>) since
 it’s assumed as <code class="docutils literal notranslate"><span class="pre">count</span> <span class="pre">=</span> <span class="pre">1</span></code>.</p>
-</section>
-<section id="put-callback">
+</div>
+<div class="section" id="put-callback">
 <h4>put callback<a class="headerlink" href="#put-callback" title="Permalink to this headline">¶</a></h4>
 <p>This callback is used to write a value from user-space.</p>
 <p>For example,</p>
@@ -2628,13 +2630,13 @@ value is not changed, return 0 instead. If any fatal error happens,
 return a negative error code as usual.</p>
 <p>As in the <code class="docutils literal notranslate"><span class="pre">get</span></code> callback, when the control has more than one
 elements, all elements must be evaluated in this callback, too.</p>
-</section>
-<section id="callbacks-are-not-atomic">
+</div>
+<div class="section" id="callbacks-are-not-atomic">
 <h4>Callbacks are not atomic<a class="headerlink" href="#callbacks-are-not-atomic" title="Permalink to this headline">¶</a></h4>
 <p>All these three callbacks are basically not atomic.</p>
-</section>
-</section>
-<section id="control-constructor">
+</div>
+</div>
+<div class="section" id="control-constructor">
 <h3>Control Constructor<a class="headerlink" href="#control-constructor" title="Permalink to this headline">¶</a></h3>
 <p>When everything is ready, finally we can create a new control. To create
 a control, there are two functions to be called,
@@ -2651,8 +2653,8 @@ can be referred to in callbacks.</p>
 <p><a class="reference internal" href="alsa-driver-api.html#c.snd_ctl_new1" title="snd_ctl_new1"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_ctl_new1()</span></code></a> allocates a new struct snd_kcontrol instance, and
 <a class="reference internal" href="alsa-driver-api.html#c.snd_ctl_add" title="snd_ctl_add"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_ctl_add()</span></code></a> assigns the given control component to the
 card.</p>
-</section>
-<section id="change-notification">
+</div>
+<div class="section" id="change-notification">
 <h3>Change Notification<a class="headerlink" href="#change-notification" title="Permalink to this headline">¶</a></h3>
 <p>If you need to change and update a control in the interrupt routine, you
 can call <a class="reference internal" href="alsa-driver-api.html#c.snd_ctl_notify" title="snd_ctl_notify"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_ctl_notify()</span></code></a>. For example,</p>
@@ -2665,8 +2667,8 @@ notification, for example, in the above example, the change of control
 values is notified. The id pointer is the pointer of struct snd_ctl_elem_id
 to be notified. You can find some examples in <code class="docutils literal notranslate"><span class="pre">es1938.c</span></code> or <code class="docutils literal notranslate"><span class="pre">es1968.c</span></code>
 for hardware volume interrupts.</p>
-</section>
-<section id="metadata">
+</div>
+<div class="section" id="metadata">
 <h3>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h3>
 <p>To provide information about the dB values of a mixer control, use on of
 the <code class="docutils literal notranslate"><span class="pre">DECLARE_TLV_xxx</span></code> macros from <code class="docutils literal notranslate"><span class="pre">&lt;sound/tlv.h&gt;</span></code> to define a
@@ -2698,17 +2700,17 @@ The second parameter is the minimum value, in units of 0.01 dB. The
 third parameter is the maximum value, in units of 0.01 dB. If the
 minimum value mutes the control, set the second parameter to
 <code class="docutils literal notranslate"><span class="pre">TLV_DB_GAIN_MUTE</span></code>.</p>
-</section>
-</section>
-<section id="api-for-ac97-codec">
+</div>
+</div>
+<div class="section" id="api-for-ac97-codec">
 <h2>API for AC97 Codec<a class="headerlink" href="#api-for-ac97-codec" title="Permalink to this headline">¶</a></h2>
-<section id="id5">
+<div class="section" id="id5">
 <h3>General<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>The ALSA AC97 codec layer is a well-defined one, and you don’t have to
 write much code to control it. Only low-level control routines are
 necessary. The AC97 codec API is defined in <code class="docutils literal notranslate"><span class="pre">&lt;sound/ac97_codec.h&gt;</span></code>.</p>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h3>Full Code Example<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct mychip {
         ....
@@ -2752,8 +2754,8 @@ static int snd_mychip_ac97(struct mychip *chip)
 }
 </pre></div>
 </div>
-</section>
-<section id="ac97-constructor">
+</div>
+<div class="section" id="ac97-constructor">
 <h3>AC97 Constructor<a class="headerlink" href="#ac97-constructor" title="Permalink to this headline">¶</a></h3>
 <p>To create an ac97 instance, first call <a class="reference internal" href="alsa-driver-api.html#c.snd_ac97_bus" title="snd_ac97_bus"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_ac97_bus()</span></code></a>
 with an <code class="docutils literal notranslate"><span class="pre">ac97_bus_ops_t</span></code> record with callback functions.</p>
@@ -2784,8 +2786,8 @@ instance. This instance is not necessarily stored in the chip
 record. If you need to change the register values from the driver, or
 need the suspend/resume of ac97 codecs, keep this pointer to pass to
 the corresponding functions.</p>
-</section>
-<section id="ac97-callbacks">
+</div>
+<div class="section" id="ac97-callbacks">
 <h3>AC97 Callbacks<a class="headerlink" href="#ac97-callbacks" title="Permalink to this headline">¶</a></h3>
 <p>The standard callbacks are <code class="docutils literal notranslate"><span class="pre">read</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code>. Obviously they
 correspond to the functions for read and write accesses to the
@@ -2817,8 +2819,8 @@ initialization of the codec. If the chip requires the extra waiting
 time, define this callback.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">init</span></code> callback is used for additional initialization of the
 codec.</p>
-</section>
-<section id="updating-registers-in-the-driver">
+</div>
+<div class="section" id="updating-registers-in-the-driver">
 <h3>Updating Registers in The Driver<a class="headerlink" href="#updating-registers-in-the-driver" title="Permalink to this headline">¶</a></h3>
 <p>If you need to access to the codec from the driver, you can call the
 following functions: <a class="reference internal" href="alsa-driver-api.html#c.snd_ac97_write" title="snd_ac97_write"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_ac97_write()</span></code></a>,
@@ -2855,22 +2857,22 @@ codec: <a class="reference internal" href="alsa-driver-api.html#c.snd_ac97_set_r
 <code class="docutils literal notranslate"><span class="pre">AC97_PCM_LR_ADC_RATE</span></code>, <code class="docutils literal notranslate"><span class="pre">AC97_SPDIF</span></code>. When <code class="docutils literal notranslate"><span class="pre">AC97_SPDIF</span></code> is
 specified, the register is not really changed but the corresponding
 IEC958 status bits will be updated.</p>
-</section>
-<section id="clock-adjustment">
+</div>
+<div class="section" id="clock-adjustment">
 <h3>Clock Adjustment<a class="headerlink" href="#clock-adjustment" title="Permalink to this headline">¶</a></h3>
 <p>In some chips, the clock of the codec isn’t 48000 but using a PCI clock
 (to save a quartz!). In this case, change the field <code class="docutils literal notranslate"><span class="pre">bus-&gt;clock</span></code> to
 the corresponding value. For example, intel8x0 and es1968 drivers have
 their own function to read from the clock.</p>
-</section>
-<section id="proc-files">
+</div>
+<div class="section" id="proc-files">
 <h3>Proc Files<a class="headerlink" href="#proc-files" title="Permalink to this headline">¶</a></h3>
 <p>The ALSA AC97 interface will create a proc file such as
 <code class="docutils literal notranslate"><span class="pre">/proc/asound/card0/codec97#0/ac97#0-0</span></code> and <code class="docutils literal notranslate"><span class="pre">ac97#0-0+regs</span></code>. You
 can refer to these files to see the current status and registers of
 the codec.</p>
-</section>
-<section id="multiple-codecs">
+</div>
+<div class="section" id="multiple-codecs">
 <h3>Multiple Codecs<a class="headerlink" href="#multiple-codecs" title="Permalink to this headline">¶</a></h3>
 <p>When there are several codecs on the same card, you need to call
 <a class="reference internal" href="alsa-driver-api.html#c.snd_ac97_mixer" title="snd_ac97_mixer"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_ac97_mixer()</span></code></a> multiple times with <code class="docutils literal notranslate"><span class="pre">ac97.num=1</span></code> or
@@ -2878,11 +2880,11 @@ greater. The <code class="docutils literal notranslate"><span class="pre">num</s
 <p>If you set up multiple codecs, you either need to write different
 callbacks for each codec or check <code class="docutils literal notranslate"><span class="pre">ac97-&gt;num</span></code> in the callback
 routines.</p>
-</section>
-</section>
-<section id="midi-mpu401-uart-interface">
+</div>
+</div>
+<div class="section" id="midi-mpu401-uart-interface">
 <h2>MIDI (MPU401-UART) Interface<a class="headerlink" href="#midi-mpu401-uart-interface" title="Permalink to this headline">¶</a></h2>
-<section id="id7">
+<div class="section" id="id7">
 <h3>General<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>Many soundcards have built-in MIDI (MPU401-UART) interfaces. When the
 soundcard supports the standard MPU401-UART interface, most likely you
@@ -2890,8 +2892,8 @@ can use the ALSA MPU401-UART API. The MPU401-UART API is defined in
 <code class="docutils literal notranslate"><span class="pre">&lt;sound/mpu401.h&gt;</span></code>.</p>
 <p>Some soundchips have a similar but slightly different implementation of
 mpu401 stuff. For example, emu10k1 has its own mpu401 routines.</p>
-</section>
-<section id="midi-constructor">
+</div>
+<div class="section" id="midi-constructor">
 <h3>MIDI Constructor<a class="headerlink" href="#midi-constructor" title="Permalink to this headline">¶</a></h3>
 <p>To create a rawmidi object, call <a class="reference internal" href="alsa-driver-api.html#c.snd_mpu401_uart_new" title="snd_mpu401_uart_new"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_mpu401_uart_new()</span></code></a>.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct snd_rawmidi *rmidi;
@@ -2943,8 +2945,8 @@ no interrupt is to be allocated (because your code is already allocating
 a shared interrupt, or because the device does not use interrupts), pass
 -1 instead. For a MPU-401 device without an interrupt, a polling timer
 will be used instead.</p>
-</section>
-<section id="midi-interrupt-handler">
+</div>
+<div class="section" id="midi-interrupt-handler">
 <h3>MIDI Interrupt Handler<a class="headerlink" href="#midi-interrupt-handler" title="Permalink to this headline">¶</a></h3>
 <p>When the interrupt is allocated in
 <a class="reference internal" href="alsa-driver-api.html#c.snd_mpu401_uart_new" title="snd_mpu401_uart_new"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_mpu401_uart_new()</span></code></a>, an exclusive ISA interrupt
@@ -2960,11 +2962,11 @@ argument of <a class="reference internal" href="alsa-driver-api.html#c.snd_mpu40
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>snd_mpu401_uart_interrupt(irq, rmidi-&gt;private_data, regs);
 </pre></div>
 </div>
-</section>
-</section>
-<section id="rawmidi-interface">
+</div>
+</div>
+<div class="section" id="rawmidi-interface">
 <h2>RawMIDI Interface<a class="headerlink" href="#rawmidi-interface" title="Permalink to this headline">¶</a></h2>
-<section id="overview">
+<div class="section" id="overview">
 <h3>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h3>
 <p>The raw MIDI interface is used for hardware MIDI ports that can be
 accessed as a byte stream. It is not used for synthesizer chips that do
@@ -2972,8 +2974,8 @@ not directly understand MIDI.</p>
 <p>ALSA handles file and buffer management. All you have to do is to write
 some code to move data between the buffer and the hardware.</p>
 <p>The rawmidi API is defined in <code class="docutils literal notranslate"><span class="pre">&lt;sound/rawmidi.h&gt;</span></code>.</p>
-</section>
-<section id="rawmidi-constructor">
+</div>
+<div class="section" id="rawmidi-constructor">
 <h3>RawMIDI Constructor<a class="headerlink" href="#rawmidi-constructor" title="Permalink to this headline">¶</a></h3>
 <p>To create a rawmidi device, call the <a class="reference internal" href="alsa-driver-api.html#c.snd_rawmidi_new" title="snd_rawmidi_new"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_rawmidi_new()</span></code></a>
 function:</p>
@@ -3027,8 +3029,8 @@ list_for_each_entry(substream,
 /* same for SNDRV_RAWMIDI_STREAM_INPUT */
 </pre></div>
 </div>
-</section>
-<section id="rawmidi-callbacks">
+</div>
+<div class="section" id="rawmidi-callbacks">
 <h3>RawMIDI Callbacks<a class="headerlink" href="#rawmidi-callbacks" title="Permalink to this headline">¶</a></h3>
 <p>In all the callbacks, the private data that you’ve set for the rawmidi
 device can be accessed as <code class="docutils literal notranslate"><span class="pre">substream-&gt;rmidi-&gt;private_data</span></code>.</p>
@@ -3039,15 +3041,15 @@ callback:</p>
 int index = substream-&gt;number;
 </pre></div>
 </div>
-<section id="rawmidi-open-callback">
+<div class="section" id="rawmidi-open-callback">
 <h4>RawMIDI open callback<a class="headerlink" href="#rawmidi-open-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int snd_xxx_open(struct snd_rawmidi_substream *substream);
 </pre></div>
 </div>
 <p>This is called when a substream is opened. You can initialize the
 hardware here, but you shouldn’t start transmitting/receiving data yet.</p>
-</section>
-<section id="rawmidi-close-callback">
+</div>
+<div class="section" id="rawmidi-close-callback">
 <h4>RawMIDI close callback<a class="headerlink" href="#rawmidi-close-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int snd_xxx_close(struct snd_rawmidi_substream *substream);
 </pre></div>
@@ -3055,8 +3057,8 @@ hardware here, but you shouldn’t start transmitting/receiving data yet.</p>
 <p>Guess what.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">open</span></code> and <code class="docutils literal notranslate"><span class="pre">close</span></code> callbacks of a rawmidi device are
 serialized with a mutex, and can sleep.</p>
-</section>
-<section id="rawmidi-trigger-callback-for-output-substreams">
+</div>
+<div class="section" id="rawmidi-trigger-callback-for-output-substreams">
 <h4>Rawmidi trigger callback for output substreams<a class="headerlink" href="#rawmidi-trigger-callback-for-output-substreams" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static void snd_xxx_output_trigger(struct snd_rawmidi_substream *substream, int up);
 </pre></div>
@@ -3098,8 +3100,8 @@ transmitting data later, either in an interrupt handler, or with a
 timer if the hardware doesn’t have a MIDI transmit interrupt.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">trigger</span></code> callback is called with a zero <code class="docutils literal notranslate"><span class="pre">up</span></code> parameter when
 the transmission of data should be aborted.</p>
-</section>
-<section id="rawmidi-trigger-callback-for-input-substreams">
+</div>
+<div class="section" id="rawmidi-trigger-callback-for-input-substreams">
 <h4>RawMIDI trigger callback for input substreams<a class="headerlink" href="#rawmidi-trigger-callback-for-input-substreams" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static void snd_xxx_input_trigger(struct snd_rawmidi_substream *substream, int up);
 </pre></div>
@@ -3120,8 +3122,8 @@ from the device is usually done in an interrupt handler.</p>
 }
 </pre></div>
 </div>
-</section>
-<section id="drain-callback">
+</div>
+<div class="section" id="drain-callback">
 <h4>drain callback<a class="headerlink" href="#drain-callback" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static void snd_xxx_drain(struct snd_rawmidi_substream *substream);
 </pre></div>
@@ -3133,12 +3135,12 @@ without losing data.</p>
 <p>This callback is optional. If you do not set <code class="docutils literal notranslate"><span class="pre">drain</span></code> in the struct
 snd_rawmidi_ops structure, ALSA will simply wait for 50 milliseconds
 instead.</p>
-</section>
-</section>
-</section>
-<section id="miscellaneous-devices">
+</div>
+</div>
+</div>
+<div class="section" id="miscellaneous-devices">
 <h2>Miscellaneous Devices<a class="headerlink" href="#miscellaneous-devices" title="Permalink to this headline">¶</a></h2>
-<section id="fm-opl3">
+<div class="section" id="fm-opl3">
 <h3>FM OPL3<a class="headerlink" href="#fm-opl3" title="Permalink to this headline">¶</a></h3>
 <p>The FM OPL3 is still used in many chips (mainly for backward
 compatibility). ALSA has a nice OPL3 FM control layer, too. The OPL3 API
@@ -3189,8 +3191,8 @@ second is the index number, usually 0.</p>
 <p>The third argument is the index-offset for the sequencer client assigned
 to the OPL3 port. When there is an MPU401-UART, give 1 for here (UART
 always takes 0).</p>
-</section>
-<section id="hardware-dependent-devices">
+</div>
+<div class="section" id="hardware-dependent-devices">
 <h3>Hardware-Dependent Devices<a class="headerlink" href="#hardware-dependent-devices" title="Permalink to this headline">¶</a></h3>
 <p>Some chips need user-space access for special controls or for loading
 the micro code. In such a case, you can create a hwdep
@@ -3229,8 +3231,8 @@ hw-&gt;ops.release = mydata_release;
 </pre></div>
 </div>
 <p>And implement the callback functions as you like.</p>
-</section>
-<section id="iec958-s-pdif">
+</div>
+<div class="section" id="iec958-s-pdif">
 <h3>IEC958 (S/PDIF)<a class="headerlink" href="#iec958-s-pdif" title="Permalink to this headline">¶</a></h3>
 <p>Usually the controls for IEC958 devices are implemented via the control
 interface. There is a macro to compose a name string for IEC958
@@ -3256,11 +3258,11 @@ the control should be named as “IEC958 xxx”, preferably using the
 <code class="xref c c-func docutils literal notranslate"><span class="pre">SNDRV_CTL_NAME_IEC958()</span></code> macro.</p>
 <p>You can find several cases, for example, <code class="docutils literal notranslate"><span class="pre">pci/emu10k1</span></code>,
 <code class="docutils literal notranslate"><span class="pre">pci/ice1712</span></code>, or <code class="docutils literal notranslate"><span class="pre">pci/cmipci.c</span></code>.</p>
-</section>
-</section>
-<section id="buffer-and-memory-management">
+</div>
+</div>
+<div class="section" id="buffer-and-memory-management">
 <h2>Buffer and Memory Management<a class="headerlink" href="#buffer-and-memory-management" title="Permalink to this headline">¶</a></h2>
-<section id="buffer-types">
+<div class="section" id="buffer-types">
 <h3>Buffer Types<a class="headerlink" href="#buffer-types" title="Permalink to this headline">¶</a></h3>
 <p>ALSA provides several different buffer allocation functions depending on
 the bus and the architecture. All these have a consistent API. The
@@ -3320,8 +3322,8 @@ after the PCM <code class="docutils literal notranslate"><span class="pre">hw_fr
 doesn’t have to call these functions explicitly in its callback any
 longer.  This made many driver code having NULL <code class="docutils literal notranslate"><span class="pre">hw_params</span></code> and
 <code class="docutils literal notranslate"><span class="pre">hw_free</span></code> entries.</p>
-</section>
-<section id="external-hardware-buffers">
+</div>
+<div class="section" id="external-hardware-buffers">
 <h3>External Hardware Buffers<a class="headerlink" href="#external-hardware-buffers" title="Permalink to this headline">¶</a></h3>
 <p>Some chips have their own hardware buffers and the DMA transfer from the
 host memory is not available. In such a case, you need to either 1)
@@ -3438,8 +3440,8 @@ would be like:</p>
 <p>In the case of non-interleaved samples, again, the implementation
 becomes a bit more complicated, as it’s called N-times per transfer
 for each channel. See, for example, <code class="docutils literal notranslate"><span class="pre">isa/gus/gus_pcm.c</span></code>.</p>
-</section>
-<section id="non-contiguous-buffers">
+</div>
+<div class="section" id="non-contiguous-buffers">
 <h3>Non-Contiguous Buffers<a class="headerlink" href="#non-contiguous-buffers" title="Permalink to this headline">¶</a></h3>
 <p>If your hardware supports the page table as in emu10k1 or the buffer
 descriptors as in via82xx, you can use the scatter-gather (SG) DMA. ALSA
@@ -3471,8 +3473,8 @@ physically non-contiguous. The physical address table is set up in
 via <a class="reference internal" href="alsa-driver-api.html#c.snd_pcm_sgbuf_get_addr" title="snd_pcm_sgbuf_get_addr"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_pcm_sgbuf_get_addr()</span></code></a>.</p>
 <p>If you need to release the SG-buffer data explicitly, call the
 standard API function <a class="reference internal" href="alsa-driver-api.html#c.snd_pcm_lib_free_pages" title="snd_pcm_lib_free_pages"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_pcm_lib_free_pages()</span></code></a> as usual.</p>
-</section>
-<section id="vmalloc-ed-buffers">
+</div>
+<div class="section" id="vmalloc-ed-buffers">
 <h3>Vmalloc’ed Buffers<a class="headerlink" href="#vmalloc-ed-buffers" title="Permalink to this headline">¶</a></h3>
 <p>It’s possible to use a buffer allocated via <a class="reference internal" href="../../core-api/mm-api.html#c.vmalloc" title="vmalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">vmalloc()</span></code></a>, for
 example, for an intermediate buffer. In the recent version of kernel,
@@ -3497,9 +3499,9 @@ argument.</p>
         snd_dma_continuous_data(GFP_KERNEL | __GFP_DMA32), 0, 0);
 </pre></div>
 </div>
-</section>
-</section>
-<section id="proc-interface">
+</div>
+</div>
+<div class="section" id="proc-interface">
 <h2>Proc Interface<a class="headerlink" href="#proc-interface" title="Permalink to this headline">¶</a></h2>
 <p>ALSA provides an easy interface for procfs. The proc files are very
 useful for debugging. I recommend you set up proc files if you write a
@@ -3593,8 +3595,8 @@ You need to use a low-level I/O functions such as
 <code class="docutils literal notranslate"><span class="pre">pos</span></code> are guaranteed to fit within 0 and the given size. You don’t
 have to check the range in the callbacks unless any other condition is
 required.</p>
-</section>
-<section id="power-management">
+</div>
+<div class="section" id="power-management">
 <h2>Power Management<a class="headerlink" href="#power-management" title="Permalink to this headline">¶</a></h2>
 <p>If the chip is supposed to work with suspend/resume functions, you need
 to add power-management code to the driver. The additional code for
@@ -3753,8 +3755,8 @@ static struct pci_driver driver = {
 };
 </pre></div>
 </div>
-</section>
-<section id="module-parameters">
+</div>
+<div class="section" id="module-parameters">
 <h2>Module Parameters<a class="headerlink" href="#module-parameters" title="Permalink to this headline">¶</a></h2>
 <p>There are standard module options for ALSA. At least, each module should
 have the <code class="docutils literal notranslate"><span class="pre">index</span></code>, <code class="docutils literal notranslate"><span class="pre">id</span></code> and <code class="docutils literal notranslate"><span class="pre">enable</span></code> options.</p>
@@ -3790,8 +3792,8 @@ module license as GPL, etc., otherwise the system is shown as “tainted”.</p>
 MODULE_LICENSE(&quot;GPL&quot;);
 </pre></div>
 </div>
-</section>
-<section id="device-managed-resources">
+</div>
+<div class="section" id="device-managed-resources">
 <h2>Device-Managed Resources<a class="headerlink" href="#device-managed-resources" title="Permalink to this headline">¶</a></h2>
 <p>In the examples above, all resources are allocated and released
 manually.  But human beings are lazy in nature, especially developers
@@ -3817,10 +3819,10 @@ invalid initialization, you can set <code class="docutils literal notranslate"><
 helpers for each component as much as possible once when you manage
 the card in that way.  Mixing up with the normal and the managed
 resources may screw up the release order.</p>
-</section>
-<section id="how-to-put-your-driver-into-alsa-tree">
+</div>
+<div class="section" id="how-to-put-your-driver-into-alsa-tree">
 <h2>How To Put Your Driver Into ALSA Tree<a class="headerlink" href="#how-to-put-your-driver-into-alsa-tree" title="Permalink to this headline">¶</a></h2>
-<section id="id8">
+<div class="section" id="id8">
 <h3>General<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <p>So far, you’ve learned how to write the driver codes. And you might have
 a question now: how to put my own driver into the ALSA driver tree? Here
@@ -3832,8 +3834,8 @@ cards.</p>
 <p>In the following sections, the driver code is supposed to be put into
 Linux kernel tree. The two cases are covered: a driver consisting of a
 single source file and one consisting of several source files.</p>
-</section>
-<section id="driver-with-a-single-source-file">
+</div>
+<div class="section" id="driver-with-a-single-source-file">
 <h3>Driver with A Single Source File<a class="headerlink" href="#driver-with-a-single-source-file" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
 <li><p>Modify sound/pci/Makefile</p>
@@ -3863,8 +3865,8 @@ the lowlevel selections again.</p>
 <p>For the details of Kconfig script, refer to the kbuild documentation.</p>
 </li>
 </ol>
-</section>
-<section id="drivers-with-several-source-files">
+</div>
+<div class="section" id="drivers-with-several-source-files">
 <h3>Drivers with Several Source Files<a class="headerlink" href="#drivers-with-several-source-files" title="Permalink to this headline">¶</a></h3>
 <p>Suppose that the driver snd-xyz have several source files. They are
 located in the new subdirectory, sound/pci/xyz.</p>
@@ -3887,11 +3889,11 @@ obj-$(CONFIG_SND_XYZ) += snd-xyz.o
 <p>This procedure is as same as in the last section.</p>
 </li>
 </ol>
-</section>
-</section>
-<section id="useful-functions">
+</div>
+</div>
+<div class="section" id="useful-functions">
 <h2>Useful Functions<a class="headerlink" href="#useful-functions" title="Permalink to this headline">¶</a></h2>
-<section id="snd-printk-and-friends">
+<div class="section" id="snd-printk-and-friends">
 <h3><a class="reference internal" href="alsa-driver-api.html#c.snd_printk" title="snd_printk"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_printk()</span></code></a> and friends<a class="headerlink" href="#snd-printk-and-friends" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -3914,15 +3916,15 @@ just like <a class="reference internal" href="alsa-driver-api.html#c.snd_printk"
 the debugging flag, it’s ignored.</p>
 <p><a class="reference internal" href="alsa-driver-api.html#c.snd_printdd" title="snd_printdd"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_printdd()</span></code></a> is compiled in only when
 <code class="docutils literal notranslate"><span class="pre">CONFIG_SND_DEBUG_VERBOSE</span></code> is set.</p>
-</section>
-<section id="snd-bug">
+</div>
+<div class="section" id="snd-bug">
 <h3><a class="reference internal" href="alsa-driver-api.html#c.snd_BUG" title="snd_BUG"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_BUG()</span></code></a><a class="headerlink" href="#snd-bug" title="Permalink to this headline">¶</a></h3>
 <p>It shows the <code class="docutils literal notranslate"><span class="pre">BUG?</span></code> message and stack trace as well as
 <a class="reference internal" href="alsa-driver-api.html#c.snd_BUG_ON" title="snd_BUG_ON"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_BUG_ON()</span></code></a> at the point. It’s useful to show that a
 fatal error happens there.</p>
 <p>When no debug flag is set, this macro is ignored.</p>
-</section>
-<section id="snd-bug-on">
+</div>
+<div class="section" id="snd-bug-on">
 <h3><a class="reference internal" href="alsa-driver-api.html#c.snd_BUG_ON" title="snd_BUG_ON"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_BUG_ON()</span></code></a><a class="headerlink" href="#snd-bug-on" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="alsa-driver-api.html#c.snd_BUG_ON" title="snd_BUG_ON"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_BUG_ON()</span></code></a> macro is similar with
 <code class="xref c c-func docutils literal notranslate"><span class="pre">WARN_ON()</span></code> macro. For example, snd_BUG_ON(!pointer); or
@@ -3932,17 +3934,17 @@ return -EINVAL;</p>
 <code class="docutils literal notranslate"><span class="pre">CONFIG_SND_DEBUG</span></code>, is set, if the expression is non-zero, it shows
 the warning message such as <code class="docutils literal notranslate"><span class="pre">BUG?</span> <span class="pre">(xxx)</span></code> normally followed by stack
 trace. In both cases it returns the evaluated value.</p>
-</section>
-</section>
-<section id="acknowledgments">
+</div>
+</div>
+<div class="section" id="acknowledgments">
 <h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this headline">¶</a></h2>
 <p>I would like to thank Phil Kerr for his help for improvement and
 corrections of this document.</p>
 <p>Kevin Conder reformatted the original plain-text to the DocBook format.</p>
 <p>Giuliano Pochini corrected typos and contributed the example codes in
 the hardware constraints section.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

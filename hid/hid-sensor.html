@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>HID Sensors Framework &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -259,7 +261,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="hid-sensors-framework">
+  <div class="section" id="hid-sensors-framework">
 <h1>HID Sensors Framework<a class="headerlink" href="#hid-sensors-framework" title="Permalink to this headline">¶</a></h1>
 <p>HID sensor framework provides necessary interfaces to implement sensor drivers,
 which are connected to a sensor hub. The sensor hub is a HID device and it provides
@@ -295,7 +297,7 @@ This accelerometer-3D has some fields. Here for example field 2 is motion intens
 (0x045f) with a logical minimum value of -32767 and logical maximum of 32767. The
 order of fields and length of each field is important as the input event raw
 data will use this format.</p>
-<section id="implementation">
+<div class="section" id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p>This specification defines many different types of sensors with different sets of
 data fields. It is difficult to have a common input event to user space applications,
@@ -306,7 +308,7 @@ So the implementation has two parts:</p>
 <li><p>Core HID driver</p></li>
 <li><p>Individual sensor processing part (sensor drivers)</p></li>
 </ul>
-<section id="core-driver">
+<div class="section" id="core-driver">
 <h3>Core driver<a class="headerlink" href="#core-driver" title="Permalink to this headline">¶</a></h3>
 <p>The core driver (hid-sensor-hub) registers as a HID driver. It parses
 report descriptors and identifies all the sensors present. It adds an MFD device
@@ -319,15 +321,15 @@ with this name and will be probed if there is an accelerometer-3D detected.</p>
 <p>The core driver provides a set of APIs which can be used by the processing
 drivers to register and get events for that usage id. Also it provides parsing
 functions, which get and set each input/feature/output report.</p>
-</section>
-<section id="individual-sensor-processing-part-sensor-drivers">
+</div>
+<div class="section" id="individual-sensor-processing-part-sensor-drivers">
 <h3>Individual sensor processing part (sensor drivers)<a class="headerlink" href="#individual-sensor-processing-part-sensor-drivers" title="Permalink to this headline">¶</a></h3>
 <p>The processing driver will use an interface provided by the core driver to parse
 the report and get the indexes of the fields and also can get events. This driver
 can use IIO interface to use the standard ABI defined for a type of sensor.</p>
-</section>
-</section>
-<section id="core-driver-interface">
+</div>
+</div>
+<div class="section" id="core-driver-interface">
 <h2>Core driver Interface<a class="headerlink" href="#core-driver-interface" title="Permalink to this headline">¶</a></h2>
 <p>Callback structure:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Each processing driver can use this structure to set some callbacks.
@@ -390,7 +392,7 @@ the usage id of X axis. HID sensors can provide events, so this is not necessary
 to poll for any field. If there is some new sample, the core driver will call
 registered callback function to process the sample.</p>
 <hr class="docutils" />
-<section id="hid-custom-and-generic-sensors">
+<div class="section" id="hid-custom-and-generic-sensors">
 <h3>HID Custom and generic Sensors<a class="headerlink" href="#hid-custom-and-generic-sensors" title="Permalink to this headline">¶</a></h3>
 <p>HID Sensor specification defines two special sensor usage types. Since they
 don’t represent a standard sensor, it is not possible to define using Linux IIO
@@ -456,7 +458,7 @@ feature-0-200316-units:25
 feature-0-200316-value:1
 </pre></div>
 </div>
-<section id="how-to-enable-such-sensor">
+<div class="section" id="how-to-enable-such-sensor">
 <h4>How to enable such sensor?<a class="headerlink" href="#how-to-enable-such-sensor" title="Permalink to this headline">¶</a></h4>
 <p>By default sensor can be power gated. To enable sysfs attribute “enable” can be
 used:</p>
@@ -473,10 +475,10 @@ These reports are pushed using misc device interface in a FIFO order:</p>
 <p>Each report can be of variable length preceded by a header. This header
 consists of a 32-bit usage id, 64-bit time stamp and 32-bit length field of raw
 data.</p>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>

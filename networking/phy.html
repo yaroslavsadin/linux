@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>PHY Abstraction Layer &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -376,9 +378,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="phy-abstraction-layer">
+  <div class="section" id="phy-abstraction-layer">
 <h1>PHY Abstraction Layer<a class="headerlink" href="#phy-abstraction-layer" title="Permalink to this headline">¶</a></h1>
-<section id="purpose">
+<div class="section" id="purpose">
 <h2>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline">¶</a></h2>
 <p>Most network devices consist of set of registers which provide an interface
 to a MAC layer, which communicates with the physical connection through a
@@ -403,8 +405,8 @@ In doing so, it has these goals:</p>
 <p>Basically, this layer is meant to provide an interface to PHY devices which
 allows network driver writers to write as little code as possible, while
 still providing a full feature set.</p>
-</section>
-<section id="the-mdio-bus">
+</div>
+<div class="section" id="the-mdio-bus">
 <h2>The MDIO bus<a class="headerlink" href="#the-mdio-bus" title="Permalink to this headline">¶</a></h2>
 <p>Most network devices are connected to a PHY by means of a management bus.
 Different devices use different busses (though some share common interfaces).
@@ -434,8 +436,8 @@ exit functions are used to register the driver.</p></li>
 <p>As an example for how one driver implemented an mdio bus driver, see
 drivers/net/ethernet/freescale/fsl_pq_mdio.c and an associated DTS file
 for one of the users. (e.g. “git grep fsl,.*-mdio arch/powerpc/boot/dts/”)</p>
-</section>
-<section id="rg-mii-electrical-interface-considerations">
+</div>
+<div class="section" id="rg-mii-electrical-interface-considerations">
 <h2>(RG)MII/electrical interface considerations<a class="headerlink" href="#rg-mii-electrical-interface-considerations" title="Permalink to this headline">¶</a></h2>
 <p>The Reduced Gigabit Medium Independent Interface (RGMII) is a 12-pin
 electrical signal interface using a synchronous 125Mhz clock signal and several
@@ -487,7 +489,7 @@ option to insert the expected 2ns RGMII delay.</p></li>
 <li><p>Modifying the PCB design to include a fixed delay (e.g: using a specifically
 designed serpentine), which may not require software configuration at all.</p></li>
 </ul>
-<section id="common-problems-with-rgmii-delay-mismatch">
+<div class="section" id="common-problems-with-rgmii-delay-mismatch">
 <h3>Common problems with RGMII delay mismatch<a class="headerlink" href="#common-problems-with-rgmii-delay-mismatch" title="Permalink to this headline">¶</a></h3>
 <p>When there is a RGMII delay mismatch between the Ethernet MAC and the PHY, this
 will most likely result in the clock and data line signals to be unstable when
@@ -502,9 +504,9 @@ or just discard them all</p></li>
 <li><p>Switching to lower speeds such as 10/100Mbits/sec makes the problem go away
 (since there is enough setup/hold time in that case)</p></li>
 </ul>
-</section>
-</section>
-<section id="connecting-to-a-phy">
+</div>
+</div>
+<div class="section" id="connecting-to-a-phy">
 <h2>Connecting to a PHY<a class="headerlink" href="#connecting-to-a-phy" title="Permalink to this headline">¶</a></h2>
 <p>Sometime during startup, the network driver needs to establish a connection
 between the PHY device, and the network device.  At this time, the PHY’s bus
@@ -521,8 +523,8 @@ does.</p></li>
 <li><p>The PAL serves only as a library of functions, with the network device
 manually calling functions to update status, and configure the PHY</p></li>
 </ol>
-</section>
-<section id="letting-the-phy-abstraction-layer-do-everything">
+</div>
+<div class="section" id="letting-the-phy-abstraction-layer-do-everything">
 <h2>Letting the PHY Abstraction Layer do Everything<a class="headerlink" href="#letting-the-phy-abstraction-layer-do-everything" title="Permalink to this headline">¶</a></h2>
 <p>If you choose option 1 (The hope is that every driver can, but to still be
 useful to drivers that can’t), connecting to the PHY is simple:</p>
@@ -573,8 +575,8 @@ phylib state machine.</p>
 <p>When you want to disconnect from the network (even if just briefly), you call
 phy_stop(phydev). This function also stops the phylib state machine and
 disables PHY interrupts.</p>
-</section>
-<section id="phy-interface-modes">
+</div>
+<div class="section" id="phy-interface-modes">
 <h2>PHY interface modes<a class="headerlink" href="#phy-interface-modes" title="Permalink to this headline">¶</a></h2>
 <p>The PHY interface mode supplied in the <a class="reference internal" href="kapi.html#c.phy_connect" title="phy_connect"><code class="xref c c-func docutils literal notranslate"><span class="pre">phy_connect()</span></code></a> family of functions
 defines the initial operating mode of the PHY interface.  This is not
@@ -639,8 +641,8 @@ rate of 125Mpbs using a 4B/5B encoding scheme, resulting in an underlying
 data rate of 100Mpbs.</p>
 </dd>
 </dl>
-</section>
-<section id="pause-frames-flow-control">
+</div>
+<div class="section" id="pause-frames-flow-control">
 <h2>Pause frames / flow control<a class="headerlink" href="#pause-frames-flow-control" title="Permalink to this headline">¶</a></h2>
 <p>The PHY does not participate directly in flow control/pause frames except by
 making sure that the SUPPORTED_Pause and SUPPORTED_AsymPause bits are set in
@@ -651,8 +653,8 @@ of properly indicating advertisement and support for such features by setting
 the SUPPORTED_Pause and SUPPORTED_AsymPause bits accordingly. This can be done
 either before or after <a class="reference internal" href="kapi.html#c.phy_connect" title="phy_connect"><code class="xref c c-func docutils literal notranslate"><span class="pre">phy_connect()</span></code></a> and/or as a result of implementing the
 ethtool::set_pauseparam feature.</p>
-</section>
-<section id="keeping-close-tabs-on-the-pal">
+</div>
+<div class="section" id="keeping-close-tabs-on-the-pal">
 <h2>Keeping Close Tabs on the PAL<a class="headerlink" href="#keeping-close-tabs-on-the-pal" title="Permalink to this headline">¶</a></h2>
 <p>It is possible that the PAL’s built-in state machine needs a little help to
 keep your network device and the PHY properly in sync.  If so, you can
@@ -664,8 +666,8 @@ handler.</p>
 <p>Currently there are no examples of how to use this functionality, and testing
 on it has been limited because the author does not have any drivers which use
 it (they all use option 1).  So Caveat Emptor.</p>
-</section>
-<section id="doing-it-all-yourself">
+</div>
+<div class="section" id="doing-it-all-yourself">
 <h2>Doing it all yourself<a class="headerlink" href="#doing-it-all-yourself" title="Permalink to this headline">¶</a></h2>
 <p>There’s a remote chance that the PAL’s built-in state machine cannot track
 the complex interactions between the PHY and your network device.  If this is
@@ -723,20 +725,20 @@ settings in the PHY.</p>
 machine if you write registers like BMCR, BMSR, ADVERTISE, etc.  Best to
 use this only to write registers which are not standard, and don’t set off
 a renegotiation.</p>
-</section>
-<section id="phy-device-drivers">
+</div>
+<div class="section" id="phy-device-drivers">
 <h2>PHY Device Drivers<a class="headerlink" href="#phy-device-drivers" title="Permalink to this headline">¶</a></h2>
 <p>With the PHY Abstraction Layer, adding support for new PHYs is
 quite easy. In some cases, no work is required at all! However,
 many PHYs require a little hand-holding to get up-and-running.</p>
-<section id="generic-phy-driver">
+<div class="section" id="generic-phy-driver">
 <h3>Generic PHY driver<a class="headerlink" href="#generic-phy-driver" title="Permalink to this headline">¶</a></h3>
 <p>If the desired PHY doesn’t have any errata, quirks, or special
 features you want to support, then it may be best to not add
 support, and let the PHY Abstraction Layer’s Generic PHY Driver
 do all of the work.</p>
-</section>
-<section id="writing-a-phy-driver">
+</div>
+<div class="section" id="writing-a-phy-driver">
 <h3>Writing a PHY driver<a class="headerlink" href="#writing-a-phy-driver" title="Permalink to this headline">¶</a></h3>
 <p>If you do need to write a PHY driver, the first thing to do is
 make sure it can be matched with an appropriate PHY device.
@@ -782,9 +784,9 @@ the IEEE standard access mechanisms, or can use the PHY’s specific
 access interfaces if overridden by the specific PHY driver. See
 the Micrel driver in drivers/net/phy/ for an example of how this
 can be implemented.</p>
-</section>
-</section>
-<section id="board-fixups">
+</div>
+</div>
+<div class="section" id="board-fixups">
 <h2>Board Fixups<a class="headerlink" href="#board-fixups" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes the specific interaction between the platform and the PHY requires
 special handling.  For instance, to change where the PHY’s clock input is,
@@ -824,8 +826,8 @@ int phy_unregister_fixup_for_uid(u32 phy_uid, u32 phy_uid_mask);
 int phy_register_fixup_for_id(const char *phy_id);
 </pre></div>
 </div>
-</section>
-<section id="standards">
+</div>
+<div class="section" id="standards">
 <h2>Standards<a class="headerlink" href="#standards" title="Permalink to this headline">¶</a></h2>
 <p>IEEE Standard 802.3: CSMA/CD Access Method and Physical Layer Specifications, Section Two:
 <a class="reference external" href="http://standards.ieee.org/getieee802/download/802.3-2008_section2.pdf">http://standards.ieee.org/getieee802/download/802.3-2008_section2.pdf</a></p>
@@ -833,8 +835,8 @@ int phy_register_fixup_for_id(const char *phy_id);
 <a class="reference external" href="http://web.archive.org/web/20160303212629/http://www.hp.com/rnd/pdfs/RGMIIv1_3.pdf">http://web.archive.org/web/20160303212629/http://www.hp.com/rnd/pdfs/RGMIIv1_3.pdf</a></p>
 <p>RGMII v2.0:
 <a class="reference external" href="http://web.archive.org/web/20160303171328/http://www.hp.com/rnd/pdfs/RGMIIv2_0_final_hp.pdf">http://web.archive.org/web/20160303171328/http://www.hp.com/rnd/pdfs/RGMIIv2_0_final_hp.pdf</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

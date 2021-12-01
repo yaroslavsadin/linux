@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>25.8. Using FS and GS segments in user space applications &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -302,7 +304,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="using-fs-and-gs-segments-in-user-space-applications">
+  <div class="section" id="using-fs-and-gs-segments-in-user-space-applications">
 <h1><span class="section-number">25.8. </span>Using FS and GS segments in user space applications<a class="headerlink" href="#using-fs-and-gs-segments-in-user-space-applications" title="Permalink to this headline">¶</a></h1>
 <p>The x86 architecture supports segmentation. Instructions which access
 memory can use segment register based addressing mode. The following
@@ -320,7 +322,7 @@ limits. The limits can be used to enforce address space protections.</p>
 <p>In 64-bit mode the CS/SS/DS/ES segments are ignored and the base address is
 always 0 to provide a full 64bit address space. The FS and GS segments are
 still functional in 64-bit mode.</p>
-<section id="common-fs-and-gs-usage">
+<div class="section" id="common-fs-and-gs-usage">
 <h2><span class="section-number">25.8.1. </span>Common FS and GS usage<a class="headerlink" href="#common-fs-and-gs-usage" title="Permalink to this headline">¶</a></h2>
 <p>The FS segment is commonly used to address Thread Local Storage (TLS). FS
 is usually managed by runtime code or a threading library. Variables
@@ -333,8 +335,8 @@ runtimes or threading libraries which manage the per thread FS.</p>
 <p>The GS segment has no common use and can be used freely by
 applications. GCC and Clang support GS based addressing via address space
 identifiers.</p>
-</section>
-<section id="reading-and-writing-the-fs-gs-base-address">
+</div>
+<div class="section" id="reading-and-writing-the-fs-gs-base-address">
 <h2><span class="section-number">25.8.2. </span>Reading and writing the FS/GS base address<a class="headerlink" href="#reading-and-writing-the-fs-gs-base-address" title="Permalink to this headline">¶</a></h2>
 <p>There exist two mechanisms to read and write the FS/GS base address:</p>
 <blockquote>
@@ -343,8 +345,8 @@ identifiers.</p>
 <li><p>the FSGSBASE instruction family</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="accessing-fs-gs-base-with-arch-prctl">
+</div>
+<div class="section" id="accessing-fs-gs-base-with-arch-prctl">
 <h2><span class="section-number">25.8.3. </span>Accessing FS/GS base with arch_prctl()<a class="headerlink" href="#accessing-fs-gs-base-with-arch-prctl" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>The arch_prctl(2) based mechanism is available on all 64-bit CPUs and all
@@ -362,8 +364,8 @@ arch_prctl(ARCH_SET_GS, gsbase);</p>
 <p>The ARCH_SET_GS prctl may be disabled depending on kernel configuration
 and security settings.</p>
 </div></blockquote>
-</section>
-<section id="accessing-fs-gs-base-with-the-fsgsbase-instructions">
+</div>
+<div class="section" id="accessing-fs-gs-base-with-the-fsgsbase-instructions">
 <h2><span class="section-number">25.8.4. </span>Accessing FS/GS base with the FSGSBASE instructions<a class="headerlink" href="#accessing-fs-gs-base-with-the-fsgsbase-instructions" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>With the Ivy Bridge CPU generation Intel introduced a new set of
@@ -398,7 +400,7 @@ applications. This does not prevent conflicts between threading libraries
 and runtimes which utilize FS and applications which want to use it for
 their own purpose.</p>
 </div></blockquote>
-<section id="fsgsbase-instructions-enablement">
+<div class="section" id="fsgsbase-instructions-enablement">
 <h3><span class="section-number">25.8.4.1. </span>FSGSBASE instructions enablement<a class="headerlink" href="#fsgsbase-instructions-enablement" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The instructions are enumerated in CPUID leaf 7, bit 0 of EBX. If
@@ -432,8 +434,8 @@ if (val &amp; HWCAP2_FSGSBASE)
 </pre></div>
 </div>
 </div></blockquote>
-</section>
-<section id="fsgsbase-instructions-compiler-support">
+</div>
+<div class="section" id="fsgsbase-instructions-compiler-support">
 <h3><span class="section-number">25.8.4.2. </span>FSGSBASE instructions compiler support<a class="headerlink" href="#fsgsbase-instructions-compiler-support" title="Permalink to this headline">¶</a></h3>
 <p>GCC version 4.6.4 and newer provide instrinsics for the FSGSBASE
 instructions. Clang 5 supports them as well.</p>
@@ -461,9 +463,9 @@ instructions. Clang 5 supports them as well.</p>
 </div></blockquote>
 <p>To utilize these instrinsics &lt;immintrin.h&gt; must be included in the source
 code and the compiler option -mfsgsbase has to be added.</p>
-</section>
-</section>
-<section id="compiler-support-for-fs-gs-based-addressing">
+</div>
+</div>
+<div class="section" id="compiler-support-for-fs-gs-based-addressing">
 <h2><span class="section-number">25.8.5. </span>Compiler support for FS/GS based addressing<a class="headerlink" href="#compiler-support-for-fs-gs-based-addressing" title="Permalink to this headline">¶</a></h2>
 <p>GCC version 6 and newer provide support for FS/GS based addressing via
 Named Address Spaces. GCC implements the following address space
@@ -529,8 +531,8 @@ versions:</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="fs-gs-based-addressing-with-inline-assembly">
+</div>
+<div class="section" id="fs-gs-based-addressing-with-inline-assembly">
 <h2><span class="section-number">25.8.6. </span>FS/GS based addressing with inline assembly<a class="headerlink" href="#fs-gs-based-addressing-with-inline-assembly" title="Permalink to this headline">¶</a></h2>
 <p>In case the compiler does not support address spaces, inline assembly can
 be used for FS/GS based addressing mode:</p>
@@ -541,8 +543,8 @@ mov %reg, %fs:offset
 mov %reg, %gs:offset
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

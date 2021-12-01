@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Proper Locking Under a Preemptible Kernel: Keeping Kernel Code Preempt-Safe &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -267,14 +269,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="proper-locking-under-a-preemptible-kernel-keeping-kernel-code-preempt-safe">
+  <div class="section" id="proper-locking-under-a-preemptible-kernel-keeping-kernel-code-preempt-safe">
 <h1>Proper Locking Under a Preemptible Kernel: Keeping Kernel Code Preempt-Safe<a class="headerlink" href="#proper-locking-under-a-preemptible-kernel-keeping-kernel-code-preempt-safe" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Robert Love &lt;<a class="reference external" href="mailto:rml&#37;&#52;&#48;tech9&#46;net">rml<span>&#64;</span>tech9<span>&#46;</span>net</a>&gt;</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>A preemptible kernel creates new locking issues.  The issues are the same as
 those under SMP: concurrency and reentrancy.  Thankfully, the Linux preemptible
@@ -282,7 +284,7 @@ kernel model leverages existing SMP locking mechanisms.  Thus, the kernel
 requires explicit additional locking for very few additional situations.</p>
 <p>This document is for all kernel hackers.  Developing code in the kernel
 requires protecting these situations.</p>
-<section id="rule-1-per-cpu-data-structures-need-explicit-protection">
+<div class="section" id="rule-1-per-cpu-data-structures-need-explicit-protection">
 <h3>RULE #1: Per-CPU data structures need explicit protection<a class="headerlink" href="#rule-1-per-cpu-data-structures-need-explicit-protection" title="Permalink to this headline">¶</a></h3>
 <p>Two similar problems arise. An example code snippet:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct this_needs_locking tux[NR_CPUS];
@@ -296,8 +298,8 @@ require it otherwise.  Second, when a preempted task is finally rescheduled,
 the previous value of smp_processor_id may not equal the current.  You must
 protect these situations by disabling preemption around them.</p>
 <p>You can also use put_cpu() and get_cpu(), which will disable preemption.</p>
-</section>
-<section id="rule-2-cpu-state-must-be-protected">
+</div>
+<div class="section" id="rule-2-cpu-state-must-be-protected">
 <h3>RULE #2: CPU state must be protected.<a class="headerlink" href="#rule-2-cpu-state-must-be-protected" title="Permalink to this headline">¶</a></h3>
 <p>Under preemption, the state of the CPU must be protected.  This is arch-
 dependent, but includes CPU structures and state not preserved over a context
@@ -309,17 +311,17 @@ upon preemption, the FPU registers will be sold to the lowest bidder.  Thus,
 preemption must be disabled around such regions.</p>
 <p>Note, some FPU functions are already explicitly preempt safe.  For example,
 kernel_fpu_begin and kernel_fpu_end will disable and enable preemption.</p>
-</section>
-<section id="rule-3-lock-acquire-and-release-must-be-performed-by-same-task">
+</div>
+<div class="section" id="rule-3-lock-acquire-and-release-must-be-performed-by-same-task">
 <h3>RULE #3: Lock acquire and release must be performed by same task<a class="headerlink" href="#rule-3-lock-acquire-and-release-must-be-performed-by-same-task" title="Permalink to this headline">¶</a></h3>
 <p>A lock acquired in one task must be released by the same task.  This
 means you can’t do oddball things like acquire a lock and go off to
 play while another task releases it.  If you want to do something
 like this, acquire and release the task in the same code path and
 have the caller wait on an event by the other task.</p>
-</section>
-</section>
-<section id="solution">
+</div>
+</div>
+<div class="section" id="solution">
 <h2>Solution<a class="headerlink" href="#solution" title="Permalink to this headline">¶</a></h2>
 <p>Data protection under preemption is achieved by disabling preemption for the
 duration of the critical region.</p>
@@ -367,8 +369,8 @@ spin_lock(&amp;buf_lock);
 </div>
 <p>This code is not preempt-safe, but see how easily we can fix it by simply
 moving the spin_lock up two lines.</p>
-</section>
-<section id="preventing-preemption-using-interrupt-disabling">
+</div>
+<div class="section" id="preventing-preemption-using-interrupt-disabling">
 <h2>Preventing preemption using interrupt disabling<a class="headerlink" href="#preventing-preemption-using-interrupt-disabling" title="Permalink to this headline">¶</a></h2>
 <p>It is possible to prevent a preemption event using local_irq_disable and
 local_irq_save.  Note, when doing so, you must be very careful to not cause
@@ -384,8 +386,8 @@ if they are ever called outside of this context, a test for preemption should
 be made. Do note that calls from interrupt context or bottom half/ tasklets
 are also protected by preemption locks and so may use the versions which do
 not check preemption.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

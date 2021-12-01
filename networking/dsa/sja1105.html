@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>NXP SJA1105 switch driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -371,9 +373,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="nxp-sja1105-switch-driver">
+  <div class="section" id="nxp-sja1105-switch-driver">
 <h1>NXP SJA1105 switch driver<a class="headerlink" href="#nxp-sja1105-switch-driver" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The NXP SJA1105 is a family of 10 SPI-managed automotive switches:</p>
 <ul class="simple">
@@ -503,8 +505,8 @@ change a hardware setting, the static configuration is also updated.
 If that changed setting can be transmitted to the switch through the dynamic
 reconfiguration interface, it is; otherwise the switch is reset and
 reprogrammed with the updated static configuration.</p>
-</section>
-<section id="switching-features">
+</div>
+<div class="section" id="switching-features">
 <h2>Switching features<a class="headerlink" href="#switching-features" title="Permalink to this headline">¶</a></h2>
 <p>The driver supports the configuration of L2 forwarding rules in hardware for
 port bridging. The forwarding, broadcast and flooding domain between ports can
@@ -526,10 +528,10 @@ untagged), and therefore this mode is also supported.</p>
 all bridges should have the same level of VLAN awareness (either both have
 <code class="docutils literal notranslate"><span class="pre">vlan_filtering</span></code> 0, or both 1).</p>
 <p>Topology and loop detection through STP is supported.</p>
-</section>
-<section id="offloads">
+</div>
+<div class="section" id="offloads">
 <h2>Offloads<a class="headerlink" href="#offloads" title="Permalink to this headline">¶</a></h2>
-<section id="time-aware-scheduling">
+<div class="section" id="time-aware-scheduling">
 <h3>Time-aware scheduling<a class="headerlink" href="#time-aware-scheduling" title="Permalink to this headline">¶</a></h3>
 <p>The switch supports a variation of the enhancements for scheduled traffic
 specified in IEEE 802.1Q-2018 (formerly 802.1Qbv). This means it can be used to
@@ -604,8 +606,8 @@ are hardware restrictions related to the fact that no gate event may trigger
 simultaneously on two ports. The driver checks the consistency of the schedules
 against this restriction and errors out when appropriate. Schedule analysis is
 needed to avoid this, which is outside the scope of the document.</p>
-</section>
-<section id="routing-actions-redirect-trap-drop">
+</div>
+<div class="section" id="routing-actions-redirect-trap-drop">
 <h3>Routing actions (redirect, trap, drop)<a class="headerlink" href="#routing-actions-redirect-trap-drop" title="Permalink to this headline">¶</a></h3>
 <p>The switch is able to offload flow-based redirection of packets to a set of
 destination ports specified by the user. Internally, this is implemented by
@@ -639,8 +641,8 @@ of 100 and a PCP of 0:</p>
         dst_mac 42:be:24:9b:76:20 vlan_id 100 vlan_prio 0 action drop
 </pre></div>
 </div>
-</section>
-<section id="time-based-ingress-policing">
+</div>
+<div class="section" id="time-based-ingress-policing">
 <h3>Time-based ingress policing<a class="headerlink" href="#time-based-ingress-policing" title="Permalink to this headline">¶</a></h3>
 <p>The TTEthernet hardware abilities of the switch can be constrained to act
 similarly to the Per-Stream Filtering and Policing (PSFP) clause specified in
@@ -711,13 +713,13 @@ tc filter add block 1 flower skip_sw dst_mac 42:be:24:9b:76:20 \
 of dropped frames, which is a sum of frames dropped due to timing violations,
 lack of destination ports and MTU enforcement checks). Byte-level counters are
 not available.</p>
-</section>
-</section>
-<section id="device-tree-bindings-and-board-design">
+</div>
+</div>
+<div class="section" id="device-tree-bindings-and-board-design">
 <h2>Device Tree bindings and board design<a class="headerlink" href="#device-tree-bindings-and-board-design" title="Permalink to this headline">¶</a></h2>
 <p>This section references <code class="docutils literal notranslate"><span class="pre">Documentation/devicetree/bindings/net/dsa/nxp,sja1105.yaml</span></code>
 and aims to showcase some potential switch caveats.</p>
-<section id="rmii-phy-role-and-out-of-band-signaling">
+<div class="section" id="rmii-phy-role-and-out-of-band-signaling">
 <h3>RMII PHY role and out-of-band signaling<a class="headerlink" href="#rmii-phy-role-and-out-of-band-signaling" title="Permalink to this headline">¶</a></h3>
 <p>In the RMII spec, the 50 MHz clock signals are either driven by the MAC or by
 an external oscillator (but not by the PHY).
@@ -744,8 +746,8 @@ frames that follow along. This looks like packet loss with some link partners
 but not with others.
 The take-away is that in RMII mode, the SJA1105 must be let to drive the
 reference clock if connected to a PHY.</p>
-</section>
-<section id="rgmii-fixed-link-and-internal-delays">
+</div>
+<div class="section" id="rgmii-fixed-link-and-internal-delays">
 <h3>RGMII fixed-link and internal delays<a class="headerlink" href="#rgmii-fixed-link-and-internal-delays" title="Permalink to this headline">¶</a></h3>
 <p>As mentioned in the bindings document, the second generation of devices has
 tunable delay lines as part of the MAC, which can be used to establish the
@@ -771,8 +773,8 @@ As to why would a fixed-link interface ever change link speeds: there are
 Ethernet controllers out there which come out of reset in 100 Mbps mode, and
 their driver inevitably needs to change the speed and clock frequency if it’s
 required to work at gigabit.</p>
-</section>
-<section id="mdio-bus-and-phy-management">
+</div>
+<div class="section" id="mdio-bus-and-phy-management">
 <h3>MDIO bus and PHY management<a class="headerlink" href="#mdio-bus-and-phy-management" title="Permalink to this headline">¶</a></h3>
 <p>The SJA1105 does not have an MDIO bus and does not perform in-band AN either.
 Therefore there is no link state notification coming from the switch device.
@@ -790,8 +792,8 @@ since the microcontroller gets disabled when the Linux driver operates.
 Discrete PHYs connected to the switch ports should have their MDIO interface
 attached to an MDIO controller from the host system and not to the switch,
 similar to SJA1105.</p>
-</section>
-<section id="port-compatibility-matrix">
+</div>
+<div class="section" id="port-compatibility-matrix">
 <h3>Port compatibility matrix<a class="headerlink" href="#port-compatibility-matrix" title="Permalink to this headline">¶</a></h3>
 <p>The SJA1105 port compatibility matrix is:</p>
 <table class="docutils align-default">
@@ -934,9 +936,9 @@ or 2500base-X</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

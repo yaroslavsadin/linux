@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Resilient Next-hop Groups &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -368,7 +370,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="resilient-next-hop-groups">
+  <div class="section" id="resilient-next-hop-groups">
 <h1>Resilient Next-hop Groups<a class="headerlink" href="#resilient-next-hop-groups" title="Permalink to this headline">¶</a></h1>
 <p>Resilient groups are a type of next-hop group that is aimed at minimizing
 disruption in flow routing across changes to the group composition and
@@ -432,7 +434,7 @@ traffic, and use those to satisfy the new next-hop distribution demands,
 keeping the “busy” buckets intact. This way, established flows are ideally
 kept being forwarded to the same endpoints through the same paths as before
 the next-hop group change.</p>
-<section id="algorithm">
+<div class="section" id="algorithm">
 <h2>Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline">¶</a></h2>
 <p>In a nutshell, the algorithm works as follows. Each next hop deserves a
 certain number of buckets, according to its weight and the number of
@@ -473,8 +475,8 @@ item. Thus buckets:</p>
 been out of balance exceeds the unbalanced timer, if that is non-zero,</p></li>
 </ol>
 <p>... are migrated as well.</p>
-</section>
-<section id="offloading-driver-feedback">
+</div>
+<div class="section" id="offloading-driver-feedback">
 <h2>Offloading &amp; Driver Feedback<a class="headerlink" href="#offloading-driver-feedback" title="Permalink to this headline">¶</a></h2>
 <p>When offloading resilient groups, the algorithm that distributes buckets
 among next hops is still the one in SW. Drivers are notified of updates to
@@ -503,10 +505,10 @@ been hit by traffic.</p>
 as busy are treated as if traffic hit them.</p>
 <p>Offloaded buckets should be flagged as either “offload” or “trap”. This is
 done through the <code class="docutils literal notranslate"><span class="pre">nexthop_bucket_set_hw_flags()</span></code> API.</p>
-</section>
-<section id="netlink-uapi">
+</div>
+<div class="section" id="netlink-uapi">
 <h2>Netlink UAPI<a class="headerlink" href="#netlink-uapi" title="Permalink to this headline">¶</a></h2>
-<section id="resilient-group-replacement">
+<div class="section" id="resilient-group-replacement">
 <h3>Resilient Group Replacement<a class="headerlink" href="#resilient-group-replacement" title="Permalink to this headline">¶</a></h3>
 <p>Resilient groups are configured using the <code class="docutils literal notranslate"><span class="pre">RTM_NEWNEXTHOP</span></code> message in the
 same manner as other multipath groups. The following changes apply to the
@@ -548,8 +550,8 @@ groups.</p></td>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="next-hop-get">
+</div>
+<div class="section" id="next-hop-get">
 <h3>Next Hop Get<a class="headerlink" href="#next-hop-get" title="Permalink to this headline">¶</a></h3>
 <p>Requests to get resilient next-hop groups use the <code class="docutils literal notranslate"><span class="pre">RTM_GETNEXTHOP</span></code>
 message in exactly the same way as other next hop get requests. The
@@ -569,8 +571,8 @@ of balance, in units of clock_t.</p></td>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="bucket-get">
+</div>
+<div class="section" id="bucket-get">
 <h3>Bucket Get<a class="headerlink" href="#bucket-get" title="Permalink to this headline">¶</a></h3>
 <p>The message <code class="docutils literal notranslate"><span class="pre">RTM_GETNEXTHOPBUCKET</span></code> without the <code class="docutils literal notranslate"><span class="pre">NLM_F_DUMP</span></code> flag is
 used to request a single bucket. The attributes recognized at get requests
@@ -605,8 +607,8 @@ are:</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="bucket-dumps">
+</div>
+<div class="section" id="bucket-dumps">
 <h3>Bucket Dumps<a class="headerlink" href="#bucket-dumps" title="Permalink to this headline">¶</a></h3>
 <p>The message <code class="docutils literal notranslate"><span class="pre">RTM_GETNEXTHOPBUCKET</span></code> with the <code class="docutils literal notranslate"><span class="pre">NLM_F_DUMP</span></code> flag is used
 to request a dump of matching buckets. The attributes recognized at dump
@@ -651,9 +653,9 @@ that contain the next hop with this ID.</p></td>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-</section>
-<section id="usage">
+</div>
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>To illustrate the usage, consider the following commands:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># ip nexthop add id 1 via 192.0.2.2 dev eth0
@@ -686,8 +688,8 @@ id 10 index 7 idle_time 8.74 nhid 1
 <p>Note the two buckets that have a shorter idle time. Those are the ones that
 were migrated after the next-hop replace command to satisfy the new demand
 that next hop 1 be given 6 buckets instead of 4.</p>
-</section>
-<section id="netdevsim">
+</div>
+<div class="section" id="netdevsim">
 <h2>Netdevsim<a class="headerlink" href="#netdevsim" title="Permalink to this headline">¶</a></h2>
 <p>The netdevsim driver implements a mock offload of resilient groups, and
 exposes debugfs interface that allows marking individual buckets as busy.
@@ -705,8 +707,8 @@ next attempt to migrate a bucket should fail:</p>
 useful in automated testing, and
 <code class="docutils literal notranslate"><span class="pre">tools/testing/selftests/drivers/net/netdevsim/nexthop.sh</span></code> makes use of
 them to test the algorithm.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

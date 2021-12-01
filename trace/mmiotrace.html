@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>In-kernel memory-mapped I/O tracing &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -274,7 +276,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="in-kernel-memory-mapped-i-o-tracing">
+  <div class="section" id="in-kernel-memory-mapped-i-o-tracing">
 <h1>In-kernel memory-mapped I/O tracing<a class="headerlink" href="#in-kernel-memory-mapped-i-o-tracing" title="Permalink to this headline">¶</a></h1>
 <p>Home page and links to optional user space tools:</p>
 <blockquote>
@@ -289,7 +291,7 @@ the Nouveau project as the first real user. Only x86 and x86_64 architectures
 are supported.</p>
 <p>Out-of-tree mmiotrace was originally modified for mainline inclusion and
 ftrace framework by Pekka Paalanen &lt;<a class="reference external" href="mailto:pq&#37;&#52;&#48;iki&#46;fi">pq<span>&#64;</span>iki<span>&#46;</span>fi</a>&gt;.</p>
-<section id="preparation">
+<div class="section" id="preparation">
 <h2>Preparation<a class="headerlink" href="#preparation" title="Permalink to this headline">¶</a></h2>
 <p>Mmiotrace feature is compiled in by the CONFIG_MMIOTRACE option. Tracing is
 disabled by default, so it is safe to have this set to yes. SMP systems are
@@ -297,8 +299,8 @@ supported, but tracing is unreliable and may miss events if more than one CPU
 is on-line, therefore mmiotrace takes all but one CPU off-line during run-time
 activation. You can re-enable CPUs by hand, but you have been warned, there
 is no way to automatically detect if you are losing events due to CPUs racing.</p>
-</section>
-<section id="usage-quick-reference">
+</div>
+<div class="section" id="usage-quick-reference">
 <h2>Usage Quick Reference<a class="headerlink" href="#usage-quick-reference" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mount -t debugfs debugfs /sys/kernel/debug
 $ echo mmiotrace &gt; /sys/kernel/debug/tracing/current_tracer
@@ -309,8 +311,8 @@ $ echo nop &gt; /sys/kernel/debug/tracing/current_tracer
 Check for lost events.
 </pre></div>
 </div>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>Make sure debugfs is mounted to /sys/kernel/debug.
 If not (requires root privileges):</p>
@@ -371,8 +373,8 @@ $ tar zcf pciid-nick-mmiotrace.tar.gz mydump.txt lspci.txt dmesg.txt
 <p>and then send the .tar.gz file. The trace compresses considerably. Replace
 “pciid” and “nick” with the PCI ID or model name of your piece of hardware
 under investigation and your nickname.</p>
-</section>
-<section id="how-mmiotrace-works">
+</div>
+<div class="section" id="how-mmiotrace-works">
 <h2>How Mmiotrace Works<a class="headerlink" href="#how-mmiotrace-works" title="Permalink to this headline">¶</a></h2>
 <p>Access to hardware IO-memory is gained by mapping addresses from PCI bus by
 calling one of the ioremap_*() functions. Mmiotrace is hooked into the
@@ -391,15 +393,15 @@ read or written. These are stored to the trace log.</p>
 machines. During the single stepping other CPUs may run freely on that page
 and events can be missed without a notice. Re-enabling other CPUs during
 tracing is discouraged.</p>
-</section>
-<section id="trace-log-format">
+</div>
+<div class="section" id="trace-log-format">
 <h2>Trace Log Format<a class="headerlink" href="#trace-log-format" title="Permalink to this headline">¶</a></h2>
 <p>The raw log is text and easily filtered with e.g. grep and awk. One record is
 one line in the log. A record starts with a keyword, followed by keyword-
 dependent arguments. Arguments are separated by a space, or continue until the
 end of line. The format for version 20070824 is as follows:</p>
-</section>
-<section id="explanation-keyword-space-separated-arguments">
+</div>
+<div class="section" id="explanation-keyword-space-separated-arguments">
 <h2>Explanation     Keyword Space-separated arguments<a class="headerlink" href="#explanation-keyword-space-separated-arguments" title="Permalink to this headline">¶</a></h2>
 <p>read event      R       width, timestamp, map id, physical, value, PC, PID
 write event     W       width, timestamp, map id, physical, value, PC, PID
@@ -422,8 +424,8 @@ physical addresses in the range [0xfb73ce40, 0xfb800000]</p>
 adr &lt; 0xfb800000) print; }&#39;
 </pre></div>
 </div>
-</section>
-<section id="tools-for-developers">
+</div>
+<div class="section" id="tools-for-developers">
 <h2>Tools for Developers<a class="headerlink" href="#tools-for-developers" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>The user space tools include utilities for:</dt><dd><ul class="simple">
@@ -432,8 +434,8 @@ adr &lt; 0xfb800000) print; }&#39;
 </ul>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

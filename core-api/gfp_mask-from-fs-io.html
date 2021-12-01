@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>GFP masks used from FS/IO context &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -265,7 +267,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="gfp-masks-used-from-fs-io-context">
+  <div class="section" id="gfp-masks-used-from-fs-io-context">
 <span id="gfp-mask-from-fs-io"></span><h1>GFP masks used from FS/IO context<a class="headerlink" href="#gfp-masks-used-from-fs-io-context" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Date</dt>
@@ -275,7 +277,7 @@
 <dd class="field-even"><p>Michal Hocko &lt;<a class="reference external" href="mailto:mhocko&#37;&#52;&#48;kernel&#46;org">mhocko<span>&#64;</span>kernel<span>&#46;</span>org</a>&gt;</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Code paths in the filesystem and IO stacks must be careful when
 allocating memory to prevent recursion deadlocks caused by direct
@@ -290,8 +292,8 @@ abuses when the restricted gfp mask is used “just in case” without a
 deeper consideration which leads to problems because an excessive use
 of GFP_NOFS/GFP_NOIO can lead to memory over-reclaim or other memory
 reclaim issues.</p>
-</section>
-<section id="new-api">
+</div>
+<div class="section" id="new-api">
 <h2>New API<a class="headerlink" href="#new-api" title="Permalink to this headline">¶</a></h2>
 <p>Since 4.12 we do have a generic scope API for both NOFS and NOIO context
 <code class="docutils literal notranslate"><span class="pre">memalloc_nofs_save</span></code>, <code class="docutils literal notranslate"><span class="pre">memalloc_nofs_restore</span></code> respectively <code class="docutils literal notranslate"><span class="pre">memalloc_noio_save</span></code>,
@@ -300,8 +302,8 @@ section from a filesystem or I/O point of view. Any allocation from that
 scope will inherently drop __GFP_FS respectively __GFP_IO from the given
 mask so no memory allocation can recurse back in the FS/IO.</p>
 <dl class="c function">
-<dt id="c.memalloc_nofs_save">
-<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">memalloc_nofs_save</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.memalloc_nofs_save" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.memalloc_nofs_save">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">memalloc_nofs_save</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.memalloc_nofs_save" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Marks implicit GFP_NOFS allocation scope.</p>
 </dd></dl>
 
@@ -318,8 +320,8 @@ point of view. Use memalloc_nofs_restore to end the scope with flags
 returned by this function.</p>
 <p>This function is safe to be used from any context.</p>
 <dl class="c function">
-<dt id="c.memalloc_nofs_restore">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">memalloc_nofs_restore</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memalloc_nofs_restore" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.memalloc_nofs_restore">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">memalloc_nofs_restore</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.memalloc_nofs_restore" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Ends the implicit GFP_NOFS scope.</p>
 </dd></dl>
 
@@ -333,8 +335,8 @@ returned by this function.</p>
 Always make sure that the given flags is the return value from the
 pairing memalloc_nofs_save call.</p>
 <dl class="c function">
-<dt id="c.memalloc_noio_save">
-<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">memalloc_noio_save</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.memalloc_noio_save" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.memalloc_noio_save">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">memalloc_noio_save</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.memalloc_noio_save" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Marks implicit GFP_NOIO allocation scope.</p>
 </dd></dl>
 
@@ -351,8 +353,8 @@ point of view. Use memalloc_noio_restore to end the scope with flags
 returned by this function.</p>
 <p>This function is safe to be used from any context.</p>
 <dl class="c function">
-<dt id="c.memalloc_noio_restore">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">memalloc_noio_restore</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memalloc_noio_restore" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.memalloc_noio_restore">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">memalloc_noio_restore</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.memalloc_noio_restore" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Ends the implicit GFP_NOIO scope.</p>
 </dd></dl>
 
@@ -375,8 +377,8 @@ explanation what is the reclaim context for easier maintenance.</p>
 allows nesting so it is safe to call <code class="docutils literal notranslate"><span class="pre">memalloc_noio_save</span></code> or
 <code class="docutils literal notranslate"><span class="pre">memalloc_noio_restore</span></code> respectively from an existing NOIO or NOFS
 scope.</p>
-</section>
-<section id="what-about-vmalloc-gfp-nofs">
+</div>
+<div class="section" id="what-about-vmalloc-gfp-nofs">
 <h2>What about __vmalloc(GFP_NOFS)<a class="headerlink" href="#what-about-vmalloc-gfp-nofs" title="Permalink to this headline">¶</a></h2>
 <p>vmalloc doesn’t support GFP_NOFS semantic because there are hardcoded
 GFP_KERNEL allocations deep inside the allocator which are quite non-trivial
@@ -388,8 +390,8 @@ and so no special care is required and vmalloc should be called without
 any problems. Sometimes if the context is not really clear or there are
 layering violations then the recommended way around that is to wrap <code class="docutils literal notranslate"><span class="pre">vmalloc</span></code>
 by the scope API with a comment explaining the problem.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Architecture &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -372,13 +374,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="architecture">
+  <div class="section" id="architecture">
 <h1>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h1>
 <p>This document describes the <strong>Distributed Switch Architecture (DSA)</strong> subsystem
 design principles, limitations, interactions with other subsystems, and how to
 develop drivers for this subsystem as well as a TODO for developers interested
 in joining the effort.</p>
-<section id="design-principles">
+<div class="section" id="design-principles">
 <h2>Design principles<a class="headerlink" href="#design-principles" title="Permalink to this headline">¶</a></h2>
 <p>The Distributed Switch Architecture is a subsystem which was primarily designed
 to support Marvell Ethernet switches (MV88E6xxx, a.k.a Linkstreet product line)
@@ -425,7 +427,7 @@ would get two interfaces for the same conduit: master netdev, and “cpu” netd
 cannot really be used as proper network interfaces either, only the
 downstream, or the top-most upstream interface makes sense with that model</p></li>
 </ul>
-<section id="switch-tagging-protocols">
+<div class="section" id="switch-tagging-protocols">
 <h3>Switch tagging protocols<a class="headerlink" href="#switch-tagging-protocols" title="Permalink to this headline">¶</a></h3>
 <p>DSA supports many vendor-specific tagging protocols, one software-defined
 tagging protocol, and a tag-less mode as well (<code class="docutils literal notranslate"><span class="pre">DSA_TAG_PROTO_NONE</span></code>).</p>
@@ -549,8 +551,8 @@ tagging protocol may require the DSA master to operate in promiscuous mode, to
 receive all frames regardless of the value of the MAC DA. This can be done by
 setting the <code class="docutils literal notranslate"><span class="pre">promisc_on_master</span></code> property of the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dsa_device_ops</span></code>.
 Note that this assumes a DSA-unaware master driver, which is the norm.</p>
-</section>
-<section id="master-network-devices">
+</div>
+<div class="section" id="master-network-devices">
 <h3>Master network devices<a class="headerlink" href="#master-network-devices" title="Permalink to this headline">¶</a></h3>
 <p>Master network devices are regular, unmodified Linux network device drivers for
 the CPU/management Ethernet interface. Such a driver might occasionally need to
@@ -560,8 +562,8 @@ but the DSA subsystem has been proven to work with industry standard drivers:
 drivers. Such network devices are also often referred to as conduit network
 devices since they act as a pipe between the host processor and the hardware
 Ethernet switch.</p>
-</section>
-<section id="networking-stack-hooks">
+</div>
+<div class="section" id="networking-stack-hooks">
 <h3>Networking stack hooks<a class="headerlink" href="#networking-stack-hooks" title="Permalink to this headline">¶</a></h3>
 <p>When a master netdev is used with DSA, a small hook is placed in the
 networking stack is in order to have the DSA subsystem process the Ethernet
@@ -614,8 +616,8 @@ Ethernet Frame receive sequence looks like this:</p>
 </ol>
 <p>Past this point, the DSA slave network devices get delivered regular Ethernet
 frames that can be processed by the networking stack.</p>
-</section>
-<section id="slave-network-devices">
+</div>
+<div class="section" id="slave-network-devices">
 <h3>Slave network devices<a class="headerlink" href="#slave-network-devices" title="Permalink to this headline">¶</a></h3>
 <p>Slave network devices created by DSA are stacked on top of their master network
 device, each of these network interfaces will be responsible for being a
@@ -639,8 +641,8 @@ switch tag in the Ethernet frames.</p>
 <code class="docutils literal notranslate"><span class="pre">ndo_start_xmit()</span></code> function, since they contain the appropriate switch tag, the
 Ethernet switch will be able to process these incoming frames from the
 management interface and delivers these frames to the physical switch port.</p>
-</section>
-<section id="graphical-representation">
+</div>
+<div class="section" id="graphical-representation">
 <h3>Graphical representation<a class="headerlink" href="#graphical-representation" title="Permalink to this headline">¶</a></h3>
 <p>Summarized, this is basically how DSA looks like from a network device
 perspective:</p>
@@ -674,8 +676,8 @@ perspective:</p>
         ++------+-+------+-+------+-+------++
 </pre></div>
 </div>
-</section>
-<section id="slave-mdio-bus">
+</div>
+<div class="section" id="slave-mdio-bus">
 <h3>Slave MDIO bus<a class="headerlink" href="#slave-mdio-bus" title="Permalink to this headline">¶</a></h3>
 <p>In order to be able to read to/from a switch PHY built into it, DSA creates a
 slave MDIO bus which allows a specific switch driver to divert and intercept
@@ -688,8 +690,8 @@ results etc..</p>
 slave MII bus can be utilized to mux/demux MDIO reads and writes towards either
 internal or external MDIO devices this switch might be connected to: internal
 PHYs, external PHYs, or even external switches.</p>
-</section>
-<section id="data-structures">
+</div>
+<div class="section" id="data-structures">
 <h3>Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h3>
 <p>DSA data structures are defined in <code class="docutils literal notranslate"><span class="pre">include/net/dsa.h</span></code> as well as
 <code class="docutils literal notranslate"><span class="pre">net/dsa/dsa_priv.h</span></code>:</p>
@@ -714,11 +716,11 @@ device, and a reference to the backing``dsa_switch_ops``</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">dsa_switch_ops</span></code>: structure referencing function pointers, see below for a
 full description.</p></li>
 </ul>
-</section>
-</section>
-<section id="design-limitations">
+</div>
+</div>
+<div class="section" id="design-limitations">
 <h2>Design limitations<a class="headerlink" href="#design-limitations" title="Permalink to this headline">¶</a></h2>
-<section id="lack-of-cpu-dsa-network-devices">
+<div class="section" id="lack-of-cpu-dsa-network-devices">
 <h3>Lack of CPU/DSA network devices<a class="headerlink" href="#lack-of-cpu-dsa-network-devices" title="Permalink to this headline">¶</a></h3>
 <p>DSA does not currently create slave network devices for the CPU or DSA ports, as
 described before. This might be an issue in the following cases:</p>
@@ -730,8 +732,8 @@ controller capabilities attached to it: <a class="reference external" href="http
 <li><p>inability to configure specific VLAN IDs / trunking VLANs between switches
 when using a cascaded setup</p></li>
 </ul>
-</section>
-<section id="common-pitfalls-using-dsa-setups">
+</div>
+<div class="section" id="common-pitfalls-using-dsa-setups">
 <h3>Common pitfalls using DSA setups<a class="headerlink" href="#common-pitfalls-using-dsa-setups" title="Permalink to this headline">¶</a></h3>
 <p>Once a master network device is configured to use DSA (dev-&gt;dsa_ptr becomes
 non-NULL), and the switch behind it expects a tagging protocol, this network
@@ -740,9 +742,9 @@ directly through this interface (e.g.: opening a socket using this interface)
 will not make us go through the switch tagging protocol transmit function, so
 the Ethernet switch on the other end, expecting a tag will typically drop this
 frame.</p>
-</section>
-</section>
-<section id="interactions-with-other-subsystems">
+</div>
+</div>
+<div class="section" id="interactions-with-other-subsystems">
 <h2>Interactions with other subsystems<a class="headerlink" href="#interactions-with-other-subsystems" title="Permalink to this headline">¶</a></h2>
 <p>DSA currently leverages the following subsystems:</p>
 <ul class="simple">
@@ -751,7 +753,7 @@ frame.</p>
 <li><p>Device Tree for various of_* functions</p></li>
 <li><p>Devlink: <code class="docutils literal notranslate"><span class="pre">net/core/devlink.c</span></code></p></li>
 </ul>
-<section id="mdio-phy-library">
+<div class="section" id="mdio-phy-library">
 <h3>MDIO/PHY library<a class="headerlink" href="#mdio-phy-library" title="Permalink to this headline">¶</a></h3>
 <p>Slave network devices exposed by DSA may or may not be interfacing with PHY
 devices (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">phy_device</span></code> as defined in <code class="docutils literal notranslate"><span class="pre">include/linux/phy.h)</span></code>, but the DSA
@@ -777,15 +779,15 @@ and connected transparently using the special fixed MDIO bus driver</p></li>
 standalone switch packages, the PHY is probed using the slave MII bus created
 by DSA</p></li>
 </ul>
-</section>
-<section id="switchdev">
+</div>
+<div class="section" id="switchdev">
 <h3>SWITCHDEV<a class="headerlink" href="#switchdev" title="Permalink to this headline">¶</a></h3>
 <p>DSA directly utilizes SWITCHDEV when interfacing with the bridge layer, and
 more specifically with its VLAN filtering portion when configuring VLANs on top
 of per-port slave network devices. As of today, the only SWITCHDEV objects
 supported by DSA are the FDB and VLAN objects.</p>
-</section>
-<section id="devlink">
+</div>
+<div class="section" id="devlink">
 <h3>Devlink<a class="headerlink" href="#devlink" title="Permalink to this headline">¶</a></h3>
 <p>DSA registers one devlink device per physical switch in the fabric.
 For each devlink device, every physical port (i.e. user ports, CPU ports, DSA
@@ -813,16 +815,16 @@ directions, such that low-priority bulk traffic does not impede the
 processing of high-priority critical traffic.</p></li>
 </ul>
 <p>For more details, consult <code class="docutils literal notranslate"><span class="pre">Documentation/networking/devlink/</span></code>.</p>
-</section>
-<section id="device-tree">
+</div>
+<div class="section" id="device-tree">
 <h3>Device Tree<a class="headerlink" href="#device-tree" title="Permalink to this headline">¶</a></h3>
 <p>DSA features a standardized binding which is documented in
 <code class="docutils literal notranslate"><span class="pre">Documentation/devicetree/bindings/net/dsa/dsa.txt</span></code>. PHY/MDIO library helper
 functions such as <code class="docutils literal notranslate"><span class="pre">of_get_phy_mode()</span></code>, <code class="docutils literal notranslate"><span class="pre">of_phy_connect()</span></code> are also used to query
 per-port PHY specific details: interface connection, MDIO bus location etc..</p>
-</section>
-</section>
-<section id="driver-development">
+</div>
+</div>
+<div class="section" id="driver-development">
 <h2>Driver development<a class="headerlink" href="#driver-development" title="Permalink to this headline">¶</a></h2>
 <p>DSA switch drivers need to implement a dsa_switch_ops structure which will
 contain the various members described below.</p>
@@ -830,7 +832,7 @@ contain the various members described below.</p>
 of drivers to probe for. <code class="docutils literal notranslate"><span class="pre">unregister_switch_driver()</span></code> does the exact opposite.</p>
 <p>Unless requested differently by setting the priv_size member accordingly, DSA
 does not allocate any driver private context space.</p>
-<section id="switch-configuration">
+<div class="section" id="switch-configuration">
 <h3>Switch configuration<a class="headerlink" href="#switch-configuration" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">tag_protocol</span></code>: this is to indicate what kind of tagging protocol is supported,
@@ -853,8 +855,8 @@ to issue a software reset of the switch during this setup function in order to
 avoid relying on what a previous software agent such as a bootloader/firmware
 may have previously configured.</p></li>
 </ul>
-</section>
-<section id="phy-devices-and-link-management">
+</div>
+<div class="section" id="phy-devices-and-link-management">
 <h3>PHY devices and link management<a class="headerlink" href="#phy-devices-and-link-management" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">get_phy_flags</span></code>: Some switches are interfaced to various kinds of Ethernet PHYs,
@@ -880,8 +882,8 @@ This is particularly useful for specific kinds of hardware such as QSGMII,
 MoCA or other kinds of non-MDIO managed PHYs where out of band link
 information is obtained</p></li>
 </ul>
-</section>
-<section id="ethtool-operations">
+</div>
+<div class="section" id="ethtool-operations">
 <h3>Ethtool operations<a class="headerlink" href="#ethtool-operations" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">get_strings</span></code>: ethtool function used to query the driver’s strings, will
@@ -914,8 +916,8 @@ switch</p></li>
 contents. This function might require user-land code in ethtool to
 pretty-print register values and registers</p></li>
 </ul>
-</section>
-<section id="power-management">
+</div>
+<div class="section" id="power-management">
 <h3>Power management<a class="headerlink" href="#power-management" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">suspend</span></code>: function invoked by the DSA platform device when the system goes to
@@ -936,8 +938,8 @@ fully disabling a given switch port. DSA takes care of marking the port with
 <code class="docutils literal notranslate"><span class="pre">BR_STATE_DISABLED</span></code> and propagating changes to the hardware if this port is
 disabled while being a bridge member</p></li>
 </ul>
-</section>
-<section id="bridge-layer">
+</div>
+<div class="section" id="bridge-layer">
 <h3>Bridge layer<a class="headerlink" href="#bridge-layer" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">port_bridge_join</span></code>: bridge layer function invoked when a given switch port is
@@ -980,8 +982,8 @@ feature.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">port_bridge_tx_fwd_unoffload</span></code>: bridge layer function invoken when a driver
 leaves a bridge port which had the TX forwarding offload feature enabled.</p></li>
 </ul>
-</section>
-<section id="bridge-vlan-filtering">
+</div>
+<div class="section" id="bridge-vlan-filtering">
 <h3>Bridge VLAN filtering<a class="headerlink" href="#bridge-vlan-filtering" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">port_vlan_filtering</span></code>: bridge layer function invoked when the bridge gets
@@ -1043,8 +1045,8 @@ this port forwarding database.</p></li>
 function that the driver has to call for each MAC address known to be behind
 the given port. A switchdev object is used to carry the VID and MDB info.</p></li>
 </ul>
-</section>
-<section id="link-aggregation">
+</div>
+<div class="section" id="link-aggregation">
 <h3>Link aggregation<a class="headerlink" href="#link-aggregation" title="Permalink to this headline">¶</a></h3>
 <p>Link aggregation is implemented in the Linux networking stack by the bonding
 and team drivers, which are modeled as virtual, stackable network interfaces.
@@ -1075,8 +1077,8 @@ of the subset of physical LAG member ports that are up.</p></li>
 can optionally populate <code class="docutils literal notranslate"><span class="pre">ds-&gt;num_lag_ids</span></code> from the <code class="docutils literal notranslate"><span class="pre">dsa_switch_ops::setup</span></code>
 method. The LAG ID associated with a bonding/team interface can then be
 retrieved by a DSA switch driver using the <code class="docutils literal notranslate"><span class="pre">dsa_lag_id</span></code> function.</p>
-</section>
-<section id="iec-62439-2-mrp">
+</div>
+<div class="section" id="iec-62439-2-mrp">
 <h3>IEC 62439-2 (MRP)<a class="headerlink" href="#iec-62439-2-mrp" title="Permalink to this headline">¶</a></h3>
 <p>The Media Redundancy Protocol is a topology management protocol optimized for
 fast fault recovery time for ring networks, which has some components
@@ -1104,8 +1106,8 @@ when an MRP instance changes ring roles between MRM or MRC. This affects
 which MRP PDUs should be trapped to software and which should be autonomously
 forwarded.</p></li>
 </ul>
-</section>
-<section id="iec-62439-3-hsr-prp">
+</div>
+<div class="section" id="iec-62439-3-hsr-prp">
 <h3>IEC 62439-3 (HSR/PRP)<a class="headerlink" href="#iec-62439-3-hsr-prp" title="Permalink to this headline">¶</a></h3>
 <p>The Parallel Redundancy Protocol (PRP) is a network redundancy protocol which
 works by duplicating and sequence numbering packets through two independent L2
@@ -1134,27 +1136,27 @@ sent to the CPU.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">port_hsr_leave</span></code>: function invoked when a given switch port leaves a
 DANP/DANH and returns to normal operation as a standalone port.</p></li>
 </ul>
-</section>
-</section>
-<section id="todo">
+</div>
+</div>
+<div class="section" id="todo">
 <h2>TODO<a class="headerlink" href="#todo" title="Permalink to this headline">¶</a></h2>
-<section id="making-switchdev-and-dsa-converge-towards-an-unified-codebase">
+<div class="section" id="making-switchdev-and-dsa-converge-towards-an-unified-codebase">
 <h3>Making SWITCHDEV and DSA converge towards an unified codebase<a class="headerlink" href="#making-switchdev-and-dsa-converge-towards-an-unified-codebase" title="Permalink to this headline">¶</a></h3>
 <p>SWITCHDEV properly takes care of abstracting the networking stack with offload
 capable hardware, but does not enforce a strict switch device driver model. On
 the other DSA enforces a fairly strict device driver model, and deals with most
 of the switch specific. At some point we should envision a merger between these
 two subsystems and get the best of both worlds.</p>
-</section>
-<section id="other-hanging-fruits">
+</div>
+<div class="section" id="other-hanging-fruits">
 <h3>Other hanging fruits<a class="headerlink" href="#other-hanging-fruits" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>allowing more than one CPU/management interface:
 <a class="reference external" href="http://comments.gmane.org/gmane.linux.network/365657">http://comments.gmane.org/gmane.linux.network/365657</a></p></li>
 </ul>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

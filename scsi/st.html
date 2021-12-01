@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The SCSI Tape Driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -297,13 +299,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-scsi-tape-driver">
+  <div class="section" id="the-scsi-tape-driver">
 <h1>The SCSI Tape Driver<a class="headerlink" href="#the-scsi-tape-driver" title="Permalink to this headline">¶</a></h1>
 <p>This file contains brief information about the SCSI tape driver.
 The driver is currently maintained by Kai Mäkisara (email
 <a class="reference external" href="mailto:Kai&#46;Makisara&#37;&#52;&#48;kolumbus&#46;fi">Kai<span>&#46;</span>Makisara<span>&#64;</span>kolumbus<span>&#46;</span>fi</a>)</p>
 <p>Last modified: Tue Feb  9 21:54:16 2016 by kai.makisara</p>
-<section id="basics">
+<div class="section" id="basics">
 <h2>Basics<a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h2>
 <p>The driver is generic, i.e., it does not contain any code tailored
 to any specific tape drive. The tape parameters can be specified with
@@ -390,8 +392,8 @@ seconds, open fails with the errno value EIO. With O_NONBLOCK the
 device can be opened for writing even if there is a write protected
 tape in the drive (commands trying to write something return error if
 attempted).</p>
-</section>
-<section id="minor-numbers">
+</div>
+<div class="section" id="minor-numbers">
 <h2>Minor Numbers<a class="headerlink" href="#minor-numbers" title="Permalink to this headline">¶</a></h2>
 <p>The tape driver currently supports up to 2^17 drives if 4 modes for
 each drive are used.</p>
@@ -405,8 +407,8 @@ byte). The bits defining the mode are below the non-rewind bit. The
 remaining bits define the tape device number. This numbering is
 backward compatible with the numbering used when the minor number was
 only 8 bits wide.</p>
-</section>
-<section id="sysfs-support">
+</div>
+<div class="section" id="sysfs-support">
 <h2>Sysfs Support<a class="headerlink" href="#sysfs-support" title="Permalink to this headline">¶</a></h2>
 <p>The driver creates the directory /sys/class/scsi_tape and populates it with
 directories corresponding to the existing tape devices. There are autorewind
@@ -426,8 +428,8 @@ bit definitions are the same as those used with MTSETDRVBUFFER in setting the
 options.</p>
 <p>A link named ‘tape’ is made from the SCSI device directory to the class
 directory corresponding to the mode 0 auto-rewind device (e.g., st0).</p>
-</section>
-<section id="sysfs-and-statistics-for-tape-devices">
+</div>
+<div class="section" id="sysfs-and-statistics-for-tape-devices">
 <h2>Sysfs and Statistics for Tape Devices<a class="headerlink" href="#sysfs-and-statistics-for-tape-devices" title="Permalink to this headline">¶</a></h2>
 <p>The st driver maintains statistics for tape drives inside the sysfs filesystem.
 The following method can be used to locate the statistics that are
@@ -544,8 +546,8 @@ updated and decremented when an I/O completes after updating statistics.
 The value of in_flight is 0 when there are no I/Os outstanding that are
 issued by the st driver. Tape statistics do not take into account any
 I/O performed via the sg device.</p>
-</section>
-<section id="bsd-and-sys-v-semantics">
+</div>
+<div class="section" id="bsd-and-sys-v-semantics">
 <h2>BSD and Sys V Semantics<a class="headerlink" href="#bsd-and-sys-v-semantics" title="Permalink to this headline">¶</a></h2>
 <p>The user can choose between these two behaviours of the tape driver by
 defining the value of the symbol ST_SYSV. The semantics differ when a
@@ -553,8 +555,8 @@ file being read is closed. The BSD semantics leaves the tape where it
 currently is whereas the SYS V semantics moves the tape past the next
 filemark unless the filemark has just been crossed.</p>
 <p>The default is BSD semantics.</p>
-</section>
-<section id="buffering">
+</div>
+<div class="section" id="buffering">
 <h2>Buffering<a class="headerlink" href="#buffering" title="Permalink to this headline">¶</a></h2>
 <p>The driver tries to do transfers directly to/from user space. If this
 is not possible, a driver buffer allocated at run-time is used. If
@@ -619,8 +621,8 @@ segments specified. If the maximum number allowed for the SCSI adapter
 is smaller than the number of segments used in phases 1 and 2,
 extending the buffer will always fail.</p></li>
 </ol>
-</section>
-<section id="eom-behaviour-when-writing">
+</div>
+<div class="section" id="eom-behaviour-when-writing">
 <h2>EOM Behaviour When Writing<a class="headerlink" href="#eom-behaviour-when-writing" title="Permalink to this headline">¶</a></h2>
 <p>When the end of medium early warning is encountered, the current write
 is finished and the number of bytes is returned. The next write
@@ -629,8 +631,8 @@ the next write is allowed to proceed and, if successful, the number of
 bytes is returned. After this, -1 and the number of bytes are
 alternately returned until the physical end of medium (or some other
 error) is encountered.</p>
-</section>
-<section id="module-parameters">
+</div>
+<div class="section" id="module-parameters">
 <h2>Module Parameters<a class="headerlink" href="#module-parameters" title="Permalink to this headline">¶</a></h2>
 <p>The buffer size, write threshold, and the maximum number of allocated buffers
 are configurable when the driver is loaded as a module. The keywords are:</p>
@@ -659,8 +661,8 @@ tape drive if this is non-zero</p></td>
 </table>
 <p>Note that if the buffer size is changed but the write threshold is not
 set, the write threshold is set to the new buffer size - 2 kB.</p>
-</section>
-<section id="boot-time-configuration">
+</div>
+<div class="section" id="boot-time-configuration">
 <h2>Boot Time Configuration<a class="headerlink" href="#boot-time-configuration" title="Permalink to this headline">¶</a></h2>
 <p>If the driver is compiled into the kernel, the same parameters can be
 also set using, e.g., the LILO command line. The preferred syntax is
@@ -689,8 +691,8 @@ string st=. Here is an example:</p>
 <li><p>dd is the maximum number of scatter/gather segments</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="ioctls">
+</div>
+<div class="section" id="ioctls">
 <h2>IOCTLs<a class="headerlink" href="#ioctls" title="Permalink to this headline">¶</a></h2>
 <p>The tape is positioned and the drive parameters are set with ioctls
 defined in mtio.h The tape control program ‘mt’ uses these ioctls. Try
@@ -956,8 +958,8 @@ is set if there is no tape in the drive. GMT_EOD means either
 end of recorded data or end of tape. GMT_EOT means end of tape.</p>
 </dd>
 </dl>
-</section>
-<section id="miscellaneous-compile-options">
+</div>
+<div class="section" id="miscellaneous-compile-options">
 <h2>Miscellaneous Compile Options<a class="headerlink" href="#miscellaneous-compile-options" title="Permalink to this headline">¶</a></h2>
 <p>The recovered write errors are considered fatal if ST_RECOVERED_WRITE_FATAL
 is defined.</p>
@@ -982,8 +984,8 @@ within file can be obtained if ST_IN_FILE_POS is defined at compile
 time or the MT_ST_CAN_BSR bit is set for the drive with an ioctl.
 (The driver always backs over a filemark crossed by read ahead if the
 user does not request data that far.)</p>
-</section>
-<section id="debugging-hints">
+</div>
+<div class="section" id="debugging-hints">
 <h2>Debugging Hints<a class="headerlink" href="#debugging-hints" title="Permalink to this headline">¶</a></h2>
 <p>Debugging code is now compiled in by default but debugging is turned off
 with the kernel module parameter debug_flag defaulting to 0.  Debugging
@@ -1003,8 +1005,8 @@ to look up the function from System.map.</p>
 <p>Note also that the timeouts are very long compared to most other
 drivers. This means that the Linux driver may appear hung although the
 real reason is that the tape firmware has got confused.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

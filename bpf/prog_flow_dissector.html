@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>BPF_PROG_TYPE_FLOW_DISSECTOR &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -265,17 +267,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bpf-prog-type-flow-dissector">
+  <div class="section" id="bpf-prog-type-flow-dissector">
 <h1>BPF_PROG_TYPE_FLOW_DISSECTOR<a class="headerlink" href="#bpf-prog-type-flow-dissector" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Flow dissector is a routine that parses metadata out of the packets. It’s
 used in the various places in the networking subsystem (RFS, flow hash, etc).</p>
 <p>BPF flow dissector is an attempt to reimplement C-based flow dissector logic
 in BPF to gain all the benefits of BPF verifier (namely, limits on the
 number of instructions and tail calls).</p>
-</section>
-<section id="api">
+</div>
+<div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p>BPF flow dissector programs operate on an <code class="docutils literal notranslate"><span class="pre">__sk_buff</span></code>. However, only the
 limited set of fields is allowed: <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">data_end</span></code> and <code class="docutils literal notranslate"><span class="pre">flow_keys</span></code>.
@@ -295,8 +297,8 @@ and output arguments.</p>
 also adjusted accordingly.</p>
 <p>The return code of the BPF program is either BPF_OK to indicate successful
 dissection, or BPF_DROP to indicate parsing error.</p>
-</section>
-<section id="sk-buff-data">
+</div>
+<div class="section" id="sk-buff-data">
 <h2>__sk_buff-&gt;data<a class="headerlink" href="#sk-buff-data" title="Permalink to this headline">¶</a></h2>
 <p>In the VLAN-less case, this is what the initial state of the BPF flow
 dissector looks like:</p>
@@ -351,8 +353,8 @@ the optional VLAN header and should gracefully handle both cases: when single
 or double VLAN is present and when it is not present. The same program
 can be called for both cases and would have to be written carefully to
 handle both cases.</p>
-</section>
-<section id="flags">
+</div>
+<div class="section" id="flags">
 <h2>Flags<a class="headerlink" href="#flags" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">flow_keys-&gt;flags</span></code> might contain optional input flags that work as follows:</p>
 <ul class="simple">
@@ -367,8 +369,8 @@ stop parsing as soon as it reaches IPv6 flow label; used by
 parsing as soon as it reaches encapsulated headers; used by routing
 infrastructure.</p></li>
 </ul>
-</section>
-<section id="reference-implementation">
+</div>
+<div class="section" id="reference-implementation">
 <h2>Reference Implementation<a class="headerlink" href="#reference-implementation" title="Permalink to this headline">¶</a></h2>
 <p>See <code class="docutils literal notranslate"><span class="pre">tools/testing/selftests/bpf/progs/bpf_flow.c</span></code> for the reference
 implementation and <code class="docutils literal notranslate"><span class="pre">tools/testing/selftests/bpf/flow_dissector_load.[hc]</span></code>
@@ -384,8 +386,8 @@ does <code class="docutils literal notranslate"><span class="pre">bpf_tail_call<
 <p>Since BPF at this point doesn’t support looping (or any jumping back),
 jmp_table is used instead to handle multiple levels of encapsulation (and
 IPv6 options).</p>
-</section>
-<section id="current-limitations">
+</div>
+<div class="section" id="current-limitations">
 <h2>Current Limitations<a class="headerlink" href="#current-limitations" title="Permalink to this headline">¶</a></h2>
 <p>BPF flow dissector doesn’t support exporting all the metadata that in-kernel
 C-based implementation can export. Notable example is single VLAN (802.1Q)
@@ -393,8 +395,8 @@ and double VLAN (802.1AD) tags. Please refer to the <code class="docutils litera
 for a set of information that’s currently can be exported from the BPF context.</p>
 <p>When BPF flow dissector is attached to the root network namespace (machine-wide
 policy), users can’t override it in their child network namespaces.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Bus-Independent Device Accesses &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -362,7 +364,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bus-independent-device-accesses">
+  <div class="section" id="bus-independent-device-accesses">
 <h1>Bus-Independent Device Accesses<a class="headerlink" href="#bus-independent-device-accesses" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -372,15 +374,15 @@
 <dd class="field-even"><p>Alan Cox</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Linux provides an API which abstracts performing IO across all busses
 and devices, allowing device drivers to be written independently of bus
 type.</p>
-</section>
-<section id="memory-mapped-io">
+</div>
+<div class="section" id="memory-mapped-io">
 <h2>Memory Mapped IO<a class="headerlink" href="#memory-mapped-io" title="Permalink to this headline">¶</a></h2>
-<section id="getting-access-to-the-device">
+<div class="section" id="getting-access-to-the-device">
 <h3>Getting Access to the Device<a class="headerlink" href="#getting-access-to-the-device" title="Permalink to this headline">¶</a></h3>
 <p>The most widely supported form of IO is memory mapped IO. That is, a
 part of the CPU’s address space is interpreted not as accesses to
@@ -398,8 +400,8 @@ routine), call iounmap() in order to return the address
 space to the kernel. Most architectures allocate new address space each
 time you call <a class="reference internal" href="#c.ioremap" title="ioremap"><code class="xref c c-func docutils literal notranslate"><span class="pre">ioremap()</span></code></a>, and they can run out unless you
 call iounmap().</p>
-</section>
-<section id="accessing-the-device">
+</div>
+<div class="section" id="accessing-the-device">
 <h3>Accessing the device<a class="headerlink" href="#accessing-the-device" title="Permalink to this headline">¶</a></h3>
 <p>The part of the interface most used by drivers is reading and writing
 memory-mapped registers on the device. Linux provides interfaces to read
@@ -463,11 +465,11 @@ performance benefits on platforms that support it. The qla2xxx driver
 provides examples of how to use readX_relaxed(). In many cases, a majority
 of the driver’s readX() calls can safely be converted to readX_relaxed()
 calls, since only a few will indicate or depend on DMA completion.</p>
-</section>
-</section>
-<section id="port-space-accesses">
+</div>
+</div>
+<div class="section" id="port-space-accesses">
 <h2>Port Space Accesses<a class="headerlink" href="#port-space-accesses" title="Permalink to this headline">¶</a></h2>
-<section id="port-space-explained">
+<div class="section" id="port-space-explained">
 <h3>Port Space Explained<a class="headerlink" href="#port-space-explained" title="Permalink to this headline">¶</a></h3>
 <p>Another form of IO commonly supported is Port Space. This is a range of
 addresses separate to the normal memory address space. Access to these
@@ -475,8 +477,8 @@ addresses is generally not as fast as accesses to the memory mapped
 addresses, and it also has a potentially smaller address space.</p>
 <p>Unlike memory mapped IO, no preparation is required to access port
 space.</p>
-</section>
-<section id="accessing-port-space">
+</div>
+<div class="section" id="accessing-port-space">
 <h3>Accessing Port Space<a class="headerlink" href="#accessing-port-space" title="Permalink to this headline">¶</a></h3>
 <p>Accesses to this space are provided through a set of functions which
 allow 8-bit, 16-bit and 32-bit accesses; also known as byte, word and
@@ -489,9 +491,9 @@ provided by appending a <code class="docutils literal notranslate"><span class="
 There are also equivalents to memcpy. The ins() and
 outs() functions copy bytes, words or longs to the given
 port.</p>
-</section>
-</section>
-<section id="iomem-pointer-tokens">
+</div>
+</div>
+<div class="section" id="iomem-pointer-tokens">
 <h2>__iomem pointer tokens<a class="headerlink" href="#iomem-pointer-tokens" title="Permalink to this headline">¶</a></h2>
 <p>The data type for an MMIO address is an <code class="docutils literal notranslate"><span class="pre">__iomem</span></code> qualified pointer, such as
 <code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*reg</span></code>. On most architectures it is a regular pointer that
@@ -505,8 +507,8 @@ uncached virtual address pointing to the physical MMIO address, some
 architectures require special instructions for MMIO, and the <code class="docutils literal notranslate"><span class="pre">__iomem</span></code> pointer
 just encodes the physical address or an offsettable cookie that is interpreted
 by readl()/writel().</p>
-</section>
-<section id="differences-between-i-o-access-functions">
+</div>
+<div class="section" id="differences-between-i-o-access-functions">
 <h2>Differences between I/O access functions<a class="headerlink" href="#differences-between-i-o-access-functions" title="Permalink to this headline">¶</a></h2>
 <p>readq(), readl(), readw(), readb(), writeq(), writel(), writew(), writeb()</p>
 <blockquote>
@@ -621,8 +623,8 @@ MMIO accessors, these do not perform a byteswap on big-endian kernels, so the
 first byte in the FIFO register corresponds to the first byte in the memory
 buffer regardless of the architecture.</p>
 </div></blockquote>
-</section>
-<section id="device-memory-mapping-modes">
+</div>
+<div class="section" id="device-memory-mapping-modes">
 <h2>Device memory mapping modes<a class="headerlink" href="#device-memory-mapping-modes" title="Permalink to this headline">¶</a></h2>
 <p>Some architectures support multiple modes for mapping device memory.
 ioremap_*() variants provide a common abstraction around these
@@ -631,7 +633,7 @@ architecture-specific modes, with a shared set of semantics.</p>
 memory (e.g. I/O registers). Other modes can offer weaker or stronger
 guarantees, if supported by the architecture. From most to least common, they
 are as follows:</p>
-<section id="ioremap">
+<div class="section" id="ioremap">
 <h3>ioremap()<a class="headerlink" href="#ioremap" title="Permalink to this headline">¶</a></h3>
 <p>The default mode, suitable for most memory-mapped devices, e.g. control
 registers. Memory mapped using <a class="reference internal" href="#c.ioremap" title="ioremap"><code class="xref c c-func docutils literal notranslate"><span class="pre">ioremap()</span></code></a> has the following characteristics:</p>
@@ -659,8 +661,8 @@ mappings are posted, which means that the CPU does not wait for the write to
 actually reach the target device before retiring the write instruction.</p>
 <p>On many platforms, I/O accesses must be aligned with respect to the access
 size; failure to do so will result in an exception or unpredictable results.</p>
-</section>
-<section id="ioremap-wc">
+</div>
+<div class="section" id="ioremap-wc">
 <h3>ioremap_wc()<a class="headerlink" href="#ioremap-wc" title="Permalink to this headline">¶</a></h3>
 <p>Maps I/O memory as normal memory with write combining. Unlike <a class="reference internal" href="#c.ioremap" title="ioremap"><code class="xref c c-func docutils literal notranslate"><span class="pre">ioremap()</span></code></a>,</p>
 <ul class="simple">
@@ -681,8 +683,8 @@ accesses without explicit barriers.</p>
 <code class="docutils literal notranslate"><span class="pre">IORESOURCE_PREFETCH</span></code>, but it may not be used on those without the flag.
 For on-chip devices, there is no corresponding flag, but a driver can use
 ioremap_wc() on a device that is known to be safe.</p>
-</section>
-<section id="ioremap-wt">
+</div>
+<div class="section" id="ioremap-wt">
 <h3>ioremap_wt()<a class="headerlink" href="#ioremap-wt" title="Permalink to this headline">¶</a></h3>
 <p>Maps I/O memory as normal memory with write-through caching. Like ioremap_wc(),
 but also,</p>
@@ -696,8 +698,8 @@ cache), but reads may be served from the cache for efficiency. However, it is
 rarely useful these days, as framebuffer drivers usually perform writes only,
 for which ioremap_wc() is more efficient (as it doesn’t needlessly trash the
 cache). Most drivers should not use this.</p>
-</section>
-<section id="ioremap-np">
+</div>
+<div class="section" id="ioremap-np">
 <h3>ioremap_np()<a class="headerlink" href="#ioremap-np" title="Permalink to this headline">¶</a></h3>
 <p>Like <a class="reference internal" href="#c.ioremap" title="ioremap"><code class="xref c c-func docutils literal notranslate"><span class="pre">ioremap()</span></code></a>, but explicitly requests non-posted write semantics. On some
 architectures and buses, <a class="reference internal" href="#c.ioremap" title="ioremap"><code class="xref c c-func docutils literal notranslate"><span class="pre">ioremap()</span></code></a> mappings have posted write semantics, which
@@ -729,15 +731,15 @@ and at worst result in complete breakage.</p>
 guarantees. A CPU may still choose to issue other reads or writes before a
 non-posted write instruction retires. See the previous section on MMIO access
 functions for details on the CPU side of things.</p>
-</section>
-<section id="ioremap-uc">
+</div>
+<div class="section" id="ioremap-uc">
 <h3>ioremap_uc()<a class="headerlink" href="#ioremap-uc" title="Permalink to this headline">¶</a></h3>
 <p>ioremap_uc() behaves like <a class="reference internal" href="#c.ioremap" title="ioremap"><code class="xref c c-func docutils literal notranslate"><span class="pre">ioremap()</span></code></a> except that on the x86 architecture without
 ‘PAT’ mode, it marks memory as uncached even when the MTRR has designated
 it as cacheable, see <a class="reference internal" href="../x86/pat.html"><span class="doc">PAT (Page Attribute Table)</span></a>.</p>
 <p>Portable drivers should avoid the use of ioremap_uc().</p>
-</section>
-<section id="ioremap-cache">
+</div>
+<div class="section" id="ioremap-cache">
 <h3>ioremap_cache()<a class="headerlink" href="#ioremap-cache" title="Permalink to this headline">¶</a></h3>
 <p>ioremap_cache() effectively maps I/O memory as normal RAM. CPU write-back
 caches can be used, and the CPU is free to treat the device as if it were a
@@ -748,8 +750,8 @@ read.</p>
 <code class="docutils literal notranslate"><span class="pre">__iomem</span></code> token. memremap() can be used for mapping normal RAM that is outside
 of the linear kernel memory area to a regular pointer.</p>
 <p>Portable drivers should avoid the use of ioremap_cache().</p>
-</section>
-<section id="architecture-example">
+</div>
+<div class="section" id="architecture-example">
 <h3>Architecture example<a class="headerlink" href="#architecture-example" title="Permalink to this headline">¶</a></h3>
 <p>Here is how the above modes map to memory attribute settings on the ARM64
 architecture:</p>
@@ -782,9 +784,9 @@ architecture:</p>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-<section id="higher-level-ioremap-abstractions">
+</div>
+</div>
+<div class="section" id="higher-level-ioremap-abstractions">
 <h2>Higher-level ioremap abstractions<a class="headerlink" href="#higher-level-ioremap-abstractions" title="Permalink to this headline">¶</a></h2>
 <p>Instead of using the above raw <a class="reference internal" href="#c.ioremap" title="ioremap"><code class="xref c c-func docutils literal notranslate"><span class="pre">ioremap()</span></code></a> modes, drivers are encouraged to use
 higher-level APIs. These APIs may implement platform-specific logic to
@@ -830,12 +832,12 @@ the driver probe() function fails or a device in unbound from its driver</p>
 </div></blockquote>
 <p>Not using these wrappers may make drivers unusable on certain platforms with
 stricter rules for mapping I/O memory.</p>
-</section>
-<section id="public-functions-provided">
+</div>
+<div class="section" id="public-functions-provided">
 <h2>Public Functions Provided<a class="headerlink" href="#public-functions-provided" title="Permalink to this headline">¶</a></h2>
 <dl class="c function">
-<dt id="c.virt_to_phys">
-<span class="pre">phys_addr_t</span> <code class="sig-name descname"><span class="pre">virt_to_phys</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">volatile</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">address</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.virt_to_phys" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.virt_to_phys">
+<span class="n"><span class="pre">phys_addr_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">virt_to_phys</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">volatile</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">address</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.virt_to_phys" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>map virtual addresses to physical</p>
 </dd></dl>
 
@@ -851,8 +853,8 @@ this function</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.phys_to_virt">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">phys_to_virt</span></code><span class="sig-paren">(</span><span class="pre">phys_addr_t</span> <em><span class="pre">address</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.phys_to_virt" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.phys_to_virt">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">phys_to_virt</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">phys_addr_t</span></span><span class="w"> </span><span class="n"><span class="pre">address</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.phys_to_virt" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>map physical address to virtual</p>
 </dd></dl>
 
@@ -868,8 +870,8 @@ this function</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.ioremap">
-<span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ioremap</span></code><span class="sig-paren">(</span><span class="pre">resource_size_t</span> <em><span class="pre">offset</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ioremap" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ioremap">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__iomem</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ioremap</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">resource_size_t</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ioremap" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>map bus memory into CPU space</p>
 </dd></dl>
 
@@ -889,8 +891,8 @@ address.</p>
 <p>If the area you are trying to map is a PCI BAR you should have a
 look at <a class="reference internal" href="#c.pci_iomap" title="pci_iomap"><code class="xref c c-func docutils literal notranslate"><span class="pre">pci_iomap()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.iosubmit_cmds512">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">iosubmit_cmds512</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*</span><em><span class="pre">dst</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">src</span></em>, <span class="pre">size_t</span> <em><span class="pre">count</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.iosubmit_cmds512" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.iosubmit_cmds512">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iosubmit_cmds512</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__iomem</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dst</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">src</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.iosubmit_cmds512" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>copy data to single MMIO location, in 512-bit units</p>
 </dd></dl>
 
@@ -910,8 +912,8 @@ performed afterwards.</p>
 <p>Warning: Do not use this helper unless your driver has checked that the CPU
 instruction is supported on the platform.</p>
 <dl class="c function">
-<dt id="c.pci_iomap_range">
-<span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">pci_iomap_range</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pci_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">int</span> <em><span class="pre">bar</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">offset</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">maxlen</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_iomap_range" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.pci_iomap_range">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__iomem</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pci_iomap_range</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pci_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">bar</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">maxlen</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_iomap_range" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>create a virtual mapping cookie for a PCI BAR</p>
 </dd></dl>
 
@@ -934,8 +936,8 @@ you expect from them in the correct way.</p>
 <p><strong>maxlen</strong> specifies the maximum length to map. If you want to get access to
 the complete BAR from offset to the end, pass <code class="docutils literal notranslate"><span class="pre">0</span></code> here.</p>
 <dl class="c function">
-<dt id="c.pci_iomap_wc_range">
-<span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">pci_iomap_wc_range</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pci_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">int</span> <em><span class="pre">bar</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">offset</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">maxlen</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_iomap_wc_range" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.pci_iomap_wc_range">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__iomem</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pci_iomap_wc_range</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pci_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">bar</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">maxlen</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_iomap_wc_range" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>create a virtual WC mapping cookie for a PCI BAR</p>
 </dd></dl>
 
@@ -959,8 +961,8 @@ is used.</p>
 <p><strong>maxlen</strong> specifies the maximum length to map. If you want to get access to
 the complete BAR from offset to the end, pass <code class="docutils literal notranslate"><span class="pre">0</span></code> here.</p>
 <dl class="c function">
-<dt id="c.pci_iomap">
-<span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">pci_iomap</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pci_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">int</span> <em><span class="pre">bar</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">maxlen</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_iomap" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.pci_iomap">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__iomem</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pci_iomap</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pci_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">bar</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">maxlen</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_iomap" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>create a virtual mapping cookie for a PCI BAR</p>
 </dd></dl>
 
@@ -981,8 +983,8 @@ you expect from them in the correct way.</p>
 <p><strong>maxlen</strong> specifies the maximum length to map. If you want to get access to
 the complete BAR without checking for its length first, pass <code class="docutils literal notranslate"><span class="pre">0</span></code> here.</p>
 <dl class="c function">
-<dt id="c.pci_iomap_wc">
-<span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">pci_iomap_wc</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pci_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">int</span> <em><span class="pre">bar</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">maxlen</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_iomap_wc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.pci_iomap_wc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__iomem</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pci_iomap_wc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pci_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">bar</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">maxlen</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_iomap_wc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>create a virtual WC mapping cookie for a PCI BAR</p>
 </dd></dl>
 
@@ -1003,8 +1005,8 @@ you expect from them in the correct way. When possible write combining
 is used.</p>
 <p><strong>maxlen</strong> specifies the maximum length to map. If you want to get access to
 the complete BAR without checking for its length first, pass <code class="docutils literal notranslate"><span class="pre">0</span></code> here.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

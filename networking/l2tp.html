@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>L2TP &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -382,7 +384,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="l2tp">
+  <div class="section" id="l2tp">
 <h1>L2TP<a class="headerlink" href="#l2tp" title="Permalink to this headline">¶</a></h1>
 <p>Layer 2 Tunneling Protocol (L2TP) allows L2 frames to be tunneled over
 an IP network.</p>
@@ -390,7 +392,7 @@ an IP network.</p>
 APIs for application developers who want to use the L2TP subsystem and
 it provides some technical details about the internal implementation
 which may be useful to kernel developers and maintainers.</p>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The kernel’s L2TP subsystem implements the datapath for L2TPv2 and
 L2TPv3. L2TPv2 is carried over UDP. L2TPv3 is carried over UDP or
@@ -422,11 +424,11 @@ tunnel socket in order to establish a session.</p></li>
 obtained from the peer using the control protocol messages.</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="l2tp-apis">
+</div>
+<div class="section" id="l2tp-apis">
 <h2>L2TP APIs<a class="headerlink" href="#l2tp-apis" title="Permalink to this headline">¶</a></h2>
 <p>This section documents each userspace API of the L2TP subsystem.</p>
-<section id="tunnel-sockets">
+<div class="section" id="tunnel-sockets">
 <h3>Tunnel Sockets<a class="headerlink" href="#tunnel-sockets" title="Permalink to this headline">¶</a></h3>
 <p>L2TPv2 always uses UDP. L2TPv3 may use UDP or IP encapsulation.</p>
 <p>To create a tunnel socket for use by L2TP, the standard POSIX
@@ -454,8 +456,8 @@ socket to listen for those requests and bind the socket using tunnel
 id 0 since tunnel setup requests are addressed to tunnel id 0.</p>
 <p>An L2TP tunnel and all of its sessions are automatically closed when
 its tunnel socket is closed.</p>
-</section>
-<section id="netlink-api">
+</div>
+<div class="section" id="netlink-api">
 <h3>Netlink API<a class="headerlink" href="#netlink-api" title="Permalink to this headline">¶</a></h3>
 <p>L2TP applications use netlink to manage L2TP tunnel and session
 instances in the kernel. The L2TP netlink API is defined in
@@ -925,8 +927,8 @@ mnl_attr_put_u32(nlh, L2TP_ATTR_CONN_ID, tid);
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="pppol2tp-session-socket-api">
+</div>
+<div class="section" id="pppol2tp-session-socket-api">
 <h3>PPPoL2TP Session Socket API<a class="headerlink" href="#pppol2tp-session-socket-api" title="Permalink to this headline">¶</a></h3>
 <p>For PPP session types, a PPPoL2TP socket must be opened and connected
 to the L2TP session.</p>
@@ -1013,8 +1015,8 @@ return 0;
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="old-l2tpv2-only-api">
+</div>
+<div class="section" id="old-l2tpv2-only-api">
 <h3>Old L2TPv2-only API<a class="headerlink" href="#old-l2tpv2-only-api" title="Permalink to this headline">¶</a></h3>
 <p>When L2TP was first added to the Linux kernel in 2.6.23, it
 implemented only L2TPv2 and did not include a netlink API. Instead,
@@ -1039,8 +1041,8 @@ when the socket is closed.</p></li>
 <p>This API is still supported but its use is discouraged. Instead, new
 L2TPv2 applications should use netlink to first create the tunnel and
 session, then create a PPPoL2TP socket for the session.</p>
-</section>
-<section id="unmanaged-l2tpv3-tunnels">
+</div>
+<div class="section" id="unmanaged-l2tpv3-tunnels">
 <h3>Unmanaged L2TPv3 tunnels<a class="headerlink" href="#unmanaged-l2tpv3-tunnels" title="Permalink to this headline">¶</a></h3>
 <p>The kernel L2TP subsystem also supports static (unmanaged) L2TPv3
 tunnels. Unmanaged tunnels have no userspace tunnel socket, and
@@ -1052,8 +1054,8 @@ the kernel and configured using parameters sent in the
 <code class="docutils literal notranslate"><span class="pre">L2TP_CMD_TUNNEL_CREATE</span></code> netlink request. The <code class="docutils literal notranslate"><span class="pre">ip</span></code> utility of
 <code class="docutils literal notranslate"><span class="pre">iproute2</span></code> has commands for managing static L2TPv3 tunnels; do <code class="docutils literal notranslate"><span class="pre">ip</span>
 <span class="pre">l2tp</span> <span class="pre">help</span></code> for more information.</p>
-</section>
-<section id="debugging">
+</div>
+<div class="section" id="debugging">
 <h3>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h3>
 <p>The L2TP subsystem offers a range of debugging interfaces through the
 debugfs filesystem.</p>
@@ -1080,12 +1082,12 @@ follows:</p>
 <p>Finally, /proc/net/pppol2tp is also provided for backwards compatibility
 with the original pppol2tp code. It lists information about L2TPv2
 tunnels and sessions only. Its use is discouraged.</p>
-</section>
-</section>
-<section id="internal-implementation">
+</div>
+</div>
+<div class="section" id="internal-implementation">
 <h2>Internal Implementation<a class="headerlink" href="#internal-implementation" title="Permalink to this headline">¶</a></h2>
 <p>This section is for kernel developers and maintainers.</p>
-<section id="sockets">
+<div class="section" id="sockets">
 <h3>Sockets<a class="headerlink" href="#sockets" title="Permalink to this headline">¶</a></h3>
 <p>UDP sockets are implemented by the networking core. When an L2TP
 tunnel is created using a UDP socket, the socket is set up as an
@@ -1095,8 +1097,8 @@ packets are received on the socket. l2tp_udp_encap_destroy is called
 when userspace closes the socket.</p>
 <p>L2TPIP sockets are implemented in <a class="reference external" href="../../../net/l2tp/l2tp_ip.c">net/l2tp/l2tp_ip.c</a> and
 <a class="reference external" href="../../../net/l2tp/l2tp_ip6.c">net/l2tp/l2tp_ip6.c</a>.</p>
-</section>
-<section id="tunnels">
+</div>
+<div class="section" id="tunnels">
 <h3>Tunnels<a class="headerlink" href="#tunnels" title="Permalink to this headline">¶</a></h3>
 <p>The kernel keeps a struct l2tp_tunnel context per L2TP tunnel. The
 l2tp_tunnel is always associated with a UDP or L2TP/IP socket and
@@ -1123,8 +1125,8 @@ first closed. Each session drops its tunnel ref. When the tunnel ref
 reaches zero, the tunnel puts its socket ref. When the socket is
 eventually destroyed, it’s sk_destruct finally frees the L2TP tunnel
 context.</p>
-</section>
-<section id="sessions">
+</div>
+<div class="section" id="sessions">
 <h3>Sessions<a class="headerlink" href="#sessions" title="Permalink to this headline">¶</a></h3>
 <p>The kernel keeps a struct l2tp_session context for each session.  Each
 session has private data which is used for data specific to the
@@ -1157,8 +1159,8 @@ per-net session list. In the UDP receive code, we must trust that the
 tunnel can be identified using the tunnel socket’s sk_user_data and
 lookup the session in the tunnel’s session list instead of the per-net
 session list.</p>
-</section>
-<section id="ppp">
+</div>
+<div class="section" id="ppp">
 <h3>PPP<a class="headerlink" href="#ppp" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="../../../net/l2tp/l2tp_ppp.c">net/l2tp/l2tp_ppp.c</a> implements the PPPoL2TP socket family. Each PPP
 session has a PPPoL2TP socket.</p>
@@ -1176,19 +1178,19 @@ process of being closed. Unlike tunnels, PPP sessions do not hold a
 ref on their associated socket, so code must be careful to sock_hold
 the socket where necessary. For all the details, see commit
 3d609342cc04129ff7568e19316ce3d7451a27e8.</p>
-</section>
-<section id="ethernet">
+</div>
+<div class="section" id="ethernet">
 <h3>Ethernet<a class="headerlink" href="#ethernet" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference external" href="../../../net/l2tp/l2tp_eth.c">net/l2tp/l2tp_eth.c</a> implements L2TPv3 Ethernet pseudowires. It
 manages a netdev for each session.</p>
 <p>L2TP Ethernet sessions are created and destroyed by netlink request,
 or are destroyed when the tunnel is destroyed. Unlike PPP sessions,
 Ethernet sessions do not have an associated socket.</p>
-</section>
-</section>
-<section id="miscellaneous">
+</div>
+</div>
+<div class="section" id="miscellaneous">
 <h2>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h2>
-<section id="rfcs">
+<div class="section" id="rfcs">
 <h3>RFCs<a class="headerlink" href="#rfcs" title="Permalink to this headline">¶</a></h3>
 <p>The kernel code implements the datapath features specified in the
 following RFCs:</p>
@@ -1213,8 +1215,8 @@ following RFCs:</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="implementations">
+</div>
+<div class="section" id="implementations">
 <h3>Implementations<a class="headerlink" href="#implementations" title="Permalink to this headline">¶</a></h3>
 <p>A number of open source applications use the L2TP kernel subsystem:</p>
 <table class="docutils align-default">
@@ -1237,8 +1239,8 @@ following RFCs:</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="limitations">
+</div>
+<div class="section" id="limitations">
 <h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h3>
 <p>The current implementation has a number of limitations:</p>
 <blockquote>
@@ -1258,17 +1260,17 @@ pair per VLAN session. The netlink attribute
 implemented.</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="testing">
+</div>
+<div class="section" id="testing">
 <h3>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h3>
 <p>Unmanaged L2TPv3 Ethernet features are tested by the kernel’s built-in
 selftests. See <a class="reference external" href="../../../tools/testing/selftests/net/l2tp.sh">tools/testing/selftests/net/l2tp.sh</a>.</p>
 <p>Another test suite, <a class="reference external" href="https://github.com/katalix/l2tp-ktest">l2tp-ktest</a>, covers all
 of the L2TP APIs and tunnel/session types. This may be integrated into
 the kernel’s built-in L2TP selftests in the future.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

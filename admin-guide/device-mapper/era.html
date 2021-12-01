@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>dm-era &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -365,9 +367,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="dm-era">
+  <div class="section" id="dm-era">
 <h1>dm-era<a class="headerlink" href="#dm-era" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>dm-era is a target that behaves similar to the linear target.  In
 addition it keeps track of which blocks were written within a user
@@ -377,8 +379,8 @@ counter.</p>
 <p>Use cases include tracking changed blocks for backup software, and
 partially invalidating the contents of a cache to restore cache
 coherency after rolling back a vendor snapshot.</p>
-</section>
-<section id="constructor">
+</div>
+<div class="section" id="constructor">
 <h2>Constructor<a class="headerlink" href="#constructor" title="Permalink to this headline">¶</a></h2>
 <p>era &lt;metadata dev&gt; &lt;origin dev&gt; &lt;block size&gt;</p>
 <blockquote>
@@ -401,26 +403,26 @@ tracked by the target</p></td>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="messages">
+</div>
+<div class="section" id="messages">
 <h2>Messages<a class="headerlink" href="#messages" title="Permalink to this headline">¶</a></h2>
 <p>None of the dm messages take any arguments.</p>
-<section id="checkpoint">
+<div class="section" id="checkpoint">
 <h3>checkpoint<a class="headerlink" href="#checkpoint" title="Permalink to this headline">¶</a></h3>
 <p>Possibly move to a new era.  You shouldn’t assume the era has
 incremented.  After sending this message, you should check the
 current era via the status line.</p>
-</section>
-<section id="take-metadata-snap">
+</div>
+<div class="section" id="take-metadata-snap">
 <h3>take_metadata_snap<a class="headerlink" href="#take-metadata-snap" title="Permalink to this headline">¶</a></h3>
 <p>Create a clone of the metadata, to allow a userland process to read it.</p>
-</section>
-<section id="drop-metadata-snap">
+</div>
+<div class="section" id="drop-metadata-snap">
 <h3>drop_metadata_snap<a class="headerlink" href="#drop-metadata-snap" title="Permalink to this headline">¶</a></h3>
 <p>Drop the metadata snapshot.</p>
-</section>
-</section>
-<section id="status">
+</div>
+</div>
+<div class="section" id="status">
 <h2>Status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
 <p>&lt;metadata block size&gt; &lt;#used metadata blocks&gt;/&lt;#total metadata blocks&gt;
 &lt;current era&gt; &lt;held metadata root | ‘-‘&gt;</p>
@@ -446,16 +448,16 @@ sectors</p></td>
 <tr class="row-odd"><td><p>held metadata root</p></td>
 <td><p>The location, in blocks, of the metadata root
 that has been ‘held’ for userspace read
-access. ‘-’ indicates there is no held root</p></td>
+access. ‘-‘ indicates there is no held root</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="detailed-use-case">
+</div>
+<div class="section" id="detailed-use-case">
 <h2>Detailed use case<a class="headerlink" href="#detailed-use-case" title="Permalink to this headline">¶</a></h2>
 <p>The scenario of invalidating a cache when rolling back a vendor
 snapshot was the primary use case when developing this target:</p>
-<section id="taking-a-vendor-snapshot">
+<div class="section" id="taking-a-vendor-snapshot">
 <h3>Taking a vendor snapshot<a class="headerlink" href="#taking-a-vendor-snapshot" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Send a checkpoint message to the era target</p></li>
@@ -463,8 +465,8 @@ snapshot was the primary use case when developing this target:</p>
 <li><p>Take vendor snapshot (the era and snapshot should be forever
 associated now).</p></li>
 </ul>
-</section>
-<section id="rolling-back-to-an-vendor-snapshot">
+</div>
+<div class="section" id="rolling-back-to-an-vendor-snapshot">
 <h3>Rolling back to an vendor snapshot<a class="headerlink" href="#rolling-back-to-an-vendor-snapshot" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Cache enters passthrough mode (see: dm-cache’s docs in <a class="reference internal" href="cache.html"><span class="doc">Cache</span></a>)</p></li>
@@ -475,9 +477,9 @@ by checking each block’s era</p></li>
 <li><p>Invalidate those blocks in the caching software</p></li>
 <li><p>Cache returns to writeback/writethrough mode</p></li>
 </ul>
-</section>
-</section>
-<section id="memory-usage">
+</div>
+</div>
+<div class="section" id="memory-usage">
 <h2>Memory usage<a class="headerlink" href="#memory-usage" title="Permalink to this headline">¶</a></h2>
 <p>The target uses a bitset to record writes in the current era.  It also
 has a spare bitset ready for switching over to a new era.  Other than
@@ -485,22 +487,22 @@ that it uses a few 4k blocks for updating metadata:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(4 * nr_blocks) bytes + buffers
 </pre></div>
 </div>
-</section>
-<section id="resilience">
+</div>
+<div class="section" id="resilience">
 <h2>Resilience<a class="headerlink" href="#resilience" title="Permalink to this headline">¶</a></h2>
 <p>Metadata is updated on disk before a write to a previously unwritten
 block is performed.  As such dm-era should not be effected by a hard
 crash such as power failure.</p>
-</section>
-<section id="userland-tools">
+</div>
+<div class="section" id="userland-tools">
 <h2>Userland tools<a class="headerlink" href="#userland-tools" title="Permalink to this headline">¶</a></h2>
 <p>Userland tools are found in the increasingly poorly named
 thin-provisioning-tools project:</p>
 <blockquote>
 <div><p><a class="reference external" href="https://github.com/jthornber/thin-provisioning-tools">https://github.com/jthornber/thin-provisioning-tools</a></p>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>DMA Test Guide &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -346,7 +348,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="dma-test-guide">
+  <div class="section" id="dma-test-guide">
 <h1>DMA Test Guide<a class="headerlink" href="#dma-test-guide" title="Permalink to this headline">¶</a></h1>
 <p>Andy Shevchenko &lt;<a class="reference external" href="mailto:andriy&#46;shevchenko&#37;&#52;&#48;linux&#46;intel&#46;com">andriy<span>&#46;</span>shevchenko<span>&#64;</span>linux<span>&#46;</span>intel<span>&#46;</span>com</a>&gt;</p>
 <p>This small document introduces how to test DMA drivers using dmatest module.</p>
@@ -361,7 +363,7 @@ capability of the following: DMA_MEMCPY (memory-to-memory), DMA_MEMSET
 <p>In case of any related questions use the official mailing list
 <a class="reference external" href="mailto:dmaengine&#37;&#52;&#48;vger&#46;kernel&#46;org">dmaengine<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a>.</p>
 </div>
-<section id="part-1-how-to-build-the-test-module">
+<div class="section" id="part-1-how-to-build-the-test-module">
 <h2>Part 1 - How to build the test module<a class="headerlink" href="#part-1-how-to-build-the-test-module" title="Permalink to this headline">¶</a></h2>
 <p>The menuconfig contains an option that could be found by following path:</p>
 <blockquote>
@@ -369,8 +371,8 @@ capability of the following: DMA_MEMCPY (memory-to-memory), DMA_MEMSET
 </div></blockquote>
 <p>In the configuration file the option called CONFIG_DMATEST. The dmatest could
 be built as module or inside kernel. Let’s consider those cases.</p>
-</section>
-<section id="part-2-when-dmatest-is-built-as-a-module">
+</div>
+<div class="section" id="part-2-when-dmatest-is-built-as-a-module">
 <h2>Part 2 - When dmatest is built as a module<a class="headerlink" href="#part-2-when-dmatest-is-built-as-a-module" title="Permalink to this headline">¶</a></h2>
 <p>Example of usage:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>% modprobe dmatest timeout=2000 iterations=1 channel=dma0chan0 run=1
@@ -442,8 +444,8 @@ waiting is disabled.</p>
 % modprobe -r dmatest
 </pre></div>
 </div>
-</section>
-<section id="part-3-when-built-in-in-the-kernel">
+</div>
+<div class="section" id="part-3-when-built-in-in-the-kernel">
 <h2>Part 3 - When built-in in the kernel<a class="headerlink" href="#part-3-when-built-in-in-the-kernel" title="Permalink to this headline">¶</a></h2>
 <p>The module parameters that is supplied to the kernel command line will be used
 for the first performed test. After user gets a control, the test could be
@@ -454,8 +456,8 @@ case. You always could check them at run-time by running</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>% grep -H . /sys/module/dmatest/parameters/*
 </pre></div>
 </div>
-</section>
-<section id="part-4-gathering-the-test-results">
+</div>
+<div class="section" id="part-4-gathering-the-test-results">
 <h2>Part 4 - Gathering the test results<a class="headerlink" href="#part-4-gathering-the-test-results" title="Permalink to this headline">¶</a></h2>
 <p>Test results are printed to the kernel log buffer with the format:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&quot;dmatest: result &lt;channel&gt;: &lt;test id&gt;: &#39;&lt;error msg&gt;&#39; with src_off=&lt;val&gt; dst_off=&lt;val&gt; len=&lt;val&gt; (&lt;err code&gt;)&quot;
@@ -478,10 +480,10 @@ dmatest: dma0chan0-copy0: summary 1 test, 0 failures 1000 iops 100000 KB/s (0)
 </div>
 <p>The details of a data miscompare error are also emitted, but do not follow the
 above format.</p>
-</section>
-<section id="part-5-handling-channel-allocation">
+</div>
+<div class="section" id="part-5-handling-channel-allocation">
 <h2>Part 5 - Handling channel allocation<a class="headerlink" href="#part-5-handling-channel-allocation" title="Permalink to this headline">¶</a></h2>
-<section id="allocating-channels">
+<div class="section" id="allocating-channels">
 <h3>Allocating Channels<a class="headerlink" href="#allocating-channels" title="Permalink to this headline">¶</a></h3>
 <p>Channels are required to be configured prior to starting the test run.
 Attempting to run the test without configuring the channels will fail.</p>
@@ -536,8 +538,8 @@ dmatest: 1 threads using dma0chan8
 </div>
 <p>Note: Channels will have to be configured for each test run as channel configurations do not
 carry across to the next test run.</p>
-</section>
-<section id="releasing-channels">
+</div>
+<div class="section" id="releasing-channels">
 <h3>Releasing Channels<a class="headerlink" href="#releasing-channels" title="Permalink to this headline">¶</a></h3>
 <p>Channels can be freed by setting run to 0.</p>
 <p>Example:</p>
@@ -552,9 +554,9 @@ dmatest: Added 1 threads using dma0chan1
 </div>
 <p>Channels allocated by previous test runs are automatically freed when a new
 channel is requested after completing a successful test run.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Intel Powerclamp Driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -354,7 +356,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="intel-powerclamp-driver">
+  <div class="section" id="intel-powerclamp-driver">
 <h1>Intel Powerclamp Driver<a class="headerlink" href="#intel-powerclamp-driver" title="Permalink to this headline">¶</a></h1>
 <dl class="simple">
 <dt>By:</dt><dd><ul class="simple">
@@ -363,7 +365,7 @@
 </ul>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>INTRODUCTION<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Consider the situation where a system’s power consumption must be
 reduced at runtime, due to power budget, thermal constraint, or noise
@@ -380,10 +382,10 @@ is to achieve forced and controllable C-state residency.</p>
 <p>Test/Analysis has been made in the areas of power, performance,
 scalability, and user experience. In many cases, clear advantage is
 shown over taking the CPU offline or modulating the CPU clock.</p>
-</section>
-<section id="theory-of-operation">
+</div>
+<div class="section" id="theory-of-operation">
 <h2>THEORY OF OPERATION<a class="headerlink" href="#theory-of-operation" title="Permalink to this headline">¶</a></h2>
-<section id="idle-injection">
+<div class="section" id="idle-injection">
 <h3>Idle Injection<a class="headerlink" href="#idle-injection" title="Permalink to this headline">¶</a></h3>
 <p>On modern Intel processors (Nehalem or later), package level C-state
 residency is available in MSRs, thus also available to the kernel.</p>
@@ -455,8 +457,8 @@ past samples and outputs are included in the feedback. For example, a
 PID-based thermal controller can use the powerclamp driver to
 maintain a desired target temperature, based on integral and
 derivative gains of the past samples.</p>
-</section>
-<section id="calibration">
+</div>
+<div class="section" id="calibration">
 <h3>Calibration<a class="headerlink" href="#calibration" title="Permalink to this headline">¶</a></h3>
 <p>During scalability testing, it is observed that synchronized actions
 among CPUs become challenging as the number of cores grows. This is
@@ -528,20 +530,20 @@ we have a simple algorithm to double the injection ratio. A possible
 enhancement might be to throttle the offending IRQ, such as delaying
 EOI for level triggered interrupts. But it is a challenge to be
 non-intrusive to the scheduler or the IRQ core code.</p>
-</section>
-<section id="cpu-online-offline">
+</div>
+<div class="section" id="cpu-online-offline">
 <h3>CPU Online/Offline<a class="headerlink" href="#cpu-online-offline" title="Permalink to this headline">¶</a></h3>
 <p>Per-CPU kernel threads are started/stopped upon receiving
 notifications of CPU hotplug activities. The intel_powerclamp driver
 keeps track of clamping kernel threads, even after they are migrated
 to other CPUs, after a CPU offline event.</p>
-</section>
-</section>
-<section id="performance-analysis">
+</div>
+</div>
+<div class="section" id="performance-analysis">
 <h2>Performance Analysis<a class="headerlink" href="#performance-analysis" title="Permalink to this headline">¶</a></h2>
 <p>This section describes the general performance data collected on
 multiple systems, including Westmere (80P) and Ivy Bridge (4P, 8P).</p>
-<section id="effectiveness-and-limitations">
+<div class="section" id="effectiveness-and-limitations">
 <h3>Effectiveness and Limitations<a class="headerlink" href="#effectiveness-and-limitations" title="Permalink to this headline">¶</a></h3>
 <p>The maximum range that idle injection is allowed is capped at 50
 percent. As mentioned earlier, since interrupts are allowed during
@@ -559,8 +561,8 @@ thus not able to enter package C- states at the expected ratio. But
 this effect is minor, in that in most cases change to the target
 ratio is updated much less frequently than the idle injection
 frequency.</p>
-</section>
-<section id="scalability">
+</div>
+<div class="section" id="scalability">
 <h3>Scalability<a class="headerlink" href="#scalability" title="Permalink to this headline">¶</a></h3>
 <p>Tests also show a minor, but measurable, difference between the 4P/8P
 Ivy Bridge system and the 80P Westmere server under 50% idle ratio.
@@ -572,9 +574,9 @@ calibration code.</p>
 achieve up to 40% better performance per watt. (measured by a spin
 counter summed over per CPU counting threads spawned for all running
 CPUs).</p>
-</section>
-</section>
-<section id="usage-and-interfaces">
+</div>
+</div>
+<div class="section" id="usage-and-interfaces">
 <h2>Usage and Interfaces<a class="headerlink" href="#usage-and-interfaces" title="Permalink to this headline">¶</a></h2>
 <p>The powerclamp driver is registered to the generic thermal layer as a
 cooling device. Currently, it’s not bound to any thermal zones:</p>
@@ -627,8 +629,8 @@ device, a PID based userspace thermal controller can manage to
 control CPU temperature effectively, when no other thermal influence
 is added. For example, a UltraBook user can compile the kernel under
 certain temperature (below most active trip points).</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Completions - “wait for completion” barrier APIs &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -261,9 +263,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="completions-wait-for-completion-barrier-apis">
+  <div class="section" id="completions-wait-for-completion-barrier-apis">
 <h1>Completions - “wait for completion” barrier APIs<a class="headerlink" href="#completions-wait-for-completion-barrier-apis" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction:<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>If you have one or more threads that must wait for some kernel activity
 to have reached a point or a specific state, completions can provide a
@@ -284,8 +286,8 @@ the Linux scheduler. The event the threads on the waitqueue are waiting for
 is reduced to a simple flag in ‘struct completion’, appropriately called “done”.</p>
 <p>As completions are scheduling related, the code can be found in
 kernel/sched/completion.c.</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage:<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>There are three main parts to using completions:</p>
 <blockquote>
@@ -320,8 +322,8 @@ complete(&amp;early_console_added);
 </div>
 <p>Good, intuitive naming (as always) helps code readability. Naming a completion
 ‘complete’ is not helpful unless the purpose is super obvious…</p>
-</section>
-<section id="initializing-completions">
+</div>
+<div class="section" id="initializing-completions">
 <h2>Initializing completions:<a class="headerlink" href="#initializing-completions" title="Permalink to this headline">¶</a></h2>
 <p>Dynamically allocated completion objects should preferably be embedded in data
 structures that are assured to be alive for the life-time of the function/driver,
@@ -379,8 +381,8 @@ exceeds the life time of any helper threads using the completion object,
 or has a lock or other synchronization mechanism to make sure complete()
 is not called on a freed object.</p>
 <p>A naive <a class="reference internal" href="../driver-api/basics.html#c.DECLARE_COMPLETION" title="DECLARE_COMPLETION"><code class="xref c c-func docutils literal notranslate"><span class="pre">DECLARE_COMPLETION()</span></code></a> on the stack triggers a lockdep warning.</p>
-</section>
-<section id="waiting-for-completions">
+</div>
+<div class="section" id="waiting-for-completions">
 <h2>Waiting for completions:<a class="headerlink" href="#waiting-for-completions" title="Permalink to this headline">¶</a></h2>
 <p>For a thread to wait for some concurrent activity to finish, it
 calls wait_for_completion() on the initialized completion structure:</p>
@@ -418,8 +420,8 @@ context.</p>
 <p>As all variants of wait_for_completion() can (obviously) block for a long
 time depending on the nature of the activity they are waiting for, so in
 most cases you probably don’t want to call this with held mutexes.</p>
-</section>
-<section id="wait-for-completion-variants-available">
+</div>
+<div class="section" id="wait-for-completion-variants-available">
 <h2>wait_for_completion*() variants available:<a class="headerlink" href="#wait-for-completion-variants-available" title="Permalink to this headline">¶</a></h2>
 <p>The below variants all return status and this status should be checked in
 most(/all) cases - in cases where the status is deliberately not checked you
@@ -470,8 +472,8 @@ an impact on how the task is accounted in scheduling/IO stats:</p>
 unsigned long wait_for_completion_io_timeout(struct completion *done, unsigned long timeout)
 </pre></div>
 </div>
-</section>
-<section id="signaling-completions">
+</div>
+<div class="section" id="signaling-completions">
 <h2>Signaling completions:<a class="headerlink" href="#signaling-completions" title="Permalink to this headline">¶</a></h2>
 <p>A thread that wants to signal that the conditions for continuation have been
 achieved calls complete() to signal exactly one of the waiters that it can
@@ -498,8 +500,8 @@ probably are a design bug.</p>
 <p>Signaling completion from IRQ context is fine as it will appropriately
 lock with spin_lock_irqsave()/spin_unlock_irqrestore() and it will never
 sleep.</p>
-</section>
-<section id="try-wait-for-completion-completion-done">
+</div>
+<div class="section" id="try-wait-for-completion-completion-done">
 <h2>try_wait_for_completion()/completion_done():<a class="headerlink" href="#try-wait-for-completion-completion-done" title="Permalink to this headline">¶</a></h2>
 <p>The try_wait_for_completion() function will not put the thread on the wait
 queue but rather returns false if it would need to enqueue (block) the thread,
@@ -516,8 +518,8 @@ waiters) and true otherwise:</p>
 </div>
 <p>Both try_wait_for_completion() and completion_done() are safe to be called in
 IRQ or atomic context.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

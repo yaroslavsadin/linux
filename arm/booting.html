@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Booting ARM Linux &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -287,7 +289,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="booting-arm-linux">
+  <div class="section" id="booting-arm-linux">
 <h1>Booting ARM Linux<a class="headerlink" href="#booting-arm-linux" title="Permalink to this headline">¶</a></h1>
 <p>Author: Russell King</p>
 <p>Date  : 18 May 2002</p>
@@ -306,7 +308,7 @@ following:</p>
 <li><p>Load initramfs.</p></li>
 <li><p>Call the kernel image.</p></li>
 </ol>
-<section id="setup-and-initialise-ram">
+<div class="section" id="setup-and-initialise-ram">
 <h2>1. Setup and initialise RAM<a class="headerlink" href="#setup-and-initialise-ram" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Existing boot loaders:</dt><dd><p>MANDATORY</p>
@@ -320,8 +322,8 @@ this in a machine dependent manner.  (It may use internal algorithms
 to automatically locate and size all RAM, or it may use knowledge of
 the RAM in the machine, or any other method the boot loader designer
 sees fit.)</p>
-</section>
-<section id="initialise-one-serial-port">
+</div>
+<div class="section" id="initialise-one-serial-port">
 <h2>2. Initialise one serial port<a class="headerlink" href="#initialise-one-serial-port" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Existing boot loaders:</dt><dd><p>OPTIONAL, RECOMMENDED</p>
@@ -339,8 +341,8 @@ serial format options as described in</p>
 <blockquote>
 <div><p><a class="reference internal" href="../admin-guide/kernel-parameters.html"><span class="doc">The kernel’s command-line parameters</span></a>.</p>
 </div></blockquote>
-</section>
-<section id="detect-the-machine-type">
+</div>
+<div class="section" id="detect-the-machine-type">
 <h2>3. Detect the machine type<a class="headerlink" href="#detect-the-machine-type" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Existing boot loaders:</dt><dd><p>OPTIONAL</p>
@@ -357,8 +359,8 @@ should be passed to the kernel in register r1.</p>
 <p>For DT-only platforms, the machine type will be determined by device
 tree.  set the machine type to all ones (~0).  This is not strictly
 necessary, but assures that it will not match any existing types.</p>
-</section>
-<section id="setup-boot-data">
+</div>
+<div class="section" id="setup-boot-data">
 <h2>4. Setup boot data<a class="headerlink" href="#setup-boot-data" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Existing boot loaders:</dt><dd><p>OPTIONAL, HIGHLY RECOMMENDED</p>
@@ -369,8 +371,8 @@ necessary, but assures that it will not match any existing types.</p>
 <p>The boot loader must provide either a tagged list or a dtb image for
 passing configuration data to the kernel.  The physical address of the
 boot data is passed to the kernel in register r2.</p>
-</section>
-<section id="a-setup-the-kernel-tagged-list">
+</div>
+<div class="section" id="a-setup-the-kernel-tagged-list">
 <h2>4a. Setup the kernel tagged list<a class="headerlink" href="#a-setup-the-kernel-tagged-list" title="Permalink to this headline">¶</a></h2>
 <p>The boot loader must create and initialise the kernel tagged list.
 A valid tagged list starts with ATAG_CORE and ends with ATAG_NONE.
@@ -397,8 +399,8 @@ base -&gt;       | ATAG_CORE |  |
 <p>The tagged list must be placed in a region of memory where neither
 the kernel decompressor nor initrd ‘bootp’ program will overwrite
 it.  The recommended placement is in the first 16KiB of RAM.</p>
-</section>
-<section id="b-setup-the-device-tree">
+</div>
+<div class="section" id="b-setup-the-device-tree">
 <h2>4b. Setup the device tree<a class="headerlink" href="#b-setup-the-device-tree" title="Permalink to this headline">¶</a></h2>
 <p>The boot loader must load a device tree image (dtb) into system ram
 at a 64bit aligned address and initialize it with the boot data.  The
@@ -412,8 +414,8 @@ placed in a region of memory where the kernel decompressor will not
 overwrite it, while remaining within the region which will be covered
 by the kernel’s low-memory mapping.</p>
 <p>A safe location is just above the 128MiB boundary from start of RAM.</p>
-</section>
-<section id="load-initramfs">
+</div>
+<div class="section" id="load-initramfs">
 <h2>5. Load initramfs.<a class="headerlink" href="#load-initramfs" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Existing boot loaders:</dt><dd><p>OPTIONAL</p>
@@ -428,8 +430,8 @@ low-memory mapping.</p>
 <p>A safe location is just above the device tree blob which itself will
 be loaded just above the 128MiB boundary from the start of RAM as
 recommended above.</p>
-</section>
-<section id="calling-the-kernel-image">
+</div>
+<div class="section" id="calling-the-kernel-image">
 <h2>6. Calling the kernel image<a class="headerlink" href="#calling-the-kernel-image" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Existing boot loaders:</dt><dd><p>MANDATORY</p>
@@ -495,8 +497,8 @@ made in ARM state, even for a Thumb-2 kernel.</p>
 Cortex-M class CPUs, the entry must be made in Thumb state.</p>
 </li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

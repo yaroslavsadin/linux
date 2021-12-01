@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Linux Socket Filtering aka Berkeley Packet Filter (BPF) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -373,9 +375,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-socket-filtering-aka-berkeley-packet-filter-bpf">
+  <div class="section" id="linux-socket-filtering-aka-berkeley-packet-filter-bpf">
 <span id="networking-filter"></span><h1>Linux Socket Filtering aka Berkeley Packet Filter (BPF)<a class="headerlink" href="#linux-socket-filtering-aka-berkeley-packet-filter-bpf" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Linux Socket Filtering (LSF) is derived from the Berkeley Packet Filter.
 Though there are some distinct differences between the BSD and Linux
@@ -422,8 +424,8 @@ architecture for user-level packet capture. In Proceedings of the
 USENIX Winter 1993 Conference Proceedings on USENIX Winter 1993
 Conference Proceedings (USENIX’93). USENIX Association, Berkeley,
 CA, USA, 2-2. [<a class="reference external" href="http://www.tcpdump.org/papers/bpf-usenix93.pdf">http://www.tcpdump.org/papers/bpf-usenix93.pdf</a>]</p>
-</section>
-<section id="structure">
+</div>
+<div class="section" id="structure">
 <h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
 <p>User space applications include &lt;linux/filter.h&gt; which contains the
 following relevant structures:</p>
@@ -446,8 +448,8 @@ value to be used for a provided code:</p>
 </div>
 <p>For socket filtering, a pointer to this structure (as shown in
 follow-up example) is being passed to the kernel through setsockopt(2).</p>
-</section>
-<section id="example">
+</div>
+<div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#include &lt;sys/socket.h&gt;
 #include &lt;sys/types.h&gt;
@@ -530,8 +532,8 @@ more complex filter code, or one that cannot be expressed with libpcap
 (e.g. different return codes for various code paths). Moreover, BPF JIT
 implementors may wish to manually write test cases and thus need low-level
 access to BPF code as well.</p>
-</section>
-<section id="bpf-engine-and-instruction-set">
+</div>
+<div class="section" id="bpf-engine-and-instruction-set">
 <h2>BPF engine and instruction set<a class="headerlink" href="#bpf-engine-and-instruction-set" title="Permalink to this headline">¶</a></h2>
 <p>Under tools/bpf/ there’s a small helper tool called bpf_asm which can
 be used to write low-level filters for example scenarios mentioned in the
@@ -1063,8 +1065,8 @@ with index 1.</p>
 <p>Exits bpf_dbg.</p>
 </li>
 </ul>
-</section>
-<section id="jit-compiler">
+</div>
+<div class="section" id="jit-compiler">
 <h2>JIT compiler<a class="headerlink" href="#jit-compiler" title="Permalink to this headline">¶</a></h2>
 <p>The Linux kernel has a built-in BPF JIT compiler for x86_64, SPARC,
 PowerPC, ARM, ARM64, MIPS, RISC-V and s390 and can be enabled through
@@ -1169,8 +1171,8 @@ c:      mov    0x68(%rdi),%r9d
 </div>
 <p>For BPF JIT developers, bpf_jit_disasm, bpf_asm and bpf_dbg provides a useful
 toolchain for developing and testing the kernel’s JIT compiler.</p>
-</section>
-<section id="bpf-kernel-internals">
+</div>
+<div class="section" id="bpf-kernel-internals">
 <h2>BPF kernel internals<a class="headerlink" href="#bpf-kernel-internals" title="Permalink to this headline">¶</a></h2>
 <p>Internally, for the kernel interpreter, a different instruction set
 format with similar underlying principles from BPF described in previous
@@ -1422,8 +1424,8 @@ can be determined in two steps: first step does depth-first-search to disallow
 loops and other CFG validation; second step starts from the first insn and
 descends all possible paths. It simulates execution of every insn and observes
 the state change of registers and stack.</p>
-</section>
-<section id="ebpf-opcode-encoding">
+</div>
+<div class="section" id="ebpf-opcode-encoding">
 <h2>eBPF opcode encoding<a class="headerlink" href="#ebpf-opcode-encoding" title="Permalink to this headline">¶</a></h2>
 <p>eBPF is reusing most of the opcode encoding from classic to simplify conversion
 of classic BPF to eBPF. For arithmetic and jump instructions the 8-bit ‘code’
@@ -1656,8 +1658,8 @@ of two consecutive <code class="docutils literal notranslate"><span class="pre">
 instruction that loads 64-bit immediate value into a dst_reg.
 Classic BPF has similar instruction: <code class="docutils literal notranslate"><span class="pre">BPF_LD</span> <span class="pre">|</span> <span class="pre">BPF_W</span> <span class="pre">|</span> <span class="pre">BPF_IMM</span></code> which loads
 32-bit immediate value into a register.</p>
-</section>
-<section id="ebpf-verifier">
+</div>
+<div class="section" id="ebpf-verifier">
 <h2>eBPF verifier<a class="headerlink" href="#ebpf-verifier" title="Permalink to this headline">¶</a></h2>
 <p>The safety of the eBPF program is determined in two steps.</p>
 <p>First step does DAG check to disallow loops and other CFG validation.
@@ -1743,8 +1745,8 @@ Seccomp solves this by two stage verifier: classic BPF verifier is followed
 by seccomp verifier. In case of eBPF one configurable verifier is shared for
 all use cases.</p>
 <p>See details of eBPF verifier in kernel/bpf/verifier.c</p>
-</section>
-<section id="register-value-tracking">
+</div>
+<div class="section" id="register-value-tracking">
 <h2>Register value tracking<a class="headerlink" href="#register-value-tracking" title="Permalink to this headline">¶</a></h2>
 <p>In order to determine the safety of an eBPF program, the verifier must track
 the range of possible values in each register and also in each stack slot.
@@ -1836,8 +1838,8 @@ it also handles reference tracking for the pointer. PTR_TO_SOCKET implicitly
 represents a reference to the corresponding <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sock</span></code>. To ensure that the
 reference is not leaked, it is imperative to NULL-check the reference and in
 the non-NULL case, and pass the valid reference to the socket release function.</p>
-</section>
-<section id="direct-packet-access">
+</div>
+<div class="section" id="direct-packet-access">
 <h2>Direct packet access<a class="headerlink" href="#direct-packet-access" title="Permalink to this headline">¶</a></h2>
 <p>In cls_bpf and act_bpf programs the verifier allows direct access to the packet
 data via skb-&gt;data and skb-&gt;data_end pointers.
@@ -1925,8 +1927,8 @@ if (udp-&gt;dest == 53 || udp-&gt;source == 9)
 </div>
 <p>which makes such programs easier to write comparing to LD_ABS insn
 and significantly faster.</p>
-</section>
-<section id="ebpf-maps">
+</div>
+<div class="section" id="ebpf-maps">
 <h2>eBPF maps<a class="headerlink" href="#ebpf-maps" title="Permalink to this headline">¶</a></h2>
 <p>‘maps’ is a generic storage of different types for sharing data between kernel
 and userspace.</p>
@@ -1962,8 +1964,8 @@ are concurrently updating.</p>
 <li><p>value size in bytes</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="pruning">
+</div>
+<div class="section" id="pruning">
 <h2>Pruning<a class="headerlink" href="#pruning" title="Permalink to this headline">¶</a></h2>
 <p>The verifier does not actually walk all possible paths through the program.  For
 each new branch to analyse, the verifier looks at all the states it’s previously
@@ -1978,8 +1980,8 @@ another NOT_INIT) is safe.  The implementation is in the function regsafe().
 Pruning considers not only the registers but also the stack (and any spilled
 registers it may hold).  They must all be safe for the branch to be pruned.
 This is implemented in states_equal().</p>
-</section>
-<section id="understanding-ebpf-verifier-messages">
+</div>
+<div class="section" id="understanding-ebpf-verifier-messages">
 <h2>Understanding eBPF verifier messages<a class="headerlink" href="#understanding-ebpf-verifier-messages" title="Permalink to this headline">¶</a></h2>
 <p>The following are few examples of invalid eBPF programs and verifier error
 messages as seen in the log:</p>
@@ -2189,8 +2191,8 @@ BPF_EXIT_INSN(),
 Unreleased reference id=1, alloc_insn=7
 </pre></div>
 </div>
-</section>
-<section id="testing">
+</div>
+<div class="section" id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
 <p>Next to the BPF toolchain, the kernel also ships a test module that contains
 various test cases for classic and internal BPF that can be executed against
@@ -2202,13 +2204,13 @@ enabled via Kconfig:</p>
 <p>After the module has been built and installed, the test suite can be executed
 via insmod or modprobe against ‘test_bpf’ module. Results of the test cases
 including timings in nsec can be found in the kernel log (dmesg).</p>
-</section>
-<section id="misc">
+</div>
+<div class="section" id="misc">
 <h2>Misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h2>
 <p>Also trinity, the Linux syscall fuzzer, has built-in support for BPF and
 SECCOMP-BPF kernel fuzzing.</p>
-</section>
-<section id="written-by">
+</div>
+<div class="section" id="written-by">
 <h2>Written by<a class="headerlink" href="#written-by" title="Permalink to this headline">¶</a></h2>
 <p>The document was written in the hope that it is found useful and in order
 to give potential BPF hackers or security auditors a better overview of
@@ -2218,8 +2220,8 @@ the underlying architecture.</p>
 <li><p>Daniel Borkmann &lt;<a class="reference external" href="mailto:daniel&#37;&#52;&#48;iogearbox&#46;net">daniel<span>&#64;</span>iogearbox<span>&#46;</span>net</a>&gt;</p></li>
 <li><p>Alexei Starovoitov &lt;<a class="reference external" href="mailto:ast&#37;&#52;&#48;kernel&#46;org">ast<span>&#64;</span>kernel<span>&#46;</span>org</a>&gt;</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

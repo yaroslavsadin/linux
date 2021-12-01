@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Runtime locking correctness validator &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -273,11 +275,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="runtime-locking-correctness-validator">
+  <div class="section" id="runtime-locking-correctness-validator">
 <h1>Runtime locking correctness validator<a class="headerlink" href="#runtime-locking-correctness-validator" title="Permalink to this headline">¶</a></h1>
 <p>started by Ingo Molnar &lt;<a class="reference external" href="mailto:mingo&#37;&#52;&#48;redhat&#46;com">mingo<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
 <p>additions by Arjan van de Ven &lt;<a class="reference external" href="mailto:arjan&#37;&#52;&#48;linux&#46;intel&#46;com">arjan<span>&#64;</span>linux<span>&#46;</span>intel<span>&#46;</span>com</a>&gt;</p>
-<section id="lock-class">
+<div class="section" id="lock-class">
 <h2>Lock-class<a class="headerlink" href="#lock-class" title="Permalink to this headline">¶</a></h2>
 <p>The basic object the validator operates upon is a ‘class’ of locks.</p>
 <p>A class of locks is a group of locks that are logically the same with
@@ -302,8 +304,8 @@ the class. A lock-class does not go away when a lock instance does, but
 it can be removed if the memory space of the lock class (static or
 dynamic) is reclaimed, this happens for example when a module is
 unloaded or a workqueue is destroyed.</p>
-</section>
-<section id="state">
+</div>
+<div class="section" id="state">
 <h2>State<a class="headerlink" href="#state" title="Permalink to this headline">¶</a></h2>
 <p>The validator tracks lock-class usage history and divides the usage into
 (4 usages * n STATEs + 1) categories:</p>
@@ -348,7 +350,7 @@ indicates:</p>
 <tr class="row-odd"><td><p>‘.’</p></td>
 <td><p>acquired while irqs disabled and not in irq context</p></td>
 </tr>
-<tr class="row-even"><td><p>‘-’</p></td>
+<tr class="row-even"><td><p>‘-‘</p></td>
 <td><p>acquired in irq context</p></td>
 </tr>
 <tr class="row-odd"><td><p>‘+’</p></td>
@@ -387,7 +389,7 @@ exact case is for the lock as of the reporting time.</p>
 </tr>
 <tr class="row-even"><td><p>ever in irq</p></td>
 <td><p>‘?’</p></td>
-<td><p>‘-’</p></td>
+<td><p>‘-‘</p></td>
 </tr>
 <tr class="row-odd"><td><p>never in irq</p></td>
 <td><p>‘+’</p></td>
@@ -396,12 +398,12 @@ exact case is for the lock as of the reporting time.</p>
 </tbody>
 </table>
 </div></blockquote>
-<p>The character ‘-’ suggests irq is disabled because if otherwise the
+<p>The character ‘-‘ suggests irq is disabled because if otherwise the
 charactor ‘?’ would have been shown instead. Similar deduction can be
 applied for ‘+’ too.</p>
 <p>Unused locks (e.g., mutexes) cannot be part of the cause of an error.</p>
-</section>
-<section id="single-lock-state-rules">
+</div>
+<div class="section" id="single-lock-state-rules">
 <h2>Single-lock state rules:<a class="headerlink" href="#single-lock-state-rules" title="Permalink to this headline">¶</a></h2>
 <p>A lock is irq-safe means it was ever used in an irq context, while a lock
 is irq-unsafe means it was ever acquired with irq enabled.</p>
@@ -420,8 +422,8 @@ lock will be attempted to acquire twice, which creates a deadlock,
 referred to as lock recursion deadlock.</p>
 <p>The validator detects and reports lock usage that violates these
 single-lock state rules.</p>
-</section>
-<section id="multi-lock-dependency-rules">
+</div>
+<div class="section" id="multi-lock-dependency-rules">
 <h2>Multi-lock dependency rules:<a class="headerlink" href="#multi-lock-dependency-rules" title="Permalink to this headline">¶</a></h2>
 <p>The same lock-class must not be acquired twice, because this could lead
 to lock recursion deadlocks.</p>
@@ -467,8 +469,8 @@ softirq-safe lock took it in the past.</p></li>
 could interrupt _any_ of the irq-unsafe or hardirq-unsafe locks, which
 could lead to a lock inversion deadlock - even if that lock scenario did
 not trigger in practice yet.)</p>
-</section>
-<section id="exception-nested-data-dependencies-leading-to-nested-locking">
+</div>
+<div class="section" id="exception-nested-data-dependencies-leading-to-nested-locking">
 <h2>Exception: Nested data dependencies leading to nested locking<a class="headerlink" href="#exception-nested-data-dependencies-leading-to-nested-locking" title="Permalink to this headline">¶</a></h2>
 <p>There are a few cases where the Linux kernel acquires more than one
 instance of the same lock-class. Such cases typically happen when there
@@ -504,8 +506,8 @@ separate (sub)class for the purposes of validation.</p>
 <p>Note: When changing code to use the _nested() primitives, be careful and
 check really thoroughly that the hierarchy is correctly mapped; otherwise
 you can get false positives or false negatives.</p>
-</section>
-<section id="annotations">
+</div>
+<div class="section" id="annotations">
 <h2>Annotations<a class="headerlink" href="#annotations" title="Permalink to this headline">¶</a></h2>
 <p>Two constructs can be used to annotate and check where and if certain locks
 must be held: lockdep_assert_held*(&amp;lock) and lockdep_*pin_lock(&amp;lock).</p>
@@ -548,8 +550,8 @@ static inline void rq_unpin_lock(struct rq *rq, struct rq_flags *rf)
 the runtime checks performed by annotations are invaluable when debugging
 locking problems and they carry the same level of details when inspecting
 code.  Always prefer annotations when in doubt!</p>
-</section>
-<section id="proof-of-100-correctness">
+</div>
+<div class="section" id="proof-of-100-correctness">
 <h2>Proof of 100% correctness:<a class="headerlink" href="#proof-of-100-correctness" title="Permalink to this headline">¶</a></h2>
 <p>The validator achieves perfect, mathematical ‘closure’ (proof of locking
 correctness) in the sense that for every simple, standalone single-task
@@ -583,8 +585,8 @@ value is unique for every lock-chain in the system. Also, lock
 recursion must not be higher than 20.</p>
 </dd>
 </dl>
-</section>
-<section id="performance">
+</div>
+<div class="section" id="performance">
 <h2>Performance:<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
 <p>The above rules require <strong>massive</strong> amounts of runtime checking. If we did
 that for every lock taken and for every irqs-enable event, it would
@@ -599,8 +601,8 @@ when the chain is validated for the first time, is then put into a hash
 table, which hash-table can be checked in a lockfree manner. If the
 locking chain occurs again later on, the hash table tells us that we
 don’t have to validate the chain again.</p>
-</section>
-<section id="troubleshooting">
+</div>
+<div class="section" id="troubleshooting">
 <h2>Troubleshooting:<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
 <p>The validator tracks a maximum of MAX_LOCKDEP_KEYS number of lock classes.
 Exceeding this number will trigger the following lockdep warning:</p>
@@ -659,8 +661,8 @@ identify the leaking lock classes:</p>
 a later run of this command to identify the leakers.  This same output
 can also help you find situations where runtime lock initialization has
 been omitted.</p>
-</section>
-<section id="recursive-read-locks">
+</div>
+<div class="section" id="recursive-read-locks">
 <h2>Recursive read locks:<a class="headerlink" href="#recursive-read-locks" title="Permalink to this headline">¶</a></h2>
 <p>The whole of the rest document tries to prove a certain type of cycle is equivalent
 to deadlock possibility.</p>
@@ -698,8 +700,8 @@ and become a waiter for writer on X. Now if read_lock_2() is recursive readers,
 task A will make progress, because writer waiters don’t block recursive readers,
 and there is no deadlock. However, if read_lock_2() is non-recursive readers,
 it will get blocked by writer waiter B, and cause a self deadlock.</p>
-</section>
-<section id="block-conditions-on-readers-writers-of-the-same-lock-instance">
+</div>
+<div class="section" id="block-conditions-on-readers-writers-of-the-same-lock-instance">
 <h2>Block conditions on readers/writers of the same lock instance:<a class="headerlink" href="#block-conditions-on-readers-writers-of-the-same-lock-instance" title="Permalink to this headline">¶</a></h2>
 <p>There are simply four block conditions:</p>
 <ol class="arabic simple">
@@ -783,8 +785,8 @@ write_lock(Y);
 </div>
 <p>Task A is waiting for task B to read_unlock() Y and task B is waiting for task
 A to read_unlock() X.</p>
-</section>
-<section id="dependency-types-and-strong-dependency-paths">
+</div>
+<div class="section" id="dependency-types-and-strong-dependency-paths">
 <h2>Dependency types and strong dependency paths:<a class="headerlink" href="#dependency-types-and-strong-dependency-paths" title="Permalink to this headline">¶</a></h2>
 <p>Lock dependencies record the orders of the acquisitions of a pair of locks, and
 because there are 3 types for lockers, there are, in theory, 9 types of lock
@@ -856,8 +858,8 @@ path (where X, Y, Z are locks), and the walk from X to Y is through a -(SR)-&gt;
 -(ER)-&gt; dependency, the walk from Y to Z must not be through a -(SN)-&gt; or
 -(SR)-&gt; dependency.</p>
 <p>We will see why the path is called “strong” in next section.</p>
-</section>
-<section id="recursive-read-deadlock-detection">
+</div>
+<div class="section" id="recursive-read-deadlock-detection">
 <h2>Recursive Read Deadlock Detection:<a class="headerlink" href="#recursive-read-deadlock-detection" title="Permalink to this headline">¶</a></h2>
 <p>We now prove two things:</p>
 <p>Lemma 1:</p>
@@ -920,13 +922,13 @@ so it’s impossible that Lx on Px+1 is a reader and Lx on Px is a recursive
 reader, because readers (no matter recursive or not) don’t block recursive
 readers, therefore Lx-1 -&gt; Lx and Lx -&gt; Lx+1 cannot be a -(xR)-&gt; -(Sx)-&gt; pair,
 and this is true for any lock in the circle, therefore, the circle is strong.</p>
-</section>
-<section id="references">
+</div>
+<div class="section" id="references">
 <h2>References:<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <p>[1]: <a class="reference external" href="https://en.wikipedia.org/wiki/Deadlock">https://en.wikipedia.org/wiki/Deadlock</a>
 [2]: Shibu, K. (2009). Intro To Embedded Systems (1st ed.). Tata McGraw-Hill</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

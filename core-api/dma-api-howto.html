@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Dynamic DMA mapping Guide &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -273,7 +275,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="dynamic-dma-mapping-guide">
+  <div class="section" id="dynamic-dma-mapping-guide">
 <h1>Dynamic DMA mapping Guide<a class="headerlink" href="#dynamic-dma-mapping-guide" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -289,7 +291,7 @@
 <p>This is a guide to device driver writers on how to use the DMA API
 with example pseudo-code.  For a concise description of the API, see
 DMA-API.txt.</p>
-<section id="cpu-and-dma-addresses">
+<div class="section" id="cpu-and-dma-addresses">
 <h2>CPU and DMA addresses<a class="headerlink" href="#cpu-and-dma-addresses" title="Permalink to this headline">¶</a></h2>
 <p>There are several kinds of addresses involved in the DMA API, and it’s
 important to understand the differences.</p>
@@ -374,8 +376,8 @@ pci_map_*() interfaces.</p>
 <p>is in your driver, which provides the definition of dma_addr_t.  This type
 can hold any valid DMA address for the platform and should be used
 everywhere you hold a DMA address returned from the DMA mapping functions.</p>
-</section>
-<section id="what-memory-is-dma-able">
+</div>
+<div class="section" id="what-memory-is-dma-able">
 <h2>What memory is DMA’able?<a class="headerlink" href="#what-memory-is-dma-able" title="Permalink to this headline">¶</a></h2>
 <p>The first piece of information you must know is what kernel memory can
 be used with the DMA mapping facilities.  There has been an unwritten
@@ -406,8 +408,8 @@ call and DMA to/from that.  This is similar to <a class="reference internal" hre
 <p>What about block I/O and networking buffers?  The block I/O and
 networking subsystems make sure that the buffers they use are valid
 for you to DMA from/to.</p>
-</section>
-<section id="dma-addressing-capabilities">
+</div>
+<div class="section" id="dma-addressing-capabilities">
 <h2>DMA addressing capabilities<a class="headerlink" href="#dma-addressing-capabilities" title="Permalink to this headline">¶</a></h2>
 <p>By default, the kernel assumes that your device can address 32-bits of DMA
 addressing.  For a 64-bit capable device, this needs to be increased, and for
@@ -524,8 +526,8 @@ if (!dma_set_mask(dev, RECORD_ADDRESS_BITS)) {
 <p>A sound card was used as an example here because this genre of PCI
 devices seems to be littered with ISA chips given a PCI front end,
 and thus retaining the 16MB DMA addressing limitations of ISA.</p>
-</section>
-<section id="types-of-dma-mappings">
+</div>
+<div class="section" id="types-of-dma-mappings">
 <h2>Types of DMA mappings<a class="headerlink" href="#types-of-dma-mappings" title="Permalink to this headline">¶</a></h2>
 <p>There are two types of DMA mappings:</p>
 <ul>
@@ -593,8 +595,8 @@ such mappings you must be explicit about what you want to happen.</p>
 the underlying bus, although some devices may have such restrictions.
 Also, systems with caches that aren’t DMA-coherent will work better
 when the underlying buffers don’t share cache lines with other data.</p>
-</section>
-<section id="using-consistent-dma-mappings">
+</div>
+<div class="section" id="using-consistent-dma-mappings">
 <h2>Using Consistent DMA mappings<a class="headerlink" href="#using-consistent-dma-mappings" title="Permalink to this headline">¶</a></h2>
 <p>To allocate and map large (PAGE_SIZE or so) consistent DMA regions,
 you should do:</p>
@@ -672,8 +674,8 @@ may be called in interrupt context.</p>
 <p>Make sure you’ve called <a class="reference internal" href="mm-api.html#c.dma_pool_free" title="dma_pool_free"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_pool_free()</span></code></a> for all memory allocated
 from a pool before you destroy the pool. This function may not
 be called in interrupt context.</p>
-</section>
-<section id="dma-direction">
+</div>
+<div class="section" id="dma-direction">
 <h2>DMA Direction<a class="headerlink" href="#dma-direction" title="Permalink to this headline">¶</a></h2>
 <p>The interfaces described in subsequent portions of this document
 take a DMA direction argument, which is an integer and takes on
@@ -717,8 +719,8 @@ working on.</p>
 packets, map/unmap them with the DMA_TO_DEVICE direction
 specifier.  For receive packets, just the opposite, map/unmap them
 with the DMA_FROM_DEVICE direction specifier.</p>
-</section>
-<section id="using-streaming-dma-mappings">
+</div>
+<div class="section" id="using-streaming-dma-mappings">
 <h2>Using Streaming DMA mappings<a class="headerlink" href="#using-streaming-dma-mappings" title="Permalink to this headline">¶</a></h2>
 <p>The streaming DMA mapping routines can be called from interrupt
 context.  There are two versions of each map/unmap, one which will
@@ -931,8 +933,8 @@ in the card registers.</p>
 is planned to completely remove virt_to_bus() and bus_to_virt() as
 they are entirely deprecated.  Some ports already do not provide these
 as it is impossible to correctly support them.</p>
-</section>
-<section id="handling-errors">
+</div>
+<div class="section" id="handling-errors">
 <h2>Handling Errors<a class="headerlink" href="#handling-errors" title="Permalink to this headline">¶</a></h2>
 <p>DMA address space is limited on some architectures and an allocation
 failure can be determined by:</p>
@@ -1034,8 +1036,8 @@ the failure case.</p>
 <p>SCSI drivers must return SCSI_MLQUEUE_HOST_BUSY if the DMA mapping
 fails in the queuecommand hook. This means that the SCSI subsystem
 passes the command to the driver again later.</p>
-</section>
-<section id="optimizing-unmap-state-space-consumption">
+</div>
+<div class="section" id="optimizing-unmap-state-space-consumption">
 <h2>Optimizing Unmap State Space Consumption<a class="headerlink" href="#optimizing-unmap-state-space-consumption" title="Permalink to this headline">¶</a></h2>
 <p>On many platforms, dma_unmap_{single,page}() is simply a nop.
 Therefore, keeping track of the mapping address and length is a waste
@@ -1093,8 +1095,8 @@ Example, before:</p>
 <p>It really should be self-explanatory.  We treat the ADDR and LEN
 separately, because it is possible for an implementation to only
 need the address in order to perform the unmap operation.</p>
-</section>
-<section id="platform-issues">
+</div>
+<div class="section" id="platform-issues">
 <h2>Platform Issues<a class="headerlink" href="#platform-issues" title="Permalink to this headline">¶</a></h2>
 <p>If you are just writing drivers for Linux and do not maintain
 an architecture port for the kernel, you can safely skip down
@@ -1118,8 +1120,8 @@ alignment constraints (e.g. the alignment constraints about 64-bit
 objects).</p>
 </li>
 </ol>
-</section>
-<section id="closing">
+</div>
+<div class="section" id="closing">
 <h2>Closing<a class="headerlink" href="#closing" title="Permalink to this headline">¶</a></h2>
 <p>This document, and the API itself, would not be in its current
 form without the feedback and suggestions from numerous individuals.
@@ -1136,8 +1138,8 @@ Jens Axboe &lt;jens.axboe@oracle.com&gt;
 David Mosberger-Tang &lt;davidm@hpl.hp.com&gt;
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

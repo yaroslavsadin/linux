@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>BTT - Block Translation Table &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -350,9 +352,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="btt-block-translation-table">
+  <div class="section" id="btt-block-translation-table">
 <h1>BTT - Block Translation Table<a class="headerlink" href="#btt-block-translation-table" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Persistent memory based storage is able to perform IO at byte (or more
 accurately, cache line) granularity. However, we often want to expose such
@@ -370,8 +372,8 @@ device, and reserves a portion of the underlying storage for its metadata. At
 the heart of it, is an indirection table that re-maps all the blocks on the
 volume. It can be thought of as an extremely simple file system that only
 provides atomic sector updates.</p>
-</section>
-<section id="static-layout">
+</div>
+<div class="section" id="static-layout">
 <h2>2. Static Layout<a class="headerlink" href="#static-layout" title="Permalink to this headline">¶</a></h2>
 <p>The underlying storage on which a BTT can be laid out is not limited in any way.
 The BTT, however, splits the available space into chunks of up to 512 GiB,
@@ -411,10 +413,10 @@ next arena). The following depicts the “On-disk” metadata layout:</p>
                         +------------------+
 </pre></div>
 </div>
-</section>
-<section id="theory-of-operation">
+</div>
+<div class="section" id="theory-of-operation">
 <h2>3. Theory of Operation<a class="headerlink" href="#theory-of-operation" title="Permalink to this headline">¶</a></h2>
-<section id="a-the-btt-map">
+<div class="section" id="a-the-btt-map">
 <h3>a. The BTT Map<a class="headerlink" href="#a-the-btt-map" title="Permalink to this headline">¶</a></h3>
 <p>The map is a simple lookup/indirection table that maps an LBA to an internal
 block. Each map entry is 32 bits. The two most significant bits are special
@@ -482,8 +484,8 @@ the external LBA at 768G. This falls into the second arena, and of the 512G
 worth of blocks that this arena contributes, this block is at 256G. Thus, the
 premap ABA is 256G. We now refer to the map, and find out the mapping for block
 ‘X’ (256G) points to block ‘Y’, say ‘64’. Thus the postmap ABA is 64.</p>
-</section>
-<section id="b-the-btt-flog">
+</div>
+<div class="section" id="b-the-btt-flog">
 <h3>b. The BTT Flog<a class="headerlink" href="#b-the-btt-flog" title="Permalink to this headline">¶</a></h3>
 <p>The BTT provides sector atomicity by making every write an “allocating write”,
 i.e. Every write goes to a “free” block. A running list of free blocks is
@@ -531,8 +533,8 @@ padded to 64 bytes to avoid cache line sharing or aliasing. Flog updates are
 done such that for any entry being written, it:
 a. overwrites the ‘old’ section in the entry based on sequence numbers
 b. writes the ‘new’ section such that the sequence number is written last.</p>
-</section>
-<section id="c-the-concept-of-lanes">
+</div>
+<div class="section" id="c-the-concept-of-lanes">
 <h3>c. The concept of lanes<a class="headerlink" href="#c-the-concept-of-lanes" title="Permalink to this headline">¶</a></h3>
 <p>While ‘nfree’ describes the number of concurrent IOs an arena can process
 concurrently, ‘nlanes’ is the number of IOs the BTT device as a whole can
@@ -544,8 +546,8 @@ process:</p>
 all the on-disk and in-memory data structures for the duration of the IO. If
 there are more CPUs than the max number of available lanes, than lanes are
 protected by spinlocks.</p>
-</section>
-<section id="d-in-memory-data-structure-read-tracking-table-rtt">
+</div>
+<div class="section" id="d-in-memory-data-structure-read-tracking-table-rtt">
 <h3>d. In-memory data structure: Read Tracking Table (RTT)<a class="headerlink" href="#d-in-memory-data-structure-read-tracking-table-rtt" title="Permalink to this headline">¶</a></h3>
 <p>Consider a case where we have two threads, one doing reads and the other,
 writes. We can hit a condition where the writer thread grabs a free block to do
@@ -562,8 +564,8 @@ into rtt[lane_number], the postmap ABA it is reading, and clears it after the
 read is complete. Every writer thread, after grabbing a free block, checks the
 RTT for its presence. If the postmap free block is in the RTT, it waits till the
 reader clears the RTT entry, and only then starts writing to it.</p>
-</section>
-<section id="e-in-memory-data-structure-map-locks">
+</div>
+<div class="section" id="e-in-memory-data-structure-map-locks">
 <h3>e. In-memory data structure: map locks<a class="headerlink" href="#e-in-memory-data-structure-map-locks" title="Permalink to this headline">¶</a></h3>
 <p>Consider a case where two writer threads are writing to the same LBA. There can
 be a race in the following sequence of steps:</p>
@@ -578,8 +580,8 @@ at the same time, duplicating another free entry for two lanes.</p>
 before performing the above sequence, but we feel that could be too contentious.
 Instead we use an array of (nfree) map_locks that is indexed by
 (premap_aba modulo nfree).</p>
-</section>
-<section id="f-reconstruction-from-the-flog">
+</div>
+<div class="section" id="f-reconstruction-from-the-flog">
 <h3>f. Reconstruction from the Flog<a class="headerlink" href="#f-reconstruction-from-the-flog" title="Permalink to this headline">¶</a></h3>
 <p>On startup, we analyze the BTT flog to create our list of free blocks. We walk
 through all the entries, and for each lane, of the set of two possible
@@ -591,8 +593,8 @@ number). The reconstruction rules/steps are simple:</p>
 <li><p>If log_entry.new does not match the map entry, then log_entry.new is free.
 (This case can only be caused by power-fails/unsafe shutdowns)</p></li>
 </ul>
-</section>
-<section id="g-summarizing-read-and-write-flows">
+</div>
+<div class="section" id="g-summarizing-read-and-write-flows">
 <h3>g. Summarizing - Read and Write flows<a class="headerlink" href="#g-summarizing-read-and-write-flows" title="Permalink to this headline">¶</a></h3>
 <p>Read:</p>
 <ol class="arabic simple">
@@ -621,9 +623,9 @@ index, next sequence number</p></li>
 <li><p>Calculate next sequence number and write into the free list entry</p></li>
 <li><p>Release lane (and lane_lock)</p></li>
 </ol>
-</section>
-</section>
-<section id="error-handling">
+</div>
+</div>
+<div class="section" id="error-handling">
 <h2>4. Error Handling<a class="headerlink" href="#error-handling" title="Permalink to this headline">¶</a></h2>
 <p>An arena would be in an error state if any of the metadata is corrupted
 irrecoverably, either due to a bug or a media error. The following conditions
@@ -638,8 +640,8 @@ entries</p></li>
 </ul>
 <p>If any of these error conditions are encountered, the arena is put into a read
 only state using a flag in the info block.</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>5. Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The BTT can be set up on any disk (namespace) exposed by the libnvdimm subsystem
 (pmem, or blk mode). The easiest way to set up such a namespace is using the
@@ -650,8 +652,8 @@ only state using a flag in the info block.</p>
 </div>
 <p>See ndctl create-namespace –help for more options.</p>
 <p>[1]: <a class="reference external" href="https://github.com/pmem/ndctl">https://github.com/pmem/ndctl</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

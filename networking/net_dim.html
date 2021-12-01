@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Net DIM - Generic Network Dynamic Interrupt Moderation &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -363,7 +365,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="net-dim-generic-network-dynamic-interrupt-moderation">
+  <div class="section" id="net-dim-generic-network-dynamic-interrupt-moderation">
 <h1><a class="toc-backref" href="#id1">Net DIM - Generic Network Dynamic Interrupt Moderation</a><a class="headerlink" href="#net-dim-generic-network-dynamic-interrupt-moderation" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -385,12 +387,12 @@
 </li>
 </ul>
 </div>
-<section id="assumptions">
+<div class="section" id="assumptions">
 <h2><a class="toc-backref" href="#id2">Assumptions</a><a class="headerlink" href="#assumptions" title="Permalink to this headline">¶</a></h2>
 <p>This document assumes the reader has basic knowledge in network drivers
 and in general interrupt moderation.</p>
-</section>
-<section id="introduction">
+</div>
+<div class="section" id="introduction">
 <h2><a class="toc-backref" href="#id3">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Dynamic Interrupt Moderation (DIM) (in networking) refers to changing the
 interrupt moderation configuration of a channel in order to optimize packet
@@ -407,8 +409,8 @@ the algorithm might decide not to change anything. The configuration fields are
 the minimum duration (microseconds) allowed between events and the maximum
 number of wanted packets per event. The Net DIM algorithm ascribes importance to
 increase bandwidth over reducing interrupt rate.</p>
-</section>
-<section id="net-dim-algorithm">
+</div>
+<div class="section" id="net-dim-algorithm">
 <h2><a class="toc-backref" href="#id4">Net DIM Algorithm</a><a class="headerlink" href="#net-dim-algorithm" title="Permalink to this headline">¶</a></h2>
 <p>Each iteration of the Net DIM algorithm follows these steps:</p>
 <ol class="arabic simple">
@@ -451,8 +453,8 @@ it and it would be useless if the work function would not apply the suggested
 configuration. This does, however, allow the registered driver some room for
 manoeuvre as it may provide partial data or ignore the algorithm suggestion
 under some conditions.</p>
-</section>
-<section id="registering-a-network-device-to-dim">
+</div>
+<div class="section" id="registering-a-network-device-to-dim">
 <h2><a class="toc-backref" href="#id5">Registering a Network Device to DIM</a><a class="headerlink" href="#registering-a-network-device-to-dim" title="Permalink to this headline">¶</a></h2>
 <p>Net DIM API exposes the main function <a class="reference internal" href="#c.net_dim" title="net_dim"><code class="xref c c-func docutils literal notranslate"><span class="pre">net_dim()</span></code></a>.
 This function is the entry point to the Net
@@ -485,8 +487,8 @@ decides to make a change in the interrupt moderation parameters. This callback
 will be scheduled and run in a separate thread in order not to add overhead to
 the data flow. After the work is done, Net DIM algorithm needs to be set to
 the proper state in order to move to the next iteration.</p>
-</section>
-<section id="example">
+</div>
+<div class="section" id="example">
 <h2><a class="toc-backref" href="#id6">Example</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>The following code demonstrates how to register a driver to Net DIM. The actual
 usage is not complete but it should make the outline of the usage clear.</p>
@@ -532,12 +534,12 @@ usage is not complete but it should make the outline of the usage clear.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="dynamic-interrupt-moderation-dim-library-api">
+</div>
+<div class="section" id="dynamic-interrupt-moderation-dim-library-api">
 <h2><a class="toc-backref" href="#id7">Dynamic Interrupt Moderation (DIM) library API</a><a class="headerlink" href="#dynamic-interrupt-moderation-dim-library-api" title="Permalink to this headline">¶</a></h2>
 <dl class="c struct">
-<dt id="c.dim_cq_moder">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dim_cq_moder</span></code><a class="headerlink" href="#c.dim_cq_moder" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_cq_moder">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_cq_moder</span></span></span><a class="headerlink" href="#c.dim_cq_moder" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Structure for CQ moderation values. Used for communications between DIM and its consumer.</p>
 </dd></dl>
 
@@ -562,8 +564,8 @@ usage is not complete but it should make the outline of the usage clear.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.dim_sample">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dim_sample</span></code><a class="headerlink" href="#c.dim_sample" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_sample">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_sample</span></span></span><a class="headerlink" href="#c.dim_sample" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Structure for DIM sample data. Used for communications between DIM and its consumer.</p>
 </dd></dl>
 
@@ -591,8 +593,8 @@ usage is not complete but it should make the outline of the usage clear.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.dim_stats">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dim_stats</span></code><a class="headerlink" href="#c.dim_stats" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_stats">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_stats</span></span></span><a class="headerlink" href="#c.dim_stats" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Structure for DIM stats. Used for holding current measured rates.</p>
 </dd></dl>
 
@@ -620,8 +622,8 @@ usage is not complete but it should make the outline of the usage clear.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.dim">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dim</span></code><a class="headerlink" href="#c.dim" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim</span></span></span><a class="headerlink" href="#c.dim" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Main structure for dynamic interrupt moderation (DIM). Used for holding all information about a specific DIM instance.</p>
 </dd></dl>
 
@@ -670,8 +672,8 @@ usage is not complete but it should make the outline of the usage clear.</p>
 </dd>
 </dl>
 <dl class="c enum">
-<dt id="c.dim_cq_period_mode">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">dim_cq_period_mode</span></code><a class="headerlink" href="#c.dim_cq_period_mode" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_cq_period_mode">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_cq_period_mode</span></span></span><a class="headerlink" href="#c.dim_cq_period_mode" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Modes for CQ period count</p>
 </dd></dl>
 
@@ -685,8 +687,8 @@ usage is not complete but it should make the outline of the usage clear.</p>
 </dd>
 </dl>
 <dl class="c enum">
-<dt id="c.dim_state">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">dim_state</span></code><a class="headerlink" href="#c.dim_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_state">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_state</span></span></span><a class="headerlink" href="#c.dim_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>DIM algorithm states</p>
 </dd></dl>
 
@@ -703,8 +705,8 @@ need to perform an action</p>
 <p><strong>Description</strong></p>
 <p>These will determine if the algorithm is in a valid state to start an iteration.</p>
 <dl class="c enum">
-<dt id="c.dim_tune_state">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">dim_tune_state</span></code><a class="headerlink" href="#c.dim_tune_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_tune_state">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_tune_state</span></span></span><a class="headerlink" href="#c.dim_tune_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>DIM algorithm tune states</p>
 </dd></dl>
 
@@ -722,8 +724,8 @@ need to perform an action</p>
 <p><strong>Description</strong></p>
 <p>These will determine which action the algorithm should perform.</p>
 <dl class="c enum">
-<dt id="c.dim_stats_state">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">dim_stats_state</span></code><a class="headerlink" href="#c.dim_stats_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_stats_state">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_stats_state</span></span></span><a class="headerlink" href="#c.dim_stats_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>DIM algorithm statistics states</p>
 </dd></dl>
 
@@ -739,8 +741,8 @@ need to perform an action</p>
 <p><strong>Description</strong></p>
 <p>These will determine the verdict of current iteration.</p>
 <dl class="c enum">
-<dt id="c.dim_step_result">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">dim_step_result</span></code><a class="headerlink" href="#c.dim_step_result" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_step_result">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_step_result</span></span></span><a class="headerlink" href="#c.dim_step_result" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>DIM algorithm step results</p>
 </dd></dl>
 
@@ -757,8 +759,8 @@ tired parking</p>
 <p><strong>Description</strong></p>
 <p>These describe the result of a step.</p>
 <dl class="c function">
-<dt id="c.dim_on_top">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">dim_on_top</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_on_top" title="dim"><span class="pre">dim</span></a> <span class="pre">*</span><em><span class="pre">dim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_on_top" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_on_top">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_on_top</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_on_top" title="dim"><span class="n"><span class="pre">dim</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dim</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_on_top" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>check if current state is a good place to stop (top location)</p>
 </dd></dl>
 
@@ -772,8 +774,8 @@ tired parking</p>
 This will result in reducing the DIM checks frequency as we assume we
 shouldn’t probably change profiles, unless traffic pattern wasn’t changed.</p>
 <dl class="c function">
-<dt id="c.dim_turn">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dim_turn</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_turn" title="dim"><span class="pre">dim</span></a> <span class="pre">*</span><em><span class="pre">dim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_turn" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_turn">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_turn</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_turn" title="dim"><span class="n"><span class="pre">dim</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dim</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_turn" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>change profile altering direction</p>
 </dd></dl>
 
@@ -786,8 +788,8 @@ shouldn’t probably change profiles, unless traffic pattern wasn’t changed.</
 <p>Go left if we were going right and vice-versa.
 Do nothing if currently parking.</p>
 <dl class="c function">
-<dt id="c.dim_park_on_top">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dim_park_on_top</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_park_on_top" title="dim"><span class="pre">dim</span></a> <span class="pre">*</span><em><span class="pre">dim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_park_on_top" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_park_on_top">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_park_on_top</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_park_on_top" title="dim"><span class="n"><span class="pre">dim</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dim</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_park_on_top" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enter a parking state on a top location</p>
 </dd></dl>
 
@@ -800,8 +802,8 @@ Do nothing if currently parking.</p>
 <p>Enter parking state.
 Clear all movement history.</p>
 <dl class="c function">
-<dt id="c.dim_park_tired">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dim_park_tired</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_park_tired" title="dim"><span class="pre">dim</span></a> <span class="pre">*</span><em><span class="pre">dim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_park_tired" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_park_tired">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_park_tired</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_park_tired" title="dim"><span class="n"><span class="pre">dim</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dim</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_park_tired" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enter a tired parking state</p>
 </dd></dl>
 
@@ -814,8 +816,8 @@ Clear all movement history.</p>
 <p>Enter parking state.
 Clear all movement history and cause DIM checks frequency to reduce.</p>
 <dl class="c function">
-<dt id="c.dim_calc_stats">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dim_calc_stats</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_sample" title="dim_sample"><span class="pre">dim_sample</span></a> <span class="pre">*</span><em><span class="pre">start</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_sample" title="dim_sample"><span class="pre">dim_sample</span></a> <span class="pre">*</span><em><span class="pre">end</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_stats" title="dim_stats"><span class="pre">dim_stats</span></a> <span class="pre">*</span><em><span class="pre">curr_stats</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_calc_stats" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_calc_stats">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_calc_stats</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_sample" title="dim_sample"><span class="n"><span class="pre">dim_sample</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">start</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_sample" title="dim_sample"><span class="n"><span class="pre">dim_sample</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">end</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_stats" title="dim_stats"><span class="n"><span class="pre">dim_stats</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">curr_stats</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_calc_stats" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>calculate the difference between two samples</p>
 </dd></dl>
 
@@ -832,8 +834,8 @@ Clear all movement history and cause DIM checks frequency to reduce.</p>
 <p>Calculate the delta between two samples (in data rates).
 Takes into consideration counter wrap-around.</p>
 <dl class="c function">
-<dt id="c.dim_update_sample">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dim_update_sample</span></code><span class="sig-paren">(</span><span class="pre">u16</span> <em><span class="pre">event_ctr</span></em>, <span class="pre">u64</span> <em><span class="pre">packets</span></em>, <span class="pre">u64</span> <em><span class="pre">bytes</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_sample" title="dim_sample"><span class="pre">dim_sample</span></a> <span class="pre">*</span><em><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_update_sample" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_update_sample">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_update_sample</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u16</span></span><span class="w"> </span><span class="n"><span class="pre">event_ctr</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">packets</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_sample" title="dim_sample"><span class="n"><span class="pre">dim_sample</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_update_sample" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set a sample’s fields with given values</p>
 </dd></dl>
 
@@ -849,8 +851,8 @@ Takes into consideration counter wrap-around.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.dim_update_sample_with_comps">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dim_update_sample_with_comps</span></code><span class="sig-paren">(</span><span class="pre">u16</span> <em><span class="pre">event_ctr</span></em>, <span class="pre">u64</span> <em><span class="pre">packets</span></em>, <span class="pre">u64</span> <em><span class="pre">bytes</span></em>, <span class="pre">u64</span> <em><span class="pre">comps</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_sample" title="dim_sample"><span class="pre">dim_sample</span></a> <span class="pre">*</span><em><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_update_sample_with_comps" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.dim_update_sample_with_comps">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dim_update_sample_with_comps</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u16</span></span><span class="w"> </span><span class="n"><span class="pre">event_ctr</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">packets</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">comps</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_sample" title="dim_sample"><span class="n"><span class="pre">dim_sample</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.dim_update_sample_with_comps" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set a sample’s fields with given values including the completion parameter</p>
 </dd></dl>
 
@@ -868,8 +870,8 @@ Takes into consideration counter wrap-around.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.net_dim_get_rx_moderation">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_cq_moder" title="dim_cq_moder"><span class="pre">dim_cq_moder</span></a> <code class="sig-name descname"><span class="pre">net_dim_get_rx_moderation</span></code><span class="sig-paren">(</span><span class="pre">u8</span> <em><span class="pre">cq_period_mode</span></em>, <span class="pre">int</span> <em><span class="pre">ix</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.net_dim_get_rx_moderation" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.net_dim_get_rx_moderation">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_cq_moder" title="dim_cq_moder"><span class="n"><span class="pre">dim_cq_moder</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">net_dim_get_rx_moderation</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">cq_period_mode</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">ix</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.net_dim_get_rx_moderation" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>provide a CQ moderation object for the given RX profile</p>
 </dd></dl>
 
@@ -881,8 +883,8 @@ Takes into consideration counter wrap-around.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.net_dim_get_def_rx_moderation">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_cq_moder" title="dim_cq_moder"><span class="pre">dim_cq_moder</span></a> <code class="sig-name descname"><span class="pre">net_dim_get_def_rx_moderation</span></code><span class="sig-paren">(</span><span class="pre">u8</span> <em><span class="pre">cq_period_mode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.net_dim_get_def_rx_moderation" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.net_dim_get_def_rx_moderation">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_cq_moder" title="dim_cq_moder"><span class="n"><span class="pre">dim_cq_moder</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">net_dim_get_def_rx_moderation</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">cq_period_mode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.net_dim_get_def_rx_moderation" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>provide the default RX moderation</p>
 </dd></dl>
 
@@ -892,8 +894,8 @@ Takes into consideration counter wrap-around.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.net_dim_get_tx_moderation">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_cq_moder" title="dim_cq_moder"><span class="pre">dim_cq_moder</span></a> <code class="sig-name descname"><span class="pre">net_dim_get_tx_moderation</span></code><span class="sig-paren">(</span><span class="pre">u8</span> <em><span class="pre">cq_period_mode</span></em>, <span class="pre">int</span> <em><span class="pre">ix</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.net_dim_get_tx_moderation" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.net_dim_get_tx_moderation">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_cq_moder" title="dim_cq_moder"><span class="n"><span class="pre">dim_cq_moder</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">net_dim_get_tx_moderation</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">cq_period_mode</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">ix</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.net_dim_get_tx_moderation" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>provide a CQ moderation object for the given TX profile</p>
 </dd></dl>
 
@@ -905,8 +907,8 @@ Takes into consideration counter wrap-around.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.net_dim_get_def_tx_moderation">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_cq_moder" title="dim_cq_moder"><span class="pre">dim_cq_moder</span></a> <code class="sig-name descname"><span class="pre">net_dim_get_def_tx_moderation</span></code><span class="sig-paren">(</span><span class="pre">u8</span> <em><span class="pre">cq_period_mode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.net_dim_get_def_tx_moderation" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.net_dim_get_def_tx_moderation">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_cq_moder" title="dim_cq_moder"><span class="n"><span class="pre">dim_cq_moder</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">net_dim_get_def_tx_moderation</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">cq_period_mode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.net_dim_get_def_tx_moderation" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>provide the default TX moderation</p>
 </dd></dl>
 
@@ -916,8 +918,8 @@ Takes into consideration counter wrap-around.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.net_dim">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">net_dim</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.net_dim" title="dim"><span class="pre">dim</span></a> <span class="pre">*</span><em><span class="pre">dim</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dim_sample" title="dim_sample"><span class="pre">dim_sample</span></a> <em><span class="pre">end_sample</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.net_dim" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.net_dim">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">net_dim</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.net_dim" title="dim"><span class="n"><span class="pre">dim</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dim</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.dim_sample" title="dim_sample"><span class="n"><span class="pre">dim_sample</span></span></a><span class="w"> </span><span class="n"><span class="pre">end_sample</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.net_dim" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>main DIM algorithm entry point</p>
 </dd></dl>
 
@@ -933,8 +935,8 @@ Takes into consideration counter wrap-around.</p>
 This is the main logic of the algorithm, where data is processed in order
 to decide on next required action.</p>
 <dl class="c function">
-<dt id="c.rdma_dim">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">rdma_dim</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.rdma_dim" title="dim"><span class="pre">dim</span></a> <span class="pre">*</span><em><span class="pre">dim</span></em>, <span class="pre">u64</span> <em><span class="pre">completions</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.rdma_dim" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.rdma_dim">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rdma_dim</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.rdma_dim" title="dim"><span class="n"><span class="pre">dim</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dim</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">completions</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.rdma_dim" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Runs the adaptive moderation.</p>
 </dd></dl>
 
@@ -950,8 +952,8 @@ to decide on next required action.</p>
 have been collected and counts them as a new event.
 Once enough events have been collected the algorithm decides a new
 moderation level.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

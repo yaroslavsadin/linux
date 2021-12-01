@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>User Space Interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -266,9 +268,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="user-space-interface">
+  <div class="section" id="user-space-interface">
 <h1>User Space Interface<a class="headerlink" href="#user-space-interface" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The concepts of the kernel crypto API visible to kernel space is fully
 applicable to the user space interface as well. Therefore, the kernel
@@ -286,8 +288,8 @@ user space, however. This includes the difference between synchronous
 and asynchronous invocations. The user space API call is fully
 synchronous.</p>
 <p>[1] <a class="reference external" href="https://www.chronox.de/libkcapi.html">https://www.chronox.de/libkcapi.html</a></p>
-</section>
-<section id="user-space-api-general-remarks">
+</div>
+<div class="section" id="user-space-api-general-remarks">
 <h2>User Space API General Remarks<a class="headerlink" href="#user-space-api-general-remarks" title="Permalink to this headline">¶</a></h2>
 <p>The kernel crypto API is accessible from user space. Currently, the
 following ciphers are accessible:</p>
@@ -330,8 +332,8 @@ particular cipher instance. When invoking send/write or recv/read
 system calls to send data to the kernel or obtain data from the
 kernel, the file descriptor returned by accept must be used.</p></li>
 </ol>
-</section>
-<section id="in-place-cipher-operation">
+</div>
+<div class="section" id="in-place-cipher-operation">
 <h2>In-place Cipher operation<a class="headerlink" href="#in-place-cipher-operation" title="Permalink to this headline">¶</a></h2>
 <p>Just like the in-kernel operation of the kernel crypto API, the user
 space interface allows the cipher operation in-place. That means that
@@ -343,8 +345,8 @@ copying of the output data to its final destination can be avoided.</p>
 ciphertext in different memory locations, all a consumer needs to do is
 to provide different memory pointers for the encryption and decryption
 operation.</p>
-</section>
-<section id="message-digest-api">
+</div>
+<div class="section" id="message-digest-api">
 <h2>Message Digest API<a class="headerlink" href="#message-digest-api" title="Permalink to this headline">¶</a></h2>
 <p>The message digest type to be used for the cipher operation is selected
 when invoking the bind syscall. bind requires the caller to provide a
@@ -377,8 +379,8 @@ digest, the flag MSG_TRUNC is set by the kernel.</p>
 the setsockopt() option of ALG_SET_KEY. If the key is not set the HMAC
 operation is performed without the initial HMAC state change caused by
 the key.</p>
-</section>
-<section id="symmetric-cipher-api">
+</div>
+<div class="section" id="symmetric-cipher-api">
 <h2>Symmetric Cipher API<a class="headerlink" href="#symmetric-cipher-api" title="Permalink to this headline">¶</a></h2>
 <p>The operation is very similar to the message digest discussion. During
 initialization, the struct sockaddr data structure must be filled as
@@ -424,8 +426,8 @@ cipher operation from the kernel crypto API. The output buffer must be
 at least as large as to hold all blocks of the encrypted or decrypted
 data. If the output data size is smaller, only as many blocks are
 returned that fit into that output buffer size.</p>
-</section>
-<section id="aead-cipher-api">
+</div>
+<div class="section" id="aead-cipher-api">
 <h2>AEAD Cipher API<a class="headerlink" href="#aead-cipher-api" title="Permalink to this headline">¶</a></h2>
 <p>The operation is very similar to the symmetric cipher discussion. During
 initialization, the struct sockaddr data structure must be filled as
@@ -479,7 +481,7 @@ at least as large as defined with the memory structure below. If the
 output data size is smaller, the cipher operation is not performed.</p>
 <p>The authenticated decryption operation may indicate an integrity error.
 Such breach in integrity is marked with the -EBADMSG error code.</p>
-<section id="aead-memory-structure">
+<div class="section" id="aead-memory-structure">
 <h3>AEAD Memory Structure<a class="headerlink" href="#aead-memory-structure" title="Permalink to this headline">¶</a></h3>
 <p>The AEAD cipher operates with the following information that is
 communicated between user and kernel space as one data stream:</p>
@@ -504,9 +506,9 @@ large to hold the following data:</p>
 <li><p>AEAD encryption output: ciphertext || authentication tag</p></li>
 <li><p>AEAD decryption output: plaintext</p></li>
 </ul>
-</section>
-</section>
-<section id="random-number-generator-api">
+</div>
+</div>
+<div class="section" id="random-number-generator-api">
 <h2>Random Number Generator API<a class="headerlink" href="#random-number-generator-api" title="Permalink to this headline">¶</a></h2>
 <p>Again, the operation is very similar to the other APIs. During
 initialization, the struct sockaddr data structure must be filled as
@@ -538,8 +540,8 @@ CAP_SYS_ADMIN permission.</p></li>
 <li><p><em>Additional Data</em> can be provided using the send()/sendmsg() system calls,
 but only after the entropy has been set.</p></li>
 </ul>
-</section>
-<section id="zero-copy-interface">
+</div>
+<div class="section" id="zero-copy-interface">
 <h2>Zero-Copy Interface<a class="headerlink" href="#zero-copy-interface" title="Permalink to this headline">¶</a></h2>
 <p>In addition to the send/write/read/recv system call family, the AF_ALG
 interface can be accessed with the zero-copy interface of
@@ -564,8 +566,8 @@ splice(pipes[0], NULL, opfd, NULL, ret, 0);
 read(opfd, out, outlen);
 </pre></div>
 </div>
-</section>
-<section id="setsockopt-interface">
+</div>
+<div class="section" id="setsockopt-interface">
 <h2>Setsockopt Interface<a class="headerlink" href="#setsockopt-interface" title="Permalink to this headline">¶</a></h2>
 <p>In addition to the read/recv and send/write system call handling to send
 and retrieve data subject to the cipher operation, a consumer also needs
@@ -593,15 +595,15 @@ the given size (see section about AEAD memory layout below).</p></li>
 <li><p>ALG_SET_DRBG_ENTROPY – Setting the entropy of the random number generator.
 This option is applicable to RNG cipher type only.</p></li>
 </ul>
-</section>
-<section id="user-space-api-example">
+</div>
+<div class="section" id="user-space-api-example">
 <h2>User space API example<a class="headerlink" href="#user-space-api-example" title="Permalink to this headline">¶</a></h2>
 <p>Please see [1] for libkcapi which provides an easy-to-use wrapper around
 the aforementioned Netlink kernel interface. [1] also contains a test
 application that invokes all libkcapi API calls.</p>
 <p>[1] <a class="reference external" href="https://www.chronox.de/libkcapi.html">https://www.chronox.de/libkcapi.html</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

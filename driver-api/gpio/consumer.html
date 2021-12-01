@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>GPIO Descriptor Consumer Interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -359,12 +361,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="gpio-descriptor-consumer-interface">
+  <div class="section" id="gpio-descriptor-consumer-interface">
 <h1>GPIO Descriptor Consumer Interface<a class="headerlink" href="#gpio-descriptor-consumer-interface" title="Permalink to this headline">¶</a></h1>
 <p>This document describes the consumer interface of the GPIO framework. Note that
 it describes the new descriptor-based interface. For a description of the
 deprecated integer-based GPIO interface please refer to gpio-legacy.txt.</p>
-<section id="guidelines-for-gpios-consumers">
+<div class="section" id="guidelines-for-gpios-consumers">
 <h2>Guidelines for GPIOs consumers<a class="headerlink" href="#guidelines-for-gpios-consumers" title="Permalink to this headline">¶</a></h2>
 <p>Drivers that can’t work without standard GPIO calls should have Kconfig entries
 that depend on GPIOLIB or select GPIOLIB. The functions that allow a driver to
@@ -390,8 +392,8 @@ prefixed with <code class="docutils literal notranslate"><span class="pre">gpiod
 interface. No other function in the kernel should use these prefixes. The use
 of the legacy functions is strongly discouraged, new code should use
 &lt;linux/gpio/consumer.h&gt; and descriptors exclusively.</p>
-</section>
-<section id="obtaining-and-disposing-gpios">
+</div>
+<div class="section" id="obtaining-and-disposing-gpios">
 <h2>Obtaining and Disposing GPIOs<a class="headerlink" href="#obtaining-and-disposing-gpios" title="Permalink to this headline">¶</a></h2>
 <p>With the descriptor-based interface, GPIOs are identified with an opaque,
 non-forgeable handler that must be obtained through a call to one of the
@@ -522,10 +524,10 @@ from an array acquired with <a class="reference internal" href="index.html#c.gpi
 void devm_gpiod_put_array(struct device *dev, struct gpio_descs *descs)
 </pre></div>
 </div>
-</section>
-<section id="using-gpios">
+</div>
+<div class="section" id="using-gpios">
 <h2>Using GPIOs<a class="headerlink" href="#using-gpios" title="Permalink to this headline">¶</a></h2>
-<section id="setting-direction">
+<div class="section" id="setting-direction">
 <h3>Setting Direction<a class="headerlink" href="#setting-direction" title="Permalink to this headline">¶</a></h3>
 <p>The first thing a driver must do with a GPIO is setting its direction. If no
 direction-setting flags have been given to gpiod_get*(), this is done by
@@ -549,8 +551,8 @@ helps avoid signal glitching during system startup.</p>
 <p>Be aware that there is no default direction for GPIOs. Therefore, <strong>using a GPIO
 without setting its direction first is illegal and will result in undefined
 behavior!</strong></p>
-</section>
-<section id="spinlock-safe-gpio-access">
+</div>
+<div class="section" id="spinlock-safe-gpio-access">
 <h3>Spinlock-Safe GPIO Access<a class="headerlink" href="#spinlock-safe-gpio-access" title="Permalink to this headline">¶</a></h3>
 <p>Most GPIO controllers can be accessed with memory read/write instructions. Those
 don’t need to sleep, and can safely be done from inside hard (non-threaded) IRQ
@@ -569,8 +571,8 @@ reported earlier from gpiod_direction_*(). However, note that not all platforms
 can read the value of output pins; those that can’t should always return zero.
 Also, using these calls for GPIOs that can’t safely be accessed without sleeping
 (see below) is an error.</p>
-</section>
-<section id="gpio-access-that-may-sleep">
+</div>
+<div class="section" id="gpio-access-that-may-sleep">
 <h3>GPIO Access That May Sleep<a class="headerlink" href="#gpio-access-that-may-sleep" title="Permalink to this headline">¶</a></h3>
 <p>Some GPIO controllers must be accessed using message based buses like I2C or
 SPI. Commands to read or write those GPIO values require waiting to get to the
@@ -592,8 +594,8 @@ accessors without the cansleep() name suffix.</p>
 <p>Other than the fact that these accessors might sleep, and will work on GPIOs
 that can’t be accessed from hardIRQ handlers, these calls act the same as the
 spinlock-safe calls.</p>
-</section>
-<section id="the-active-low-and-open-drain-semantics">
+</div>
+<div class="section" id="the-active-low-and-open-drain-semantics">
 <span id="active-low-semantics"></span><h3>The active low and open drain semantics<a class="headerlink" href="#the-active-low-and-open-drain-semantics" title="Permalink to this headline">¶</a></h3>
 <p>As a consumer should not have to care about the physical line level, all of the
 gpiod_set_value_xxx() or gpiod_set_array_value_xxx() functions operate with
@@ -629,8 +631,8 @@ gpiod_set_value(desc, 1);          open source            high
 but it should be avoided as much as possible, especially by system-agnostic drivers
 which should not need to care about the actual physical line level and worry about
 the logical value instead.</p>
-</section>
-<section id="accessing-raw-gpio-values">
+</div>
+<div class="section" id="accessing-raw-gpio-values">
 <h3>Accessing raw GPIO values<a class="headerlink" href="#accessing-raw-gpio-values" title="Permalink to this headline">¶</a></h3>
 <p>Consumers exist that need to manage the logical state of a GPIO line, i.e. the value
 their device will actually receive, no matter what lies between it and the GPIO
@@ -652,8 +654,8 @@ void gpiod_toggle_active_low(struct gpio_desc *desc)
 </div>
 <p>Note that these functions should only be used with great moderation; a driver
 should not have to care about the physical line level or open drain semantics.</p>
-</section>
-<section id="access-multiple-gpios-with-a-single-function-call">
+</div>
+<div class="section" id="access-multiple-gpios-with-a-single-function-call">
 <h3>Access multiple GPIOs with a single function call<a class="headerlink" href="#access-multiple-gpios-with-a-single-function-call" title="Permalink to this headline">¶</a></h3>
 <p>The following functions get or set the values of an array of GPIOs:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int gpiod_get_array_value(unsigned int array_size,
@@ -733,8 +735,8 @@ banks as data I/O ports without much loss of performance.</p>
 or negative on error. Note the difference to <a class="reference internal" href="index.html#c.gpiod_get_value" title="gpiod_get_value"><code class="xref c c-func docutils literal notranslate"><span class="pre">gpiod_get_value()</span></code></a>, which returns
 0 or 1 on success to convey the GPIO value. With the array functions, the GPIO
 values are stored in value_array rather than passed back as return value.</p>
-</section>
-<section id="gpios-mapped-to-irqs">
+</div>
+<div class="section" id="gpios-mapped-to-irqs">
 <h3>GPIOs mapped to IRQs<a class="headerlink" href="#gpios-mapped-to-irqs" title="Permalink to this headline">¶</a></h3>
 <p>GPIO lines can quite often be used as IRQs. You can get the IRQ number
 corresponding to a given GPIO using the following call:</p>
@@ -751,9 +753,9 @@ from <a class="reference internal" href="index.html#c.gpiod_to_irq" title="gpiod
 by the board-specific initialization code. Note that IRQ trigger options are
 part of the IRQ interface, e.g. IRQF_TRIGGER_FALLING, as are system wakeup
 capabilities.</p>
-</section>
-</section>
-<section id="gpios-and-acpi">
+</div>
+</div>
+<div class="section" id="gpios-and-acpi">
 <h2>GPIOs and ACPI<a class="headerlink" href="#gpios-and-acpi" title="Permalink to this headline">¶</a></h2>
 <p>On ACPI systems, GPIOs are described by GpioIo()/GpioInt() resources listed by
 the _CRS configuration objects of devices.  Those resources do not provide
@@ -766,8 +768,8 @@ case, it will be handled by the GPIO subsystem automatically.  However, if the
 _DSD is not present, the mappings between GpioIo()/GpioInt() resources and GPIO
 connection IDs need to be provided by device drivers.</p>
 <p>For details refer to <a class="reference internal" href="../../firmware-guide/acpi/gpio-properties.html"><span class="doc">_DSD Device Properties Related to GPIO</span></a></p>
-</section>
-<section id="interacting-with-the-legacy-gpio-subsystem">
+</div>
+<div class="section" id="interacting-with-the-legacy-gpio-subsystem">
 <h2>Interacting With the Legacy GPIO Subsystem<a class="headerlink" href="#interacting-with-the-legacy-gpio-subsystem" title="Permalink to this headline">¶</a></h2>
 <p>Many kernel subsystems and drivers still handle GPIOs using the legacy
 integer-based interface. It is strongly recommended to update these to the new
@@ -785,8 +787,8 @@ acquired using e.g. <a class="reference internal" href="legacy.html#c.gpio_reque
 considered valid until that GPIO number is released using gpio_free().</p>
 <p>Freeing a GPIO obtained by one API with the other API is forbidden and an
 unchecked error.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

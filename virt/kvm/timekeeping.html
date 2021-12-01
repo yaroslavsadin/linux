@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Timekeeping Virtualization for X86-Based Architectures &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -275,7 +277,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="timekeeping-virtualization-for-x86-based-architectures">
+  <div class="section" id="timekeeping-virtualization-for-x86-based-architectures">
 <h1>Timekeeping Virtualization for X86-Based Architectures<a class="headerlink" href="#timekeeping-virtualization-for-x86-based-architectures" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -287,7 +289,7 @@
 </ol>
 </dd>
 </dl>
-<section id="overview">
+<div class="section" id="overview">
 <h2>1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>One of the most complicated parts of the X86 platform, and specifically,
 the virtualization of this platform is the plethora of timing devices available
@@ -300,13 +302,13 @@ specific recommendations for certain classes of KVM guests.</p>
 <p>The purpose of this document is to collect data and information relevant to
 timekeeping which may be difficult to find elsewhere, specifically,
 information relevant to KVM and hardware-based virtualization.</p>
-</section>
-<section id="timing-devices">
+</div>
+<div class="section" id="timing-devices">
 <h2>2. Timing Devices<a class="headerlink" href="#timing-devices" title="Permalink to this headline">¶</a></h2>
 <p>First we discuss the basic hardware devices available.  TSC and the related
 KVM clock are special enough to warrant a full exposition and are described in
 the following section.</p>
-<section id="i8254-pit">
+<div class="section" id="i8254-pit">
 <h3>2.1. i8254 - PIT<a class="headerlink" href="#i8254-pit" title="Permalink to this headline">¶</a></h3>
 <p>One of the first timer devices available is the programmable interrupt timer,
 or PIT.  The PIT has a fixed frequency 1.193182 MHz base clock and three
@@ -447,8 +449,8 @@ Bit 0  : Binary (0) / BCD (1)
       Bit 0 = Binary (0) / BCD mode (1)
 </pre></div>
 </div>
-</section>
-<section id="rtc">
+</div>
+<div class="section" id="rtc">
 <h3>2.2. RTC<a class="headerlink" href="#rtc" title="Permalink to this headline">¶</a></h3>
 <p>The second device which was available in the original PC was the MC146818 real
 time clock.  The original device is now obsolete, and usually emulated by the
@@ -521,8 +523,8 @@ ODh         byte    Register D (read only)
 (*) location vendor specific and now determined from ACPI global tables
 </pre></div>
 </div>
-</section>
-<section id="apic">
+</div>
+<div class="section" id="apic">
 <h3>2.3. APIC<a class="headerlink" href="#apic" title="Permalink to this headline">¶</a></h3>
 <p>On Pentium and later processors, an on-board timer is available to each CPU
 as part of the Advanced Programmable Interrupt Controller.  The APIC is
@@ -540,8 +542,8 @@ avoid repetition of the detail here.  It should be pointed out that the APIC
 timer is programmed through the LVT (local vector timer) register, is capable
 of one-shot or periodic operation, and is based on the bus clock divided down
 by the programmable divider register.</p>
-</section>
-<section id="hpet">
+</div>
+<div class="section" id="hpet">
 <h3>2.4. HPET<a class="headerlink" href="#hpet" title="Permalink to this headline">¶</a></h3>
 <p>HPET is quite complex, and was originally intended to replace the PIT / RTC
 support of the X86 PC.  It remains to be seen whether that will be the case, as
@@ -558,8 +560,8 @@ in any given system).  The HPET is also memory-mapped, and its presence is
 indicated through ACPI tables by the BIOS.</p>
 <p>Detailed specification of the HPET is beyond the current scope of this
 document, as it is also very well documented elsewhere.</p>
-</section>
-<section id="offboard-timers">
+</div>
+<div class="section" id="offboard-timers">
 <h3>2.5. Offboard Timers<a class="headerlink" href="#offboard-timers" title="Permalink to this headline">¶</a></h3>
 <p>Several cards, both proprietary (watchdog boards) and commonplace (e1000) have
 timing chips built into the cards which may have registers which are accessible
@@ -568,9 +570,9 @@ a clocksource for a Linux or other kernel has not yet been attempted and is in
 general frowned upon as not playing by the agreed rules of the game.  Such a
 timer device would require additional support to be virtualized properly and is
 not considered important at this time as no known operating system does this.</p>
-</section>
-</section>
-<section id="tsc-hardware">
+</div>
+</div>
+<div class="section" id="tsc-hardware">
 <h2>3. TSC Hardware<a class="headerlink" href="#tsc-hardware" title="Permalink to this headline">¶</a></h2>
 <p>The TSC or time stamp counter is relatively simple in theory; it counts
 instruction cycles issued by the processor, which can be used as a measure of
@@ -596,7 +598,7 @@ bits.</p>
 allows the guest visible TSC to be offset by a constant.  Newer implementations
 promise to allow the TSC to additionally be scaled, but this hardware is not
 yet widely available.</p>
-<section id="tsc-synchronization">
+<div class="section" id="tsc-synchronization">
 <h3>3.1. TSC synchronization<a class="headerlink" href="#tsc-synchronization" title="Permalink to this headline">¶</a></h3>
 <p>The TSC is a CPU-local clock in most implementations.  This means, on SMP
 platforms, the TSCs of different CPUs may start at different times depending
@@ -611,8 +613,8 @@ unsynchronized TSCs.  This may be done by BIOS or system software, but in
 practice, getting a perfectly synchronized TSC will not be possible unless all
 values are read from the same clock, which generally only is possible on single
 socket systems or those with special hardware support.</p>
-</section>
-<section id="tsc-and-cpu-hotplug">
+</div>
+<div class="section" id="tsc-and-cpu-hotplug">
 <h3>3.2. TSC and CPU hotplug<a class="headerlink" href="#tsc-and-cpu-hotplug" title="Permalink to this headline">¶</a></h3>
 <p>As touched on already, CPUs which arrive later than the boot time of the system
 may not have a TSC value that is synchronized with the rest of the system.
@@ -621,8 +623,8 @@ to a value matching the rest of the system, but a perfect match is usually not
 a guarantee.  This can have the effect of bringing a system from a state where
 TSC is synchronized back to a state where TSC synchronization flaws, however
 small, may be exposed to the OS and any virtualization environment.</p>
-</section>
-<section id="tsc-and-multi-socket-numa">
+</div>
+<div class="section" id="tsc-and-multi-socket-numa">
 <h3>3.3. TSC and multi-socket / NUMA<a class="headerlink" href="#tsc-and-multi-socket-numa" title="Permalink to this headline">¶</a></h3>
 <p>Multi-socket systems, especially large multi-socket systems are likely to have
 individual clocksources rather than a single, universally distributed clock.
@@ -637,8 +639,8 @@ clock frequency and harmonics of it, which may be required to pass FCC
 standards for telecommunications and computer equipment.</p>
 <p>It is recommended not to trust the TSCs to remain synchronized on NUMA or
 multiple socket systems for these reasons.</p>
-</section>
-<section id="tsc-and-c-states">
+</div>
+<div class="section" id="tsc-and-c-states">
 <h3>3.4. TSC and C-states<a class="headerlink" href="#tsc-and-c-states" title="Permalink to this headline">¶</a></h3>
 <p>C-states, or idling states of the processor, especially C1E and deeper sleep
 states may be problematic for TSC as well.  The TSC may stop advancing in such
@@ -647,8 +649,8 @@ is resumed.  Such CPUs must be detected and flagged by the operating system
 based on CPU and chipset identifications.</p>
 <p>The TSC in such a case may be corrected by catching it up to a known external
 clocksource.</p>
-</section>
-<section id="tsc-frequency-change-p-states">
+</div>
+<div class="section" id="tsc-frequency-change-p-states">
 <h3>3.5. TSC frequency change / P-states<a class="headerlink" href="#tsc-frequency-change-p-states" title="Permalink to this headline">¶</a></h3>
 <p>To make things slightly more interesting, some CPUs may change frequency.  They
 may or may not run the TSC at the same rate, and because the frequency change
@@ -665,30 +667,30 @@ inactive, the P-state may be raised temporarily to service cache misses from
 other processors.  In such cases, the TSC on halted CPUs could advance faster
 than that of non-halted processors.  AMD Turion processors are known to have
 this problem.</p>
-</section>
-<section id="tsc-and-stpclk-t-states">
+</div>
+<div class="section" id="tsc-and-stpclk-t-states">
 <h3>3.6. TSC and STPCLK / T-states<a class="headerlink" href="#tsc-and-stpclk-t-states" title="Permalink to this headline">¶</a></h3>
 <p>External signals given to the processor may also have the effect of stopping
 the TSC.  This is typically done for thermal emergency power control to prevent
 an overheating condition, and typically, there is no way to detect that this
 condition has happened.</p>
-</section>
-<section id="tsc-virtualization-vmx">
+</div>
+<div class="section" id="tsc-virtualization-vmx">
 <h3>3.7. TSC virtualization - VMX<a class="headerlink" href="#tsc-virtualization-vmx" title="Permalink to this headline">¶</a></h3>
 <p>VMX provides conditional trapping of RDTSC, RDMSR, WRMSR and RDTSCP
 instructions, which is enough for full virtualization of TSC in any manner.  In
 addition, VMX allows passing through the host TSC plus an additional TSC_OFFSET
 field specified in the VMCS.  Special instructions must be used to read and
 write the VMCS field.</p>
-</section>
-<section id="tsc-virtualization-svm">
+</div>
+<div class="section" id="tsc-virtualization-svm">
 <h3>3.8. TSC virtualization - SVM<a class="headerlink" href="#tsc-virtualization-svm" title="Permalink to this headline">¶</a></h3>
 <p>SVM provides conditional trapping of RDTSC, RDMSR, WRMSR and RDTSCP
 instructions, which is enough for full virtualization of TSC in any manner.  In
 addition, SVM allows passing through the host TSC plus an additional offset
 field specified in the SVM control block.</p>
-</section>
-<section id="tsc-feature-bits-in-linux">
+</div>
+<div class="section" id="tsc-feature-bits-in-linux">
 <h3>3.9. TSC feature bits in Linux<a class="headerlink" href="#tsc-feature-bits-in-linux" title="Permalink to this headline">¶</a></h3>
 <p>In summary, there is no way to guarantee the TSC remains in perfect
 synchronization unless it is explicitly guaranteed by the architecture.  Even
@@ -719,9 +721,9 @@ but they can only be taken to be meaningful for UP or single node systems.</p>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-<section id="virtualization-problems">
+</div>
+</div>
+<div class="section" id="virtualization-problems">
 <h2>4. Virtualization Problems<a class="headerlink" href="#virtualization-problems" title="Permalink to this headline">¶</a></h2>
 <p>Timekeeping is especially problematic for virtualization because a number of
 challenges arise.  The most obvious problem is that time is now shared between
@@ -738,7 +740,7 @@ steal cycles from the naturally on X86 systems when SMM mode is used by the
 BIOS, but not in such an extreme fashion.  However, the fact that SMM mode may
 cause similar problems to virtualization makes it a good justification for
 solving many of these problems on bare metal.</p>
-<section id="interrupt-clocking">
+<div class="section" id="interrupt-clocking">
 <h3>4.1. Interrupt clocking<a class="headerlink" href="#interrupt-clocking" title="Permalink to this headline">¶</a></h3>
 <p>One of the most immediate problems that occurs with legacy operating systems
 is that the system timekeeping routines are often designed to keep track of
@@ -764,8 +766,8 @@ commonly used Linux systems.</p>
 thus requires interrupt slewing to keep proper time.  It does use a low enough
 rate (ed: is it 18.2 Hz?) however that it has not yet been a problem in
 practice.</p>
-</section>
-<section id="tsc-sampling-and-serialization">
+</div>
+<div class="section" id="tsc-sampling-and-serialization">
 <h3>4.2. TSC sampling and serialization<a class="headerlink" href="#tsc-sampling-and-serialization" title="Permalink to this headline">¶</a></h3>
 <p>As the highest precision time source available, the cycle counter of the CPU
 has aroused much interest from developers.  As explained above, this timer has
@@ -785,8 +787,8 @@ accurate time stamp counter reading may therefore not always be available, and
 it may be necessary for an implementation to guard against “backwards” reads of
 the TSC as seen from other CPUs, even in an otherwise perfectly synchronized
 system.</p>
-</section>
-<section id="timespec-aliasing">
+</div>
+<div class="section" id="timespec-aliasing">
 <h3>4.3. Timespec aliasing<a class="headerlink" href="#timespec-aliasing" title="Permalink to this headline">¶</a></h3>
 <p>Additionally, this lack of serialization from the TSC poses another challenge
 when using results of the TSC when measured against another time source.  As
@@ -806,8 +808,8 @@ at the rate of jiffies, and possibly in catchup modes, at a much larger step.</p
 <p>This aliasing requires care in the computation and recalibration of kvmclock
 and any other values derived from TSC computation (such as TSC virtualization
 itself).</p>
-</section>
-<section id="migration">
+</div>
+<div class="section" id="migration">
 <h3>4.4. Migration<a class="headerlink" href="#migration" title="Permalink to this headline">¶</a></h3>
 <p>Migration of a virtual machine raises problems for timekeeping in two ways.
 First, the migration itself may take time, during which interrupts cannot be
@@ -823,8 +825,8 @@ advancing faster than usual.  A slower clock is less of a problem, as it can
 always be caught up to the original rate.  KVM clock avoids these problems by
 simply storing multipliers and offsets against the TSC for the guest to convert
 back into nanosecond resolution values.</p>
-</section>
-<section id="scheduling">
+</div>
+<div class="section" id="scheduling">
 <h3>4.5. Scheduling<a class="headerlink" href="#scheduling" title="Permalink to this headline">¶</a></h3>
 <p>Since scheduling may be based on precise timing and firing of interrupts, the
 scheduling algorithms of an operating system may be adversely affected by
@@ -835,16 +837,16 @@ be the case.  The effect of this has not been well studied.</p>
 <p>In an attempt to work around this, several implementations have provided a
 paravirtualized scheduler clock, which reveals the true amount of CPU time for
 which a virtual machine has been running.</p>
-</section>
-<section id="watchdogs">
+</div>
+<div class="section" id="watchdogs">
 <h3>4.6. Watchdogs<a class="headerlink" href="#watchdogs" title="Permalink to this headline">¶</a></h3>
 <p>Watchdog timers, such as the lock detector in Linux may fire accidentally when
 running under hardware virtualization due to timer interrupts being delayed or
 misinterpretation of the passage of real time.  Usually, these warnings are
 spurious and can be ignored, but in some circumstances it may be necessary to
 disable such detection.</p>
-</section>
-<section id="delays-and-precision-timing">
+</div>
+<div class="section" id="delays-and-precision-timing">
 <h3>4.7. Delays and precision timing<a class="headerlink" href="#delays-and-precision-timing" title="Permalink to this headline">¶</a></h3>
 <p>Precise timing and delays may not be possible in a virtualized system.  This
 can happen if the system is controlling physical hardware, or issues delays to
@@ -855,8 +857,8 @@ require an RT aware virtualization platform.</p>
 <p>The second issue may cause performance problems, but this is unlikely to be a
 significant issue.  In many cases these delays may be eliminated through
 configuration or paravirtualization.</p>
-</section>
-<section id="covert-channels-and-leaks">
+</div>
+<div class="section" id="covert-channels-and-leaks">
 <h3>4.8. Covert channels and leaks<a class="headerlink" href="#covert-channels-and-leaks" title="Permalink to this headline">¶</a></h3>
 <p>In addition to the above problems, time information will inevitably leak to the
 guest about the host in anything but a perfect implementation of virtualized
@@ -866,9 +868,9 @@ by using CPU utilization itself as a signalling channel.  Preventing such
 problems would require completely isolated virtual time which may not track
 real time any longer.  This may be useful in certain security or QA contexts,
 but in general isn’t recommended for real-world deployment scenarios.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

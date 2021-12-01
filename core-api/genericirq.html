@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Linux generic IRQ handling &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -267,7 +269,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-generic-irq-handling">
+  <div class="section" id="linux-generic-irq-handling">
 <h1>Linux generic IRQ handling<a class="headerlink" href="#linux-generic-irq-handling" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Copyright</dt>
@@ -277,7 +279,7 @@
 <dd class="field-even"><p>© 2005-2006:  Ingo Molnar</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The generic interrupt handling layer is designed to provide a complete
 abstraction of interrupt handling for device drivers. It is able to
@@ -289,8 +291,8 @@ code changes.</p>
 <p>This documentation is provided to developers who want to implement an
 interrupt subsystem based for their architecture, with the help of the
 generic IRQ handling layer.</p>
-</section>
-<section id="rationale">
+</div>
+<div class="section" id="rationale">
 <h2>Rationale<a class="headerlink" href="#rationale" title="Permalink to this headline">¶</a></h2>
 <p>The original implementation of interrupt handling in Linux uses the
 __do_IRQ() super-handler, which is able to deal with every type of
@@ -346,12 +348,12 @@ available. This leads to a kind of duality for the time being. Over time
 the new model should be used in more and more architectures, as it
 enables smaller and cleaner IRQ subsystems. It’s deprecated for three
 years now and about to be removed.</p>
-</section>
-<section id="known-bugs-and-assumptions">
+</div>
+<div class="section" id="known-bugs-and-assumptions">
 <h2>Known Bugs And Assumptions<a class="headerlink" href="#known-bugs-and-assumptions" title="Permalink to this headline">¶</a></h2>
 <p>None (knock on wood).</p>
-</section>
-<section id="abstraction-layers">
+</div>
+<div class="section" id="abstraction-layers">
 <h2>Abstraction layers<a class="headerlink" href="#abstraction-layers" title="Permalink to this headline">¶</a></h2>
 <p>There are three main levels of abstraction in the interrupt code:</p>
 <ol class="arabic simple">
@@ -359,7 +361,7 @@ years now and about to be removed.</p>
 <li><p>High-level IRQ flow handlers</p></li>
 <li><p>Chip-level hardware encapsulation</p></li>
 </ol>
-<section id="interrupt-control-flow">
+<div class="section" id="interrupt-control-flow">
 <h3>Interrupt control flow<a class="headerlink" href="#interrupt-control-flow" title="Permalink to this headline">¶</a></h3>
 <p>Each interrupt is described by an interrupt descriptor structure
 irq_desc. The interrupt is referenced by an ‘unsigned int’ numeric
@@ -371,8 +373,8 @@ interrupt chip structure which are assigned to this interrupt.</p>
 into the generic interrupt code by calling desc-&gt;handle_irq(). This
 high-level IRQ handling function only uses desc-&gt;irq_data.chip
 primitives referenced by the assigned chip descriptor structure.</p>
-</section>
-<section id="high-level-driver-api">
+</div>
+<div class="section" id="high-level-driver-api">
 <h3>High-level Driver API<a class="headerlink" href="#high-level-driver-api" title="Permalink to this headline">¶</a></h3>
 <p>The high-level Driver API consists of following functions:</p>
 <ul class="simple">
@@ -390,8 +392,8 @@ primitives referenced by the assigned chip descriptor structure.</p>
 <li><p><a class="reference internal" href="#c.irq_set_chip_data" title="irq_set_chip_data"><code class="xref c c-func docutils literal notranslate"><span class="pre">irq_set_chip_data()</span></code></a></p></li>
 </ul>
 <p>See the autogenerated function documentation for details.</p>
-</section>
-<section id="high-level-irq-flow-handlers">
+</div>
+<div class="section" id="high-level-irq-flow-handlers">
 <h3>High-level IRQ flow handlers<a class="headerlink" href="#high-level-irq-flow-handlers" title="Permalink to this headline">¶</a></h3>
 <p>The generic layer provides a set of pre-defined irq-flow methods:</p>
 <ul class="simple">
@@ -406,9 +408,9 @@ primitives referenced by the assigned chip descriptor structure.</p>
 <p>The interrupt flow handlers (either pre-defined or architecture
 specific) are assigned to specific interrupts by the architecture either
 during bootup or during device initialization.</p>
-<section id="default-flow-implementations">
+<div class="section" id="default-flow-implementations">
 <h4>Default flow implementations<a class="headerlink" href="#default-flow-implementations" title="Permalink to this headline">¶</a></h4>
-<section id="helper-functions">
+<div class="section" id="helper-functions">
 <h5>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h5>
 <p>The helper functions call the chip primitives and are used by the
 default flow implementations. The following helper functions are
@@ -444,11 +446,11 @@ noop(struct irq_data *data))
 }
 </pre></div>
 </div>
-</section>
-</section>
-<section id="default-flow-handler-implementations">
+</div>
+</div>
+<div class="section" id="default-flow-handler-implementations">
 <h4>Default flow handler implementations<a class="headerlink" href="#default-flow-handler-implementations" title="Permalink to this headline">¶</a></h4>
-<section id="default-level-irq-flow-handler">
+<div class="section" id="default-level-irq-flow-handler">
 <h5>Default Level IRQ flow handler<a class="headerlink" href="#default-level-irq-flow-handler" title="Permalink to this headline">¶</a></h5>
 <p>handle_level_irq provides a generic implementation for level-triggered
 interrupts.</p>
@@ -458,8 +460,8 @@ handle_irq_event(desc-&gt;action);
 desc-&gt;irq_data.chip-&gt;irq_unmask();
 </pre></div>
 </div>
-</section>
-<section id="default-fast-eoi-irq-flow-handler">
+</div>
+<div class="section" id="default-fast-eoi-irq-flow-handler">
 <h5>Default Fast EOI IRQ flow handler<a class="headerlink" href="#default-fast-eoi-irq-flow-handler" title="Permalink to this headline">¶</a></h5>
 <p>handle_fasteoi_irq provides a generic implementation for interrupts,
 which only need an EOI at the end of the handler.</p>
@@ -468,8 +470,8 @@ which only need an EOI at the end of the handler.</p>
 desc-&gt;irq_data.chip-&gt;irq_eoi();
 </pre></div>
 </div>
-</section>
-<section id="default-edge-irq-flow-handler">
+</div>
+<div class="section" id="default-edge-irq-flow-handler">
 <h5>Default Edge IRQ flow handler<a class="headerlink" href="#default-edge-irq-flow-handler" title="Permalink to this headline">¶</a></h5>
 <p>handle_edge_irq provides a generic implementation for edge-triggered
 interrupts.</p>
@@ -490,8 +492,8 @@ do {
 desc-&gt;status &amp;= ~running;
 </pre></div>
 </div>
-</section>
-<section id="default-simple-irq-flow-handler">
+</div>
+<div class="section" id="default-simple-irq-flow-handler">
 <h5>Default simple IRQ flow handler<a class="headerlink" href="#default-simple-irq-flow-handler" title="Permalink to this headline">¶</a></h5>
 <p>handle_simple_irq provides a generic implementation for simple
 interrupts.</p>
@@ -503,8 +505,8 @@ interrupts.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>handle_irq_event(desc-&gt;action);
 </pre></div>
 </div>
-</section>
-<section id="default-per-cpu-flow-handler">
+</div>
+<div class="section" id="default-per-cpu-flow-handler">
 <h5>Default per CPU flow handler<a class="headerlink" href="#default-per-cpu-flow-handler" title="Permalink to this headline">¶</a></h5>
 <p>handle_percpu_irq provides a generic implementation for per CPU
 interrupts.</p>
@@ -518,27 +520,27 @@ if (desc-&gt;irq_data.chip-&gt;irq_eoi)
     desc-&gt;irq_data.chip-&gt;irq_eoi();
 </pre></div>
 </div>
-</section>
-<section id="eoi-edge-irq-flow-handler">
+</div>
+<div class="section" id="eoi-edge-irq-flow-handler">
 <h5>EOI Edge IRQ flow handler<a class="headerlink" href="#eoi-edge-irq-flow-handler" title="Permalink to this headline">¶</a></h5>
 <p>handle_edge_eoi_irq provides an abnomination of the edge handler
 which is solely used to tame a badly wreckaged irq controller on
 powerpc/cell.</p>
-</section>
-<section id="bad-irq-flow-handler">
+</div>
+<div class="section" id="bad-irq-flow-handler">
 <h5>Bad IRQ flow handler<a class="headerlink" href="#bad-irq-flow-handler" title="Permalink to this headline">¶</a></h5>
 <p>handle_bad_irq is used for spurious interrupts which have no real
 handler assigned..</p>
-</section>
-</section>
-<section id="quirks-and-optimizations">
+</div>
+</div>
+<div class="section" id="quirks-and-optimizations">
 <h4>Quirks and optimizations<a class="headerlink" href="#quirks-and-optimizations" title="Permalink to this headline">¶</a></h4>
 <p>The generic functions are intended for ‘clean’ architectures and chips,
 which have no platform-specific IRQ handling quirks. If an architecture
 needs to implement quirks on the ‘flow’ level then it can do so by
 overriding the high-level irq-flow handler.</p>
-</section>
-<section id="delayed-interrupt-disable">
+</div>
+<div class="section" id="delayed-interrupt-disable">
 <h4>Delayed interrupt disable<a class="headerlink" href="#delayed-interrupt-disable" title="Permalink to this headline">¶</a></h4>
 <p>This per interrupt selectable feature, which was introduced by Russell
 King in the ARM interrupt implementation, does not mask an interrupt at
@@ -555,9 +557,9 @@ necessary to enable CONFIG_HARDIRQS_SW_RESEND when you want to use
 the delayed interrupt disable feature and your hardware is not capable
 of retriggering an interrupt.) The delayed interrupt disable is not
 configurable.</p>
-</section>
-</section>
-<section id="chip-level-hardware-encapsulation">
+</div>
+</div>
+<div class="section" id="chip-level-hardware-encapsulation">
 <h3>Chip-level hardware encapsulation<a class="headerlink" href="#chip-level-hardware-encapsulation" title="Permalink to this headline">¶</a></h3>
 <p>The chip-level hardware descriptor structure <a class="reference internal" href="#c.irq_chip" title="irq_chip"><code class="xref c c-type docutils literal notranslate"><span class="pre">irq_chip</span></code></a> contains all
 the direct chip relevant functions, which can be utilized by the irq flow
@@ -575,9 +577,9 @@ implementations.</p>
 <p>These primitives are strictly intended to mean what they say: ack means
 ACK, masking means masking of an IRQ line, etc. It is up to the flow
 handler(s) to use these basic units of low-level functionality.</p>
-</section>
-</section>
-<section id="do-irq-entry-point">
+</div>
+</div>
+<div class="section" id="do-irq-entry-point">
 <h2>__do_IRQ entry point<a class="headerlink" href="#do-irq-entry-point" title="Permalink to this headline">¶</a></h2>
 <p>The original implementation __do_IRQ() was an alternative entry point
 for all types of interrupts. It no longer exists.</p>
@@ -585,14 +587,14 @@ for all types of interrupts. It no longer exists.</p>
 and was therefore reimplemented with split functionality for
 edge/level/simple/percpu interrupts. This is not only a functional
 optimization. It also shortens code paths for interrupts.</p>
-</section>
-<section id="locking-on-smp">
+</div>
+<div class="section" id="locking-on-smp">
 <h2>Locking on SMP<a class="headerlink" href="#locking-on-smp" title="Permalink to this headline">¶</a></h2>
 <p>The locking of chip registers is up to the architecture that defines the
 chip primitives. The per-irq structure is protected via desc-&gt;lock, by
 the generic layer.</p>
-</section>
-<section id="generic-interrupt-chip">
+</div>
+<div class="section" id="generic-interrupt-chip">
 <h2>Generic interrupt chip<a class="headerlink" href="#generic-interrupt-chip" title="Permalink to this headline">¶</a></h2>
 <p>To avoid copies of identical implementations of IRQ chips the core
 provides a configurable generic interrupt chip implementation.
@@ -600,8 +602,8 @@ Developers should check carefully whether the generic chip fits their
 needs before implementing the same functionality slightly differently
 themselves.</p>
 <dl class="c function">
-<dt id="c.irq_gc_noop">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_noop</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_noop" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_gc_noop">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_gc_noop</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">d</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_noop" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>NOOP function</p>
 </dd></dl>
 
@@ -611,8 +613,8 @@ themselves.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_gc_mask_disable_reg">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_mask_disable_reg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_mask_disable_reg" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_gc_mask_disable_reg">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_gc_mask_disable_reg</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">d</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_mask_disable_reg" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mask chip via disable register</p>
 </dd></dl>
 
@@ -625,8 +627,8 @@ themselves.</p>
 <p>Chip has separate enable/disable registers instead of a single mask
 register.</p>
 <dl class="c function">
-<dt id="c.irq_gc_mask_set_bit">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_mask_set_bit</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_mask_set_bit" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_gc_mask_set_bit">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_gc_mask_set_bit</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">d</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_mask_set_bit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mask chip via setting bit in mask register</p>
 </dd></dl>
 
@@ -639,8 +641,8 @@ register.</p>
 <p>Chip has a single mask register. Values of this register are cached
 and protected by gc-&gt;lock</p>
 <dl class="c function">
-<dt id="c.irq_gc_mask_clr_bit">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_mask_clr_bit</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_mask_clr_bit" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_gc_mask_clr_bit">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_gc_mask_clr_bit</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">d</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_mask_clr_bit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mask chip via clearing bit in mask register</p>
 </dd></dl>
 
@@ -653,8 +655,8 @@ and protected by gc-&gt;lock</p>
 <p>Chip has a single mask register. Values of this register are cached
 and protected by gc-&gt;lock</p>
 <dl class="c function">
-<dt id="c.irq_gc_unmask_enable_reg">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_unmask_enable_reg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_unmask_enable_reg" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_gc_unmask_enable_reg">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_gc_unmask_enable_reg</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">d</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_unmask_enable_reg" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unmask chip via enable register</p>
 </dd></dl>
 
@@ -667,8 +669,8 @@ and protected by gc-&gt;lock</p>
 <p>Chip has separate enable/disable registers instead of a single mask
 register.</p>
 <dl class="c function">
-<dt id="c.irq_gc_ack_set_bit">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_ack_set_bit</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_ack_set_bit" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_gc_ack_set_bit">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_gc_ack_set_bit</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">d</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_ack_set_bit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Ack pending interrupt via setting bit</p>
 </dd></dl>
 
@@ -678,8 +680,8 @@ register.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_gc_set_wake">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_gc_set_wake</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">on</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_set_wake" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_gc_set_wake">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_gc_set_wake</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">d</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">on</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_set_wake" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set/clr wake bit for an interrupt</p>
 </dd></dl>
 
@@ -695,8 +697,8 @@ register.</p>
 configured in a separate register and the wakeup active state is
 just stored in a bitmask.</p>
 <dl class="c function">
-<dt id="c.irq_alloc_generic_chip">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_chip_generic" title="irq_chip_generic"><span class="pre">irq_chip_generic</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">irq_alloc_generic_chip</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">int</span> <em><span class="pre">num_ct</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq_base</span></em>, <span class="pre">void</span> <span class="pre">__iomem</span> <span class="pre">*</span><em><span class="pre">reg_base</span></em>, <span class="pre">irq_flow_handler_t</span> <em><span class="pre">handler</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_alloc_generic_chip" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_alloc_generic_chip">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_chip_generic" title="irq_chip_generic"><span class="n"><span class="pre">irq_chip_generic</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">irq_alloc_generic_chip</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_ct</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq_base</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__iomem</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">reg_base</span></span>, <span class="n"><span class="pre">irq_flow_handler_t</span></span><span class="w"> </span><span class="n"><span class="pre">handler</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_alloc_generic_chip" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Allocate a generic chip and initialize it</p>
 </dd></dl>
 
@@ -717,8 +719,8 @@ just stored in a bitmask.</p>
 <p>Returns an initialized irq_chip_generic structure. The chip defaults
 to the primary (index 0) irq_chip_type and <strong>handler</strong></p>
 <dl class="c function">
-<dt id="c.__irq_alloc_domain_generic_chips">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">__irq_alloc_domain_generic_chips</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_domain</span> <span class="pre">*</span><em><span class="pre">d</span></em>, <span class="pre">int</span> <em><span class="pre">irqs_per_chip</span></em>, <span class="pre">int</span> <em><span class="pre">num_ct</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">irq_flow_handler_t</span> <em><span class="pre">handler</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">clr</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">set</span></em>, <em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.irq_gc_flags" title="irq_gc_flags"><span class="pre">irq_gc_flags</span></a> <em><span class="pre">gcflags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__irq_alloc_domain_generic_chips" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__irq_alloc_domain_generic_chips">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__irq_alloc_domain_generic_chips</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_domain</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">d</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irqs_per_chip</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">num_ct</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">irq_flow_handler_t</span></span><span class="w"> </span><span class="n"><span class="pre">handler</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">clr</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_gc_flags" title="irq_gc_flags"><span class="n"><span class="pre">irq_gc_flags</span></span></a><span class="w"> </span><span class="n"><span class="pre">gcflags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__irq_alloc_domain_generic_chips" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Allocate generic chips for an irq domain</p>
 </dd></dl>
 
@@ -742,8 +744,8 @@ to the primary (index 0) irq_chip_type and <strong>handler</strong></p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_get_domain_generic_chip">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_chip_generic" title="irq_chip_generic"><span class="pre">irq_chip_generic</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">irq_get_domain_generic_chip</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_domain</span> <span class="pre">*</span><em><span class="pre">d</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">hw_irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_get_domain_generic_chip" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_get_domain_generic_chip">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_chip_generic" title="irq_chip_generic"><span class="n"><span class="pre">irq_chip_generic</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">irq_get_domain_generic_chip</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_domain</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">d</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">hw_irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_get_domain_generic_chip" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get a pointer to the generic chip of a hw_irq</p>
 </dd></dl>
 
@@ -755,8 +757,8 @@ to the primary (index 0) irq_chip_type and <strong>handler</strong></p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_setup_generic_chip">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_setup_generic_chip</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_chip_generic" title="irq_chip_generic"><span class="pre">irq_chip_generic</span></a> <span class="pre">*</span><em><span class="pre">gc</span></em>, <span class="pre">u32</span> <em><span class="pre">msk</span></em>, <em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.irq_gc_flags" title="irq_gc_flags"><span class="pre">irq_gc_flags</span></a> <em><span class="pre">flags</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">clr</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_setup_generic_chip" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_setup_generic_chip">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_setup_generic_chip</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_chip_generic" title="irq_chip_generic"><span class="n"><span class="pre">irq_chip_generic</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">gc</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">msk</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_gc_flags" title="irq_gc_flags"><span class="n"><span class="pre">irq_gc_flags</span></span></a><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">clr</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_setup_generic_chip" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Setup a range of interrupts with a generic chip</p>
 </dd></dl>
 
@@ -778,8 +780,8 @@ to the primary (index 0) irq_chip_type and <strong>handler</strong></p>
 initializes all interrupts to the primary irq_chip_type and its
 associated handler.</p>
 <dl class="c function">
-<dt id="c.irq_setup_alt_chip">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_setup_alt_chip</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_setup_alt_chip" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_setup_alt_chip">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_setup_alt_chip</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">d</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_setup_alt_chip" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Switch to alternative chip</p>
 </dd></dl>
 
@@ -793,8 +795,8 @@ associated handler.</p>
 <p><strong>Description</strong></p>
 <p>Only to be called from chip-&gt;irq_set_type() callbacks.</p>
 <dl class="c function">
-<dt id="c.irq_remove_generic_chip">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_remove_generic_chip</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_chip_generic" title="irq_chip_generic"><span class="pre">irq_chip_generic</span></a> <span class="pre">*</span><em><span class="pre">gc</span></em>, <span class="pre">u32</span> <em><span class="pre">msk</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">clr</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_remove_generic_chip" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_remove_generic_chip">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_remove_generic_chip</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_chip_generic" title="irq_chip_generic"><span class="n"><span class="pre">irq_chip_generic</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">gc</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">msk</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">clr</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_remove_generic_chip" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Remove a chip</p>
 </dd></dl>
 
@@ -811,14 +813,14 @@ associated handler.</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>Remove up to 32 interrupts starting from gc-&gt;irq_base.</p>
-</section>
-<section id="structures">
+</div>
+<div class="section" id="structures">
 <h2>Structures<a class="headerlink" href="#structures" title="Permalink to this headline">¶</a></h2>
 <p>This chapter contains the autogenerated documentation of the structures
 which are used in the generic IRQ layer.</p>
 <dl class="c struct">
-<dt id="c.irq_common_data">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irq_common_data</span></code><a class="headerlink" href="#c.irq_common_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_common_data">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_common_data</span></span></span><a class="headerlink" href="#c.irq_common_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>per irq data shared by all irqchips</p>
 </dd></dl>
 
@@ -863,8 +865,8 @@ A subset of <strong>affinity</strong>.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.irq_data">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irq_data</span></code><a class="headerlink" href="#c.irq_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_data">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_data</span></span></span><a class="headerlink" href="#c.irq_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>per irq chip data passed down to chip functions</p>
 </dd></dl>
 
@@ -906,8 +908,8 @@ methods, to allow shared chip implementations</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.irq_chip">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irq_chip</span></code><a class="headerlink" href="#c.irq_chip" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip</span></span></span><a class="headerlink" href="#c.irq_chip" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>hardware interrupt chip descriptor</p>
 </dd></dl>
 
@@ -1039,8 +1041,8 @@ irq_request_resources</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.irq_chip_regs">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irq_chip_regs</span></code><a class="headerlink" href="#c.irq_chip_regs" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_regs">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_regs</span></span></span><a class="headerlink" href="#c.irq_chip_regs" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>register offsets for struct irq_gci</p>
 </dd></dl>
 
@@ -1074,8 +1076,8 @@ irq_request_resources</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.irq_chip_type">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irq_chip_type</span></code><a class="headerlink" href="#c.irq_chip_type" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_type">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_type</span></span></span><a class="headerlink" href="#c.irq_chip_type" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Generic interrupt chip instance for a flow type</p>
 </dd></dl>
 
@@ -1110,8 +1112,8 @@ irq_request_resources</p>
 it requires different functions and register offsets for different
 flow types.</p>
 <dl class="c struct">
-<dt id="c.irq_chip_generic">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irq_chip_generic</span></code><a class="headerlink" href="#c.irq_chip_generic" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_generic">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_generic</span></span></span><a class="headerlink" href="#c.irq_chip_generic" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Generic irq chip data structure</p>
 </dd></dl>
 
@@ -1194,8 +1196,8 @@ an irq_chip_generic instance. That allows to share and protect
 state in an irq_chip_generic instance when we need to implement
 different flow mechanisms (level/edge) for it.</p>
 <dl class="c enum">
-<dt id="c.irq_gc_flags">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">irq_gc_flags</span></code><a class="headerlink" href="#c.irq_gc_flags" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_gc_flags">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_gc_flags</span></span></span><a class="headerlink" href="#c.irq_gc_flags" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Initialization flags for generic irq chips</p>
 </dd></dl>
 
@@ -1215,8 +1217,8 @@ the parent irq. Usually GPIO implementations</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.irqaction">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irqaction</span></code><a class="headerlink" href="#c.irqaction" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irqaction">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irqaction</span></span></span><a class="headerlink" href="#c.irqaction" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>per interrupt action descriptor</p>
 </dd></dl>
 
@@ -1268,8 +1270,8 @@ the parent irq. Usually GPIO implementations</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.request_irq">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">request_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">irq_handler_t</span> <em><span class="pre">handler</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.request_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.request_irq">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">request_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="n"><span class="pre">irq_handler_t</span></span><span class="w"> </span><span class="n"><span class="pre">handler</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.request_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Add a handler for an interrupt line</p>
 </dd></dl>
 
@@ -1292,8 +1294,8 @@ If NULL, the default primary handler is installed</p>
 <p>This call allocates an interrupt and establishes a handler; see
 the documentation for <a class="reference internal" href="#c.request_threaded_irq" title="request_threaded_irq"><code class="xref c c-func docutils literal notranslate"><span class="pre">request_threaded_irq()</span></code></a> for details.</p>
 <dl class="c struct">
-<dt id="c.irq_affinity_notify">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irq_affinity_notify</span></code><a class="headerlink" href="#c.irq_affinity_notify" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_affinity_notify">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_affinity_notify</span></span></span><a class="headerlink" href="#c.irq_affinity_notify" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>context for notification of IRQ affinity changes</p>
 </dd></dl>
 
@@ -1325,8 +1327,8 @@ called or later.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.irq_affinity">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irq_affinity</span></code><a class="headerlink" href="#c.irq_affinity" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_affinity">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_affinity</span></span></span><a class="headerlink" href="#c.irq_affinity" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Description for automatic irq affinity assignements</p>
 </dd></dl>
 
@@ -1362,8 +1364,8 @@ pointer to driver/device specific data.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.irq_affinity_desc">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">irq_affinity_desc</span></code><a class="headerlink" href="#c.irq_affinity_desc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_affinity_desc">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_affinity_desc</span></span></span><a class="headerlink" href="#c.irq_affinity_desc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Interrupt affinity descriptor</p>
 </dd></dl>
 
@@ -1381,14 +1383,14 @@ pointer to driver/device specific data.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">is_managed</span></code></dt><dd><p>1 if the interrupt is managed internally</p>
 </dd>
 </dl>
-</section>
-<section id="public-functions-provided">
+</div>
+<div class="section" id="public-functions-provided">
 <h2>Public Functions Provided<a class="headerlink" href="#public-functions-provided" title="Permalink to this headline">¶</a></h2>
 <p>This chapter contains the autogenerated documentation of the kernel API
 functions which are exported.</p>
 <dl class="c function">
-<dt id="c.synchronize_hardirq">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">synchronize_hardirq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.synchronize_hardirq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.synchronize_hardirq">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">synchronize_hardirq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.synchronize_hardirq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>wait for pending hard IRQ handlers (on other CPUs)</p>
 </dd></dl>
 
@@ -1414,8 +1416,8 @@ called with interrupts disabled and the target CPU of the interrupt
 is the current CPU.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.synchronize_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">synchronize_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.synchronize_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.synchronize_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">synchronize_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.synchronize_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>wait for pending IRQ handlers (on other CPUs)</p>
 </dd></dl>
 
@@ -1433,8 +1435,8 @@ service.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_can_set_affinity">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_can_set_affinity</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_can_set_affinity" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_can_set_affinity">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_can_set_affinity</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_can_set_affinity" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check if the affinity of a given irq can be set</p>
 </dd></dl>
 
@@ -1444,8 +1446,8 @@ service.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_can_set_affinity_usr">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">irq_can_set_affinity_usr</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_can_set_affinity_usr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_can_set_affinity_usr">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_can_set_affinity_usr</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_can_set_affinity_usr" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check if affinity of a irq can be set from user space</p>
 </dd></dl>
 
@@ -1458,8 +1460,8 @@ service.</p>
 <p>Like <a class="reference internal" href="#c.irq_can_set_affinity" title="irq_can_set_affinity"><code class="xref c c-func docutils literal notranslate"><span class="pre">irq_can_set_affinity()</span></code></a> above, but additionally checks for the
 AFFINITY_MANAGED flag.</p>
 <dl class="c function">
-<dt id="c.irq_set_thread_affinity">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_set_thread_affinity</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_thread_affinity" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_thread_affinity">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_thread_affinity</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_thread_affinity" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Notify irq threads to adjust affinity</p>
 </dd></dl>
 
@@ -1473,8 +1475,8 @@ code can be called from hard interrupt context.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_update_affinity_desc">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_update_affinity_desc</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_affinity_desc" title="irq_affinity_desc"><span class="pre">irq_affinity_desc</span></a> <span class="pre">*</span><em><span class="pre">affinity</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_update_affinity_desc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_update_affinity_desc">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_update_affinity_desc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_affinity_desc" title="irq_affinity_desc"><span class="n"><span class="pre">irq_affinity_desc</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">affinity</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_update_affinity_desc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Update affinity management for an interrupt</p>
 </dd></dl>
 
@@ -1495,8 +1497,8 @@ managed/non-managed interrupt accounting. In addition, attempts to use it on
 an interrupt which is already started or which has already been configured
 as managed will also fail, as these mean invalid init state or double init.</p>
 <dl class="c function">
-<dt id="c.irq_set_affinity">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_affinity</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_set_affinity" title="cpumask"><span class="pre">cpumask</span></a> <span class="pre">*</span><em><span class="pre">cpumask</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_affinity" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_affinity">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_affinity</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_set_affinity" title="cpumask"><span class="n"><span class="pre">cpumask</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cpumask</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_affinity" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the irq affinity of a given irq</p>
 </dd></dl>
 
@@ -1510,8 +1512,8 @@ as managed will also fail, as these mean invalid init state or double init.</p>
 <p><strong>Description</strong></p>
 <p>Fails if cpumask does not contain an online CPU</p>
 <dl class="c function">
-<dt id="c.irq_force_affinity">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_force_affinity</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_force_affinity" title="cpumask"><span class="pre">cpumask</span></a> <span class="pre">*</span><em><span class="pre">cpumask</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_force_affinity" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_force_affinity">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_force_affinity</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_force_affinity" title="cpumask"><span class="n"><span class="pre">cpumask</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cpumask</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_force_affinity" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Force the irq affinity of a given irq</p>
 </dd></dl>
 
@@ -1528,8 +1530,8 @@ online cpus.</p>
 <p>Solely for low level cpu hotplug code, where we need to make per
 cpu interrupts affine before the cpu becomes online.</p>
 <dl class="c function">
-<dt id="c.irq_set_affinity_notifier">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_affinity_notifier</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_affinity_notify" title="irq_affinity_notify"><span class="pre">irq_affinity_notify</span></a> <span class="pre">*</span><em><span class="pre">notify</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_affinity_notifier" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_affinity_notifier">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_affinity_notifier</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_affinity_notify" title="irq_affinity_notify"><span class="n"><span class="pre">irq_affinity_notify</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">notify</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_affinity_notifier" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>control notification of IRQ affinity changes</p>
 </dd></dl>
 
@@ -1548,8 +1550,8 @@ freed using <a class="reference internal" href="#c.free_irq" title="free_irq"><c
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_set_vcpu_affinity">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_vcpu_affinity</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">vcpu_info</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_vcpu_affinity" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_vcpu_affinity">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_vcpu_affinity</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vcpu_info</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_vcpu_affinity" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set vcpu affinity for the interrupt</p>
 </dd></dl>
 
@@ -1568,8 +1570,8 @@ KVM -&gt; IOMMU -&gt; <a class="reference internal" href="#c.irq_set_vcpu_affini
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.disable_irq_nosync">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">disable_irq_nosync</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_irq_nosync" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.disable_irq_nosync">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">disable_irq_nosync</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_irq_nosync" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>disable an irq without waiting</p>
 </dd></dl>
 
@@ -1584,8 +1586,8 @@ instances of the IRQ handler have completed before returning.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.disable_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">disable_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.disable_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">disable_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>disable an irq and wait for completion</p>
 </dd></dl>
 
@@ -1601,8 +1603,8 @@ holding a resource the IRQ handler may need you will deadlock.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.disable_hardirq">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">disable_hardirq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_hardirq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.disable_hardirq">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">disable_hardirq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_hardirq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>disables an irq and waits for hardirq completion</p>
 </dd></dl>
 
@@ -1624,8 +1626,8 @@ the return value must be checked.</p>
 <div><p>This function may be called - with care - from IRQ context.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.disable_nmi_nosync">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">disable_nmi_nosync</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_nmi_nosync" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.disable_nmi_nosync">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">disable_nmi_nosync</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.disable_nmi_nosync" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>disable an nmi without waiting</p>
 </dd></dl>
 
@@ -1640,8 +1642,8 @@ instances of the IRQ handler have completed before returning.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.enable_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">enable_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.enable_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.enable_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">enable_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.enable_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enable handling of an irq</p>
 </dd></dl>
 
@@ -1656,8 +1658,8 @@ desc-&gt;irq_data.chip-&gt;bus_lock and desc-&gt;chip-&gt;bus_sync_unlock are NU
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.enable_nmi">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">enable_nmi</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.enable_nmi" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.enable_nmi">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">enable_nmi</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.enable_nmi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enable handling of an nmi</p>
 </dd></dl>
 
@@ -1671,8 +1673,8 @@ IRQ line is re-enabled.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_set_irq_wake">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_irq_wake</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">on</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_irq_wake" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_irq_wake">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_irq_wake</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">on</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_irq_wake" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>control irq power management wakeup</p>
 </dd></dl>
 
@@ -1698,8 +1700,8 @@ to be investigated.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_wake_thread">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_wake_thread</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_wake_thread" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_wake_thread">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_wake_thread</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_wake_thread" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>wake the irq thread for the action identified by dev_id</p>
 </dd></dl>
 
@@ -1711,8 +1713,8 @@ to be investigated.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.free_irq">
-<em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">free_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.free_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.free_irq">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">free_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.free_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free an interrupt allocated with request_irq</p>
 </dd></dl>
 
@@ -1732,8 +1734,8 @@ have completed.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.request_threaded_irq">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">request_threaded_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">irq_handler_t</span> <em><span class="pre">handler</span></em>, <span class="pre">irq_handler_t</span> <em><span class="pre">thread_fn</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">irqflags</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">devname</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.request_threaded_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.request_threaded_irq">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">request_threaded_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="n"><span class="pre">irq_handler_t</span></span><span class="w"> </span><span class="n"><span class="pre">handler</span></span>, <span class="n"><span class="pre">irq_handler_t</span></span><span class="w"> </span><span class="n"><span class="pre">thread_fn</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">irqflags</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">devname</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.request_threaded_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate an interrupt line</p>
 </dd></dl>
 
@@ -1780,8 +1782,8 @@ IRQF_ONESHOT            Run thread_fn with interrupt line masked</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.request_any_context_irq">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">request_any_context_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">irq_handler_t</span> <em><span class="pre">handler</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.request_any_context_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.request_any_context_irq">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">request_any_context_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="n"><span class="pre">irq_handler_t</span></span><span class="w"> </span><span class="n"><span class="pre">handler</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.request_any_context_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate an interrupt line</p>
 </dd></dl>
 
@@ -1806,8 +1808,8 @@ it returns either IRQC_IS_HARDIRQ or IRQC_IS_NESTED.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.request_nmi">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">request_nmi</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">irq_handler_t</span> <em><span class="pre">handler</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">irqflags</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.request_nmi" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.request_nmi">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">request_nmi</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="n"><span class="pre">irq_handler_t</span></span><span class="w"> </span><span class="n"><span class="pre">handler</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">irqflags</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.request_nmi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate an interrupt line for NMI delivery</p>
 </dd></dl>
 
@@ -1838,8 +1840,8 @@ will fail and return a negative value.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_percpu_is_enabled">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">irq_percpu_is_enabled</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_percpu_is_enabled" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_percpu_is_enabled">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_percpu_is_enabled</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_percpu_is_enabled" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check whether the per cpu irq is enabled</p>
 </dd></dl>
 
@@ -1852,8 +1854,8 @@ will fail and return a negative value.</p>
 <p>Must be called from a non migratable context. Returns the enable
 state of a per cpu interrupt on the current cpu.</p>
 <dl class="c function">
-<dt id="c.remove_percpu_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">remove_percpu_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irqaction" title="irqaction"><span class="pre">irqaction</span></a> <span class="pre">*</span><em><span class="pre">act</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.remove_percpu_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.remove_percpu_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">remove_percpu_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irqaction" title="irqaction"><span class="n"><span class="pre">irqaction</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">act</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.remove_percpu_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free a per-cpu interrupt</p>
 </dd></dl>
 
@@ -1867,8 +1869,8 @@ state of a per cpu interrupt on the current cpu.</p>
 <p><strong>Description</strong></p>
 <p>Used to remove interrupts statically setup by the early boot process.</p>
 <dl class="c function">
-<dt id="c.free_percpu_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">free_percpu_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">void</span> <span class="pre">__percpu</span> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.free_percpu_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.free_percpu_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">free_percpu_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__percpu</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.free_percpu_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free an interrupt allocated with request_percpu_irq</p>
 </dd></dl>
 
@@ -1885,8 +1887,8 @@ until any executing interrupts for this IRQ have completed.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.setup_percpu_irq">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">setup_percpu_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irqaction" title="irqaction"><span class="pre">irqaction</span></a> <span class="pre">*</span><em><span class="pre">act</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.setup_percpu_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.setup_percpu_irq">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_percpu_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irqaction" title="irqaction"><span class="n"><span class="pre">irqaction</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">act</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.setup_percpu_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>setup a per-cpu interrupt</p>
 </dd></dl>
 
@@ -1900,8 +1902,8 @@ until any executing interrupts for this IRQ have completed.</p>
 <p><strong>Description</strong></p>
 <p>Used to statically setup per-cpu interrupts in the early boot process.</p>
 <dl class="c function">
-<dt id="c.__request_percpu_irq">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">__request_percpu_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">irq_handler_t</span> <em><span class="pre">handler</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">flags</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">devname</span></em>, <span class="pre">void</span> <span class="pre">__percpu</span> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__request_percpu_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__request_percpu_irq">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__request_percpu_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="n"><span class="pre">irq_handler_t</span></span><span class="w"> </span><span class="n"><span class="pre">handler</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">devname</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__percpu</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__request_percpu_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate a percpu interrupt line</p>
 </dd></dl>
 
@@ -1926,8 +1928,8 @@ that variable.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.request_percpu_nmi">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">request_percpu_nmi</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">irq_handler_t</span> <em><span class="pre">handler</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">void</span> <span class="pre">__percpu</span> <span class="pre">*</span><em><span class="pre">dev_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.request_percpu_nmi" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.request_percpu_nmi">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">request_percpu_nmi</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="n"><span class="pre">irq_handler_t</span></span><span class="w"> </span><span class="n"><span class="pre">handler</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__percpu</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev_id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.request_percpu_nmi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate a percpu interrupt line for NMI delivery</p>
 </dd></dl>
 
@@ -1953,8 +1955,8 @@ will fail returning a negative value.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.prepare_percpu_nmi">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">prepare_percpu_nmi</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.prepare_percpu_nmi" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.prepare_percpu_nmi">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">prepare_percpu_nmi</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.prepare_percpu_nmi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>performs CPU local setup for NMI delivery</p>
 </dd></dl>
 
@@ -1970,8 +1972,8 @@ will fail returning a negative value.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.teardown_percpu_nmi">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">teardown_percpu_nmi</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.teardown_percpu_nmi" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.teardown_percpu_nmi">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">teardown_percpu_nmi</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.teardown_percpu_nmi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>undoes NMI setup of IRQ line</p>
 </dd></dl>
 
@@ -1988,8 +1990,8 @@ context.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_get_irqchip_state">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_get_irqchip_state</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">irqchip_irq_state</span> <em><span class="pre">which</span></em>, <span class="pre">bool</span> <span class="pre">*</span><em><span class="pre">state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_get_irqchip_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_get_irqchip_state">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_get_irqchip_state</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">irqchip_irq_state</span></span><span class="w"> </span><span class="n"><span class="pre">which</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_get_irqchip_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>returns the irqchip state of a interrupt.</p>
 </dd></dl>
 
@@ -2008,8 +2010,8 @@ interrupt controller has per-cpu registers.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_set_irqchip_state">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_irqchip_state</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">irqchip_irq_state</span> <em><span class="pre">which</span></em>, <span class="pre">bool</span> <em><span class="pre">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_irqchip_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_irqchip_state">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_irqchip_state</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">irqchip_irq_state</span></span><span class="w"> </span><span class="n"><span class="pre">which</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_irqchip_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set the state of a forwarded interrupt.</p>
 </dd></dl>
 
@@ -2027,8 +2029,8 @@ interrupt controller has per-cpu registers.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_has_action">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">irq_has_action</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_has_action" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_has_action">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_has_action</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_has_action" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check whether an interrupt is requested</p>
 </dd></dl>
 
@@ -2040,8 +2042,8 @@ interrupt controller has per-cpu registers.</p>
 <p><strong>Return</strong></p>
 <p>A snapshot of the current state</p>
 <dl class="c function">
-<dt id="c.irq_check_status_bit">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">irq_check_status_bit</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">bitmask</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_check_status_bit" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_check_status_bit">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_check_status_bit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">bitmask</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_check_status_bit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check whether bits in the irq descriptor status are set</p>
 </dd></dl>
 
@@ -2055,8 +2057,8 @@ interrupt controller has per-cpu registers.</p>
 <p><strong>Return</strong></p>
 <p>True if one of the bits in <strong>bitmask</strong> is set</p>
 <dl class="c function">
-<dt id="c.irq_set_chip">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_chip</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_chip" title="irq_chip"><span class="pre">irq_chip</span></a> <span class="pre">*</span><em><span class="pre">chip</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_chip" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_chip">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_chip</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_chip" title="irq_chip"><span class="n"><span class="pre">irq_chip</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">chip</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_chip" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set the irq chip for an irq</p>
 </dd></dl>
 
@@ -2068,8 +2070,8 @@ interrupt controller has per-cpu registers.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_set_irq_type">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_irq_type</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_irq_type" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_irq_type">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_irq_type</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_irq_type" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set the irq trigger type for an irq</p>
 </dd></dl>
 
@@ -2081,8 +2083,8 @@ interrupt controller has per-cpu registers.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_set_handler_data">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_handler_data</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_handler_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_handler_data">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_handler_data</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_handler_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set irq handler data for an irq</p>
 </dd></dl>
 
@@ -2095,8 +2097,8 @@ interrupt controller has per-cpu registers.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_set_chip_data">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_chip_data</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_chip_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_chip_data">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_chip_data</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_chip_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set irq chip data for an irq</p>
 </dd></dl>
 
@@ -2109,8 +2111,8 @@ interrupt controller has per-cpu registers.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.handle_simple_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_simple_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_simple_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_simple_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_simple_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_simple_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Simple and software-decoded IRQs.</p>
 </dd></dl>
 
@@ -2128,8 +2130,8 @@ is necessary.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.handle_untracked_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_untracked_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_untracked_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_untracked_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_untracked_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_untracked_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Simple and software-decoded IRQs.</p>
 </dd></dl>
 
@@ -2149,8 +2151,8 @@ spurious interrupt detection.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.handle_level_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_level_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_level_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_level_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_level_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_level_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Level type irq handler</p>
 </dd></dl>
 
@@ -2164,8 +2166,8 @@ interrupt line is back to inactive.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.handle_fasteoi_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_fasteoi_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_fasteoi_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_fasteoi_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_fasteoi_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_fasteoi_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>irq handler for transparent controllers</p>
 </dd></dl>
 
@@ -2179,8 +2181,8 @@ details in hardware, transparently.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.handle_fasteoi_nmi">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_fasteoi_nmi</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_fasteoi_nmi" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_fasteoi_nmi">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_fasteoi_nmi</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_fasteoi_nmi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>irq handler for NMI interrupt lines</p>
 </dd></dl>
 
@@ -2196,8 +2198,8 @@ details in hardware, transparently.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.handle_edge_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_edge_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_edge_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_edge_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_edge_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_edge_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>edge type IRQ handler</p>
 </dd></dl>
 
@@ -2217,8 +2219,8 @@ loop is left.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.handle_fasteoi_ack_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_fasteoi_ack_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_fasteoi_ack_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_fasteoi_ack_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_fasteoi_ack_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_fasteoi_ack_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>irq handler for edge hierarchy stacked on transparent controllers</p>
 </dd></dl>
 
@@ -2231,8 +2233,8 @@ called.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.handle_fasteoi_mask_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_fasteoi_mask_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_fasteoi_mask_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_fasteoi_mask_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_fasteoi_mask_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_fasteoi_mask_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>irq handler for level hierarchy stacked on transparent controllers</p>
 </dd></dl>
 
@@ -2245,8 +2247,8 @@ called.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_chip_set_parent_state">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_set_parent_state</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">irqchip_irq_state</span> <em><span class="pre">which</span></em>, <span class="pre">bool</span> <em><span class="pre">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_set_parent_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_set_parent_state">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_set_parent_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">irqchip_irq_state</span></span><span class="w"> </span><span class="n"><span class="pre">which</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_set_parent_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set the state of a parent interrupt.</p>
 </dd></dl>
 
@@ -2262,8 +2264,8 @@ called.</p>
 <p><strong>Description</strong></p>
 <p>Conditional success, if the underlying irqchip does not implement it.</p>
 <dl class="c function">
-<dt id="c.irq_chip_get_parent_state">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_get_parent_state</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">irqchip_irq_state</span> <em><span class="pre">which</span></em>, <span class="pre">bool</span> <span class="pre">*</span><em><span class="pre">state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_get_parent_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_get_parent_state">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_get_parent_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">irqchip_irq_state</span></span><span class="w"> </span><span class="n"><span class="pre">which</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_get_parent_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get the state of a parent interrupt.</p>
 </dd></dl>
 
@@ -2279,8 +2281,8 @@ called.</p>
 <p><strong>Description</strong></p>
 <p>Conditional success, if the underlying irqchip does not implement it.</p>
 <dl class="c function">
-<dt id="c.irq_chip_enable_parent">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_chip_enable_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_enable_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_enable_parent">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_enable_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_enable_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Enable the parent interrupt (defaults to unmask if NULL)</p>
 </dd></dl>
 
@@ -2290,8 +2292,8 @@ called.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_chip_disable_parent">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_chip_disable_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_disable_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_disable_parent">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_disable_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_disable_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Disable the parent interrupt (defaults to mask if NULL)</p>
 </dd></dl>
 
@@ -2301,8 +2303,8 @@ called.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_chip_ack_parent">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_chip_ack_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_ack_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_ack_parent">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_ack_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_ack_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Acknowledge the parent interrupt</p>
 </dd></dl>
 
@@ -2312,8 +2314,8 @@ called.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_chip_mask_parent">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_chip_mask_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_mask_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_mask_parent">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_mask_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_mask_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mask the parent interrupt</p>
 </dd></dl>
 
@@ -2323,8 +2325,8 @@ called.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_chip_mask_ack_parent">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_chip_mask_ack_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_mask_ack_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_mask_ack_parent">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_mask_ack_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_mask_ack_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mask and acknowledge the parent interrupt</p>
 </dd></dl>
 
@@ -2334,8 +2336,8 @@ called.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_chip_unmask_parent">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_chip_unmask_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_unmask_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_unmask_parent">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_unmask_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_unmask_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unmask the parent interrupt</p>
 </dd></dl>
 
@@ -2345,8 +2347,8 @@ called.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_chip_eoi_parent">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_chip_eoi_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_eoi_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_eoi_parent">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_eoi_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_eoi_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Invoke EOI on the parent interrupt</p>
 </dd></dl>
 
@@ -2356,8 +2358,8 @@ called.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_chip_set_affinity_parent">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_set_affinity_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">cpumask</span> <span class="pre">*</span><em><span class="pre">dest</span></em>, <span class="pre">bool</span> <em><span class="pre">force</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_set_affinity_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_set_affinity_parent">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_set_affinity_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cpumask</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dest</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">force</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_set_affinity_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set affinity on the parent interrupt</p>
 </dd></dl>
 
@@ -2373,8 +2375,8 @@ called.</p>
 <p><strong>Description</strong></p>
 <p>Conditional, as the underlying parent chip might not implement it.</p>
 <dl class="c function">
-<dt id="c.irq_chip_set_type_parent">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_set_type_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_set_type_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_set_type_parent">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_set_type_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_set_type_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set IRQ type on the parent interrupt</p>
 </dd></dl>
 
@@ -2388,8 +2390,8 @@ called.</p>
 <p><strong>Description</strong></p>
 <p>Conditional, as the underlying parent chip might not implement it.</p>
 <dl class="c function">
-<dt id="c.irq_chip_retrigger_hierarchy">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_retrigger_hierarchy</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_retrigger_hierarchy" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_retrigger_hierarchy">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_retrigger_hierarchy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_retrigger_hierarchy" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Retrigger an interrupt in hardware</p>
 </dd></dl>
 
@@ -2402,8 +2404,8 @@ called.</p>
 <p>Iterate through the domain hierarchy of the interrupt and check
 whether a hw retrigger function exists. If yes, invoke it.</p>
 <dl class="c function">
-<dt id="c.irq_chip_set_vcpu_affinity_parent">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_set_vcpu_affinity_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">vcpu_info</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_set_vcpu_affinity_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_set_vcpu_affinity_parent">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_set_vcpu_affinity_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vcpu_info</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_set_vcpu_affinity_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set vcpu affinity on the parent interrupt</p>
 </dd></dl>
 
@@ -2415,8 +2417,8 @@ whether a hw retrigger function exists. If yes, invoke it.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_chip_set_wake_parent">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_set_wake_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">on</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_set_wake_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_set_wake_parent">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_set_wake_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">on</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_set_wake_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set/reset wake-up on the parent interrupt</p>
 </dd></dl>
 
@@ -2430,8 +2432,8 @@ whether a hw retrigger function exists. If yes, invoke it.</p>
 <p><strong>Description</strong></p>
 <p>Conditional, as the underlying parent chip might not implement it.</p>
 <dl class="c function">
-<dt id="c.irq_chip_request_resources_parent">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_request_resources_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_request_resources_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_request_resources_parent">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_request_resources_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_request_resources_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Request resources on the parent interrupt</p>
 </dd></dl>
 
@@ -2441,8 +2443,8 @@ whether a hw retrigger function exists. If yes, invoke it.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_chip_release_resources_parent">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_chip_release_resources_parent</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_release_resources_parent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_release_resources_parent">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_release_resources_parent</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_release_resources_parent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Release resources on the parent interrupt</p>
 </dd></dl>
 
@@ -2451,14 +2453,14 @@ whether a hw retrigger function exists. If yes, invoke it.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">irq_data</span> <span class="pre">*data</span></code></dt><dd><p>Pointer to interrupt specific data</p>
 </dd>
 </dl>
-</section>
-<section id="internal-functions-provided">
+</div>
+<div class="section" id="internal-functions-provided">
 <h2>Internal Functions Provided<a class="headerlink" href="#internal-functions-provided" title="Permalink to this headline">¶</a></h2>
 <p>This chapter contains the autogenerated documentation of the internal
 functions.</p>
 <dl class="c function">
-<dt id="c.generic_handle_irq">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">generic_handle_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.generic_handle_irq">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">generic_handle_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Invoke the handler for a particular irq</p>
 </dd></dl>
 
@@ -2474,8 +2476,8 @@ functions.</p>
 initialized.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.generic_handle_domain_irq">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">generic_handle_domain_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_domain</span> <span class="pre">*</span><em><span class="pre">domain</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">hwirq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_domain_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.generic_handle_domain_irq">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">generic_handle_domain_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_domain</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">domain</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">hwirq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_domain_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Invoke the handler for a HW irq belonging to a domain.</p>
 </dd></dl>
 
@@ -2493,8 +2495,8 @@ initialized.</p>
 initialized.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.generic_handle_domain_nmi">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">generic_handle_domain_nmi</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_domain</span> <span class="pre">*</span><em><span class="pre">domain</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">hwirq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_domain_nmi" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.generic_handle_domain_nmi">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">generic_handle_domain_nmi</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_domain</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">domain</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">hwirq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_domain_nmi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Invoke the handler for a HW nmi belonging to a domain.</p>
 </dd></dl>
 
@@ -2512,8 +2514,8 @@ initialized.</p>
 initialized.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.irq_free_descs">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_free_descs</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">from</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">cnt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_free_descs" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_free_descs">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_free_descs</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">from</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cnt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_free_descs" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free irq descriptors</p>
 </dd></dl>
 
@@ -2525,8 +2527,8 @@ initialized.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.__irq_alloc_descs">
-<span class="pre">int</span> <span class="pre">__ref</span> <code class="sig-name descname"><span class="pre">__irq_alloc_descs</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">from</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">cnt</span></em>, <span class="pre">int</span> <em><span class="pre">node</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">module</span> <span class="pre">*</span><em><span class="pre">owner</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_affinity_desc" title="irq_affinity_desc"><span class="pre">irq_affinity_desc</span></a> <span class="pre">*</span><em><span class="pre">affinity</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__irq_alloc_descs" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__irq_alloc_descs">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="pre">__ref</span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__irq_alloc_descs</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">from</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cnt</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">node</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">module</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">owner</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_affinity_desc" title="irq_affinity_desc"><span class="n"><span class="pre">irq_affinity_desc</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">affinity</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__irq_alloc_descs" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate and initialize a range of irq descriptors</p>
 </dd></dl>
 
@@ -2550,8 +2552,8 @@ default affinities to use</p>
 <p><strong>Description</strong></p>
 <p>Returns the first irq number or error code</p>
 <dl class="c function">
-<dt id="c.irq_get_next_irq">
-<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_get_next_irq</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">offset</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_get_next_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_get_next_irq">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_get_next_irq</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_get_next_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>get next allocated irq number</p>
 </dd></dl>
 
@@ -2563,8 +2565,8 @@ default affinities to use</p>
 <p><strong>Description</strong></p>
 <p>Returns next irq number after offset or nr_irqs if none is found.</p>
 <dl class="c function">
-<dt id="c.kstat_irqs_cpu">
-<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">kstat_irqs_cpu</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <span class="pre">int</span> <em><span class="pre">cpu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.kstat_irqs_cpu" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.kstat_irqs_cpu">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kstat_irqs_cpu</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cpu</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.kstat_irqs_cpu" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the statistics for an interrupt on a cpu</p>
 </dd></dl>
 
@@ -2580,8 +2582,8 @@ default affinities to use</p>
 <strong>irq</strong>. The caller must ensure that the interrupt is not removed
 concurrently.</p>
 <dl class="c function">
-<dt id="c.kstat_irqs_usr">
-<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">kstat_irqs_usr</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.kstat_irqs_usr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.kstat_irqs_usr">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kstat_irqs_usr</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.kstat_irqs_usr" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the statistics for an interrupt from thread context</p>
 </dd></dl>
 
@@ -2596,8 +2598,8 @@ concurrently.</p>
 interrupt descriptor is observing an rcu grace period before
 delayed_free_desc()/irq_kobj_release().</p>
 <dl class="c function">
-<dt id="c.handle_bad_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_bad_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_bad_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_bad_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_bad_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_bad_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>handle spurious and unhandled irqs</p>
 </dd></dl>
 
@@ -2609,8 +2611,8 @@ delayed_free_desc()/irq_kobj_release().</p>
 <p><strong>Description</strong></p>
 <p>Handles spurious and unhandled IRQ’s. It also prints a debugmessage.</p>
 <dl class="c function">
-<dt id="c.generic_handle_arch_irq">
-<span class="pre">void</span> <span class="pre">noinstr</span> <code class="sig-name descname"><span class="pre">generic_handle_arch_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pt_regs</span> <span class="pre">*</span><em><span class="pre">regs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_arch_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.generic_handle_arch_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">noinstr</span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">generic_handle_arch_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pt_regs</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">regs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_arch_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>root irq handler for architectures which do no entry accounting themselves</p>
 </dd></dl>
 
@@ -2620,8 +2622,8 @@ delayed_free_desc()/irq_kobj_release().</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_set_msi_desc_off">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_msi_desc_off</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq_base</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq_offset</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">msi_desc</span> <span class="pre">*</span><em><span class="pre">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_msi_desc_off" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_msi_desc_off">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_msi_desc_off</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq_base</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq_offset</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">msi_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">entry</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_msi_desc_off" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set MSI descriptor data for an irq at offset</p>
 </dd></dl>
 
@@ -2636,8 +2638,8 @@ delayed_free_desc()/irq_kobj_release().</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_set_msi_desc">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_msi_desc</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">msi_desc</span> <span class="pre">*</span><em><span class="pre">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_msi_desc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_set_msi_desc">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_set_msi_desc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">irq</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">msi_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">entry</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_msi_desc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set MSI descriptor data for an irq</p>
 </dd></dl>
 
@@ -2650,8 +2652,8 @@ delayed_free_desc()/irq_kobj_release().</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.irq_disable">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_disable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_disable" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_disable">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_disable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_disable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mark interrupt disabled</p>
 </dd></dl>
 
@@ -2676,8 +2678,8 @@ be used for devices which cannot disable the interrupt at the
 device level under certain circumstances and have to use
 disable_irq[_nosync] instead.</p>
 <dl class="c function">
-<dt id="c.handle_edge_eoi_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_edge_eoi_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_edge_eoi_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_edge_eoi_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_edge_eoi_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_edge_eoi_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>edge eoi type IRQ handler</p>
 </dd></dl>
 
@@ -2690,8 +2692,8 @@ disable_irq[_nosync] instead.</p>
 <p>Similar as the above handle_edge_irq, but using eoi and w/o the
 mask/unmask logic.</p>
 <dl class="c function">
-<dt id="c.handle_percpu_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_percpu_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_percpu_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_percpu_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_percpu_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_percpu_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Per CPU local irq handler</p>
 </dd></dl>
 
@@ -2702,8 +2704,8 @@ mask/unmask logic.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.handle_percpu_devid_irq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_percpu_devid_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_percpu_devid_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_percpu_devid_irq">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_percpu_devid_irq</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_percpu_devid_irq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Per CPU local irq handler with per cpu dev ids</p>
 </dd></dl>
 
@@ -2719,8 +2721,8 @@ mask/unmask logic.</p>
 contain the real device id for the cpu on which this handler is
 called</p>
 <dl class="c function">
-<dt id="c.handle_percpu_devid_fasteoi_nmi">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">handle_percpu_devid_fasteoi_nmi</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_desc</span> <span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_percpu_devid_fasteoi_nmi" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_percpu_devid_fasteoi_nmi">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_percpu_devid_fasteoi_nmi</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">irq_desc</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_percpu_devid_fasteoi_nmi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Per CPU local NMI handler with per cpu dev ids</p>
 </dd></dl>
 
@@ -2733,8 +2735,8 @@ called</p>
 <p>Similar to handle_fasteoi_nmi, but handling the dev_id cookie
 as a percpu pointer.</p>
 <dl class="c function">
-<dt id="c.irq_cpu_online">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_cpu_online</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_cpu_online" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_cpu_online">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_cpu_online</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_cpu_online" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Invoke all irq_cpu_online functions.</p>
 </dd></dl>
 
@@ -2749,8 +2751,8 @@ as a percpu pointer.</p>
 for each.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.irq_cpu_offline">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_cpu_offline</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_cpu_offline" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_cpu_offline">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_cpu_offline</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_cpu_offline" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Invoke all irq_cpu_offline functions.</p>
 </dd></dl>
 
@@ -2765,8 +2767,8 @@ for each.</p>
 for each.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.irq_chip_compose_msi_msg">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_compose_msi_msg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">msi_msg</span> <span class="pre">*</span><em><span class="pre">msg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_compose_msi_msg" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_compose_msi_msg">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_compose_msi_msg</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">msi_msg</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">msg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_compose_msi_msg" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Compose msi message for a irq chip</p>
 </dd></dl>
 
@@ -2782,8 +2784,8 @@ for each.</p>
 which implements the irq_compose_msi_msg callback. For non
 hierarchical we use the top level chip.</p>
 <dl class="c function">
-<dt id="c.irq_chip_pm_get">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_pm_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_pm_get" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_pm_get">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_pm_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_pm_get" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Enable power for an IRQ chip</p>
 </dd></dl>
 
@@ -2796,8 +2798,8 @@ hierarchical we use the top level chip.</p>
 <p>Enable the power to the IRQ chip referenced by the interrupt data
 structure.</p>
 <dl class="c function">
-<dt id="c.irq_chip_pm_put">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_chip_pm_put</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_pm_put" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.irq_chip_pm_put">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">irq_chip_pm_put</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.irq_data" title="irq_data"><span class="n"><span class="pre">irq_data</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_chip_pm_put" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Disable power for an IRQ chip</p>
 </dd></dl>
 
@@ -2810,16 +2812,16 @@ structure.</p>
 <p>Disable the power to the IRQ chip referenced by the interrupt data
 structure, belongs. Note that power will only be disabled, once this
 function has been called for all IRQs that have called <a class="reference internal" href="#c.irq_chip_pm_get" title="irq_chip_pm_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">irq_chip_pm_get()</span></code></a>.</p>
-</section>
-<section id="credits">
+</div>
+<div class="section" id="credits">
 <h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
 <p>The following people have contributed to this document:</p>
 <ol class="arabic simple">
 <li><p>Thomas Gleixner <a class="reference external" href="mailto:tglx&#37;&#52;&#48;linutronix&#46;de">tglx<span>&#64;</span>linutronix<span>&#46;</span>de</a></p></li>
 <li><p>Ingo Molnar <a class="reference external" href="mailto:mingo&#37;&#52;&#48;elte&#46;hu">mingo<span>&#64;</span>elte<span>&#46;</span>hu</a></p></li>
 </ol>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

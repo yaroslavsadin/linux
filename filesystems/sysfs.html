@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>sysfs - _The_ filesystem for exporting kernel objects &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -317,7 +319,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="sysfs-the-filesystem-for-exporting-kernel-objects">
+  <div class="section" id="sysfs-the-filesystem-for-exporting-kernel-objects">
 <h1>sysfs - _The_ filesystem for exporting kernel objects<a class="headerlink" href="#sysfs-the-filesystem-for-exporting-kernel-objects" title="Permalink to this headline">¶</a></h1>
 <p>Patrick Mochel  &lt;<a class="reference external" href="mailto:mochel&#37;&#52;&#48;osdl&#46;org">mochel<span>&#64;</span>osdl<span>&#46;</span>org</a>&gt;</p>
 <p>Mike Murphy &lt;<a class="reference external" href="mailto:mamurph&#37;&#52;&#48;cs&#46;clemson&#46;edu">mamurph<span>&#64;</span>cs<span>&#46;</span>clemson<span>&#46;</span>edu</a>&gt;</p>
@@ -329,7 +331,7 @@
 <dd class="field-even"><p>10 January 2003</p>
 </dd>
 </dl>
-<section id="what-it-is">
+<div class="section" id="what-it-is">
 <h2>What it is:<a class="headerlink" href="#what-it-is" title="Permalink to this headline">¶</a></h2>
 <p>sysfs is a ram-based filesystem initially based on ramfs. It provides
 a means to export kernel data structures, their attributes, and the
@@ -337,16 +339,16 @@ linkages between them to userspace.</p>
 <p>sysfs is tied inherently to the kobject infrastructure. Please read
 <a class="reference internal" href="../core-api/kobject.html"><span class="doc">Everything you never wanted to know about kobjects, ksets, and ktypes</span></a> for more information concerning the kobject
 interface.</p>
-</section>
-<section id="using-sysfs">
+</div>
+<div class="section" id="using-sysfs">
 <h2>Using sysfs<a class="headerlink" href="#using-sysfs" title="Permalink to this headline">¶</a></h2>
 <p>sysfs is always compiled in if CONFIG_SYSFS is defined. You can access
 it by doing:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mount -t sysfs sysfs /sys
 </pre></div>
 </div>
-</section>
-<section id="directory-creation">
+</div>
+<div class="section" id="directory-creation">
 <h2>Directory Creation<a class="headerlink" href="#directory-creation" title="Permalink to this headline">¶</a></h2>
 <p>For every kobject that is registered with the system, a directory is
 created for it in sysfs. That directory is created as a subdirectory
@@ -360,8 +362,8 @@ the past this kobject pointer has been used by sysfs to do reference
 counting directly on the kobject whenever the file is opened or closed.
 With the current sysfs implementation the kobject reference count is
 only modified directly by the function sysfs_schedule_callback().</p>
-</section>
-<section id="attributes">
+</div>
+<div class="section" id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
 <p>Attributes can be exported for kobjects in the form of regular files in
 the filesystem. Sysfs forwards file I/O operations to methods defined
@@ -448,8 +450,8 @@ mode to 0644.</p>
 indicator (see: kernel/workqueue.c)</p>
 </dd>
 </dl>
-</section>
-<section id="subsystem-specific-callbacks">
+</div>
+<div class="section" id="subsystem-specific-callbacks">
 <h2>Subsystem-Specific Callbacks<a class="headerlink" href="#subsystem-specific-callbacks" title="Permalink to this headline">¶</a></h2>
 <p>When a subsystem defines a new attribute type, it must implement a
 set of sysfs operations for forwarding read and write calls to the
@@ -487,8 +489,8 @@ static ssize_t dev_attr_show(struct kobject *kobj, struct attribute *attr,
 }
 </pre></div>
 </div>
-</section>
-<section id="reading-writing-attribute-data">
+</div>
+<div class="section" id="reading-writing-attribute-data">
 <h2>Reading/Writing Attribute Data<a class="headerlink" href="#reading-writing-attribute-data" title="Permalink to this headline">¶</a></h2>
 <p>To read or write attributes, show() or store() methods must be
 specified when declaring the attribute. The method types should be as
@@ -562,8 +564,8 @@ static DEVICE_ATTR(name, S_IRUGO, show_name, store_name);
 </div>
 <p>(Note that the real implementation doesn’t allow userspace to set the
 name for a device.)</p>
-</section>
-<section id="top-level-directory-layout">
+</div>
+<div class="section" id="top-level-directory-layout">
 <h2>Top Level Directory Layout<a class="headerlink" href="#top-level-directory-layout" title="Permalink to this headline">¶</a></h2>
 <p>The sysfs directory arrangement exposes the relationship of kernel
 data structures.</p>
@@ -603,11 +605,11 @@ a stat(2) operation.</p>
 <p>More information can driver-model specific features can be found in
 Documentation/driver-api/driver-model/.</p>
 <p>TODO: Finish this section.</p>
-</section>
-<section id="current-interfaces">
+</div>
+<div class="section" id="current-interfaces">
 <h2>Current Interfaces<a class="headerlink" href="#current-interfaces" title="Permalink to this headline">¶</a></h2>
 <p>The following interface layers currently exist in sysfs:</p>
-<section id="devices-include-linux-device-h">
+<div class="section" id="devices-include-linux-device-h">
 <h3>devices (include/linux/device.h)<a class="headerlink" href="#devices-include-linux-device-h" title="Permalink to this headline">¶</a></h3>
 <p>Structure:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct device_attribute {
@@ -628,8 +630,8 @@ Documentation/driver-api/driver-model/.</p>
 void device_remove_file(struct device *dev, const struct device_attribute * attr);
 </pre></div>
 </div>
-</section>
-<section id="bus-drivers-include-linux-device-h">
+</div>
+<div class="section" id="bus-drivers-include-linux-device-h">
 <h3>bus drivers (include/linux/device.h)<a class="headerlink" href="#bus-drivers-include-linux-device-h" title="Permalink to this headline">¶</a></h3>
 <p>Structure:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct bus_attribute {
@@ -650,8 +652,8 @@ static BUS_ATTR_WO(name);
 void bus_remove_file(struct bus_type *, struct bus_attribute *);
 </pre></div>
 </div>
-</section>
-<section id="device-drivers-include-linux-device-h">
+</div>
+<div class="section" id="device-drivers-include-linux-device-h">
 <h3>device drivers (include/linux/device.h)<a class="headerlink" href="#device-drivers-include-linux-device-h" title="Permalink to this headline">¶</a></h3>
 <p>Structure:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct driver_attribute {
@@ -672,17 +674,17 @@ DRIVER_ATTR_RW(_name)
 void driver_remove_file(struct device_driver *, const struct driver_attribute *);
 </pre></div>
 </div>
-</section>
-</section>
-<section id="documentation">
+</div>
+</div>
+<div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <p>The sysfs directory structure and the attributes in each directory define an
 ABI between the kernel and user space. As for any ABI, it is important that
 this ABI is stable and properly documented. All new sysfs attributes must be
 documented in Documentation/ABI. See also Documentation/ABI/README for more
 information.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

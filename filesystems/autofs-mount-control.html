@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Miscellaneous Device control operations for the autofs kernel module &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -312,9 +314,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="miscellaneous-device-control-operations-for-the-autofs-kernel-module">
+  <div class="section" id="miscellaneous-device-control-operations-for-the-autofs-kernel-module">
 <h1>Miscellaneous Device control operations for the autofs kernel module<a class="headerlink" href="#miscellaneous-device-control-operations-for-the-autofs-kernel-module" title="Permalink to this headline">¶</a></h1>
-<section id="the-problem">
+<div class="section" id="the-problem">
 <h2>The problem<a class="headerlink" href="#the-problem" title="Permalink to this headline">¶</a></h2>
 <p>There is a problem with active restarts in autofs (that is to say
 restarting autofs when there are busy mounts).</p>
@@ -409,8 +411,8 @@ descriptor are accounted for in checks made to determine if a mount is
 in use and is also used to access autofs file system information held
 in the mount super block. So the use of a file handle needs to be
 retained.</p>
-</section>
-<section id="the-solution">
+</div>
+<div class="section" id="the-solution">
 <h2>The Solution<a class="headerlink" href="#the-solution" title="Permalink to this headline">¶</a></h2>
 <p>To be able to restart autofs leaving existing direct, indirect and
 offset mounts in place we need to be able to obtain a file handle
@@ -458,8 +460,8 @@ appropriate status to the daemon. At the moment we just expire one
 mount at a time. A Generic Netlink implementation would exclude this
 possibility for future development due to the requirements of the
 message bus architecture.</p>
-</section>
-<section id="autofs-miscellaneous-device-mount-control-interface">
+</div>
+<div class="section" id="autofs-miscellaneous-device-mount-control-interface">
 <h2>autofs Miscellaneous Device mount control interface<a class="headerlink" href="#autofs-miscellaneous-device-mount-control-interface" title="Permalink to this headline">¶</a></h2>
 <p>The control interface is opening a device node, typically /dev/autofs.</p>
 <p>All the ioctls use a common structure to pass the needed parameter
@@ -517,23 +519,23 @@ AUTOFS_DEV_IOCTL_CLOSEMOUNT_CMD the ioctlfd is validated and if it is
 not a valid descriptor or doesn’t correspond to an autofs mount point
 an error of -EBADF, -ENOTTY or -EINVAL (not an autofs descriptor) is
 returned.</p>
-</section>
-<section id="the-ioctls">
+</div>
+<div class="section" id="the-ioctls">
 <h2>The ioctls<a class="headerlink" href="#the-ioctls" title="Permalink to this headline">¶</a></h2>
 <p>An example of an implementation which uses this interface can be seen
 in autofs version 5.0.4 and later in file lib/dev-ioctl-lib.c of the
 distribution tar available for download from kernel.org in directory
 /pub/linux/daemons/autofs/v5.</p>
 <p>The device node ioctl operations implemented by this interface are:</p>
-<section id="autofs-dev-ioctl-version">
+<div class="section" id="autofs-dev-ioctl-version">
 <h3>AUTOFS_DEV_IOCTL_VERSION<a class="headerlink" href="#autofs-dev-ioctl-version" title="Permalink to this headline">¶</a></h3>
 <p>Get the major and minor version of the autofs device ioctl kernel module
 implementation. It requires an initialized struct autofs_dev_ioctl as an
 input parameter and sets the version information in the passed in structure.
 It returns 0 on success or the error -EINVAL if a version mismatch is
 detected.</p>
-</section>
-<section id="autofs-dev-ioctl-protover-cmd-and-autofs-dev-ioctl-protosubver-cmd">
+</div>
+<div class="section" id="autofs-dev-ioctl-protover-cmd-and-autofs-dev-ioctl-protosubver-cmd">
 <h3>AUTOFS_DEV_IOCTL_PROTOVER_CMD and AUTOFS_DEV_IOCTL_PROTOSUBVER_CMD<a class="headerlink" href="#autofs-dev-ioctl-protover-cmd-and-autofs-dev-ioctl-protosubver-cmd" title="Permalink to this headline">¶</a></h3>
 <p>Get the major and minor version of the autofs protocol version understood
 by loaded module. This call requires an initialized struct autofs_dev_ioctl
@@ -541,8 +543,8 @@ with the ioctlfd field set to a valid autofs mount point descriptor
 and sets the requested version number in version field of struct args_protover
 or sub_version field of struct args_protosubver. These commands return
 0 on success or one of the negative error codes if validation fails.</p>
-</section>
-<section id="autofs-dev-ioctl-openmount-and-autofs-dev-ioctl-closemount">
+</div>
+<div class="section" id="autofs-dev-ioctl-openmount-and-autofs-dev-ioctl-closemount">
 <h3>AUTOFS_DEV_IOCTL_OPENMOUNT and AUTOFS_DEV_IOCTL_CLOSEMOUNT<a class="headerlink" href="#autofs-dev-ioctl-openmount-and-autofs-dev-ioctl-closemount" title="Permalink to this headline">¶</a></h3>
 <p>Obtain and release a file descriptor for an autofs managed mount point
 path. The open call requires an initialized struct autofs_dev_ioctl with
@@ -555,8 +557,8 @@ from the open call. The release of the file descriptor can also be done
 with close(2) so any open descriptors will also be closed at process exit.
 The close call is included in the implemented operations largely for
 completeness and to provide for a consistent user space implementation.</p>
-</section>
-<section id="autofs-dev-ioctl-ready-cmd-and-autofs-dev-ioctl-fail-cmd">
+</div>
+<div class="section" id="autofs-dev-ioctl-ready-cmd-and-autofs-dev-ioctl-fail-cmd">
 <h3>AUTOFS_DEV_IOCTL_READY_CMD and AUTOFS_DEV_IOCTL_FAIL_CMD<a class="headerlink" href="#autofs-dev-ioctl-ready-cmd-and-autofs-dev-ioctl-fail-cmd" title="Permalink to this headline">¶</a></h3>
 <p>Return mount and expire result status from user space to the kernel.
 Both of these calls require an initialized struct autofs_dev_ioctl
@@ -565,8 +567,8 @@ call and the token field of struct args_ready or struct args_fail set
 to the wait queue token number, received by user space in the foregoing
 mount or expire request. The status field of struct args_fail is set to
 the errno of the operation. It is set to 0 on success.</p>
-</section>
-<section id="autofs-dev-ioctl-setpipefd-cmd">
+</div>
+<div class="section" id="autofs-dev-ioctl-setpipefd-cmd">
 <h3>AUTOFS_DEV_IOCTL_SETPIPEFD_CMD<a class="headerlink" href="#autofs-dev-ioctl-setpipefd-cmd" title="Permalink to this headline">¶</a></h3>
 <p>Set the pipe file descriptor used for kernel communication to the daemon.
 Normally this is set at mount time using an option but when reconnecting
@@ -580,22 +582,22 @@ the pipefd field of struct args_setpipefd set to descriptor of the pipe.
 On success the call also sets the process group id used to identify the
 controlling process (eg. the owning automount(8) daemon) to the process
 group of the caller.</p>
-</section>
-<section id="autofs-dev-ioctl-catatonic-cmd">
+</div>
+<div class="section" id="autofs-dev-ioctl-catatonic-cmd">
 <h3>AUTOFS_DEV_IOCTL_CATATONIC_CMD<a class="headerlink" href="#autofs-dev-ioctl-catatonic-cmd" title="Permalink to this headline">¶</a></h3>
 <p>Make the autofs mount point catatonic. The autofs mount will no longer
 issue mount requests, the kernel communication pipe descriptor is released
 and any remaining waits in the queue released.</p>
 <p>The call requires an initialized struct autofs_dev_ioctl with the
 ioctlfd field set to the descriptor obtained from the open call.</p>
-</section>
-<section id="autofs-dev-ioctl-timeout-cmd">
+</div>
+<div class="section" id="autofs-dev-ioctl-timeout-cmd">
 <h3>AUTOFS_DEV_IOCTL_TIMEOUT_CMD<a class="headerlink" href="#autofs-dev-ioctl-timeout-cmd" title="Permalink to this headline">¶</a></h3>
 <p>Set the expire timeout for mounts within an autofs mount point.</p>
 <p>The call requires an initialized struct autofs_dev_ioctl with the
 ioctlfd field set to the descriptor obtained from the open call.</p>
-</section>
-<section id="autofs-dev-ioctl-requester-cmd">
+</div>
+<div class="section" id="autofs-dev-ioctl-requester-cmd">
 <h3>AUTOFS_DEV_IOCTL_REQUESTER_CMD<a class="headerlink" href="#autofs-dev-ioctl-requester-cmd" title="Permalink to this headline">¶</a></h3>
 <p>Return the uid and gid of the last process to successfully trigger a the
 mount on the given path dentry.</p>
@@ -608,8 +610,8 @@ re-connect to mounts that may have used the original process uid and
 gid (or string variations of them) for mount lookups within the map entry.
 This call provides the ability to obtain this uid and gid so they may be
 used by user space for the mount map lookups.</p>
-</section>
-<section id="autofs-dev-ioctl-expire-cmd">
+</div>
+<div class="section" id="autofs-dev-ioctl-expire-cmd">
 <h3>AUTOFS_DEV_IOCTL_EXPIRE_CMD<a class="headerlink" href="#autofs-dev-ioctl-expire-cmd" title="Permalink to this headline">¶</a></h3>
 <p>Issue an expire request to the kernel for an autofs mount. Typically
 this ioctl is called until no further expire candidates are found.</p>
@@ -624,16 +626,16 @@ EAGAIN.</p>
 <p>This call causes the kernel module to check the mount corresponding
 to the given ioctlfd for mounts that can be expired, issues an expire
 request back to the daemon and waits for completion.</p>
-</section>
-<section id="autofs-dev-ioctl-askumount-cmd">
+</div>
+<div class="section" id="autofs-dev-ioctl-askumount-cmd">
 <h3>AUTOFS_DEV_IOCTL_ASKUMOUNT_CMD<a class="headerlink" href="#autofs-dev-ioctl-askumount-cmd" title="Permalink to this headline">¶</a></h3>
 <p>Checks if an autofs mount point is in use.</p>
 <p>The call requires an initialized struct autofs_dev_ioctl with the
 ioctlfd field set to the descriptor obtained from the open call and
 it returns the result in the may_umount field of struct args_askumount,
 1 for busy and 0 otherwise.</p>
-</section>
-<section id="autofs-dev-ioctl-ismountpoint-cmd">
+</div>
+<div class="section" id="autofs-dev-ioctl-ismountpoint-cmd">
 <h3>AUTOFS_DEV_IOCTL_ISMOUNTPOINT_CMD<a class="headerlink" href="#autofs-dev-ioctl-ismountpoint-cmd" title="Permalink to this headline">¶</a></h3>
 <p>Check if the given path is a mountpoint.</p>
 <p>The call requires an initialized struct autofs_dev_ioctl. There are two
@@ -659,9 +661,9 @@ type is also given we are looking for a particular autofs mount and if
 a match isn’t found a fail is returned. If the located path is the
 root of a mount 1 is returned along with the super magic of the mount
 or 0 otherwise.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

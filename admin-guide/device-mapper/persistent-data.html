@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Persistent data &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -359,9 +361,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="persistent-data">
+  <div class="section" id="persistent-data">
 <h1>Persistent data<a class="headerlink" href="#persistent-data" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The more-sophisticated device-mapper targets require complex metadata
 that is managed in kernel.  In late 2010 we were seeing that various
@@ -378,20 +380,20 @@ we’d like to reduce the number.</p>
 framework for people who want to store metadata in device-mapper
 targets.  It’s currently used by the thin-provisioning target and an
 upcoming hierarchical storage target.</p>
-</section>
-<section id="overview">
+</div>
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The main documentation is in the header files which can all be found
 under drivers/md/persistent-data.</p>
-<section id="the-block-manager">
+<div class="section" id="the-block-manager">
 <h3>The block manager<a class="headerlink" href="#the-block-manager" title="Permalink to this headline">¶</a></h3>
 <p>dm-block-manager.[hc]</p>
 <p>This provides access to the data on disk in fixed sized-blocks.  There
 is a read/write locking interface to prevent concurrent accesses, and
 keep data that is being used in the cache.</p>
 <p>Clients of persistent-data are unlikely to use this directly.</p>
-</section>
-<section id="the-transaction-manager">
+</div>
+<div class="section" id="the-transaction-manager">
 <h3>The transaction manager<a class="headerlink" href="#the-transaction-manager" title="Permalink to this headline">¶</a></h3>
 <p>dm-transaction-manager.[hc]</p>
 <p>This restricts access to blocks and enforces copy-on-write semantics.
@@ -401,8 +403,8 @@ copy-on-write) or allocating a fresh one.  Shadowing is elided within
 the same transaction so performance is reasonable.  The commit method
 ensures that all data is flushed before it writes the superblock.
 On power failure your metadata will be as it was when last committed.</p>
-</section>
-<section id="the-space-maps">
+</div>
+<div class="section" id="the-space-maps">
 <h3>The Space Maps<a class="headerlink" href="#the-space-maps" title="Permalink to this headline">¶</a></h3>
 <p>dm-space-map.h
 dm-space-map-metadata.[hc]
@@ -413,8 +415,8 @@ implementations: a simpler one for managing blocks on a different
 device (eg. thinly-provisioned data blocks); and one for managing
 the metadata space.  The latter is complicated by the need to store
 its own data within the space it’s managing.</p>
-</section>
-<section id="the-data-structures">
+</div>
+<div class="section" id="the-data-structures">
 <h3>The data structures<a class="headerlink" href="#the-data-structures" title="Permalink to this headline">¶</a></h3>
 <p>dm-btree.[hc]
 dm-btree-remove.c
@@ -430,9 +432,9 @@ The first maps a device id to a mapping tree, and that in turn maps a
 virtual block to a physical block.</p>
 <p>Values stored in the btrees can have arbitrary size.  Keys are always
 64bits, although nesting allows you to use multiple keys.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

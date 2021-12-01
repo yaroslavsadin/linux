@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Reexporting NFS filesystems &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -316,17 +318,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="reexporting-nfs-filesystems">
+  <div class="section" id="reexporting-nfs-filesystems">
 <h1>Reexporting NFS filesystems<a class="headerlink" href="#reexporting-nfs-filesystems" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>It is possible to reexport an NFS filesystem over NFS.  However, this
 feature comes with a number of limitations.  Before trying it, we
 recommend some careful research to determine whether it will work for
 your purposes.</p>
 <p>A discussion of current known limitations follows.</p>
-</section>
-<section id="fsid-required-crossmnt-broken">
+</div>
+<div class="section" id="fsid-required-crossmnt-broken">
 <h2>“fsid=” required, crossmnt broken<a class="headerlink" href="#fsid-required-crossmnt-broken" title="Permalink to this headline">¶</a></h2>
 <p>We require the “fsid=” export option on any reexport of an NFS
 filesystem.  You can use “uuidgen -r” to generate a unique argument.</p>
@@ -334,15 +336,15 @@ filesystem.  You can use “uuidgen -r” to generate a unique argument.</p>
 traversing into further nfs filesystems; if you wish to export nfs
 filesystems mounted under the exported filesystem, you’ll need to export
 them explicitly, assigning each its own unique “fsid= option.</p>
-</section>
-<section id="reboot-recovery">
+</div>
+<div class="section" id="reboot-recovery">
 <h2>Reboot recovery<a class="headerlink" href="#reboot-recovery" title="Permalink to this headline">¶</a></h2>
 <p>The NFS protocol’s normal reboot recovery mechanisms don’t work for the
 case when the reexport server reboots.  Clients will lose any locks
 they held before the reboot, and further IO will result in errors.
 Closing and reopening files should clear the errors.</p>
-</section>
-<section id="filehandle-limits">
+</div>
+<div class="section" id="filehandle-limits">
 <h2>Filehandle limits<a class="headerlink" href="#filehandle-limits" title="Permalink to this headline">¶</a></h2>
 <p>If the original server uses an X byte filehandle for a given object, the
 reexport server’s filehandle for the reexported object will be X+22
@@ -434,8 +436,8 @@ the source code and comments; see in particular:</p>
 <li><p>fs/nfs/export.c:nfs_encode_fh</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="open-deny-bits-ignored">
+</div>
+<div class="section" id="open-deny-bits-ignored">
 <h2>Open DENY bits ignored<a class="headerlink" href="#open-deny-bits-ignored" title="Permalink to this headline">¶</a></h2>
 <p>NFS since NFSv4 supports ALLOW and DENY bits taken from Windows, which
 allow you, for example, to open a file in a mode which forbids other
@@ -445,8 +447,8 @@ against other NFS users, not against processes accessing the exported
 filesystem locally. A reexport server will also not pass them along to
 the original server, so they will not be enforced between clients of
 different reexport servers.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

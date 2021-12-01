@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Bus Types &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -358,14 +360,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bus-types">
+  <div class="section" id="bus-types">
 <h1>Bus Types<a class="headerlink" href="#bus-types" title="Permalink to this headline">¶</a></h1>
-<section id="definition">
+<div class="section" id="definition">
 <h2>Definition<a class="headerlink" href="#definition" title="Permalink to this headline">¶</a></h2>
 <p>See the kerneldoc for the struct bus_type.</p>
 <p>int bus_register(struct bus_type * bus);</p>
-</section>
-<section id="declaration">
+</div>
+<div class="section" id="declaration">
 <h2>Declaration<a class="headerlink" href="#declaration" title="Permalink to this headline">¶</a></h2>
 <p>Each bus type in the kernel (PCI, USB, etc) should declare one static
 object of this type. They must initialize the name field, and may
@@ -378,18 +380,18 @@ optionally initialize the match callback:</p>
 </div>
 <p>The structure should be exported to drivers in a header file:</p>
 <p>extern struct bus_type pci_bus_type;</p>
-</section>
-<section id="registration">
+</div>
+<div class="section" id="registration">
 <h2>Registration<a class="headerlink" href="#registration" title="Permalink to this headline">¶</a></h2>
 <p>When a bus driver is initialized, it calls bus_register. This
 initializes the rest of the fields in the bus object and inserts it
 into a global list of bus types. Once the bus object is registered,
 the fields in it are usable by the bus driver.</p>
-</section>
-<section id="callbacks">
+</div>
+<div class="section" id="callbacks">
 <h2>Callbacks<a class="headerlink" href="#callbacks" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="match-attaching-drivers-to-devices">
+</div>
+<div class="section" id="match-attaching-drivers-to-devices">
 <h2>match(): Attaching Drivers to Devices<a class="headerlink" href="#match-attaching-drivers-to-devices" title="Permalink to this headline">¶</a></h2>
 <p>The format of device ID structures and the semantics for comparing
 them are inherently bus-specific. Drivers typically declare an array
@@ -403,8 +405,8 @@ type-safety.</p>
 <p>When a driver is registered with the bus, the bus’s list of devices is
 iterated over, and the match callback is called for each device that
 does not have a driver associated with it.</p>
-</section>
-<section id="device-and-driver-lists">
+</div>
+<div class="section" id="device-and-driver-lists">
 <h2>Device and Driver Lists<a class="headerlink" href="#device-and-driver-lists" title="Permalink to this headline">¶</a></h2>
 <p>The lists of devices and drivers are intended to replace the local
 lists that many buses keep. They are lists of struct devices and
@@ -426,8 +428,8 @@ synchronized by taking the bus’s lock (read currently). The reference
 count on each object in the list is incremented before the callback is
 called; it is decremented after the next object has been obtained. The
 lock is not held when calling the callback.</p>
-</section>
-<section id="sysfs">
+</div>
+<div class="section" id="sysfs">
 <h2>sysfs<a class="headerlink" href="#sysfs" title="Permalink to this headline">¶</a></h2>
 <p>There is a top-level directory named ‘bus’.</p>
 <p>Each bus gets a directory in the bus directory, along with two default
@@ -459,8 +461,8 @@ hierarchy:</p>
 `-- drivers
 </pre></div>
 </div>
-</section>
-<section id="exporting-attributes">
+</div>
+<div class="section" id="exporting-attributes">
 <h2>Exporting Attributes<a class="headerlink" href="#exporting-attributes" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct bus_attribute {
       struct attribute        attr;
@@ -485,8 +487,8 @@ sysfs directory using:</p>
 void bus_remove_file(struct bus_type *, struct bus_attribute *);
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

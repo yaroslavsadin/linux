@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Adjunct Processor (AP) facility &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -282,9 +284,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="adjunct-processor-ap-facility">
+  <div class="section" id="adjunct-processor-ap-facility">
 <h1>Adjunct Processor (AP) facility<a class="headerlink" href="#adjunct-processor-ap-facility" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The Adjunct Processor (AP) facility is an IBM Z cryptographic facility comprised
 of three AP instructions and from 1 up to 256 PCIe cryptographic adapter cards.
@@ -295,8 +297,8 @@ is to make AP cards available to KVM guests using the VFIO mediated device
 framework. This implementation relies considerably on the s390 virtualization
 facilities which do most of the hard work of providing direct access to AP
 devices.</p>
-</section>
-<section id="ap-architectural-overview">
+</div>
+<div class="section" id="ap-architectural-overview">
 <h2>AP Architectural Overview<a class="headerlink" href="#ap-architectural-overview" title="Permalink to this headline">¶</a></h2>
 <p>To facilitate the comprehension of the design, let’s start with some
 definitions:</p>
@@ -395,8 +397,8 @@ domain that is not one of the usage domains, but the modified domain
 must be one of the control domains.</p>
 </li>
 </ul>
-</section>
-<section id="ap-and-sie">
+</div>
+<div class="section" id="ap-and-sie">
 <h2>AP and SIE<a class="headerlink" href="#ap-and-sie" title="Permalink to this headline">¶</a></h2>
 <p>Let’s now take a look at how AP instructions executed on a guest are interpreted
 by the hardware.</p>
@@ -461,8 +463,8 @@ This is an invalid configuration because both guests have access to
 APQN (1,6).
 </pre></div>
 </div>
-</section>
-<section id="the-design">
+</div>
+<div class="section" id="the-design">
 <h2>The Design<a class="headerlink" href="#the-design" title="Permalink to this headline">¶</a></h2>
 <p>The design introduces three new objects:</p>
 <ol class="arabic simple">
@@ -470,7 +472,7 @@ APQN (1,6).
 <li><p>VFIO AP device driver (vfio_ap.ko)</p></li>
 <li><p>VFIO AP mediated matrix pass-through device</p></li>
 </ol>
-<section id="the-vfio-ap-device-driver">
+<div class="section" id="the-vfio-ap-device-driver">
 <h3>The VFIO AP device driver<a class="headerlink" href="#the-vfio-ap-device-driver" title="Permalink to this headline">¶</a></h3>
 <p>The VFIO AP (vfio_ap) device driver serves the following purposes:</p>
 <ol class="arabic simple">
@@ -481,8 +483,8 @@ domains, and control domains comprising the matrix for a KVM guest.</p></li>
 <li><p>Configures the APM, AQM and ADM in the CRYCB referenced by a KVM guest’s
 SIE state description to grant the guest access to a matrix of AP devices</p></li>
 </ol>
-</section>
-<section id="reserve-apqns-for-exclusive-use-of-kvm-guests">
+</div>
+<div class="section" id="reserve-apqns-for-exclusive-use-of-kvm-guests">
 <h3>Reserve APQNs for exclusive use of KVM guests<a class="headerlink" href="#reserve-apqns-for-exclusive-use-of-kvm-guests" title="Permalink to this headline">¶</a></h3>
 <p>The following block diagram illustrates the mechanism by which APQNs are
 reserved:</p>
@@ -549,8 +551,8 @@ used by a guest</p></li>
 <li><p>The administrator assigns the adapters, usage domains and control domains
 to be exclusively used by a guest.</p></li>
 </ol>
-</section>
-<section id="set-up-the-vfio-mediated-device-interfaces">
+</div>
+<div class="section" id="set-up-the-vfio-mediated-device-interfaces">
 <h3>Set up the VFIO mediated device interfaces<a class="headerlink" href="#set-up-the-vfio-mediated-device-interfaces" title="Permalink to this headline">¶</a></h3>
 <p>The VFIO AP device driver utilizes the common interface of the VFIO mediated
 device core driver to:</p>
@@ -697,8 +699,8 @@ mdev matrix device and deconfigures the guest’s AP matrix.</p>
 </dl>
 </li>
 </ul>
-</section>
-<section id="configure-the-apm-aqm-and-adm-in-the-crycb">
+</div>
+<div class="section" id="configure-the-apm-aqm-and-adm-in-the-crycb">
 <h3>Configure the APM, AQM and ADM in the CRYCB<a class="headerlink" href="#configure-the-apm-aqm-and-adm-in-the-crycb" title="Permalink to this headline">¶</a></h3>
 <p>Configuring the AP matrix for a KVM guest will be performed when the
 VFIO_GROUP_NOTIFY_SET_KVM notifier callback is invoked. The notifier
@@ -712,8 +714,8 @@ mediated matrix device via its ‘assign_domain’ interface.</p></li>
 <li><p>Setting the bits in the ADM corresponding to the domain dIDs assigned to the
 mediated matrix device via its ‘assign_control_domains’ interface.</p></li>
 </ul>
-</section>
-<section id="the-cpu-model-features-for-ap">
+</div>
+<div class="section" id="the-cpu-model-features-for-ap">
 <h3>The CPU model features for AP<a class="headerlink" href="#the-cpu-model-features-for-ap" title="Permalink to this headline">¶</a></h3>
 <p>The AP stack relies on the presence of the AP instructions as well as two
 facilities: The AP Facilities Test (APFT) facility; and the AP Query
@@ -748,15 +750,15 @@ the APFT facility to ascertain the facilities installed on a given AP device. If
 the APFT facility is not installed on the guest, then the probe of device
 drivers will fail since only type 10 and newer devices can be configured for
 guest use.</p>
-</section>
-</section>
-<section id="example">
+</div>
+</div>
+<div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>Let’s now provide an example to illustrate how KVM guests may be given
 access to AP facilities. For this example, we will show how to configure
 three guests such that executing the lszcrypt command on the guests would
 look like this:</p>
-<section id="guest1">
+<div class="section" id="guest1">
 <h3>Guest1<a class="headerlink" href="#guest1" title="Permalink to this headline">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
@@ -797,8 +799,8 @@ look like this:</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="guest2">
+</div>
+<div class="section" id="guest2">
 <h3>Guest2<a class="headerlink" href="#guest2" title="Permalink to this headline">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
@@ -827,8 +829,8 @@ look like this:</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="guest3">
+</div>
+<div class="section" id="guest3">
 <h3>Guest3<a class="headerlink" href="#guest3" title="Permalink to this headline">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
@@ -946,7 +948,7 @@ an error (EINVAL).</p>
 </li>
 <li><p>Individual bits in the mask can be switched on and off by specifying
 each bit number to be switched in a comma separated list. Each bit
-number string must be prepended with a (‘+’) or minus (‘-’) to indicate
+number string must be prepended with a (‘+’) or minus (‘-‘) to indicate
 the corresponding bit is to be switched on (‘+’) or off (‘-‘). Some
 valid values are:</p>
 <blockquote>
@@ -990,8 +992,8 @@ alternate drivers pool:  adapter 16-255, domains 0, 2-255
 </ol>
 </li>
 </ol>
-</section>
-<section id="securing-the-apqns-for-our-example">
+</div>
+<div class="section" id="securing-the-apqns-for-our-example">
 <h3>Securing the APQNs for our example<a class="headerlink" href="#securing-the-apqns-for-our-example" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>To secure the AP queues 05.0004, 05.0047, 05.00ab, 05.00ff, 06.0004, 06.0047,
@@ -1216,9 +1218,9 @@ that the remove will fail if a guest using the mdev is still running.</p>
 remove it if no guest will use it during the remaining lifetime of the linux
 host. If the mdev matrix device is removed, one may want to also reconfigure
 the pool of adapters and queues reserved for use by the default drivers.</p>
-</section>
-</section>
-<section id="limitations">
+</div>
+</div>
+<div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The KVM/kernel interfaces do not provide a way to prevent restoring an APQN
@@ -1231,8 +1233,8 @@ device such as a private key configured specifically for the guest.</p></li>
 hot(un)plug of AP devices for the guest) is currently not supported</p></li>
 <li><p>Live guest migration is not supported for guests using AP devices.</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

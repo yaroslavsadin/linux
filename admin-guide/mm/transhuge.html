@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Transparent Hugepage Support &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -352,9 +354,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="transparent-hugepage-support">
+  <div class="section" id="transparent-hugepage-support">
 <span id="admin-guide-transhuge"></span><h1>Transparent Hugepage Support<a class="headerlink" href="#transparent-hugepage-support" title="Permalink to this headline">¶</a></h1>
-<section id="objective">
+<div class="section" id="objective">
 <h2>Objective<a class="headerlink" href="#objective" title="Permalink to this headline">¶</a></h2>
 <p>Performance critical computing applications dealing with large memory
 working sets are already running on top of libhugetlbfs and in turn
@@ -426,10 +428,10 @@ only run faster.</p>
 <p>Applications that gets a lot of benefit from hugepages and that don’t
 risk to lose memory by using hugepages, should use
 madvise(MADV_HUGEPAGE) on their critical mmapped regions.</p>
-</section>
-<section id="sysfs">
+</div>
+<div class="section" id="sysfs">
 <span id="thp-sysfs"></span><h2>sysfs<a class="headerlink" href="#sysfs" title="Permalink to this headline">¶</a></h2>
-<section id="global-thp-controls">
+<div class="section" id="global-thp-controls">
 <h3>Global THP controls<a class="headerlink" href="#global-thp-controls" title="Permalink to this headline">¶</a></h3>
 <p>Transparent Hugepage Support for anonymous memory can be entirely disabled
 (mostly for debugging purposes) or only enabled inside MADV_HUGEPAGE
@@ -495,8 +497,8 @@ library) may want to know the size (in bytes) of a transparent hugepage:</p>
 <p>khugepaged will be automatically started when
 transparent_hugepage/enabled is set to “always” or “madvise, and it’ll
 be automatically shutdown if it’s set to “never”.</p>
-</section>
-<section id="khugepaged-controls">
+</div>
+<div class="section" id="khugepaged-controls">
 <h3>Khugepaged controls<a class="headerlink" href="#khugepaged-controls" title="Permalink to this headline">¶</a></h3>
 <p>khugepaged runs usually at low frequency so while one may not want to
 invoke defrag algorithms synchronously during the page faults, it
@@ -555,16 +557,16 @@ processes. Exceeding the number would block the collapse:</p>
 </pre></div>
 </div>
 <p>A higher value may increase memory footprint for some workloads.</p>
-</section>
-</section>
-<section id="boot-parameter">
+</div>
+</div>
+<div class="section" id="boot-parameter">
 <h2>Boot parameter<a class="headerlink" href="#boot-parameter" title="Permalink to this headline">¶</a></h2>
 <p>You can change the sysfs boot time defaults of Transparent Hugepage
 Support by passing the parameter <code class="docutils literal notranslate"><span class="pre">transparent_hugepage=always</span></code> or
 <code class="docutils literal notranslate"><span class="pre">transparent_hugepage=madvise</span></code> or <code class="docutils literal notranslate"><span class="pre">transparent_hugepage=never</span></code>
 to the kernel command line.</p>
-</section>
-<section id="hugepages-in-tmpfs-shmem">
+</div>
+<div class="section" id="hugepages-in-tmpfs-shmem">
 <h2>Hugepages in tmpfs/shmem<a class="headerlink" href="#hugepages-in-tmpfs-shmem" title="Permalink to this headline">¶</a></h2>
 <p>You can control hugepage allocation policy in tmpfs with mount option
 <code class="docutils literal notranslate"><span class="pre">huge=</span></code>. It can have following values:</p>
@@ -596,15 +598,15 @@ all mounts;</p>
 <dt>force</dt><dd><p>Force the huge option on for all - very useful for testing;</p>
 </dd>
 </dl>
-</section>
-<section id="need-of-application-restart">
+</div>
+<div class="section" id="need-of-application-restart">
 <h2>Need of application restart<a class="headerlink" href="#need-of-application-restart" title="Permalink to this headline">¶</a></h2>
 <p>The transparent_hugepage/enabled values and tmpfs mount option only affect
 future behavior. So to make them effective you need to restart any
 application that could have been using hugepages. This also applies to the
 regions registered in khugepaged.</p>
-</section>
-<section id="monitoring-usage">
+</div>
+<div class="section" id="monitoring-usage">
 <h2>Monitoring usage<a class="headerlink" href="#monitoring-usage" title="Permalink to this headline">¶</a></h2>
 <p>The number of anonymous transparent huge pages currently used by the
 system is available by reading the AnonHugePages field in <code class="docutils literal notranslate"><span class="pre">/proc/meminfo</span></code>.
@@ -705,22 +707,22 @@ but failed.</p>
 tracer to record how long was spent in __alloc_pages() and
 using the mm_page_alloc tracepoint to identify which allocations were
 for huge pages.</p>
-</section>
-<section id="optimizing-the-applications">
+</div>
+<div class="section" id="optimizing-the-applications">
 <h2>Optimizing the applications<a class="headerlink" href="#optimizing-the-applications" title="Permalink to this headline">¶</a></h2>
 <p>To be guaranteed that the kernel will map a 2M page immediately in any
 memory region, the mmap region has to be hugepage naturally
 aligned. posix_memalign() can provide that guarantee.</p>
-</section>
-<section id="hugetlbfs">
+</div>
+<div class="section" id="hugetlbfs">
 <h2>Hugetlbfs<a class="headerlink" href="#hugetlbfs" title="Permalink to this headline">¶</a></h2>
 <p>You can use hugetlbfs on a kernel that has transparent hugepage
 support enabled just fine as always. No difference can be noted in
 hugetlbfs other than there will be less overall fragmentation. All
 usual features belonging to hugetlbfs are preserved and
 unaffected. libhugetlbfs will also work fine as usual.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

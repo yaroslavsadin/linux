@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Coda Kernel-Venus Interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -314,7 +316,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="coda-kernel-venus-interface">
+  <div class="section" id="coda-kernel-venus-interface">
 <h1>Coda Kernel-Venus Interface<a class="headerlink" href="#coda-kernel-venus-interface" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -344,7 +346,7 @@ level filesystem code needed for the operation of the Coda file sys-
 tem.  This document version is meant to describe the current interface
 (version 1.0) as well as improvements we envisage.</p>
 </div></blockquote>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>A key component in the Coda Distributed File System is the cache
@@ -382,8 +384,8 @@ to make future ports easier, communication between Venus and the
 kernel should be documented in great detail.  This is the aim of this
 document.</p>
 </div></blockquote>
-</section>
-<section id="servicing-coda-filesystem-calls">
+</div>
+<div class="section" id="servicing-coda-filesystem-calls">
 <h2>2.  Servicing Coda filesystem calls<a class="headerlink" href="#servicing-coda-filesystem-calls" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>The service of a request for a Coda file system service originates in
@@ -440,8 +442,8 @@ receive and be notified of messages are platform specific.  We will
 not go into the calls exported to the VFS layer but we will state the
 requirements of the message exchange mechanism.</p>
 </div></blockquote>
-</section>
-<section id="the-message-layer">
+</div>
+<div class="section" id="the-message-layer">
 <h2>3.  The message layer<a class="headerlink" href="#the-message-layer" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>At the lowest level the communication between Venus and the FS driver
@@ -518,7 +520,7 @@ involves more than one upcall, this can lead to complicated state, an
 extra field “handle_signals” could be added in the message structure
 to indicate points of no return have been passed.–)</p>
 </div></blockquote>
-<section id="implementation-details">
+<div class="section" id="implementation-details">
 <h3>3.1.  Implementation details<a class="headerlink" href="#implementation-details" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The Unix implementation of this mechanism has been through the
@@ -535,9 +537,9 @@ asynchronous.  Windows EventObjects are used for notification of
 message arrival.  The process P is kept waiting on a KernelEvent
 object in NT and a semaphore in Windows 95.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="the-interface-at-the-call-level">
+</div>
+</div>
+<div class="section" id="the-interface-at-the-call-level">
 <h2>4.  The interface at the call level<a class="headerlink" href="#the-interface-at-the-call-level" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>This section describes the upcalls a Coda FS driver can make to Venus.
@@ -573,7 +575,7 @@ are included.</p>
 <p>Before delving into the specific calls we need to discuss a variety of
 data structures shared by the kernel and Venus.</p>
 </div></blockquote>
-<section id="data-structures-shared-by-the-kernel-and-venus">
+<div class="section" id="data-structures-shared-by-the-kernel-and-venus">
 <h3>4.1.  Data structures shared by the kernel and Venus<a class="headerlink" href="#data-structures-shared-by-the-kernel-and-venus" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The CodaCred structure defines a variety of user and group ids as
@@ -649,8 +651,8 @@ struct coda_vattr {
 </pre></div>
 </div>
 </div></blockquote>
-</section>
-<section id="the-pioctl-interface">
+</div>
+<div class="section" id="the-pioctl-interface">
 <h3>4.2.  The pioctl interface<a class="headerlink" href="#the-pioctl-interface" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Coda specific requests can be made by application through the pioctl
@@ -684,8 +686,8 @@ made.</p>
 </div>
 </div></blockquote>
 <p><strong>We now proceed to document the individual calls</strong>:</p>
-</section>
-<section id="root">
+</div>
+<div class="section" id="root">
 <h3>4.3.  root<a class="headerlink" href="#root" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -709,8 +711,8 @@ the Coda filesystem.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="lookup">
+</div>
+<div class="section" id="lookup">
 <h3>4.4.  lookup<a class="headerlink" href="#lookup" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -752,8 +754,8 @@ not be put in the kernel name cache.</p>
 coda_vtype. Linux does not take note of CFS_NOCACHE.  It should.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="getattr">
+</div>
+<div class="section" id="getattr">
 <h3>4.5.  getattr<a class="headerlink" href="#getattr" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Summary Get the attributes of a file.</p>
@@ -790,8 +792,8 @@ both at the Venus/kernel interaction level and at the RPC level.</p>
 <p>The vattr structure included in the input arguments is superfluous and
 should be removed.</p>
 </div></blockquote>
-</section>
-<section id="setattr">
+</div>
+<div class="section" id="setattr">
 <h3>4.6.  setattr<a class="headerlink" href="#setattr" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -821,8 +823,8 @@ be inaccessible, or permission may not be granted by Venus.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="access">
+</div>
+<div class="section" id="access">
 <h3>4.7.  access<a class="headerlink" href="#access" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -850,8 +852,8 @@ may not be accessible.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="create">
+</div>
+<div class="section" id="create">
 <h3>4.8.  create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -905,8 +907,8 @@ under Unix.  There should be no flags argument; this is used in open
 <p>The attributes of the directory should be returned too, since the size
 and mtime changed.</p>
 </div></blockquote>
-</section>
-<section id="mkdir">
+</div>
+<div class="section" id="mkdir">
 <h3>4.9.  mkdir<a class="headerlink" href="#mkdir" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -944,8 +946,8 @@ attributes.</p>
 <p>The attributes of the parent should be returned since the size and
 mtime changes.</p>
 </div></blockquote>
-</section>
-<section id="link">
+</div>
+<div class="section" id="link">
 <h3>4.10.  link<a class="headerlink" href="#link" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -974,8 +976,8 @@ relevant.  It indicates success or the type of failure.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="symlink">
+</div>
+<div class="section" id="symlink">
 <h3>4.11.  symlink<a class="headerlink" href="#symlink" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1007,8 +1009,8 @@ be set to attr.</p>
 its size changed.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="remove">
+</div>
+<div class="section" id="remove">
 <h3>4.12.  remove<a class="headerlink" href="#remove" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1036,8 +1038,8 @@ identified by   VFid.</p>
 mtime and size may change.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="rmdir">
+</div>
+<div class="section" id="rmdir">
 <h3>4.13.  rmdir<a class="headerlink" href="#rmdir" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1065,8 +1067,8 @@ identified by VFid.</p>
 its mtime and size may change.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="readlink">
+</div>
+<div class="section" id="readlink">
 <h3>4.14.  readlink<a class="headerlink" href="#readlink" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1094,8 +1096,8 @@ to hold any name up to CFS_MAXNAMLEN (PATH or NAM??).</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="open">
+</div>
+<div class="section" id="open">
 <h3>4.15.  open<a class="headerlink" href="#open" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1133,8 +1135,8 @@ upcalls, one to open aiming at a container file name, the other at a
 container file inode.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="close">
+</div>
+<div class="section" id="close">
 <h3>4.16.  close<a class="headerlink" href="#close" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1168,8 +1170,8 @@ currently Venus might think a file can be flushed from the cache when
 it is still memory mapped.  This needs to be understood.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="ioctl">
+</div>
+<div class="section" id="ioctl">
 <h3>4.17.  ioctl<a class="headerlink" href="#ioctl" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1203,8 +1205,8 @@ data arguments are filled as usual.  flags is not used by Venus.</p>
 business about PREFETCHING in the Venus code?</p>
 </div>
 </div></blockquote>
-</section>
-<section id="rename">
+</div>
+<div class="section" id="rename">
 <h3>4.18.  rename<a class="headerlink" href="#rename" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1231,8 +1233,8 @@ kernels are not always null terminated.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="readdir">
+</div>
+<div class="section" id="readdir">
 <h3>4.19.  readdir<a class="headerlink" href="#readdir" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1266,8 +1268,8 @@ files.  We will re-evaluate this during the directory revamp which is
 about to take place.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="vget">
+</div>
+<div class="section" id="vget">
 <h3>4.20.  vget<a class="headerlink" href="#vget" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1299,8 +1301,8 @@ These can be “pinned” in the Venus cache using vget and released with
 inactive.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="fsync">
+</div>
+<div class="section" id="fsync">
 <h3>4.21.  fsync<a class="headerlink" href="#fsync" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1327,8 +1329,8 @@ result indicates if the syncing was successful.</p>
 <p>Linux does not implement this call. It should.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="inactive">
+</div>
+<div class="section" id="inactive">
 <h3>4.22.  inactive<a class="headerlink" href="#inactive" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1353,8 +1355,8 @@ result indicates if the syncing was successful.</p>
 <p>This should perhaps be removed.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="rdwr">
+</div>
+<div class="section" id="rdwr">
 <h3>4.23.  rdwr<a class="headerlink" href="#rdwr" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1390,8 +1392,8 @@ read/write operations never reach Venus.  I have been told the
 operation does not work.  It is not currently used.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="odymount">
+</div>
+<div class="section" id="odymount">
 <h3>4.24.  odymount<a class="headerlink" href="#odymount" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1421,8 +1423,8 @@ removed since it causes a jungle of pointers in the VFS mounting area.
 It is not used by Coda proper.  Call is not implemented by Venus.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="ody-lookup">
+</div>
+<div class="section" id="ody-lookup">
 <h3>4.25.  ody_lookup<a class="headerlink" href="#ody-lookup" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1443,8 +1445,8 @@ It is not used by Coda proper.  Call is not implemented by Venus.</p>
 <p>Gut it. Call is not implemented by Venus.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="ody-expand">
+</div>
+<div class="section" id="ody-expand">
 <h3>4.26.  ody_expand<a class="headerlink" href="#ody-expand" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1465,8 +1467,8 @@ It is not used by Coda proper.  Call is not implemented by Venus.</p>
 <p>Gut it. Call is not implemented by Venus.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="prefetch">
+</div>
+<div class="section" id="prefetch">
 <h3>4.27.  prefetch<a class="headerlink" href="#prefetch" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl class="simple">
@@ -1495,8 +1497,8 @@ have support for it. (ODY_PREFETCH is not a defined operation).</p>
 <p>Gut it. It isn’t working and isn’t used by Coda.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="signal">
+</div>
+<div class="section" id="signal">
 <h3>4.28.  signal<a class="headerlink" href="#signal" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1529,9 +1531,9 @@ kernel is responsible for notifying Venus to clean up (e.g. open
 definitely is such a state change, but many others are maybe not).</p>
 </div>
 </div></blockquote>
-</section>
-</section>
-<section id="the-minicache-and-downcalls">
+</div>
+</div>
+<div class="section" id="the-minicache-and-downcalls">
 <h2>5.  The minicache and downcalls<a class="headerlink" href="#the-minicache-and-downcalls" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>The Coda FS Driver can cache results of lookup and access upcalls, to
@@ -1564,13 +1566,13 @@ intercepted by the Coda FS Driver and lead to cache invalidations of
 the kind described below.  The Coda FS Driver does not return an error
 unless the downcall data could not be read into kernel memory.</p>
 </div></blockquote>
-<section id="invalidate">
+<div class="section" id="invalidate">
 <h3>5.1.  INVALIDATE<a class="headerlink" href="#invalidate" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>No information is available on this call.</p>
 </div></blockquote>
-</section>
-<section id="flush">
+</div>
+<div class="section" id="flush">
 <h3>5.2.  FLUSH<a class="headerlink" href="#flush" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl class="simple">
@@ -1585,8 +1587,8 @@ When this is done, this downcall is made.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="purgeuser">
+</div>
+<div class="section" id="purgeuser">
 <h3>5.3.  PURGEUSER<a class="headerlink" href="#purgeuser" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1601,8 +1603,8 @@ call is issued when tokens for a user expire or are flushed.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="zapfile">
+</div>
+<div class="section" id="zapfile">
 <h3>5.4.  ZAPFILE<a class="headerlink" href="#zapfile" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1624,8 +1626,8 @@ zapfile routine takes different arguments. Linux does not implement
 the invalidation of attributes correctly.</p>
 </div>
 </div></blockquote>
-</section>
-<section id="zapdir">
+</div>
+<div class="section" id="zapdir">
 <h3>5.5.  ZAPDIR<a class="headerlink" href="#zapdir" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1641,8 +1643,8 @@ Venus receives a callback on the directory.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="zapvnode">
+</div>
+<div class="section" id="zapvnode">
 <h3>5.6.  ZAPVNODE<a class="headerlink" href="#zapvnode" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1658,8 +1660,8 @@ as in the arguments. This downcall is probably never issued.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="purgefid">
+</div>
+<div class="section" id="purgefid">
 <h3>5.7.  PURGEFID<a class="headerlink" href="#purgefid" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1675,8 +1677,8 @@ namecache.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="replace">
+</div>
+<div class="section" id="replace">
 <h3>5.8.  REPLACE<a class="headerlink" href="#replace" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl>
@@ -1696,9 +1698,9 @@ when the reference counts on those fids are not zero.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-</section>
-<section id="initialization-and-cleanup">
+</div>
+</div>
+<div class="section" id="initialization-and-cleanup">
 <h2>6.  Initialization and cleanup<a class="headerlink" href="#initialization-and-cleanup" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>This section gives brief hints as to desirable features for the Coda
@@ -1726,7 +1728,7 @@ treat these similarly.</p>
 </li>
 </ol>
 </div></blockquote>
-<section id="requirements">
+<div class="section" id="requirements">
 <h3>6.1.  Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The following requirements should be accommodated:</p>
@@ -1767,9 +1769,9 @@ above requirements fully.  For smooth operation this needs to be
 corrected.</p>
 </div>
 </div></blockquote>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

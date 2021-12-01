@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>SAS Layer &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -294,7 +296,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="sas-layer">
+  <div class="section" id="sas-layer">
 <h1>SAS Layer<a class="headerlink" href="#sas-layer" title="Permalink to this headline">¶</a></h1>
 <p>The SAS Layer is a management infrastructure which manages
 SAS LLDDs.  It sits between SCSI Core and SAS LLDDs.  The
@@ -330,9 +332,9 @@ register your SAS driver with the sysfs SAS tree it creates.
 It will then return.  Then you enable your phys to actually
 start OOB (at which point your driver will start calling the
 notify_* event callbacks).</p>
-<section id="structure-descriptions">
+<div class="section" id="structure-descriptions">
 <h2>Structure descriptions<a class="headerlink" href="#structure-descriptions" title="Permalink to this headline">¶</a></h2>
-<section id="struct-sas-phy">
+<div class="section" id="struct-sas-phy">
 <h3><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sas_phy</span></code><a class="headerlink" href="#struct-sas-phy" title="Permalink to this headline">¶</a></h3>
 <p>Normally this is statically embedded to your driver’s
 phy structure:</p>
@@ -425,8 +427,8 @@ prefer.</p></li>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="struct-sas-port">
+</div>
+<div class="section" id="struct-sas-port">
 <h3><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sas_port</span></code><a class="headerlink" href="#struct-sas-port" title="Permalink to this headline">¶</a></h3>
 <p>The LLDD doesn’t set any fields of this struct – it only
 reads them.  They should be self explanatory.</p>
@@ -440,8 +442,8 @@ use of this.</p></li>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="struct-sas-ha-struct">
+</div>
+<div class="section" id="struct-sas-ha-struct">
 <h3><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sas_ha_struct</span></code><a class="headerlink" href="#struct-sas-ha-struct" title="Permalink to this headline">¶</a></h3>
 <p>It normally is statically declared in your own LLDD
 structure describing your adapter:</p>
@@ -457,7 +459,7 @@ structure describing your adapter:</p>
 </pre></div>
 </div>
 <p>What needs to be initialized (sample function given below).</p>
-<section id="pcidev">
+<div class="section" id="pcidev">
 <h4>pcidev<a class="headerlink" href="#pcidev" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt>sas_addr</dt><dd><ul class="simple">
@@ -469,8 +471,8 @@ adapter as given by you or the manufacturer, etc.</p></li>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="sas-port">
+</div>
+<div class="section" id="sas-port">
 <h4>sas_port<a class="headerlink" href="#sas-port" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt>sas_phy</dt><dd><ul class="simple">
@@ -581,10 +583,10 @@ can look like this (called last thing from probe())
 <ol class="arabic simple" start="2">
 <li><p>SAS 1.1 does not define I_T Nexus Reset TMF.</p></li>
 </ol>
-</section>
-</section>
-</section>
-<section id="events">
+</div>
+</div>
+</div>
+<div class="section" id="events">
 <h2>Events<a class="headerlink" href="#events" title="Permalink to this headline">¶</a></h2>
 <p>Events are <strong>the only way</strong> a SAS LLDD notifies the SAS layer
 of anything.  There is no other method or way a LLDD to tell
@@ -698,8 +700,8 @@ queuing of any sort and at any level in a SAS LLDD.</p>
 };
 </pre></div>
 </div>
-</section>
-<section id="discovery">
+</div>
+<div class="section" id="discovery">
 <h2>Discovery<a class="headerlink" href="#discovery" title="Permalink to this headline">¶</a></h2>
 <p>The sysfs tree has the following purposes:</p>
 <blockquote>
@@ -730,8 +732,8 @@ points to a domain device, this is how the SAS LLDD knows
 where to send the task(s) to.  A SAS LLDD only reads the
 contents of the domain_device structure, but it never creates
 or destroys one.</p>
-</section>
-<section id="expander-management-from-user-space">
+</div>
+<div class="section" id="expander-management-from-user-space">
 <h2>Expander management from User Space<a class="headerlink" href="#expander-management-from-user-space" title="Permalink to this headline">¶</a></h2>
 <p>In each expander directory in sysfs, there is a file called
 “smp_portal”.  It is a binary sysfs attribute file, which
@@ -768,8 +770,8 @@ expander, and gives expander information, including routing
 tables.</p>
 <p>The SMP portal gives you complete control of the expander,
 so please be careful.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

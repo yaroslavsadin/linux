@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Network Devices, the Kernel, and You! &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -366,14 +368,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="network-devices-the-kernel-and-you">
+  <div class="section" id="network-devices-the-kernel-and-you">
 <h1>Network Devices, the Kernel, and You!<a class="headerlink" href="#network-devices-the-kernel-and-you" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The following is a random collection of documentation regarding
 network devices.</p>
-</section>
-<section id="struct-net-device-lifetime-rules">
+</div>
+<div class="section" id="struct-net-device-lifetime-rules">
 <h2>struct net_device lifetime rules<a class="headerlink" href="#struct-net-device-lifetime-rules" title="Permalink to this headline">¶</a></h2>
 <p>Network device structures need to persist even after module is unloaded and
 must be allocated with <a class="reference internal" href="kapi.html#c.alloc_netdev_mqs" title="alloc_netdev_mqs"><code class="xref c c-func docutils literal notranslate"><span class="pre">alloc_netdev_mqs()</span></code></a> and friends.
@@ -389,7 +391,7 @@ First group can be used in normal contexts where <code class="docutils literal n
 held: <a class="reference internal" href="kapi.html#c.register_netdev" title="register_netdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">register_netdev()</span></code></a>, <a class="reference internal" href="kapi.html#c.unregister_netdev" title="unregister_netdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">unregister_netdev()</span></code></a>.
 Second group can be used when <code class="docutils literal notranslate"><span class="pre">rtnl_lock</span></code> is already held:
 <a class="reference internal" href="kapi.html#c.register_netdevice" title="register_netdevice"><code class="xref c c-func docutils literal notranslate"><span class="pre">register_netdevice()</span></code></a>, unregister_netdevice(), free_netdevice().</p>
-<section id="simple-drivers">
+<div class="section" id="simple-drivers">
 <h3>Simple drivers<a class="headerlink" href="#simple-drivers" title="Permalink to this headline">¶</a></h3>
 <p>Most drivers (especially device drivers) handle lifetime of <a class="reference internal" href="kapi.html#c.net_device" title="net_device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">net_device</span></code></a>
 in context where <code class="docutils literal notranslate"><span class="pre">rtnl_lock</span></code> is not held (e.g. driver probe and remove paths).</p>
@@ -436,8 +438,8 @@ with it. The memory of <a class="reference internal" href="kapi.html#c.net_devic
 by sysfs but all operations on that device will fail.</p>
 <p><a class="reference internal" href="kapi.html#c.free_netdev" title="free_netdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">free_netdev()</span></code></a> can be called after <a class="reference internal" href="kapi.html#c.unregister_netdev" title="unregister_netdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">unregister_netdev()</span></code></a> returns on when
 <a class="reference internal" href="kapi.html#c.register_netdev" title="register_netdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">register_netdev()</span></code></a> failed.</p>
-</section>
-<section id="device-management-under-rtnl">
+</div>
+<div class="section" id="device-management-under-rtnl">
 <h3>Device management under RTNL<a class="headerlink" href="#device-management-under-rtnl" title="Permalink to this headline">¶</a></h3>
 <p>Registering <a class="reference internal" href="kapi.html#c.net_device" title="net_device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">net_device</span></code></a> while in context which already holds
 the <code class="docutils literal notranslate"><span class="pre">rtnl_lock</span></code> requires extra care. In those scenarios most drivers
@@ -516,7 +518,7 @@ happen after <code class="docutils literal notranslate"><span class="pre">rtnl_l
 will defer some of the processing until <code class="docutils literal notranslate"><span class="pre">rtnl_lock</span></code> is released.</p>
 <p>Devices spawned from struct rtnl_link_ops should never free the
 <a class="reference internal" href="kapi.html#c.net_device" title="net_device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">net_device</span></code></a> directly.</p>
-<section id="ndo-init-and-ndo-uninit">
+<div class="section" id="ndo-init-and-ndo-uninit">
 <h4>.ndo_init and .ndo_uninit<a class="headerlink" href="#ndo-init-and-ndo-uninit" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">.ndo_init</span></code> and <code class="docutils literal notranslate"><span class="pre">.ndo_uninit</span></code> callbacks are called during net_device
 registration and de-registration, under <code class="docutils literal notranslate"><span class="pre">rtnl_lock</span></code>. Drivers can use
@@ -524,10 +526,10 @@ those e.g. when parts of their init process need to run under <code class="docut
 <p><code class="docutils literal notranslate"><span class="pre">.ndo_init</span></code> runs before device is visible in the system, <code class="docutils literal notranslate"><span class="pre">.ndo_uninit</span></code>
 runs during de-registering after device is closed but other subsystems
 may still have outstanding references to the netdevice.</p>
-</section>
-</section>
-</section>
-<section id="mtu">
+</div>
+</div>
+</div>
+<div class="section" id="mtu">
 <h2>MTU<a class="headerlink" href="#mtu" title="Permalink to this headline">¶</a></h2>
 <p>Each network device has a Maximum Transfer Unit. The MTU does not
 include any link layer protocol overhead. Upper layer protocols must
@@ -548,8 +550,8 @@ standard Ethernet mtu of 1500 bytes, the device should allow up to
 1518 byte packets (1500 + 14 header + 4 tag).  The device may either:
 drop, truncate, or pass up oversize packets, but dropping oversize
 packets is preferred.</p>
-</section>
-<section id="struct-net-device-synchronization-rules">
+</div>
+<div class="section" id="struct-net-device-synchronization-rules">
 <h2>struct net_device synchronization rules<a class="headerlink" href="#struct-net-device-synchronization-rules" title="Permalink to this headline">¶</a></h2>
 <dl>
 <dt>ndo_open:</dt><dd><p>Synchronization: rtnl_lock() semaphore.
@@ -613,8 +615,8 @@ Notes: <a class="reference internal" href="kapi.html#c.netif_queue_stopped" titl
 Context: BHs disabled</p>
 </dd>
 </dl>
-</section>
-<section id="struct-napi-struct-synchronization-rules">
+</div>
+<div class="section" id="struct-napi-struct-synchronization-rules">
 <h2>struct napi_struct synchronization rules<a class="headerlink" href="#struct-napi-struct-synchronization-rules" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>napi-&gt;poll:</dt><dd><dl class="simple">
@@ -630,8 +632,8 @@ will be called with interrupts disabled by netconsole.</p>
 </dl>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

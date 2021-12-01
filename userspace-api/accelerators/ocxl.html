@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>OpenCAPI (Open Coherent Accelerator Processor Interface) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -267,7 +269,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="opencapi-open-coherent-accelerator-processor-interface">
+  <div class="section" id="opencapi-open-coherent-accelerator-processor-interface">
 <h1>OpenCAPI (Open Coherent Accelerator Processor Interface)<a class="headerlink" href="#opencapi-open-coherent-accelerator-processor-interface" title="Permalink to this headline">¶</a></h1>
 <p>OpenCAPI is an interface between processors and accelerators. It aims
 at being low-latency and high-bandwidth. The specification is
@@ -280,7 +282,7 @@ host.</p>
 evolution of ‘cxl’ (the driver for the IBM CAPI interface for
 powerpc), which was named that way to avoid confusion with the ISDN
 CAPI subsystem.</p>
-<section id="high-level-view">
+<div class="section" id="high-level-view">
 <h2>High-level view<a class="headerlink" href="#high-level-view" title="Permalink to this headline">¶</a></h2>
 <p>OpenCAPI defines a Data Link Layer (DL) and Transaction Layer (TL), to
 be implemented on top of a physical link. Any processor or device
@@ -306,8 +308,8 @@ implementing the DL and TL can start sharing memory.</p>
      +---------------------------------------+
 </pre></div>
 </div>
-</section>
-<section id="device-discovery">
+</div>
+<div class="section" id="device-discovery">
 <h2>Device discovery<a class="headerlink" href="#device-discovery" title="Permalink to this headline">¶</a></h2>
 <p>OpenCAPI relies on a PCI-like configuration space, implemented on the
 device. So the host can discover AFUs by querying the config space.</p>
@@ -320,16 +322,16 @@ devices are available.</p>
 <p>The configuration space defines the AFU(s) that can be found on the
 physical adapter, such as its name, how many memory contexts it can
 work with, the size of its MMIO areas, …</p>
-</section>
-<section id="mmio">
+</div>
+<div class="section" id="mmio">
 <h2>MMIO<a class="headerlink" href="#mmio" title="Permalink to this headline">¶</a></h2>
 <p>OpenCAPI defines two MMIO areas for each AFU:</p>
 <ul class="simple">
 <li><p>the global MMIO area, with registers pertinent to the whole AFU.</p></li>
 <li><p>a per-process MMIO area, which has a fixed size for each context.</p></li>
 </ul>
-</section>
-<section id="afu-interrupts">
+</div>
+<div class="section" id="afu-interrupts">
 <h2>AFU interrupts<a class="headerlink" href="#afu-interrupts" title="Permalink to this headline">¶</a></h2>
 <p>OpenCAPI includes the possibility for an AFU to send an interrupt to a
 host process. It is done through a ‘intrp_req’ defined in the
@@ -337,8 +339,8 @@ Transaction Layer, specifying a 64-bit object handle which defines the
 interrupt.</p>
 <p>The driver allows a process to allocate an interrupt and obtain its
 64-bit object handle, that can be passed to the AFU.</p>
-</section>
-<section id="char-devices">
+</div>
+<div class="section" id="char-devices">
 <h2>char devices<a class="headerlink" href="#char-devices" title="Permalink to this headline">¶</a></h2>
 <p>The driver creates one char device per AFU found on the physical
 device. A physical device may have multiple functions and each
@@ -352,23 +354,23 @@ config space of the AFU.
 when a system has more than one instance of the same OpenCAPI device.
 &lt;index&gt; is also to help distinguish AFUs in the unlikely case where a
 device carries multiple copies of the same AFU.</p>
-</section>
-<section id="sysfs-class">
+</div>
+<div class="section" id="sysfs-class">
 <h2>Sysfs class<a class="headerlink" href="#sysfs-class" title="Permalink to this headline">¶</a></h2>
 <p>An ocxl class is added for the devices representing the AFUs. See
 /sys/class/ocxl. The layout is described in
 Documentation/ABI/testing/sysfs-class-ocxl</p>
-</section>
-<section id="user-api">
+</div>
+<div class="section" id="user-api">
 <h2>User API<a class="headerlink" href="#user-api" title="Permalink to this headline">¶</a></h2>
-<section id="open">
+<div class="section" id="open">
 <h3>open<a class="headerlink" href="#open" title="Permalink to this headline">¶</a></h3>
 <p>Based on the AFU definition found in the config space, an AFU may
 support working with more than one memory context, in which case the
 associated char device may be opened multiple times by different
 processes.</p>
-</section>
-<section id="ioctl">
+</div>
+<div class="section" id="ioctl">
 <h3>ioctl<a class="headerlink" href="#ioctl" title="Permalink to this headline">¶</a></h3>
 <p>OCXL_IOCTL_ATTACH:</p>
 <blockquote>
@@ -404,14 +406,14 @@ this is only available on POWER9.</p>
 <div><p>Reports on which CPU features that affect OpenCAPI are usable from
 userspace.</p>
 </div></blockquote>
-</section>
-<section id="mmap">
+</div>
+<div class="section" id="mmap">
 <h3>mmap<a class="headerlink" href="#mmap" title="Permalink to this headline">¶</a></h3>
 <p>A process can mmap the per-process MMIO area for interactions with the
 AFU.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

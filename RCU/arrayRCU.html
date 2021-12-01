@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Using RCU to Protect Read-Mostly Arrays &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -277,7 +279,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="using-rcu-to-protect-read-mostly-arrays">
+  <div class="section" id="using-rcu-to-protect-read-mostly-arrays">
 <span id="array-rcu-doc"></span><h1>Using RCU to Protect Read-Mostly Arrays<a class="headerlink" href="#using-rcu-to-protect-read-mostly-arrays" title="Permalink to this headline">¶</a></h1>
 <p>Although RCU is more commonly used to protect linked lists, it can
 also be used to protect arrays.  Three situations are as follows:</p>
@@ -298,14 +300,14 @@ explicit cooperation from the compiler will be required to permit them
 to be safely used.</p>
 <p>That aside, each of the three RCU-protected pointer situations are
 described in the following sections.</p>
-<section id="situation-1-hash-tables">
+<div class="section" id="situation-1-hash-tables">
 <span id="hash-tables"></span><h2>Situation 1: Hash Tables<a class="headerlink" href="#situation-1-hash-tables" title="Permalink to this headline">¶</a></h2>
 <p>Hash tables are often implemented as an array, where each array entry
 has a linked-list hash chain.  Each hash chain can be protected by RCU
 as described in the <a class="reference internal" href="listRCU.html"><span class="doc">Using RCU to Protect Read-Mostly Linked Lists</span></a> document.  This approach also applies
 to other array-of-list situations, such as radix trees.</p>
-</section>
-<section id="situation-2-static-arrays">
+</div>
+<div class="section" id="situation-2-static-arrays">
 <span id="static-arrays"></span><h2>Situation 2: Static Arrays<a class="headerlink" href="#situation-2-static-arrays" title="Permalink to this headline">¶</a></h2>
 <p>Static arrays, where the data (rather than a pointer to the data) is
 located in each array element, and where the array is never resized,
@@ -317,8 +319,8 @@ as updates are rare.</p>
 </dd>
 </dl>
 <p><a class="reference internal" href="#answer-quick-quiz-seqlock"><span class="std std-ref">Answer to Quick Quiz</span></a></p>
-</section>
-<section id="situation-3-resizable-arrays">
+</div>
+<div class="section" id="situation-3-resizable-arrays">
 <span id="resizable-arrays"></span><h2>Situation 3: Resizable Arrays<a class="headerlink" href="#situation-3-resizable-arrays" title="Permalink to this headline">¶</a></h2>
 <p>Use of RCU for resizable arrays is demonstrated by the grow_ary()
 function formerly used by the System V IPC code.  The array is used
@@ -423,8 +425,8 @@ One way to avoid this problem is to assign a seqlock for
 each array entry rather than to the entire array.</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

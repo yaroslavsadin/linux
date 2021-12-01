@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Devlink DPIPE &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -373,9 +375,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="devlink-dpipe">
+  <div class="section" id="devlink-dpipe">
 <h1>Devlink DPIPE<a class="headerlink" href="#devlink-dpipe" title="Permalink to this headline">¶</a></h1>
-<section id="background">
+<div class="section" id="background">
 <h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
 <p>While performing the hardware offloading process, much of the hardware
 specifics cannot be presented. These details are useful for debugging, and
@@ -403,8 +405,8 @@ kernel’s dump may not be enough. By combining this data with complementary
 information about the underlying hardware, this debugging can be made
 easier; additionally, the information can be useful when debugging
 performance issues.</p>
-</section>
-<section id="overview">
+</div>
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">devlink-dpipe</span></code> interface closes this gap. The hardware’s pipeline is
 modeled as a graph of match/action tables. Each table represents a specific
@@ -422,8 +424,8 @@ TCAM regions have a predefined lookup key. Offloading the TC filter rules
 using TCAM engine can result in multiple TCAM regions being interconnected
 in a chain (which may affect the data path latency). In response to a new TC
 filter new tables should be created describing those regions.</p>
-</section>
-<section id="model">
+</div>
+<div class="section" id="model">
 <h2>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">DPIPE</span></code> model introduces several objects:</p>
 <blockquote>
@@ -453,7 +455,7 @@ userspace:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">counters_set</span></code>: Enable or disable counters on a table.</p></li>
 </ul>
 </div></blockquote>
-<section id="table">
+<div class="section" id="table">
 <h3>Table<a class="headerlink" href="#table" title="Permalink to this headline">¶</a></h3>
 <p>The driver should implement the following operations for each table:</p>
 <blockquote>
@@ -465,8 +467,8 @@ userspace:</p>
 disabled.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="header-field">
+</div>
+<div class="section" id="header-field">
 <h3>Header/Field<a class="headerlink" href="#header-field" title="Permalink to this headline">¶</a></h3>
 <p>In a similar way to P4 headers and fields are used to describe a table’s
 behavior. There is a slight difference between the standard protocol headers
@@ -480,8 +482,8 @@ mapped to kernel objects. For example, internal router interface indexes can
 be directly mapped to the net device ifindex. FIB table indexes used by
 different Virtual Routing and Forwarding (VRF) tables can be mapped to
 internal routing table indexes.</p>
-</section>
-<section id="match">
+</div>
+<div class="section" id="match">
 <h3>Match<a class="headerlink" href="#match" title="Permalink to this headline">¶</a></h3>
 <p>Matches are kept primitive and close to hardware operation. Match types like
 LPM are not supported due to the fact that this is exactly a process we wish
@@ -497,8 +499,8 @@ to describe in full detail. Example of matches:</p>
 identify the specific field. Furthermore, the header index should be
 specified in order to distinguish multiple headers of the same type in a
 packet (tunneling).</p>
-</section>
-<section id="action">
+</div>
+<div class="section" id="action">
 <h3>Action<a class="headerlink" href="#action" title="Permalink to this headline">¶</a></h3>
 <p>Similar to match, the actions are kept primitive and close to hardware
 operation. For example:</p>
@@ -510,22 +512,22 @@ operation. For example:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">pop_header</span></code>: Remove a header.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="entry">
+</div>
+<div class="section" id="entry">
 <h3>Entry<a class="headerlink" href="#entry" title="Permalink to this headline">¶</a></h3>
 <p>Entries of a specific table can be dumped on demand. Each eentry is
 identified with an index and its properties are described by a list of
 match/action values and specific counter. By dumping the tables content the
 interactions between tables can be resolved.</p>
-</section>
-</section>
-<section id="abstraction-example">
+</div>
+</div>
+<div class="section" id="abstraction-example">
 <h2>Abstraction Example<a class="headerlink" href="#abstraction-example" title="Permalink to this headline">¶</a></h2>
 <p>The following is an example of the abstraction model of the L3 part of
 Mellanox Spectrum ASIC. The blocks are described in the order they appear in
 the pipeline. The table sizes in the following examples are not real
 hardware sizes and are provided for demonstration purposes.</p>
-<section id="lpm">
+<div class="section" id="lpm">
 <h3>LPM<a class="headerlink" href="#lpm" title="Permalink to this headline">¶</a></h3>
 <p>The LPM algorithm can be implemented as a list of hash tables. Each hash
 table contains routes with the same prefix length. The root of the list is
@@ -549,8 +551,8 @@ The <code class="docutils literal notranslate"><span class="pre">meta.lpm_prefix
 }
 </pre></div>
 </div>
-</section>
-<section id="local-host">
+</div>
+<div class="section" id="local-host">
 <h3>Local Host<a class="headerlink" href="#local-host" title="Permalink to this headline">¶</a></h3>
 <p>In the case of local routes the LPM lookup already resolves the egress
 router interface (RIF), yet the exact MAC address is not known. The local
@@ -565,8 +567,8 @@ destination IP address as a key. The result is the MAC address.</p>
 }
 </pre></div>
 </div>
-</section>
-<section id="adjacency">
+</div>
+<div class="section" id="adjacency">
 <h3>Adjacency<a class="headerlink" href="#adjacency" title="Permalink to this headline">¶</a></h3>
 <p>In case of remote routes this table does the ECMP. The LPM lookup results in
 ECMP group size and index that serves as a global offset into this table.
@@ -584,8 +586,8 @@ point to the same adjacency group.</p>
 }
 </pre></div>
 </div>
-</section>
-<section id="erif">
+</div>
+<div class="section" id="erif">
 <h3>ERIF<a class="headerlink" href="#erif" title="Permalink to this headline">¶</a></h3>
 <p>In case the egress RIF and destination MAC have been resolved by previous
 tables this table does multiple operations like TTL decrease and MTU check.
@@ -603,9 +605,9 @@ updated based on the packet’s type (broadcast, unicast, multicast).</p>
 }
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

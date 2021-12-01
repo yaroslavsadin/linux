@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>SocketCAN - Controller Area Network &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -390,9 +392,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="socketcan-controller-area-network">
+  <div class="section" id="socketcan-controller-area-network">
 <h1>SocketCAN - Controller Area Network<a class="headerlink" href="#socketcan-controller-area-network" title="Permalink to this headline">¶</a></h1>
-<section id="overview-what-is-socketcan">
+<div class="section" id="overview-what-is-socketcan">
 <h2>Overview / What is SocketCAN<a class="headerlink" href="#overview-what-is-socketcan" title="Permalink to this headline">¶</a></h2>
 <p>The socketcan package is an implementation of CAN protocols
 (Controller Area Network) for Linux.  CAN is a networking technology
@@ -404,8 +406,8 @@ drivers as network interfaces.  The CAN socket API has been designed
 as similar as possible to the TCP/IP protocols to allow programmers,
 familiar with network programming, to easily learn how to use CAN
 sockets.</p>
-</section>
-<section id="motivation-why-using-the-socket-api">
+</div>
+<div class="section" id="motivation-why-using-the-socket-api">
 <span id="socketcan-motivation"></span><h2>Motivation / Why Using the Socket API<a class="headerlink" href="#motivation-why-using-the-socket-api" title="Permalink to this headline">¶</a></h2>
 <p>There have been CAN implementations for Linux before SocketCAN so the
 question arises, why we have started another project.  Most existing
@@ -479,8 +481,8 @@ SocketCAN does.</p>
 </ul>
 <p>The use of the networking framework of the Linux kernel is just the
 natural and most appropriate way to implement CAN for Linux.</p>
-</section>
-<section id="socketcan-concept">
+</div>
+<div class="section" id="socketcan-concept">
 <span id="id1"></span><h2>SocketCAN Concept<a class="headerlink" href="#socketcan-concept" title="Permalink to this headline">¶</a></h2>
 <p>As described in <a class="reference internal" href="#socketcan-motivation"><span class="std std-ref">Motivation / Why Using the Socket API</span></a> the main goal of SocketCAN is to
 provide a socket interface to user space applications which builds
@@ -491,7 +493,7 @@ medium that has no MAC-layer addressing like ethernet. The CAN-identifier
 have to be chosen uniquely on the bus. When designing a CAN-ECU
 network the CAN-IDs are mapped to be sent by a specific ECU.
 For this reason a CAN-ID can be treated best as a kind of source address.</p>
-<section id="receive-lists">
+<div class="section" id="receive-lists">
 <span id="socketcan-receive-lists"></span><h3>Receive Lists<a class="headerlink" href="#receive-lists" title="Permalink to this headline">¶</a></h3>
 <p>The network transparent access of multiple applications leads to the
 problem that different applications may be interested in the same
@@ -507,8 +509,8 @@ CAN protocol modules by the SocketCAN core (see <a class="reference internal" hr
 To optimize the CPU usage at runtime the receive lists are split up
 into several specific lists per device that match the requested
 filter complexity for a given use-case.</p>
-</section>
-<section id="local-loopback-of-sent-frames">
+</div>
+<div class="section" id="local-loopback-of-sent-frames">
 <span id="socketcan-local-loopback1"></span><h3>Local Loopback of Sent Frames<a class="headerlink" href="#local-loopback-of-sent-frames" title="Permalink to this headline">¶</a></h3>
 <p>As known from other networking concepts the data exchanging
 applications may run on the same or different nodes without any
@@ -544,8 +546,8 @@ separate socket. See sockopts from the CAN RAW sockets in <a class="reference in
 tools like ‘candump’ or ‘cansniffer’ on the (same) node.</p>
 </dd>
 </dl>
-</section>
-<section id="network-problem-notifications">
+</div>
+<div class="section" id="network-problem-notifications">
 <span id="socketcan-network-problem-notifications"></span><h3>Network Problem Notifications<a class="headerlink" href="#network-problem-notifications" title="Permalink to this headline">¶</a></h3>
 <p>The use of the CAN bus may lead to several problems on the physical
 and media access control layer. Detecting and logging of these lower
@@ -564,9 +566,9 @@ mechanisms. Inside this filter definition the (interested) type of
 errors may be selected. The reception of error messages is disabled
 by default. The format of the CAN error message frame is briefly
 described in the Linux header file “include/uapi/linux/can/error.h”.</p>
-</section>
-</section>
-<section id="how-to-use-socketcan">
+</div>
+</div>
+<div class="section" id="how-to-use-socketcan">
 <h2>How to use SocketCAN<a class="headerlink" href="#how-to-use-socketcan" title="Permalink to this headline">¶</a></h2>
 <p>Like TCP/IP, you first need to open a socket for communicating over a
 CAN network. Since SocketCAN implements a new protocol family, you
@@ -777,7 +779,7 @@ definitions are specified for CAN specific MTUs in include/linux/can.h:</p>
 <span class="cp">#define CANFD_MTU (sizeof(struct canfd_frame)) == 72  =&gt; CAN FD frame</span>
 </pre></div>
 </div>
-<section id="raw-protocol-sockets-with-can-filters-sock-raw">
+<div class="section" id="raw-protocol-sockets-with-can-filters-sock-raw">
 <span id="socketcan-raw-sockets"></span><h3>RAW Protocol Sockets with can_filters (SOCK_RAW)<a class="headerlink" href="#raw-protocol-sockets-with-can-filters-sock-raw" title="Permalink to this headline">¶</a></h3>
 <p>Using CAN_RAW sockets is extensively comparable to the commonly
 known access to CAN character devices. To meet the new possibilities
@@ -792,7 +794,7 @@ defaults are set at RAW socket binding time:</p>
 <p>These default settings may be changed before or after binding the socket.
 To use the referenced definitions of the socket options for CAN_RAW
 sockets, include &lt;linux/can/raw.h&gt;.</p>
-<section id="raw-socket-option-can-raw-filter">
+<div class="section" id="raw-socket-option-can-raw-filter">
 <span id="socketcan-rawfilter"></span><h4>RAW socket option CAN_RAW_FILTER<a class="headerlink" href="#raw-socket-option-can-raw-filter" title="Permalink to this headline">¶</a></h4>
 <p>The reception of CAN frames using CAN_RAW sockets can be controlled
 by defining 0 .. n filters with the CAN_RAW_FILTER socket option.</p>
@@ -830,7 +832,7 @@ receive filters for each open socket separately:</p>
 data causes the raw socket to discard the received CAN frames. But
 having this ‘send only’ use-case we may remove the receive list in the
 Kernel to save a little (really a very little!) CPU usage.</p>
-<section id="can-filter-usage-optimisation">
+<div class="section" id="can-filter-usage-optimisation">
 <h5>CAN Filter Usage Optimisation<a class="headerlink" href="#can-filter-usage-optimisation" title="Permalink to this headline">¶</a></h5>
 <p>The CAN filters are processed in per-device filter lists at CAN frame
 reception time. To reduce the number of checks that need to be performed
@@ -862,9 +864,9 @@ filter has to be defined in this way to benefit from the optimized filters:</p>
 <span class="n">setsockopt</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">SOL_CAN_RAW</span><span class="p">,</span> <span class="n">CAN_RAW_FILTER</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rfilter</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rfilter</span><span class="p">));</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="raw-socket-option-can-raw-err-filter">
+</div>
+</div>
+<div class="section" id="raw-socket-option-can-raw-err-filter">
 <h4>RAW Socket Option CAN_RAW_ERR_FILTER<a class="headerlink" href="#raw-socket-option-can-raw-err-filter" title="Permalink to this headline">¶</a></h4>
 <p>As described in <a class="reference internal" href="#socketcan-network-problem-notifications"><span class="std std-ref">Network Problem Notifications</span></a> the CAN interface driver can generate so
 called Error Message Frames that can optionally be passed to the user
@@ -879,8 +881,8 @@ The values for the error mask are defined in linux/can/error.h:</p>
            <span class="o">&amp;</span><span class="n">err_mask</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">err_mask</span><span class="p">));</span>
 </pre></div>
 </div>
-</section>
-<section id="raw-socket-option-can-raw-loopback">
+</div>
+<div class="section" id="raw-socket-option-can-raw-loopback">
 <h4>RAW Socket Option CAN_RAW_LOOPBACK<a class="headerlink" href="#raw-socket-option-can-raw-loopback" title="Permalink to this headline">¶</a></h4>
 <p>To meet multi user needs the local loopback is enabled by default
 (see <a class="reference internal" href="#socketcan-local-loopback1"><span class="std std-ref">Local Loopback of Sent Frames</span></a> for details). But in some embedded use-cases
@@ -891,8 +893,8 @@ functionality can be disabled (separately for each socket):</p>
 <span class="n">setsockopt</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">SOL_CAN_RAW</span><span class="p">,</span> <span class="n">CAN_RAW_LOOPBACK</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">loopback</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">loopback</span><span class="p">));</span>
 </pre></div>
 </div>
-</section>
-<section id="raw-socket-option-can-raw-recv-own-msgs">
+</div>
+<div class="section" id="raw-socket-option-can-raw-recv-own-msgs">
 <h4>RAW socket option CAN_RAW_RECV_OWN_MSGS<a class="headerlink" href="#raw-socket-option-can-raw-recv-own-msgs" title="Permalink to this headline">¶</a></h4>
 <p>When the local loopback is enabled, all the sent CAN frames are
 looped back to the open CAN sockets that registered for the CAN
@@ -909,8 +911,8 @@ demand:</p>
 </div>
 <p>Note that reception of a socket’s own CAN frames are subject to the same
 filtering as other CAN frames (see <a class="reference internal" href="#socketcan-rawfilter"><span class="std std-ref">RAW socket option CAN_RAW_FILTER</span></a>).</p>
-</section>
-<section id="raw-socket-option-can-raw-fd-frames">
+</div>
+<div class="section" id="raw-socket-option-can-raw-fd-frames">
 <span id="socketcan-rawfd"></span><h4>RAW Socket Option CAN_RAW_FD_FRAMES<a class="headerlink" href="#raw-socket-option-can-raw-fd-frames" title="Permalink to this headline">¶</a></h4>
 <p>CAN FD support in CAN_RAW sockets can be enabled with a new socket option
 CAN_RAW_FD_FRAMES which is off by default. When the new socket option is
@@ -962,8 +964,8 @@ or CAN FD frames and can process them the same way.</p>
 <p>When sending to CAN devices make sure that the device is capable to handle
 CAN FD frames by checking if the device maximum transfer unit is CANFD_MTU.
 The CAN device MTU can be retrieved e.g. with a SIOCGIFMTU ioctl() syscall.</p>
-</section>
-<section id="raw-socket-option-can-raw-join-filters">
+</div>
+<div class="section" id="raw-socket-option-can-raw-join-filters">
 <h4>RAW socket option CAN_RAW_JOIN_FILTERS<a class="headerlink" href="#raw-socket-option-can-raw-join-filters" title="Permalink to this headline">¶</a></h4>
 <p>The CAN_RAW socket can set multiple CAN identifier specific filters that
 lead to multiple filters in the af_can.c filter processing. These filters
@@ -975,8 +977,8 @@ semantic for the applied filters is therefore changed to a logical AND.</p>
 <p>This is useful especially when the filterset is a combination of filters
 where the CAN_INV_FILTER flag is set in order to notch single CAN IDs or
 CAN ID ranges from the incoming traffic.</p>
-</section>
-<section id="raw-socket-returned-message-flags">
+</div>
+<div class="section" id="raw-socket-returned-message-flags">
 <h4>RAW Socket Returned Message Flags<a class="headerlink" href="#raw-socket-returned-message-flags" title="Permalink to this headline">¶</a></h4>
 <p>When using recvmsg() call, the msg-&gt;msg_flags may contain following flags:</p>
 <dl class="simple">
@@ -989,9 +991,9 @@ CAN driver supports the echo of frames on driver level, see
 In order to receive such messages, CAN_RAW_RECV_OWN_MSGS must be set.</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="broadcast-manager-protocol-sockets-sock-dgram">
+</div>
+</div>
+<div class="section" id="broadcast-manager-protocol-sockets-sock-dgram">
 <h3>Broadcast Manager Protocol Sockets (SOCK_DGRAM)<a class="headerlink" href="#broadcast-manager-protocol-sockets-sock-dgram" title="Permalink to this headline">¶</a></h3>
 <p>The Broadcast Manager protocol provides a command based configuration
 interface to filter and send (e.g. cyclic) CAN messages in kernel space.</p>
@@ -1050,7 +1052,7 @@ interface index is set to zero) the configured receive filters apply to any
 CAN interface unless the sendto() syscall is used to overrule the ‘any’ CAN
 interface index. When using recvfrom() instead of read() to retrieve BCM
 socket messages the originating CAN interface is provided in can_ifindex.</p>
-<section id="broadcast-manager-operations">
+<div class="section" id="broadcast-manager-operations">
 <h4>Broadcast Manager Operations<a class="headerlink" href="#broadcast-manager-operations" title="Permalink to this headline">¶</a></h4>
 <p>The opcode defines the operation for the broadcast manager to carry out,
 or details the broadcast managers response to several events, including
@@ -1093,8 +1095,8 @@ user requests.</p>
 Sent on first message received or on receipt of revised CAN messages.</p>
 </dd>
 </dl>
-</section>
-<section id="broadcast-manager-message-flags">
+</div>
+<div class="section" id="broadcast-manager-message-flags">
 <h4>Broadcast Manager Message Flags<a class="headerlink" href="#broadcast-manager-message-flags" title="Permalink to this headline">¶</a></h4>
 <p>When sending a message to the broadcast manager the ‘flags’ element may
 contain the following flag definitions which influence the behaviour:</p>
@@ -1129,8 +1131,8 @@ RX_CHANGED message will be generated when the (cyclic) receive restarts.</p>
 <dt>CAN_FD_FRAME:</dt><dd><p>The CAN frames following the bcm_msg_head are struct canfd_frame’s</p>
 </dd>
 </dl>
-</section>
-<section id="broadcast-manager-transmission-timers">
+</div>
+<div class="section" id="broadcast-manager-transmission-timers">
 <h4>Broadcast Manager Transmission Timers<a class="headerlink" href="#broadcast-manager-transmission-timers" title="Permalink to this headline">¶</a></h4>
 <p>Periodic transmission configurations may use up to two interval timers.
 In this case the BCM sends a number of messages (‘count’) at an interval
@@ -1138,8 +1140,8 @@ In this case the BCM sends a number of messages (‘count’) at an interval
 only one timer is needed ‘count’ is set to zero and only ‘ival2’ is used.
 When SET_TIMER and START_TIMER flag were set the timers are activated.
 The timer values can be altered at runtime when only SET_TIMER is set.</p>
-</section>
-<section id="broadcast-manager-message-sequence-transmission">
+</div>
+<div class="section" id="broadcast-manager-message-sequence-transmission">
 <h4>Broadcast Manager message sequence transmission<a class="headerlink" href="#broadcast-manager-message-sequence-transmission" title="Permalink to this headline">¶</a></h4>
 <p>Up to 256 CAN frames can be transmitted in a sequence in the case of a cyclic
 TX task configuration. The number of CAN frames is provided in the ‘nframes’
@@ -1160,8 +1162,8 @@ as array to the TX_SETUP BCM configuration message:</p>
 </div>
 <p>With every transmission the index in the array of CAN frames is increased
 and set to zero at index overflow.</p>
-</section>
-<section id="broadcast-manager-receive-filter-timers">
+</div>
+<div class="section" id="broadcast-manager-receive-filter-timers">
 <h4>Broadcast Manager Receive Filter Timers<a class="headerlink" href="#broadcast-manager-receive-filter-timers" title="Permalink to this headline">¶</a></h4>
 <p>The timer values ival1 or ival2 may be set to non-zero values at RX_SETUP.
 When the SET_TIMER flag is set the timers are enabled:</p>
@@ -1176,8 +1178,8 @@ CAN frame is stateless as state changes within the ival2 periode may get
 lost.</p>
 </dd>
 </dl>
-</section>
-<section id="broadcast-manager-multiplex-message-receive-filter">
+</div>
+<div class="section" id="broadcast-manager-multiplex-message-receive-filter">
 <h4>Broadcast Manager Multiplex Message Receive Filter<a class="headerlink" href="#broadcast-manager-multiplex-message-receive-filter" title="Permalink to this headline">¶</a></h4>
 <p>To filter for content changes in multiplex message sequences an array of more
 than one CAN frames can be passed in a RX_SETUP configuration message. The
@@ -1208,8 +1210,8 @@ filters) can be added as array to the TX_SETUP BCM configuration message:</p>
 <span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">msg</span><span class="p">));</span>
 </pre></div>
 </div>
-</section>
-<section id="broadcast-manager-can-fd-support">
+</div>
+<div class="section" id="broadcast-manager-can-fd-support">
 <h4>Broadcast Manager CAN FD Support<a class="headerlink" href="#broadcast-manager-can-fd-support" title="Permalink to this headline">¶</a></h4>
 <p>The programming API of the CAN_BCM depends on struct can_frame which is
 given as array directly behind the bcm_msg_head structure. To follow this
@@ -1230,24 +1232,24 @@ bcm_msg_head are defined as struct canfd_frame:</p>
 </div>
 <p>When using CAN FD frames for multiplex filtering the MUX mask is still
 expected in the first 64 bit of the struct canfd_frame data section.</p>
-</section>
-</section>
-<section id="connected-transport-protocols-sock-seqpacket">
+</div>
+</div>
+<div class="section" id="connected-transport-protocols-sock-seqpacket">
 <h3>Connected Transport Protocols (SOCK_SEQPACKET)<a class="headerlink" href="#connected-transport-protocols-sock-seqpacket" title="Permalink to this headline">¶</a></h3>
 <p>(to be written)</p>
-</section>
-<section id="unconnected-transport-protocols-sock-dgram">
+</div>
+<div class="section" id="unconnected-transport-protocols-sock-dgram">
 <h3>Unconnected Transport Protocols (SOCK_DGRAM)<a class="headerlink" href="#unconnected-transport-protocols-sock-dgram" title="Permalink to this headline">¶</a></h3>
 <p>(to be written)</p>
-</section>
-</section>
-<section id="socketcan-core-module">
+</div>
+</div>
+<div class="section" id="socketcan-core-module">
 <span id="id3"></span><h2>SocketCAN Core Module<a class="headerlink" href="#socketcan-core-module" title="Permalink to this headline">¶</a></h2>
 <p>The SocketCAN core module implements the protocol family
 PF_CAN. CAN protocol modules are loaded by the core module at
 runtime. The core module provides an interface for CAN protocol
 modules to subscribe needed CAN IDs (see <a class="reference internal" href="#socketcan-receive-lists"><span class="std std-ref">Receive Lists</span></a>).</p>
-<section id="can-ko-module-params">
+<div class="section" id="can-ko-module-params">
 <h3>can.ko Module Params<a class="headerlink" href="#can-ko-module-params" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><strong>stats_timer</strong>:
@@ -1258,8 +1260,8 @@ disabled by using stattimer=0 on the module commandline.</p></li>
 <li><p><strong>debug</strong>:
 (removed since SocketCAN SVN r546)</p></li>
 </ul>
-</section>
-<section id="procfs-content">
+</div>
+<div class="section" id="procfs-content">
 <h3>procfs content<a class="headerlink" href="#procfs-content" title="Permalink to this headline">¶</a></h3>
 <p>As described in <a class="reference internal" href="#socketcan-receive-lists"><span class="std std-ref">Receive Lists</span></a> the SocketCAN core uses several filter
 lists to deliver received CAN frames to CAN protocol modules. These
@@ -1292,8 +1294,8 @@ reset_stats - manual statistic reset
 version     - prints SocketCAN core and ABI version (removed in Linux 5.10)
 </pre></div>
 </div>
-</section>
-<section id="writing-own-can-protocol-modules">
+</div>
+<div class="section" id="writing-own-can-protocol-modules">
 <h3>Writing Own CAN Protocol Modules<a class="headerlink" href="#writing-own-can-protocol-modules" title="Permalink to this headline">¶</a></h3>
 <p>To implement a new protocol in the protocol family PF_CAN a new
 protocol has to be defined in include/linux/can.h .
@@ -1309,9 +1311,9 @@ can_send          - transmit a CAN frame (optional with local loopback)
 </div>
 <p>For details see the kerneldoc documentation in net/can/af_can.c or
 the source code of net/can/raw.c or net/can/bcm.c .</p>
-</section>
-</section>
-<section id="can-network-drivers">
+</div>
+</div>
+<div class="section" id="can-network-drivers">
 <h2>CAN Network Drivers<a class="headerlink" href="#can-network-drivers" title="Permalink to this headline">¶</a></h2>
 <p>Writing a CAN network device driver is much easier than writing a
 CAN character device driver. Similar to other known network device
@@ -1322,7 +1324,7 @@ drivers you mainly have to deal with:</p>
 </ul>
 <p>See e.g. at <a class="reference internal" href="netdevices.html"><span class="doc">Network Devices, the Kernel, and You!</span></a> . The differences
 for writing CAN network device driver are described below:</p>
-<section id="general-settings">
+<div class="section" id="general-settings">
 <h3>General Settings<a class="headerlink" href="#general-settings" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">type</span>  <span class="o">=</span> <span class="n">ARPHRD_CAN</span><span class="p">;</span> <span class="cm">/* the netdevice hardware type */</span>
 <span class="n">dev</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">IFF_NOARP</span><span class="p">;</span>  <span class="cm">/* CAN has no arp */</span>
@@ -1335,8 +1337,8 @@ for writing CAN network device driver are described below:</p>
 </div>
 <p>The struct can_frame or struct canfd_frame is the payload of each socket
 buffer (skbuff) in the protocol family PF_CAN.</p>
-</section>
-<section id="socketcan-local-loopback2">
+</div>
+<div class="section" id="socketcan-local-loopback2">
 <span id="id4"></span><h3>Local Loopback of Sent Frames<a class="headerlink" href="#socketcan-local-loopback2" title="Permalink to this headline">¶</a></h3>
 <p>As described in <a class="reference internal" href="#socketcan-local-loopback1"><span class="std std-ref">Local Loopback of Sent Frames</span></a> the CAN network device driver should
 support a local loopback functionality similar to the local echo
@@ -1346,8 +1348,8 @@ set to prevent the PF_CAN core from locally echoing sent frames
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>dev-&gt;flags = (IFF_NOARP | IFF_ECHO);
 </pre></div>
 </div>
-</section>
-<section id="can-controller-hardware-filters">
+</div>
+<div class="section" id="can-controller-hardware-filters">
 <h3>CAN Controller Hardware Filters<a class="headerlink" href="#can-controller-hardware-filters" title="Permalink to this headline">¶</a></h3>
 <p>To reduce the interrupt load on deep embedded systems some CAN
 controllers support the filtering of CAN IDs or ranges of CAN IDs.
@@ -1362,8 +1364,8 @@ Therefore the use of hardware filters goes to the category ‘handmade
 tuning on deep embedded systems’. The author is running a MPC603e
 &#64;133MHz with four SJA1000 CAN controllers from 2002 under heavy bus
 load without any problems …</p>
-</section>
-<section id="the-virtual-can-driver-vcan">
+</div>
+<div class="section" id="the-virtual-can-driver-vcan">
 <h3>The Virtual CAN Driver (vcan)<a class="headerlink" href="#the-virtual-can-driver-vcan" title="Permalink to this headline">¶</a></h3>
 <p>Similar to the network loopback devices, vcan offers a virtual local
 CAN interface. A full qualified address on CAN consists of</p>
@@ -1389,8 +1391,8 @@ removal of vcan network devices can be managed with the ip(8) tool:</p>
      $ ip link del vcan42
 </pre></div>
 </div>
-</section>
-<section id="the-can-network-device-driver-interface">
+</div>
+<div class="section" id="the-can-network-device-driver-interface">
 <h3>The CAN Network Device Driver Interface<a class="headerlink" href="#the-can-network-device-driver-interface" title="Permalink to this headline">¶</a></h3>
 <p>The CAN network device driver interface provides a generic interface
 to setup, configure and monitor CAN network devices. The user can then
@@ -1401,7 +1403,7 @@ Furthermore, the interface uses a common data structure and exports a
 set of common functions, which all real CAN network device drivers
 should use. Please have a look to the SJA1000 or MSCAN driver to
 understand how to use them. The name of the module is can-dev.ko.</p>
-<section id="netlink-interface-to-set-get-devices-properties">
+<div class="section" id="netlink-interface-to-set-get-devices-properties">
 <h4>Netlink interface to set/get devices properties<a class="headerlink" href="#netlink-interface-to-set-get-devices-properties" title="Permalink to this headline">¶</a></h4>
 <p>The CAN device must be configured via netlink interface. The supported
 netlink message types are defined and briefly described in
@@ -1498,8 +1500,8 @@ bus-off state. RX overrun errors are listed in the “overrun”
 field of the standard network statistics.</p>
 </dd>
 </dl>
-</section>
-<section id="setting-the-can-bit-timing">
+</div>
+<div class="section" id="setting-the-can-bit-timing">
 <h4>Setting the CAN Bit-Timing<a class="headerlink" href="#setting-the-can-bit-timing" title="Permalink to this headline">¶</a></h4>
 <p>The CAN bit-timing parameters can always be defined in a hardware
 independent format as proposed in the Bosch CAN 2.0 specification
@@ -1527,8 +1529,8 @@ following command:</p>
   sja1000: clock 8000000 tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp-inc 1
 </pre></div>
 </div>
-</section>
-<section id="starting-and-stopping-the-can-network-device">
+</div>
+<div class="section" id="starting-and-stopping-the-can-network-device">
 <h4>Starting and Stopping the CAN Network Device<a class="headerlink" href="#starting-and-stopping-the-can-network-device" title="Permalink to this headline">¶</a></h4>
 <p>A CAN network device is started or stopped as usual with the command
 “ifconfig canX up/down” or “ip link set canX up/down”. Be aware that
@@ -1552,9 +1554,9 @@ appropriate with the command:</p>
 </div>
 <p>Note that a restart will also create a CAN error message frame (see
 also <a class="reference internal" href="#socketcan-network-problem-notifications"><span class="std std-ref">Network Problem Notifications</span></a>).</p>
-</section>
-</section>
-<section id="can-fd-flexible-data-rate-driver-support">
+</div>
+</div>
+<div class="section" id="can-fd-flexible-data-rate-driver-support">
 <span id="socketcan-can-fd-driver"></span><h3>CAN FD (Flexible Data Rate) Driver Support<a class="headerlink" href="#can-fd-flexible-data-rate-driver-support" title="Permalink to this headline">¶</a></h3>
 <p>CAN FD capable CAN controllers support two different bitrates for the
 arbitration phase and the payload phase of the CAN FD frame. Therefore a
@@ -1624,22 +1626,22 @@ can &lt;FD&gt; state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>can &lt;FD,FD-NON-ISO&gt; state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0
 </pre></div>
 </div>
-</section>
-<section id="supported-can-hardware">
+</div>
+<div class="section" id="supported-can-hardware">
 <h3>Supported CAN Hardware<a class="headerlink" href="#supported-can-hardware" title="Permalink to this headline">¶</a></h3>
 <p>Please check the “Kconfig” file in “drivers/net/can” to get an actual
 list of the support CAN hardware. On the SocketCAN project website
 (see <a class="reference internal" href="#socketcan-resources"><span class="std std-ref">SocketCAN Resources</span></a>) there might be further drivers available, also for
 older kernel versions.</p>
-</section>
-</section>
-<section id="socketcan-resources">
+</div>
+</div>
+<div class="section" id="socketcan-resources">
 <span id="id5"></span><h2>SocketCAN Resources<a class="headerlink" href="#socketcan-resources" title="Permalink to this headline">¶</a></h2>
 <p>The Linux CAN / SocketCAN project resources (project site / mailing list)
 are referenced in the MAINTAINERS file in the Linux source tree.
 Search for CAN NETWORK [LAYERS|DRIVERS].</p>
-</section>
-<section id="credits">
+</div>
+<div class="section" id="credits">
 <h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Oliver Hartkopp (PF_CAN core, filters, drivers, bcm, SJA1000 driver)</p></li>
@@ -1662,8 +1664,8 @@ Search for CAN NETWORK [LAYERS|DRIVERS].</p>
 <li><p>Per Dalen (SJA1000 Kvaser PCI driver)</p></li>
 <li><p>Sam Ravnborg (reviews, coding style, kbuild help)</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

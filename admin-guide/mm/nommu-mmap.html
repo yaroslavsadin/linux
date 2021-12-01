@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>No-MMU memory mapping support &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -352,7 +354,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="no-mmu-memory-mapping-support">
+  <div class="section" id="no-mmu-memory-mapping-support">
 <h1>No-MMU memory mapping support<a class="headerlink" href="#no-mmu-memory-mapping-support" title="Permalink to this headline">¶</a></h1>
 <p>The kernel has limited support for memory mapping under no-MMU conditions, such
 as are used in uClinux environments. From the userspace point of view, memory
@@ -458,7 +460,7 @@ provide any such support, then the mapping request will be denied.</p>
 </li>
 </ol>
 </div></blockquote>
-<section id="further-notes-on-no-mmu-mmap">
+<div class="section" id="further-notes-on-no-mmu-mmap">
 <h2>Further notes on no-MMU MMAP<a class="headerlink" href="#further-notes-on-no-mmu-mmap" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ol class="arabic">
@@ -505,21 +507,21 @@ error will result if they don’t. This is most likely to be encountered
 with character device files, pipes, fifos and sockets.</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="interprocess-shared-memory">
+</div>
+<div class="section" id="interprocess-shared-memory">
 <h2>Interprocess shared memory<a class="headerlink" href="#interprocess-shared-memory" title="Permalink to this headline">¶</a></h2>
 <p>Both SYSV IPC SHM shared memory and POSIX shared memory is supported in NOMMU
 mode.  The former through the usual mechanism, the latter through files created
 on ramfs or tmpfs mounts.</p>
-</section>
-<section id="futexes">
+</div>
+<div class="section" id="futexes">
 <h2>Futexes<a class="headerlink" href="#futexes" title="Permalink to this headline">¶</a></h2>
 <p>Futexes are supported in NOMMU mode if the arch supports them.  An error will
 be given if an address passed to the futex system call lies outside the
 mappings made by a process or if the mapping in which the address lies does not
 support futexes (such as an I/O chardev mapping).</p>
-</section>
-<section id="no-mmu-mremap">
+</div>
+<div class="section" id="no-mmu-mremap">
 <h2>No-MMU mremap<a class="headerlink" href="#no-mmu-mremap" title="Permalink to this headline">¶</a></h2>
 <p>The mremap() function is partially supported.  It may change the size of a
 mapping, and may move it <a class="footnote-reference brackets" href="#id2" id="id1">1</a> if MREMAP_MAYMOVE is specified and if the new size
@@ -538,8 +540,8 @@ act on a complete mapping.</p>
 <dd><p>Not currently supported.</p>
 </dd>
 </dl>
-</section>
-<section id="providing-shareable-character-device-support">
+</div>
+<div class="section" id="providing-shareable-character-device-support">
 <h2>Providing shareable character device support<a class="headerlink" href="#providing-shareable-character-device-support" title="Permalink to this headline">¶</a></h2>
 <p>To provide shareable character device support, a driver must provide a
 file-&gt;f_op-&gt;get_unmapped_area() operation. The mmap() routines will call this
@@ -576,8 +578,8 @@ controlling the device. Remember especially: private executable
 mappings may still be mapped directly off the device under some
 circumstances!</p>
 </div>
-</section>
-<section id="providing-shareable-memory-backed-file-support">
+</div>
+<div class="section" id="providing-shareable-memory-backed-file-support">
 <h2>Providing shareable memory-backed file support<a class="headerlink" href="#providing-shareable-memory-backed-file-support" title="Permalink to this headline">¶</a></h2>
 <p>Provision of shared mappings on memory backed files is similar to the provision
 of support for shared mapped character devices. The main difference is that the
@@ -589,14 +591,14 @@ enough pages to honour a mapping. This is required to support POSIX shared
 memory.</p>
 <p>Memory backed devices are indicated by the mapping’s backing device info having
 the memory_backed flag set.</p>
-</section>
-<section id="providing-shareable-block-device-support">
+</div>
+<div class="section" id="providing-shareable-block-device-support">
 <h2>Providing shareable block device support<a class="headerlink" href="#providing-shareable-block-device-support" title="Permalink to this headline">¶</a></h2>
 <p>Provision of shared mappings on block device files is exactly the same as for
 character devices. If there isn’t a real device underneath, then the driver
 should allocate sufficient contiguous memory to honour any supported mapping.</p>
-</section>
-<section id="adjusting-page-trimming-behaviour">
+</div>
+<div class="section" id="adjusting-page-trimming-behaviour">
 <h2>Adjusting page trimming behaviour<a class="headerlink" href="#adjusting-page-trimming-behaviour" title="Permalink to this headline">¶</a></h2>
 <p>NOMMU mmap automatically rounds up to the nearest power-of-2 number of pages
 when performing an allocation.  This can have adverse effects on memory
@@ -606,8 +608,8 @@ allocator.  In order to retain finer-grained control over fragmentation, this
 behaviour can either be disabled completely, or bumped up to a higher page
 watermark where trimming begins.</p>
 <p>Page trimming behaviour is configurable via the sysctl <code class="docutils literal notranslate"><span class="pre">vm.nr_trim_pages</span></code>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

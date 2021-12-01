@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Kprobe-based Event Tracing &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -275,14 +277,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kprobe-based-event-tracing">
+  <div class="section" id="kprobe-based-event-tracing">
 <h1>Kprobe-based Event Tracing<a class="headerlink" href="#kprobe-based-event-tracing" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Masami Hiramatsu</p>
 </dd>
 </dl>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>These events are similar to tracepoint based events. Instead of Tracepoint,
 this is based on kprobes (kprobe and kretprobe). So it can probe wherever
@@ -298,8 +300,8 @@ current_tracer. Instead of that, add probe points via
 <p>You can also use /sys/kernel/debug/tracing/dynamic_events instead of
 kprobe_events. That interface will provide unified access to other
 dynamic events too.</p>
-</section>
-<section id="synopsis-of-kprobe-events">
+</div>
+<div class="section" id="synopsis-of-kprobe-events">
 <h2>Synopsis of kprobe_events<a class="headerlink" href="#synopsis-of-kprobe-events" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span> p[:[GRP/]EVENT] [MOD:]SYM[+offs]|MEMADDR [FETCHARGS]  : Set a probe
  r[MAXACTIVE][:[GRP/]EVENT] [MOD:]SYM[+0] [FETCHARGS]  : Set a return probe
@@ -340,8 +342,8 @@ FETCHARGS      : Arguments. Each probe can have up to 128 args.
  (\*4) &quot;u&quot; means user-space dereference. See :ref:`user_mem_access`.
 </pre></div>
 </div>
-</section>
-<section id="types">
+</div>
+<div class="section" id="types">
 <h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
 <p>Several types are supported for fetch-args. Kprobe tracer will access memory
 by given type. Prefix ‘s’ and ‘u’ means those types are signed and unsigned
@@ -372,8 +374,8 @@ offset, and container-size (usually 32). The syntax is:</p>
 <p>Symbol type(‘symbol’) is an alias of u32 or u64 type (depends on BITS_PER_LONG)
 which shows given pointer in “symbol+offset” style.
 For $comm, the default type is “string”; any other type is invalid.</p>
-</section>
-<section id="user-memory-access">
+</div>
+<div class="section" id="user-memory-access">
 <span id="user-mem-access"></span><h2>User Memory Access<a class="headerlink" href="#user-memory-access" title="Permalink to this headline">¶</a></h2>
 <p>Kprobe events supports user-space memory access. For that purpose, you can use
 either user-space dereference syntax or ‘ustring’ type.</p>
@@ -389,8 +391,8 @@ space. ‘ustring’ is a shortcut way of performing the same task. That is,
 use it transparently. This means if you use normal dereference or string type
 for user memory, it might fail, and may always fail on some archs. The user
 has to carefully check if the target data is in kernel or user space.</p>
-</section>
-<section id="per-probe-event-filtering">
+</div>
+<div class="section" id="per-probe-event-filtering">
 <h2>Per-Probe Event Filtering<a class="headerlink" href="#per-probe-event-filtering" title="Permalink to this headline">¶</a></h2>
 <p>Per-probe event filtering feature allows you to set different filter on each
 probe and gives you what arguments will be shown in trace buffer. If an event
@@ -410,15 +412,15 @@ under tracing/events/kprobes/&lt;EVENT&gt;, at the directory you can see ‘id�
 hit (for details, see <a class="reference internal" href="events.html"><span class="doc">Event Tracing</span></a>, section 6).</p>
 </dd>
 </dl>
-</section>
-<section id="event-profiling">
+</div>
+<div class="section" id="event-profiling">
 <h2>Event Profiling<a class="headerlink" href="#event-profiling" title="Permalink to this headline">¶</a></h2>
 <p>You can check the total number of probe hits and probe miss-hits via
 /sys/kernel/debug/tracing/kprobe_profile.
 The first column is event name, the second is the number of probe hits,
 the third is the number of probe miss-hits.</p>
-</section>
-<section id="kernel-boot-parameter">
+</div>
+<div class="section" id="kernel-boot-parameter">
 <h2>Kernel Boot Parameter<a class="headerlink" href="#kernel-boot-parameter" title="Permalink to this headline">¶</a></h2>
 <p>You can add and enable new kprobe events when booting up the kernel by
 “kprobe_event=” parameter. The parameter accepts a semicolon-delimited
@@ -432,8 +434,8 @@ instead of space. For example, adding myprobe event on do_sys_open like below</p
 <blockquote>
 <div><p>p:myprobe,do_sys_open,dfd=%ax,filename=%dx,flags=%cx,mode=+4($stack)</p>
 </div></blockquote>
-</section>
-<section id="usage-examples">
+</div>
+<div class="section" id="usage-examples">
 <h2>Usage examples<a class="headerlink" href="#usage-examples" title="Permalink to this headline">¶</a></h2>
 <p>To add a probe as a new event, write a new definition to kprobe_events
 as below:</p>
@@ -513,8 +515,8 @@ Open something...
 <p>Each line shows when the kernel hits an event, and &lt;- SYMBOL means kernel
 returns from SYMBOL(e.g. “sys_open+0x1b/0x1d &lt;- do_sys_open” means kernel
 returns from do_sys_open to sys_open+0x1b).</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

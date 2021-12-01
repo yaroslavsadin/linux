@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Notes on Analysing Behaviour Using Events and Tracepoints &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -285,14 +287,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="notes-on-analysing-behaviour-using-events-and-tracepoints">
+  <div class="section" id="notes-on-analysing-behaviour-using-events-and-tracepoints">
 <h1>Notes on Analysing Behaviour Using Events and Tracepoints<a class="headerlink" href="#notes-on-analysing-behaviour-using-events-and-tracepoints" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Mel Gorman (PCL information heavily based on email from Ingo Molnar)</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Tracepoints (see <a class="reference internal" href="tracepoints.html"><span class="doc">Using the Linux Kernel Tracepoints</span></a>) can be used without
 creating custom kernel modules to register probe functions using the event
@@ -305,10 +307,10 @@ this document describes some of the methods that can be used.</p>
 <p>This document assumes that debugfs is mounted on /sys/kernel/debug and that
 the appropriate tracing options have been configured into the kernel. It is
 assumed that the PCL tool tools/perf has been installed and is in your path.</p>
-</section>
-<section id="listing-available-events">
+</div>
+<div class="section" id="listing-available-events">
 <h2>2. Listing Available Events<a class="headerlink" href="#listing-available-events" title="Permalink to this headline">¶</a></h2>
-<section id="standard-utilities">
+<div class="section" id="standard-utilities">
 <h3>2.1 Standard Utilities<a class="headerlink" href="#standard-utilities" title="Permalink to this headline">¶</a></h3>
 <p>All possible events are visible from /sys/kernel/debug/tracing/events. Simply
 calling:</p>
@@ -316,8 +318,8 @@ calling:</p>
 </pre></div>
 </div>
 <p>will give a fair indication of the number of events available.</p>
-</section>
-<section id="pcl-performance-counters-for-linux">
+</div>
+<div class="section" id="pcl-performance-counters-for-linux">
 <h3>2.2 PCL (Performance Counters for Linux)<a class="headerlink" href="#pcl-performance-counters-for-linux" title="Permalink to this headline">¶</a></h3>
 <p>Discovery and enumeration of all counters and events, including tracepoints,
 are available with the perf tool. Getting a list of available events is a
@@ -331,11 +333,11 @@ ext4:ext4_ordered_write_end              [Tracepoint event]
 [ .... remaining output snipped .... ]
 </pre></div>
 </div>
-</section>
-</section>
-<section id="enabling-events">
+</div>
+</div>
+<div class="section" id="enabling-events">
 <h2>3. Enabling Events<a class="headerlink" href="#enabling-events" title="Permalink to this headline">¶</a></h2>
-<section id="system-wide-event-enabling">
+<div class="section" id="system-wide-event-enabling">
 <h3>3.1 System-Wide Event Enabling<a class="headerlink" href="#system-wide-event-enabling" title="Permalink to this headline">¶</a></h3>
 <p>See <a class="reference internal" href="events.html"><span class="doc">Event Tracing</span></a> for a proper description on how events
 can be enabled system-wide. A short example of enabling all events related
@@ -343,8 +345,8 @@ to page allocation would look something like:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ for i in `find /sys/kernel/debug/tracing/events -name &quot;enable&quot; | grep mm_`; do echo 1 &gt; $i; done
 </pre></div>
 </div>
-</section>
-<section id="system-wide-event-enabling-with-systemtap">
+</div>
+<div class="section" id="system-wide-event-enabling-with-systemtap">
 <h3>3.2 System-Wide Event Enabling with SystemTap<a class="headerlink" href="#system-wide-event-enabling-with-systemtap" title="Permalink to this headline">¶</a></h3>
 <p>In SystemTap, tracepoints are accessible using the kernel.trace() function
 call. The following is an example that reports every 5 seconds what processes
@@ -368,8 +370,8 @@ probe timer.s(5) {
 }
 </pre></div>
 </div>
-</section>
-<section id="system-wide-event-enabling-with-pcl">
+</div>
+<div class="section" id="system-wide-event-enabling-with-pcl">
 <h3>3.3 System-Wide Event Enabling with PCL<a class="headerlink" href="#system-wide-event-enabling-with-pcl" title="Permalink to this headline">¶</a></h3>
 <p>By specifying the -a switch and analysing sleep, the system-wide events
 for a duration of time can be examined.</p>
@@ -388,13 +390,13 @@ Performance counter stats for &#39;sleep 10&#39;:
 </div>
 <p>Similarly, one could execute a shell and exit it as desired to get a report
 at that point.</p>
-</section>
-<section id="local-event-enabling">
+</div>
+<div class="section" id="local-event-enabling">
 <h3>3.4 Local Event Enabling<a class="headerlink" href="#local-event-enabling" title="Permalink to this headline">¶</a></h3>
 <p><a class="reference internal" href="ftrace.html"><span class="doc">ftrace - Function Tracer</span></a> describes how to enable events on a per-thread
 basis using set_ftrace_pid.</p>
-</section>
-<section id="local-event-enablement-with-pcl">
+</div>
+<div class="section" id="local-event-enablement-with-pcl">
 <h3>3.5 Local Event Enablement with PCL<a class="headerlink" href="#local-event-enablement-with-pcl" title="Permalink to this headline">¶</a></h3>
 <p>Events can be activated and tracked for the duration of a process on a local
 basis using PCL such as follows.</p>
@@ -411,15 +413,15 @@ Time: 0.909
   0.973913387  seconds time elapsed
 </pre></div>
 </div>
-</section>
-</section>
-<section id="event-filtering">
+</div>
+</div>
+<div class="section" id="event-filtering">
 <h2>4. Event Filtering<a class="headerlink" href="#event-filtering" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="ftrace.html"><span class="doc">ftrace - Function Tracer</span></a> covers in-depth how to filter events in
 ftrace.  Obviously using grep and awk of trace_pipe is an option as well
 as any script reading trace_pipe.</p>
-</section>
-<section id="analysing-event-variances-with-pcl">
+</div>
+<div class="section" id="analysing-event-variances-with-pcl">
 <h2>5. Analysing Event Variances with PCL<a class="headerlink" href="#analysing-event-variances-with-pcl" title="Permalink to this headline">¶</a></h2>
 <p>Any workload can exhibit variances between runs and it can be important
 to know what the standard deviation is. By and large, this is left to the
@@ -459,8 +461,8 @@ Performance counter stats for &#39;sleep 1&#39; (10 runs):
   1.002251757  seconds time elapsed   ( +-   0.005% )
 </pre></div>
 </div>
-</section>
-<section id="higher-level-analysis-with-helper-scripts">
+</div>
+<div class="section" id="higher-level-analysis-with-helper-scripts">
 <h2>6. Higher-Level Analysis with Helper Scripts<a class="headerlink" href="#higher-level-analysis-with-helper-scripts" title="Permalink to this headline">¶</a></h2>
 <p>When events are enabled the events that are triggering can be read from
 /sys/kernel/debug/tracing/trace_pipe in human-readable format although binary
@@ -494,8 +496,8 @@ processes, the parent process responsible for creating all the helpers
 can be identified</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="lower-level-analysis-with-pcl">
+</div>
+<div class="section" id="lower-level-analysis-with-pcl">
 <h2>7. Lower-Level Analysis with PCL<a class="headerlink" href="#lower-level-analysis-with-pcl" title="Permalink to this headline">¶</a></h2>
 <p>There may also be a requirement to identify what functions within a program
 were generating events within the kernel. To begin this sort of analysis, the
@@ -606,8 +608,8 @@ the card.  Further investigation would be needed to determine why pixmaps
 are being copied around so much but a starting point would be to take an
 ancient build of libpixmap out of the library path where it was totally
 forgotten about from months ago!</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

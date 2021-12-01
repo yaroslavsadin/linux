@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Detailed Usages &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -349,7 +351,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="detailed-usages">
+  <div class="section" id="detailed-usages">
 <h1>Detailed Usages<a class="headerlink" href="#detailed-usages" title="Permalink to this headline">¶</a></h1>
 <p>DAMON provides below three interfaces for different users.</p>
 <ul class="simple">
@@ -378,12 +380,12 @@ interface.  A reference implementation is available at
 <a class="reference external" href="https://github.com/awslabs/damo">https://github.com/awslabs/damo</a>.  If you are a kernel programmer, you could
 refer to <a class="reference internal" href="../../../vm/damon/api.html"><span class="doc">API Reference</span></a> for the kernel space programming interface.  For
 the reason, this document describes only the debugfs interface</p>
-<section id="debugfs-interface">
+<div class="section" id="debugfs-interface">
 <h2>debugfs Interface<a class="headerlink" href="#debugfs-interface" title="Permalink to this headline">¶</a></h2>
 <p>DAMON exports five files, <code class="docutils literal notranslate"><span class="pre">attrs</span></code>, <code class="docutils literal notranslate"><span class="pre">target_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">init_regions</span></code>,
 <code class="docutils literal notranslate"><span class="pre">schemes</span></code> and <code class="docutils literal notranslate"><span class="pre">monitor_on</span></code> under its debugfs directory,
 <code class="docutils literal notranslate"><span class="pre">&lt;debugfs&gt;/damon/</span></code>.</p>
-<section id="attributes">
+<div class="section" id="attributes">
 <h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
 <p>Users can get and set the <code class="docutils literal notranslate"><span class="pre">sampling</span> <span class="pre">interval</span></code>, <code class="docutils literal notranslate"><span class="pre">aggregation</span> <span class="pre">interval</span></code>,
 <code class="docutils literal notranslate"><span class="pre">regions</span> <span class="pre">update</span> <span class="pre">interval</span></code>, and min/max number of monitoring target regions by
@@ -397,8 +399,8 @@ example, below commands set those values to 5 ms, 100 ms, 1,000 ms, 10 and
 5000 100000 1000000 10 1000
 </pre></div>
 </div>
-</section>
-<section id="target-ids">
+</div>
+<div class="section" id="target-ids">
 <h3>Target IDs<a class="headerlink" href="#target-ids" title="Permalink to this headline">¶</a></h3>
 <p>Some types of address spaces supports multiple monitoring target.  For example,
 the virtual memory address spaces monitoring can have multiple processes as the
@@ -425,8 +427,8 @@ fake value, <code class="docutils literal notranslate"><span class="pre">42</spa
 </pre></div>
 </div>
 <p>Note that setting the target ids doesn’t start the monitoring.</p>
-</section>
-<section id="initial-monitoring-target-regions">
+</div>
+<div class="section" id="initial-monitoring-target-regions">
 <h3>Initial Monitoring Target Regions<a class="headerlink" href="#initial-monitoring-target-regions" title="Permalink to this headline">¶</a></h3>
 <p>In case of the virtual address space monitoring, DAMON automatically sets and
 updates the monitoring target regions so that entire memory mappings of target
@@ -461,8 +463,8 @@ virtual memory monitoring, DAMON will automatically updates the boundary of the
 regions after one <code class="docutils literal notranslate"><span class="pre">regions</span> <span class="pre">update</span> <span class="pre">interval</span></code>.  Therefore, users should set the
 <code class="docutils literal notranslate"><span class="pre">regions</span> <span class="pre">update</span> <span class="pre">interval</span></code> large enough in this case, if they don’t want the
 update.</p>
-</section>
-<section id="schemes">
+</div>
+<div class="section" id="schemes">
 <h3>Schemes<a class="headerlink" href="#schemes" title="Permalink to this headline">¶</a></h3>
 <p>For usual DAMON-based data access aware memory management optimizations, users
 would simply want the system to apply a memory management action to a memory
@@ -507,8 +509,8 @@ finally remove the scheme.</p>
 </div>
 <p>The last two integers in the 4th line of above example is the total number and
 the total size of the regions that the scheme is applied.</p>
-</section>
-<section id="turning-on-off">
+</div>
+<div class="section" id="turning-on-off">
 <h3>Turning On/Off<a class="headerlink" href="#turning-on-off" title="Permalink to this headline">¶</a></h3>
 <p>Setting the files as described above doesn’t incur effect unless you explicitly
 start the monitoring.  You can start, stop, and check the current status of the
@@ -527,9 +529,9 @@ off
 <p>Please note that you cannot write to the above-mentioned debugfs files while
 the monitoring is turned on.  If you write to the files while DAMON is running,
 an error code such as <code class="docutils literal notranslate"><span class="pre">-EBUSY</span></code> will be returned.</p>
-</section>
-</section>
-<section id="tracepoint-for-monitoring-results">
+</div>
+</div>
+<div class="section" id="tracepoint-for-monitoring-results">
 <h2>Tracepoint for Monitoring Results<a class="headerlink" href="#tracepoint-for-monitoring-results" title="Permalink to this headline">¶</a></h2>
 <p>DAMON provides the monitoring results via a tracepoint,
 <code class="docutils literal notranslate"><span class="pre">damon:damon_aggregated</span></code>.  While the monitoring is turned on, you could
@@ -543,8 +545,8 @@ like <code class="docutils literal notranslate"><span class="pre">perf</span></c
 # perf script
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

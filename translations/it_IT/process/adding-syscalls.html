@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Aggiungere una nuova chiamata di sistema &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -276,13 +278,13 @@ Per maggiori informazioni consultate le <a class="reference internal" href="../i
 <dd class="field-even"><p>Federico Vaga &lt;<a class="reference external" href="mailto:federico&#46;vaga&#37;&#52;&#48;vaga&#46;pv&#46;it">federico<span>&#46;</span>vaga<span>&#64;</span>vaga<span>&#46;</span>pv<span>&#46;</span>it</a>&gt;</p>
 </dd>
 </dl>
-<section id="aggiungere-una-nuova-chiamata-di-sistema">
+<div class="section" id="aggiungere-una-nuova-chiamata-di-sistema">
 <span id="it-addsyscalls"></span><h1>Aggiungere una nuova chiamata di sistema<a class="headerlink" href="#aggiungere-una-nuova-chiamata-di-sistema" title="Permalink to this headline">¶</a></h1>
 <p>Questo documento descrive quello che è necessario sapere per aggiungere
 nuove chiamate di sistema al kernel Linux; questo è da considerarsi come
 un’aggiunta ai soliti consigli su come proporre nuove modifiche
 <a class="reference internal" href="submitting-patches.html#it-submittingpatches"><span class="std std-ref"><a class="reference internal" href="submitting-patches.html"><span class="doc">Inviare patch: la guida essenziale per vedere il vostro codice nel kernel</span></a></span></a>.</p>
-<section id="alternative-alle-chiamate-di-sistema">
+<div class="section" id="alternative-alle-chiamate-di-sistema">
 <h2>Alternative alle chiamate di sistema<a class="headerlink" href="#alternative-alle-chiamate-di-sistema" title="Permalink to this headline">¶</a></h2>
 <p>La prima considerazione da fare quando si aggiunge una nuova chiamata di
 sistema è quella di valutare le alternative.  Nonostante le chiamate di sistema
@@ -331,8 +333,8 @@ nel comando <code class="docutils literal notranslate"><span class="pre">prctl</
 al processo.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="progettare-l-api-pianificare-le-estensioni">
+</div>
+<div class="section" id="progettare-l-api-pianificare-le-estensioni">
 <h2>Progettare l’API: pianificare le estensioni<a class="headerlink" href="#progettare-l-api-pianificare-le-estensioni" title="Permalink to this headline">¶</a></h2>
 <p>Una nuova chiamata di sistema diventerà parte dell’API del kernel, e
 dev’essere supportata per un periodo indefinito.  Per questo, è davvero
@@ -383,8 +385,8 @@ programma in spazio utente estendendo la struttura dati con zeri (in pratica
 </div></blockquote>
 <p>Vedere <em class="manpage">perf_event_open(2)</em> e la funzione <code class="docutils literal notranslate"><span class="pre">perf_copy_attr()</span></code> (in
 <code class="docutils literal notranslate"><span class="pre">kernel/events/core.c</span></code>) per un esempio pratico di questo approccio.</p>
-</section>
-<section id="progettare-l-api-altre-considerazioni">
+</div>
+<div class="section" id="progettare-l-api-altre-considerazioni">
 <h2>Progettare l’API: altre considerazioni<a class="headerlink" href="#progettare-l-api-altre-considerazioni" title="Permalink to this headline">¶</a></h2>
 <p>Se la vostra nuova chiamata di sistema permette allo spazio utente di fare
 riferimento ad un oggetto del kernel, allora questa dovrebbe usare un
@@ -450,8 +452,8 @@ di sistema con argomenti a 64-bit viene semplificata se questi argomenti
 ricadono in posizioni dispari (pratica, i parametri 1, 3, 5); questo permette
 l’uso di coppie contigue di registri a 32-bit.  (Questo non conta se gli
 argomenti sono parte di una struttura dati che viene passata per puntatore).</p>
-</section>
-<section id="proporre-l-api">
+</div>
+<div class="section" id="proporre-l-api">
 <h2>Proporre l’API<a class="headerlink" href="#proporre-l-api" title="Permalink to this headline">¶</a></h2>
 <p>Al fine di rendere le nuove chiamate di sistema di facile revisione, è meglio
 che dividiate le modifiche i pezzi separati.  Questi dovrebbero includere
@@ -474,8 +476,8 @@ al repositorio delle pagine man.</p></li>
 <p>Le proposte di nuove chiamate di sistema, come ogni altro modifica all’API del
 kernel, deve essere sottomessa alla lista di discussione
 <a class="reference external" href="mailto:linux-api&#37;&#52;&#48;vger&#46;kernel&#46;org">linux-api<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a>.</p>
-</section>
-<section id="implementazione-di-chiamate-di-sistema-generiche">
+</div>
+<div class="section" id="implementazione-di-chiamate-di-sistema-generiche">
 <h2>Implementazione di chiamate di sistema generiche<a class="headerlink" href="#implementazione-di-chiamate-di-sistema-generiche" title="Permalink to this headline">¶</a></h2>
 <p>Il principale punto d’accesso alla vostra nuova chiamata di sistema
 <em class="manpage">xyzzy(2)</em> verrà chiamato <code class="docutils literal notranslate"><span class="pre">sys_xyzzy()</span></code>; ma, piuttosto che in modo
@@ -538,8 +540,8 @@ opzione CONFIG disabilitata.</p></li>
 <li><p><em>stub</em> di ripiego in <code class="docutils literal notranslate"><span class="pre">kernel/sys_ni.c</span></code></p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="implementazione-delle-chiamate-di-sistema-x86">
+</div>
+<div class="section" id="implementazione-delle-chiamate-di-sistema-x86">
 <h2>Implementazione delle chiamate di sistema x86<a class="headerlink" href="#implementazione-delle-chiamate-di-sistema-x86" title="Permalink to this headline">¶</a></h2>
 <p>Per collegare la vostra nuova chiamate di sistema alle piattaforme x86,
 dovete aggiornate la tabella principale di syscall.  Assumendo che la vostra
@@ -555,8 +557,8 @@ arch/x86/entry/syscalls/syscall_64.tbl:</p>
 </div>
 <p>Ancora una volta, questi numeri potrebbero essere cambiati se generano
 conflitti durante la finestra di integrazione.</p>
-</section>
-<section id="chiamate-di-sistema-compatibili-generico">
+</div>
+<div class="section" id="chiamate-di-sistema-compatibili-generico">
 <h2>Chiamate di sistema compatibili (generico)<a class="headerlink" href="#chiamate-di-sistema-compatibili-generico" title="Permalink to this headline">¶</a></h2>
 <p>Per molte chiamate di sistema, la stessa implementazione a 64-bit può essere
 invocata anche quando il programma in spazio utente è a 32-bit; anche se la
@@ -652,8 +654,8 @@ __SC_COMP(__NR_xyzzy, sys_xyzzy, compat_sys_xyzzy)
 <code class="docutils literal notranslate"><span class="pre">include/uapi/asm-generic/unistd.h</span></code></p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="compatibilita-delle-chiamate-di-sistema-x86">
+</div>
+<div class="section" id="compatibilita-delle-chiamate-di-sistema-x86">
 <h2>Compatibilità delle chiamate di sistema (x86)<a class="headerlink" href="#compatibilita-delle-chiamate-di-sistema-x86" title="Permalink to this headline">¶</a></h2>
 <p>Per collegare una chiamata di sistema, su un’architettura x86, con la sua
 versione <em>compatibile</em>, è necessario aggiustare la voce nella tabella
@@ -683,8 +685,8 @@ arch/x86/entry/syscalls/syscall_64.tbl rimane immutata).</p>
 <p>In ambo i casi, dovreste verificare che i tipi usati dagli argomenti
 abbiano un’esatta corrispondenza da x32 (-mx32) al loro equivalente a
 32-bit (-m32) o 64-bit (-m64).</p>
-</section>
-<section id="chiamate-di-sistema-che-ritornano-altrove">
+</div>
+<div class="section" id="chiamate-di-sistema-che-ritornano-altrove">
 <h2>Chiamate di sistema che ritornano altrove<a class="headerlink" href="#chiamate-di-sistema-che-ritornano-altrove" title="Permalink to this headline">¶</a></h2>
 <p>Nella maggior parte delle chiamate di sistema, al termine della loro
 esecuzione, i programmi in spazio utente riprendono esattamente dal punto
@@ -735,8 +737,8 @@ Correggerlo è semplice, basta aggiungere una #define in
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#define stub_xyzzy sys_xyzzy
 </pre></div>
 </div>
-</section>
-<section id="altri-dettagli">
+</div>
+<div class="section" id="altri-dettagli">
 <h2>Altri dettagli<a class="headerlink" href="#altri-dettagli" title="Permalink to this headline">¶</a></h2>
 <p>La maggior parte dei kernel tratta le chiamate di sistema allo stesso modo,
 ma possono esserci rare eccezioni per le quali potrebbe essere necessario
@@ -751,8 +753,8 @@ essere aggiornato.</p>
 <p>Più in generale, se esiste una chiamata di sistema che è simile alla vostra,
 vale la pena fare una ricerca con <code class="docutils literal notranslate"><span class="pre">grep</span></code> su tutto il kernel per la chiamata
 di sistema esistente per verificare che non ci siano altri casi speciali.</p>
-</section>
-<section id="verifica">
+</div>
+<div class="section" id="verifica">
 <h2>Verifica<a class="headerlink" href="#verifica" title="Permalink to this headline">¶</a></h2>
 <p>Una nuova chiamata di sistema dev’essere, ovviamente, provata; è utile fornire
 ai revisori un programma in spazio utente che mostri l’uso della chiamata di
@@ -776,8 +778,8 @@ oppure al progetto xfstests per cambiamenti relativi al filesystem.</p>
 <li><p>git://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="pagine-man">
+</div>
+<div class="section" id="pagine-man">
 <h2>Pagine man<a class="headerlink" href="#pagine-man" title="Permalink to this headline">¶</a></h2>
 <p>Tutte le nuove chiamate di sistema dovrebbero avere una pagina man completa,
 idealmente usando i marcatori groff, ma anche il puro testo può andare.  Se
@@ -787,8 +789,8 @@ versione già convertita in formato ASCII: semplificherà la vita dei revisori.<
 <a class="reference external" href="mailto:linux-man&#37;&#52;&#48;vger&#46;kernel&#46;org">linux-man<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a>
 Per maggiori dettagli, leggere
 <a class="reference external" href="https://www.kernel.org/doc/man-pages/patches.html">https://www.kernel.org/doc/man-pages/patches.html</a></p>
-</section>
-<section id="non-invocate-chiamate-di-sistema-dal-kernel">
+</div>
+<div class="section" id="non-invocate-chiamate-di-sistema-dal-kernel">
 <h2>Non invocate chiamate di sistema dal kernel<a class="headerlink" href="#non-invocate-chiamate-di-sistema-dal-kernel" title="Permalink to this headline">¶</a></h2>
 <p>Le chiamate di sistema sono, come già detto prima, punti di interazione fra
 lo spazio utente e il kernel.  Perciò, le chiamate di sistema come
@@ -816,8 +818,8 @@ fra il kernel e l’utente.  Questo è un altro motivo per cui invocare
 <p>Eccezioni a questa regola vengono accettate solo per funzioni d’architetture
 che surclassano quelle generiche, per funzioni d’architettura di compatibilità,
 o per altro codice in arch/</p>
-</section>
-<section id="riferimenti-e-fonti">
+</div>
+<div class="section" id="riferimenti-e-fonti">
 <h2>Riferimenti e fonti<a class="headerlink" href="#riferimenti-e-fonti" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul>
@@ -882,8 +884,8 @@ favorire la compatibilità con le versioni a 64-bit piuttosto che quelle a 32-bi
 <a class="reference external" href="https://lore.kernel.org/r/CA+55aFxfmwfB7jbbrXxa=K7VBYPfAvmu3XOkGrLbB1UFjX1+Ew&#64;mail.gmail.com">https://lore.kernel.org/r/CA+55aFxfmwfB7jbbrXxa=K7VBYPfAvmu3XOkGrLbB1UFjX1+Ew&#64;mail.gmail.com</a></p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

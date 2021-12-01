@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Boot-time tracing &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -277,14 +279,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="boot-time-tracing">
+  <div class="section" id="boot-time-tracing">
 <h1>Boot-time tracing<a class="headerlink" href="#boot-time-tracing" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Masami Hiramatsu &lt;<a class="reference external" href="mailto:mhiramat&#37;&#52;&#48;kernel&#46;org">mhiramat<span>&#64;</span>kernel<span>&#46;</span>org</a>&gt;</p>
 </dd>
 </dl>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Boot-time tracing allows users to trace boot-time process including
 device initialization with full features of ftrace including per-event
@@ -292,8 +294,8 @@ filter and actions, histograms, kprobe-events and synthetic-events,
 and trace instances.
 Since kernel command line is not enough to control these complex features,
 this uses bootconfig file to describe tracing feature programming.</p>
-</section>
-<section id="options-in-the-boot-config">
+</div>
+<div class="section" id="options-in-the-boot-config">
 <h2>Options in the Boot Config<a class="headerlink" href="#options-in-the-boot-config" title="Permalink to this headline">¶</a></h2>
 <p>Here is the list of available options list for boot time tracing in
 boot config file <a class="footnote-reference brackets" href="#id3" id="id1">1</a>. All options are under “ftrace.” or “kernel.”
@@ -307,7 +309,7 @@ with “kernel.” prefix <a class="footnote-reference brackets" href="#id4" id=
 <dd><p>See <a class="reference internal" href="../admin-guide/kernel-parameters.html#kernelparameters"><span class="std std-ref"><a class="reference internal" href="../admin-guide/kernel-parameters.html"><span class="doc">The kernel’s command-line parameters</span></a></span></a></p>
 </dd>
 </dl>
-<section id="ftrace-global-options">
+<div class="section" id="ftrace-global-options">
 <h3>Ftrace Global Options<a class="headerlink" href="#ftrace-global-options" title="Permalink to this headline">¶</a></h3>
 <p>Ftrace global options have “kernel.” prefix in boot config, which means
 these options are passed as a part of kernel legacy command line.</p>
@@ -326,8 +328,8 @@ on all CPUs. If MODE = 2, dump a buffer on a CPU which kicks Oops.</p>
 <dt>kernel.fgraph_notraces = FILTER[, FILTER2…]</dt><dd><p>Add fgraph non-tracing function filters.</p>
 </dd>
 </dl>
-</section>
-<section id="ftrace-per-instance-options">
+</div>
+<div class="section" id="ftrace-per-instance-options">
 <h3>Ftrace Per-instance Options<a class="headerlink" href="#ftrace-per-instance-options" title="Permalink to this headline">¶</a></h3>
 <p>These options can be used for each instance including global ftrace node.</p>
 <dl class="simple">
@@ -354,8 +356,8 @@ for that SIZE.</p>
 <dt>ftrace.[instance.INSTANCE.]ftrace.notraces</dt><dd><p>This will take an array of NON-tracing function filter rules.</p>
 </dd>
 </dl>
-</section>
-<section id="ftrace-per-event-options">
+</div>
+<div class="section" id="ftrace-per-event-options">
 <h3>Ftrace Per-Event Options<a class="headerlink" href="#ftrace-per-event-options" title="Permalink to this headline">¶</a></h3>
 <p>These options are setting per-event options.</p>
 <dl class="simple">
@@ -381,8 +383,8 @@ group name is “kprobes”.</p>
 <p>Note that kprobe and synthetic event definitions can be written under
 instance node, but those are also visible from other instances. So please
 take care for event name conflict.</p>
-</section>
-<section id="ftrace-histogram-options">
+</div>
+<div class="section" id="ftrace-histogram-options">
 <h3>Ftrace Histogram Options<a class="headerlink" href="#ftrace-histogram-options" title="Permalink to this headline">¶</a></h3>
 <p>Since it is too long to write a histogram action as a string for per-event
 action option, there are tree-style options under per-event ‘hist’ subkey
@@ -435,9 +437,9 @@ This option or above ‘save’ option is mandatory if ‘onmax.var’ or
 </dl>
 <p>Note that this ‘hist’ option can conflict with the per-event ‘actions’
 option if the ‘actions’ option has a histogram action.</p>
-</section>
-</section>
-<section id="when-to-start">
+</div>
+</div>
+<div class="section" id="when-to-start">
 <h2>When to Start<a class="headerlink" href="#when-to-start" title="Permalink to this headline">¶</a></h2>
 <p>All boot-time tracing options starting with <code class="docutils literal notranslate"><span class="pre">ftrace</span></code> will be enabled at the
 end of core_initcall. This means you can trace the events from postcore_initcall.
@@ -448,8 +450,8 @@ If you want to trace events before core_initcall, you can use the options
 starting with <code class="docutils literal notranslate"><span class="pre">kernel</span></code>. Some of them will be enabled eariler than the initcall
 processing (for example,. <code class="docutils literal notranslate"><span class="pre">kernel.ftrace=function</span></code> and <code class="docutils literal notranslate"><span class="pre">kernel.trace_event</span></code>
 will start before the initcall.)</p>
-</section>
-<section id="examples">
+</div>
+<div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>For example, to add filter and actions for each event, define kprobe
 events, and synthetic events with histogram, write a boot config like
@@ -542,8 +544,8 @@ For example, following kernel parameters:</p>
 </pre></div>
 </div>
 <p>Note that parameters start with “kernel” prefix instead of “ftrace”.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

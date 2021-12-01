@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>内存分配指南 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -293,7 +295,7 @@
 <dd class="field-odd"><p>时奎亮 &lt;<a class="reference external" href="mailto:alexs&#37;&#52;&#48;kernel&#46;org">alexs<span>&#64;</span>kernel<span>&#46;</span>org</a>&gt;</p>
 </dd>
 </dl>
-<section id="cn-core-api-memory-allocation">
+<div class="section" id="cn-core-api-memory-allocation">
 <span id="id1"></span><h1>内存分配指南<a class="headerlink" href="#cn-core-api-memory-allocation" title="Permalink to this headline">¶</a></h1>
 <p>Linux为内存分配提供了多种API。你可以使用 <cite>kmalloc</cite> 或 <cite>kmem_cache_alloc</cite>
 系列分配小块内存，使用 <cite>vmalloc</cite> 及其派生产品分配大的几乎连续的区域，或者
@@ -307,7 +309,7 @@
 </pre></div>
 </div>
 <p>当然，有些情况下必须使用其他分配API和不同的GFP标志。</p>
-<section id="id2">
+<div class="section" id="id2">
 <h2>获取空闲页标志<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>GFP标志控制分配器的行为。它们告诉我们哪些内存区域可以被使用，分配器应该多努力寻
 找空闲的内存，这些内存是否可以被用户空间访问等等。内存管理API为GFP标志和它们的
@@ -341,7 +343,7 @@
 <p>其他传统的GFP标志是 <code class="docutils literal notranslate"><span class="pre">GFP_DMA</span></code> 和 <code class="docutils literal notranslate"><span class="pre">GFP_DMA32</span></code> 。它们用于确保分配的内存可以被寻
 址能力有限的硬件访问。因此，除非你正在为一个有这种限制的设备编写驱动程序，否则要避免
 使用这些标志。而且，即使是有限制的硬件，也最好使用dma_alloc* APIs。</p>
-<section id="gfp">
+<div class="section" id="gfp">
 <h3>GFP标志和回收行为<a class="headerlink" href="#gfp" title="Permalink to this headline">¶</a></h3>
 <p>内存分配可能会触发直接或后台回收，了解页面分配器将如何努力满足该请求或其他请求是非常
 有用的。</p>
@@ -367,9 +369,9 @@
 环，直到成功。这可能真的很危险，特别是对于较大的需求。</p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-<section id="id3">
+</div>
+</div>
+<div class="section" id="id3">
 <h2>选择内存分配器<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>分配内存的最直接的方法是使用<a class="reference internal" href="../../../core-api/mm-api.html#c.kmalloc" title="kmalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">kmalloc()</span></code></a>系列的函数。而且，为了安全起见，最好使用将内存
 设置为零的例程，如<a class="reference internal" href="../../../core-api/mm-api.html#c.kzalloc" title="kzalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">kzalloc()</span></code></a>。如果你需要为一个数组分配内存，有<a class="reference internal" href="../../../core-api/mm-api.html#c.kmalloc_array" title="kmalloc_array"><code class="xref c c-func docutils literal notranslate"><span class="pre">kmalloc_array()</span></code></a>和<a class="reference internal" href="../../../core-api/mm-api.html#c.kcalloc" title="kcalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">kcalloc()</span></code></a>
@@ -394,8 +396,8 @@
 <p>当分配的内存不再需要时，它必须被释放。你可以使用<a class="reference internal" href="../../../core-api/mm-api.html#c.kvfree" title="kvfree"><code class="xref c c-func docutils literal notranslate"><span class="pre">kvfree()</span></code></a>来处理用 <cite>kmalloc</cite> 、 <cite>vmalloc</cite>
 和 <cite>kvmalloc</cite> 分配的内存。slab缓存应该用<a class="reference internal" href="../../../core-api/mm-api.html#c.kmem_cache_free" title="kmem_cache_free"><code class="xref c c-func docutils literal notranslate"><span class="pre">kmem_cache_free()</span></code></a>来释放。不要忘记用
 kmem_cache_destroy()来销毁缓存。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Livepatch &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -270,7 +272,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="livepatch">
+  <div class="section" id="livepatch">
 <h1>Livepatch<a class="headerlink" href="#livepatch" title="Permalink to this headline">¶</a></h1>
 <p>This document outlines basic information about kernel livepatching.</p>
 <div class="contents local topic" id="contents">
@@ -301,7 +303,7 @@
 <li><p><a class="reference internal" href="#limitations" id="id17">7. Limitations</a></p></li>
 </ul>
 </div>
-<section id="motivation">
+<div class="section" id="motivation">
 <h2><a class="toc-backref" href="#id3">1. Motivation</a><a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
 <p>There are many situations where users are reluctant to reboot a system. It may
 be because their system is performing complex scientific computations or under
@@ -309,8 +311,8 @@ heavy load during peak usage. In addition to keeping systems up and running,
 users want to also have a stable and secure system. Livepatching gives users
 both by allowing for function calls to be redirected; thus, fixing critical
 functions without a system reboot.</p>
-</section>
-<section id="kprobes-ftrace-livepatching">
+</div>
+<div class="section" id="kprobes-ftrace-livepatching">
 <h2><a class="toc-backref" href="#id4">2. Kprobes, Ftrace, Livepatching</a><a class="headerlink" href="#kprobes-ftrace-livepatching" title="Permalink to this headline">¶</a></h2>
 <p>There are multiple mechanisms in the Linux kernel that are directly related
 to redirection of code execution; namely: kernel probes, function tracing,
@@ -334,8 +336,8 @@ a base. A Kprobe is registered as a ftrace handler when the function entry
 is probed, see CONFIG_KPROBES_ON_FTRACE. Also an alternative function from
 a live patch is called with the help of a custom ftrace handler. But there are
 some limitations, see below.</p>
-</section>
-<section id="consistency-model">
+</div>
+<div class="section" id="consistency-model">
 <h2><a class="toc-backref" href="#id5">3. Consistency model</a><a class="headerlink" href="#consistency-model" title="Permalink to this headline">¶</a></h2>
 <p>Functions are there for a reason. They take some input parameters, get or
 release locks, read, process, and even write some data in a defined way,
@@ -443,7 +445,7 @@ reference count if a patch module is disabled and enabled in a loop.</p>
 patches and cause even more harm to the system. Administrator should first
 consider to simply cancel a transition (see above). If force is used, reboot
 should be planned and no more live patches applied.</p>
-<section id="adding-consistency-model-support-to-new-architectures">
+<div class="section" id="adding-consistency-model-support-to-new-architectures">
 <h3><a class="toc-backref" href="#id6">3.1 Adding consistency model support to new architectures</a><a class="headerlink" href="#adding-consistency-model-support-to-new-architectures" title="Permalink to this headline">¶</a></h3>
 <p>For adding consistency model support to new architectures, there are a
 few options:</p>
@@ -475,9 +477,9 @@ a good backup option for those architectures which don’t have
 reliable stack traces yet.</p>
 </li>
 </ol>
-</section>
-</section>
-<section id="livepatch-module">
+</div>
+</div>
+<div class="section" id="livepatch-module">
 <h2><a class="toc-backref" href="#id7">4. Livepatch module</a><a class="headerlink" href="#livepatch-module" title="Permalink to this headline">¶</a></h2>
 <p>Livepatches are distributed using kernel modules, see
 samples/livepatch/livepatch-sample.c.</p>
@@ -488,7 +490,7 @@ is code that makes the kernel start using the new code when the livepatch
 module is loaded. Also there is code that cleans up before the
 livepatch module is removed. All this is explained in more details in
 the next sections.</p>
-<section id="new-functions">
+<div class="section" id="new-functions">
 <h3><a class="toc-backref" href="#id8">4.1. New functions</a><a class="headerlink" href="#new-functions" title="Permalink to this headline">¶</a></h3>
 <p>New versions of functions are typically just copied from the original
 sources. A good practice is to add a prefix to the names so that they
@@ -500,8 +502,8 @@ might want to access functions or data from the original source file
 that may only be locally accessible. This can be solved by a special
 relocation section in the generated livepatch module, see
 <a class="reference internal" href="module-elf-format.html"><span class="doc">Livepatch module Elf format</span></a> for more details.</p>
-</section>
-<section id="metadata">
+</div>
+<div class="section" id="metadata">
 <h3><a class="toc-backref" href="#id9">4.2. Metadata</a><a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h3>
 <p>The patch is described by several structures that split the information
 into three levels:</p>
@@ -540,16 +542,16 @@ see the “Consistency model” section.</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-<section id="livepatch-life-cycle">
+</div>
+</div>
+<div class="section" id="livepatch-life-cycle">
 <h2><a class="toc-backref" href="#id10">5. Livepatch life-cycle</a><a class="headerlink" href="#livepatch-life-cycle" title="Permalink to this headline">¶</a></h2>
 <p>Livepatching can be described by five basic operations:
 loading, enabling, replacing, disabling, removing.</p>
 <p>Where the replacing and the disabling operations are mutually
 exclusive. They have the same result for the given patch but
 not for the system.</p>
-<section id="loading">
+<div class="section" id="loading">
 <h3><a class="toc-backref" href="#id11">5.1. Loading</a><a class="headerlink" href="#loading" title="Permalink to this headline">¶</a></h3>
 <p>The only reasonable way is to enable the patch when the livepatch kernel
 module is being loaded. For this, klp_enable_patch() has to be called
@@ -557,8 +559,8 @@ in the <a class="reference internal" href="../driver-api/basics.html#c.module_in
 <p>First, only the module has an easy access to the related struct klp_patch.</p>
 <p>Second, the error code might be used to refuse loading the module when
 the patch cannot get enabled.</p>
-</section>
-<section id="enabling">
+</div>
+<div class="section" id="enabling">
 <h3><a class="toc-backref" href="#id12">5.2. Enabling</a><a class="headerlink" href="#enabling" title="Permalink to this headline">¶</a></h3>
 <p>The livepatch gets enabled by calling klp_enable_patch() from
 the <a class="reference internal" href="../driver-api/basics.html#c.module_init" title="module_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_init()</span></code></a> callback. The system will start using the new
@@ -588,8 +590,8 @@ because they help keeping the consistency of all changes. In this case,
 functions might be patched two times only during the transition period.</p>
 </dd>
 </dl>
-</section>
-<section id="replacing">
+</div>
+<div class="section" id="replacing">
 <h3><a class="toc-backref" href="#id13">5.3. Replacing</a><a class="headerlink" href="#replacing" title="Permalink to this headline">¶</a></h3>
 <p>All enabled patches might get replaced by a cumulative patch that
 has the .replace flag set.</p>
@@ -600,8 +602,8 @@ the ftrace handler is unregistered and the struct klp_ops is
 freed when the related function is not modified by the new patch
 and func_stack list becomes empty.</p>
 <p>See <a class="reference internal" href="cumulative-patches.html"><span class="doc">Atomic Replace &amp; Cumulative Patches</span></a> for more details.</p>
-</section>
-<section id="disabling">
+</div>
+<div class="section" id="disabling">
 <h3><a class="toc-backref" href="#id14">5.4. Disabling</a><a class="headerlink" href="#disabling" title="Permalink to this headline">¶</a></h3>
 <p>Enabled patches might get disabled by writing ‘0’ to
 /sys/kernel/livepatch/&lt;name&gt;/enabled.</p>
@@ -617,17 +619,17 @@ patch are removed from the corresponding struct klp_ops. The ftrace handler
 is unregistered and the struct klp_ops is freed when the func_stack list
 becomes empty.</p>
 <p>Third, the sysfs interface is destroyed.</p>
-</section>
-<section id="removing">
+</div>
+<div class="section" id="removing">
 <h3><a class="toc-backref" href="#id15">5.5. Removing</a><a class="headerlink" href="#removing" title="Permalink to this headline">¶</a></h3>
 <p>Module removal is only safe when there are no users of functions provided
 by the module. This is the reason why the force feature permanently
 disables the removal. Only when the system is successfully transitioned
 to a new patch state (patched/unpatched) without being forced it is
 guaranteed that no task sleeps or runs in the old code.</p>
-</section>
-</section>
-<section id="sysfs">
+</div>
+</div>
+<div class="section" id="sysfs">
 <h2><a class="toc-backref" href="#id16">6. Sysfs</a><a class="headerlink" href="#sysfs" title="Permalink to this headline">¶</a></h2>
 <p>Information about the registered patches can be found under
 /sys/kernel/livepatch. The patches could be enabled and disabled
@@ -635,8 +637,8 @@ by writing there.</p>
 <p>/sys/kernel/livepatch/&lt;patch&gt;/force attributes allow administrator to affect a
 patching operation.</p>
 <p>See Documentation/ABI/testing/sysfs-kernel-livepatch for more details.</p>
-</section>
-<section id="limitations">
+</div>
+<div class="section" id="limitations">
 <h2><a class="toc-backref" href="#id17">7. Limitations</a><a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <p>The current Livepatch implementation has several limitations:</p>
 <blockquote>
@@ -671,8 +673,8 @@ redirected to the new implementation.</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

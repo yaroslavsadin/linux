@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>NUMA Memory Policy &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -350,9 +352,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="numa-memory-policy">
+  <div class="section" id="numa-memory-policy">
 <span id="id1"></span><h1>NUMA Memory Policy<a class="headerlink" href="#numa-memory-policy" title="Permalink to this headline">¶</a></h1>
-<section id="what-is-numa-memory-policy">
+<div class="section" id="what-is-numa-memory-policy">
 <h2>What is NUMA Memory Policy?<a class="headerlink" href="#what-is-numa-memory-policy" title="Permalink to this headline">¶</a></h2>
 <p>In the Linux kernel, “memory policy” determines from which node the kernel will
 allocate memory in a NUMA system or in an emulated NUMA system.  Linux has
@@ -368,10 +370,10 @@ programming interface that a NUMA-aware application can take advantage of.  When
 both cpusets and policies are applied to a task, the restrictions of the cpuset
 takes priority.  See <a class="reference internal" href="#mem-pol-and-cpusets"><span class="std std-ref">Memory Policies and cpusets</span></a>
 below for more details.</p>
-</section>
-<section id="memory-policy-concepts">
+</div>
+<div class="section" id="memory-policy-concepts">
 <h2>Memory Policy Concepts<a class="headerlink" href="#memory-policy-concepts" title="Permalink to this headline">¶</a></h2>
-<section id="scope-of-memory-policies">
+<div class="section" id="scope-of-memory-policies">
 <h3>Scope of Memory Policies<a class="headerlink" href="#scope-of-memory-policies" title="Permalink to this headline">¶</a></h3>
 <p>The Linux kernel supports _scopes_ of memory policy, described here from
 most general to most specific:</p>
@@ -490,8 +492,8 @@ a shared memory region, when one task has installed shared policy on
 one or more ranges of the region.</p>
 </dd>
 </dl>
-</section>
-<section id="components-of-memory-policies">
+</div>
+<div class="section" id="components-of-memory-policies">
 <h3>Components of Memory Policies<a class="headerlink" href="#components-of-memory-policies" title="Permalink to this headline">¶</a></h3>
 <p>A NUMA memory policy consists of a “mode”, optional mode flags, and
 an optional set of nodes.  The mode determines the behavior of the
@@ -641,9 +643,9 @@ MPOL_PREFERRED policies that were created with an empty nodemask
 (local allocation).</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="memory-policy-reference-counting">
+</div>
+</div>
+<div class="section" id="memory-policy-reference-counting">
 <h2>Memory Policy Reference Counting<a class="headerlink" href="#memory-policy-reference-counting" title="Permalink to this headline">¶</a></h2>
 <p>To resolve use/free races, struct mempolicy contains an atomic reference
 count field.  Internal interfaces, mpol_get()/mpol_put() increment and
@@ -705,8 +707,8 @@ or by prefaulting the entire shared memory region into memory and locking
 it down.  However, this might not be appropriate for all applications.</p>
 </li>
 </ol>
-</section>
-<section id="memory-policy-apis">
+</div>
+<div class="section" id="memory-policy-apis">
 <span id="id2"></span><h2>Memory Policy APIs<a class="headerlink" href="#memory-policy-apis" title="Permalink to this headline">¶</a></h2>
 <p>Linux supports 3 system calls for controlling memory policy.  These APIS
 always affect only the calling task, the calling task’s address space, or
@@ -752,8 +754,8 @@ VMA policy for the range of the calling task’s address space specified
 by the ‘start’ and ‘len’ arguments.  Additional actions may be
 requested via the ‘flags’ argument.</p>
 <p>See the mbind(2) man page for more details.</p>
-</section>
-<section id="memory-policy-command-line-interface">
+</div>
+<div class="section" id="memory-policy-command-line-interface">
 <h2>Memory Policy Command Line Interface<a class="headerlink" href="#memory-policy-command-line-interface" title="Permalink to this headline">¶</a></h2>
 <p>Although not strictly part of the Linux implementation of memory policy,
 a command line tool, numactl(8), exists that allows one to:</p>
@@ -766,8 +768,8 @@ exec(2)</p></li>
 containing the memory policy system call wrappers.  Some distributions
 package the headers and compile-time libraries in a separate development
 package.</p>
-</section>
-<section id="memory-policies-and-cpusets">
+</div>
+<div class="section" id="memory-policies-and-cpusets">
 <span id="mem-pol-and-cpusets"></span><h2>Memory Policies and cpusets<a class="headerlink" href="#memory-policies-and-cpusets" title="Permalink to this headline">¶</a></h2>
 <p>Memory policies work within cpusets as described above.  For memory policies
 that require a node or set of nodes, the nodes are restricted to the set of
@@ -787,8 +789,8 @@ this information requires “stepping outside” the memory policy APIs to use t
 cpuset information and requires that one know in what cpusets other task might
 be attaching to the shared region.  Furthermore, if the cpusets’ allowed
 memory sets are disjoint, “local” allocation is the only valid policy.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The irq_domain interrupt number mapping library &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -262,7 +264,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-irq-domain-interrupt-number-mapping-library">
+  <div class="section" id="the-irq-domain-interrupt-number-mapping-library">
 <h1>The irq_domain interrupt number mapping library<a class="headerlink" href="#the-irq-domain-interrupt-number-mapping-library" title="Permalink to this headline">¶</a></h1>
 <p>The current design of the Linux kernel uses a single large number
 space where each separate IRQ source is assigned a different number.
@@ -293,7 +295,7 @@ reverse mapping scheme.</p>
 <p>irq_domain also implements translation from an abstract irq_fwspec
 structure to hwirq numbers (Device Tree and ACPI GSI so far), and can
 be easily extended to support other IRQ topology data sources.</p>
-<section id="irq-domain-usage">
+<div class="section" id="irq-domain-usage">
 <h2>irq_domain usage<a class="headerlink" href="#irq-domain-usage" title="Permalink to this headline">¶</a></h2>
 <p>An interrupt controller driver creates and registers an irq_domain by
 calling one of the irq_domain_add_*() or irq_domain_create_*() functions
@@ -328,14 +330,14 @@ be allocated.</p>
 <p>If the driver has the Linux IRQ number or the irq_data pointer, and
 needs to know the associated hwirq number (such as in the irq_chip
 callbacks) then it can be directly obtained from irq_data-&gt;hwirq.</p>
-</section>
-<section id="types-of-irq-domain-mappings">
+</div>
+<div class="section" id="types-of-irq-domain-mappings">
 <h2>Types of irq_domain mappings<a class="headerlink" href="#types-of-irq-domain-mappings" title="Permalink to this headline">¶</a></h2>
 <p>There are several mechanisms available for reverse mapping from hwirq
 to Linux irq, and each mechanism uses a different allocation function.
 Which reverse map type should be used depends on the use case.  Each
 of the reverse map types are described below:</p>
-<section id="linear">
+<div class="section" id="linear">
 <h3>Linear<a class="headerlink" href="#linear" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>irq_domain_add_linear()
 irq_domain_create_linear()
@@ -354,8 +356,8 @@ equivalent, except for the first argument is different - the former
 accepts an Open Firmware specific ‘struct device_node’, while the latter
 accepts a more general abstraction ‘struct fwnode_handle’.</p>
 <p>The majority of drivers should use the linear map.</p>
-</section>
-<section id="tree">
+</div>
+<div class="section" id="tree">
 <h3>Tree<a class="headerlink" href="#tree" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>irq_domain_add_tree()
 irq_domain_create_tree()
@@ -373,8 +375,8 @@ equivalent, except for the first argument is different - the former
 accepts an Open Firmware specific ‘struct device_node’, while the latter
 accepts a more general abstraction ‘struct fwnode_handle’.</p>
 <p>Very few drivers should need this mapping.</p>
-</section>
-<section id="no-map">
+</div>
+<div class="section" id="no-map">
 <h3>No Map<a class="headerlink" href="#no-map" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>irq_domain_add_nomap()
 </pre></div>
@@ -388,8 +390,8 @@ Linux IRQ number into the hardware.</p>
 <p>Most drivers cannot use this mapping, and it is now gated on the
 CONFIG_IRQ_DOMAIN_NOMAP option. Please refrain from introducing new
 users of this API.</p>
-</section>
-<section id="legacy">
+</div>
+<div class="section" id="legacy">
 <h3>Legacy<a class="headerlink" href="#legacy" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>irq_domain_add_simple()
 irq_domain_add_legacy()
@@ -437,8 +439,8 @@ irq_domain_add_legacy() and irq_domain_create_legacy() are functionally
 equivalent, except for the first argument is different - the former
 accepts an Open Firmware specific ‘struct device_node’, while the latter
 accepts a more general abstraction ‘struct fwnode_handle’.</p>
-</section>
-<section id="hierarchy-irq-domain">
+</div>
+<div class="section" id="hierarchy-irq-domain">
 <h3>Hierarchy IRQ domain<a class="headerlink" href="#hierarchy-irq-domain" title="Permalink to this headline">¶</a></h3>
 <p>On some architectures, there may be multiple interrupt controllers
 involved in delivering an interrupt from the device to the target CPU.
@@ -512,14 +514,14 @@ they are unused with hierarchy irq_domain.</p></li>
 </ol>
 <p>Hierarchy irq_domain is in no way x86 specific, and is heavily used to
 support other architectures, such as ARM, ARM64 etc.</p>
-</section>
-</section>
-<section id="debugging">
+</div>
+</div>
+<div class="section" id="debugging">
 <h2>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
 <p>Most of the internals of the IRQ subsystem are exposed in debugfs by
 turning CONFIG_GENERIC_IRQ_DEBUGFS on.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

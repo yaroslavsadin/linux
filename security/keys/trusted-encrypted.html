@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Trusted and Encrypted Keys &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -266,7 +268,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="trusted-and-encrypted-keys">
+  <div class="section" id="trusted-and-encrypted-keys">
 <h1>Trusted and Encrypted Keys<a class="headerlink" href="#trusted-and-encrypted-keys" title="Permalink to this headline">¶</a></h1>
 <p>Trusted and Encrypted Keys are two new key types added to the existing kernel
 key ring service.  Both of these new types are variable length symmetric keys,
@@ -275,7 +277,7 @@ stores, and loads only encrypted blobs.  Trusted Keys require the availability
 of a Trust Source for greater security, while Encrypted Keys can be used on any
 system. All user level blobs, are displayed and loaded in hex ASCII for
 convenience, and are integrity verified.</p>
-<section id="trust-source">
+<div class="section" id="trust-source">
 <h2>Trust Source<a class="headerlink" href="#trust-source" title="Permalink to this headline">¶</a></h2>
 <p>A trust source provides the source of security for Trusted Keys.  This
 section lists currently supported trust sources, along with their security
@@ -346,10 +348,10 @@ purpose must be assessed when using them to protect security-relevant data.</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="key-generation">
+</div>
+<div class="section" id="key-generation">
 <h2>Key Generation<a class="headerlink" href="#key-generation" title="Permalink to this headline">¶</a></h2>
-<section id="trusted-keys">
+<div class="section" id="trusted-keys">
 <h3>Trusted Keys<a class="headerlink" href="#trusted-keys" title="Permalink to this headline">¶</a></h3>
 <p>New keys are created from random numbers generated in the trust source. They
 are encrypted/decrypted using a child key in the storage key hierarchy.
@@ -368,8 +370,8 @@ which can be seeded via multiple entropy sources.</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="encrypted-keys">
+</div>
+<div class="section" id="encrypted-keys">
 <h3>Encrypted Keys<a class="headerlink" href="#encrypted-keys" title="Permalink to this headline">¶</a></h3>
 <p>Encrypted keys do not depend on a trust source, and are faster, as they use AES
 for encryption/decryption. New keys are created from kernel-generated random
@@ -378,11 +380,11 @@ numbers, and are encrypted/decrypted using a specified ‘master’ key. The
 of encrypted keys is that if they are not rooted in a trusted key, they are only
 as secure as the user key encrypting them. The master user key should therefore
 be loaded in as secure a way as possible, preferably early in boot.</p>
-</section>
-</section>
-<section id="usage">
+</div>
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<section id="trusted-keys-usage-tpm">
+<div class="section" id="trusted-keys-usage-tpm">
 <h3>Trusted Keys usage: TPM<a class="headerlink" href="#trusted-keys-usage-tpm" title="Permalink to this headline">¶</a></h3>
 <p>TPM 1.2: By default, trusted keys are sealed under the SRK, which has the
 default authorization value (20 bytes of 0s).  This can be set at takeownership
@@ -435,8 +437,8 @@ options:
 TPM_STORED_DATA format.  The key length for new keys are always in bytes.
 Trusted Keys can be 32 - 128 bytes (256 - 1024 bits), the upper limit is to fit
 within the 2048 bit SRK (RSA) keylength, with all necessary structure/padding.</p>
-</section>
-<section id="trusted-keys-usage-tee">
+</div>
+<div class="section" id="trusted-keys-usage-tee">
 <h3>Trusted Keys usage: TEE<a class="headerlink" href="#trusted-keys-usage-tee" title="Permalink to this headline">¶</a></h3>
 <p>Usage:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>keyctl add trusted name &quot;new keylen&quot; ring
@@ -447,8 +449,8 @@ keyctl print keyid
 <p>“keyctl print” returns an ASCII hex copy of the sealed key, which is in format
 specific to TEE device implementation.  The key length for new keys is always
 in bytes. Trusted Keys can be 32 - 128 bytes (256 - 1024 bits).</p>
-</section>
-<section id="encrypted-keys-usage">
+</div>
+<div class="section" id="encrypted-keys-usage">
 <h3>Encrypted Keys usage<a class="headerlink" href="#encrypted-keys-usage" title="Permalink to this headline">¶</a></h3>
 <p>The decrypted portion of encrypted keys can contain either a simple symmetric
 key or a more complex structure. The format of the more complex structure is
@@ -465,8 +467,8 @@ keyctl update keyid &quot;update key-type:master-key-name&quot;
 key-type:= &#39;trusted&#39; | &#39;user&#39;
 </pre></div>
 </div>
-</section>
-<section id="examples-of-trusted-and-encrypted-key-usage">
+</div>
+<div class="section" id="examples-of-trusted-and-encrypted-key-usage">
 <h3>Examples of trusted and encrypted key usage<a class="headerlink" href="#examples-of-trusted-and-encrypted-key-usage" title="Permalink to this headline">¶</a></h3>
 <p>Create and save a trusted key named “kmk” of length 32 bytes.</p>
 <p>Note: When using a TPM 2.0 with a persistent key with handle 0x81000001,
@@ -564,8 +566,8 @@ about the usage can be found in the file
 <p>Another new format ‘enc32’ has been defined in order to support encrypted keys
 with payload size of 32 bytes. This will initially be used for nvdimm security
 but may expand to other usages that require 32 bytes payload.</p>
-</section>
-<section id="tpm-2-0-asn-1-key-format">
+</div>
+<div class="section" id="tpm-2-0-asn-1-key-format">
 <h3>TPM 2.0 ASN.1 Key Format<a class="headerlink" href="#tpm-2-0-asn-1-key-format" title="Permalink to this headline">¶</a></h3>
 <p>The TPM 2.0 ASN.1 key format is designed to be easily recognisable,
 even in binary form (fixing a problem we had with the TPM 1.2 ASN.1
@@ -616,9 +618,9 @@ string length.</p>
 <p>privkey is the binary representation of TPM2B_PUBLIC excluding the
 initial TPM2B header which can be reconstructed from the ASN.1 octed
 string length.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Devres - Managed Device Resource &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -356,11 +358,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="devres-managed-device-resource">
+  <div class="section" id="devres-managed-device-resource">
 <h1>Devres - Managed Device Resource<a class="headerlink" href="#devres-managed-device-resource" title="Permalink to this headline">¶</a></h1>
 <p>Tejun Heo       &lt;<a class="reference external" href="mailto:teheo&#37;&#52;&#48;suse&#46;de">teheo<span>&#64;</span>suse<span>&#46;</span>de</a>&gt;</p>
 <p>First draft     10 January 2007</p>
-<section id="intro">
+<div class="section" id="intro">
 <h2>1. Intro<a class="headerlink" href="#intro" title="Permalink to this headline">¶</a></h2>
 <p>devres came up while trying to convert libata to use iomap.  Each
 iomapped address should be kept and unmapped on driver detach.  For
@@ -382,8 +384,8 @@ needs to handle multiple entry points.</p>
 and having half broken failure path implementation in -&gt;probe() which
 would leak resources or even cause oops when failure occurs.  iomap
 adds more to this mix.  So do msi and msix.</p>
-</section>
-<section id="devres">
+</div>
+<div class="section" id="devres">
 <h2>2. Devres<a class="headerlink" href="#devres" title="Permalink to this headline">¶</a></h2>
 <p>devres is basically linked list of arbitrarily sized memory areas
 associated with a <a class="reference internal" href="../infrastructure.html#c.device" title="device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span></code></a>.  Each devres entry is associated with
@@ -476,8 +478,8 @@ like allocating memory, have failed. Managed resources pertains to the
 freeing of these resources <em>only</em> - all other checks needed are still
 on you. In some cases this may mean introducing checks that were not
 necessary before moving to the managed devm_* calls.</p>
-</section>
-<section id="devres-group">
+</div>
+<div class="section" id="devres-group">
 <h2>3. Devres group<a class="headerlink" href="#devres-group" title="Permalink to this headline">¶</a></h2>
 <p>Devres entries can be grouped using devres group.  When a group is
 released, all contained normal devres entries and properly nested
@@ -532,8 +534,8 @@ void my_midlayer_destroy_something()
 }
 </pre></div>
 </div>
-</section>
-<section id="details">
+</div>
+<div class="section" id="details">
 <h2>4. Details<a class="headerlink" href="#details" title="Permalink to this headline">¶</a></h2>
 <p>Lifetime of a devres entry begins on devres allocation and finishes
 when it is released or destroyed (removed and freed) - no reference
@@ -548,8 +550,8 @@ resource allocations already do the job.</p>
 in lib/devres.c.</p>
 <p>All devres interface functions can be called without context if the
 right gfp mask is given.</p>
-</section>
-<section id="overhead">
+</div>
+<div class="section" id="overhead">
 <h2>5. Overhead<a class="headerlink" href="#overhead" title="Permalink to this headline">¶</a></h2>
 <p>Each devres bookkeeping info is allocated together with requested data
 area.  With debug option turned off, bookkeeping info occupies 16
@@ -561,8 +563,8 @@ singly linked list is used.</p>
 <p>Memory space overhead on ahci controller with two ports is between 300
 and 400 bytes on 32bit machine after naive conversion (we can
 certainly invest a bit more effort into libata core layer).</p>
-</section>
-<section id="list-of-managed-interfaces">
+</div>
+<div class="section" id="list-of-managed-interfaces">
 <h2>6. List of managed interfaces<a class="headerlink" href="#list-of-managed-interfaces" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>CLOCK</dt><dd><p><a class="reference internal" href="../../core-api/kernel-api.html#c.devm_clk_get" title="devm_clk_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">devm_clk_get()</span></code></a>
@@ -727,8 +729,8 @@ devm_rtc_nvmem_register()</p>
 <dt>WATCHDOG</dt><dd><p>devm_watchdog_register_device()</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

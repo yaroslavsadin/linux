@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Data Integrity &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -275,9 +277,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="data-integrity">
+  <div class="section" id="data-integrity">
 <h1>Data Integrity<a class="headerlink" href="#data-integrity" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Modern filesystems feature checksumming of data and metadata to
 protect against data corruption.  However, the detection of the
@@ -303,8 +305,8 @@ is well defined and every node in the I/O path can verify the
 integrity of the I/O and reject it if corruption is detected.  This
 allows not only corruption prevention but also isolation of the point
 of failure.</p>
-</section>
-<section id="the-data-integrity-extensions">
+</div>
+<div class="section" id="the-data-integrity-extensions">
 <h2>2. The Data Integrity Extensions<a class="headerlink" href="#the-data-integrity-extensions" title="Permalink to this headline">¶</a></h2>
 <p>As written, the protocol extensions only protect the path between
 controller and storage device.  However, many controllers actually
@@ -343,8 +345,8 @@ the choice in checksums is referred to as the Data Integrity
 Extensions.  As these extensions are outside the scope of the protocol
 bodies (T10, T13), Oracle and its partners are trying to standardize
 them within the Storage Networking Industry Association.</p>
-</section>
-<section id="kernel-changes">
+</div>
+<div class="section" id="kernel-changes">
 <h2>3. Kernel Changes<a class="headerlink" href="#kernel-changes" title="Permalink to this headline">¶</a></h2>
 <p>The data integrity framework in Linux enables protection information
 to be pinned to I/Os and sent to/received from controllers that
@@ -382,10 +384,10 @@ attached to a typical 4KB filesystem block.</p>
 <p>This also means that applications such as fsck and mkfs will need
 access to manipulate the tags from user space.  A passthrough
 interface for this is being worked on.</p>
-</section>
-<section id="block-layer-implementation-details">
+</div>
+<div class="section" id="block-layer-implementation-details">
 <h2>4. Block Layer Implementation Details<a class="headerlink" href="#block-layer-implementation-details" title="Permalink to this headline">¶</a></h2>
-<section id="bio">
+<div class="section" id="bio">
 <h3>4.1 Bio<a class="headerlink" href="#bio" title="Permalink to this headline">¶</a></h3>
 <p>The data integrity patches add a new field to struct bio when
 CONFIG_BLK_DEV_INTEGRITY is enabled.  bio_integrity(bio) returns a
@@ -399,8 +401,8 @@ bip to the bio.</p>
 <p>Individual pages containing integrity metadata can subsequently be
 attached using bio_integrity_add_page().</p>
 <p>bio_free() will automatically free the bip.</p>
-</section>
-<section id="block-device">
+</div>
+<div class="section" id="block-device">
 <h3>4.2 Block Device<a class="headerlink" href="#block-device" title="Permalink to this headline">¶</a></h3>
 <p>Because the format of the protection data is tied to the physical
 disk, each block device has been extended with a block integrity
@@ -414,11 +416,11 @@ merging and splitting the integrity metadata.</p>
 for all subdevices.  <a class="reference internal" href="../core-api/kernel-api.html#c.blk_integrity_compare" title="blk_integrity_compare"><code class="xref c c-func docutils literal notranslate"><span class="pre">blk_integrity_compare()</span></code></a> can help with that.  DM
 and MD linear, RAID0 and RAID1 are currently supported.  RAID4/5/6
 will require extra work due to the application tag.</p>
-</section>
-</section>
-<section id="block-layer-integrity-api">
+</div>
+</div>
+<div class="section" id="block-layer-integrity-api">
 <h2>5.0 Block Layer Integrity API<a class="headerlink" href="#block-layer-integrity-api" title="Permalink to this headline">¶</a></h2>
-<section id="normal-filesystem">
+<div class="section" id="normal-filesystem">
 <h3>5.1 Normal Filesystem<a class="headerlink" href="#normal-filesystem" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The normal filesystem is unaware that the underlying block device
@@ -436,8 +438,8 @@ to be verified upon completion.</p>
 </div>
 <p>flags.</p>
 </div></blockquote>
-</section>
-<section id="integrity-aware-filesystem">
+</div>
+<div class="section" id="integrity-aware-filesystem">
 <h3>5.2 Integrity-Aware Filesystem<a class="headerlink" href="#integrity-aware-filesystem" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>A filesystem that is integrity-aware can prepare I/Os with IMD
@@ -454,8 +456,8 @@ change while I/O is in progress.
 Complete bio with error if prepare failed for some reson.</p>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="passing-existing-integrity-metadata">
+</div>
+<div class="section" id="passing-existing-integrity-metadata">
 <h3>5.3 Passing Existing Integrity Metadata<a class="headerlink" href="#passing-existing-integrity-metadata" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Filesystems that either generate their own integrity metadata or
@@ -487,8 +489,8 @@ It is up to the receiver to process them and verify data
 integrity upon completion.</p>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="registering-a-block-device-as-capable-of-exchanging-integrity-metadata">
+</div>
+<div class="section" id="registering-a-block-device-as-capable-of-exchanging-integrity-metadata">
 <h3>5.4 Registering A Block Device As Capable Of Exchanging Integrity Metadata<a class="headerlink" href="#registering-a-block-device-as-capable-of-exchanging-integrity-metadata" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>To enable integrity exchange on a block device the gendisk must be
@@ -522,9 +524,9 @@ are available per hardware sector.  For DIF this is either 2 or
 </div></blockquote>
 <hr class="docutils" />
 <p>2007-12-24 Martin K. Petersen &lt;<a class="reference external" href="mailto:martin&#46;petersen&#37;&#52;&#48;oracle&#46;com">martin<span>&#46;</span>petersen<span>&#64;</span>oracle<span>&#46;</span>com</a>&gt;</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

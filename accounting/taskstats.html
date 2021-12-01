@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Per-task statistics interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -253,7 +255,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="per-task-statistics-interface">
+  <div class="section" id="per-task-statistics-interface">
 <h1>Per-task statistics interface<a class="headerlink" href="#per-task-statistics-interface" title="Permalink to this headline">¶</a></h1>
 <p>Taskstats is a netlink-based interface for sending per-task and
 per-process statistics from the kernel to userspace.</p>
@@ -263,7 +265,7 @@ per-process statistics from the kernel to userspace.</p>
 <li><p>unified interface for multiple accounting subsystems</p></li>
 <li><p>extensibility for use by future accounting patches</p></li>
 </ul>
-<section id="terminology">
+<div class="section" id="terminology">
 <h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h2>
 <p>“pid”, “tid” and “task” are used interchangeably and refer to the standard
 Linux task defined by struct task_struct.  per-pid stats are the same as
@@ -272,8 +274,8 @@ per-task stats.</p>
 tasks that share an mm_struct i.e. the traditional Unix process. Despite the
 use of tgid, there is no special treatment for the task that is thread group
 leader - a process is deemed alive as long as it has any task belonging to it.</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>To get statistics during a task’s lifetime, userspace opens a unicast netlink
 socket (NETLINK_GENERIC family) and sends commands specifying a pid or a tgid.
@@ -294,8 +296,8 @@ for reporting delay accounting statistics. Users can register cpumasks,
 send commands and process responses, listen for per-tid/tgid exit data,
 write the data received to a file and do basic flow control by increasing
 receive buffer sizes.</p>
-</section>
-<section id="interface">
+</div>
+<div class="section" id="interface">
 <h2>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h2>
 <p>The user-kernel interface is encapsulated in include/linux/taskstats.h</p>
 <p>To avoid this documentation becoming obsolete as the interface evolves, only
@@ -347,8 +349,8 @@ series of attributes of the following type:</p></li>
 <li><p>TASKSTATS_TYPE_TGID: contains tgid of process to which task belongs</p></li>
 <li><p>TASKSTATS_TYPE_STATS: contains the per-tgid stats for exiting task’s process</p></li>
 </ol>
-</section>
-<section id="per-tgid-stats">
+</div>
+<div class="section" id="per-tgid-stats">
 <h2>per-tgid stats<a class="headerlink" href="#per-tgid-stats" title="Permalink to this headline">¶</a></h2>
 <p>Taskstats provides per-process stats, in addition to per-task stats, since
 resource management is often done at a process granularity and aggregating task
@@ -362,8 +364,8 @@ gets sent to userspace (along with the per-task data).</p>
 <p>When a user queries to get per-tgid data, the sum of all other live threads in
 the group is added up and added to the accumulated total for previously exited
 threads of the same thread group.</p>
-</section>
-<section id="extending-taskstats">
+</div>
+<div class="section" id="extending-taskstats">
 <h2>Extending taskstats<a class="headerlink" href="#extending-taskstats" title="Permalink to this headline">¶</a></h2>
 <p>There are two ways to extend the taskstats interface to export more
 per-task/process stats as patches to collect them get added to the kernel
@@ -385,8 +387,8 @@ processing new netlink attributes. But if the new fields expand the existing
 struct too much, requiring disparate userspace accounting utilities to
 unnecessarily receive large structures whose fields are of no interest, then
 extending the attributes structure would be worthwhile.</p>
-</section>
-<section id="flow-control-for-taskstats">
+</div>
+<div class="section" id="flow-control-for-taskstats">
 <h2>Flow control for taskstats<a class="headerlink" href="#flow-control-for-taskstats" title="Permalink to this headline">¶</a></h2>
 <p>When the rate of task exits becomes large, a listener may not be able to keep
 up with the kernel’s rate of sending per-tid/tgid exit data leading to data
@@ -404,8 +406,8 @@ of cpus to which it listens, especially if they are listening to just one cpu.</
 <p>Despite these measures, if the userspace receives ENOBUFS error messages
 indicated overflow of receive buffers, it should take measures to handle the
 loss of data.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

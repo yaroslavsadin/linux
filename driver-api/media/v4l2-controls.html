@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>2.13. V4L2 Controls &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -378,9 +380,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="v4l2-controls">
+  <div class="section" id="v4l2-controls">
 <h1><span class="section-number">2.13. </span>V4L2 Controls<a class="headerlink" href="#v4l2-controls" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2><span class="section-number">2.13.1. </span>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The V4L2 control API seems simple enough, but quickly becomes very hard to
 implement correctly in drivers. But much of the code needed to handle controls
@@ -402,8 +404,8 @@ life as easy as possible for the driver developer.</p>
 <p>Note that the control framework relies on the presence of a struct
 <a class="reference internal" href="v4l2-device.html#c.v4l2_device" title="v4l2_device"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_device</span></code></a> for V4L2 drivers and <a class="reference internal" href="v4l2-subdev.html#c.v4l2_subdev" title="v4l2_subdev"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">v4l2_subdev</span></code></a> for
 sub-device drivers.</p>
-</section>
-<section id="objects-in-the-framework">
+</div>
+<div class="section" id="objects-in-the-framework">
 <h2><span class="section-number">2.13.2. </span>Objects in the framework<a class="headerlink" href="#objects-in-the-framework" title="Permalink to this headline">¶</a></h2>
 <p>There are two main objects:</p>
 <p>The <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl</span></code></a> object describes the control properties and keeps
@@ -412,8 +414,8 @@ value).</p>
 <p><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_handler</span></code></a> is the object that keeps track of controls. It
 maintains a list of v4l2_ctrl objects that it owns and another list of
 references to controls, possibly to controls owned by other handlers.</p>
-</section>
-<section id="basic-usage-for-v4l2-and-sub-device-drivers">
+</div>
+<div class="section" id="basic-usage-for-v4l2-and-sub-device-drivers">
 <h2><span class="section-number">2.13.3. </span>Basic usage for V4L2 and sub-device drivers<a class="headerlink" href="#basic-usage-for-v4l2-and-sub-device-drivers" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>Prepare the driver:</p></li>
@@ -616,8 +618,8 @@ and QUERYMENU. And G/S_CTRL as well as G/TRY/S_EXT_CTRLS are automatically suppo
 <p>The remainder sections deal with more advanced controls topics and scenarios.
 In practice the basic usage as described above is sufficient for most drivers.</p>
 </div>
-</section>
-<section id="inheriting-sub-device-controls">
+</div>
+<div class="section" id="inheriting-sub-device-controls">
 <h2><span class="section-number">2.13.4. </span>Inheriting Sub-device Controls<a class="headerlink" href="#inheriting-sub-device-controls" title="Permalink to this headline">¶</a></h2>
 <p>When a sub-device is registered with a V4L2 driver by calling
 <a class="reference internal" href="v4l2-device.html#c.v4l2_device_register_subdev" title="v4l2_device_register_subdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_device_register_subdev()</span></code></a> and the ctrl_handler fields of both v4l2_subdev
@@ -628,8 +630,8 @@ skipped (so a V4L2 driver can always override a subdev control).</p>
 <p>What happens here is that <a class="reference internal" href="v4l2-device.html#c.v4l2_device_register_subdev" title="v4l2_device_register_subdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_device_register_subdev()</span></code></a> calls
 <a class="reference internal" href="#c.v4l2_ctrl_add_handler" title="v4l2_ctrl_add_handler"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_add_handler()</span></code></a> adding the controls of the subdev to the controls
 of v4l2_device.</p>
-</section>
-<section id="accessing-control-values">
+</div>
+<div class="section" id="accessing-control-values">
 <h2><span class="section-number">2.13.5. </span>Accessing Control Values<a class="headerlink" href="#accessing-control-values" title="Permalink to this headline">¶</a></h2>
 <p>The following union is used inside the control framework to access control
 values:</p>
@@ -718,8 +720,8 @@ will result in a deadlock since these helpers lock the handler as well.</p>
 <span class="n">mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">ctrl_handler</span><span class="p">.</span><span class="n">lock</span><span class="p">);</span>
 </pre></div>
 </div>
-</section>
-<section id="menu-controls">
+</div>
+<div class="section" id="menu-controls">
 <h2><span class="section-number">2.13.6. </span>Menu Controls<a class="headerlink" href="#menu-controls" title="Permalink to this headline">¶</a></h2>
 <p>The v4l2_ctrl struct contains this union:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">union</span> <span class="p">{</span>
@@ -740,8 +742,8 @@ mask you can tell the framework which menu items should be skipped. Setting
 it to 0 means that all menu items are supported.</p>
 <p>You set this mask either through the v4l2_ctrl_config struct for a custom
 control, or by calling <a class="reference internal" href="#c.v4l2_ctrl_new_std_menu" title="v4l2_ctrl_new_std_menu"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_new_std_menu()</span></code></a>.</p>
-</section>
-<section id="custom-controls">
+</div>
+<div class="section" id="custom-controls">
 <h2><span class="section-number">2.13.7. </span>Custom Controls<a class="headerlink" href="#custom-controls" title="Permalink to this headline">¶</a></h2>
 <p>Driver specific controls can be created using <a class="reference internal" href="#c.v4l2_ctrl_new_custom" title="v4l2_ctrl_new_custom"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_new_custom()</span></code></a>:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">v4l2_ctrl_config</span> <span class="n">ctrl_filter</span> <span class="o">=</span> <span class="p">{</span>
@@ -762,8 +764,8 @@ private data.</p>
 <p>The v4l2_ctrl_config struct also has a field to set the is_private flag.</p>
 <p>If the name field is not set, then the framework will assume this is a standard
 control and will fill in the name, type and flags fields accordingly.</p>
-</section>
-<section id="active-and-grabbed-controls">
+</div>
+<div class="section" id="active-and-grabbed-controls">
 <h2><span class="section-number">2.13.8. </span>Active and Grabbed Controls<a class="headerlink" href="#active-and-grabbed-controls" title="Permalink to this headline">¶</a></h2>
 <p>If you get more complex relationships between controls, then you may have to
 activate and deactivate controls. For example, if the Chroma AGC control is
@@ -781,8 +783,8 @@ bitrate controls that cannot be changed while capturing is in progress.</p>
 will return -EBUSY if an attempt is made to set this control. The
 <a class="reference internal" href="#c.v4l2_ctrl_grab" title="v4l2_ctrl_grab"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_grab()</span></code></a> function is typically called from the driver when it
 starts or stops streaming.</p>
-</section>
-<section id="control-clusters">
+</div>
+<div class="section" id="control-clusters">
 <h2><span class="section-number">2.13.9. </span>Control Clusters<a class="headerlink" href="#control-clusters" title="Permalink to this headline">¶</a></h2>
 <p>By default all controls are independent from the others. But in more
 complex scenarios you can get dependencies from one control to another.
@@ -867,8 +869,8 @@ flag of the mute control would be set if the user called VIDIOC_S_CTRL for
 mute only. If the user would call VIDIOC_S_EXT_CTRLS for both mute and volume
 controls, then the ‘is_new’ flag would be 1 for both controls.</p>
 <p>The ‘is_new’ flag is always 1 when called from <a class="reference internal" href="#c.v4l2_ctrl_handler_setup" title="v4l2_ctrl_handler_setup"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_handler_setup()</span></code></a>.</p>
-</section>
-<section id="handling-autogain-gain-type-controls-with-auto-clusters">
+</div>
+<div class="section" id="handling-autogain-gain-type-controls-with-auto-clusters">
 <h2><span class="section-number">2.13.10. </span>Handling autogain/gain-type Controls with Auto Clusters<a class="headerlink" href="#handling-autogain-gain-type-controls-with-auto-clusters" title="Permalink to this headline">¶</a></h2>
 <p>A common type of control cluster is one that handles ‘auto-foo/foo’-type
 controls. Typical examples are autogain/gain, autoexposure/exposure,
@@ -902,16 +904,16 @@ you to obtain the current gain value).</p>
 <p>The first control of the cluster is assumed to be the ‘auto’ control.</p>
 <p>Using this function will ensure that you don’t need to handle all the complex
 flag and volatile handling.</p>
-</section>
-<section id="vidioc-log-status-support">
+</div>
+<div class="section" id="vidioc-log-status-support">
 <h2><span class="section-number">2.13.11. </span>VIDIOC_LOG_STATUS Support<a class="headerlink" href="#vidioc-log-status-support" title="Permalink to this headline">¶</a></h2>
 <p>This ioctl allow you to dump the current status of a driver to the kernel log.
 The v4l2_ctrl_handler_log_status(ctrl_handler, prefix) can be used to dump the
 value of the controls owned by the given handler to the log. You can supply a
 prefix as well. If the prefix didn’t end with a space, then ‘: ‘ will be added
 for you.</p>
-</section>
-<section id="different-handlers-for-different-video-nodes">
+</div>
+<div class="section" id="different-handlers-for-different-video-nodes">
 <h2><span class="section-number">2.13.12. </span>Different Handlers for Different Video Nodes<a class="headerlink" href="#different-handlers-for-different-video-nodes" title="Permalink to this headline">¶</a></h2>
 <p>Usually the V4L2 driver has just one control handler that is global for
 all video nodes. But you can also specify different control handlers for
@@ -957,8 +959,8 @@ For example:</p>
 <p>This would be bad since muting the radio would not change the video mute
 control. The rule is to have one control for each hardware ‘knob’ that you
 can twiddle.</p>
-</section>
-<section id="finding-controls">
+</div>
+<div class="section" id="finding-controls">
 <h2><span class="section-number">2.13.13. </span>Finding Controls<a class="headerlink" href="#finding-controls" title="Permalink to this headline">¶</a></h2>
 <p>Normally you have created the controls yourself and you can store the <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span>
 <span class="pre">v4l2_ctrl</span></code></a> pointer into your own struct.</p>
@@ -987,8 +989,8 @@ use it. For example, this is not a good idea:</p>
 <p>When s_ctrl is called by the framework the ctrl_handler.lock is already taken, so
 attempting to find another control from the same handler will deadlock.</p>
 <p>It is recommended not to use this function from inside the control ops.</p>
-</section>
-<section id="preventing-controls-inheritance">
+</div>
+<div class="section" id="preventing-controls-inheritance">
 <h2><span class="section-number">2.13.14. </span>Preventing Controls inheritance<a class="headerlink" href="#preventing-controls-inheritance" title="Permalink to this headline">¶</a></h2>
 <p>When one control handler is added to another using v4l2_ctrl_add_handler, then
 by default all controls from one are merged to the other. But a subdev might
@@ -1010,8 +1012,8 @@ setting the ‘is_private’ flag of the control to 1:</p>
 </pre></div>
 </div>
 <p>These controls will now be skipped when v4l2_ctrl_add_handler is called.</p>
-</section>
-<section id="v4l2-ctrl-type-ctrl-class-controls">
+</div>
+<div class="section" id="v4l2-ctrl-type-ctrl-class-controls">
 <h2><span class="section-number">2.13.15. </span>V4L2_CTRL_TYPE_CTRL_CLASS Controls<a class="headerlink" href="#v4l2-ctrl-type-ctrl-class-controls" title="Permalink to this headline">¶</a></h2>
 <p>Controls of this type can be used by GUIs to get the name of the control class.
 A fully featured GUI can make a dialog with multiple tabs with each tab
@@ -1020,8 +1022,8 @@ each tab can be found by querying a special control with ID &lt;control class | 
 <p>Drivers do not have to care about this. The framework will automatically add
 a control of this type whenever the first control belonging to a new control
 class is added.</p>
-</section>
-<section id="adding-notify-callbacks">
+</div>
+<div class="section" id="adding-notify-callbacks">
 <h2><span class="section-number">2.13.16. </span>Adding Notify Callbacks<a class="headerlink" href="#adding-notify-callbacks" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes the platform or bridge driver needs to be notified when a control
 from a sub-device driver changes. You can set a notify callback by calling
@@ -1036,12 +1038,12 @@ v4l2_ctrl_notify. Note that the control’s handler lock is held when the
 notify function is called.</p>
 <p>There can be only one notify function per control handler. Any attempt
 to set another notify function will cause a WARN_ON.</p>
-</section>
-<section id="v4l2-ctrl-functions-and-data-structures">
+</div>
+<div class="section" id="v4l2-ctrl-functions-and-data-structures">
 <h2><span class="section-number">2.13.17. </span>v4l2_ctrl functions and data structures<a class="headerlink" href="#v4l2-ctrl-functions-and-data-structures" title="Permalink to this headline">¶</a></h2>
 <dl class="c union">
-<dt id="c.v4l2_ctrl_ptr">
-<em class="property"><span class="pre">union</span> </em><code class="sig-name descname"><span class="pre">v4l2_ctrl_ptr</span></code><a class="headerlink" href="#c.v4l2_ctrl_ptr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_ptr">
+<span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_ptr</span></span></span><a class="headerlink" href="#c.v4l2_ctrl_ptr" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>A pointer to a control value.</p>
 </dd></dl>
 
@@ -1129,8 +1131,8 @@ to set another notify function will cause a WARN_ON.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_ptr_create">
-<em class="property"><span class="pre">union</span></em> <a class="reference internal" href="#c.v4l2_ctrl_ptr" title="v4l2_ctrl_ptr"><span class="pre">v4l2_ctrl_ptr</span></a> <code class="sig-name descname"><span class="pre">v4l2_ctrl_ptr_create</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">ptr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_ptr_create" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_ptr_create">
+<span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_ptr" title="v4l2_ctrl_ptr"><span class="n"><span class="pre">v4l2_ctrl_ptr</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_ptr_create</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_ptr_create" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to return a v4l2_ctrl_ptr from a void pointer</p>
 </dd></dl>
 
@@ -1140,8 +1142,8 @@ to set another notify function will cause a WARN_ON.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_ctrl_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_ctrl_ops</span></code><a class="headerlink" href="#c.v4l2_ctrl_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_ops</span></span></span><a class="headerlink" href="#c.v4l2_ctrl_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The control operations that the driver has to provide.</p>
 </dd></dl>
 
@@ -1170,8 +1172,8 @@ one else can access controls owned by that handler.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_ctrl_type_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_ctrl_type_ops</span></code><a class="headerlink" href="#c.v4l2_ctrl_type_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_type_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_type_ops</span></span></span><a class="headerlink" href="#c.v4l2_ctrl_type_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The control type operations that the driver has to provide.</p>
 </dd></dl>
 
@@ -1197,8 +1199,8 @@ otherwise.</p>
 </dd>
 </dl>
 <dl class="c macro">
-<dt id="c.v4l2_ctrl_notify_fnc">
-<code class="sig-name descname"><span class="pre">v4l2_ctrl_notify_fnc</span></code><a class="headerlink" href="#c.v4l2_ctrl_notify_fnc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_notify_fnc">
+<span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_notify_fnc</span></span></span><a class="headerlink" href="#c.v4l2_ctrl_notify_fnc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><strong>Typedef</strong>: typedef for a notify argument with a function that should be called when a control value has changed.</p>
 </dd></dl>
 
@@ -1217,8 +1219,8 @@ otherwise.</p>
 <p>This typedef definition is used as an argument to <a class="reference internal" href="#c.v4l2_ctrl_notify" title="v4l2_ctrl_notify"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_notify()</span></code></a>
 and as an argument at struct <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_handler</span></code></a>.</p>
 <dl class="c struct">
-<dt id="c.v4l2_ctrl">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_ctrl</span></code><a class="headerlink" href="#c.v4l2_ctrl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl</span></span></span><a class="headerlink" href="#c.v4l2_ctrl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The control structure.</p>
 </dd></dl>
 
@@ -1402,8 +1404,8 @@ through a pointer.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_ctrl_ref">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_ctrl_ref</span></code><a class="headerlink" href="#c.v4l2_ctrl_ref" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_ref">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_ref</span></span></span><a class="headerlink" href="#c.v4l2_ctrl_ref" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The control reference.</p>
 </dd></dl>
 
@@ -1456,8 +1458,8 @@ control will not be updated when this request is applied.</p>
 keep a sorted-by-control-ID list of all controls, while the next pointer
 is used to link the control in the hash’s bucket.</p>
 <dl class="c struct">
-<dt id="c.v4l2_ctrl_handler">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_ctrl_handler</span></code><a class="headerlink" href="#c.v4l2_ctrl_handler" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_handler">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></span><a class="headerlink" href="#c.v4l2_ctrl_handler" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The control handler keeps track of all the controls: both the controls owned by the handler and those inherited from other handlers.</p>
 </dd></dl>
 
@@ -1525,8 +1527,8 @@ completed it is removed from this list.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_ctrl_config">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_ctrl_config</span></code><a class="headerlink" href="#c.v4l2_ctrl_config" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_config">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_config</span></span></span><a class="headerlink" href="#c.v4l2_ctrl_config" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Control configuration structure.</p>
 </dd></dl>
 
@@ -1600,8 +1602,8 @@ will not be added to any other handlers.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_fill">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_fill</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <em><span class="pre">id</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">name</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">v4l2_ctrl_type</span> <span class="pre">*</span><em><span class="pre">type</span></em>, <span class="pre">s64</span> <span class="pre">*</span><em><span class="pre">min</span></em>, <span class="pre">s64</span> <span class="pre">*</span><em><span class="pre">max</span></em>, <span class="pre">u64</span> <span class="pre">*</span><em><span class="pre">step</span></em>, <span class="pre">s64</span> <span class="pre">*</span><em><span class="pre">def</span></em>, <span class="pre">u32</span> <span class="pre">*</span><em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_fill" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_fill">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_fill</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_ctrl_type</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">min</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">max</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">step</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">def</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_fill" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Fill in the control fields based on the control ID.</p>
 </dd></dl>
 
@@ -1638,8 +1640,8 @@ control handling only. Once all drivers are converted to use the new
 control framework this function will no longer be exported.</p>
 </div>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_handler_init_class">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_handler_init_class</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">nr_of_controls_hint</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">lock_class_key</span> <span class="pre">*</span><em><span class="pre">key</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_handler_init_class" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_handler_init_class">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_handler_init_class</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nr_of_controls_hint</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">lock_class_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_handler_init_class" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Initialize the control handler.</p>
 </dd></dl>
 
@@ -1670,8 +1672,8 @@ macro that hides the <strong>key</strong> and <strong>name</strong> arguments.</
 <p>returns an error if the buckets could not be allocated. This
 error will also be stored in <strong>hdl-&gt;error</strong>.</p>
 <dl class="c macro">
-<dt id="c.v4l2_ctrl_handler_init">
-<code class="sig-name descname"><span class="pre">v4l2_ctrl_handler_init</span></code><a class="headerlink" href="#c.v4l2_ctrl_handler_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_handler_init">
+<span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_handler_init</span></span></span><a class="headerlink" href="#c.v4l2_ctrl_handler_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">v4l2_ctrl_handler_init</span> <span class="pre">(hdl,</span> <span class="pre">nr_of_controls_hint)</span></code></p>
@@ -1697,8 +1699,8 @@ calls <a class="reference internal" href="#c.v4l2_ctrl_handler_init_class" title
 validador.</p>
 <p>Use this helper function to initialize a control handler.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_handler_free">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_handler_free</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_handler_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_handler_free">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_handler_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_handler_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Free all controls owned by the handler and free the control list.</p>
 </dd></dl>
 
@@ -1710,8 +1712,8 @@ validador.</p>
 <p><strong>Description</strong></p>
 <p>Does nothing if <strong>hdl</strong> == NULL.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_lock">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_lock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_lock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_lock">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_lock</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_lock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to lock the handler associated with the control.</p>
 </dd></dl>
 
@@ -1721,8 +1723,8 @@ validador.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_unlock">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_unlock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_unlock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_unlock">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_unlock</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_unlock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to unlock the handler associated with the control.</p>
 </dd></dl>
 
@@ -1732,8 +1734,8 @@ validador.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.__v4l2_ctrl_handler_setup">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">__v4l2_ctrl_handler_setup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_handler_setup" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__v4l2_ctrl_handler_setup">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__v4l2_ctrl_handler_setup</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_handler_setup" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Call the s_ctrl op for all controls belonging to the handler to initialize the hardware to the current control values. The caller is responsible for acquiring the control handler mutex on behalf of <a class="reference internal" href="#c.__v4l2_ctrl_handler_setup" title="__v4l2_ctrl_handler_setup"><code class="xref c c-func docutils literal notranslate"><span class="pre">__v4l2_ctrl_handler_setup()</span></code></a>.</p>
 </dd></dl>
 
@@ -1746,8 +1748,8 @@ validador.</p>
 <p>Button controls will be skipped, as are read-only controls.</p>
 <p>If <strong>hdl</strong> == NULL, then this just returns 0.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_handler_setup">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_handler_setup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_handler_setup" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_handler_setup">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_handler_setup</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_handler_setup" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Call the s_ctrl op for all controls belonging to the handler to initialize the hardware to the current control values.</p>
 </dd></dl>
 
@@ -1760,8 +1762,8 @@ validador.</p>
 <p>Button controls will be skipped, as are read-only controls.</p>
 <p>If <strong>hdl</strong> == NULL, then this just returns 0.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_handler_log_status">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_handler_log_status</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">prefix</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_handler_log_status" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_handler_log_status">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_handler_log_status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">prefix</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_handler_log_status" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Log all controls owned by the handler.</p>
 </dd></dl>
 
@@ -1779,8 +1781,8 @@ used.</p>
 <p>For use with VIDIOC_LOG_STATUS.</p>
 <p>Does nothing if <strong>hdl</strong> == NULL.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_new_custom">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_new_custom</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_config" title="v4l2_ctrl_config"><span class="pre">v4l2_ctrl_config</span></a> <span class="pre">*</span><em><span class="pre">cfg</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">priv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_custom" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_new_custom">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_new_custom</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_config" title="v4l2_ctrl_config"><span class="n"><span class="pre">v4l2_ctrl_config</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cfg</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">priv</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_custom" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Allocate and initialize a new custom V4L2 control.</p>
 </dd></dl>
 
@@ -1797,8 +1799,8 @@ used.</p>
 <p>If the <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl</span></code></a> struct could not be allocated then NULL is returned
 and <strong>hdl-&gt;error</strong> is set to the error code (if it wasn’t set already).</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_new_std">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_new_std</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="pre">v4l2_ctrl_ops</span></a> <span class="pre">*</span><em><span class="pre">ops</span></em>, <span class="pre">u32</span> <em><span class="pre">id</span></em>, <span class="pre">s64</span> <em><span class="pre">min</span></em>, <span class="pre">s64</span> <em><span class="pre">max</span></em>, <span class="pre">u64</span> <em><span class="pre">step</span></em>, <span class="pre">s64</span> <em><span class="pre">def</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_std" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_new_std">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_new_std</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="n"><span class="pre">v4l2_ctrl_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">min</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">max</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">step</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">def</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_std" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Allocate and initialize a new standard V4L2 non-menu control.</p>
 </dd></dl>
 
@@ -1826,8 +1828,8 @@ appropriate error code (if it wasn’t set already).</p>
 <p>If <strong>id</strong> refers to a menu control, then this function will return NULL.</p>
 <p>Use <a class="reference internal" href="#c.v4l2_ctrl_new_std_menu" title="v4l2_ctrl_new_std_menu"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_new_std_menu()</span></code></a> when adding menu controls.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_new_std_menu">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_new_std_menu</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="pre">v4l2_ctrl_ops</span></a> <span class="pre">*</span><em><span class="pre">ops</span></em>, <span class="pre">u32</span> <em><span class="pre">id</span></em>, <span class="pre">u8</span> <em><span class="pre">max</span></em>, <span class="pre">u64</span> <em><span class="pre">mask</span></em>, <span class="pre">u8</span> <em><span class="pre">def</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_std_menu" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_new_std_menu">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_new_std_menu</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="n"><span class="pre">v4l2_ctrl_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">max</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">mask</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">def</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_std_menu" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Allocate and initialize a new standard V4L2 menu control.</p>
 </dd></dl>
 
@@ -1856,8 +1858,8 @@ then this will have to be extended to a bit array.</p>
 determines which menu items are to be skipped.</p>
 <p>If <strong>id</strong> refers to a non-menu control, then this function will return NULL.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_new_std_menu_items">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_new_std_menu_items</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="pre">v4l2_ctrl_ops</span></a> <span class="pre">*</span><em><span class="pre">ops</span></em>, <span class="pre">u32</span> <em><span class="pre">id</span></em>, <span class="pre">u8</span> <em><span class="pre">max</span></em>, <span class="pre">u64</span> <em><span class="pre">mask</span></em>, <span class="pre">u8</span> <em><span class="pre">def</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em class="property"><span class="pre">const</span></em> <span class="pre">*</span><em><span class="pre">qmenu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_std_menu_items" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_new_std_menu_items">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_new_std_menu_items</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="n"><span class="pre">v4l2_ctrl_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">max</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">mask</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">def</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">qmenu</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_std_menu_items" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a new standard V4L2 menu control with driver specific menu.</p>
 </dd></dl>
 
@@ -1887,8 +1889,8 @@ then this will have to be extended to a bit array.</p>
 <p>Same as <a class="reference internal" href="#c.v4l2_ctrl_new_std_menu" title="v4l2_ctrl_new_std_menu"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_new_std_menu()</span></code></a>, but <strong>qmenu</strong> will be the driver specific
 menu of this control.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_new_std_compound">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_new_std_compound</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="pre">v4l2_ctrl_ops</span></a> <span class="pre">*</span><em><span class="pre">ops</span></em>, <span class="pre">u32</span> <em><span class="pre">id</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">union</span></em> <a class="reference internal" href="#c.v4l2_ctrl_ptr" title="v4l2_ctrl_ptr"><span class="pre">v4l2_ctrl_ptr</span></a> <em><span class="pre">p_def</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_std_compound" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_new_std_compound">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_new_std_compound</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="n"><span class="pre">v4l2_ctrl_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_ptr" title="v4l2_ctrl_ptr"><span class="n"><span class="pre">v4l2_ctrl_ptr</span></span></a><span class="w"> </span><span class="n"><span class="pre">p_def</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_std_compound" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Allocate and initialize a new standard V4L2 compound control.</p>
 </dd></dl>
 
@@ -1909,8 +1911,8 @@ to the <strong>p_def</strong> field. Use <a class="reference internal" href="#c.
 pointer. Use v4l2_ctrl_ptr_create(NULL) if the default value of the
 compound control should be all zeroes.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_new_int_menu">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_new_int_menu</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="pre">v4l2_ctrl_ops</span></a> <span class="pre">*</span><em><span class="pre">ops</span></em>, <span class="pre">u32</span> <em><span class="pre">id</span></em>, <span class="pre">u8</span> <em><span class="pre">max</span></em>, <span class="pre">u8</span> <em><span class="pre">def</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">s64</span> <span class="pre">*</span><em><span class="pre">qmenu_int</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_int_menu" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_new_int_menu">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_new_int_menu</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="n"><span class="pre">v4l2_ctrl_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">max</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">def</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">qmenu_int</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_int_menu" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a new standard V4L2 integer menu control.</p>
 </dd></dl>
 
@@ -1935,8 +1937,8 @@ takes as an argument an array of integers determining the menu items.</p>
 <p>If <strong>id</strong> refers to a non-integer-menu control, then this function will
 return <code class="docutils literal notranslate"><span class="pre">NULL</span></code>.</p>
 <dl class="c macro">
-<dt id="c.v4l2_ctrl_filter">
-<code class="sig-name descname"><span class="pre">v4l2_ctrl_filter</span></code><a class="headerlink" href="#c.v4l2_ctrl_filter" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_filter">
+<span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_filter</span></span></span><a class="headerlink" href="#c.v4l2_ctrl_filter" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><strong>Typedef</strong>: Typedef to define the filter function to be used when adding a control handler.</p>
 </dd></dl>
 
@@ -1950,8 +1952,8 @@ return <code class="docutils literal notranslate"><span class="pre">NULL</span><
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_add_handler">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_add_handler</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">add</span></em>, <a class="reference internal" href="#c.v4l2_ctrl_filter" title="v4l2_ctrl_filter"><span class="pre">v4l2_ctrl_filter</span></a> <em><span class="pre">filter</span></em>, <span class="pre">bool</span> <em><span class="pre">from_other_dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_add_handler" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_add_handler">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_add_handler</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">add</span></span>, <a class="reference internal" href="#c.v4l2_ctrl_filter" title="v4l2_ctrl_filter"><span class="n"><span class="pre">v4l2_ctrl_filter</span></span></a><span class="w"> </span><span class="n"><span class="pre">filter</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">from_other_dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_add_handler" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Add all controls from handler <strong>add</strong> to handler <strong>hdl</strong>.</p>
 </dd></dl>
 
@@ -1975,8 +1977,8 @@ controls for which <strong>filter</strong> returns true will be added.
 In case of an error <strong>hdl-&gt;error</strong> will be set to the error code (if it
 wasn’t set already).</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_radio_filter">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_radio_filter</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_radio_filter" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_radio_filter">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_radio_filter</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_radio_filter" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Standard filter for radio controls.</p>
 </dd></dl>
 
@@ -1991,8 +1993,8 @@ nodes. Those are all of the V4L2_CID_AUDIO_* user controls and all FM
 transmitter class controls.</p>
 <p>This function is to be used with <a class="reference internal" href="#c.v4l2_ctrl_add_handler" title="v4l2_ctrl_add_handler"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_add_handler()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_cluster">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_cluster</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">ncontrols</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">controls</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_cluster" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_cluster">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_cluster</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">ncontrols</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">controls</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_cluster" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mark all controls in the cluster as belonging to that cluster.</p>
 </dd></dl>
 
@@ -2004,8 +2006,8 @@ transmitter class controls.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_auto_cluster">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_auto_cluster</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">ncontrols</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">controls</span></em>, <span class="pre">u8</span> <em><span class="pre">manual_val</span></em>, <span class="pre">bool</span> <em><span class="pre">set_volatile</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_auto_cluster" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_auto_cluster">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_auto_cluster</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">ncontrols</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">controls</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">manual_val</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">set_volatile</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_auto_cluster" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mark all controls in the cluster as belonging to that cluster and set it up for autofoo/foo-type handling.</p>
 </dd></dl>
 
@@ -2039,8 +2041,8 @@ going through g_volatile_ctrl.</p>
 on the autofoo control and <code class="docutils literal notranslate"><span class="pre">V4L2_CTRL_FLAG_INACTIVE</span></code> on the foo control(s)
 if autofoo is in auto mode.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_find">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_find</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <span class="pre">u32</span> <em><span class="pre">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_find" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_find">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_find</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_find" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Find a control with the given ID.</p>
 </dd></dl>
 
@@ -2055,8 +2057,8 @@ if autofoo is in auto mode.</p>
 <p>If <strong>hdl</strong> == NULL this will return NULL as well. Will lock the handler so
 do not use from inside <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_activate">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_activate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <span class="pre">bool</span> <em><span class="pre">active</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_activate" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_activate">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_activate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">active</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_activate" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Make the control active or inactive.</p>
 </dd></dl>
 
@@ -2074,8 +2076,8 @@ This will usually be called from within the s_ctrl op.
 The V4L2_EVENT_CTRL event will be generated afterwards.</p>
 <p>This function assumes that the control handler is locked.</p>
 <dl class="c function">
-<dt id="c.__v4l2_ctrl_grab">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__v4l2_ctrl_grab</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <span class="pre">bool</span> <em><span class="pre">grabbed</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_grab" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__v4l2_ctrl_grab">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__v4l2_ctrl_grab</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">grabbed</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_grab" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unlocked variant of v4l2_ctrl_grab.</p>
 </dd></dl>
 
@@ -2094,8 +2096,8 @@ This will usually be called when starting or stopping streaming in the
 driver.</p>
 <p>This function assumes that the control handler is locked by the caller.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_grab">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_grab</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <span class="pre">bool</span> <em><span class="pre">grabbed</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_grab" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_grab">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_grab</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">grabbed</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_grab" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mark the control as grabbed or not grabbed.</p>
 </dd></dl>
 
@@ -2115,8 +2117,8 @@ driver.</p>
 <p>This function assumes that the control handler is not locked and will
 take the lock itself.</p>
 <dl class="c function">
-<dt id="c.__v4l2_ctrl_modify_range">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">__v4l2_ctrl_modify_range</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <span class="pre">s64</span> <em><span class="pre">min</span></em>, <span class="pre">s64</span> <em><span class="pre">max</span></em>, <span class="pre">u64</span> <em><span class="pre">step</span></em>, <span class="pre">s64</span> <em><span class="pre">def</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_modify_range" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__v4l2_ctrl_modify_range">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__v4l2_ctrl_modify_range</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">min</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">max</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">step</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">def</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_modify_range" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unlocked variant of <a class="reference internal" href="#c.v4l2_ctrl_modify_range" title="v4l2_ctrl_modify_range"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_modify_range()</span></code></a></p>
 </dd></dl>
 
@@ -2142,8 +2144,8 @@ control type.</p>
 <p>The caller is responsible for acquiring the control handler mutex on behalf
 of <a class="reference internal" href="#c.__v4l2_ctrl_modify_range" title="__v4l2_ctrl_modify_range"><code class="xref c c-func docutils literal notranslate"><span class="pre">__v4l2_ctrl_modify_range()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_modify_range">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_modify_range</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <span class="pre">s64</span> <em><span class="pre">min</span></em>, <span class="pre">s64</span> <em><span class="pre">max</span></em>, <span class="pre">u64</span> <em><span class="pre">step</span></em>, <span class="pre">s64</span> <em><span class="pre">def</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_modify_range" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_modify_range">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_modify_range</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">min</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">max</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">step</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">def</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_modify_range" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Update the range of a control.</p>
 </dd></dl>
 
@@ -2169,8 +2171,8 @@ control type.</p>
 <p>This function assumes that the control handler is not locked and will
 take the lock itself.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_notify">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_notify</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <a class="reference internal" href="#c.v4l2_ctrl_notify_fnc" title="v4l2_ctrl_notify_fnc"><span class="pre">v4l2_ctrl_notify_fnc</span></a> <em><span class="pre">notify</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">priv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_notify" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_notify">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_notify</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <a class="reference internal" href="#c.v4l2_ctrl_notify_fnc" title="v4l2_ctrl_notify_fnc"><span class="n"><span class="pre">v4l2_ctrl_notify_fnc</span></span></a><span class="w"> </span><span class="n"><span class="pre">notify</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">priv</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_notify" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Function to set a notify callback for a control.</p>
 </dd></dl>
 
@@ -2190,8 +2192,8 @@ be removed.</p>
 <p>There can be only one notify. If another already exists, then a WARN_ON
 will be issued and the function will do nothing.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_get_name">
-<em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_get_name</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <em><span class="pre">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_get_name" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_get_name">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_get_name</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_get_name" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the name of the control</p>
 </dd></dl>
 
@@ -2204,8 +2206,8 @@ will be issued and the function will do nothing.</p>
 <p>This function returns the name of the given control ID or NULL if it isn’t
 a known control.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_get_menu">
-<em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em class="property"><span class="pre">const</span></em> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_get_menu</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <em><span class="pre">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_get_menu" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_get_menu">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_get_menu</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_get_menu" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the menu string array of the control</p>
 </dd></dl>
 
@@ -2218,8 +2220,8 @@ a known control.</p>
 <p>This function returns the NULL-terminated menu string array name of the
 given control ID or NULL if it isn’t a known menu control.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_get_int_menu">
-<em class="property"><span class="pre">const</span></em> <span class="pre">s64</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_get_int_menu</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <em><span class="pre">id</span></em>, <span class="pre">u32</span> <span class="pre">*</span><em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_get_int_menu" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_get_int_menu">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_get_int_menu</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_get_int_menu" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the integer menu array of the control</p>
 </dd></dl>
 
@@ -2234,8 +2236,8 @@ given control ID or NULL if it isn’t a known menu control.</p>
 <p>This function returns the integer array of the given control ID or NULL if it
 if it isn’t a known integer menu control.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_g_ctrl">
-<span class="pre">s32</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_g_ctrl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_g_ctrl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_g_ctrl">
+<span class="n"><span class="pre">s32</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_g_ctrl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_g_ctrl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to get the control’s value from within a driver.</p>
 </dd></dl>
 
@@ -2250,8 +2252,8 @@ framework. This function will lock the control’s handler, so it cannot be
 used from within the <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a> functions.</p>
 <p>This function is for integer type controls only.</p>
 <dl class="c function">
-<dt id="c.__v4l2_ctrl_s_ctrl">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">__v4l2_ctrl_s_ctrl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <span class="pre">s32</span> <em><span class="pre">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_s_ctrl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__v4l2_ctrl_s_ctrl">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__v4l2_ctrl_s_ctrl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="n"><span class="pre">s32</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_s_ctrl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unlocked variant of <a class="reference internal" href="#c.v4l2_ctrl_s_ctrl" title="v4l2_ctrl_s_ctrl"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_s_ctrl()</span></code></a>.</p>
 </dd></dl>
 
@@ -2268,8 +2270,8 @@ framework. This function assumes the control’s handler is already locked,
 allowing it to be used from within the <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a> functions.</p>
 <p>This function is for integer type controls only.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_s_ctrl">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_s_ctrl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <span class="pre">s32</span> <em><span class="pre">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_s_ctrl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_s_ctrl">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_s_ctrl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="n"><span class="pre">s32</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_s_ctrl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to set the control’s value from within a driver.</p>
 </dd></dl>
 
@@ -2286,8 +2288,8 @@ framework. This function will lock the control’s handler, so it cannot be
 used from within the <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a> functions.</p>
 <p>This function is for integer type controls only.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_g_ctrl_int64">
-<span class="pre">s64</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_g_ctrl_int64</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_g_ctrl_int64" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_g_ctrl_int64">
+<span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_g_ctrl_int64</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_g_ctrl_int64" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to get a 64-bit control’s value from within a driver.</p>
 </dd></dl>
 
@@ -2302,8 +2304,8 @@ framework. This function will lock the control’s handler, so it cannot be
 used from within the <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a> functions.</p>
 <p>This function is for 64-bit integer type controls only.</p>
 <dl class="c function">
-<dt id="c.__v4l2_ctrl_s_ctrl_int64">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">__v4l2_ctrl_s_ctrl_int64</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <span class="pre">s64</span> <em><span class="pre">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_s_ctrl_int64" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__v4l2_ctrl_s_ctrl_int64">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__v4l2_ctrl_s_ctrl_int64</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_s_ctrl_int64" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unlocked variant of <a class="reference internal" href="#c.v4l2_ctrl_s_ctrl_int64" title="v4l2_ctrl_s_ctrl_int64"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_s_ctrl_int64()</span></code></a>.</p>
 </dd></dl>
 
@@ -2320,8 +2322,8 @@ framework. This function assumes the control’s handler is already locked,
 allowing it to be used from within the <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a> functions.</p>
 <p>This function is for 64-bit integer type controls only.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_s_ctrl_int64">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_s_ctrl_int64</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <span class="pre">s64</span> <em><span class="pre">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_s_ctrl_int64" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_s_ctrl_int64">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_s_ctrl_int64</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="n"><span class="pre">s64</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_s_ctrl_int64" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to set a 64-bit control’s value from within a driver.</p>
 </dd></dl>
 
@@ -2338,8 +2340,8 @@ framework. This function will lock the control’s handler, so it cannot be
 used from within the <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a> functions.</p>
 <p>This function is for 64-bit integer type controls only.</p>
 <dl class="c function">
-<dt id="c.__v4l2_ctrl_s_ctrl_string">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">__v4l2_ctrl_s_ctrl_string</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_s_ctrl_string" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__v4l2_ctrl_s_ctrl_string">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__v4l2_ctrl_s_ctrl_string</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_s_ctrl_string" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unlocked variant of <a class="reference internal" href="#c.v4l2_ctrl_s_ctrl_string" title="v4l2_ctrl_s_ctrl_string"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_s_ctrl_string()</span></code></a>.</p>
 </dd></dl>
 
@@ -2356,8 +2358,8 @@ framework. This function assumes the control’s handler is already locked,
 allowing it to be used from within the <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a> functions.</p>
 <p>This function is for string type controls only.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_s_ctrl_string">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_s_ctrl_string</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_s_ctrl_string" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_s_ctrl_string">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_s_ctrl_string</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_s_ctrl_string" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to set a control’s string value from within a driver.</p>
 </dd></dl>
 
@@ -2374,8 +2376,8 @@ framework. This function will lock the control’s handler, so it cannot be
 used from within the <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a> functions.</p>
 <p>This function is for string type controls only.</p>
 <dl class="c function">
-<dt id="c.__v4l2_ctrl_s_ctrl_compound">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">__v4l2_ctrl_s_ctrl_compound</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">v4l2_ctrl_type</span> <em><span class="pre">type</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_s_ctrl_compound" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__v4l2_ctrl_s_ctrl_compound">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__v4l2_ctrl_s_ctrl_compound</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_ctrl_type</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__v4l2_ctrl_s_ctrl_compound" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unlocked variant to set a compound control</p>
 </dd></dl>
 
@@ -2394,8 +2396,8 @@ control framework. This function assumes the control’s handler is already
 locked, allowing it to be used from within the <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a> functions.</p>
 <p>This function is for compound type controls only.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_s_ctrl_compound">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_s_ctrl_compound</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><em><span class="pre">ctrl</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">v4l2_ctrl_type</span> <em><span class="pre">type</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_s_ctrl_compound" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_s_ctrl_compound">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_s_ctrl_compound</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_ctrl_type</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_s_ctrl_compound" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to set a compound control from within a driver.</p>
 </dd></dl>
 
@@ -2414,8 +2416,8 @@ control framework. This function will lock the control’s handler, so it
 cannot be used from within the <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_ctrl_ops</span></code></a> functions.</p>
 <p>This function is for compound type controls only.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_replace">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_replace</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event</span> <span class="pre">*</span><em><span class="pre">old</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event</span> <span class="pre">*</span><em><span class="pre">new</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_replace" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_replace">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_replace</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">old</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">new</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_replace" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Function to be used as a callback to <a class="reference internal" href="v4l2-event.html#c.v4l2_subscribed_event_ops" title="v4l2_subscribed_event_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">v4l2_subscribed_event_ops</span></code></a> replace()</p>
 </dd></dl>
 
@@ -2429,8 +2431,8 @@ event;</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_merge">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_merge</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event</span> <span class="pre">*</span><em><span class="pre">old</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event</span> <span class="pre">*</span><em><span class="pre">new</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_merge" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_merge">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_merge</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">old</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">new</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_merge" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Function to be used as a callback to <a class="reference internal" href="v4l2-event.html#c.v4l2_subscribed_event_ops" title="v4l2_subscribed_event_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">v4l2_subscribed_event_ops</span></code></a> merge()</p>
 </dd></dl>
 
@@ -2444,8 +2446,8 @@ event;</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_log_status">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_log_status</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_log_status" title="file"><span class="pre">file</span></a> <span class="pre">*</span><em><span class="pre">file</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">fh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_log_status" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_log_status">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_log_status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_log_status" title="file"><span class="n"><span class="pre">file</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">file</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_log_status" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>helper function to implement <code class="docutils literal notranslate"><span class="pre">VIDIOC_LOG_STATUS</span></code> ioctl</p>
 </dd></dl>
 
@@ -2461,8 +2463,8 @@ event;</p>
 <p>Can be used as a vidioc_log_status function that just dumps all controls
 associated with the filehandle.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_subscribe_event">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_subscribe_event</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event_subscription</span> <span class="pre">*</span><em><span class="pre">sub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_subscribe_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_subscribe_event">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_subscribe_event</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event_subscription</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sub</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_subscribe_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Subscribes to an event</p>
 </dd></dl>
 
@@ -2477,8 +2479,8 @@ associated with the filehandle.</p>
 <p>Can be used as a vidioc_subscribe_event function that just subscribes
 control events.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_poll">
-<span class="pre">__poll_t</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_poll</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_poll" title="file"><span class="pre">file</span></a> <span class="pre">*</span><em><span class="pre">file</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">poll_table_struct</span> <span class="pre">*</span><em><span class="pre">wait</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_poll" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_poll">
+<span class="n"><span class="pre">__poll_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_poll</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_poll" title="file"><span class="n"><span class="pre">file</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">file</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">poll_table_struct</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">wait</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_poll" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>function to be used as a callback to the poll() That just polls for control events.</p>
 </dd></dl>
 
@@ -2490,8 +2492,8 @@ control events.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_request_setup">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_request_setup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="mc-core.html#c.media_request" title="media_request"><span class="pre">media_request</span></a> <span class="pre">*</span><em><span class="pre">req</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">parent</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_request_setup" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_request_setup">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_request_setup</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="mc-core.html#c.media_request" title="media_request"><span class="n"><span class="pre">media_request</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">req</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">parent</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_request_setup" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>helper function to apply control values in a request</p>
 </dd></dl>
 
@@ -2508,8 +2510,8 @@ the control values contained in the request. Do note that this approach of
 applying control values in a request is only applicable to memory-to-memory
 devices.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_request_complete">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_request_complete</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="mc-core.html#c.media_request" title="media_request"><span class="pre">media_request</span></a> <span class="pre">*</span><em><span class="pre">req</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">parent</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_request_complete" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_request_complete">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_request_complete</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="mc-core.html#c.media_request" title="media_request"><span class="n"><span class="pre">media_request</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">req</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">parent</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_request_complete" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Complete a control handler request object</p>
 </dd></dl>
 
@@ -2528,8 +2530,8 @@ supports requests.</p>
 handler and attach them to the request. Then, the function completes the
 request object.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_request_hdl_find">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_request_hdl_find</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="mc-core.html#c.media_request" title="media_request"><span class="pre">media_request</span></a> <span class="pre">*</span><em><span class="pre">req</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">parent</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_request_hdl_find" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_request_hdl_find">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_request_hdl_find</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="mc-core.html#c.media_request" title="media_request"><span class="n"><span class="pre">media_request</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">req</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">parent</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_request_hdl_find" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Find the control handler in the request</p>
 </dd></dl>
 
@@ -2550,8 +2552,8 @@ will always return NULL.</p>
 no objects can be added or deleted from the request.</p>
 <p>In state QUEUED it is the driver that will have to ensure this.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_request_hdl_put">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_request_hdl_put</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_request_hdl_put" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_request_hdl_put">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_request_hdl_put</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_request_hdl_put" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Put the control handler</p>
 </dd></dl>
 
@@ -2564,8 +2566,8 @@ no objects can be added or deleted from the request.</p>
 <p>This function released the control handler previously obtained from’
 <a class="reference internal" href="#c.v4l2_ctrl_request_hdl_find" title="v4l2_ctrl_request_hdl_find"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_ctrl_request_hdl_find()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_request_hdl_ctrl_find">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="pre">v4l2_ctrl</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">v4l2_ctrl_request_hdl_ctrl_find</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <span class="pre">u32</span> <em><span class="pre">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_request_hdl_ctrl_find" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_request_hdl_ctrl_find">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl" title="v4l2_ctrl"><span class="n"><span class="pre">v4l2_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_request_hdl_ctrl_find</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_request_hdl_ctrl_find" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Find a control with the given ID.</p>
 </dd></dl>
 
@@ -2580,8 +2582,8 @@ no objects can be added or deleted from the request.</p>
 <p>This function returns a pointer to the control if this control is
 part of the request or NULL otherwise.</p>
 <dl class="c function">
-<dt id="c.v4l2_queryctrl">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_queryctrl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_queryctrl" title="v4l2_queryctrl"><span class="pre">v4l2_queryctrl</span></a> <span class="pre">*</span><em><span class="pre">qc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_queryctrl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_queryctrl">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_queryctrl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_queryctrl" title="v4l2_queryctrl"><span class="n"><span class="pre">v4l2_queryctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">qc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_queryctrl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to implement <a class="reference internal" href="../../userspace-api/media/v4l/vidioc-queryctrl.html#vidioc-queryctrl"><span class="std std-ref">VIDIOC_QUERYCTRL</span></a> ioctl</p>
 </dd></dl>
 
@@ -2595,8 +2597,8 @@ part of the request or NULL otherwise.</p>
 <p><strong>Description</strong></p>
 <p>If hdl == NULL then they will all return -EINVAL.</p>
 <dl class="c function">
-<dt id="c.v4l2_query_ext_ctrl">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_query_ext_ctrl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_query_ext_ctrl" title="v4l2_query_ext_ctrl"><span class="pre">v4l2_query_ext_ctrl</span></a> <span class="pre">*</span><em><span class="pre">qc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_query_ext_ctrl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_query_ext_ctrl">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_query_ext_ctrl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_query_ext_ctrl" title="v4l2_query_ext_ctrl"><span class="n"><span class="pre">v4l2_query_ext_ctrl</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">qc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_query_ext_ctrl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to implement <a class="reference internal" href="../../userspace-api/media/v4l/vidioc-queryctrl.html#vidioc-queryctrl"><span class="std std-ref">VIDIOC_QUERY_EXT_CTRL</span></a> ioctl</p>
 </dd></dl>
 
@@ -2610,8 +2612,8 @@ part of the request or NULL otherwise.</p>
 <p><strong>Description</strong></p>
 <p>If hdl == NULL then they will all return -EINVAL.</p>
 <dl class="c function">
-<dt id="c.v4l2_querymenu">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_querymenu</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_querymenu" title="v4l2_querymenu"><span class="pre">v4l2_querymenu</span></a> <span class="pre">*</span><em><span class="pre">qm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_querymenu" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_querymenu">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_querymenu</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_querymenu" title="v4l2_querymenu"><span class="n"><span class="pre">v4l2_querymenu</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">qm</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_querymenu" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to implement <a class="reference internal" href="../../userspace-api/media/v4l/vidioc-queryctrl.html#vidioc-queryctrl"><span class="std std-ref">VIDIOC_QUERYMENU</span></a> ioctl</p>
 </dd></dl>
 
@@ -2625,8 +2627,8 @@ part of the request or NULL otherwise.</p>
 <p><strong>Description</strong></p>
 <p>If hdl == NULL then they will all return -EINVAL.</p>
 <dl class="c function">
-<dt id="c.v4l2_g_ctrl">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_g_ctrl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_control</span> <span class="pre">*</span><em><span class="pre">ctrl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_g_ctrl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_g_ctrl">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_g_ctrl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_control</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_g_ctrl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to implement <a class="reference internal" href="../../userspace-api/media/v4l/vidioc-g-ctrl.html#vidioc-g-ctrl"><span class="std std-ref">VIDIOC_G_CTRL</span></a> ioctl</p>
 </dd></dl>
 
@@ -2640,8 +2642,8 @@ part of the request or NULL otherwise.</p>
 <p><strong>Description</strong></p>
 <p>If hdl == NULL then they will all return -EINVAL.</p>
 <dl class="c function">
-<dt id="c.v4l2_s_ctrl">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_s_ctrl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_control</span> <span class="pre">*</span><em><span class="pre">ctrl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_s_ctrl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_s_ctrl">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_s_ctrl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_control</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_s_ctrl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to implement <a class="reference internal" href="../../userspace-api/media/v4l/vidioc-g-ctrl.html#vidioc-g-ctrl"><span class="std std-ref">VIDIOC_S_CTRL</span></a> ioctl</p>
 </dd></dl>
 
@@ -2657,8 +2659,8 @@ part of the request or NULL otherwise.</p>
 <p><strong>Description</strong></p>
 <p>If hdl == NULL then they will all return -EINVAL.</p>
 <dl class="c function">
-<dt id="c.v4l2_g_ext_ctrls">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_g_ext_ctrls</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-dev.html#c.video_device" title="video_device"><span class="pre">video_device</span></a> <span class="pre">*</span><em><span class="pre">vdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="mc-core.html#c.media_device" title="media_device"><span class="pre">media_device</span></a> <span class="pre">*</span><em><span class="pre">mdev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_ext_controls</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_g_ext_ctrls" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_g_ext_ctrls">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_g_ext_ctrls</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-dev.html#c.video_device" title="video_device"><span class="n"><span class="pre">video_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="mc-core.html#c.media_device" title="media_device"><span class="n"><span class="pre">media_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_ext_controls</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_g_ext_ctrls" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to implement <a class="reference internal" href="../../userspace-api/media/v4l/vidioc-g-ext-ctrls.html#vidioc-g-ext-ctrls"><span class="std std-ref">VIDIOC_G_EXT_CTRLS</span></a> ioctl</p>
 </dd></dl>
 
@@ -2676,8 +2678,8 @@ part of the request or NULL otherwise.</p>
 <p><strong>Description</strong></p>
 <p>If hdl == NULL then they will all return -EINVAL.</p>
 <dl class="c function">
-<dt id="c.v4l2_try_ext_ctrls">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_try_ext_ctrls</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-dev.html#c.video_device" title="video_device"><span class="pre">video_device</span></a> <span class="pre">*</span><em><span class="pre">vdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="mc-core.html#c.media_device" title="media_device"><span class="pre">media_device</span></a> <span class="pre">*</span><em><span class="pre">mdev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_ext_controls</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_try_ext_ctrls" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_try_ext_ctrls">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_try_ext_ctrls</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-dev.html#c.video_device" title="video_device"><span class="n"><span class="pre">video_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="mc-core.html#c.media_device" title="media_device"><span class="n"><span class="pre">media_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_ext_controls</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_try_ext_ctrls" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to implement <a class="reference internal" href="../../userspace-api/media/v4l/vidioc-g-ext-ctrls.html#vidioc-g-ext-ctrls"><span class="std std-ref">VIDIOC_TRY_EXT_CTRLS</span></a> ioctl</p>
 </dd></dl>
 
@@ -2695,8 +2697,8 @@ part of the request or NULL otherwise.</p>
 <p><strong>Description</strong></p>
 <p>If hdl == NULL then they will all return -EINVAL.</p>
 <dl class="c function">
-<dt id="c.v4l2_s_ext_ctrls">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_s_ext_ctrls</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-dev.html#c.video_device" title="video_device"><span class="pre">video_device</span></a> <span class="pre">*</span><em><span class="pre">vdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="mc-core.html#c.media_device" title="media_device"><span class="pre">media_device</span></a> <span class="pre">*</span><em><span class="pre">mdev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_ext_controls</span> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_s_ext_ctrls" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_s_ext_ctrls">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_s_ext_ctrls</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-dev.html#c.video_device" title="video_device"><span class="n"><span class="pre">video_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="mc-core.html#c.media_device" title="media_device"><span class="n"><span class="pre">media_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_ext_controls</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_s_ext_ctrls" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to implement <a class="reference internal" href="../../userspace-api/media/v4l/vidioc-g-ext-ctrls.html#vidioc-g-ext-ctrls"><span class="std std-ref">VIDIOC_S_EXT_CTRLS</span></a> ioctl</p>
 </dd></dl>
 
@@ -2716,8 +2718,8 @@ part of the request or NULL otherwise.</p>
 <p><strong>Description</strong></p>
 <p>If hdl == NULL then they will all return -EINVAL.</p>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_subdev_subscribe_event">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_subdev_subscribe_event</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-subdev.html#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event_subscription</span> <span class="pre">*</span><em><span class="pre">sub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_subdev_subscribe_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_subdev_subscribe_event">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_subdev_subscribe_event</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-subdev.html#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event_subscription</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sub</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_subdev_subscribe_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Helper function to implement as a <a class="reference internal" href="v4l2-subdev.html#c.v4l2_subdev_core_ops" title="v4l2_subdev_core_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">v4l2_subdev_core_ops</span></code></a> subscribe_event function that just subscribes control events.</p>
 </dd></dl>
 
@@ -2731,8 +2733,8 @@ part of the request or NULL otherwise.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_subdev_log_status">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_subdev_log_status</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-subdev.html#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_subdev_log_status" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_subdev_log_status">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_subdev_log_status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-subdev.html#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_subdev_log_status" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Log all controls owned by subdev’s control handler.</p>
 </dd></dl>
 
@@ -2742,8 +2744,8 @@ part of the request or NULL otherwise.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_ctrl_new_fwnode_properties">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_ctrl_new_fwnode_properties</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="pre">v4l2_ctrl_handler</span></a> <span class="pre">*</span><em><span class="pre">hdl</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="pre">v4l2_ctrl_ops</span></a> <span class="pre">*</span><em><span class="pre">ctrl_ops</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fwnode.html#c.v4l2_fwnode_device_properties" title="v4l2_fwnode_device_properties"><span class="pre">v4l2_fwnode_device_properties</span></a> <span class="pre">*</span><em><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_fwnode_properties" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_ctrl_new_fwnode_properties">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_ctrl_new_fwnode_properties</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_handler" title="v4l2_ctrl_handler"><span class="n"><span class="pre">v4l2_ctrl_handler</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdl</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_ctrl_ops" title="v4l2_ctrl_ops"><span class="n"><span class="pre">v4l2_ctrl_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctrl_ops</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fwnode.html#c.v4l2_fwnode_device_properties" title="v4l2_fwnode_device_properties"><span class="n"><span class="pre">v4l2_fwnode_device_properties</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_ctrl_new_fwnode_properties" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Register controls for the device properties</p>
 </dd></dl>
 
@@ -2768,8 +2770,8 @@ not overwritten. Callers should register the controls they want to handle
 themselves before calling this function.</p>
 <p><strong>Return</strong></p>
 <p>0 on success, a negative error code on failure.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

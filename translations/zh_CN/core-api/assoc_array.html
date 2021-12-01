@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>通用关联数组的实现 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -292,9 +294,9 @@
 <dt class="field-odd">校译</dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
-<section id="cn-core-api-assoc-array">
+<div class="section" id="cn-core-api-assoc-array">
 <span id="id1"></span><h1>通用关联数组的实现<a class="headerlink" href="#cn-core-api-assoc-array" title="Permalink to this headline">¶</a></h1>
-<section id="id2">
+<div class="section" id="id2">
 <h2>简介<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>这个关联数组的实现是一个具有以下属性的对象容器:</p>
 <ol class="arabic">
@@ -323,8 +325,8 @@
 引，其方式与基数树相同。为了提高内存效率，可以放置快捷键，以跳过本来是一系列单占节点的地
 方。此外，节点将叶子对象指针打包到节点的空闲空间中，而不是做一个额外的分支，直到有对象
 需要被添加到一个完整的节点中。</p>
-</section>
-<section id="api">
+</div>
+<div class="section" id="api">
 <h2>公用API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p>公用API可以在 <code class="docutils literal notranslate"><span class="pre">&lt;linux/assoc_array.h&gt;</span></code> 中找到。关联数组的根是以下结构:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct assoc_array {
@@ -336,7 +338,7 @@
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./script/config -e ASSOCIATIVE_ARRAY
 </pre></div>
 </div>
-<section id="id3">
+<div class="section" id="id3">
 <h3>编辑脚本<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>插入和删除功能会产生一个“编辑脚本”，以后可以应用这个脚本来实现更改，而不会造成 <code class="docutils literal notranslate"><span class="pre">ENOMEM</span></code>
 风险。这保留了将被安装在内部树中的预分配的元数据块，并跟踪应用脚本时将从树中删除的元数
@@ -367,8 +369,8 @@
 <p>这将立即释放编辑脚本和所有预分配的内存。如果这是为了插入，新的对象不会被这个函数释放，
 而是必须由调用者释放。</p>
 <p>这些函数保证不会失败。</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3>操作表<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>各种功能采用了一个操作表:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct assoc_array_ops {
@@ -420,8 +422,8 @@
 </ol>
 <p>释放指定的对象。注意，这可能是在调用 <code class="docutils literal notranslate"><span class="pre">assoc_array_apply_edit()</span></code> 后的一个RCU宽限期内
 调用的，所以在模块卸载时可能需要 <code class="docutils literal notranslate"><span class="pre">synchronize_rcu()</span></code> 。</p>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h3>操控函数<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>有一些函数用于操控关联数组:</p>
 <ol class="arabic">
@@ -507,8 +509,8 @@ true，该对象被保留。如果它返回 <code class="docutils literal notran
 <p>如果成功，该函数将返回 <code class="docutils literal notranslate"><span class="pre">0</span></code> ，如果没有足够的内存，则返回 <code class="docutils literal notranslate"><span class="pre">-ENOMEM</span></code> 。</p>
 <p>在这个函数执行过程中，其他线程有可能在RCU读锁下迭代或搜索阵列。调用者应该专门针对数组的其他
 修改者进行锁定。</p>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h3>访问函数<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>有两个函数用于访问一个关联数组:</p>
 <ol class="arabic">
@@ -538,8 +540,8 @@ true，该对象被保留。如果它返回 <code class="docutils literal notran
 <p>这将直接穿过数组的内部树，到达索引键所指定的对象。</p>
 <p>这个函数可以在修改数组的同时用在数组上，前提是RCU读锁被持有。</p>
 <p>如果找到对象，该函数将返回对象（并将 <code class="docutils literal notranslate"><span class="pre">*_type</span></code> 设置为对象的类型），如果没有找到对象，将返回 <code class="docutils literal notranslate"><span class="pre">NULL</span></code> 。</p>
-</section>
-<section id="id7">
+</div>
+<div class="section" id="id7">
 <h3>索引键形式<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>索引键可以是任何形式的，但是由于算法没有被告知键有多长，所以强烈建议在任何由于长度而产生的变化
 对比较产生影响之前，索引键应该很早就包括其长度。</p>
@@ -549,9 +551,9 @@ true，该对象被保留。如果它返回 <code class="docutils literal notran
 <p>分散性差并不是一个太大的问题，因为有快捷键，节点可以包含叶子和元数据指针的混合物。</p>
 <p>索引键是以机器字的块状来读取的。每个块被细分为每层一个nibble（4比特），所以在32位CPU上这适合8层，
 在64位CPU上适合16层。除非散布情况真的很差，否则不太可能有超过一个字的任何特定索引键需要被使用。</p>
-</section>
-</section>
-<section id="id8">
+</div>
+</div>
+<div class="section" id="id8">
 <h2>内部工作机制<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
 <p>关联数组数据结构有一个内部树。这个树由两种类型的元数据块构成：节点和快捷键。</p>
 <p>一个节点是一个槽的数组。每个槽可以包含以下四种东西之一:</p>
@@ -561,7 +563,7 @@ true，该对象被保留。如果它返回 <code class="docutils literal notran
 <li><p>一个指向下一级节点的指针。</p></li>
 <li><p>一个指向快捷键的指针。</p></li>
 </ul>
-<section id="id9">
+<div class="section" id="id9">
 <h3>基本的内部树形布局<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <p>暂时不考虑快捷键，节点形成一个多级树。索引键空间被树上的节点严格细分，节点出现在固定的层次上。例如:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Level: 0               1               2               3
@@ -645,15 +647,15 @@ any     LEAF            f3842239082
 any LEAF            1458952489
 </pre></div>
 </div>
-</section>
-<section id="id10">
+</div>
+<div class="section" id="id10">
 <h3>快捷键<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>快捷键是跳过一块键空间的元数据记录。快捷键是一系列通过层次上升的单占节点的替代物。快捷键的存在是
 为了节省内存和加快遍历速度。</p>
 <p>树的根部有可能是一个快捷键——比如说，树至少包含17个节点，都有键前缀 <code class="docutils literal notranslate"><span class="pre">1111</span></code> 。插入算法将插入一个快捷键，
 以单次跳过 <code class="docutils literal notranslate"><span class="pre">1111</span></code> 的键位，并到达第四层，在这里，这些键位实际上变得不同。</p>
-</section>
-<section id="id11">
+</div>
+<div class="section" id="id11">
 <h3>拆分和合并节点<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <p>每个节点的最大容量为16个叶子和元数据指针。如果插入算法发现它正试图将一个第17个对象插入到一个节点中，
 该节点将被拆分，使得至少两个在该层有一个共同的关键段的叶子最终在一个单独的节点中，该共同的关键段的根
@@ -661,14 +663,14 @@ any LEAF            1458952489
 <p>如果一个完整的节点中的叶子和被插入的叶子足够相似，那么就会在树中插入一个快捷键。</p>
 <p>当根植于某个节点的子树中的对象数量下降到16个或更少时，那么该子树将被合并成一个单独的节点——如果可能的
 话，这将向根部扩散。</p>
-</section>
-<section id="id12">
+</div>
+<div class="section" id="id12">
 <h3>非递归式迭代<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <p>每个节点和快捷键都包含一个指向其父节点的后置指针，以及该父节点中指向它的槽数。非递归迭代使用这些来
 通过树的根部进行，前往父节点，槽N+1，以确保在没有堆栈的情况下取得进展。</p>
 <p>然而，反向指针使得同时改变和迭代变得很棘手。</p>
-</section>
-<section id="id13">
+</div>
+<div class="section" id="id13">
 <h3>同时改变和迭代<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <p>有一些情况需要考虑:</p>
 <ol class="arabic">
@@ -699,9 +701,9 @@ any LEAF            1458952489
 </div>
 <p>过时的块和叶子在RCU宽限期过后会被释放，所以只要任何进行遍历或迭代的人持有RCU读锁，旧的上层建筑就不
 应该在他们身上消失。</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

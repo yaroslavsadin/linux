@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Devlink Port &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -373,7 +375,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="devlink-port">
+  <div class="section" id="devlink-port">
 <span id="id1"></span><h1>Devlink Port<a class="headerlink" href="#devlink-port" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">devlink-port</span></code> is a port that exists on the device. It has a logically
 separate ingress/egress point of the device. A devlink port can be any one
@@ -444,7 +446,7 @@ type automatically.</p></td>
 </tr>
 </tbody>
 </table>
-<section id="pci-controllers">
+<div class="section" id="pci-controllers">
 <h2>PCI controllers<a class="headerlink" href="#pci-controllers" title="Permalink to this headline">¶</a></h2>
 <p>In most cases a PCI device has only one controller. A controller consists of
 potentially multiple physical, virtual functions and subfunctions. A function
@@ -491,7 +493,7 @@ An eswitch is on the PCI device which supports ports of multiple controllers.</p
 doesn’t have the eswitch. Local controller (identified by controller number = 0)
 has the eswitch. The Devlink instance on the local controller has eswitch
 devlink ports for both the controllers.</p>
-<section id="function-configuration">
+<div class="section" id="function-configuration">
 <h3>Function configuration<a class="headerlink" href="#function-configuration" title="Permalink to this headline">¶</a></h3>
 <p>A user can configure the function attribute before enumerating the PCI
 function. Usually it means, user should configure function attribute
@@ -503,8 +505,8 @@ configure port function attribute before activating the port function.</p>
 <p>A user may set the hardware address of the function using
 ‘devlink port function set hw_addr’ command. For Ethernet port function
 this means a MAC address.</p>
-</section>
-<section id="subfunction">
+</div>
+<div class="section" id="subfunction">
 <h3>Subfunction<a class="headerlink" href="#subfunction" title="Permalink to this headline">¶</a></h3>
 <p>Subfunction is a lightweight function that has a parent PCI function on which
 it is deployed. Subfunction is created and deployed in unit of 1. Unlike
@@ -516,9 +518,9 @@ A subfunction communicates with the hardware through the parent PCI function.</p
 (3) deploy - deploy the subfunction;</p>
 <p>Subfunction management is done using devlink port user interface.
 User performs setup on the subfunction management device.</p>
-</section>
-</section>
-<section id="create">
+</div>
+</div>
+<div class="section" id="create">
 <h2>(1) Create<a class="headerlink" href="#create" title="Permalink to this headline">¶</a></h2>
 <p>A subfunction is created using a devlink port interface. A user adds the
 subfunction by adding a devlink port of subfunction flavour. The devlink
@@ -526,8 +528,8 @@ kernel code calls down to subfunction management driver (devlink ops) and asks
 it to create a subfunction devlink port. Driver then instantiates the
 subfunction port and any associated objects such as health reporters and
 representor netdevice.</p>
-</section>
-<section id="configure">
+</div>
+<div class="section" id="configure">
 <h2>(2) Configure<a class="headerlink" href="#configure" title="Permalink to this headline">¶</a></h2>
 <p>A subfunction devlink port is created but it is not active yet. That means the
 entities are created on devlink side, the e-switch port representor is created,
@@ -535,15 +537,15 @@ but the subfunction device itself is not created. A user might use e-switch port
 representor to do settings, putting it into bridge, adding TC rules, etc. A user
 might as well configure the hardware address (such as MAC address) of the
 subfunction while subfunction is inactive.</p>
-</section>
-<section id="deploy">
+</div>
+<div class="section" id="deploy">
 <h2>(3) Deploy<a class="headerlink" href="#deploy" title="Permalink to this headline">¶</a></h2>
 <p>Once a subfunction is configured, user must activate it to use it. Upon
 activation, subfunction management driver asks the subfunction management
 device to instantiate the subfunction device on particular PCI function.
 A subfunction device is created on the <a class="reference internal" href="../../driver-api/auxiliary_bus.html#auxiliary-bus"><span class="std std-ref"><a class="reference internal" href="../../driver-api/auxiliary_bus.html"><span class="doc">Auxiliary Bus</span></a></span></a>.
 At this point a matching subfunction driver binds to the subfunction’s auxiliary device.</p>
-<section id="rate-object-management">
+<div class="section" id="rate-object-management">
 <h3>Rate object management<a class="headerlink" href="#rate-object-management" title="Permalink to this headline">¶</a></h3>
 <p>Devlink provides API to manage tx rates of single devlink port or a group.
 This is done through rate objects, which can be one of the two types:</p>
@@ -573,8 +575,8 @@ to all node children limits. <code class="docutils literal notranslate"><span cl
 </dl>
 <p>Driver implementations are allowed to support both or either rate object types
 and setting methods of their parameters.</p>
-</section>
-<section id="terms-and-definitions">
+</div>
+<div class="section" id="terms-and-definitions">
 <h3>Terms and Definitions<a class="headerlink" href="#terms-and-definitions" title="Permalink to this headline">¶</a></h3>
 <table class="colwidths-given docutils align-default" id="id4">
 <caption><span class="caption-text">Terms and Definitions</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
@@ -622,9 +624,9 @@ host drivers are different.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

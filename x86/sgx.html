@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>27. Software Guard eXtensions (SGX) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -301,9 +303,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="software-guard-extensions-sgx">
+  <div class="section" id="software-guard-extensions-sgx">
 <h1><span class="section-number">27. </span>Software Guard eXtensions (SGX)<a class="headerlink" href="#software-guard-extensions-sgx" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2><span class="section-number">27.1. </span>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Software Guard eXtensions (SGX) hardware enables for user space applications
 to set aside private memory regions of code and data:</p>
@@ -327,8 +329,8 @@ from LLC.</p>
 appears to be unsupported on a system which has hardware support, ensure
 support is enabled in the BIOS.  If a BIOS presents a choice between “Enabled”
 and “Software Enabled” modes for SGX, choose “Enabled”.</p>
-</section>
-<section id="enclave-page-cache">
+</div>
+<div class="section" id="enclave-page-cache">
 <h2><span class="section-number">27.2. </span>Enclave Page Cache<a class="headerlink" href="#enclave-page-cache" title="Permalink to this headline">¶</a></h2>
 <p>SGX utilizes an <em>Enclave Page Cache (EPC)</em> to store pages that are associated
 with an enclave. It is contained in a BIOS-reserved region of physical memory.
@@ -338,7 +340,7 @@ the enclave during enclave construction with special, limited SGX instructions.<
 However, a CPU executing inside an enclave may access normal memory outside the
 enclave.</p>
 <p>The kernel manages enclave memory similar to how it treats device memory.</p>
-<section id="enclave-page-types">
+<div class="section" id="enclave-page-types">
 <h3><span class="section-number">27.2.1. </span>Enclave Page Types<a class="headerlink" href="#enclave-page-types" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt><strong>SGX Enclave Control Structure (SECS)</strong></dt><dd><p>Enclave’s address range, attributes and other global data are defined
@@ -353,8 +355,8 @@ track the execution state of an enclave thread.</p>
 number for a page evicted from the EPC.</p>
 </dd>
 </dl>
-</section>
-<section id="enclave-page-cache-map">
+</div>
+<div class="section" id="enclave-page-cache-map">
 <h3><span class="section-number">27.2.2. </span>Enclave Page Cache Map<a class="headerlink" href="#enclave-page-cache-map" title="Permalink to this headline">¶</a></h3>
 <p>The processor tracks EPC pages in a hardware metadata structure called the
 <em>Enclave Page Cache Map (EPCM)</em>.  The EPCM contains an entry for each EPC page
@@ -368,11 +370,11 @@ top of normal x86 page permissions.</p>
 invalidate all EPCM entries at will.  This requires that software be prepared to
 handle an EPCM fault at any time.  In practice, this can happen on events like
 power transitions when the ephemeral key that encrypts enclave memory is lost.</p>
-</section>
-</section>
-<section id="application-interface">
+</div>
+</div>
+<div class="section" id="application-interface">
 <h2><span class="section-number">27.3. </span>Application interface<a class="headerlink" href="#application-interface" title="Permalink to this headline">¶</a></h2>
-<section id="enclave-build-functions">
+<div class="section" id="enclave-build-functions">
 <h3><span class="section-number">27.3.1. </span>Enclave build functions<a class="headerlink" href="#enclave-build-functions" title="Permalink to this headline">¶</a></h3>
 <p>In addition to the traditional compiler and linker build process, SGX has a
 separate enclave “build” process.  Enclaves must be built before they can be
@@ -381,8 +383,8 @@ executed (entered). The first step in building an enclave is opening the
 access, special privileged instructions are Then used to copy data into enclave
 pages and establish enclave page permissions.</p>
 <dl class="c function">
-<dt id="c.sgx_ioc_enclave_create">
-<span class="pre">long</span> <code class="sig-name descname"><span class="pre">sgx_ioc_enclave_create</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">sgx_encl</span> <span class="pre">*</span><em><span class="pre">encl</span></em>, <span class="pre">void</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.sgx_ioc_enclave_create" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sgx_ioc_enclave_create">
+<span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sgx_ioc_enclave_create</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sgx_encl</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">encl</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sgx_ioc_enclave_create" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>handler for <code class="docutils literal notranslate"><span class="pre">SGX_IOC_ENCLAVE_CREATE</span></code></p>
 </dd></dl>
 
@@ -402,8 +404,8 @@ pages and establish enclave page permissions.</p>
 <li><p>-errno:    POSIX error.</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.sgx_ioc_enclave_add_pages">
-<span class="pre">long</span> <code class="sig-name descname"><span class="pre">sgx_ioc_enclave_add_pages</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">sgx_encl</span> <span class="pre">*</span><em><span class="pre">encl</span></em>, <span class="pre">void</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.sgx_ioc_enclave_add_pages" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sgx_ioc_enclave_add_pages">
+<span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sgx_ioc_enclave_add_pages</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sgx_encl</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">encl</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sgx_ioc_enclave_add_pages" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The handler for <code class="docutils literal notranslate"><span class="pre">SGX_IOC_ENCLAVE_ADD_PAGES</span></code></p>
 </dd></dl>
 
@@ -451,8 +453,8 @@ been invalidated. This will cause EADD and EEXTEND to fail.</p></li>
 <li><p>-errno:    POSIX error.</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.sgx_ioc_enclave_init">
-<span class="pre">long</span> <code class="sig-name descname"><span class="pre">sgx_ioc_enclave_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">sgx_encl</span> <span class="pre">*</span><em><span class="pre">encl</span></em>, <span class="pre">void</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.sgx_ioc_enclave_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sgx_ioc_enclave_init">
+<span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sgx_ioc_enclave_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sgx_encl</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">encl</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sgx_ioc_enclave_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>handler for <code class="docutils literal notranslate"><span class="pre">SGX_IOC_ENCLAVE_INIT</span></code></p>
 </dd></dl>
 
@@ -475,8 +477,8 @@ the enclave’s MRSIGNER, which is caculated from the provided sigstruct.</p>
 <li><p>-errno:    POSIX error.</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.sgx_ioc_enclave_provision">
-<span class="pre">long</span> <code class="sig-name descname"><span class="pre">sgx_ioc_enclave_provision</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">sgx_encl</span> <span class="pre">*</span><em><span class="pre">encl</span></em>, <span class="pre">void</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.sgx_ioc_enclave_provision" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.sgx_ioc_enclave_provision">
+<span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sgx_ioc_enclave_provision</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">sgx_encl</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">encl</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.sgx_ioc_enclave_provision" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>handler for <code class="docutils literal notranslate"><span class="pre">SGX_IOC_ENCLAVE_PROVISION</span></code></p>
 </dd></dl>
 
@@ -495,8 +497,8 @@ the enclave’s MRSIGNER, which is caculated from the provided sigstruct.</p>
 <li><p>0:         Success.</p></li>
 <li><p>-errno:    Otherwise.</p></li>
 </ul>
-</section>
-<section id="enclave-vdso">
+</div>
+<div class="section" id="enclave-vdso">
 <h3><span class="section-number">27.3.2. </span>Enclave vDSO<a class="headerlink" href="#enclave-vdso" title="Permalink to this headline">¶</a></h3>
 <p>Entering an enclave can only be done through SGX-specific EENTER and ERESUME
 functions, and is a non-trivial process.  Because of the complexity of
@@ -513,8 +515,8 @@ ERESUME.  The vDSO function intercepts exceptions that would otherwise generate
 a signal and return the fault information directly to its caller.  This avoids
 the need to juggle signal handlers.</p>
 <dl class="c macro">
-<dt id="c.vdso_sgx_enter_enclave_t">
-<code class="sig-name descname"><span class="pre">vdso_sgx_enter_enclave_t</span></code><a class="headerlink" href="#c.vdso_sgx_enter_enclave_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.vdso_sgx_enter_enclave_t">
+<span class="sig-name descname"><span class="n"><span class="pre">vdso_sgx_enter_enclave_t</span></span></span><a class="headerlink" href="#c.vdso_sgx_enter_enclave_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><strong>Typedef</strong>: Prototype for __vdso_sgx_enter_enclave(), a vDSO function to enter an SGX enclave.</p>
 </dd></dl>
 
@@ -567,12 +569,12 @@ recorded in <strong>run.exception</strong>, the optional sgx_enclave_exception s
 <li><p>0:         ENCLU function was successfully executed.</p></li>
 <li><p>-EINVAL:   Invalid ENCL number (neither EENTER nor ERESUME).</p></li>
 </ul>
-</section>
-</section>
-<section id="ksgxd">
+</div>
+</div>
+<div class="section" id="ksgxd">
 <h2><span class="section-number">27.4. </span>ksgxd<a class="headerlink" href="#ksgxd" title="Permalink to this headline">¶</a></h2>
 <p>SGX support includes a kernel thread called <em>ksgxwapd</em>.</p>
-<section id="epc-sanitization">
+<div class="section" id="epc-sanitization">
 <h3><span class="section-number">27.4.1. </span>EPC sanitization<a class="headerlink" href="#epc-sanitization" title="Permalink to this headline">¶</a></h3>
 <p>ksgxd is started when SGX initializes.  Enclave memory is typically ready
 For use when the processor powers on or resets.  However, if SGX has been in
@@ -583,15 +585,15 @@ reinitializes all enclave pages so that they can be allocated and re-used.</p>
 EREMOVE function to each physical page. Some enclave pages like SECS pages have
 hardware dependencies on other pages which prevents EREMOVE from functioning.
 Executing two EREMOVE passes removes the dependencies.</p>
-</section>
-<section id="page-reclaimer">
+</div>
+<div class="section" id="page-reclaimer">
 <h3><span class="section-number">27.4.2. </span>Page reclaimer<a class="headerlink" href="#page-reclaimer" title="Permalink to this headline">¶</a></h3>
 <p>Similar to the core kswapd, ksgxd, is responsible for managing the
 overcommitment of enclave memory.  If the system runs out of enclave memory,
 <em>ksgxwapd</em> “swaps” enclave memory to normal memory.</p>
-</section>
-</section>
-<section id="launch-control">
+</div>
+</div>
+<div class="section" id="launch-control">
 <h2><span class="section-number">27.5. </span>Launch Control<a class="headerlink" href="#launch-control" title="Permalink to this headline">¶</a></h2>
 <p>SGX provides a launch control mechanism. After all enclave pages have been
 copied, kernel executes EINIT function, which initializes the enclave. Only after
@@ -604,8 +606,8 @@ SHA256 of a public key.</p>
 Linux supports only writable configuration in order to give full control to the
 kernel on launch control policy. Before calling EINIT function, the driver sets
 the MSRs to match the enclave’s signing key.</p>
-</section>
-<section id="encryption-engines">
+</div>
+<div class="section" id="encryption-engines">
 <h2><span class="section-number">27.6. </span>Encryption engines<a class="headerlink" href="#encryption-engines" title="Permalink to this headline">¶</a></h2>
 <p>In order to conceal the enclave data while it is out of the CPU package, the
 memory controller has an encryption engine to transparently encrypt and decrypt
@@ -623,10 +625,10 @@ additional changes to prevent cipher text from being returned and SW memory
 aliases from being Created.</p>
 <p>DMA to enclave memory is blocked by range registers on both MEE and TME systems
 (SDM section 41.10).</p>
-</section>
-<section id="usage-models">
+</div>
+<div class="section" id="usage-models">
 <h2><span class="section-number">27.7. </span>Usage Models<a class="headerlink" href="#usage-models" title="Permalink to this headline">¶</a></h2>
-<section id="shared-library">
+<div class="section" id="shared-library">
 <h3><span class="section-number">27.7.1. </span>Shared Library<a class="headerlink" href="#shared-library" title="Permalink to this headline">¶</a></h3>
 <p>Sensitive data and the code that acts on it is partitioned from the application
 into a separate library. The library is then linked as a DSO which can be loaded
@@ -634,18 +636,18 @@ into an enclave. The application can then make individual function calls into
 the enclave through special SGX instructions. A run-time within the enclave is
 configured to marshal function parameters into and out of the enclave and to
 call the correct library function.</p>
-</section>
-<section id="application-container">
+</div>
+<div class="section" id="application-container">
 <h3><span class="section-number">27.7.2. </span>Application Container<a class="headerlink" href="#application-container" title="Permalink to this headline">¶</a></h3>
 <p>An application may be loaded into a container enclave which is specially
 configured with a library OS and run-time which permits the application to run.
 The enclave run-time and library OS work together to execute the application
 when a thread enters the enclave.</p>
-</section>
-</section>
-<section id="impact-of-potential-kernel-sgx-bugs">
+</div>
+</div>
+<div class="section" id="impact-of-potential-kernel-sgx-bugs">
 <h2><span class="section-number">27.8. </span>Impact of Potential Kernel SGX Bugs<a class="headerlink" href="#impact-of-potential-kernel-sgx-bugs" title="Permalink to this headline">¶</a></h2>
-<section id="epc-leaks">
+<div class="section" id="epc-leaks">
 <h3><span class="section-number">27.8.1. </span>EPC leaks<a class="headerlink" href="#epc-leaks" title="Permalink to this headline">¶</a></h3>
 <p>When EPC page leaks happen, a WARNING like this is shown in dmesg:</p>
 <p>“EREMOVE returned … and an EPC page was leaked.  SGX may become unusable…”</p>
@@ -661,9 +663,9 @@ is unlikely to be impacted and should continue to work.</p>
 SGX workloads, (or just any new workloads), and migrate all valuable
 workloads. Although a machine reboot can recover all EPC memory, the bug
 should be reported to Linux developers.</p>
-</section>
-</section>
-<section id="virtual-epc">
+</div>
+</div>
+<div class="section" id="virtual-epc">
 <h2><span class="section-number">27.9. </span>Virtual EPC<a class="headerlink" href="#virtual-epc" title="Permalink to this headline">¶</a></h2>
 <p>The implementation has also a virtual EPC driver to support SGX enclaves
 in guests. Unlike the SGX driver, an EPC page allocated by the virtual
@@ -707,8 +709,8 @@ first call.  It indicates a bug in the kernel or the userspace client
 if any of the second round of <code class="docutils literal notranslate"><span class="pre">SGX_IOC_VEPC_REMOVE_ALL</span></code> calls has
 a return code other than 0.</p></li>
 </ol>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

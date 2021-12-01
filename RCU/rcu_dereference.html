@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>PROPER CARE AND FEEDING OF RETURN VALUES FROM rcu_dereference() &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -277,11 +279,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="proper-care-and-feeding-of-return-values-from-rcu-dereference">
+  <div class="section" id="proper-care-and-feeding-of-return-values-from-rcu-dereference">
 <span id="rcu-dereference-doc"></span><h1>PROPER CARE AND FEEDING OF RETURN VALUES FROM rcu_dereference()<a class="headerlink" href="#proper-care-and-feeding-of-return-values-from-rcu-dereference" title="Permalink to this headline">¶</a></h1>
 <p>Most of the time, you can use values from <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_dereference" title="rcu_dereference"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_dereference()</span></code></a> or one of
 the similar primitives without worries.  Dereferencing (prefix “*”),
-field selection (“-&gt;”), assignment (“=”), address-of (”&amp;”), addition and
+field selection (“-&gt;”), assignment (“=”), address-of (“&amp;”), addition and
 subtraction of constants, and casts all work quite naturally and safely.</p>
 <p>It is nevertheless possible to get into trouble with other operations.
 Follow these rules to keep your RCU code working properly:</p>
@@ -456,7 +458,7 @@ ordered systems (such as ARM or Power).  Choose your compiler
 command-line options wisely!</p>
 </li>
 </ul>
-<section id="example-of-amplified-rcu-usage-bug">
+<div class="section" id="example-of-amplified-rcu-usage-bug">
 <h2>EXAMPLE OF AMPLIFIED RCU-USAGE BUG<a class="headerlink" href="#example-of-amplified-rcu-usage-bug" title="Permalink to this headline">¶</a></h2>
 <p>Because updaters can run concurrently with RCU readers, RCU readers can
 see stale and/or inconsistent values.  If RCU readers need fresh or
@@ -563,8 +565,8 @@ void reader(void)
 </pre></div>
 </div>
 <p>As always, use the right tool for the job!</p>
-</section>
-<section id="example-where-the-compiler-knows-too-much">
+</div>
+<div class="section" id="example-where-the-compiler-knows-too-much">
 <h2>EXAMPLE WHERE THE COMPILER KNOWS TOO MUCH<a class="headerlink" href="#example-where-the-compiler-knows-too-much" title="Permalink to this headline">¶</a></h2>
 <p>If a pointer obtained from <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_dereference" title="rcu_dereference"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_dereference()</span></code></a> compares not-equal to some
 other pointer, the compiler normally has no clue what the value of the
@@ -615,8 +617,8 @@ return values.  This can result in “p-&gt;b” returning pre-initialization
 garbage values.</p>
 <p>In short, <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_dereference" title="rcu_dereference"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_dereference()</span></code></a> is <em>not</em> optional when you are going to
 dereference the resulting pointer.</p>
-</section>
-<section id="which-member-of-the-rcu-dereference-family-should-you-use">
+</div>
+<div class="section" id="which-member-of-the-rcu-dereference-family-should-you-use">
 <h2>WHICH MEMBER OF THE rcu_dereference() FAMILY SHOULD YOU USE?<a class="headerlink" href="#which-member-of-the-rcu-dereference-family-should-you-use" title="Permalink to this headline">¶</a></h2>
 <p>First, please avoid using rcu_dereference_raw() and also please avoid
 using <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_dereference_check" title="rcu_dereference_check"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_dereference_check()</span></code></a> and <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_dereference_protected" title="rcu_dereference_protected"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_dereference_protected()</span></code></a> with a
@@ -671,8 +673,8 @@ Ditto for its synonym, rcu_dereference_check( … , 1), and
 its close relative, rcu_dereference_protected(… , 1).</p>
 </li>
 </ol>
-</section>
-<section id="sparse-checking-of-rcu-protected-pointers">
+</div>
+<div class="section" id="sparse-checking-of-rcu-protected-pointers">
 <h2>SPARSE CHECKING OF RCU-PROTECTED POINTERS<a class="headerlink" href="#sparse-checking-of-rcu-protected-pointers" title="Permalink to this headline">¶</a></h2>
 <p>The sparse static-analysis tool checks for direct access to RCU-protected
 pointers, which can result in “interesting” bugs due to compiler
@@ -715,8 +717,8 @@ follows:</p>
 </div>
 <p>Use of “__rcu” is opt-in.  If you choose not to use it, then you should
 ignore the sparse warnings.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>A description of what robust futexes are &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -264,14 +266,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="a-description-of-what-robust-futexes-are">
+  <div class="section" id="a-description-of-what-robust-futexes-are">
 <h1>A description of what robust futexes are<a class="headerlink" href="#a-description-of-what-robust-futexes-are" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Started by</dt>
 <dd class="field-odd"><p>Ingo Molnar &lt;<a class="reference external" href="mailto:mingo&#37;&#52;&#48;redhat&#46;com">mingo<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
 </dd>
 </dl>
-<section id="background">
+<div class="section" id="background">
 <h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
 <p>what are robust futexes? To answer that, we first need to understand
 what futexes are: normal futexes are special types of locks that in the
@@ -340,8 +342,8 @@ into this process’s address space).</p>
 normal kernels can turn it off, but worse than that: the overhead makes
 robust futexes impractical for any type of generic Linux distribution.</p>
 <p>So something had to be done.</p>
-</section>
-<section id="new-approach-to-robust-futexes">
+</div>
+<div class="section" id="new-approach-to-robust-futexes">
 <h2>New approach to robust futexes<a class="headerlink" href="#new-approach-to-robust-futexes" title="Permalink to this headline">¶</a></h2>
 <p>At the heart of this new approach there is a per-thread private list of
 robust locks that userspace is holding (maintained by glibc) - which
@@ -392,8 +394,8 @@ mutexes are just as fast.</p></li>
 interactions with the VM.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="performance">
+</div>
+<div class="section" id="performance">
 <h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
 <p>I have benchmarked the time needed for the kernel to process a list of 1
 million (!) held locks, using the new method [on a 2GHz CPU]:</p>
@@ -410,8 +412,8 @@ userspace had to do.</p>
 <p>(1 million held locks are unheard of - we expect at most a handful of
 locks to be held at a time. Nevertheless it’s nice to know that this
 approach scales nicely.)</p>
-</section>
-<section id="implementation-details">
+</div>
+<div class="section" id="implementation-details">
 <h2>Implementation details<a class="headerlink" href="#implementation-details" title="Permalink to this headline">¶</a></h2>
 <p>The patch adds two new syscalls: one to register the userspace list, and
 one to query the registered list pointer:</p>
@@ -446,8 +448,8 @@ the futex field atomically. Waiters set the FUTEX_WAITERS bit:</p>
 </pre></div>
 </div>
 <p>and the remaining bits are for the TID.</p>
-</section>
-<section id="testing-architecture-support">
+</div>
+<div class="section" id="testing-architecture-support">
 <h2>Testing, architecture support<a class="headerlink" href="#testing-architecture-support" title="Permalink to this headline">¶</a></h2>
 <p>I’ve tested the new syscalls on x86 and x86_64, and have made sure the
 parsing of the userspace list is robust [ ;-) ] even if the list is
@@ -459,8 +461,8 @@ robust-mutex testcases.</p>
 the new syscalls yet.</p>
 <p>Architectures need to implement the new futex_atomic_cmpxchg_inatomic()
 inline function before writing up the syscalls.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

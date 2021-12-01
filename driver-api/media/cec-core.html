@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>6. CEC Kernel Support &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -359,7 +361,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="cec-kernel-support">
+  <div class="section" id="cec-kernel-support">
 <h1><span class="section-number">6. </span>CEC Kernel Support<a class="headerlink" href="#cec-kernel-support" title="Permalink to this headline">¶</a></h1>
 <p>The CEC framework provides a unified kernel interface for use with HDMI CEC
 hardware. It is designed to handle a multiple types of hardware (receivers,
@@ -367,7 +369,7 @@ transmitters, USB dongles). The framework also gives the option to decide
 what to do in the kernel driver and what should be handled by userspace
 applications. In addition it integrates the remote control passthrough
 feature into the kernel’s remote control framework.</p>
-<section id="the-cec-protocol">
+<div class="section" id="the-cec-protocol">
 <h2><span class="section-number">6.1. </span>The CEC Protocol<a class="headerlink" href="#the-cec-protocol" title="Permalink to this headline">¶</a></h2>
 <p>The CEC protocol enables consumer electronic devices to communicate with each
 other through the HDMI connection. The protocol uses logical addresses in the
@@ -380,19 +382,19 @@ It is documented in the HDMI 1.4 specification with the new 2.0 bits documented
 in the HDMI 2.0 specification. But for most of the features the freely available
 HDMI 1.3a specification is sufficient:</p>
 <p><a class="reference external" href="https://www.hdmi.org/spec/index">https://www.hdmi.org/spec/index</a></p>
-</section>
-<section id="cec-adapter-interface">
+</div>
+<div class="section" id="cec-adapter-interface">
 <h2><span class="section-number">6.2. </span>CEC Adapter Interface<a class="headerlink" href="#cec-adapter-interface" title="Permalink to this headline">¶</a></h2>
 <p>The struct cec_adapter represents the CEC adapter hardware. It is created by
 calling <a class="reference internal" href="#c.cec_allocate_adapter" title="cec_allocate_adapter"><code class="xref c c-func docutils literal notranslate"><span class="pre">cec_allocate_adapter()</span></code></a> and deleted by calling <a class="reference internal" href="#c.cec_delete_adapter" title="cec_delete_adapter"><code class="xref c c-func docutils literal notranslate"><span class="pre">cec_delete_adapter()</span></code></a>:</p>
 <dl class="c function">
-<dt id="c.cec_allocate_adapter">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">cec_allocate_adapter</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.cec_adap_ops" title="cec_adap_ops"><span class="pre">cec_adap_ops</span></a> <span class="pre">*</span><em><span class="pre">ops</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">priv</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">u32</span> <em><span class="pre">caps</span></em>, <span class="pre">u8</span> <em><span class="pre">available_las</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.cec_allocate_adapter" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_allocate_adapter">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">cec_allocate_adapter</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.cec_adap_ops" title="cec_adap_ops"><span class="n"><span class="pre">cec_adap_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">priv</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">caps</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">available_las</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.cec_allocate_adapter" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt id="c.cec_delete_adapter">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_delete_adapter</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.cec_delete_adapter" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_delete_adapter">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_delete_adapter</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.cec_delete_adapter" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>To create an adapter you need to pass the following information:</p>
@@ -416,22 +418,22 @@ adapter can handle. Must be 1 &lt;= available_las &lt;= CEC_MAX_LOG_ADDRS.</p>
 </dl>
 <p>To obtain the priv pointer use this helper function:</p>
 <dl class="c function">
-<dt id="c.cec_get_drvdata">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">cec_get_drvdata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.cec_get_drvdata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_get_drvdata">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">cec_get_drvdata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.cec_get_drvdata" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>To register the /dev/cecX device node and the remote control device (if
 CEC_CAP_RC is set) you call:</p>
 <dl class="c function">
-<dt id="c.cec_register_adapter">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">cec_register_adapter</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">parent</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.cec_register_adapter" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_register_adapter">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_register_adapter</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">parent</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.cec_register_adapter" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>where parent is the parent device.</p>
 <p>To unregister the devices call:</p>
 <dl class="c function">
-<dt id="c.cec_unregister_adapter">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_unregister_adapter</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.cec_unregister_adapter" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_unregister_adapter">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_unregister_adapter</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.cec_unregister_adapter" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Note: if <a class="reference internal" href="#c.cec_register_adapter" title="cec_register_adapter"><code class="xref c c-func docutils literal notranslate"><span class="pre">cec_register_adapter()</span></code></a> fails, then call <a class="reference internal" href="#c.cec_delete_adapter" title="cec_delete_adapter"><code class="xref c c-func docutils literal notranslate"><span class="pre">cec_delete_adapter()</span></code></a> to
@@ -439,14 +441,14 @@ clean up. But if <a class="reference internal" href="#c.cec_register_adapter" ti
 <a class="reference internal" href="#c.cec_unregister_adapter" title="cec_unregister_adapter"><code class="xref c c-func docutils literal notranslate"><span class="pre">cec_unregister_adapter()</span></code></a> to clean up, never <a class="reference internal" href="#c.cec_delete_adapter" title="cec_delete_adapter"><code class="xref c c-func docutils literal notranslate"><span class="pre">cec_delete_adapter()</span></code></a>. The
 unregister function will delete the adapter automatically once the last user
 of that /dev/cecX device has closed its file handle.</p>
-</section>
-<section id="implementing-the-low-level-cec-adapter">
+</div>
+<div class="section" id="implementing-the-low-level-cec-adapter">
 <h2><span class="section-number">6.3. </span>Implementing the Low-Level CEC Adapter<a class="headerlink" href="#implementing-the-low-level-cec-adapter" title="Permalink to this headline">¶</a></h2>
 <p>The following low-level adapter operations have to be implemented in
 your driver:</p>
 <dl class="c struct">
-<dt id="c.cec_adap_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">cec_adap_ops</span></code><a class="headerlink" href="#c.cec_adap_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_adap_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_adap_ops</span></span></span><a class="headerlink" href="#c.cec_adap_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct cec_adap_ops
@@ -595,13 +597,13 @@ attempt. It will call cec_transmit_done() in turn, filling in 1 for the
 count argument corresponding to the status. Or all 0 if the status was OK.</p>
 <p>When a CEC message was received:</p>
 <dl class="c function">
-<dt id="c.cec_received_msg">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_received_msg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">cec_msg</span> <span class="pre">*</span><em><span class="pre">msg</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.cec_received_msg" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_received_msg">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_received_msg</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_msg</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">msg</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.cec_received_msg" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Speaks for itself.</p>
-</section>
-<section id="implementing-the-interrupt-handler">
+</div>
+<div class="section" id="implementing-the-interrupt-handler">
 <h2><span class="section-number">6.4. </span>Implementing the interrupt handler<a class="headerlink" href="#implementing-the-interrupt-handler" title="Permalink to this headline">¶</a></h2>
 <p>Typically the CEC hardware provides interrupts that signal when a transmit
 finished and whether it was successful or not, and it provides and interrupt
@@ -610,8 +612,8 @@ when a CEC message was received.</p>
 handling the receive interrupt. The framework expects to see the cec_transmit_done
 call before the cec_received_msg call, otherwise it can get confused if the
 received message was in reply to the transmitted message.</p>
-</section>
-<section id="optional-implementing-error-injection-support">
+</div>
+<div class="section" id="optional-implementing-error-injection-support">
 <h2><span class="section-number">6.5. </span>Optional: Implementing Error Injection Support<a class="headerlink" href="#optional-implementing-error-injection-support" title="Permalink to this headline">¶</a></h2>
 <p>If the CEC adapter supports Error Injection functionality, then that can
 be exposed through the Error Injection callbacks:</p>
@@ -661,8 +663,8 @@ are no embedded newlines) and it is 0-terminated. The callback is free to
 modify the contents of the buffer. It is only called for lines containing a
 command, so this callback is never called for empty lines or comment lines.</p>
 <p>Return true if the command was valid or false if there were syntax errors.</p>
-</section>
-<section id="implementing-the-high-level-cec-adapter">
+</div>
+<div class="section" id="implementing-the-high-level-cec-adapter">
 <h2><span class="section-number">6.6. </span>Implementing the High-Level CEC Adapter<a class="headerlink" href="#implementing-the-high-level-cec-adapter" title="Permalink to this headline">¶</a></h2>
 <p>The low-level operations drive the hardware, the high-level operations are
 CEC protocol driven. The following high-level callbacks are available:</p>
@@ -687,20 +689,20 @@ received CEC message:</p>
 callback. If it doesn’t want to handle this message, then it should return
 -ENOMSG, otherwise the CEC framework assumes it processed this message and
 it will not do anything with it.</p>
-</section>
-<section id="cec-framework-functions">
+</div>
+<div class="section" id="cec-framework-functions">
 <h2><span class="section-number">6.7. </span>CEC framework functions<a class="headerlink" href="#cec-framework-functions" title="Permalink to this headline">¶</a></h2>
 <p>CEC Adapter drivers can call the following CEC framework functions:</p>
 <dl class="c function">
-<dt id="c.cec_transmit_msg">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">cec_transmit_msg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">cec_msg</span> <span class="pre">*</span><em><span class="pre">msg</span></em>, <span class="pre">bool</span> <em><span class="pre">block</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.cec_transmit_msg" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_transmit_msg">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_transmit_msg</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_msg</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">msg</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">block</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.cec_transmit_msg" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Transmit a CEC message. If block is true, then wait until the message has been
 transmitted, otherwise just queue it and return.</p>
 <dl class="c function">
-<dt id="c.cec_s_phys_addr">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_s_phys_addr</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em>, <span class="pre">u16</span> <em><span class="pre">phys_addr</span></em>, <span class="pre">bool</span> <em><span class="pre">block</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.cec_s_phys_addr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_s_phys_addr">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_s_phys_addr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span>, <span class="n"><span class="pre">u16</span></span><span class="w"> </span><span class="n"><span class="pre">phys_addr</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">block</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.cec_s_phys_addr" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Change the physical address. This function will set adap-&gt;phys_addr and
@@ -714,16 +716,16 @@ then the CEC adapter will be disabled. If you change a valid physical address
 to another valid physical address, then this function will first set the
 address to CEC_PHYS_ADDR_INVALID before enabling the new physical address.</p>
 <dl class="c function">
-<dt id="c.cec_s_phys_addr_from_edid">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_s_phys_addr_from_edid</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.cec_s_phys_addr_from_edid" title="edid"><span class="pre">edid</span></a> <span class="pre">*</span><em><span class="pre">edid</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.cec_s_phys_addr_from_edid" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_s_phys_addr_from_edid">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_s_phys_addr_from_edid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.cec_s_phys_addr_from_edid" title="edid"><span class="n"><span class="pre">edid</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">edid</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.cec_s_phys_addr_from_edid" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>A helper function that extracts the physical address from the edid struct
 and calls <a class="reference internal" href="#c.cec_s_phys_addr" title="cec_s_phys_addr"><code class="xref c c-func docutils literal notranslate"><span class="pre">cec_s_phys_addr()</span></code></a> with that address, or CEC_PHYS_ADDR_INVALID
 if the EDID did not contain a physical address or edid was a NULL pointer.</p>
 <dl class="c function">
-<dt id="c.cec_s_log_addrs">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">cec_s_log_addrs</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">cec_log_addrs</span> <span class="pre">*</span><em><span class="pre">log_addrs</span></em>, <span class="pre">bool</span> <em><span class="pre">block</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.cec_s_log_addrs" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_s_log_addrs">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_s_log_addrs</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_log_addrs</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">log_addrs</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">block</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.cec_s_log_addrs" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Claim the CEC logical addresses. Should never be called if CEC_CAP_LOG_ADDRS
@@ -734,8 +736,8 @@ log_addrs-&gt;num_log_addrs set to 0. The block argument is ignored when
 unconfiguring. This function will just return if the physical address is
 invalid. Once the physical address becomes valid, then the framework will
 attempt to claim these logical addresses.</p>
-</section>
-<section id="cec-pin-framework">
+</div>
+<div class="section" id="cec-pin-framework">
 <h2><span class="section-number">6.8. </span>CEC Pin framework<a class="headerlink" href="#cec-pin-framework" title="Permalink to this headline">¶</a></h2>
 <p>Most CEC hardware operates on full CEC messages where the software provides
 the message and the hardware handles the low-level CEC protocol. But some
@@ -749,8 +751,8 @@ occur. In reality it appears to be fairly reliable.</p>
 a cheap CEC analyser, especially if interrupts can be used to detect
 CEC pin transitions from low to high or vice versa.</p>
 <dl class="c struct">
-<dt id="c.cec_pin_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">cec_pin_ops</span></code><a class="headerlink" href="#c.cec_pin_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_pin_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_pin_ops</span></span></span><a class="headerlink" href="#c.cec_pin_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>low-level CEC pin operations</p>
 </dd></dl>
 
@@ -802,8 +804,8 @@ to process CEC messages.</p>
 <p>These operations (except for the <strong>received</strong> op) are used by the
 cec pin framework to manipulate the CEC pin.</p>
 <dl class="c function">
-<dt id="c.cec_pin_changed">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_pin_changed</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em>, <span class="pre">bool</span> <em><span class="pre">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_pin_changed" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_pin_changed">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_pin_changed</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_pin_changed" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>update pin state from interrupt</p>
 </dd></dl>
 
@@ -818,8 +820,8 @@ cec pin framework to manipulate the CEC pin.</p>
 <p>If changes of the CEC voltage are detected via an interrupt, then
 cec_pin_changed is called from the interrupt with the new value.</p>
 <dl class="c function">
-<dt id="c.cec_pin_allocate_adapter">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">cec_pin_allocate_adapter</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.cec_pin_ops" title="cec_pin_ops"><span class="pre">cec_pin_ops</span></a> <span class="pre">*</span><em><span class="pre">pin_ops</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">priv</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">u32</span> <em><span class="pre">caps</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_pin_allocate_adapter" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_pin_allocate_adapter">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">cec_pin_allocate_adapter</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.cec_pin_ops" title="cec_pin_ops"><span class="n"><span class="pre">cec_pin_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pin_ops</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">priv</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">caps</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_pin_allocate_adapter" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate a pin-based cec adapter</p>
 </dd></dl>
 
@@ -840,8 +842,8 @@ CEC_CAP_MONITOR_ALL and CEC_CAP_MONITOR_PIN.</p>
 <p>Allocate a cec adapter using the cec pin framework.</p>
 <p><strong>Return</strong></p>
 <p>a pointer to the cec adapter or an error pointer</p>
-</section>
-<section id="cec-notifier-framework">
+</div>
+<div class="section" id="cec-notifier-framework">
 <h2><span class="section-number">6.9. </span>CEC Notifier framework<a class="headerlink" href="#cec-notifier-framework" title="Permalink to this headline">¶</a></h2>
 <p>Most drm HDMI implementations have an integrated CEC implementation and no
 notifier support is needed. But some have independent CEC implementations
@@ -850,8 +852,8 @@ completely separate chip that deals with the CEC pin. For those cases a
 drm driver can install a notifier and use the notifier to inform the
 CEC driver about changes in the physical address.</p>
 <dl class="c function">
-<dt id="c.cec_notifier_conn_register">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">cec_notifier</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">cec_notifier_conn_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">hdmi_dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">port_name</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">cec_connector_info</span> <span class="pre">*</span><em><span class="pre">conn_info</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_conn_register" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_notifier_conn_register">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_notifier</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">cec_notifier_conn_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdmi_dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">port_name</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_connector_info</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">conn_info</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_conn_register" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>find or create a new cec_notifier for the given HDMI device and connector tuple.</p>
 </dd></dl>
 
@@ -872,8 +874,8 @@ increase the refcount and return that notifier.</p>
 pointer to that new struct.</p>
 <p>Return NULL if the memory could not be allocated.</p>
 <dl class="c function">
-<dt id="c.cec_notifier_conn_unregister">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_notifier_conn_unregister</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_notifier</span> <span class="pre">*</span><em><span class="pre">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_conn_unregister" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_notifier_conn_unregister">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_notifier_conn_unregister</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_notifier</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_conn_unregister" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>decrease refcount and delete when the refcount reaches 0.</p>
 </dd></dl>
 
@@ -883,8 +885,8 @@ pointer to that new struct.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.cec_notifier_cec_adap_register">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">cec_notifier</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">cec_notifier_cec_adap_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">hdmi_dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">port_name</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_cec_adap_register" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_notifier_cec_adap_register">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_notifier</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">cec_notifier_cec_adap_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hdmi_dev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">port_name</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_cec_adap_register" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>find or create a new cec_notifier for the given device.</p>
 </dd></dl>
 
@@ -905,8 +907,8 @@ increase the refcount and return that notifier.</p>
 pointer to that new struct.</p>
 <p>Return NULL if the memory could not be allocated.</p>
 <dl class="c function">
-<dt id="c.cec_notifier_cec_adap_unregister">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_notifier_cec_adap_unregister</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_notifier</span> <span class="pre">*</span><em><span class="pre">n</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">cec_adapter</span> <span class="pre">*</span><em><span class="pre">adap</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_cec_adap_unregister" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_notifier_cec_adap_unregister">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_notifier_cec_adap_unregister</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_notifier</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">n</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_adapter</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">adap</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_cec_adap_unregister" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>decrease refcount and delete when the refcount reaches 0.</p>
 </dd></dl>
 
@@ -918,8 +920,8 @@ pointer to that new struct.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.cec_notifier_set_phys_addr">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_notifier_set_phys_addr</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_notifier</span> <span class="pre">*</span><em><span class="pre">n</span></em>, <span class="pre">u16</span> <em><span class="pre">pa</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_set_phys_addr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_notifier_set_phys_addr">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_notifier_set_phys_addr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_notifier</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">n</span></span>, <span class="n"><span class="pre">u16</span></span><span class="w"> </span><span class="n"><span class="pre">pa</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_set_phys_addr" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set a new physical address.</p>
 </dd></dl>
 
@@ -934,8 +936,8 @@ pointer to that new struct.</p>
 <p>Set a new CEC physical address.
 Does nothing if <strong>n</strong> == NULL.</p>
 <dl class="c function">
-<dt id="c.cec_notifier_set_phys_addr_from_edid">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_notifier_set_phys_addr_from_edid</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_notifier</span> <span class="pre">*</span><em><span class="pre">n</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.cec_notifier_set_phys_addr_from_edid" title="edid"><span class="pre">edid</span></a> <span class="pre">*</span><em><span class="pre">edid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_set_phys_addr_from_edid" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_notifier_set_phys_addr_from_edid">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_notifier_set_phys_addr_from_edid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_notifier</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">n</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.cec_notifier_set_phys_addr_from_edid" title="edid"><span class="n"><span class="pre">edid</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">edid</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_set_phys_addr_from_edid" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set parse the PA from the EDID.</p>
 </dd></dl>
 
@@ -950,8 +952,8 @@ Does nothing if <strong>n</strong> == NULL.</p>
 <p>Parses the EDID to obtain the new CEC physical address and set it.
 Does nothing if <strong>n</strong> == NULL.</p>
 <dl class="c function">
-<dt id="c.cec_notifier_parse_hdmi_phandle">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">cec_notifier_parse_hdmi_phandle</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_parse_hdmi_phandle" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_notifier_parse_hdmi_phandle">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">cec_notifier_parse_hdmi_phandle</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_parse_hdmi_phandle" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>find the hdmi device from “hdmi-phandle”</p>
 </dd></dl>
 
@@ -966,8 +968,8 @@ Note that the refcount of the returned device is not incremented.
 This device pointer is only used as a key value in the notifier
 list, but it is never accessed by the CEC driver.</p>
 <dl class="c function">
-<dt id="c.cec_notifier_phys_addr_invalidate">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">cec_notifier_phys_addr_invalidate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">cec_notifier</span> <span class="pre">*</span><em><span class="pre">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_phys_addr_invalidate" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.cec_notifier_phys_addr_invalidate">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cec_notifier_phys_addr_invalidate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">cec_notifier</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.cec_notifier_phys_addr_invalidate" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set the physical address to INVALID</p>
 </dd></dl>
 
@@ -979,8 +981,8 @@ list, but it is never accessed by the CEC driver.</p>
 <p><strong>Description</strong></p>
 <p>This is a simple helper function to invalidate the physical
 address. Does nothing if <strong>n</strong> == NULL.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

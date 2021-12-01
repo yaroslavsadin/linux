@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Energy Model of devices &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -278,9 +280,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="energy-model-of-devices">
+  <div class="section" id="energy-model-of-devices">
 <h1>Energy Model of devices<a class="headerlink" href="#energy-model-of-devices" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The Energy Model (EM) framework serves as an interface between drivers knowing
 the power consumed by devices at various performance levels, and the kernel
@@ -342,14 +344,14 @@ whose performance is scaled together. Performance domains generally have a
 1-to-1 mapping with CPUFreq policies. All CPUs in a performance domain are
 required to have the same micro-architecture. CPUs in different performance
 domains can have different micro-architectures.</p>
-</section>
-<section id="core-apis">
+</div>
+<div class="section" id="core-apis">
 <h2>2. Core APIs<a class="headerlink" href="#core-apis" title="Permalink to this headline">¶</a></h2>
-<section id="config-options">
+<div class="section" id="config-options">
 <h3>2.1 Config options<a class="headerlink" href="#config-options" title="Permalink to this headline">¶</a></h3>
 <p>CONFIG_ENERGY_MODEL must be enabled to use the EM framework.</p>
-</section>
-<section id="registration-of-performance-domains">
+</div>
+<div class="section" id="registration-of-performance-domains">
 <h3>2.2 Registration of performance domains<a class="headerlink" href="#registration-of-performance-domains" title="Permalink to this headline">¶</a></h3>
 <p>Drivers are expected to register performance domains into the EM framework by
 calling the following API:</p>
@@ -369,8 +371,8 @@ the same scale. If there are different scales, these subsystems might decide
 to: return warning/error, stop working or panic.
 See Section 3. for an example of driver implementing this
 callback, or Section 2.4 for further documentation on this API</p>
-</section>
-<section id="accessing-performance-domains">
+</div>
+<div class="section" id="accessing-performance-domains">
 <h3>2.3 Accessing performance domains<a class="headerlink" href="#accessing-performance-domains" title="Permalink to this headline">¶</a></h3>
 <p>There are two API functions which provide the access to the energy model:
 <a class="reference internal" href="#c.em_cpu_get" title="em_cpu_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">em_cpu_get()</span></code></a> which takes CPU id as an argument and <a class="reference internal" href="#c.em_pd_get" title="em_pd_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">em_pd_get()</span></code></a> with device
@@ -386,12 +388,12 @@ CPUfreq governor is in use in case of CPU device. Currently this calculation is
 not provided for other type of devices.</p>
 <p>More details about the above APIs can be found in <code class="docutils literal notranslate"><span class="pre">&lt;linux/energy_model.h&gt;</span></code>
 or in Section 2.4</p>
-</section>
-<section id="description-details-of-this-api">
+</div>
+<div class="section" id="description-details-of-this-api">
 <h3>2.4 Description details of this API<a class="headerlink" href="#description-details-of-this-api" title="Permalink to this headline">¶</a></h3>
 <dl class="c struct">
-<dt id="c.em_perf_state">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">em_perf_state</span></code><a class="headerlink" href="#c.em_perf_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.em_perf_state">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">em_perf_state</span></span></span><a class="headerlink" href="#c.em_perf_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Performance state of a performance domain</p>
 </dd></dl>
 
@@ -418,8 +420,8 @@ energy calculation. Equal to: power * max_frequency / frequency</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.em_perf_domain">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">em_perf_domain</span></code><a class="headerlink" href="#c.em_perf_domain" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.em_perf_domain">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">em_perf_domain</span></span></span><a class="headerlink" href="#c.em_perf_domain" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Performance domain</p>
 </dd></dl>
 
@@ -453,8 +455,8 @@ must have the same micro-architecture. Performance domains often have
 a 1-to-1 mapping with CPUFreq policies. In case of other devices the <strong>cpus</strong>
 field is unused.</p>
 <dl class="c function">
-<dt id="c.em_pd_get_efficient_state">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.em_perf_state" title="em_perf_state"><span class="pre">em_perf_state</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">em_pd_get_efficient_state</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.em_perf_domain" title="em_perf_domain"><span class="pre">em_perf_domain</span></a> <span class="pre">*</span><em><span class="pre">pd</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">freq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.em_pd_get_efficient_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.em_pd_get_efficient_state">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.em_perf_state" title="em_perf_state"><span class="n"><span class="pre">em_perf_state</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">em_pd_get_efficient_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.em_perf_domain" title="em_perf_domain"><span class="n"><span class="pre">em_perf_domain</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pd</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">freq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.em_pd_get_efficient_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get an efficient performance state from the EM</p>
 </dd></dl>
 
@@ -472,8 +474,8 @@ doesn’t implement any check.</p>
 <p>An efficient performance state, high enough to meet <strong>freq</strong>
 requirement.</p>
 <dl class="c function">
-<dt id="c.em_cpu_energy">
-<span class="pre">unsigned</span> <span class="pre">long</span> <code class="sig-name descname"><span class="pre">em_cpu_energy</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.em_perf_domain" title="em_perf_domain"><span class="pre">em_perf_domain</span></a> <span class="pre">*</span><em><span class="pre">pd</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">max_util</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">sum_util</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">allowed_cpu_cap</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.em_cpu_energy" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.em_cpu_energy">
+<span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">em_cpu_energy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.em_perf_domain" title="em_perf_domain"><span class="n"><span class="pre">em_perf_domain</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pd</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">max_util</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">sum_util</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">allowed_cpu_cap</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.em_cpu_energy" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Estimates the energy consumed by the CPUs of a performance domain</p>
 </dd></dl>
 
@@ -497,8 +499,8 @@ the scheduler code quite frequently and that is why there is not checks.</p>
 <p>the sum of the energy consumed by the CPUs of the domain assuming
 a capacity state satisfying the max utilization of the domain.</p>
 <dl class="c function">
-<dt id="c.em_pd_nr_perf_states">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">em_pd_nr_perf_states</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.em_perf_domain" title="em_perf_domain"><span class="pre">em_perf_domain</span></a> <span class="pre">*</span><em><span class="pre">pd</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.em_pd_nr_perf_states" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.em_pd_nr_perf_states">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">em_pd_nr_perf_states</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.em_perf_domain" title="em_perf_domain"><span class="n"><span class="pre">em_perf_domain</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pd</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.em_pd_nr_perf_states" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the number of performance states of a perf. domain</p>
 </dd></dl>
 
@@ -510,8 +512,8 @@ a capacity state satisfying the max utilization of the domain.</p>
 <p><strong>Return</strong></p>
 <p>the number of performance states in the performance domain table</p>
 <dl class="c function">
-<dt id="c.em_pd_get">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.em_perf_domain" title="em_perf_domain"><span class="pre">em_perf_domain</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">em_pd_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.em_pd_get" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.em_pd_get">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.em_perf_domain" title="em_perf_domain"><span class="n"><span class="pre">em_perf_domain</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">em_pd_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.em_pd_get" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return the performance domain for a device</p>
 </dd></dl>
 
@@ -524,8 +526,8 @@ a capacity state satisfying the max utilization of the domain.</p>
 <p>Returns the performance domain to which <strong>dev</strong> belongs, or NULL if it doesn’t
 exist.</p>
 <dl class="c function">
-<dt id="c.em_cpu_get">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.em_perf_domain" title="em_perf_domain"><span class="pre">em_perf_domain</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">em_cpu_get</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">cpu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.em_cpu_get" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.em_cpu_get">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.em_perf_domain" title="em_perf_domain"><span class="n"><span class="pre">em_perf_domain</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">em_cpu_get</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cpu</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.em_cpu_get" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return the performance domain for a CPU</p>
 </dd></dl>
 
@@ -538,8 +540,8 @@ exist.</p>
 <p>Returns the performance domain to which <strong>cpu</strong> belongs, or NULL if it doesn’t
 exist.</p>
 <dl class="c function">
-<dt id="c.em_dev_register_perf_domain">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">em_dev_register_perf_domain</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">nr_states</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">em_data_callback</span> <span class="pre">*</span><em><span class="pre">cb</span></em>, <span class="pre">cpumask_t</span> <span class="pre">*</span><em><span class="pre">cpus</span></em>, <span class="pre">bool</span> <em><span class="pre">milliwatts</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.em_dev_register_perf_domain" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.em_dev_register_perf_domain">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">em_dev_register_perf_domain</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nr_states</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">em_data_callback</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cb</span></span>, <span class="n"><span class="pre">cpumask_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cpus</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">milliwatts</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.em_dev_register_perf_domain" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Register the Energy Model (EM) for a device</p>
 </dd></dl>
 
@@ -569,8 +571,8 @@ using the same scale.</p>
 registration will be ignored.</p>
 <p>Return 0 on success</p>
 <dl class="c function">
-<dt id="c.em_dev_unregister_perf_domain">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">em_dev_unregister_perf_domain</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.em_dev_unregister_perf_domain" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.em_dev_unregister_perf_domain">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">em_dev_unregister_perf_domain</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.em_dev_unregister_perf_domain" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unregister Energy Model (EM) for a device</p>
 </dd></dl>
 
@@ -581,9 +583,9 @@ registration will be ignored.</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>Unregister the EM for the specified <strong>dev</strong> (but not a CPU device).</p>
-</section>
-</section>
-<section id="example-driver">
+</div>
+</div>
+<div class="section" id="example-driver">
 <h2>3. Example driver<a class="headerlink" href="#example-driver" title="Permalink to this headline">¶</a></h2>
 <p>This section provides a simple example of a CPUFreq driver registering a
 performance domain in the Energy Model framework using the (fake) ‘foo’
@@ -637,8 +639,8 @@ EM framework:</p>
 44    }
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

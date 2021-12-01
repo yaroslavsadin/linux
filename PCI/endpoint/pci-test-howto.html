@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>9.5. PCI Test User Guide &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -267,7 +269,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="pci-test-user-guide">
+  <div class="section" id="pci-test-user-guide">
 <h1><span class="section-number">9.5. </span>PCI Test User Guide<a class="headerlink" href="#pci-test-user-guide" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -277,9 +279,9 @@
 <p>This document is a guide to help users use pci-epf-test function driver
 and pci_endpoint_test host driver for testing PCI. The list of steps to
 be followed in the host side and EP side is given below.</p>
-<section id="endpoint-device">
+<div class="section" id="endpoint-device">
 <h2><span class="section-number">9.5.1. </span>Endpoint Device<a class="headerlink" href="#endpoint-device" title="Permalink to this headline">¶</a></h2>
-<section id="endpoint-controller-devices">
+<div class="section" id="endpoint-controller-devices">
 <h3><span class="section-number">9.5.1.1. </span>Endpoint Controller Devices<a class="headerlink" href="#endpoint-controller-devices" title="Permalink to this headline">¶</a></h3>
 <p>To find the list of endpoint controller devices in the system:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># ls /sys/class/pci_epc/
@@ -291,8 +293,8 @@ be followed in the host side and EP side is given below.</p>
   51000000.pcie_ep
 </pre></div>
 </div>
-</section>
-<section id="endpoint-function-drivers">
+</div>
+<div class="section" id="endpoint-function-drivers">
 <h3><span class="section-number">9.5.1.2. </span>Endpoint Function Drivers<a class="headerlink" href="#endpoint-function-drivers" title="Permalink to this headline">¶</a></h3>
 <p>To find the list of endpoint function drivers in the system:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># ls /sys/bus/pci-epf/drivers
@@ -304,8 +306,8 @@ be followed in the host side and EP side is given below.</p>
   pci_epf_test
 </pre></div>
 </div>
-</section>
-<section id="creating-pci-epf-test-device">
+</div>
+<div class="section" id="creating-pci-epf-test-device">
 <h3><span class="section-number">9.5.1.3. </span>Creating pci-epf-test Device<a class="headerlink" href="#creating-pci-epf-test-device" title="Permalink to this headline">¶</a></h3>
 <p>PCI endpoint function device can be created using the configfs. To create
 pci-epf-test device, the following commands can be used:</p>
@@ -333,8 +335,8 @@ vendorid with 0xffff and interrupt_pin with 0x0001:</p>
   0x0001
 </pre></div>
 </div>
-</section>
-<section id="configuring-pci-epf-test-device">
+</div>
+<div class="section" id="configuring-pci-epf-test-device">
 <h3><span class="section-number">9.5.1.4. </span>Configuring pci-epf-test Device<a class="headerlink" href="#configuring-pci-epf-test-device" title="Permalink to this headline">¶</a></h3>
 <p>The user can configure the pci-epf-test device using configfs entry. In order
 to change the vendorid and the number of MSI interrupts used by the function
@@ -345,8 +347,8 @@ device, the following commands can be used:</p>
 # echo 8 &gt; functions/pci_epf_test/func1/msix_interrupts
 </pre></div>
 </div>
-</section>
-<section id="binding-pci-epf-test-device-to-ep-controller">
+</div>
+<div class="section" id="binding-pci-epf-test-device-to-ep-controller">
 <h3><span class="section-number">9.5.1.5. </span>Binding pci-epf-test Device to EP Controller<a class="headerlink" href="#binding-pci-epf-test-device-to-ep-controller" title="Permalink to this headline">¶</a></h3>
 <p>In order for the endpoint function device to be useful, it has to be bound to
 a PCI endpoint controller driver. Use the configfs to bind the function
@@ -356,19 +358,19 @@ device to one of the controller driver present in the system:</p>
 </div>
 <p>Once the above step is completed, the PCI endpoint is ready to establish a link
 with the host.</p>
-</section>
-<section id="start-the-link">
+</div>
+<div class="section" id="start-the-link">
 <h3><span class="section-number">9.5.1.6. </span>Start the Link<a class="headerlink" href="#start-the-link" title="Permalink to this headline">¶</a></h3>
 <p>In order for the endpoint device to establish a link with the host, the _start_
 field should be populated with ‘1’:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># echo 1 &gt; controllers/51000000.pcie_ep/start
 </pre></div>
 </div>
-</section>
-</section>
-<section id="rootcomplex-device">
+</div>
+</div>
+<div class="section" id="rootcomplex-device">
 <h2><span class="section-number">9.5.2. </span>RootComplex Device<a class="headerlink" href="#rootcomplex-device" title="Permalink to this headline">¶</a></h2>
-<section id="lspci-output">
+<div class="section" id="lspci-output">
 <h3><span class="section-number">9.5.2.1. </span>lspci Output<a class="headerlink" href="#lspci-output" title="Permalink to this headline">¶</a></h3>
 <p>Note that the devices listed here correspond to the value populated in 1.4
 above:</p>
@@ -376,8 +378,8 @@ above:</p>
 01:00.0 Unassigned class [ff00]: Texas Instruments Device b500
 </pre></div>
 </div>
-</section>
-<section id="using-endpoint-test-function-device">
+</div>
+<div class="section" id="using-endpoint-test-function-device">
 <h3><span class="section-number">9.5.2.2. </span>Using Endpoint Test function Device<a class="headerlink" href="#using-endpoint-test-function-device" title="Permalink to this headline">¶</a></h3>
 <p>pcitest.sh added in tools/pci/ can be used to run all the default PCI endpoint
 tests. To compile this tool the following commands should be used:</p>
@@ -391,7 +393,7 @@ tests. To compile this tool the following commands should be used:</p>
 </pre></div>
 </div>
 <p>The tool and script will be located in &lt;rootfs&gt;/usr/bin/</p>
-<section id="pcitest-sh-output">
+<div class="section" id="pcitest-sh-output">
 <h4><span class="section-number">9.5.2.2.1. </span>pcitest.sh Output<a class="headerlink" href="#pcitest-sh-output" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># pcitest.sh
 BAR tests
@@ -487,10 +489,10 @@ COPY (1024000 bytes):           OKAY
 COPY (1024001 bytes):           OKAY
 </pre></div>
 </div>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Kernel TLS &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -368,16 +370,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kernel-tls">
+  <div class="section" id="kernel-tls">
 <span id="id1"></span><h1>Kernel TLS<a class="headerlink" href="#kernel-tls" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Transport Layer Security (TLS) is a Upper Layer Protocol (ULP) that runs over
 TCP. TLS provides end-to-end data integrity and confidentiality.</p>
-</section>
-<section id="user-interface">
+</div>
+<div class="section" id="user-interface">
 <h2>User interface<a class="headerlink" href="#user-interface" title="Permalink to this headline">¶</a></h2>
-<section id="creating-a-tls-connection">
+<div class="section" id="creating-a-tls-connection">
 <h3>Creating a TLS connection<a class="headerlink" href="#creating-a-tls-connection" title="Permalink to this headline">¶</a></h3>
 <p>First create a new TCP socket and set the TLS ULP.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
@@ -419,8 +421,8 @@ the transmit and the receive into the kernel.</p>
 </div>
 <p>Transmit and receive are set separately, but the setup is the same, using either
 TLS_TX or TLS_RX.</p>
-</section>
-<section id="sending-tls-application-data">
+</div>
+<div class="section" id="sending-tls-application-data">
 <h3>Sending TLS application data<a class="headerlink" href="#sending-tls-application-data" title="Permalink to this headline">¶</a></h3>
 <p>After setting the TLS_TX socket option all application data sent over this
 socket is encrypted using TLS and the parameters provided in the socket option.
@@ -447,8 +449,8 @@ either the entire send() call will return -ENOMEM (or block waiting
 for memory), or the encryption will always succeed.  If send() returns
 -ENOMEM and some data was left on the socket buffer from a previous
 call using MSG_MORE, the MSG_MORE data is left on the socket buffer.</p>
-</section>
-<section id="receiving-tls-application-data">
+</div>
+<div class="section" id="receiving-tls-application-data">
 <h3>Receiving TLS application data<a class="headerlink" href="#receiving-tls-application-data" title="Permalink to this headline">¶</a></h3>
 <p>After setting the TLS_RX socket option, all recv family socket calls
 are decrypted using TLS parameters provided.  A full TLS record must
@@ -465,8 +467,8 @@ userspace.</p>
 match the version passed in setsockopt.</p>
 <p><code class="docutils literal notranslate"><span class="pre">EMSGSIZE</span></code> is returned if the received message is too big.</p>
 <p><code class="docutils literal notranslate"><span class="pre">EBADMSG</span></code> is returned if decryption failed for any other reason.</p>
-</section>
-<section id="send-tls-control-messages">
+</div>
+<div class="section" id="send-tls-control-messages">
 <h3>Send TLS control messages<a class="headerlink" href="#send-tls-control-messages" title="Permalink to this headline">¶</a></h3>
 <p>Other than application data, TLS has control messages such as alert
 messages (record type 21) and handshake messages (record type 22), etc.
@@ -503,8 +505,8 @@ using a record of type &#64;record_type.</p>
 </div>
 <p>Control message data should be provided unencrypted, and will be
 encrypted by the kernel.</p>
-</section>
-<section id="receiving-tls-control-messages">
+</div>
+<div class="section" id="receiving-tls-control-messages">
 <h3>Receiving TLS control messages<a class="headerlink" href="#receiving-tls-control-messages" title="Permalink to this headline">¶</a></h3>
 <p>TLS control messages are passed in the userspace buffer, with message
 type passed via cmsg.  If no cmsg buffer is provided, an error is
@@ -539,8 +541,8 @@ received without a cmsg buffer set.</p>
 </pre></div>
 </div>
 <p>recv will never return data from mixed types of TLS records.</p>
-</section>
-<section id="integrating-in-to-userspace-tls-library">
+</div>
+<div class="section" id="integrating-in-to-userspace-tls-library">
 <h3>Integrating in to userspace TLS library<a class="headerlink" href="#integrating-in-to-userspace-tls-library" title="Permalink to this headline">¶</a></h3>
 <p>At a high level, the kernel TLS ULP is a replacement for the record
 layer of a userspace TLS library.</p>
@@ -550,9 +552,9 @@ layer of a userspace TLS library.</p>
 of calling send directly after a handshake using gnutls.
 Since it doesn’t implement a full record layer, control
 messages are not supported.</p>
-</section>
-</section>
-<section id="statistics">
+</div>
+</div>
+<div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>TLS implementation exposes the following per-namespace statistics
 (<code class="docutils literal notranslate"><span class="pre">/proc/net/tls_stat</span></code>):</p>
@@ -572,8 +574,8 @@ record decryption failed (e.g. due to incorrect authentication tag)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">TlsDeviceRxResync</span></code> -
 number of RX resyncs sent to NICs handling cryptography</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

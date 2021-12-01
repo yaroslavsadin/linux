@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Converting old watchdog drivers to the watchdog framework &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -260,7 +262,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="converting-old-watchdog-drivers-to-the-watchdog-framework">
+  <div class="section" id="converting-old-watchdog-drivers-to-the-watchdog-framework">
 <h1>Converting old watchdog drivers to the watchdog framework<a class="headerlink" href="#converting-old-watchdog-drivers-to-the-watchdog-framework" title="Permalink to this headline">¶</a></h1>
 <p>by Wolfram Sang &lt;<a class="reference external" href="mailto:wsa&#37;&#52;&#48;kernel&#46;org">wsa<span>&#64;</span>kernel<span>&#46;</span>org</a>&gt;</p>
 <p>Before the watchdog framework came into the kernel, every driver had to
@@ -268,7 +270,7 @@ implement the API on its own. Now, as the framework factored out the common
 components, those drivers can be lightened making it a user of the framework.
 This document shall guide you for this task. The necessary steps are described
 as well as things to look out for.</p>
-<section id="remove-the-file-operations-struct">
+<div class="section" id="remove-the-file-operations-struct">
 <h2>Remove the file_operations struct<a class="headerlink" href="#remove-the-file-operations-struct" title="Permalink to this headline">¶</a></h2>
 <p>Old drivers define their own file_operations for actions like open(), write(),
 etc… These are now handled by the framework and just call the driver when
@@ -333,8 +335,8 @@ is directly given to the user.</p>
 </div>
 <p>Check the functions for device-specific stuff and keep it for later
 refactoring. The rest can go.</p>
-</section>
-<section id="remove-the-miscdevice">
+</div>
+<div class="section" id="remove-the-miscdevice">
 <h2>Remove the miscdevice<a class="headerlink" href="#remove-the-miscdevice" title="Permalink to this headline">¶</a></h2>
 <p>Since the file_operations are gone now, you can also remove the ‘struct
 miscdevice’. The framework will create it on watchdog_dev_register() called by
@@ -346,8 +348,8 @@ watchdog_register_device():</p>
 -};
 </pre></div>
 </div>
-</section>
-<section id="remove-obsolete-includes-and-defines">
+</div>
+<div class="section" id="remove-obsolete-includes-and-defines">
 <h2>Remove obsolete includes and defines<a class="headerlink" href="#remove-obsolete-includes-and-defines" title="Permalink to this headline">¶</a></h2>
 <p>Because of the simplifications, a few defines are probably unused now. Remove
 them. Includes can be removed, too. For example:</p>
@@ -356,8 +358,8 @@ them. Includes can be removed, too. For example:</p>
 - #include &lt;linux/uaccess.h&gt; (if no custom IOCTLs are used)
 </pre></div>
 </div>
-</section>
-<section id="add-the-watchdog-operations">
+</div>
+<div class="section" id="add-the-watchdog-operations">
 <h2>Add the watchdog operations<a class="headerlink" href="#add-the-watchdog-operations" title="Permalink to this headline">¶</a></h2>
 <p>All possible callbacks are defined in ‘struct watchdog_ops’. You can find it
 explained in ‘<a class="reference internal" href="watchdog-kernel-api.html"><span class="doc">The Linux WatchDog Timer Driver Core kernel API</span></a>’ in this directory. <a class="reference internal" href="../networking/ieee802154.html#c.start" title="start"><code class="xref c c-func docutils literal notranslate"><span class="pre">start()</span></code></a> and
@@ -392,8 +394,8 @@ code left from the above steps, it should be refactored into these callbacks.</p
 +       s3c2410wdt_keepalive(&amp;s3c2410_wdd);
 </pre></div>
 </div>
-</section>
-<section id="add-the-watchdog-device">
+</div>
+<div class="section" id="add-the-watchdog-device">
 <h2>Add the watchdog device<a class="headerlink" href="#add-the-watchdog-device" title="Permalink to this headline">¶</a></h2>
 <p>Now we need to create a ‘struct watchdog_device’ and populate it with the
 necessary information for the framework. The struct is also explained in detail
@@ -410,8 +412,8 @@ use signed int, so this has to be converted, too.</p>
 +};
 </pre></div>
 </div>
-</section>
-<section id="handle-the-nowayout-feature">
+</div>
+<div class="section" id="handle-the-nowayout-feature">
 <h2>Handle the ‘nowayout’ feature<a class="headerlink" href="#handle-the-nowayout-feature" title="Permalink to this headline">¶</a></h2>
 <p>A few drivers use nowayout statically, i.e. there is no module parameter for it
 and only CONFIG_WATCHDOG_NOWAYOUT determines if the feature is going to be
@@ -427,8 +429,8 @@ by adding a module parameter. The conversion for this would be something like:</
 </div>
 <p>The module parameter itself needs to stay, everything else related to nowayout
 can go, though. This will likely be some code in open(), close() or write().</p>
-</section>
-<section id="register-the-watchdog-device">
+</div>
+<div class="section" id="register-the-watchdog-device">
 <h2>Register the watchdog device<a class="headerlink" href="#register-the-watchdog-device" title="Permalink to this headline">¶</a></h2>
 <p>Replace misc_register(&amp;miscdev) with watchdog_register_device(&amp;watchdog_dev).
 Make sure the return value gets checked and the error message, if present,
@@ -442,8 +444,8 @@ still fits. Also convert the unregister case:</p>
 +       watchdog_unregister_device(&amp;s3c2410_wdd);
 </pre></div>
 </div>
-</section>
-<section id="update-the-kconfig-entry">
+</div>
+<div class="section" id="update-the-kconfig-entry">
 <h2>Update the Kconfig-entry<a class="headerlink" href="#update-the-kconfig-entry" title="Permalink to this headline">¶</a></h2>
 <p>The entry for the driver now needs to select WATCHDOG_CORE:</p>
 <blockquote>
@@ -451,13 +453,13 @@ still fits. Also convert the unregister case:</p>
 <li><p>select WATCHDOG_CORE</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="create-a-patch-and-send-it-to-upstream">
+</div>
+<div class="section" id="create-a-patch-and-send-it-to-upstream">
 <h2>Create a patch and send it to upstream<a class="headerlink" href="#create-a-patch-and-send-it-to-upstream" title="Permalink to this headline">¶</a></h2>
 <p>Make sure you understood <a class="reference internal" href="../process/submitting-patches.html"><span class="doc">Submitting patches: the essential guide to getting your code into the kernel</span></a> and send your patch to
 <a class="reference external" href="mailto:linux-watchdog&#37;&#52;&#48;vger&#46;kernel&#46;org">linux-watchdog<span>&#64;</span>vger<span>&#46;</span>kernel<span>&#46;</span>org</a>. We are looking forward to it :)</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>s390 (IBM Z) Ultravisor and Protected VMs &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -277,9 +279,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="s390-ibm-z-ultravisor-and-protected-vms">
+  <div class="section" id="s390-ibm-z-ultravisor-and-protected-vms">
 <h1>s390 (IBM Z) Ultravisor and Protected VMs<a class="headerlink" href="#s390-ibm-z-ultravisor-and-protected-vms" title="Permalink to this headline">¶</a></h1>
-<section id="summary">
+<div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>Protected virtual machines (PVM) are KVM VMs that do not allow KVM to
 access VM state like guest memory or guest registers. Instead, the
@@ -299,8 +301,8 @@ the behavior of the SIE instruction. A new format 4 state description
 has been introduced, where some fields have different meanings for a
 PVM. SIE exits are minimized as much as possible to improve speed and
 reduce exposed guest state.</p>
-</section>
-<section id="interrupt-injection">
+</div>
+<div class="section" id="interrupt-injection">
 <h2>Interrupt injection<a class="headerlink" href="#interrupt-injection" title="Permalink to this headline">¶</a></h2>
 <p>Interrupt injection is safeguarded by the Ultravisor. As KVM doesn’t
 have access to the VCPUs’ lowcores, injection is handled via the
@@ -317,8 +319,8 @@ been intercepted into KVM. The exceptions need to be a valid outcome
 of an instruction emulation by KVM, e.g. we can never inject a
 addressing exception as they are reported by SIE since KVM has no
 access to the guest memory.</p>
-</section>
-<section id="mask-notification-interceptions">
+</div>
+<div class="section" id="mask-notification-interceptions">
 <h2>Mask notification interceptions<a class="headerlink" href="#mask-notification-interceptions" title="Permalink to this headline">¶</a></h2>
 <p>KVM cannot intercept lctl(g) and lpsw(e) anymore in order to be
 notified when a PVM enables a certain class of interrupt.  As a
@@ -327,8 +329,8 @@ indicating that the contents of CRs 0, 6, or 14 have been changed,
 indicating different interruption subclasses; and one indicating that
 PSW bit 13 has been changed, indicating that a machine check
 intervention was requested and those are now enabled.</p>
-</section>
-<section id="instruction-emulation">
+</div>
+<div class="section" id="instruction-emulation">
 <h2>Instruction emulation<a class="headerlink" href="#instruction-emulation" title="Permalink to this headline">¶</a></h2>
 <p>With the format 4 state description for PVMs, the SIE instruction already
 interprets more instructions than it does with format 2. It is not able
@@ -356,8 +358,8 @@ intercepted, the SIE will only allow data and program interrupts for
 this instruction to be moved to the guest via the two data areas
 discussed before. Other data is either ignored or results in validity
 interceptions.</p>
-</section>
-<section id="instruction-emulation-interceptions">
+</div>
+<div class="section" id="instruction-emulation-interceptions">
 <h2>Instruction emulation interceptions<a class="headerlink" href="#instruction-emulation-interceptions" title="Permalink to this headline">¶</a></h2>
 <p>There are two types of SIE secure instruction intercepts: the normal
 and the notification type. Normal secure instruction intercepts will
@@ -372,12 +374,12 @@ the new lowcore location. On SIE reentry, any KVM data in the data areas
 is ignored and execution continues as if the guest instruction had
 completed. For that reason KVM is not allowed to inject a program
 interrupt.</p>
-</section>
-<section id="links">
+</div>
+<div class="section" id="links">
 <h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://static.sched.com/hosted_files/kvmforum2019/3b/ibm_protected_vms_s390x.pdf">KVM Forum 2019 presentation</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>UML HowTo &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -284,7 +286,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="uml-howto">
+  <div class="section" id="uml-howto">
 <h1>UML HowTo<a class="headerlink" href="#uml-howto" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -379,12 +381,12 @@
 </li>
 </ul>
 </div>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2><a class="toc-backref" href="#id1">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Welcome to User Mode Linux</p>
 <p>User Mode Linux is the first Open Source virtualization platform (first
 release date 1991) and second virtualization platform for an x86 PC.</p>
-<section id="how-is-uml-different-from-a-vm-using-virtualization-package-x">
+<div class="section" id="how-is-uml-different-from-a-vm-using-virtualization-package-x">
 <h3><a class="toc-backref" href="#id2">How is UML Different from a VM using Virtualization package X?</a><a class="headerlink" href="#how-is-uml-different-from-a-vm-using-virtualization-package-x" title="Permalink to this headline">¶</a></h3>
 <p>We have come to assume that virtualization also means some level of
 hardware emulation. In fact, it does not. As long as a virtualization
@@ -411,8 +413,8 @@ This is different from other virtualization packages which do not make any
 difference between the guest kernel and guest programs. This difference
 results in a number of advantages and disadvantages of UML over let’s say
 QEMU which we will cover later in this document.</p>
-</section>
-<section id="why-would-i-want-user-mode-linux">
+</div>
+<div class="section" id="why-would-i-want-user-mode-linux">
 <h3><a class="toc-backref" href="#id3">Why Would I Want User Mode Linux?</a><a class="headerlink" href="#why-would-i-want-user-mode-linux" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>If User Mode Linux kernel crashes, your host kernel is still fine. It
@@ -432,8 +434,8 @@ real hardware such as time travel and making your system clock
 dependent on what UML does (very useful for things like tests).</p></li>
 <li><p>It’s fun.</p></li>
 </ul>
-</section>
-<section id="why-not-to-run-uml">
+</div>
+<div class="section" id="why-not-to-run-uml">
 <h3><a class="toc-backref" href="#id4">Why not to run UML</a><a class="headerlink" href="#why-not-to-run-uml" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The syscall interception technique used by UML makes it inherently
@@ -446,9 +448,9 @@ take for granted).</p></li>
 application which needs many CPUs to function, it is clearly the
 wrong choice.</p></li>
 </ul>
-</section>
-</section>
-<section id="building-a-uml-instance">
+</div>
+</div>
+<div class="section" id="building-a-uml-instance">
 <h2><a class="toc-backref" href="#id5">Building a UML instance</a><a class="headerlink" href="#building-a-uml-instance" title="Permalink to this headline">¶</a></h2>
 <p>There is no UML installer in any distribution. While you can use off
 the shelf install media to install into a blank VM using a virtualization
@@ -457,7 +459,7 @@ your host to build a viable filesystem image.</p>
 <p>This is extremely easy on Debian - you can do it using debootstrap. It is
 also easy on OpenWRT - the build process can build UML images. All other
 distros - YMMV.</p>
-<section id="creating-an-image">
+<div class="section" id="creating-an-image">
 <h3><a class="toc-backref" href="#id6">Creating an image</a><a class="headerlink" href="#creating-an-image" title="Permalink to this headline">¶</a></h3>
 <p>Create a sparse raw disk image:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># dd if=/dev/zero of=disk_image_name bs=1 count=1 seek=16G
@@ -488,8 +490,8 @@ mounted image:</p>
 # exit
 </pre></div>
 </div>
-</section>
-<section id="edit-key-system-files">
+</div>
+<div class="section" id="edit-key-system-files">
 <h3><a class="toc-backref" href="#id7">Edit key system files</a><a class="headerlink" href="#edit-key-system-files" title="Permalink to this headline">¶</a></h3>
 <p>UML block devices are called ubds. The fstab created by debootstrap
 will be empty and it needs an entry for the root file system:</p>
@@ -537,9 +539,9 @@ To specify the full module installation path, use:</p>
 </pre></div>
 </div>
 <p>At this point the image is ready to be brought up.</p>
-</section>
-</section>
-<section id="setting-up-uml-networking">
+</div>
+</div>
+<div class="section" id="setting-up-uml-networking">
 <h2><a class="toc-backref" href="#id8">Setting Up UML Networking</a><a class="headerlink" href="#setting-up-uml-networking" title="Permalink to this headline">¶</a></h2>
 <p>UML networking is designed to emulate an Ethernet connection. This
 connection may be either point-to-point (similar to a connection
@@ -641,7 +643,7 @@ machines, remote network devices and remote UML instances.</p></li>
 <li><p>Daemon and bess require running a local switch. This switch may be
 connected to the host as well.</p></li>
 </ul>
-<section id="network-configuration-privileges">
+<div class="section" id="network-configuration-privileges">
 <h3><a class="toc-backref" href="#id9">Network configuration privileges</a><a class="headerlink" href="#network-configuration-privileges" title="Permalink to this headline">¶</a></h3>
 <p>The majority of the supported networking modes need <code class="docutils literal notranslate"><span class="pre">root</span></code> privileges.
 For example, in the legacy tuntap networking mode, users were required
@@ -658,8 +660,8 @@ full networking.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># sudo setcap cap_net_raw,cap_net_admin+ep linux
 </pre></div>
 </div>
-</section>
-<section id="configuring-vector-transports">
+</div>
+<div class="section" id="configuring-vector-transports">
 <h3><a class="toc-backref" href="#id10">Configuring vector transports</a><a class="headerlink" href="#configuring-vector-transports" title="Permalink to this headline">¶</a></h3>
 <p>All vector transports support a similar syntax:</p>
 <p>If X is the interface number as in vec0, vec1, vec2, etc, the general
@@ -667,7 +669,7 @@ syntax for options is:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>vecX:transport=&quot;Transport Name&quot;,option=value,option=value,...,option=value
 </pre></div>
 </div>
-<section id="common-options">
+<div class="section" id="common-options">
 <h4><a class="toc-backref" href="#id11">Common options</a><a class="headerlink" href="#common-options" title="Permalink to this headline">¶</a></h4>
 <p>These options are common for all transports:</p>
 <ul class="simple">
@@ -692,8 +694,8 @@ if a packet will need to be re-encapsulated into for instance VXLAN.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">vec=0</span></code> - disable multipacket IO and fall back to packet at a
 time mode</p></li>
 </ul>
-</section>
-<section id="shared-options">
+</div>
+<div class="section" id="shared-options">
 <h4><a class="toc-backref" href="#id12">Shared Options</a><a class="headerlink" href="#shared-options" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">ifname=str</span></code> Transports which bind to a local network interface
@@ -708,8 +710,8 @@ EoL2TPv3), sets the correct mode of operation. In the absense of this
 option, the socket type is determined based on what do the src and dst
 arguments resolve/parse to.</p></li>
 </ul>
-</section>
-<section id="tap-transport">
+</div>
+<div class="section" id="tap-transport">
 <h4><a class="toc-backref" href="#id13">tap transport</a><a class="headerlink" href="#tap-transport" title="Permalink to this headline">¶</a></h4>
 <p>Example:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>vecX:transport=tap,ifname=tap0,depth=128,gro=1
@@ -732,8 +734,8 @@ vhost-net like helper for UML is planned at some point in the future.</p>
 UML user using tunctl. Example <code class="docutils literal notranslate"><span class="pre">tunctl</span> <span class="pre">-u</span> <span class="pre">uml-user</span> <span class="pre">-t</span> <span class="pre">tap0</span></code></p></li>
 <li><p>binary to have <code class="docutils literal notranslate"><span class="pre">CAP_NET_ADMIN</span></code> privilege</p></li>
 </ul>
-</section>
-<section id="hybrid-transport">
+</div>
+<div class="section" id="hybrid-transport">
 <h4><a class="toc-backref" href="#id14">hybrid transport</a><a class="headerlink" href="#hybrid-transport" title="Permalink to this headline">¶</a></h4>
 <p>Example:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>vecX:transport=hybrid,ifname=tap0,depth=128,gro=1
@@ -744,8 +746,8 @@ and a raw socket for receive. The raw socket allows multi-packet
 receive resulting in significantly higher packet rates than normal tap.</p>
 <p>Privileges required: hybrid requires <code class="docutils literal notranslate"><span class="pre">CAP_NET_RAW</span></code> capability by
 the UML user as well as the requirements for the tap transport.</p>
-</section>
-<section id="raw-socket-transport">
+</div>
+<div class="section" id="raw-socket-transport">
 <h4><a class="toc-backref" href="#id15">raw socket transport</a><a class="headerlink" href="#raw-socket-transport" title="Permalink to this headline">¶</a></h4>
 <p>Example:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>vecX:transport=raw,ifname=p-veth0,depth=128,gro=1
@@ -786,8 +788,8 @@ risk. It is not recommended to allow this unless the User Mode Linux
 instance is considered trusted.</p>
 <p>Privileges required: raw socket transport requires <cite>CAP_NET_RAW</cite>
 capability.</p>
-</section>
-<section id="gre-socket-transport">
+</div>
+<div class="section" id="gre-socket-transport">
 <h4><a class="toc-backref" href="#id16">GRE socket transport</a><a class="headerlink" href="#gre-socket-transport" title="Permalink to this headline">¶</a></h4>
 <p>Example:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>vecX:transport=gre,src=$src_host,dst=$dst_host
@@ -834,8 +836,8 @@ iface gt0 inet static
 </div>
 <p>Additionally, GRE has been tested versus a variety of network equipment.</p>
 <p>Privileges required: GRE requires <code class="docutils literal notranslate"><span class="pre">CAP_NET_RAW</span></code></p>
-</section>
-<section id="l2tpv3-socket-transport">
+</div>
+<div class="section" id="l2tpv3-socket-transport">
 <h4><a class="toc-backref" href="#id17">l2tpv3 socket transport</a><a class="headerlink" href="#l2tpv3-socket-transport" title="Permalink to this headline">¶</a></h4>
 <p>_Warning_. L2TPv3 has a “bug”. It is the “bug” known as “has more
 options than GNU ls”. While it has some advantages, there are usually
@@ -896,8 +898,8 @@ iface l2tp1 inet static
 </div>
 <p>Privileges required: L2TPv3 requires <code class="docutils literal notranslate"><span class="pre">CAP_NET_RAW</span></code> for raw IP mode and
 no special privileges for the UDP mode.</p>
-</section>
-<section id="bess-socket-transport">
+</div>
+<div class="section" id="bess-socket-transport">
 <h4><a class="toc-backref" href="#id18">BESS socket transport</a><a class="headerlink" href="#bess-socket-transport" title="Permalink to this headline">¶</a></h4>
 <p>BESS is a high performance modular network switch.</p>
 <p><a class="reference external" href="https://github.com/NetSys/bess">https://github.com/NetSys/bess</a></p>
@@ -913,15 +915,15 @@ socket address as source and unix_dst socket address as destination.</p>
 please see the BESS documentation.</p>
 <p><a class="reference external" href="https://github.com/NetSys/bess/wiki/Built-In-Modules-and-Ports">https://github.com/NetSys/bess/wiki/Built-In-Modules-and-Ports</a></p>
 <p>BESS transport does not require any special privileges.</p>
-</section>
-</section>
-<section id="configuring-legacy-transports">
+</div>
+</div>
+<div class="section" id="configuring-legacy-transports">
 <h3><a class="toc-backref" href="#id19">Configuring Legacy transports</a><a class="headerlink" href="#configuring-legacy-transports" title="Permalink to this headline">¶</a></h3>
 <p>Legacy transports are now considered obsolete. Please use the vector
 versions.</p>
-</section>
-</section>
-<section id="running-uml">
+</div>
+</div>
+<div class="section" id="running-uml">
 <h2><a class="toc-backref" href="#id20">Running UML</a><a class="headerlink" href="#running-uml" title="Permalink to this headline">¶</a></h2>
 <p>This section assumes that either the user-mode-linux package from the
 distribution or a custom built kernel has been installed on the host.</p>
@@ -930,9 +932,9 @@ kernel. It can be run just like any other executable.
 It will take most normal linux kernel arguments as command line
 arguments.  Additionally, it will need some UML-specific arguments
 in order to do something useful.</p>
-<section id="arguments">
+<div class="section" id="arguments">
 <h3><a class="toc-backref" href="#id21">Arguments</a><a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h3>
-<section id="mandatory-arguments">
+<div class="section" id="mandatory-arguments">
 <h4><a class="toc-backref" href="#id22">Mandatory Arguments:</a><a class="headerlink" href="#mandatory-arguments" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">mem=int[K,M,G]</span></code> - amount of memory. By default in bytes. It will
@@ -963,8 +965,8 @@ blocks in the image. To turn it off, specify the <code class="docutils literal n
 <li><p><code class="docutils literal notranslate"><span class="pre">root=</span></code> root device - most likely <code class="docutils literal notranslate"><span class="pre">/dev/ubd0</span></code> (this is a Linux
 filesystem image)</p></li>
 </ul>
-</section>
-<section id="important-optional-arguments">
+</div>
+<div class="section" id="important-optional-arguments">
 <h4><a class="toc-backref" href="#id23">Important Optional Arguments</a><a class="headerlink" href="#important-optional-arguments" title="Permalink to this headline">¶</a></h4>
 <p>If UML is run as “linux” with no extra arguments, it will try to start an
 xterm for every console configured inside the image (up to 6 in most
@@ -1003,9 +1005,9 @@ Alternatively, these need to be complied and installed from source. All
 options applicable to consoles also apply to UML serial lines which are
 presented as ttyS inside UML.</p></li>
 </ul>
-</section>
-</section>
-<section id="starting-uml">
+</div>
+</div>
+<div class="section" id="starting-uml">
 <h3><a class="toc-backref" href="#id24">Starting UML</a><a class="headerlink" href="#starting-uml" title="Permalink to this headline">¶</a></h3>
 <p>We can now run UML.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># linux mem=2048M umid=TEST \
@@ -1018,15 +1020,15 @@ presented as ttyS inside UML.</p></li>
 called <code class="docutils literal notranslate"><span class="pre">Filesystem.img</span></code> as root. It will connect to the host using tap0.
 All consoles except <code class="docutils literal notranslate"><span class="pre">con1</span></code> will be disabled and console 1 will
 use standard input/output making it appear in the same terminal it was started.</p>
-</section>
-<section id="logging-in">
+</div>
+<div class="section" id="logging-in">
 <h3><a class="toc-backref" href="#id25">Logging in</a><a class="headerlink" href="#logging-in" title="Permalink to this headline">¶</a></h3>
 <p>If you have not set up a password when generating the image, you will have to
 shut down the UML instance, mount the image, chroot into it and set it - as
 described in the Generating an Image section.  If the password is already set,
 you can just log in.</p>
-</section>
-<section id="the-uml-management-console">
+</div>
+<div class="section" id="the-uml-management-console">
 <h3><a class="toc-backref" href="#id26">The UML Management Console</a><a class="headerlink" href="#the-uml-management-console" title="Permalink to this headline">¶</a></h3>
 <p>In addition to managing the image from “the inside” using normal sysadmin tools,
 it is possible to perform a number of low-level operations using the UML
@@ -1081,7 +1083,7 @@ UML.  Run it with either the umid or the full path as its argument:</p>
 <li><p>proc</p></li>
 <li><p>stack</p></li>
 </ul>
-<section id="version">
+<div class="section" id="version">
 <h4><a class="toc-backref" href="#id27">version</a><a class="headerlink" href="#version" title="Permalink to this headline">¶</a></h4>
 <p>This command takes no arguments.  It prints the UML version:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(mconsole)  version
@@ -1092,13 +1094,13 @@ OK Linux OpenWrt 4.14.106 #0 Tue Mar 19 08:19:41 2019 x86_64
 can be used to check that a UML is running.  It’s also a way of
 sending a device interrupt to the UML. UML mconsole is treated internally as
 a UML device.</p>
-</section>
-<section id="help">
+</div>
+<div class="section" id="help">
 <h4><a class="toc-backref" href="#id28">help</a><a class="headerlink" href="#help" title="Permalink to this headline">¶</a></h4>
 <p>This command takes no arguments. It prints a short help screen with the
 supported mconsole commands.</p>
-</section>
-<section id="halt-and-reboot">
+</div>
+<div class="section" id="halt-and-reboot">
 <h4><a class="toc-backref" href="#id29">halt and reboot</a><a class="headerlink" href="#halt-and-reboot" title="Permalink to this headline">¶</a></h4>
 <p>These commands take no arguments.  They shut the machine down immediately, with
 no syncing of disks and no clean shutdown of userspace.  So, they are
@@ -1107,8 +1109,8 @@ pretty close to crashing the machine:</p>
 OK
 </pre></div>
 </div>
-</section>
-<section id="config">
+</div>
+<div class="section" id="config">
 <h4><a class="toc-backref" href="#id30">config</a><a class="headerlink" href="#config" title="Permalink to this headline">¶</a></h4>
 <p>“config” adds a new device to the virtual machine. This is supported
 by most UML device drivers. It takes one argument, which is the
@@ -1116,8 +1118,8 @@ device to add, with the same syntax as the kernel command line:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(mconsole) config ubd3=/home/jdike/incoming/roots/root_fs_debian22
 </pre></div>
 </div>
-</section>
-<section id="remove">
+</div>
+<div class="section" id="remove">
 <h4><a class="toc-backref" href="#id31">remove</a><a class="headerlink" href="#remove" title="Permalink to this headline">¶</a></h4>
 <p>“remove” deletes a device from the system.  Its argument is just the
 name of the device to be removed. The device must be idle in whatever
@@ -1127,54 +1129,54 @@ open, and in the case of the network driver, the device must be down:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(mconsole)  remove ubd3
 </pre></div>
 </div>
-</section>
-<section id="sysrq">
+</div>
+<div class="section" id="sysrq">
 <h4><a class="toc-backref" href="#id32">sysrq</a><a class="headerlink" href="#sysrq" title="Permalink to this headline">¶</a></h4>
 <p>This command takes one argument, which is a single letter.  It calls the
 generic kernel’s SysRq driver, which does whatever is called for by
 that argument.  See the SysRq documentation in
 <a class="reference internal" href="../../admin-guide/sysrq.html"><span class="doc">Linux Magic System Request Key Hacks</span></a> in your favorite kernel tree to
 see what letters are valid and what they do.</p>
-</section>
-<section id="cad">
+</div>
+<div class="section" id="cad">
 <h4><a class="toc-backref" href="#id33">cad</a><a class="headerlink" href="#cad" title="Permalink to this headline">¶</a></h4>
 <p>This invokes the <code class="docutils literal notranslate"><span class="pre">Ctl-Alt-Del</span></code> action in the running image.  What exactly
 this ends up doing is up to init, systemd, etc.  Normally, it reboots the
 machine.</p>
-</section>
-<section id="stop">
+</div>
+<div class="section" id="stop">
 <h4><a class="toc-backref" href="#id34">stop</a><a class="headerlink" href="#stop" title="Permalink to this headline">¶</a></h4>
 <p>This puts the UML in a loop reading mconsole requests until a ‘go’
 mconsole command is received. This is very useful as a
 debugging/snapshotting tool.</p>
-</section>
-<section id="go">
+</div>
+<div class="section" id="go">
 <h4><a class="toc-backref" href="#id35">go</a><a class="headerlink" href="#go" title="Permalink to this headline">¶</a></h4>
 <p>This resumes a UML after being paused by a ‘stop’ command. Note that
 when the UML has resumed, TCP connections may have timed out and if
 the UML is paused for a long period of time, crond might go a little
 crazy, running all the jobs it didn’t do earlier.</p>
-</section>
-<section id="proc">
+</div>
+<div class="section" id="proc">
 <h4><a class="toc-backref" href="#id36">proc</a><a class="headerlink" href="#proc" title="Permalink to this headline">¶</a></h4>
 <p>This takes one argument - the name of a file in /proc which is printed
 to the mconsole standard output</p>
-</section>
-<section id="stack">
+</div>
+<div class="section" id="stack">
 <h4><a class="toc-backref" href="#id37">stack</a><a class="headerlink" href="#stack" title="Permalink to this headline">¶</a></h4>
 <p>This takes one argument - the pid number of a process. Its stack is
 printed to a standard output.</p>
-</section>
-</section>
-</section>
-<section id="advanced-uml-topics">
+</div>
+</div>
+</div>
+<div class="section" id="advanced-uml-topics">
 <h2><a class="toc-backref" href="#id38">Advanced UML Topics</a><a class="headerlink" href="#advanced-uml-topics" title="Permalink to this headline">¶</a></h2>
-<section id="sharing-filesystems-between-virtual-machines">
+<div class="section" id="sharing-filesystems-between-virtual-machines">
 <h3><a class="toc-backref" href="#id39">Sharing Filesystems between Virtual Machines</a><a class="headerlink" href="#sharing-filesystems-between-virtual-machines" title="Permalink to this headline">¶</a></h3>
 <p>Don’t attempt to share filesystems simply by booting two UMLs from the
 same file.  That’s the same thing as booting two physical machines
 from a shared disk.  It will result in filesystem corruption.</p>
-<section id="using-layered-block-devices">
+<div class="section" id="using-layered-block-devices">
 <h4><a class="toc-backref" href="#id40">Using layered block devices</a><a class="headerlink" href="#using-layered-block-devices" title="Permalink to this headline">¶</a></h4>
 <p>The way to share a filesystem between two virtual machines is to use
 the copy-on-write (COW) layering capability of the ubd block driver.
@@ -1203,14 +1205,14 @@ add the name of the COW file to the appropriate ubd switch:</p>
 <p>where <code class="docutils literal notranslate"><span class="pre">root_fs_cow</span></code> is the private COW file and <code class="docutils literal notranslate"><span class="pre">root_fs_debian_22</span></code> is
 the existing shared filesystem.  The COW file need not exist.  If it
 doesn’t, the driver will create and initialize it.</p>
-</section>
-<section id="disk-usage">
+</div>
+<div class="section" id="disk-usage">
 <h4><a class="toc-backref" href="#id41">Disk Usage</a><a class="headerlink" href="#disk-usage" title="Permalink to this headline">¶</a></h4>
 <p>UML has TRIM support which will release any unused space in its disk
 image files to the underlying OS. It is important to use either ls -ls
 or du to verify the actual file size.</p>
-</section>
-<section id="cow-validity">
+</div>
+<div class="section" id="cow-validity">
 <h4><a class="toc-backref" href="#id42">COW validity.</a><a class="headerlink" href="#cow-validity" title="Permalink to this headline">¶</a></h4>
 <p>Any changes to the master image will invalidate all COW files. If this
 happens, UML will <em>NOT</em> automatically delete any of the COW files and
@@ -1218,8 +1220,8 @@ will refuse to boot. In this case the only solution is to either
 restore the old image (including its last modified timestamp) or remove
 all COW files which will result in their recreation. Any changes in
 the COW files will be lost.</p>
-</section>
-<section id="cows-can-moo-uml-moo-merging-a-cow-file-with-its-backing-file">
+</div>
+<div class="section" id="cows-can-moo-uml-moo-merging-a-cow-file-with-its-backing-file">
 <h4><a class="toc-backref" href="#id43">Cows can moo - uml_moo : Merging a COW file with its backing file</a><a class="headerlink" href="#cows-can-moo-uml-moo-merging-a-cow-file-with-its-backing-file" title="Permalink to this headline">¶</a></h4>
 <p>Depending on how you use UML and COW devices, it may be advisable to
 merge the changes in the COW file into the backing file every once in
@@ -1242,9 +1244,9 @@ convenient if you’re short of disk space, and it should also be
 noticeably faster than a non-destructive merge.</p>
 <p><code class="docutils literal notranslate"><span class="pre">uml_moo</span></code> is installed with the UML distribution packages and is
 available as a part of UML utilities.</p>
-</section>
-</section>
-<section id="host-file-access">
+</div>
+</div>
+<div class="section" id="host-file-access">
 <h3><a class="toc-backref" href="#id44">Host file access</a><a class="headerlink" href="#host-file-access" title="Permalink to this headline">¶</a></h3>
 <p>If you want to access files on the host machine from inside UML, you
 can treat it as a separate machine and either nfs mount directories
@@ -1260,7 +1262,7 @@ files contained in it just as you would on the host.</p>
 to mount any part of the host filesystem and write to it. Always
 confine hostfs to a specific “harmless” directory (for example <code class="docutils literal notranslate"><span class="pre">/var/tmp</span></code>)
 if running UML. This is especially important if UML is being run as root.</p>
-<section id="using-hostfs">
+<div class="section" id="using-hostfs">
 <h4><a class="toc-backref" href="#id45">Using hostfs</a><a class="headerlink" href="#using-hostfs" title="Permalink to this headline">¶</a></h4>
 <p>To begin with, make sure that hostfs is available inside the virtual
 machine with:</p>
@@ -1281,8 +1283,8 @@ specify a subdirectory to mount with the -o switch to mount:</p>
 </pre></div>
 </div>
 <p>will mount the host’s /home on the virtual machine’s /mnt/home.</p>
-</section>
-<section id="hostfs-as-the-root-filesystem">
+</div>
+<div class="section" id="hostfs-as-the-root-filesystem">
 <h4><a class="toc-backref" href="#id46">hostfs as the root filesystem</a><a class="headerlink" href="#hostfs-as-the-root-filesystem" title="Permalink to this headline">¶</a></h4>
 <p>It’s possible to boot from a directory hierarchy on the host using
 hostfs rather than using the standard filesystem in a file.
@@ -1307,17 +1309,17 @@ module.  Then run UML with the boot device pointing at that directory:</p>
 </pre></div>
 </div>
 <p>UML should then boot as it does normally.</p>
-</section>
-<section id="hostfs-caveats">
+</div>
+<div class="section" id="hostfs-caveats">
 <h4><a class="toc-backref" href="#id47">Hostfs Caveats</a><a class="headerlink" href="#hostfs-caveats" title="Permalink to this headline">¶</a></h4>
 <p>Hostfs does not support keeping track of host filesystem changes on the
 host (outside UML). As a result, if a file is changed without UML’s
 knowledge, UML will not know about it and its own in-memory cache of
 the file may be corrupt. While it is possible to fix this, it is not
 something which is being worked on at present.</p>
-</section>
-</section>
-<section id="tuning-uml">
+</div>
+</div>
+<div class="section" id="tuning-uml">
 <h3><a class="toc-backref" href="#id48">Tuning UML</a><a class="headerlink" href="#tuning-uml" title="Permalink to this headline">¶</a></h3>
 <p>UML at present is strictly uniprocessor. It will, however spin up a
 number of threads to handle various functions.</p>
@@ -1341,9 +1343,9 @@ look for shmfs mounted under <code class="docutils literal notranslate"><span cl
 TEMP=/mnt/tmpfs-nodeX taskset -cX linux options options options..
 </pre></div>
 </div>
-</section>
-</section>
-<section id="contributing-to-uml-and-developing-with-uml">
+</div>
+</div>
+<div class="section" id="contributing-to-uml-and-developing-with-uml">
 <h2><a class="toc-backref" href="#id49">Contributing to UML and Developing with UML</a><a class="headerlink" href="#contributing-to-uml-and-developing-with-uml" title="Permalink to this headline">¶</a></h2>
 <p>UML is an excellent platform to develop new Linux kernel concepts -
 filesystems, devices, virtualization, etc. It provides unrivalled
@@ -1368,7 +1370,7 @@ later on on how to do that. That, however, is not the only way to
 debug a Linux kernel. Quite often adding tracing statements and/or
 using UML specific approaches such as ptracing the UML kernel process
 are significantly more informative.</p>
-<section id="tracing-uml">
+<div class="section" id="tracing-uml">
 <h3><a class="toc-backref" href="#id50">Tracing UML</a><a class="headerlink" href="#tracing-uml" title="Permalink to this headline">¶</a></h3>
 <p>When running, UML consists of a main kernel thread and a number of
 helper threads. The ones of interest for tracing are NOT the ones
@@ -1419,8 +1421,8 @@ will execute an ACPI idle).</p></li>
 <p>As you can see UML will generate quite a bit of output even in idle. The output
 can be very informative when observing IO. It shows the actual IO calls, their
 arguments and returns values.</p>
-</section>
-<section id="kernel-debugging">
+</div>
+<div class="section" id="kernel-debugging">
 <h3><a class="toc-backref" href="#id51">Kernel debugging</a><a class="headerlink" href="#kernel-debugging" title="Permalink to this headline">¶</a></h3>
 <p>You can run UML under gdb now, though it will not necessarily agree to
 be started under it. If you are trying to track a runtime bug, it is
@@ -1432,8 +1434,8 @@ much better to attach gdb to a running UML instance and let UML run.</p>
 <p>This will STOP the UML instance, so you must enter <cite>cont</cite> at the GDB
 command line to request it to continue. It may be a good idea to make
 this into a gdb script and pass it to gdb as an argument.</p>
-</section>
-<section id="developing-device-drivers">
+</div>
+<div class="section" id="developing-device-drivers">
 <h3><a class="toc-backref" href="#id52">Developing Device Drivers</a><a class="headerlink" href="#developing-device-drivers" title="Permalink to this headline">¶</a></h3>
 <p>Nearly all UML drivers are monolithic. While it is possible to build a
 UML driver as a kernel module, that limits the possible functionality
@@ -1457,7 +1459,7 @@ which includes and libraries they are trying to refer to.</p>
 E.g. <code class="docutils literal notranslate"><span class="pre">os_close_file()</span></code> is just a wrapper around <code class="docutils literal notranslate"><span class="pre">close()</span></code>
 which ensures that the userspace function close does not clash
 with similarly named function(s) in the kernel part.</p>
-<section id="security-considerations">
+<div class="section" id="security-considerations">
 <h4><a class="toc-backref" href="#id53">Security Considerations</a><a class="headerlink" href="#security-considerations" title="Permalink to this headline">¶</a></h4>
 <p>Drivers or any new functionality should default to not
 accepting arbitrary filename, bpf code or other parameters
@@ -1477,10 +1479,10 @@ use this to break out of UML. Thus, if UML is used in
 a production application, it is recommended that all modules
 are loaded at boot and kernel module loading is disabled
 afterwards.</p>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Kernel Crypto API Architecture &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -265,9 +267,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kernel-crypto-api-architecture">
+  <div class="section" id="kernel-crypto-api-architecture">
 <h1>Kernel Crypto API Architecture<a class="headerlink" href="#kernel-crypto-api-architecture" title="Permalink to this headline">¶</a></h1>
-<section id="cipher-algorithm-types">
+<div class="section" id="cipher-algorithm-types">
 <h2>Cipher algorithm types<a class="headerlink" href="#cipher-algorithm-types" title="Permalink to this headline">¶</a></h2>
 <p>The kernel crypto API provides different API calls for the following
 cipher types:</p>
@@ -278,8 +280,8 @@ cipher types:</p>
 <li><p>Random number generation</p></li>
 <li><p>User space interface</p></li>
 </ul>
-</section>
-<section id="ciphers-and-templates">
+</div>
+<div class="section" id="ciphers-and-templates">
 <h2>Ciphers And Templates<a class="headerlink" href="#ciphers-and-templates" title="Permalink to this headline">¶</a></h2>
 <p>The kernel crypto API provides implementations of single block ciphers
 and message digests. In addition, the kernel crypto API provides
@@ -304,8 +306,8 @@ However, templates cannot be used without a single cipher.</p>
 </ul>
 <p>In these examples, “aes” and “sha1” are the ciphers and all others are
 the templates.</p>
-</section>
-<section id="synchronous-and-asynchronous-operation">
+</div>
+<div class="section" id="synchronous-and-asynchronous-operation">
 <h2>Synchronous And Asynchronous Operation<a class="headerlink" href="#synchronous-and-asynchronous-operation" title="Permalink to this headline">¶</a></h2>
 <p>The kernel crypto API provides synchronous and asynchronous API
 operations.</p>
@@ -325,8 +327,8 @@ must ensure it can handle such asynchronous events by applying
 appropriate locking around its data. The kernel crypto API does not
 perform any special serialization operation to protect the caller’s data
 integrity.</p>
-</section>
-<section id="crypto-api-cipher-references-and-priority">
+</div>
+<div class="section" id="crypto-api-cipher-references-and-priority">
 <h2>Crypto API Cipher References And Priority<a class="headerlink" href="#crypto-api-cipher-references-and-priority" title="Permalink to this headline">¶</a></h2>
 <p>A cipher is referenced by the caller with a string. That string has the
 following semantics:</p>
@@ -394,8 +396,8 @@ an ECDH or DH implementation</p></li>
 <li><p>digestsize: output size of the message digest</p></li>
 <li><p>geniv: IV generator (obsolete)</p></li>
 </ul>
-</section>
-<section id="key-sizes">
+</div>
+<div class="section" id="key-sizes">
 <h2>Key Sizes<a class="headerlink" href="#key-sizes" title="Permalink to this headline">¶</a></h2>
 <p>When allocating a cipher handle, the caller only specifies the cipher
 type. Symmetric ciphers, however, typically support multiple key sizes
@@ -403,8 +405,8 @@ type. Symmetric ciphers, however, typically support multiple key sizes
 with the length of the provided key. Thus, the kernel crypto API does
 not provide a separate way to select the particular symmetric cipher key
 size.</p>
-</section>
-<section id="cipher-allocation-type-and-masks">
+</div>
+<div class="section" id="cipher-allocation-type-and-masks">
 <h2>Cipher Allocation Type And Masks<a class="headerlink" href="#cipher-allocation-type-and-masks" title="Permalink to this headline">¶</a></h2>
 <p>The different cipher handle allocation functions allow the specification
 of a type and mask flag. Both parameters have the following meaning (and
@@ -440,8 +442,8 @@ cipher implementation for the given cipher name. That means, even when a
 caller uses a cipher name that exists during its initialization call,
 the kernel crypto API may not select it due to the used type and mask
 field.</p>
-</section>
-<section id="internal-structure-of-kernel-crypto-api">
+</div>
+<div class="section" id="internal-structure-of-kernel-crypto-api">
 <h2>Internal Structure of Kernel Crypto API<a class="headerlink" href="#internal-structure-of-kernel-crypto-api" title="Permalink to this headline">¶</a></h2>
 <p>The kernel crypto API has an internal structure where a cipher
 implementation may use many layers and indirections. This section shall
@@ -450,7 +452,7 @@ implement the complete cipher.</p>
 <p>The following subsections explain the internal structure based on
 existing cipher implementations. The first section addresses the most
 complex scenario where all other scenarios form a logical subset.</p>
-<section id="generic-aead-cipher-structure">
+<div class="section" id="generic-aead-cipher-structure">
 <h3>Generic AEAD Cipher Structure<a class="headerlink" href="#generic-aead-cipher-structure" title="Permalink to this headline">¶</a></h3>
 <p>The following ASCII art decomposes the kernel crypto API layers when
 using the AEAD cipher with the automated IV generation. The shown
@@ -546,16 +548,16 @@ implementation via the AHASH API.</p></li>
 <p>When the IPSEC layer triggers the esp_input() function, the same call
 sequence is followed with the only difference that the operation starts
 with step (2).</p>
-</section>
-<section id="generic-block-cipher-structure">
+</div>
+<div class="section" id="generic-block-cipher-structure">
 <h3>Generic Block Cipher Structure<a class="headerlink" href="#generic-block-cipher-structure" title="Permalink to this headline">¶</a></h3>
 <p>Generic block ciphers follow the same concept as depicted with the ASCII
 art picture above.</p>
 <p>For example, CBC(AES) is implemented with cbc.c, and aes-generic.c. The
 ASCII art picture above applies as well with the difference that only
 step (4) is used and the SKCIPHER block chaining mode is CBC.</p>
-</section>
-<section id="generic-keyed-message-digest-structure">
+</div>
+<div class="section" id="generic-keyed-message-digest-structure">
 <h3>Generic Keyed Message Digest Structure<a class="headerlink" href="#generic-keyed-message-digest-structure" title="Permalink to this headline">¶</a></h3>
 <p>Keyed message digest implementations again follow the same concept as
 depicted in the ASCII art picture above.</p>
@@ -591,9 +593,9 @@ where the SHA256 cipher handle is used.</p>
 <li><p>The HMAC instance now invokes the SHASH API with the SHA256 cipher
 handle to calculate the message digest.</p></li>
 </ol>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

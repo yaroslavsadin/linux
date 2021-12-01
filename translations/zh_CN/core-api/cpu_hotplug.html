@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>内核中的CPU热拔插 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -293,7 +295,7 @@
 <dd class="field-odd"><p>吴想成 Wu XiangCheng &lt;<a class="reference external" href="mailto:bobwxc&#37;&#52;&#48;email&#46;cn">bobwxc<span>&#64;</span>email<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="cpu">
+<div class="section" id="cpu">
 <span id="cn-core-api-cpu-hotplug"></span><h1>内核中的CPU热拔插<a class="headerlink" href="#cpu" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">时间</dt>
@@ -307,7 +309,7 @@ Ashok Raj &lt;<a class="reference external" href="mailto:ashok&#46;raj&#37;&#52;
 Joel Schopp &lt;<a class="reference external" href="mailto:jschopp&#37;&#52;&#48;austin&#46;ibm&#46;com">jschopp<span>&#64;</span>austin<span>&#46;</span>ibm<span>&#46;</span>com</a>&gt;</p>
 </dd>
 </dl>
-<section id="id1">
+<div class="section" id="id1">
 <h2>简介<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>现代系统架构的演进已经在处理器中引入了先进的错误报告和纠正能力。有一些OEM也支
 持可热拔插的NUMA（Non Uniform Memory Access，非统一内存访问）硬件,其中物理
@@ -316,8 +318,8 @@ Joel Schopp &lt;<a class="reference external" href="mailto:jschopp&#37;&#52;&#48
 以保持一个不需要的CPU不在系统执行路径。因此需要在Linux内核中支持CPU热拔插。</p>
 <p>CPU热拔插支持的一个更新颖的用途是它在SMP的暂停恢复支持中的应用。双核和超线程支
 持使得即使是笔记本电脑也能运行不支持这些方法的SMP内核。</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h2>命令行开关<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">maxcpus=n</span></code></dt><dd><p>限制启动时的CPU为 <em>n</em> 个。例如，如果你有四个CPU，使用 <code class="docutils literal notranslate"><span class="pre">maxcpus=2</span></code> 将只能启
@@ -337,8 +339,8 @@ Joel Schopp &lt;<a class="reference external" href="mailto:jschopp&#37;&#52;&#48
 <p>这个选项只限于X86架构。</p>
 </dd>
 </dl>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>CPU位图<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">cpu_possible_mask</span></code></dt><dd><p>系统中可能可用CPU的位图。这是用来为per_cpu变量分配一些启动时的内存，这些变量
@@ -360,8 +362,8 @@ hot-add/hot-remove。目前还没有定死规定。典型的用法是在启动�
 CPU资源时，几乎总是使用 <code class="docutils literal notranslate"><span class="pre">cpu_possible_mask</span></code> 或 <code class="docutils literal notranslate"><span class="pre">for_each_possible_cpu()</span></code>
 来进行迭代。宏 <code class="docutils literal notranslate"><span class="pre">for_each_cpu()</span></code> 可以用来迭代一个自定义的CPU掩码。</p>
 <p>不要使用 <code class="docutils literal notranslate"><span class="pre">cpumask_t</span></code> 以外的任何东西来表示CPU的位图。</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h2>使用CPU热拔插<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>内核选项 <em>CONFIG_HOTPLUG_CPU</em> 需要被启用。它目前可用于多种架构，包括ARM、MIPS、
 PowerPC和X86。配置是通过sysfs接口完成的:</p>
@@ -402,10 +404,10 @@ smpboot: Booting Node 0 Processor 4 APIC 0x1
 <li><p>PIC中断。如果检测到PIC中断，CPU0就不能被移除。</p></li>
 </ul>
 <p>如果你发现CPU0上有任何依赖性，请告知Fenghua Yu &lt;<a class="reference external" href="mailto:fenghua&#46;yu&#37;&#52;&#48;intel&#46;com">fenghua<span>&#46;</span>yu<span>&#64;</span>intel<span>&#46;</span>com</a>&gt;。</p>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h2>CPU的热拔插协作<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
-<section id="id6">
+<div class="section" id="id6">
 <h3>下线情况<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>一旦CPU被逻辑关闭，注册的热插拔状态的清除回调将被调用，从 <code class="docutils literal notranslate"><span class="pre">CPUHP_ONLINE</span></code> 开始，在
 <code class="docutils literal notranslate"><span class="pre">CPUHP_OFFLINE</span></code> 状态结束。这包括:</p>
@@ -418,8 +420,8 @@ smpboot: Booting Node 0 Processor 4 APIC 0x1
 <li><p>一旦所有的服务被迁移，内核会调用一个特定的例程 <code class="docutils literal notranslate"><span class="pre">__cpu_disable()</span></code> 来进行特定的清
 理。</p></li>
 </ul>
-</section>
-<section id="api">
+</div>
+<div class="section" id="api">
 <h3>使用热插拔API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h3>
 <p>一旦一个CPU下线或上线，就有可能收到通知。这对某些需要根据可用CPU数量执行某种设置或清
 理功能的驱动程序来说可能很重要:</p>
@@ -437,7 +439,7 @@ ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, &quot;X/Y:online&quot;,
 （ <em>CPUHP_AP_ONLINE_DYN</em> ）的分配热拔插。对于预定义的状态，它将返回0。</p>
 <p>该回调可以通过调用 <code class="docutils literal notranslate"><span class="pre">cpuhp_remove_state()</span></code> 来删除。如果是动态分配的状态
 （ <em>CPUHP_AP_ONLINE_DYN</em> ），则使用返回的状态。在移除热插拔状态的过程中，将调用拆解回调。</p>
-<section id="id7">
+<div class="section" id="id7">
 <h4>多个实例<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
 <p>如果一个驱动程序有多个实例，并且每个实例都需要独立执行回调，那么很可能应该使用
 <code class="docutils literal notranslate"><span class="pre">multi-state</span></code> 。首先需要注册一个多状态的状态:</p>
@@ -460,16 +462,16 @@ CPU上调用先前注册的回调（ <code class="docutils literal notranslate">
 </pre></div>
 </div>
 <p>应该被调用，这将在所有在线CPU上调用拆分回调。</p>
-</section>
-<section id="id8">
+</div>
+<div class="section" id="id8">
 <h4>手动设置<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
 <p>通常情况下，在注册或移除状态时调用setup和teamdown回调是很方便的，因为通常在CPU上线
 （下线）和驱动的初始设置（关闭）时需要执行该操作。然而，每个注册和删除功能也有一个
 _nocalls的后缀，如果不希望调用回调，则不调用所提供的回调。在手动设置（或关闭）期间，
 应该使用 <code class="docutils literal notranslate"><span class="pre">get_online_cpus()</span></code> 和 <code class="docutils literal notranslate"><span class="pre">put_online_cpus()</span></code> 函数来抑制CPU热插拔操作。</p>
-</section>
-</section>
-<section id="id9">
+</div>
+</div>
+<div class="section" id="id9">
 <h3>事件的顺序<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <p>热插拔状态被定义在 <code class="docutils literal notranslate"><span class="pre">include/linux/cpuhotplug.h</span></code>:</p>
 <ul class="simple">
@@ -485,9 +487,9 @@ _nocalls的后缀，如果不希望调用回调，则不调用所提供的回调
 <p>通过 <code class="docutils literal notranslate"><span class="pre">CPUHP_AP_ONLINE_DYN</span></code> 动态分配的状态通常已经足够了。然而，如果在启动或关闭
 期间需要更早的调用，那么应该获得一个显式状态。如果热拔插事件需要相对于另一个热拔插事
 件的特定排序，也可能需要一个显式状态。</p>
-</section>
-</section>
-<section id="id10">
+</div>
+</div>
+<div class="section" id="id10">
 <h2>测试热拔插状态<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
 <p>验证自定义状态是否按预期工作的一个方法是关闭一个CPU，然后再把它上线。也可以把CPU放到某
 些状态（例如 <code class="docutils literal notranslate"><span class="pre">CPUHP_AP_ONLINE</span></code> ），然后再回到 <code class="docutils literal notranslate"><span class="pre">CPUHP_ONLINE</span></code> 。这将模拟在
@@ -551,8 +553,8 @@ $ cat /sys/devices/system/cpu/cpu4/hotplug/state
 </div>
 <p>可以看到，CPU4一直下降到时间戳22.996，然后又上升到95.552。所有被调用的回调，
 包括它们的返回代码都可以在跟踪中看到。</p>
-</section>
-<section id="id11">
+</div>
+<div class="section" id="id11">
 <h2>架构的要求<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
 <p>需要具备以下功能和配置：</p>
 <dl class="simple">
@@ -567,8 +569,8 @@ $ cat /sys/devices/system/cpu/cpu4/hotplug/state
 通常会等待一些per_cpu状态的设置，以确保处理器的死亡例程被调用来保持活跃。</p>
 </dd>
 </dl>
-</section>
-<section id="id12">
+</div>
+<div class="section" id="id12">
 <h2>用户空间通知<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h2>
 <p>在CPU成功上线或下线后，udev事件被发送。一个udev规则，比如:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>SUBSYSTEM==&quot;cpu&quot;, DRIVERS==&quot;processor&quot;, DEVPATH==&quot;/devices/system/cpu/*&quot;, RUN+=&quot;the_hotplug_receiver.sh&quot;
@@ -589,13 +591,13 @@ fi
 </pre></div>
 </div>
 <p>可以进一步处理该事件。</p>
-</section>
-<section id="id13">
+</div>
+<div class="section" id="id13">
 <h2>内核内联文档参考<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h2>
 <p>该API在以下内核代码中:</p>
 <p>include/linux/cpuhotplug.h</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

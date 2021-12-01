@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>RISC-V平台上对PMUs的支持 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -287,10 +289,10 @@
 <dd class="field-even"><p>司延腾 Yanteng Si &lt;<a class="reference external" href="mailto:siyanteng&#37;&#52;&#48;loongson&#46;cn">siyanteng<span>&#64;</span>loongson<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="risc-vpmus">
+<div class="section" id="risc-vpmus">
 <span id="cn-riscv-pmu"></span><h1>RISC-V平台上对PMUs的支持<a class="headerlink" href="#risc-vpmus" title="Permalink to this headline">¶</a></h1>
 <p>Alan Kao &lt;<a class="reference external" href="mailto:alankao&#37;&#52;&#48;andestech&#46;com">alankao<span>&#64;</span>andestech<span>&#46;</span>com</a>&gt;, Mar 2018</p>
-<section id="id1">
+<div class="section" id="id1">
 <h2>简介<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>截止本文撰写时，在The RISC-V ISA Privileged Version 1.10中提到的 perf_event
 相关特性如下:
@@ -319,8 +321,8 @@
 perf’ 机制和待办事项。</p>
 <p>你可以在这里查看以前的讨论[1][2]。 另外，查看附录中的相关内核结构体可能会有
 帮助。</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h2>1. 初始化<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p><em>riscv_pmu</em> 是一个类型为 <em>struct riscv_pmu</em> 的全局指针，它包含了根据perf内部
 约定的各种方法和PMU-specific参数。人们应该声明这样的实例来代表PMU。 默认情况
@@ -330,8 +332,8 @@ perf’ 机制和待办事项。</p>
 辑，或者创建他/她自己的 <em>riscv_init_platform_pmu</em> 实现。</p>
 <p>换句话说，现有的 <em>riscv_base_pmu</em> 源只是提供了一个参考实现。 开发者可以灵活地
 决定多少部分可用，在最极端的情况下，他们可以根据自己的需要定制每一个函数。</p>
-</section>
-<section id="event-initialization">
+</div>
+<div class="section" id="event-initialization">
 <h2>2. Event Initialization<a class="headerlink" href="#event-initialization" title="Permalink to this headline">¶</a></h2>
 <p>当用户启动perf命令来监控一些事件时，首先会被用户空间的perf工具解释为多个
 <em>perf_event_open</em> 系统调用，然后进一步调用上一步分配的 <em>event_init</em> 成员函数
@@ -354,8 +356,8 @@ perf’ 机制和待办事项。</p>
 </li>
 </ol>
 <p>在 <em>riscv_base_pmu</em> 的情况下，目前只提供了（3）。</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>3. 中断<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>3.1. 中断初始化</p>
 <p>这种情况经常出现在 <em>event_init</em> 方案的开头。通常情况下，这应该是一个代码段，如:</p>
@@ -413,8 +415,8 @@ perf’ 机制和待办事项。</p>
 然而截至目前，没有一个RISC-V的实现为perf设计了中断，所以具体的实现要在未来完成。
 </pre></div>
 </div>
-</section>
-<section id="reading-writing">
+</div>
+<div class="section" id="reading-writing">
 <h2>4. Reading/Writing 计数<a class="headerlink" href="#reading-writing" title="Permalink to this headline">¶</a></h2>
 <p>它们看似差不多，但perf对待它们的态度却截然不同。 对于读，在 <em>struct pmu</em> 中有一个
 <em>read</em> 接口，但它的作用不仅仅是读。 根据上下文，<em>read</em> 函数不仅要读取计数器的内容
@@ -426,8 +428,8 @@ perf’ 机制和待办事项。</p>
 2）在IRQ里面，应该把计数器设置成同样的合理值。</p>
 </div></blockquote>
 <p>在RISC-V中，读操作不是问题，但写操作就需要费些力气了，因为S模式不允许写计数器。</p>
-</section>
-<section id="add-del-start-stop">
+</div>
+<div class="section" id="add-del-start-stop">
 <h2>5. add()/del()/start()/stop()<a class="headerlink" href="#add-del-start-stop" title="Permalink to this headline">¶</a></h2>
 <p>基本思想: add()/del() 向PMU添加/删除事件，<a class="reference internal" href="../../../networking/ieee802154.html#c.start" title="start"><code class="xref c c-func docutils literal notranslate"><span class="pre">start()</span></code></a>/<a class="reference internal" href="../../../networking/ieee802154.html#c.stop" title="stop"><code class="xref c c-func docutils literal notranslate"><span class="pre">stop()</span></code></a> 启动/停止PMU中某个事件
 的计数器。 所有这些函数都使用相同的参数: <em>struct perf_event *event</em> 和 <em>int flag</em> 。</p>
@@ -467,8 +469,8 @@ perf核心需要快速停止和启动时也会被调用，比如在调整中断�
 </dd>
 </dl>
 <p>目前的实现已经足够了，将来可以很容易地扩展到功能。</p>
-</section>
-<section id="a">
+</div>
+<div class="section" id="a">
 <h2>A. 相关结构体<a class="headerlink" href="#a" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>struct pmu: include/linux/perf_event.h</p></li>
@@ -487,13 +489,13 @@ perf的内部状态机处理perf事件（详情请查看kernel/events/core.c）�
 事件的数量和事件的数组。</p>
 </li>
 </ul>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h2>参考文献<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>[1] <a class="reference external" href="https://github.com/riscv/riscv-linux/pull/124">https://github.com/riscv/riscv-linux/pull/124</a></p>
 <p>[2] <a class="reference external" href="https://groups.google.com/a/groups.riscv.org/forum/#!topic/sw-dev/f19TmCNP6yA">https://groups.google.com/a/groups.riscv.org/forum/#!topic/sw-dev/f19TmCNP6yA</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

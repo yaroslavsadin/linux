@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>uGuru datasheet &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -451,7 +453,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="uguru-datasheet">
+  <div class="section" id="uguru-datasheet">
 <h1>uGuru datasheet<a class="headerlink" href="#uguru-datasheet" title="Permalink to this headline">¶</a></h1>
 <p>First of all, what I know about uGuru is no fact based on any help, hints or
 datasheet from Abit. The data I have got on uGuru have I assembled through
@@ -471,7 +473,7 @@ document and the Linux driver could not have been written without his efforts.</
 <p>Note: because of the lack of specs only the sensors part of the uGuru is
 described here and not the CPU / RAM / etc voltage &amp; frequency control.</p>
 <p>Hans de Goede &lt;<a class="reference external" href="mailto:j&#46;w&#46;r&#46;degoede&#37;&#52;&#48;hhs&#46;nl">j<span>&#46;</span>w<span>&#46;</span>r<span>&#46;</span>degoede<span>&#64;</span>hhs<span>&#46;</span>nl</a>&gt;, 28-01-2006</p>
-<section id="detection">
+<div class="section" id="detection">
 <h2>Detection<a class="headerlink" href="#detection" title="Permalink to this headline">¶</a></h2>
 <p>As far as known the uGuru is always placed at and using the (ISA) I/O-ports
 0xE0 and 0xE4, so we don’t have to scan any port-range, just check what the two
@@ -488,10 +490,10 @@ hold 0x09 and will only hold 0x08 after reading CMD first, so CMD must be read
 first!</p>
 <p>To be really sure an uGuru is present a test read of one or more register
 sets should be done.</p>
-</section>
-<section id="reading-writing">
+</div>
+<div class="section" id="reading-writing">
 <h2>Reading / Writing<a class="headerlink" href="#reading-writing" title="Permalink to this headline">¶</a></h2>
-<section id="addressing">
+<div class="section" id="addressing">
 <h3>Addressing<a class="headerlink" href="#addressing" title="Permalink to this headline">¶</a></h3>
 <p>The uGuru has a number of different addressing levels. The first addressing
 level we will call banks. A bank holds data for one or more sensors. The data
@@ -509,8 +511,8 @@ a sensor.</p>
 uGuru determines if a read from or a write to the bank is taking place, thus
 when reading you should always use the read address and when writing the
 write address. The write address is always one (1) more than the read address.</p>
-</section>
-<section id="uguru-ready">
+</div>
+<div class="section" id="uguru-ready">
 <h3>uGuru ready<a class="headerlink" href="#uguru-ready" title="Permalink to this headline">¶</a></h3>
 <p>Before you can read from or write to the uGuru you must first put the uGuru
 in “ready” mode.</p>
@@ -523,8 +525,8 @@ has to be read a number of times (max 50).</p>
 for input. As above DATA will usually hold 0x08 the first read but not always.
 This step can be skipped, but it is undetermined what happens if the uGuru has
 not yet reported 0x08 at DATA and you proceed with writing a bank address.</p>
-</section>
-<section id="sending-bank-and-sensor-addresses-to-the-uguru">
+</div>
+<div class="section" id="sending-bank-and-sensor-addresses-to-the-uguru">
 <h3>Sending bank and sensor addresses to the uGuru<a class="headerlink" href="#sending-bank-and-sensor-addresses-to-the-uguru" title="Permalink to this headline">¶</a></h3>
 <p>First the uGuru must be in “ready” mode as described above, DATA should hold
 0x08 indicating that the uGuru wants input, in this case the bank address.</p>
@@ -532,8 +534,8 @@ not yet reported 0x08 at DATA and you proceed with writing a bank address.</p>
 wait for to DATA to hold 0x08 again indicating that it wants / is ready for
 more input (max 250 reads).</p>
 <p>Once DATA holds 0x08 again write the sensor address to CMD.</p>
-</section>
-<section id="reading">
+</div>
+<div class="section" id="reading">
 <h3>Reading<a class="headerlink" href="#reading" title="Permalink to this headline">¶</a></h3>
 <p>First send the bank and sensor addresses as described above.
 Then for each byte of data you want to read wait for DATA to hold 0x01
@@ -546,8 +548,8 @@ above and below.</p>
 ready mode, so that it is ready for the next read / write cycle. This way
 if your program / driver is unloaded and later loaded again the detection
 algorithm described above will still work.</p>
-</section>
-<section id="writing">
+</div>
+<div class="section" id="writing">
 <h3>Writing<a class="headerlink" href="#writing" title="Permalink to this headline">¶</a></h3>
 <p>First send the bank and sensor addresses as described above.
 Then for each byte of data you want to write wait for DATA to hold 0x00
@@ -560,8 +562,8 @@ don’t ask why this is the way it is.</p>
 ready mode, so that it is ready for the next read / write cycle. This way
 if your program / driver is unloaded and later loaded again the detection
 algorithm described above will still work.</p>
-</section>
-<section id="gotchas">
+</div>
+<div class="section" id="gotchas">
 <h3>Gotchas<a class="headerlink" href="#gotchas" title="Permalink to this headline">¶</a></h3>
 <p>After wider testing of the Linux kernel driver some variants of the uGuru have
 turned up which do not hold 0x08 at DATA within 250 reads after writing the
@@ -570,11 +572,11 @@ timeouts doesn’t help, they just go offline for a second or 2, doing some
 internal calibration or whatever. Your code should be prepared to handle
 this and in case of no response in this specific case just goto sleep for a
 while and then retry.</p>
-</section>
-</section>
-<section id="address-map">
+</div>
+</div>
+<div class="section" id="address-map">
 <h2>Address Map<a class="headerlink" href="#address-map" title="Permalink to this headline">¶</a></h2>
-<section id="bank-0x20-alarms-r">
+<div class="section" id="bank-0x20-alarms-r">
 <h3>Bank 0x20 Alarms (R)<a class="headerlink" href="#bank-0x20-alarms-r" title="Permalink to this headline">¶</a></h3>
 <p>This bank contains 0 sensors, iow the sensor address is ignored (but must be
 written) just use 0. Bank 0x20 contains 3 bytes:</p>
@@ -589,8 +591,8 @@ corresponding to sensor 8, 1 to 9, etc.</p>
 corresponding to sensor 0, 1 to 1, etc.</p>
 </dd>
 </dl>
-</section>
-<section id="bank-0x21-sensor-bank1-values-readings-r">
+</div>
+<div class="section" id="bank-0x21-sensor-bank1-values-readings-r">
 <h3>Bank 0x21 Sensor Bank1 Values / Readings (R)<a class="headerlink" href="#bank-0x21-sensor-bank1-values-readings-r" title="Permalink to this headline">¶</a></h3>
 <p>This bank contains 16 sensors, for each sensor it contains 1 byte.
 So far the following sensors are known to be available on all motherboards:</p>
@@ -616,8 +618,8 @@ in use result in ranges of: 0-4361mV, 0-6248mV or 0-14510mV. 3.3 volt sources
 use the 0-4361mV range, 5 volt the 0-6248mV and 12 volt the 0-14510mV .</p>
 <p>Temp sensors also use a linear scale, a reading of 0 corresponds with 0 degree
 Celsius and a reading of 255 with a reading of 255 degrees Celsius.</p>
-</section>
-<section id="bank-0x22-sensor-bank1-settings-r-and-bank-0x23-sensor-bank1-settings-w">
+</div>
+<div class="section" id="bank-0x22-sensor-bank1-settings-r-and-bank-0x23-sensor-bank1-settings-w">
 <h3>Bank 0x22 Sensor Bank1 Settings (R) and Bank 0x23 Sensor Bank1 Settings (W)<a class="headerlink" href="#bank-0x22-sensor-bank1-settings-r-and-bank-0x23-sensor-bank1-settings-w" title="Permalink to this headline">¶</a></h3>
 <p>Those banks contain 16 sensors, for each sensor it contains 3 bytes. Each
 set of 3 bytes contains the settings for the sensor with the same sensor
@@ -669,8 +671,8 @@ comments on how todo this.</p>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="bank-0x24-pwm-outputs-for-fan-s-r-and-bank-0x25-pwm-outputs-for-fan-s-w">
+</div>
+<div class="section" id="bank-0x24-pwm-outputs-for-fan-s-r-and-bank-0x25-pwm-outputs-for-fan-s-w">
 <h3>Bank 0x24 PWM outputs for FAN’s (R) and Bank 0x25 PWM outputs for FAN’s (W)<a class="headerlink" href="#bank-0x24-pwm-outputs-for-fan-s-r-and-bank-0x25-pwm-outputs-for-fan-s-w" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>Those banks contain 3 “sensors”, for each sensor it contains 5 bytes.</dt><dd><ul class="simple">
@@ -693,8 +695,8 @@ high threshold temp (specified in byte 4)</p>
 <dt>byte 4:</dt><dd><p>High threshold temp (scale as bank 0x21)</p>
 </dd>
 </dl>
-</section>
-<section id="bank-0x26-sensors-bank2-values-readings-r">
+</div>
+<div class="section" id="bank-0x26-sensors-bank2-values-readings-r">
 <h3>Bank 0x26 Sensors Bank2 Values / Readings (R)<a class="headerlink" href="#bank-0x26-sensors-bank2-values-readings-r" title="Permalink to this headline">¶</a></h3>
 <p>This bank contains 6 sensors (AFAIK), for each sensor it contains 1 byte.</p>
 <dl class="simple">
@@ -707,8 +709,8 @@ high threshold temp (specified in byte 4)</p>
 <dt>Byte 0:</dt><dd><p>This byte holds the reading from the sensor. 0-255 = 0-15300 (linear)</p>
 </dd>
 </dl>
-</section>
-<section id="bank-0x27-sensors-bank2-settings-r-and-bank-0x28-sensors-bank2-settings-w">
+</div>
+<div class="section" id="bank-0x27-sensors-bank2-settings-r-and-bank-0x28-sensors-bank2-settings-w">
 <h3>Bank 0x27 Sensors Bank2 Settings (R) and Bank 0x28 Sensors Bank2 Settings (W)<a class="headerlink" href="#bank-0x27-sensors-bank2-settings-r-and-bank-0x28-sensors-bank2-settings-w" title="Permalink to this headline">¶</a></h3>
 <p>Those banks contain 6 sensors (AFAIK), for each sensor it contains 2 bytes.</p>
 <dl class="simple">
@@ -723,9 +725,9 @@ high threshold temp (specified in byte 4)</p>
 <dt>Byte 1:</dt><dd><p>min threshold (scale as bank 0x26)</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="warning-for-the-adventurous">
+</div>
+</div>
+<div class="section" id="warning-for-the-adventurous">
 <h2>Warning for the adventurous<a class="headerlink" href="#warning-for-the-adventurous" title="Permalink to this headline">¶</a></h2>
 <p>A word of caution to those who want to experiment and see if they can figure
 the voltage / clock programming out, I tried reading and only reading banks
@@ -735,8 +737,8 @@ sensors part configured so that it would shutdown my system on any out of spec
 voltages which probably safed my computer (after a reboot I managed to
 immediately enter the bios and reload the defaults). This probably means that
 the read/write cycle for the non sensor part is different from the sensor part.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

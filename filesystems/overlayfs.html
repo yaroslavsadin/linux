@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Overlay Filesystem &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -327,14 +329,14 @@
             
   <p>Written by: Neil Brown
 Please see MAINTAINERS file for where to send questions.</p>
-<section id="overlay-filesystem">
+<div class="section" id="overlay-filesystem">
 <h1>Overlay Filesystem<a class="headerlink" href="#overlay-filesystem" title="Permalink to this headline">¶</a></h1>
 <p>This document describes a prototype for a new approach to providing
 overlay-filesystem functionality in Linux (sometimes referred to as
 union-filesystems).  An overlay-filesystem tries to present a
 filesystem which is the result over overlaying one filesystem on top
 of the other.</p>
-<section id="overlay-objects">
+<div class="section" id="overlay-objects">
 <h2>Overlay objects<a class="headerlink" href="#overlay-objects" title="Permalink to this headline">¶</a></h2>
 <p>The overlay filesystem approach is ‘hybrid’, because the objects that
 appear in the filesystem do not always appear to belong to that filesystem.
@@ -368,7 +370,7 @@ the lifetime of the filesystem.  The “-o xino=auto” overlay mount option
 enables the “xino” feature only if the persistent st_ino requirement is met.</p>
 <p>The following table summarizes what can be expected in different overlay
 configurations.</p>
-<section id="inode-properties">
+<div class="section" id="inode-properties">
 <h3>Inode properties<a class="headerlink" href="#inode-properties" title="Permalink to this headline">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
@@ -454,9 +456,9 @@ ino overflow</p></td>
 <p>[*] nfsd v3 readdirplus verifies d_ino == i_ino. i_ino is exposed via several
 /proc files, such as /proc/locks and /proc/self/fdinfo/&lt;fd&gt; of an inotify
 file descriptor.</p>
-</section>
-</section>
-<section id="upper-and-lower">
+</div>
+</div>
+<div class="section" id="upper-and-lower">
 <h2>Upper and Lower<a class="headerlink" href="#upper-and-lower" title="Permalink to this headline">¶</a></h2>
 <p>An overlay filesystem combines two filesystems - an ‘upper’ filesystem
 and a ‘lower’ filesystem.  When a name exists in both filesystems, the
@@ -477,8 +479,8 @@ creation of trusted.* and/or user.* extended attributes, and must provide
 valid d_type in readdir responses, so NFS is not suitable.</p>
 <p>A read-only overlay of two read-only filesystems may use any
 filesystem type.</p>
-</section>
-<section id="directories">
+</div>
+<div class="section" id="directories">
 <h2>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h2>
 <p>Overlaying mainly involves directories.  If a given name appears in both
 upper and lower filesystems and refers to a non-directory in either,
@@ -502,8 +504,8 @@ exists, else the lower.</p>
 <p>Only the lists of names from directories are merged.  Other content
 such as metadata and extended attributes are reported for the upper
 directory only.  These attributes of the lower directory are hidden.</p>
-</section>
-<section id="whiteouts-and-opaque-directories">
+</div>
+<div class="section" id="whiteouts-and-opaque-directories">
 <h2>whiteouts and opaque directories<a class="headerlink" href="#whiteouts-and-opaque-directories" title="Permalink to this headline">¶</a></h2>
 <p>In order to support rm and rmdir without changing the lower
 filesystem, an overlay filesystem needs to record in the upper filesystem
@@ -516,8 +518,8 @@ is also hidden.</p>
 <p>A directory is made opaque by setting the xattr “trusted.overlay.opaque”
 to “y”.  Where the upper filesystem contains an opaque directory, any
 directory in the lower filesystem with the same name is ignored.</p>
-</section>
-<section id="readdir">
+</div>
+<div class="section" id="readdir">
 <h2>readdir<a class="headerlink" href="#readdir" title="Permalink to this headline">¶</a></h2>
 <p>When a ‘readdir’ request is made on a merged directory, the upper and
 lower directories are each read and the name lists merged in the
@@ -546,8 +548,8 @@ the list of filenames, particularly if anything has changed in the
 directory.</p>
 <p>Readdir on directories that are not merged is simply handled by the
 underlying directory (upper or lower).</p>
-</section>
-<section id="renaming-directories">
+</div>
+<div class="section" id="renaming-directories">
 <h2>renaming directories<a class="headerlink" href="#renaming-directories" title="Permalink to this headline">¶</a></h2>
 <p>When renaming a directory that is on the lower layer or merged (i.e. the
 directory was not created on the upper layer to start with) overlayfs can
@@ -634,8 +636,8 @@ a possible inconsistency.</p>
 <p>Because lower layer redirects cannot be verified with the index, enabling
 NFS export support on an overlay filesystem with no upper layer requires
 turning off redirect follow (e.g. “redirect_dir=nofollow”).</p>
-</section>
-<section id="non-directories">
+</div>
+<div class="section" id="non-directories">
 <h2>Non-directories<a class="headerlink" href="#non-directories" title="Permalink to this headline">¶</a></h2>
 <p>Objects that are not directories (files, symlinks, device-special
 files etc.) are presented either from the upper or lower filesystem as
@@ -658,8 +660,8 @@ provides direct access to the newly created file in the upper
 filesystem - future operations on the file are barely noticed by the
 overlay filesystem (though an operation on the name of the file such as
 rename or unlink will of course be noticed and handled).</p>
-</section>
-<section id="permission-model">
+</div>
+<div class="section" id="permission-model">
 <h2>Permission model<a class="headerlink" href="#permission-model" title="Permalink to this headline">¶</a></h2>
 <p>Permission checking in the overlay filesystem follows these principles:</p>
 <blockquote>
@@ -699,8 +701,8 @@ mount –bind /upper /merged</p>
 </div></blockquote>
 <p>The resulting access permissions should be the same.  The difference is in
 the time of copy (on-demand vs. up-front).</p>
-</section>
-<section id="multiple-lower-layers">
+</div>
+<div class="section" id="multiple-lower-layers">
 <h2>Multiple lower layers<a class="headerlink" href="#multiple-lower-layers" title="Permalink to this headline">¶</a></h2>
 <p>Multiple lower layers can now be given using the colon (“:”) as a
 separator character between the directory names.  For example:</p>
@@ -712,8 +714,8 @@ that case the overlay will be read-only.</p>
 <p>The specified lower directories will be stacked beginning from the
 rightmost one and going left.  In the above example lower1 will be the
 top, lower2 the middle and lower3 the bottom layer.</p>
-</section>
-<section id="metadata-only-copy-up">
+</div>
+<div class="section" id="metadata-only-copy-up">
 <h2>Metadata only copy up<a class="headerlink" href="#metadata-only-copy-up" title="Permalink to this headline">¶</a></h2>
 <p>When metadata only copy up feature is enabled, overlayfs will only copy
 up metadata (as opposed to whole file), when a metadata specific operation
@@ -736,8 +738,8 @@ for untrusted layers like from a pen drive.</p>
 conflict with metacopy=on, and will result in an error.</p>
 <p>[*] redirect_dir=follow only conflicts with metacopy=on if upperdir=… is
 given.</p>
-</section>
-<section id="sharing-and-copying-layers">
+</div>
+<div class="section" id="sharing-and-copying-layers">
 <h2>Sharing and copying layers<a class="headerlink" href="#sharing-and-copying-layers" title="Permalink to this headline">¶</a></h2>
 <p>Lower layers may be shared among several overlay mounts and that is indeed
 a very common practice.  An overlay mount may use the same lower layer
@@ -770,8 +772,8 @@ probably will succeed but expect the unexpected later on. So don’t do it.</p>
 directory tree on the same or different underlying filesystem, and even
 to a different machine.  With the “inodes index” feature, trying to mount
 the copied layers will fail the verification of the lower root file handle.</p>
-</section>
-<section id="non-standard-behavior">
+</div>
+<div class="section" id="non-standard-behavior">
 <h2>Non-standard behavior<a class="headerlink" href="#non-standard-behavior" title="Permalink to this headline">¶</a></h2>
 <p>Current version of overlayfs can act as a mostly POSIX compliant
 filesystem.</p>
@@ -815,8 +817,8 @@ E.g. the value of st_dev may be different for two objects in the same
 overlay filesystem and the value of st_ino for filesystem objects may not be
 persistent and could change even while the overlay filesystem is mounted, as
 summarized in the <a class="reference internal" href="#inode-properties">Inode properties</a> table above.</p>
-</section>
-<section id="changes-to-underlying-filesystems">
+</div>
+<div class="section" id="changes-to-underlying-filesystems">
 <h2>Changes to underlying filesystems<a class="headerlink" href="#changes-to-underlying-filesystems" title="Permalink to this headline">¶</a></h2>
 <p>Changes to the underlying filesystems while part of a mounted overlay
 filesystem are not allowed.  If the underlying filesystem is changed,
@@ -841,8 +843,8 @@ that the found lower directory file handle and lower filesystem UUID
 match the origin file handle that was stored at copy_up time.  If a
 found lower directory does not match the stored origin, that directory
 will not be merged with the upper directory.</p>
-</section>
-<section id="nfs-export">
+</div>
+<div class="section" id="nfs-export">
 <h2>NFS export<a class="headerlink" href="#nfs-export" title="Permalink to this headline">¶</a></h2>
 <p>When the underlying filesystems supports NFS export and the “nfs_export”
 feature is enabled, an overlay filesystem may be exported to NFS.</p>
@@ -911,8 +913,8 @@ filesystem in file handles with null, and effectively disable UUID checks. This
 can be useful in case the underlying disk is copied and the UUID of this copy
 is changed. This is only applicable if all lower/upper/work directories are on
 the same filesystem, otherwise it will fallback to normal behaviour.</p>
-</section>
-<section id="volatile-mount">
+</div>
+<div class="section" id="volatile-mount">
 <h2>Volatile mount<a class="headerlink" href="#volatile-mount" title="Permalink to this headline">¶</a></h2>
 <p>This is enabled with the “volatile” mount option.  Volatile mounts are not
 guaranteed to survive a crash.  It is strongly recommended that volatile
@@ -934,14 +936,14 @@ indicator that user should throw away upper and work directories and create
 fresh one. In very limited cases where the user knows that the system has
 not crashed and contents of upperdir are intact, The “volatile” directory
 can be removed.</p>
-</section>
-<section id="user-xattr">
+</div>
+<div class="section" id="user-xattr">
 <h2>User xattr<a class="headerlink" href="#user-xattr" title="Permalink to this headline">¶</a></h2>
 <p>The the “-o userxattr” mount option forces overlayfs to use the
 “user.overlay.” xattr namespace instead of “trusted.overlay.”.  This is
 useful for unprivileged mounting of overlayfs.</p>
-</section>
-<section id="testsuite">
+</div>
+<div class="section" id="testsuite">
 <h2>Testsuite<a class="headerlink" href="#testsuite" title="Permalink to this headline">¶</a></h2>
 <p>There’s a testsuite originally developed by David Howells and currently
 maintained by Amir Goldstein at:</p>
@@ -953,8 +955,8 @@ maintained by Amir Goldstein at:</p>
 <div><p># cd unionmount-testsuite
 # ./run –ov –verify</p>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

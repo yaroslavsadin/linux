@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Altera Triple-Speed Ethernet MAC driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
@@ -416,7 +418,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="altera-triple-speed-ethernet-mac-driver">
+  <div class="section" id="altera-triple-speed-ethernet-mac-driver">
 <h1>Altera Triple-Speed Ethernet MAC driver<a class="headerlink" href="#altera-triple-speed-ethernet-mac-driver" title="Permalink to this headline">¶</a></h1>
 <p>Copyright © 2008-2014 Altera Corporation</p>
 <p>This is the driver for the Altera Triple-Speed Ethernet (TSE) controllers
@@ -454,15 +456,15 @@ driver.</p>
 <p>Jumbo frames are not supported at this time.</p>
 <p>The driver limits PHY operations to 10/100Mbps, and has not yet been fully
 tested for 1Gbps. This support will be added in a future maintenance update.</p>
-<section id="kernel-configuration">
+<div class="section" id="kernel-configuration">
 <h2>1. Kernel Configuration<a class="headerlink" href="#kernel-configuration" title="Permalink to this headline">¶</a></h2>
 <p>The kernel configuration option is ALTERA_TSE:</p>
 <blockquote>
 <div><p>Device Drivers —&gt; Network device support —&gt; Ethernet driver support —&gt;
 Altera Triple-Speed Ethernet MAC support (ALTERA_TSE)</p>
 </div></blockquote>
-</section>
-<section id="driver-parameters-list">
+</div>
+<div class="section" id="driver-parameters-list">
 <h2>2. Driver parameters list<a class="headerlink" href="#driver-parameters-list" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
@@ -471,17 +473,17 @@ Altera Triple-Speed Ethernet MAC support (ALTERA_TSE)</p>
 <li><p>dma_tx_num: Number of descriptors in the TX list (default is 64).</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="command-line-options">
+</div>
+<div class="section" id="command-line-options">
 <h2>3. Command line options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h2>
 <p>Driver parameters can be also passed in command line by using:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>altera_tse=dma_rx_num:128,dma_tx_num:512
 </pre></div>
 </div>
-</section>
-<section id="driver-information-and-notes">
+</div>
+<div class="section" id="driver-information-and-notes">
 <h2>4. Driver information and notes<a class="headerlink" href="#driver-information-and-notes" title="Permalink to this headline">¶</a></h2>
-<section id="transmit-process">
+<div class="section" id="transmit-process">
 <h3>4.1. Transmit process<a class="headerlink" href="#transmit-process" title="Permalink to this headline">¶</a></h3>
 <p>When the driver’s transmit routine is called by the kernel, it sets up a
 transmit descriptor by calling the underlying DMA transmit routine (SGDMA or
@@ -489,8 +491,8 @@ MSGDMA), and initiates a transmit operation. Once the transmit is complete, an
 interrupt is driven by the transmit DMA logic. The driver handles the transmit
 completion in the context of the interrupt handling chain by recycling
 resource required to send and track the requested transmit operation.</p>
-</section>
-<section id="receive-process">
+</div>
+<div class="section" id="receive-process">
 <h3>4.2. Receive process<a class="headerlink" href="#receive-process" title="Permalink to this headline">¶</a></h3>
 <p>The driver will post receive buffers to the receive DMA logic during driver
 initialization. Receive buffers may or may not be queued depending upon the
@@ -499,23 +501,23 @@ to queue receive buffers to the SGDMA receive logic). When a packet is
 received, the DMA logic generates an interrupt. The driver handles a receive
 interrupt by obtaining the DMA receive logic status, reaping receive
 completions until no more receive completions are available.</p>
-</section>
-<section id="interrupt-mitigation">
+</div>
+<div class="section" id="interrupt-mitigation">
 <h3>4.3. Interrupt Mitigation<a class="headerlink" href="#interrupt-mitigation" title="Permalink to this headline">¶</a></h3>
 <p>The driver is able to mitigate the number of its DMA interrupts
 using NAPI for receive operations. Interrupt mitigation is not yet supported
 for transmit operations, but will be added in a future maintenance release.</p>
-</section>
-<section id="ethtool-support">
+</div>
+<div class="section" id="ethtool-support">
 <h3>4.4) Ethtool support<a class="headerlink" href="#ethtool-support" title="Permalink to this headline">¶</a></h3>
 <p>Ethtool is supported. Driver statistics and internal errors can be taken using:
 ethtool -S ethX command. It is possible to dump registers etc.</p>
-</section>
-<section id="phy-support">
+</div>
+<div class="section" id="phy-support">
 <h3>4.5) PHY Support<a class="headerlink" href="#phy-support" title="Permalink to this headline">¶</a></h3>
 <p>The driver is compatible with PAL to work with PHY and GPHY devices.</p>
-</section>
-<section id="list-of-source-files">
+</div>
+<div class="section" id="list-of-source-files">
 <h3>4.7) List of source files:<a class="headerlink" href="#list-of-source-files" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -534,9 +536,9 @@ ethtool -S ethX command. It is possible to dump registers etc.</p>
 <li><p>altera_utils.h: Driver utility function definitions</p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-<section id="debug-information">
+</div>
+</div>
+<div class="section" id="debug-information">
 <h2>5. Debug Information<a class="headerlink" href="#debug-information" title="Permalink to this headline">¶</a></h2>
 <p>The driver exports debug information such as internal statistics,
 debug information, MAC and DMA registers etc.</p>
@@ -545,8 +547,8 @@ e.g. using: ethtool -S ethX (that shows the statistics counters)
 or sees the MAC registers: e.g. using: ethtool -d ethX</p>
 <p>The developer can also use the “debug” module parameter to get
 further debug information.</p>
-</section>
-<section id="statistics-support">
+</div>
+<div class="section" id="statistics-support">
 <h2>6. Statistics Support<a class="headerlink" href="#statistics-support" title="Permalink to this headline">¶</a></h2>
 <p>The controller and driver support a mix of IEEE standard defined statistics,
 RFC defined statistics, and driver or Altera defined statistics. The four
@@ -660,8 +662,8 @@ or a bad CRC with a non-integral number of octets (Alignment Error).</p>
 statistic is the total number of packets received that were less than 64 octets
 in length and had either a bad CRC with an integral number of octets (CRC
 error) or a bad CRC with a non-integral number of octets (Alignment Error).</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

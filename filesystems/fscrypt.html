@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Filesystem-level encryption (fscrypt) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -261,9 +263,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="filesystem-level-encryption-fscrypt">
+  <div class="section" id="filesystem-level-encryption-fscrypt">
 <h1>Filesystem-level encryption (fscrypt)<a class="headerlink" href="#filesystem-level-encryption-fscrypt" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>fscrypt is a library which filesystems can hook into to support
 transparent encryption of files and directories.</p>
@@ -300,10 +302,10 @@ supports marking an empty directory as encrypted.  Then, after
 userspace provides the key, all regular files, directories, and
 symbolic links created in that directory tree are transparently
 encrypted.</p>
-</section>
-<section id="threat-model">
+</div>
+<div class="section" id="threat-model">
 <h2>Threat model<a class="headerlink" href="#threat-model" title="Permalink to this headline">¶</a></h2>
-<section id="offline-attacks">
+<div class="section" id="offline-attacks">
 <h3>Offline attacks<a class="headerlink" href="#offline-attacks" title="Permalink to this headline">¶</a></h3>
 <p>Provided that userspace chooses a strong encryption key, fscrypt
 protects the confidentiality of file contents and filenames in the
@@ -316,12 +318,12 @@ files is not protected.</p>
 <p>fscrypt is not guaranteed to protect confidentiality or authenticity
 if an attacker is able to manipulate the filesystem offline prior to
 an authorized user later accessing the filesystem.</p>
-</section>
-<section id="online-attacks">
+</div>
+<div class="section" id="online-attacks">
 <h3>Online attacks<a class="headerlink" href="#online-attacks" title="Permalink to this headline">¶</a></h3>
 <p>fscrypt (and storage encryption in general) can only provide limited
 protection, if any at all, against online attacks.  In detail:</p>
-<section id="side-channel-attacks">
+<div class="section" id="side-channel-attacks">
 <h4>Side-channel attacks<a class="headerlink" href="#side-channel-attacks" title="Permalink to this headline">¶</a></h4>
 <p>fscrypt is only resistant to side-channel attacks, such as timing or
 electromagnetic attacks, to the extent that the underlying Linux
@@ -330,8 +332,8 @@ vulnerable algorithm is used, such as a table-based implementation of
 AES, it may be possible for an attacker to mount a side channel attack
 against the online system.  Side channel attacks may also be mounted
 against applications consuming decrypted data.</p>
-</section>
-<section id="unauthorized-file-access">
+</div>
+<div class="section" id="unauthorized-file-access">
 <h4>Unauthorized file access<a class="headerlink" href="#unauthorized-file-access" title="Permalink to this headline">¶</a></h4>
 <p>After an encryption key has been added, fscrypt does not hide the
 plaintext file contents or filenames from other users on the same
@@ -344,8 +346,8 @@ encryption but rather only by the correctness of the kernel.
 Therefore, any encryption-specific access control checks would merely
 be enforced by kernel <em>code</em> and therefore would be largely redundant
 with the wide variety of access control mechanisms already available.)</p>
-</section>
-<section id="kernel-memory-compromise">
+</div>
+<div class="section" id="kernel-memory-compromise">
 <h4>Kernel memory compromise<a class="headerlink" href="#kernel-memory-compromise" title="Permalink to this headline">¶</a></h4>
 <p>An attacker who compromises the system enough to read from arbitrary
 memory, e.g. by mounting a physical attack or by exploiting a kernel
@@ -384,8 +386,8 @@ to your kernel command line.  However, this has a performance cost.</p></li>
 accelerator hardware (if used by the crypto API to implement any of
 the algorithms), or in other places not explicitly considered here.</p></li>
 </ul>
-</section>
-<section id="limitations-of-v1-policies">
+</div>
+<div class="section" id="limitations-of-v1-policies">
 <h4>Limitations of v1 policies<a class="headerlink" href="#limitations-of-v1-policies" title="Permalink to this headline">¶</a></h4>
 <p>v1 encryption policies have some weaknesses with respect to online
 attacks:</p>
@@ -404,12 +406,12 @@ which it was derived.</p></li>
 <p>All the above problems are fixed with v2 encryption policies.  For
 this reason among others, it is recommended to use v2 encryption
 policies on all new encrypted directories.</p>
-</section>
-</section>
-</section>
-<section id="key-hierarchy">
+</div>
+</div>
+</div>
+<div class="section" id="key-hierarchy">
 <h2>Key hierarchy<a class="headerlink" href="#key-hierarchy" title="Permalink to this headline">¶</a></h2>
-<section id="master-keys">
+<div class="section" id="master-keys">
 <h3>Master Keys<a class="headerlink" href="#master-keys" title="Permalink to this headline">¶</a></h3>
 <p>Each encrypted directory tree is protected by a <em>master key</em>.  Master
 keys can be up to 64 bytes long, and must be at least as long as the
@@ -434,8 +436,8 @@ cryptographically secure random number generator, or by using a KDF
 therefore, if userspace derives the key from a low-entropy secret such
 as a passphrase, it is critical that a KDF designed for this purpose
 be used, such as scrypt, PBKDF2, or Argon2.</p>
-</section>
-<section id="key-derivation-function">
+</div>
+<div class="section" id="key-derivation-function">
 <h3>Key derivation function<a class="headerlink" href="#key-derivation-function" title="Permalink to this headline">¶</a></h3>
 <p>With one exception, fscrypt never uses the master key(s) for
 encryption directly.  Instead, they are only used as input to a KDF
@@ -462,8 +464,8 @@ context bytes are used for other types of derived keys.</p>
 HKDF is more flexible, is nonreversible, and evenly distributes
 entropy from the master key.  HKDF is also standardized and widely
 used by other software, whereas the AES-128-ECB based KDF is ad-hoc.</p>
-</section>
-<section id="per-file-encryption-keys">
+</div>
+<div class="section" id="per-file-encryption-keys">
 <h3>Per-file encryption keys<a class="headerlink" href="#per-file-encryption-keys" title="Permalink to this headline">¶</a></h3>
 <p>Since each master key can protect many files, it is necessary to
 “tweak” the encryption of each file so that the same plaintext in two
@@ -482,8 +484,8 @@ there is no requirement to support unlocking a file with multiple
 alternative master keys or to support rotating master keys.  Instead,
 the master keys may be wrapped in userspace, e.g. as is done by the
 <a class="reference external" href="https://github.com/google/fscrypt">fscrypt</a> tool.</p>
-</section>
-<section id="direct-key-policies">
+</div>
+<div class="section" id="direct-key-policies">
 <h3>DIRECT_KEY policies<a class="headerlink" href="#direct-key-policies" title="Permalink to this headline">¶</a></h3>
 <p>The Adiantum encryption mode (see <a class="reference internal" href="#encryption-modes-and-usage">Encryption modes and usage</a>) is
 suitable for both contents and filenames encryption, and it accepts
@@ -504,8 +506,8 @@ key for any other purpose, even for other v1 policies.</p></li>
 key derived using the KDF.  Users may use the same master key for
 other v2 encryption policies.</p></li>
 </ul>
-</section>
-<section id="iv-ino-lblk-64-policies">
+</div>
+<div class="section" id="iv-ino-lblk-64-policies">
 <h3>IV_INO_LBLK_64 policies<a class="headerlink" href="#iv-ino-lblk-64-policies" title="Permalink to this headline">¶</a></h3>
 <p>When FSCRYPT_POLICY_FLAG_IV_INO_LBLK_64 is set in the fscrypt policy,
 the encryption keys are derived from the master key, encryption mode
@@ -517,8 +519,8 @@ Consequently, shrinking the filesystem may not be allowed.</p>
 <p>This format is optimized for use with inline encryption hardware
 compliant with the UFS standard, which supports only 64 IV bits per
 I/O request and may have only a small number of keyslots.</p>
-</section>
-<section id="iv-ino-lblk-32-policies">
+</div>
+<div class="section" id="iv-ino-lblk-32-policies">
 <h3>IV_INO_LBLK_32 policies<a class="headerlink" href="#iv-ino-lblk-32-policies" title="Permalink to this headline">¶</a></h3>
 <p>IV_INO_LBLK_32 policies work like IV_INO_LBLK_64, except that for
 IV_INO_LBLK_32, the inode number is hashed with SipHash-2-4 (where the
@@ -529,14 +531,14 @@ compliant with the eMMC v5.2 standard, which supports only 32 IV bits
 per I/O request and may have only a small number of keyslots.  This
 format results in some level of IV reuse, so it should only be used
 when necessary due to hardware limitations.</p>
-</section>
-<section id="key-identifiers">
+</div>
+<div class="section" id="key-identifiers">
 <h3>Key identifiers<a class="headerlink" href="#key-identifiers" title="Permalink to this headline">¶</a></h3>
 <p>For master keys used for v2 encryption policies, a unique 16-byte “key
 identifier” is also derived using the KDF.  This value is stored in
 the clear, since it is needed to reliably identify the key itself.</p>
-</section>
-<section id="dirhash-keys">
+</div>
+<div class="section" id="dirhash-keys">
 <h3>Dirhash keys<a class="headerlink" href="#dirhash-keys" title="Permalink to this headline">¶</a></h3>
 <p>For directories that are indexed using a secret-keyed dirhash over the
 plaintext filenames, the KDF is also used to derive a 128-bit
@@ -544,9 +546,9 @@ SipHash-2-4 key per directory in order to hash filenames.  This works
 just like deriving a per-file encryption key, except that a different
 KDF context is used.  Currently, only casefolded (“case-insensitive”)
 encrypted directories use this style of hashing.</p>
-</section>
-</section>
-<section id="encryption-modes-and-usage">
+</div>
+</div>
+<div class="section" id="encryption-modes-and-usage">
 <h2>Encryption modes and usage<a class="headerlink" href="#encryption-modes-and-usage" title="Permalink to this headline">¶</a></h2>
 <p>fscrypt allows one encryption mode to be specified for file contents
 and one encryption mode to be specified for filenames.  Different
@@ -577,7 +579,7 @@ CONFIG_CRYPTO_CHACHA20_NEON and CONFIG_CRYPTO_NHPOLY1305_NEON for ARM.</p>
 to individual filesystems.  However, authenticated encryption (AE)
 modes are not currently supported because of the difficulty of dealing
 with ciphertext expansion.</p>
-<section id="contents-encryption">
+<div class="section" id="contents-encryption">
 <h3>Contents encryption<a class="headerlink" href="#contents-encryption" title="Permalink to this headline">¶</a></h3>
 <p>For file contents, each filesystem block is encrypted independently.
 Starting from Linux kernel 5.5, encryption of filesystems with block
@@ -600,8 +602,8 @@ is then hashed and added mod 2^32.</p></li>
 <p>Note that because file logical block numbers are included in the IVs,
 filesystems must enforce that blocks are never shifted around within
 encrypted files, e.g. via “collapse range” or “insert range”.</p>
-</section>
-<section id="filenames-encryption">
+</div>
+<div class="section" id="filenames-encryption">
 <h3>Filenames encryption<a class="headerlink" href="#filenames-encryption" title="Permalink to this headline">¶</a></h3>
 <p>For filenames, each full filename is encrypted at once.  Because of
 the requirements to retain support for efficient directory lookups and
@@ -629,13 +631,13 @@ produce duplicate plaintexts.</p>
 <p>Symbolic link targets are considered a type of filename and are
 encrypted in the same way as filenames in directory entries, except
 that IV reuse is not a problem as each symlink has its own inode.</p>
-</section>
-</section>
-<section id="user-api">
+</div>
+</div>
+<div class="section" id="user-api">
 <h2>User API<a class="headerlink" href="#user-api" title="Permalink to this headline">¶</a></h2>
-<section id="setting-an-encryption-policy">
+<div class="section" id="setting-an-encryption-policy">
 <h3>Setting an encryption policy<a class="headerlink" href="#setting-an-encryption-policy" title="Permalink to this headline">¶</a></h3>
-<section id="fs-ioc-set-encryption-policy">
+<div class="section" id="fs-ioc-set-encryption-policy">
 <h4>FS_IOC_SET_ENCRYPTION_POLICY<a class="headerlink" href="#fs-ioc-set-encryption-policy" title="Permalink to this headline">¶</a></h4>
 <p>The FS_IOC_SET_ENCRYPTION_POLICY ioctl sets an encryption policy on an
 empty directory or verifies that a directory or regular file already
@@ -765,9 +767,9 @@ feature flag enabled using <code class="docutils literal notranslate"><span clas
 the root directory of an ext4 filesystem</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">EROFS</span></code>: the filesystem is readonly</p></li>
 </ul>
-</section>
-</section>
-<section id="getting-an-encryption-policy">
+</div>
+</div>
+<div class="section" id="getting-an-encryption-policy">
 <h3>Getting an encryption policy<a class="headerlink" href="#getting-an-encryption-policy" title="Permalink to this headline">¶</a></h3>
 <p>Two ioctls are available to get a file’s encryption policy:</p>
 <ul class="simple">
@@ -779,7 +781,7 @@ recommended to use when possible.  However, on older kernels only the
 original ioctl is available.  Applications should try the extended
 version, and if it fails with ENOTTY fall back to the original
 version.</p>
-<section id="fs-ioc-get-encryption-policy-ex">
+<div class="section" id="fs-ioc-get-encryption-policy-ex">
 <h4>FS_IOC_GET_ENCRYPTION_POLICY_EX<a class="headerlink" href="#fs-ioc-get-encryption-policy-ex" title="Permalink to this headline">¶</a></h4>
 <p>The FS_IOC_GET_ENCRYPTION_POLICY_EX ioctl retrieves the encryption
 policy, if any, for a directory or regular file.  No additional
@@ -821,8 +823,8 @@ the provided buffer</p></li>
 most filesystems it is also possible to use the FS_IOC_GETFLAGS ioctl
 and check for FS_ENCRYPT_FL, or to use the statx() system call and
 check for STATX_ATTR_ENCRYPTED in stx_attributes.</p>
-</section>
-<section id="fs-ioc-get-encryption-policy">
+</div>
+<div class="section" id="fs-ioc-get-encryption-policy">
 <h4>FS_IOC_GET_ENCRYPTION_POLICY<a class="headerlink" href="#fs-ioc-get-encryption-policy" title="Permalink to this headline">¶</a></h4>
 <p>The FS_IOC_GET_ENCRYPTION_POLICY ioctl can also retrieve the
 encryption policy, if any, for a directory or regular file.  However,
@@ -834,9 +836,9 @@ rather than struct fscrypt_get_policy_ex_arg.</p>
 for FS_IOC_GET_ENCRYPTION_POLICY_EX, except that
 FS_IOC_GET_ENCRYPTION_POLICY also returns <code class="docutils literal notranslate"><span class="pre">EINVAL</span></code> if the file is
 encrypted using a newer encryption policy version.</p>
-</section>
-</section>
-<section id="getting-the-per-filesystem-salt">
+</div>
+</div>
+<div class="section" id="getting-the-per-filesystem-salt">
 <h3>Getting the per-filesystem salt<a class="headerlink" href="#getting-the-per-filesystem-salt" title="Permalink to this headline">¶</a></h3>
 <p>Some filesystems, such as ext4 and F2FS, also support the deprecated
 ioctl FS_IOC_GET_ENCRYPTION_PWSALT.  This ioctl retrieves a randomly
@@ -845,8 +847,8 @@ value is intended to used as a salt when deriving an encryption key
 from a passphrase or other low-entropy user credential.</p>
 <p>FS_IOC_GET_ENCRYPTION_PWSALT is deprecated.  Instead, prefer to
 generate and manage any needed salt(s) in userspace.</p>
-</section>
-<section id="getting-a-file-s-encryption-nonce">
+</div>
+<div class="section" id="getting-a-file-s-encryption-nonce">
 <h3>Getting a file’s encryption nonce<a class="headerlink" href="#getting-a-file-s-encryption-nonce" title="Permalink to this headline">¶</a></h3>
 <p>Since Linux v5.7, the ioctl FS_IOC_GET_ENCRYPTION_NONCE is supported.
 On encrypted files and directories it gets the inode’s 16-byte nonce.
@@ -854,10 +856,10 @@ On unencrypted files and directories, it fails with ENODATA.</p>
 <p>This ioctl can be useful for automated tests which verify that the
 encryption is being done correctly.  It is not needed for normal use
 of fscrypt.</p>
-</section>
-<section id="adding-keys">
+</div>
+<div class="section" id="adding-keys">
 <h3>Adding keys<a class="headerlink" href="#adding-keys" title="Permalink to this headline">¶</a></h3>
-<section id="fs-ioc-add-encryption-key">
+<div class="section" id="fs-ioc-add-encryption-key">
 <h4>FS_IOC_ADD_ENCRYPTION_KEY<a class="headerlink" href="#fs-ioc-add-encryption-key" title="Permalink to this headline">¶</a></h4>
 <p>The FS_IOC_ADD_ENCRYPTION_KEY ioctl adds a master encryption key to
 the filesystem, making all files on the filesystem which were
@@ -965,8 +967,8 @@ exists with that ID</p></li>
 support for this filesystem, or the filesystem superblock has not
 had encryption enabled on it</p></li>
 </ul>
-</section>
-<section id="legacy-method">
+</div>
+<div class="section" id="legacy-method">
 <h4>Legacy method<a class="headerlink" href="#legacy-method" title="Permalink to this headline">¶</a></h4>
 <p>For v1 encryption policies, a master encryption key can also be
 provided by adding it to a process-subscribed keyring, e.g. to a
@@ -1007,9 +1009,9 @@ bytes <code class="docutils literal notranslate"><span class="pre">raw[0..size-1
 with a filesystem-specific prefix such as “ext4:”.  However, the
 filesystem-specific prefixes are deprecated and should not be used in
 new programs.</p>
-</section>
-</section>
-<section id="removing-keys">
+</div>
+</div>
+<div class="section" id="removing-keys">
 <h3>Removing keys<a class="headerlink" href="#removing-keys" title="Permalink to this headline">¶</a></h3>
 <p>Two ioctls are available for removing a key that was added by
 <a class="reference internal" href="#fs-ioc-add-encryption-key">FS_IOC_ADD_ENCRYPTION_KEY</a>:</p>
@@ -1024,7 +1026,7 @@ process-subscribed keyrings mechanism.</p>
 <p>Before using these ioctls, read the <a class="reference internal" href="#kernel-memory-compromise">Kernel memory compromise</a>
 section for a discussion of the security goals and limitations of
 these ioctls.</p>
-<section id="fs-ioc-remove-encryption-key">
+<div class="section" id="fs-ioc-remove-encryption-key">
 <h4>FS_IOC_REMOVE_ENCRYPTION_KEY<a class="headerlink" href="#fs-ioc-remove-encryption-key" title="Permalink to this headline">¶</a></h4>
 <p>The FS_IOC_REMOVE_ENCRYPTION_KEY ioctl removes a claim to a master
 encryption key from the filesystem, and possibly removes the key
@@ -1103,8 +1105,8 @@ someone else does).</p></li>
 support for this filesystem, or the filesystem superblock has not
 had encryption enabled on it</p></li>
 </ul>
-</section>
-<section id="fs-ioc-remove-encryption-key-all-users">
+</div>
+<div class="section" id="fs-ioc-remove-encryption-key-all-users">
 <h4>FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS<a class="headerlink" href="#fs-ioc-remove-encryption-key-all-users" title="Permalink to this headline">¶</a></h4>
 <p>FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS is exactly the same as
 <a class="reference internal" href="#fs-ioc-remove-encryption-key">FS_IOC_REMOVE_ENCRYPTION_KEY</a>, except that for v2 policy keys, the
@@ -1115,11 +1117,11 @@ only meaningful if non-root users are adding and removing keys.</p>
 <p>Because of this, FS_IOC_REMOVE_ENCRYPTION_KEY_ALL_USERS also requires
 “root”, namely the CAP_SYS_ADMIN capability in the initial user
 namespace.  Otherwise it will fail with EACCES.</p>
-</section>
-</section>
-<section id="getting-key-status">
+</div>
+</div>
+<div class="section" id="getting-key-status">
 <h3>Getting key status<a class="headerlink" href="#getting-key-status" title="Permalink to this headline">¶</a></h3>
-<section id="fs-ioc-get-encryption-key-status">
+<div class="section" id="fs-ioc-get-encryption-key-status">
 <h4>FS_IOC_GET_ENCRYPTION_KEY_STATUS<a class="headerlink" href="#fs-ioc-get-encryption-key-status" title="Permalink to this headline">¶</a></h4>
 <p>The FS_IOC_GET_ENCRYPTION_KEY_STATUS ioctl retrieves the status of a
 master encryption key.  It can be executed on any file or directory on
@@ -1192,12 +1194,12 @@ the filesystem-level keyring, i.e. the keyring managed by
 cannot get the status of a key that has only been added for use by v1
 encryption policies using the legacy mechanism involving
 process-subscribed keyrings.</p>
-</section>
-</section>
-</section>
-<section id="access-semantics">
+</div>
+</div>
+</div>
+<div class="section" id="access-semantics">
 <h2>Access semantics<a class="headerlink" href="#access-semantics" title="Permalink to this headline">¶</a></h2>
-<section id="with-the-key">
+<div class="section" id="with-the-key">
 <h3>With the key<a class="headerlink" href="#with-the-key" title="Permalink to this headline">¶</a></h3>
 <p>With the encryption key, encrypted regular files, directories, and
 symlinks behave very similarly to their unencrypted counterparts —
@@ -1237,8 +1239,8 @@ bytes long (both lengths excluding the terminating null).</p></li>
 </ul>
 <p>Note that mmap <em>is</em> supported.  This is possible because the pagecache
 for an encrypted file contains the plaintext, not the ciphertext.</p>
-</section>
-<section id="without-the-key">
+</div>
+<div class="section" id="without-the-key">
 <h3>Without the key<a class="headerlink" href="#without-the-key" title="Permalink to this headline">¶</a></h3>
 <p>Some filesystem operations may be performed on encrypted regular
 files, directories, and symlinks even before their encryption key has
@@ -1275,9 +1277,9 @@ such operations will fail with ENOKEY.</p>
 <p>It is not currently possible to backup and restore encrypted files
 without the encryption key.  This would require special APIs which
 have not yet been implemented.</p>
-</section>
-</section>
-<section id="encryption-policy-enforcement">
+</div>
+</div>
+<div class="section" id="encryption-policy-enforcement">
 <h2>Encryption policy enforcement<a class="headerlink" href="#encryption-policy-enforcement" title="Permalink to this headline">¶</a></h2>
 <p>After an encryption policy has been set on a directory, all regular
 files, directories, and symbolic links created in that directory
@@ -1293,8 +1295,8 @@ attacks that try to disable or downgrade encryption in known locations
 where applications may later write sensitive data.  It is recommended
 that systems implementing a form of “verified boot” take advantage of
 this by validating all top-level encryption policies prior to access.</p>
-</section>
-<section id="inline-encryption-support">
+</div>
+<div class="section" id="inline-encryption-support">
 <h2>Inline encryption support<a class="headerlink" href="#inline-encryption-support" title="Permalink to this headline">¶</a></h2>
 <p>By default, fscrypt uses the kernel crypto API for all cryptographic
 operations (other than HKDF, which fscrypt partially implements
@@ -1331,10 +1333,10 @@ inline encryption hardware that supports that data unit size.</p>
 <p>Inline encryption doesn’t affect the ciphertext or other aspects of
 the on-disk format, so users may freely switch back and forth between
 using “inlinecrypt” and not using “inlinecrypt”.</p>
-</section>
-<section id="implementation-details">
+</div>
+<div class="section" id="implementation-details">
 <h2>Implementation details<a class="headerlink" href="#implementation-details" title="Permalink to this headline">¶</a></h2>
-<section id="encryption-context">
+<div class="section" id="encryption-context">
 <h3>Encryption context<a class="headerlink" href="#encryption-context" title="Permalink to this headline">¶</a></h3>
 <p>An encryption policy is represented on-disk by
 struct fscrypt_context_v1 or struct fscrypt_context_v2.  It is up to
@@ -1375,8 +1377,8 @@ context structs also contain a nonce.  The nonce is randomly generated
 by the kernel and is used as KDF input or as a tweak to cause
 different files to be encrypted differently; see <a class="reference internal" href="#per-file-encryption-keys">Per-file encryption
 keys</a> and <a class="reference internal" href="#direct-key-policies">DIRECT_KEY policies</a>.</p>
-</section>
-<section id="data-path-changes">
+</div>
+<div class="section" id="data-path-changes">
 <h3>Data path changes<a class="headerlink" href="#data-path-changes" title="Permalink to this headline">¶</a></h3>
 <p>When inline encryption is used, filesystems just need to associate
 encryption contexts with bios to specify how the block layer or the
@@ -1394,8 +1396,8 @@ temporary buffer or “bounce page”, then write out the temporary
 buffer.  Some filesystems, such as UBIFS, already use temporary
 buffers regardless of encryption.  Other filesystems, such as ext4 and
 F2FS, have to allocate bounce pages specially for encryption.</p>
-</section>
-<section id="filename-hashing-and-encoding">
+</div>
+<div class="section" id="filename-hashing-and-encoding">
 <h3>Filename hashing and encoding<a class="headerlink" href="#filename-hashing-and-encoding" title="Permalink to this headline">¶</a></h3>
 <p>Modern filesystems accelerate directory lookups by using indexed
 directories.  An indexed directory is organized as a tree keyed by
@@ -1430,9 +1432,9 @@ struct fscrypt_nokey_name in the source for more details.</p>
 without the key is subject to change in the future.  It is only meant
 as a way to temporarily present valid filenames so that commands like
 <code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">-r</span></code> work as expected on encrypted directories.</p>
-</section>
-</section>
-<section id="tests">
+</div>
+</div>
+<div class="section" id="tests">
 <h2>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
 <p>To test fscrypt, use xfstests, which is Linux’s de facto standard
 filesystem test suite.  First, run all the tests in the “encrypt”
@@ -1472,8 +1474,8 @@ instead of kvm-xfstests:</p>
 gce-xfstests -c ext4/encrypt,f2fs/encrypt -g auto -m inlinecrypt
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

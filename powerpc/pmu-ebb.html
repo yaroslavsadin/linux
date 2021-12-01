@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>PMU Event Based Branches &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -298,7 +300,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="pmu-event-based-branches">
+  <div class="section" id="pmu-event-based-branches">
 <h1>PMU Event Based Branches<a class="headerlink" href="#pmu-event-based-branches" title="Permalink to this headline">¶</a></h1>
 <p>Event Based Branches (EBBs) are a feature which allows the hardware to
 branch directly to a specified user space address when certain events occur.</p>
@@ -309,14 +311,14 @@ branch directly to a specified user space address when certain events occur.</p>
 <p>One type of event for which EBBs can be configured is PMU exceptions. This
 document describes the API for configuring the Power PMU to generate EBBs,
 using the Linux perf_events API.</p>
-<section id="terminology">
+<div class="section" id="terminology">
 <h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h2>
 <p>Throughout this document we will refer to an “EBB event” or “EBB events”. This
 just refers to a struct perf_event which has set the “EBB” flag in its
 attr.config. All events which can be configured on the hardware PMU are
 possible “EBB events”.</p>
-</section>
-<section id="background">
+</div>
+<div class="section" id="background">
 <h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
 <p>When a PMU EBB occurs it is delivered to the currently running process. As such
 EBBs can only sensibly be used by programs for self-monitoring.</p>
@@ -341,8 +343,8 @@ events will be given priority over other events, unless they are also pinned.
 If an EBB event and a regular event are both pinned, then whichever is enabled
 first will be scheduled and the other will be put in error state. See the
 section below titled “Enabling an EBB event” for more information.</p>
-</section>
-<section id="creating-an-ebb-event">
+</div>
+<div class="section" id="creating-an-ebb-event">
 <h2>Creating an EBB event<a class="headerlink" href="#creating-an-ebb-event" title="Permalink to this headline">¶</a></h2>
 <p>To request that an event is counted using EBB, the event code should have bit
 63 set.</p>
@@ -360,8 +362,8 @@ by passing a pid value, typically 0 indicating the current task.</p>
 must request EBB, or none may request EBB.</p>
 <p>EBB events must specify the PMC they are to be counted on. This ensures
 userspace is able to reliably determine which PMC the event is scheduled on.</p>
-</section>
-<section id="enabling-an-ebb-event">
+</div>
+<div class="section" id="enabling-an-ebb-event">
 <h2>Enabling an EBB event<a class="headerlink" href="#enabling-an-ebb-event" title="Permalink to this headline">¶</a></h2>
 <p>Once an EBB event has been successfully opened, it must be enabled with the
 perf_events API. This can be achieved either via the ioctl() interface, or the
@@ -375,20 +377,20 @@ enabled.</p>
 EBB event is enabled it will force all other non-pinned events off the PMU. In
 this case the enable will be successful. However if there is already an event
 pinned on the PMU then the enable will not be successful.</p>
-</section>
-<section id="reading-an-ebb-event">
+</div>
+<div class="section" id="reading-an-ebb-event">
 <h2>Reading an EBB event<a class="headerlink" href="#reading-an-ebb-event" title="Permalink to this headline">¶</a></h2>
 <p>It is possible to read() from an EBB event. However the results are
 meaningless. Because interrupts are being delivered to the user process the
 kernel is not able to count the event, and so will return a junk value.</p>
-</section>
-<section id="closing-an-ebb-event">
+</div>
+<div class="section" id="closing-an-ebb-event">
 <h2>Closing an EBB event<a class="headerlink" href="#closing-an-ebb-event" title="Permalink to this headline">¶</a></h2>
 <p>When an EBB event is finished with, you can close it using close() as for any
 regular event. If this is the last EBB event the PMU will be deconfigured and
 no further PMU EBBs will be delivered.</p>
-</section>
-<section id="ebb-handler">
+</div>
+<div class="section" id="ebb-handler">
 <h2>EBB Handler<a class="headerlink" href="#ebb-handler" title="Permalink to this headline">¶</a></h2>
 <p>The EBB handler is just regular userspace code, however it must be written in
 the style of an interrupt handler. When the handler is entered all registers
@@ -396,14 +398,14 @@ are live (possibly) and so must be saved somehow before the handler can invoke
 other code.</p>
 <p>It’s up to the program how to handle this. For C programs a relatively simple
 option is to create an interrupt frame on the stack and save registers there.</p>
-</section>
-<section id="fork">
+</div>
+<div class="section" id="fork">
 <h2>Fork<a class="headerlink" href="#fork" title="Permalink to this headline">¶</a></h2>
 <p>EBB events are not inherited across fork. If the child process wishes to use
 EBBs it should open a new event for itself. Similarly the EBB state in
 BESCR/EBBHR/EBBRR is cleared across fork().</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

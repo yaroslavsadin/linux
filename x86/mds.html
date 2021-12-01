@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>18. Microarchitectural Data Sampling (MDS) mitigation &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -297,9 +299,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="microarchitectural-data-sampling-mds-mitigation">
+  <div class="section" id="microarchitectural-data-sampling-mds-mitigation">
 <h1><span class="section-number">18. </span>Microarchitectural Data Sampling (MDS) mitigation<a class="headerlink" href="#microarchitectural-data-sampling-mds-mitigation" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <span id="mds"></span><h2><span class="section-number">18.1. </span>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Microarchitectural Data Sampling (MDS) is a family of side channel attacks
 on internal buffers in Intel CPUs. The variants are:</p>
@@ -337,8 +339,8 @@ thread leakage is possible.</p>
 memory that takes a fault or assist can leave data in a microarchitectural
 structure that may later be observed using one of the same methods used by
 MSBDS, MFBDS or MLPDS.</p>
-</section>
-<section id="exposure-assumptions">
+</div>
+<div class="section" id="exposure-assumptions">
 <h2><span class="section-number">18.2. </span>Exposure assumptions<a class="headerlink" href="#exposure-assumptions" title="Permalink to this headline">¶</a></h2>
 <p>It is assumed that attack code resides in user space or in a guest with one
 exception. The rationale behind this assumption is that the code construct
@@ -357,8 +359,8 @@ data</p></li>
 <p>There is one exception, which is untrusted BPF. The functionality of
 untrusted BPF is limited, but it needs to be thoroughly investigated
 whether it can be used to create such a construct.</p>
-</section>
-<section id="mitigation-strategy">
+</div>
+<div class="section" id="mitigation-strategy">
 <h2><span class="section-number">18.3. </span>Mitigation strategy<a class="headerlink" href="#mitigation-strategy" title="Permalink to this headline">¶</a></h2>
 <p>All variants have the same mitigation strategy at least for the single CPU
 thread case (SMT off): Force the CPU to clear the affected buffers.</p>
@@ -391,8 +393,8 @@ accordingly.</p>
 itself are not required because the necessary gadgets to expose the leaked
 data cannot be controlled in a way which allows exploitation from malicious
 user space or VM guests.</p>
-</section>
-<section id="kernel-internal-mitigation-modes">
+</div>
+<div class="section" id="kernel-internal-mitigation-modes">
 <h2><span class="section-number">18.4. </span>Kernel internal mitigation modes<a class="headerlink" href="#kernel-internal-mitigation-modes" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><table class="docutils align-default">
@@ -422,10 +424,10 @@ effort approach without guarantee.</p></td>
 <p>If the CPU is affected and mds=off is not supplied on the kernel command
 line then the kernel selects the appropriate mitigation mode depending on
 the availability of the MD_CLEAR CPUID bit.</p>
-</section>
-<section id="mitigation-points">
+</div>
+<div class="section" id="mitigation-points">
 <h2><span class="section-number">18.5. </span>Mitigation points<a class="headerlink" href="#mitigation-points" title="Permalink to this headline">¶</a></h2>
-<section id="return-to-user-space">
+<div class="section" id="return-to-user-space">
 <h3><span class="section-number">18.5.1. </span>1. Return to user space<a class="headerlink" href="#return-to-user-space" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>When transitioning from kernel to user space the CPU buffers are flushed
@@ -442,8 +444,8 @@ enable IRQs with NMIs blocked.)</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="c-state-transition">
+</div>
+<div class="section" id="c-state-transition">
 <h3><span class="section-number">18.5.2. </span>2. C-State transition<a class="headerlink" href="#c-state-transition" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>When a CPU goes idle and enters a C-State the CPU buffers need to be
@@ -478,9 +480,9 @@ functionality in microcode. Aside of that the IO-Port mechanism is a
 legacy interface which is only used on older systems which are either
 not affected or do not receive microcode updates anymore.</p>
 </div></blockquote>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

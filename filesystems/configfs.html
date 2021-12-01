@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Configfs - Userspace-driven Kernel Object Configuration &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -324,7 +326,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="configfs-userspace-driven-kernel-object-configuration">
+  <div class="section" id="configfs-userspace-driven-kernel-object-configuration">
 <h1>Configfs - Userspace-driven Kernel Object Configuration<a class="headerlink" href="#configfs-userspace-driven-kernel-object-configuration" title="Permalink to this headline">¶</a></h1>
 <p>Joel Becker &lt;<a class="reference external" href="mailto:joel&#46;becker&#37;&#52;&#48;oracle&#46;com">joel<span>&#46;</span>becker<span>&#64;</span>oracle<span>&#46;</span>com</a>&gt;</p>
 <p>Updated: 31 March 2005</p>
@@ -332,7 +334,7 @@
 <dt>Copyright (c) 2005 Oracle Corporation,</dt><dd><p>Joel Becker &lt;<a class="reference external" href="mailto:joel&#46;becker&#37;&#52;&#48;oracle&#46;com">joel<span>&#46;</span>becker<span>&#64;</span>oracle<span>&#46;</span>com</a>&gt;</p>
 </dd>
 </dl>
-<section id="what-is-configfs">
+<div class="section" id="what-is-configfs">
 <h2>What is configfs?<a class="headerlink" href="#what-is-configfs" title="Permalink to this headline">¶</a></h2>
 <p>configfs is a ram-based filesystem that provides the converse of
 sysfs’s functionality.  Where sysfs is a filesystem-based view of
@@ -354,8 +356,8 @@ lifetime of the representation is completely driven by userspace.  The
 kernel modules backing the items must respond to this.</p>
 <p>Both sysfs and configfs can and should exist together on the same
 system.  One is not a replacement for the other.</p>
-</section>
-<section id="using-configfs">
+</div>
+<div class="section" id="using-configfs">
 <h2>Using configfs<a class="headerlink" href="#using-configfs" title="Permalink to this headline">¶</a></h2>
 <p>configfs can be compiled as a module or into the kernel.  You can access
 it by doing:</p>
@@ -393,8 +395,8 @@ maximum buffer value.</p></li>
 <p>When an item needs to be destroyed, remove it with rmdir(2).  An
 item cannot be destroyed if any other item has a link to it (via
 symlink(2)).  Links can be removed via unlink(2).</p>
-</section>
-<section id="configuring-fakenbd-an-example">
+</div>
+<div class="section" id="configuring-fakenbd-an-example">
 <h2>Configuring FakeNBD: an Example<a class="headerlink" href="#configuring-fakenbd-an-example" title="Permalink to this headline">¶</a></h2>
 <p>Imagine there’s a Network Block Device (NBD) driver that allows you to
 access remote block devices.  Call it FakeNBD.  FakeNBD uses configfs
@@ -426,8 +428,8 @@ read-only or read-write:</p>
 </div>
 <p>That’s it.  That’s all there is.  Now the device is configured, via the
 shell no less.</p>
-</section>
-<section id="coding-with-configfs">
+</div>
+<div class="section" id="coding-with-configfs">
 <h2>Coding With configfs<a class="headerlink" href="#coding-with-configfs" title="Permalink to this headline">¶</a></h2>
 <p>Every object in configfs is a config_item.  A config_item reflects an
 object in the subsystem.  It has attributes that match values on that
@@ -443,8 +445,8 @@ the client module registers the subsystem with configfs, the subsystem
 appears as a directory at the top of the configfs filesystem.  A
 subsystem is also a config_group, and can do everything a config_group
 can.</p>
-</section>
-<section id="struct-config-item">
+</div>
+<div class="section" id="struct-config-item">
 <h2>struct config_item<a class="headerlink" href="#struct-config-item" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct config_item {
         char                    *ci_name;
@@ -479,8 +481,8 @@ config_item_put().</p>
 <p>By itself, a config_item cannot do much more than appear in configfs.
 Usually a subsystem wants the item to display and/or store attributes,
 among other things.  For that, it needs a type.</p>
-</section>
-<section id="struct-config-item-type">
+</div>
+<div class="section" id="struct-config-item-type">
 <h2>struct config_item_type<a class="headerlink" href="#struct-config-item-type" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct configfs_item_operations {
         void (*release)(struct config_item *);
@@ -504,8 +506,8 @@ operations can be performed on a config_item.  All items that have been
 allocated dynamically will need to provide the ct_item_ops-&gt;release()
 method.  This method is called when the config_item’s reference count
 reaches zero.</p>
-</section>
-<section id="struct-configfs-attribute">
+</div>
+<div class="section" id="struct-configfs-attribute">
 <h2>struct configfs_attribute<a class="headerlink" href="#struct-configfs-attribute" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct configfs_attribute {
         char                    *ca_name;
@@ -526,8 +528,8 @@ filename.  configfs_attribute-&gt;ca_mode specifies the file permissions.</p>
 be called whenever userspace asks for a read(2) on the attribute.  If an
 attribute is writable and provides a -&gt;store  method, that method will be
 called whenever userspace asks for a write(2) on the attribute.</p>
-</section>
-<section id="struct-configfs-bin-attribute">
+</div>
+<div class="section" id="struct-configfs-bin-attribute">
 <h2>struct configfs_bin_attribute<a class="headerlink" href="#struct-configfs-bin-attribute" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct configfs_bin_attribute {
         struct configfs_attribute       cb_attr;
@@ -552,8 +554,8 @@ whenever userspace asks for a read(2) on the attribute.  The converse
 will happen for write(2). The reads/writes are bufferred so only a
 single read/write will occur; the attributes’ need not concern itself
 with it.</p>
-</section>
-<section id="struct-config-group">
+</div>
+<div class="section" id="struct-config-group">
 <h2>struct config_group<a class="headerlink" href="#struct-config-group" title="Permalink to this headline">¶</a></h2>
 <p>A config_item cannot live in a vacuum.  The only way one can be created
 is via mkdir(2) on a config_group.  This will trigger creation of a
@@ -629,8 +631,8 @@ not drop any references here, as they still must do it in drop_item().</p>
 is implemented in the configfs rmdir(2) code.  -&gt;drop_item() will not be
 called, as the item has not been dropped.  rmdir(2) will fail, as the
 directory is not empty.</p>
-</section>
-<section id="struct-configfs-subsystem">
+</div>
+<div class="section" id="struct-configfs-subsystem">
 <h2>struct configfs_subsystem<a class="headerlink" href="#struct-configfs-subsystem" title="Permalink to this headline">¶</a></h2>
 <p>A subsystem must register itself, usually at module_init time.  This
 tells configfs to make the subsystem appear in the file tree:</p>
@@ -652,16 +654,16 @@ initialized the mutex.</p>
 <p>When the register call returns, the subsystem is live, and it
 will be visible via configfs.  At that point, mkdir(2) can be called and
 the subsystem must be ready for it.</p>
-</section>
-<section id="an-example">
+</div>
+<div class="section" id="an-example">
 <h2>An Example<a class="headerlink" href="#an-example" title="Permalink to this headline">¶</a></h2>
 <p>The best example of these basic concepts is the simple_children
 subsystem/group and the simple_child item in
 samples/configfs/configfs_sample.c. It shows a trivial object displaying
 and storing an attribute, and a simple group creating and destroying
 these children.</p>
-</section>
-<section id="hierarchy-navigation-and-the-subsystem-mutex">
+</div>
+<div class="section" id="hierarchy-navigation-and-the-subsystem-mutex">
 <h2>Hierarchy Navigation and the Subsystem Mutex<a class="headerlink" href="#hierarchy-navigation-and-the-subsystem-mutex" title="Permalink to this headline">¶</a></h2>
 <p>There is an extra bonus that configfs provides.  The config_groups and
 config_items are arranged in a hierarchy due to the fact that they
@@ -683,8 +685,8 @@ never be NULL while the item is in configfs, and that an item will only
 be in its parent’s cg_children list for the same duration.  This allows
 a subsystem to trust ci_parent and cg_children while they hold the
 mutex.</p>
-</section>
-<section id="item-aggregation-via-symlink-2">
+</div>
+<div class="section" id="item-aggregation-via-symlink-2">
 <h2>Item Aggregation Via symlink(2)<a class="headerlink" href="#item-aggregation-via-symlink-2" title="Permalink to this headline">¶</a></h2>
 <p>configfs provides a simple group via the group-&gt;item parent/child
 relationship.  Often, however, a larger environment requires aggregation
@@ -707,8 +709,8 @@ responsible for responding to the change.</p>
 <p>A config_item cannot be removed while it links to any other item, nor
 can it be removed while an item links to it.  Dangling symlinks are not
 allowed in configfs.</p>
-</section>
-<section id="automatically-created-subgroups">
+</div>
+<div class="section" id="automatically-created-subgroups">
 <h2>Automatically Created Subgroups<a class="headerlink" href="#automatically-created-subgroups" title="Permalink to this headline">¶</a></h2>
 <p>A new config_group may want to have two types of child config_items.
 While this could be codified by magic names in -&gt;make_item(), it is much
@@ -733,8 +735,8 @@ also means every default group child associated with that parent group.</p>
 <p>As a consequence of this, default groups cannot be removed directly via
 rmdir(2).  They also are not considered when rmdir(2) on the parent
 group is checking for children.</p>
-</section>
-<section id="dependent-subsystems">
+</div>
+<div class="section" id="dependent-subsystems">
 <h2>Dependent Subsystems<a class="headerlink" href="#dependent-subsystems" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes other drivers depend on particular configfs items.  For
 example, ocfs2 mounts depend on a heartbeat region item.  If that
@@ -757,8 +759,8 @@ up.  Here, the heartbeat code calls configfs_depend_item().  If it
 succeeds, then heartbeat knows the region is safe to give to ocfs2.
 If it fails, it was being torn down anyway, and heartbeat can gracefully
 pass up an error.</p>
-</section>
-<section id="committable-items">
+</div>
+<div class="section" id="committable-items">
 <h2>Committable Items<a class="headerlink" href="#committable-items" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Note:</dt><dd><p>Committable items are currently unimplemented.</p>
@@ -799,8 +801,8 @@ method returns zero and the item is moved to the “live” directory.</p>
 shutdown, or “uncommitted”.  Again, this is done via rename(2), this
 time from the “live” directory back to the “pending” one.  The subsystem
 is notified by the ct_group_ops-&gt;uncommit_object() method.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

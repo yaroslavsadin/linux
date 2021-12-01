@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Red-black Trees (rbtree) in Linux &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -273,7 +275,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="red-black-trees-rbtree-in-linux">
+  <div class="section" id="red-black-trees-rbtree-in-linux">
 <h1>Red-black Trees (rbtree) in Linux<a class="headerlink" href="#red-black-trees-rbtree-in-linux" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Date</dt>
@@ -283,7 +285,7 @@
 <dd class="field-even"><p>Rob Landley &lt;<a class="reference external" href="mailto:rob&#37;&#52;&#48;landley&#46;net">rob<span>&#64;</span>landley<span>&#46;</span>net</a>&gt;</p>
 </dd>
 </dl>
-<section id="what-are-red-black-trees-and-what-are-they-for">
+<div class="section" id="what-are-red-black-trees-and-what-are-they-for">
 <h2>What are red-black trees, and what are they for?<a class="headerlink" href="#what-are-red-black-trees-and-what-are-they-for" title="Permalink to this headline">¶</a></h2>
 <p>Red-black trees are a type of self-balancing binary search tree, used for
 storing sortable key/value data pairs.  This differs from radix trees (which
@@ -316,8 +318,8 @@ information on the nature and implementation of Red Black Trees,  see:</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="linux-implementation-of-red-black-trees">
+</div>
+<div class="section" id="linux-implementation-of-red-black-trees">
 <h2>Linux implementation of red-black trees<a class="headerlink" href="#linux-implementation-of-red-black-trees" title="Permalink to this headline">¶</a></h2>
 <p>Linux’s rbtree implementation lives in the file “lib/rbtree.c”.  To use it,
 “#include &lt;linux/rbtree.h&gt;”.</p>
@@ -329,8 +331,8 @@ it organizes.  And instead of using a comparison callback function pointer,
 users are expected to write their own tree search and insert functions
 which call the provided rbtree functions.  Locking is also left up to the
 user of the rbtree code.</p>
-</section>
-<section id="creating-a-new-rbtree">
+</div>
+<div class="section" id="creating-a-new-rbtree">
 <h2>Creating a new rbtree<a class="headerlink" href="#creating-a-new-rbtree" title="Permalink to this headline">¶</a></h2>
 <p>Data nodes in an rbtree tree are structures containing a struct rb_node member:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct mytype {
@@ -347,8 +349,8 @@ empty via:</p>
 <blockquote>
 <div><p>struct rb_root mytree = RB_ROOT;</p>
 </div></blockquote>
-</section>
-<section id="searching-for-a-value-in-an-rbtree">
+</div>
+<div class="section" id="searching-for-a-value-in-an-rbtree">
 <h2>Searching for a value in an rbtree<a class="headerlink" href="#searching-for-a-value-in-an-rbtree" title="Permalink to this headline">¶</a></h2>
 <p>Writing a search function for your tree is fairly straightforward: start at the
 root, compare each value, and follow the left or right branch as necessary.</p>
@@ -374,8 +376,8 @@ root, compare each value, and follow the left or right branch as necessary.</p>
 }
 </pre></div>
 </div>
-</section>
-<section id="inserting-data-into-an-rbtree">
+</div>
+<div class="section" id="inserting-data-into-an-rbtree">
 <h2>Inserting data into an rbtree<a class="headerlink" href="#inserting-data-into-an-rbtree" title="Permalink to this headline">¶</a></h2>
 <p>Inserting data in the tree involves first searching for the place to insert the
 new node, then inserting the node and rebalancing (“recoloring”) the tree.</p>
@@ -409,8 +411,8 @@ needs a link to its parent node for rebalancing purposes.</p>
 }
 </pre></div>
 </div>
-</section>
-<section id="removing-or-replacing-existing-data-in-an-rbtree">
+</div>
+<div class="section" id="removing-or-replacing-existing-data-in-an-rbtree">
 <h2>Removing or replacing existing data in an rbtree<a class="headerlink" href="#removing-or-replacing-existing-data-in-an-rbtree" title="Permalink to this headline">¶</a></h2>
 <p>To remove an existing node from a tree, call:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void rb_erase(struct rb_node *victim, struct rb_root *tree);
@@ -432,8 +434,8 @@ if (data) {
 </div>
 <p>Replacing a node this way does not re-sort the tree: If the new node doesn’t
 have the same key as the old node, the rbtree will probably become corrupted.</p>
-</section>
-<section id="iterating-through-the-elements-stored-in-an-rbtree-in-sort-order">
+</div>
+<div class="section" id="iterating-through-the-elements-stored-in-an-rbtree-in-sort-order">
 <h2>Iterating through the elements stored in an rbtree (in sort order)<a class="headerlink" href="#iterating-through-the-elements-stored-in-an-rbtree-in-sort-order" title="Permalink to this headline">¶</a></h2>
 <p>Four functions are provided for iterating through an rbtree’s contents in
 sorted order.  These work on arbitrary trees, and should not need to be
@@ -459,8 +461,8 @@ for (node = rb_first(&amp;mytree); node; node = rb_next(node))
       printk(&quot;key=%s\n&quot;, rb_entry(node, struct mytype, node)-&gt;keystring);
 </pre></div>
 </div>
-</section>
-<section id="cached-rbtrees">
+</div>
+<div class="section" id="cached-rbtrees">
 <h2>Cached rbtrees<a class="headerlink" href="#cached-rbtrees" title="Permalink to this headline">¶</a></h2>
 <p>Computing the leftmost (smallest) node is quite a common task for binary
 search trees, such as for traversals or users relying on a the particular
@@ -490,8 +492,8 @@ void rb_erase_augmented_cached(struct rb_node *, struct rb_root_cached *,
                                struct rb_augment_callbacks *);
 </pre></div>
 </div>
-</section>
-<section id="support-for-augmented-rbtrees">
+</div>
+<div class="section" id="support-for-augmented-rbtrees">
 <h2>Support for Augmented rbtrees<a class="headerlink" href="#support-for-augmented-rbtrees" title="Permalink to this headline">¶</a></h2>
 <p>Augmented rbtree is an rbtree with “some” additional data stored in
 each node, where the additional data for node N must be a function of
@@ -533,7 +535,7 @@ information for the former subtree root.</p></li>
 copy callbacks, which results in a large function, so each augmented rbtree
 user should have a single rb_erase_augmented() call site in order to limit
 compiled code size.</p>
-<section id="sample-usage">
+<div class="section" id="sample-usage">
 <h3>Sample usage<a class="headerlink" href="#sample-usage" title="Permalink to this headline">¶</a></h3>
 <p>Interval tree is an example of augmented rb tree. Reference -
 “Introduction to Algorithms” by Cormen, Leiserson, Rivest and Stein.
@@ -680,9 +682,9 @@ void interval_tree_remove(struct interval_tree_node *node,
 }
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>I915 GuC Submission/DRM Scheduler Section &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -266,9 +268,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="i915-guc-submission-drm-scheduler-section">
+  <div class="section" id="i915-guc-submission-drm-scheduler-section">
 <h1>I915 GuC Submission/DRM Scheduler Section<a class="headerlink" href="#i915-guc-submission-drm-scheduler-section" title="Permalink to this headline">¶</a></h1>
-<section id="upstream-plan">
+<div class="section" id="upstream-plan">
 <h2>Upstream plan<a class="headerlink" href="#upstream-plan" title="Permalink to this headline">¶</a></h2>
 <p>For upstream the overall plan for landing GuC submission and integrating the
 i915 with the DRM scheduler is:</p>
@@ -359,16 +361,16 @@ finish out of order</p></li>
 </dl>
 </li>
 </ul>
-</section>
-<section id="todos-for-guc-submission-upstream">
+</div>
+<div class="section" id="todos-for-guc-submission-upstream">
 <h2>TODOs for GuC submission upstream<a class="headerlink" href="#todos-for-guc-submission-upstream" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Need an update to GuC firmware / i915 to enable error state capture</p></li>
 <li><p>Open source tool to decode GuC logs</p></li>
 <li><p>Public GuC spec</p></li>
 </ul>
-</section>
-<section id="new-uapi-for-basic-guc-submission">
+</div>
+<div class="section" id="new-uapi-for-basic-guc-submission">
 <h2>New uAPI for basic GuC submission<a class="headerlink" href="#new-uapi-for-basic-guc-submission" title="Permalink to this headline">¶</a></h2>
 <p>No major changes are required to the uAPI for basic GuC submission. The only
 change is a new scheduler attribute: I915_SCHEDULER_CAP_STATIC_PRIORITY_MAP.
@@ -382,16 +384,16 @@ into 3 levels as follows:</p>
 <p>This is needed because the GuC only has 4 priority bands. The highest priority
 band is reserved with the kernel. This aligns with the DRM scheduler priority
 levels too.</p>
-<section id="spec-references">
+<div class="section" id="spec-references">
 <h3>Spec references:<a class="headerlink" href="#spec-references" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.khronos.org/registry/EGL/extensions/IMG/EGL_IMG_context_priority.txt">https://www.khronos.org/registry/EGL/extensions/IMG/EGL_IMG_context_priority.txt</a></p></li>
 <li><p><a class="reference external" href="https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/chap5.html#devsandqueues-priority">https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/chap5.html#devsandqueues-priority</a></p></li>
 <li><p><a class="reference external" href="https://spec.oneapi.com/level-zero/latest/core/api.html#ze-command-queue-priority-t">https://spec.oneapi.com/level-zero/latest/core/api.html#ze-command-queue-priority-t</a></p></li>
 </ul>
-</section>
-</section>
-<section id="new-parallel-submission-uapi">
+</div>
+</div>
+<div class="section" id="new-parallel-submission-uapi">
 <h2>New parallel submission uAPI<a class="headerlink" href="#new-parallel-submission-uapi" title="Permalink to this headline">¶</a></h2>
 <p>The existing bonding uAPI is completely broken with GuC submission because
 whether a submission is a single context submit or parallel submit isn’t known
@@ -410,7 +412,7 @@ continue to support.</p>
 submission</p></li>
 <li><p>Extend execbuf2 IOCTL to support submitting N BBs in a single IOCTL</p></li>
 </ul>
-<section id="export-engines-logical-mapping">
+<div class="section" id="export-engines-logical-mapping">
 <h3>Export engines logical mapping<a class="headerlink" href="#export-engines-logical-mapping" title="Permalink to this headline">¶</a></h3>
 <p>Certain use cases require BBs to be placed on engine instances in logical order
 (e.g. split-frame on gen11+). The logical mapping of engine instances can change
@@ -424,8 +426,8 @@ engine instances.</p>
 <p>A single bit will be added to drm_i915_engine_info.flags indicating that the
 logical instance has been returned and a new field,
 drm_i915_engine_info.logical_instance, returns the logical instance.</p>
-</section>
-<section id="a-set-parallel-extension-to-configure-contexts-for-parallel-submission">
+</div>
+<div class="section" id="a-set-parallel-extension-to-configure-contexts-for-parallel-submission">
 <h3>A ‘set_parallel’ extension to configure contexts for parallel submission<a class="headerlink" href="#a-set-parallel-extension-to-configure-contexts-for-parallel-submission" title="Permalink to this headline">¶</a></h3>
 <p>The ‘set_parallel’ extension configures a slot for parallel submission of N BBs.
 It is a setup step that must be called before using any of the contexts. See
@@ -437,8 +439,8 @@ supports GuC submission. Execlists supports can be added later if needed.</p>
 drm_i915_context_engines_parallel_submit to the uAPI to implement this
 extension.</p>
 <dl class="c struct">
-<dt id="c.i915_context_engines_parallel_submit">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">i915_context_engines_parallel_submit</span></code><a class="headerlink" href="#c.i915_context_engines_parallel_submit" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.i915_context_engines_parallel_submit">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">i915_context_engines_parallel_submit</span></span></span><a class="headerlink" href="#c.i915_context_engines_parallel_submit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Configure engine for parallel submission.</p>
 </dd></dl>
 
@@ -541,8 +543,8 @@ CS[0], CS[1]
 CS[1], CS[3] - Not logically contiguous, return -EINVAL
 </pre></div>
 </div>
-</section>
-<section id="extend-execbuf2-ioctl-to-support-submitting-n-bbs-in-a-single-ioctl">
+</div>
+<div class="section" id="extend-execbuf2-ioctl-to-support-submitting-n-bbs-in-a-single-ioctl">
 <h3>Extend execbuf2 IOCTL to support submitting N BBs in a single IOCTL<a class="headerlink" href="#extend-execbuf2-ioctl-to-support-submitting-n-bbs-in-a-single-ioctl" title="Permalink to this headline">¶</a></h3>
 <p>Contexts that have been configured with the ‘set_parallel’ extension can only
 submit N BBs in a single execbuf2 IOCTL. The BBs are either the last N objects
@@ -550,9 +552,9 @@ in the drm_i915_gem_exec_object2 list or the first N if I915_EXEC_BATCH_FIRST is
 set. The number of BBs is implicit based on the slot submitted and how it has
 been configured by ‘set_parallel’ or other extensions. No uAPI changes are
 required to the execbuf2 IOCTL.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

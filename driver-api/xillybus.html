@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Xillybus driver for generic FPGA interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -360,7 +362,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="xillybus-driver-for-generic-fpga-interface">
+  <div class="section" id="xillybus-driver-for-generic-fpga-interface">
 <h1>Xillybus driver for generic FPGA interface<a class="headerlink" href="#xillybus-driver-for-generic-fpga-interface" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -370,9 +372,9 @@
 <dd class="field-even"><p><a class="reference external" href="mailto:eli&#46;billauer&#37;&#52;&#48;gmail&#46;com">eli<span>&#46;</span>billauer<span>&#64;</span>gmail<span>&#46;</span>com</a> or as advertised on Xillybus’ site.</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<section id="background">
+<div class="section" id="background">
 <h3>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h3>
 <p>An FPGA (Field Programmable Gate Array) is a piece of logic hardware, which
 can be programmed to become virtually anything that is usually found as a
@@ -408,8 +410,8 @@ a quicker and possibly less elegant solution is sought: The driver is
 effectively written as a user space program, leaving the kernel space part
 with just elementary data transport. This still requires designing some
 interface logic for the FPGA, and write a simple ad-hoc driver for the kernel.</p>
-</section>
-<section id="xillybus-overview">
+</div>
+<div class="section" id="xillybus-overview">
 <h3>Xillybus Overview<a class="headerlink" href="#xillybus-overview" title="Permalink to this headline">¶</a></h3>
 <p>Xillybus is an IP core and a Linux driver. Together, they form a kit for
 elementary data transport between an FPGA and the host, providing pipe-like
@@ -435,11 +437,11 @@ up the DMA buffers and character devices accordingly. As a result, a single
 driver is used to work out of the box with any Xillybus IP core.</p>
 <p>The data structure just mentioned should not be confused with PCI’s
 configuration space or the Flattened Device Tree.</p>
-</section>
-</section>
-<section id="usage">
+</div>
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<section id="user-interface">
+<div class="section" id="user-interface">
 <h3>User interface<a class="headerlink" href="#user-interface" title="Permalink to this headline">¶</a></h3>
 <p>On the host, all interface with Xillybus is done through /dev/xillybus_*
 device files, which are generated automatically as the drivers loads. The
@@ -465,8 +467,8 @@ pieces of data sent across (like TCP/IP) by autoflushing.</p></li>
 <p>A device file can be read only, write only or bidirectional. Bidirectional
 device files are treated like two independent pipes (except for sharing a
 “channel” structure in the implementation code).</p>
-</section>
-<section id="synchronization">
+</div>
+<div class="section" id="synchronization">
 <h3>Synchronization<a class="headerlink" href="#synchronization" title="Permalink to this headline">¶</a></h3>
 <p>Xillybus pipes are configured (on the IP core) to be either synchronous or
 asynchronous. For a synchronous pipe, write() returns successfully only after
@@ -488,8 +490,8 @@ returning.</p>
 that read() or write() completes less bytes than requested. There is a
 separate configuration flag (“allowpartial”) that determines whether such a
 partial completion is allowed.</p>
-</section>
-<section id="seekable-pipes">
+</div>
+<div class="section" id="seekable-pipes">
 <h3>Seekable pipes<a class="headerlink" href="#seekable-pipes" title="Permalink to this headline">¶</a></h3>
 <p>A synchronous pipe can be configured to have the stream’s position exposed
 to the user logic at the FPGA. Such a pipe is also seekable on the host API.
@@ -497,11 +499,11 @@ With this feature, a memory or register interface can be attached on the
 FPGA side to the seekable stream. Reading or writing to a certain address in
 the attached memory is done by seeking to the desired address, and calling
 read() or write() as required.</p>
-</section>
-</section>
-<section id="internals">
+</div>
+</div>
+<div class="section" id="internals">
 <h2>Internals<a class="headerlink" href="#internals" title="Permalink to this headline">¶</a></h2>
-<section id="source-code-organization">
+<div class="section" id="source-code-organization">
 <h3>Source code organization<a class="headerlink" href="#source-code-organization" title="Permalink to this headline">¶</a></h3>
 <p>The Xillybus driver consists of a core module, xillybus_core.c, and modules
 that depend on the specific bus interface (xillybus_of.c and xillybus_pcie.c).</p>
@@ -511,8 +513,8 @@ dependent by their nature, are used by the core module, a
 xilly_endpoint_hardware structure is passed to the core module on
 initialization. This structure is populated with pointers to wrapper functions
 which execute the DMA-related operations on the bus.</p>
-</section>
-<section id="pipe-attributes">
+</div>
+<div class="section" id="pipe-attributes">
 <h3>Pipe attributes<a class="headerlink" href="#pipe-attributes" title="Permalink to this headline">¶</a></h3>
 <p>Each pipe has a number of attributes which are set when the FPGA component
 (IP core) is built. They are fetched from the IDT (the data structure which
@@ -540,8 +542,8 @@ Seekable pipes above.</p></li>
 hardware will send the messages that are necessary to support select() and
 poll() for this pipe.</p></li>
 </ul>
-</section>
-<section id="host-never-reads-from-the-fpga">
+</div>
+<div class="section" id="host-never-reads-from-the-fpga">
 <h3>Host never reads from the FPGA<a class="headerlink" href="#host-never-reads-from-the-fpga" title="Permalink to this headline">¶</a></h3>
 <p>Even though PCI Express is hotpluggable in general, a typical motherboard
 doesn’t expect a card to go away all of the sudden. But since the PCIe card
@@ -558,15 +560,15 @@ doesn’t follow the common practice of checking a status register when it’s
 invoked. Rather, the FPGA prepares a small buffer which contains short
 messages, which inform the host what the interrupt was about.</p>
 <p>This mechanism is used on non-PCIe buses as well for the sake of uniformity.</p>
-</section>
-<section id="channels-pipes-and-the-message-channel">
+</div>
+<div class="section" id="channels-pipes-and-the-message-channel">
 <h3>Channels, pipes, and the message channel<a class="headerlink" href="#channels-pipes-and-the-message-channel" title="Permalink to this headline">¶</a></h3>
 <p>Each of the (possibly bidirectional) pipes presented to the user is allocated
 a data channel between the FPGA and the host. The distinction between channels
 and pipes is necessary only because of channel 0, which is used for interrupt-
 related messages from the FPGA, and has no pipe attached to it.</p>
-</section>
-<section id="data-streaming">
+</div>
+<div class="section" id="data-streaming">
 <h3>Data streaming<a class="headerlink" href="#data-streaming" title="Permalink to this headline">¶</a></h3>
 <p>Even though a non-segmented data stream is presented to the user at both
 sides, the implementation relies on a set of DMA buffers which is allocated
@@ -602,8 +604,8 @@ and yet enjoy a stream-like interface.</p>
 <p>Note that the issue of partial buffer flushing is irrelevant for pipes having
 the “synchronous” attribute nonzero, since synchronous pipes don’t allow data
 to lay around in the DMA buffers between read() and write() anyhow.</p>
-</section>
-<section id="data-granularity">
+</div>
+<div class="section" id="data-granularity">
 <h3>Data granularity<a class="headerlink" href="#data-granularity" title="Permalink to this headline">¶</a></h3>
 <p>The data arrives or is sent at the FPGA as 8, 16 or 32 bit wide words, as
 configured by the “format” attribute. Whenever possible, the driver attempts
@@ -618,8 +620,8 @@ when a buffer is flushed, it may contain up to 3 bytes don’t form a word in
 the FPGA, and hence can’t be sent. To prevent loss of data, these leftover
 bytes need to be moved to the next buffer. The parts in xillybus_core.c
 that mention “leftovers” in some way are related to this complication.</p>
-</section>
-<section id="probing">
+</div>
+<div class="section" id="probing">
 <h3>Probing<a class="headerlink" href="#probing" title="Permalink to this headline">¶</a></h3>
 <p>As mentioned earlier, the number of pipes that are created when the driver
 loads and their attributes depend on the Xillybus IP core in the FPGA. During
@@ -633,8 +635,8 @@ for this command contains the IDT’s buffer length.</p></li>
 <li><p>Acquire the IDT itself.</p></li>
 <li><p>Create the interfaces according to the IDT.</p></li>
 </ol>
-</section>
-<section id="buffer-allocation">
+</div>
+<div class="section" id="buffer-allocation">
 <h3>Buffer allocation<a class="headerlink" href="#buffer-allocation" title="Permalink to this headline">¶</a></h3>
 <p>In order to simplify the logic that prevents illegal boundary crossings of
 PCIe packets, the following rule applies: If a buffer is smaller than 4kB,
@@ -655,8 +657,8 @@ single page is requested from the kernel, and that page is partially used.
 Or, if there already is a partially used page at hand, the buffer is packed
 into that page. It can be shown that all pages requested from the kernel
 (except possibly for the last) are 100% utilized this way.</p>
-</section>
-<section id="the-nonempty-message-supporting-poll">
+</div>
+<div class="section" id="the-nonempty-message-supporting-poll">
 <h3>The “nonempty” message (supporting poll)<a class="headerlink" href="#the-nonempty-message-supporting-poll" title="Permalink to this headline">¶</a></h3>
 <p>In order to support the “poll” method (and hence select() ), there is a small
 catch regarding the FPGA to host direction: The FPGA may have filled a DMA
@@ -668,9 +670,9 @@ XILLYMSG_OPCODE_NONEMPTY messages sent by the FPGA when a channel goes from
 completely empty to containing some data.</p>
 <p>These messages are used only to support poll() and select(). The IP core can
 be configured not to send them for a slight reduction of bandwidth.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

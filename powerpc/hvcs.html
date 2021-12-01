@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>HVCS IBM “Hypervisor Virtual Console Server” Installation Guide &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -299,14 +301,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="hvcs-ibm-hypervisor-virtual-console-server-installation-guide">
+  <div class="section" id="hvcs-ibm-hypervisor-virtual-console-server-installation-guide">
 <h1>HVCS IBM “Hypervisor Virtual Console Server” Installation Guide<a class="headerlink" href="#hvcs-ibm-hypervisor-virtual-console-server-installation-guide" title="Permalink to this headline">¶</a></h1>
 <p>for Linux Kernel 2.6.4+</p>
 <p>Copyright (C) 2004 IBM Corporation</p>
 <p>Author(s): Ryan S. Arnold &lt;<a class="reference external" href="mailto:rsa&#37;&#52;&#48;us&#46;ibm&#46;com">rsa<span>&#64;</span>us<span>&#46;</span>ibm<span>&#46;</span>com</a>&gt;</p>
 <p>Date Created: March, 02, 2004
 Last Changed: August, 24, 2004</p>
-<section id="driver-introduction">
+<div class="section" id="driver-introduction">
 <h2>1. Driver Introduction:<a class="headerlink" href="#driver-introduction" title="Permalink to this headline">¶</a></h2>
 <p>This is the device driver for the IBM Hypervisor Virtual Console Server,
 “hvcs”.  The IBM hvcs provides a tty driver interface to allow Linux user
@@ -315,8 +317,8 @@ operating systems (Linux and AIX) running on the same partitioned Power5
 ppc64 system.  Physical hardware consoles per partition are not practical
 on this hardware so system consoles are accessed by this driver using
 firmware interfaces to virtual terminal devices.</p>
-</section>
-<section id="system-requirements">
+</div>
+<div class="section" id="system-requirements">
 <h2>2. System Requirements:<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h2>
 <p>This device driver was written using 2.6.4 Linux kernel APIs and will only
 build and run on kernels of this version or later.</p>
@@ -326,8 +328,8 @@ calls from the driver code.</p>
 <p>Sysfs must be mounted on the system so that the user can determine which
 major and minor numbers are associated with each vty-server.  Directions
 for sysfs mounting are outside the scope of this document.</p>
-</section>
-<section id="build-options">
+</div>
+<div class="section" id="build-options">
 <h2>3. Build Options:<a class="headerlink" href="#build-options" title="Permalink to this headline">¶</a></h2>
 <p>The hvcs driver registers itself as a tty driver.  The tty layer
 dynamically allocates a block of major and minor numbers in a quantity
@@ -337,7 +339,7 @@ entries.</p>
 <p>If the default number of device entries is adequate then this driver can be
 built into the kernel.  If not, the default can be over-ridden by inserting
 the driver as a module with insmod parameters.</p>
-<section id="built-in">
+<div class="section" id="built-in">
 <h3>3.1 Built-in:<a class="headerlink" href="#built-in" title="Permalink to this headline">¶</a></h3>
 <p>The following menuconfig example demonstrates selecting to build this
 driver into the kernel:</p>
@@ -347,8 +349,8 @@ driver into the kernel:</p>
 </pre></div>
 </div>
 <p>Begin the kernel make process.</p>
-</section>
-<section id="module">
+</div>
+<div class="section" id="module">
 <h3>3.2 Module:<a class="headerlink" href="#module" title="Permalink to this headline">¶</a></h3>
 <p>The following menuconfig example demonstrates selecting to build this
 driver as a kernel module:</p>
@@ -402,9 +404,9 @@ proper order:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>modprobe -r hvcs
 </pre></div>
 </div>
-</section>
-</section>
-<section id="installation">
+</div>
+</div>
+<div class="section" id="installation">
 <h2>4. Installation:<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>The tty layer creates sysfs entries which contain the major and minor
 numbers allocated for the hvcs driver.  The following snippet of “tree”
@@ -468,8 +470,8 @@ the hvcs module will result in an error message similar to the following:</p>
 </div>
 <p>NOTE: Just because there is a device node present doesn’t mean that there
 is a vty-server device configured for that node.</p>
-</section>
-<section id="connection">
+</div>
+<div class="section" id="connection">
 <h2>5. Connection<a class="headerlink" href="#connection" title="Permalink to this headline">¶</a></h2>
 <p>Since this driver controls devices that provide a tty interface a user can
 interact with the device node entries using any standard tty-interactive
@@ -521,8 +523,8 @@ index attribute of vty-server adapter 30000004 shows the following:</p>
 system the /dev/hvcs* entry that interacts with a particular vty-server
 adapter is not guaranteed to remain the same across system reboots.  Look
 in the Q &amp; A section for more on this issue.</p>
-</section>
-<section id="disconnection">
+</div>
+<div class="section" id="disconnection">
 <h2>6. Disconnection<a class="headerlink" href="#disconnection" title="Permalink to this headline">¶</a></h2>
 <p>As a security feature to prevent the delivery of stale data to an
 unintended target the Power5 system firmware disables the fetching of data
@@ -571,8 +573,8 @@ Pow5:/sys/bus/vio/drivers/hvcs/30000004 # cat vterm_state
 </div>
 <p>All vty-server connections are automatically terminated when the device is
 hotplug removed and when the module is removed.</p>
-</section>
-<section id="configuration">
+</div>
+<div class="section" id="configuration">
 <h2>7. Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <p>Each vty-server has a sysfs entry in the /sys/devices/vio directory, which
 is symlinked in several other sysfs tree directories, notably under the
@@ -655,8 +657,8 @@ does not affect the current connection.  The change takes effect when the
 currently open connection is freed.</p>
 <p>Information on the “vterm_state” attribute was covered earlier on the
 chapter entitled “disconnection”.</p>
-</section>
-<section id="questions-answers">
+</div>
+<div class="section" id="questions-answers">
 <h2>8. Questions &amp; Answers:<a class="headerlink" href="#questions-answers" title="Permalink to this headline">¶</a></h2>
 <p>Q: What are the security concerns involving hvcs?</p>
 <p>A: There are three main security concerns:</p>
@@ -769,9 +771,9 @@ additional /dev/hvcs* device.</p>
 /dev/hvc* and another program on the current partition can be configured to
 read or write to /dev/hvcs*.  Now you have a tty conduit between two
 partitions.</p>
-</section>
+</div>
 <hr class="docutils" />
-<section id="reporting-bugs">
+<div class="section" id="reporting-bugs">
 <h2>9. Reporting Bugs:<a class="headerlink" href="#reporting-bugs" title="Permalink to this headline">¶</a></h2>
 <p>The proper channel for reporting bugs is either through the Linux OS
 distribution company that provided your OS or by posting issues to the
@@ -780,8 +782,8 @@ PowerPC development mailing list at:</p>
 <p>This request is to provide a documented and searchable public exchange
 of the problems and solutions surrounding this driver for the benefit of
 all users.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

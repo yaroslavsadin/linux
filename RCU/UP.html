@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>RCU on Uniprocessor Systems &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -277,7 +279,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="rcu-on-uniprocessor-systems">
+  <div class="section" id="rcu-on-uniprocessor-systems">
 <span id="up-doc"></span><h1>RCU on Uniprocessor Systems<a class="headerlink" href="#rcu-on-uniprocessor-systems" title="Permalink to this headline">¶</a></h1>
 <p>A common misconception is that, on UP systems, the <a class="reference internal" href="../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a> primitive
 may immediately invoke its function.  The basis of this misconception
@@ -287,7 +289,7 @@ anything else to be happening on.  Although this approach will <em>sort of</em>
 work a surprising amount of the time, it is a very bad idea in general.
 This document presents three examples that demonstrate exactly how bad
 an idea this is.</p>
-<section id="example-1-softirq-suicide">
+<div class="section" id="example-1-softirq-suicide">
 <h2>Example 1: softirq Suicide<a class="headerlink" href="#example-1-softirq-suicide" title="Permalink to this headline">¶</a></h2>
 <p>Suppose that an RCU-based algorithm scans a linked list containing
 elements A, B, and C in process context, and can delete elements from
@@ -301,8 +303,8 @@ element B.  This situation can greatly decrease the life expectancy of
 your kernel.</p>
 <p>This same problem can occur if <a class="reference internal" href="../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a> is invoked from a hardware
 interrupt handler.</p>
-</section>
-<section id="example-2-function-call-fatality">
+</div>
+<div class="section" id="example-2-function-call-fatality">
 <h2>Example 2: Function-Call Fatality<a class="headerlink" href="#example-2-function-call-fatality" title="Permalink to this headline">¶</a></h2>
 <p>Of course, one could avert the suicide described in the preceding example
 by having <a class="reference internal" href="../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a> directly invoke its arguments only if it was called
@@ -322,8 +324,8 @@ all RCU read-side critical sections currently executing have completed.</p>
 </dd>
 </dl>
 <p><a class="reference internal" href="#answer-quick-quiz-up"><span class="std std-ref">Answers to Quick Quiz</span></a></p>
-</section>
-<section id="example-3-death-by-deadlock">
+</div>
+<div class="section" id="example-3-death-by-deadlock">
 <h2>Example 3: Death by Deadlock<a class="headerlink" href="#example-3-death-by-deadlock" title="Permalink to this headline">¶</a></h2>
 <p>Suppose that <a class="reference internal" href="../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a> is invoked while holding a lock, and that the
 callback function must acquire this same lock.  In this case, if
@@ -351,8 +353,8 @@ or API changes would be required.</p>
 </dd>
 </dl>
 <p><a class="reference internal" href="#answer-quick-quiz-up"><span class="std std-ref">Answers to Quick Quiz</span></a></p>
-</section>
-<section id="summary">
+</div>
+<div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>Permitting <a class="reference internal" href="../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a> to immediately invoke its arguments breaks RCU,
 even on a UP system.  So do not do it!  Even on a UP system, the RCU
@@ -399,8 +401,8 @@ end of the grace period, which would come as a nasty shock to
 that other thread when it started running again.</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

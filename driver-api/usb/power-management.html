@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Power Management for USB &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -374,7 +376,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="power-management-for-usb">
+  <div class="section" id="power-management-for-usb">
 <span id="usb-power-management"></span><h1>Power Management for USB<a class="headerlink" href="#power-management-for-usb" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -384,7 +386,7 @@
 <dd class="field-even"><p>Last-updated: February 2014</p>
 </dd>
 </dl>
-<section id="what-is-power-management">
+<div class="section" id="what-is-power-management">
 <h2>What is Power Management?<a class="headerlink" href="#what-is-power-management" title="Permalink to this headline">¶</a></h2>
 <p>Power Management (PM) is the practice of saving energy by suspending
 parts of a computer system when they aren’t being used.  While a
@@ -413,8 +415,8 @@ kernel had been built with <code class="docutils literal notranslate"><span clas
 support for USB was present whenever the kernel was built with
 <code class="docutils literal notranslate"><span class="pre">CONFIG_PM_RUNTIME</span></code> enabled.  The <code class="docutils literal notranslate"><span class="pre">CONFIG_USB_SUSPEND</span></code> option had been
 eliminated.]</p>
-</section>
-<section id="what-is-remote-wakeup">
+</div>
+<div class="section" id="what-is-remote-wakeup">
 <h2>What is Remote Wakeup?<a class="headerlink" href="#what-is-remote-wakeup" title="Permalink to this headline">¶</a></h2>
 <p>When a device has been suspended, it generally doesn’t resume until
 the computer tells it to.  Likewise, if the entire computer has been
@@ -428,8 +430,8 @@ device is enabled for remote wakeup and it is suspended, it may resume
 itself (or send a request to be resumed) in response to some external
 event.  Examples include a suspended keyboard resuming when a key is
 pressed, or a suspended USB hub resuming when a device is plugged in.</p>
-</section>
-<section id="when-is-a-usb-device-idle">
+</div>
+<div class="section" id="when-is-a-usb-device-idle">
 <h2>When is a USB device idle?<a class="headerlink" href="#when-is-a-usb-device-idle" title="Permalink to this headline">¶</a></h2>
 <p>A device is idle whenever the kernel thinks it’s not busy doing
 anything important and thus is a candidate for being suspended.  The
@@ -441,8 +443,8 @@ In addition, a device isn’t considered idle so long as a program keeps
 its usbfs file open, whether or not any I/O is going on.</p>
 <p>If a USB device has no driver, its usbfs file isn’t open, and it isn’t
 being accessed through sysfs, then it definitely is idle.</p>
-</section>
-<section id="forms-of-dynamic-pm">
+</div>
+<div class="section" id="forms-of-dynamic-pm">
 <h2>Forms of dynamic PM<a class="headerlink" href="#forms-of-dynamic-pm" title="Permalink to this headline">¶</a></h2>
 <p>Dynamic suspends occur when the kernel decides to suspend an idle
 device.  This is called <code class="docutils literal notranslate"><span class="pre">autosuspend</span></code> for short.  In general, a device
@@ -469,8 +471,8 @@ remote wakeup (triggered by the device).  Internal events are those
 triggered within the USB stack: autosuspend and autoresume.  Note that
 all dynamic suspend events are internal; external agents are not
 allowed to issue dynamic suspends.</p>
-</section>
-<section id="the-user-interface-for-dynamic-pm">
+</div>
+<div class="section" id="the-user-interface-for-dynamic-pm">
 <h2>The user interface for dynamic PM<a class="headerlink" href="#the-user-interface-for-dynamic-pm" title="Permalink to this headline">¶</a></h2>
 <p>The user interface for controlling dynamic PM is located in the <code class="docutils literal notranslate"><span class="pre">power/</span></code>
 subdirectory of each USB device’s sysfs directory, that is, in
@@ -534,8 +536,8 @@ from being autosuspended; the behavior was changed in 2.6.22.  The
 <code class="docutils literal notranslate"><span class="pre">power/level</span></code> attribute did not exist prior to 2.6.22.  <code class="docutils literal notranslate"><span class="pre">power/control</span></code>
 was added in 2.6.34, and <code class="docutils literal notranslate"><span class="pre">power/autosuspend_delay_ms</span></code> was added in
 2.6.37 but did not become functional until 2.6.38.)</p>
-</section>
-<section id="changing-the-default-idle-delay-time">
+</div>
+<div class="section" id="changing-the-default-idle-delay-time">
 <h2>Changing the default idle-delay time<a class="headerlink" href="#changing-the-default-idle-delay-time" title="Permalink to this headline">¶</a></h2>
 <p>The default autosuspend idle-delay time (in seconds) is controlled by
 a module parameter in usbcore.  You can specify the value when usbcore
@@ -570,8 +572,8 @@ will not be affected.)</p>
 <p>Setting the initial default idle-delay to -1 will prevent any
 autosuspend of any USB device.  This has the benefit of allowing you
 then to enable autosuspend for selected devices.</p>
-</section>
-<section id="warnings">
+</div>
+<div class="section" id="warnings">
 <h2>Warnings<a class="headerlink" href="#warnings" title="Permalink to this headline">¶</a></h2>
 <p>The USB specification states that all USB devices must support power
 management.  Nevertheless, the sad fact is that many devices do not
@@ -612,8 +614,8 @@ presses but not to motion, and some in response to neither.</p>
 that can’t handle it.  It is even possible in theory to damage a
 device by suspending it at the wrong time.  (Highly unlikely, but
 possible.)  Take care.</p>
-</section>
-<section id="the-driver-interface-for-power-management">
+</div>
+<div class="section" id="the-driver-interface-for-power-management">
 <h2>The driver interface for Power Management<a class="headerlink" href="#the-driver-interface-for-power-management" title="Permalink to this headline">¶</a></h2>
 <p>The requirements for a USB driver to support external power management
 are pretty modest; the driver need only define:</p>
@@ -665,8 +667,8 @@ interfaces are suspended when the device itself is suspended and all
 interfaces are resumed when the device is resumed.  It isn’t possible
 to suspend or resume some but not all of a device’s interfaces.  The
 closest you can come is to unbind the interfaces’ drivers.</p>
-</section>
-<section id="the-driver-interface-for-autosuspend-and-autoresume">
+</div>
+<div class="section" id="the-driver-interface-for-autosuspend-and-autoresume">
 <h2>The driver interface for autosuspend and autoresume<a class="headerlink" href="#the-driver-interface-for-autosuspend-and-autoresume" title="Permalink to this headline">¶</a></h2>
 <p>To support autosuspend and autoresume, a driver should implement all
 three of the methods listed above.  In addition, a driver indicates
@@ -732,8 +734,8 @@ has expired.</p>
 <p>Autoresume attempts also can fail, although failure would mean that
 the device is no longer present or operating properly.  Unlike
 autosuspend, there’s no idle-delay for an autoresume.</p>
-</section>
-<section id="other-parts-of-the-driver-interface">
+</div>
+<div class="section" id="other-parts-of-the-driver-interface">
 <h2>Other parts of the driver interface<a class="headerlink" href="#other-parts-of-the-driver-interface" title="Permalink to this headline">¶</a></h2>
 <p>Drivers can enable autosuspend for their devices by calling:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>usb_enable_autosuspend(struct usb_device *udev);
@@ -781,8 +783,8 @@ only autosuspend calls.  The driver can tell them apart by applying
 the <code class="xref c c-func docutils literal notranslate"><span class="pre">PMSG_IS_AUTO()</span></code> macro to the message argument to the <code class="docutils literal notranslate"><span class="pre">suspend</span></code>
 method; it will return True for internal PM events (autosuspend) and
 False for external PM events.</p>
-</section>
-<section id="mutual-exclusion">
+</div>
+<div class="section" id="mutual-exclusion">
 <h2>Mutual exclusion<a class="headerlink" href="#mutual-exclusion" title="Permalink to this headline">¶</a></h2>
 <p>For external events – but not necessarily for autosuspend or
 autoresume – the device semaphore (udev-&gt;dev.sem) will be held when a
@@ -796,8 +798,8 @@ critical section, the best way is to lock the device and call
 critical section).  Holding the device semaphore will block all
 external PM calls, and the <a class="reference internal" href="usb.html#c.usb_autopm_get_interface" title="usb_autopm_get_interface"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_autopm_get_interface()</span></code></a> will prevent any
 internal PM calls, even if it fails.  (Exercise: Why?)</p>
-</section>
-<section id="interaction-between-dynamic-pm-and-system-pm">
+</div>
+<div class="section" id="interaction-between-dynamic-pm-and-system-pm">
 <h2>Interaction between dynamic PM and system PM<a class="headerlink" href="#interaction-between-dynamic-pm-and-system-pm" title="Permalink to this headline">¶</a></h2>
 <p>Dynamic power management and system power management can interact in
 a couple of ways.</p>
@@ -818,8 +820,8 @@ succeed, it may still remain active and thus cause the system to
 resume as soon as the system suspend is complete.  Or the remote
 wakeup may fail and get lost.  Which outcome occurs depends on timing
 and on the hardware and firmware design.</p>
-</section>
-<section id="xhci-hardware-link-pm">
+</div>
+<div class="section" id="xhci-hardware-link-pm">
 <h2>xHCI hardware link PM<a class="headerlink" href="#xhci-hardware-link-pm" title="Permalink to this headline">¶</a></h2>
 <p>xHCI host controller provides hardware link power management to usb2.0
 (xHCI 1.0 feature) and usb3.0 devices which support link PM. By
@@ -856,8 +858,8 @@ indicating whether or not USB3 hardware LPM U1 or U2
 is enabled for the device.</p>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="usb-port-power-control">
+</div>
+<div class="section" id="usb-port-power-control">
 <h2>USB Port Power Control<a class="headerlink" href="#usb-port-power-control" title="Permalink to this headline">¶</a></h2>
 <p>In addition to suspending endpoint devices and enabling hardware
 controlled link power management, the USB subsystem also has the
@@ -900,8 +902,8 @@ power control implementation will block poweroff attempts on that
 port.</p>
 </dd>
 </dl>
-</section>
-<section id="user-interface-for-port-power-control">
+</div>
+<div class="section" id="user-interface-for-port-power-control">
 <h2>User Interface for Port Power Control<a class="headerlink" href="#user-interface-for-port-power-control" title="Permalink to this headline">¶</a></h2>
 <p>The port power control mechanism uses the PM runtime system.  Poweroff is
 requested by clearing the <code class="docutils literal notranslate"><span class="pre">power/pm_qos_no_power_off</span></code> flag of the port device
@@ -1054,8 +1056,8 @@ echo auto &gt; &lt;child&gt;/power/control
 echo 1 &gt; &lt;child&gt;/power/persist # this is the default value
 </pre></div>
 </div>
-</section>
-<section id="suggested-userspace-port-power-policy">
+</div>
+<div class="section" id="suggested-userspace-port-power-policy">
 <h2>Suggested Userspace Port Power Policy<a class="headerlink" href="#suggested-userspace-port-power-policy" title="Permalink to this headline">¶</a></h2>
 <p>As noted above userspace needs to be careful and deliberate about what
 ports are enabled for poweroff.</p>
@@ -1074,8 +1076,8 @@ system.  For example, a distro may want to enable power off all USB
 ports when the screen blanks, and re-power them when the screen becomes
 active.  Smart phones and tablets may want to power off USB ports when
 the user pushes the power button.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

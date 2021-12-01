@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>irq_domain 中断号映射库 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
@@ -292,7 +294,7 @@
 <dd class="field-even"><p>司延腾 Yanteng Si &lt;<a class="reference external" href="mailto:siyanteng&#37;&#52;&#48;loongson&#46;cn">siyanteng<span>&#64;</span>loongson<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="irq-domain">
+<div class="section" id="irq-domain">
 <span id="cn-irq-domain-rst"></span><h1>irq_domain 中断号映射库<a class="headerlink" href="#irq-domain" title="Permalink to this headline">¶</a></h1>
 <p>目前Linux内核的设计使用了一个巨大的数字空间，每个独立的IRQ源都被分配了一个不
 同的数字。
@@ -313,7 +315,7 @@
 irq_domain来管理映射。</p>
 <p>irq_domain还实现了从抽象的irq_fwspec结构体到hwirq号的转换（到目前为止是
 Device Tree和ACPI GSI），并且可以很容易地扩展以支持其它IRQ拓扑数据源。</p>
-<section id="id1">
+<div class="section" id="id1">
 <h2>irq_domain的用法<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>中断控制器驱动程序通过以下方式创建并注册一个irq_domain。调用
 irq_domain_add_*() 或 irq_domain_create_*()函数之一（每个映射方法都有不
@@ -330,12 +332,12 @@ Linux IRQ号。</p>
 以免描述符不能被分配。</p>
 <p>如果驱动程序有Linux的IRQ号或irq_data指针，并且需要知道相关的hwirq号（比
 如在irq_chip回调中），那么可以直接从irq_data-&gt;hwirq中获得。</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h2>irq_domain映射的类型<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>从hwirq到Linux irq的反向映射有几种机制，每种机制使用不同的分配函数。应该
 使用哪种反向映射类型取决于用例。 下面介绍每一种反向映射类型：</p>
-<section id="id3">
+<div class="section" id="id3">
 <h3>线性映射<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>irq_domain_add_linear()
 irq_domain_create_linear()
@@ -350,8 +352,8 @@ irq_domain_create_linear()
 除了第一个参数不同–前者接受一个Open Firmware特定的 ‘struct device_node’ 而
 后者接受一个更通用的抽象 ‘struct fwnode_handle’ 。</p>
 <p>大多数驱动应该使用线性映射</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3>树状映射<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>irq_domain_add_tree()
 irq_domain_create_tree()
@@ -365,8 +367,8 @@ irq_domain_create_tree()
 个参数不同——前者接受一个Open Firmware特定的 ‘struct device_node’ ，而后者接受
 一个更通用的抽象 ‘struct fwnode_handle’ 。</p>
 <p>很少有驱动应该需要这个映射。</p>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h3>无映射<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>irq_domain_add_nomap()
 </pre></div>
@@ -375,8 +377,8 @@ irq_domain_create_tree()
 Linux IRQ号编入硬件本身，这样就不需要映射了。 调用irq_create_direct_mapping()
 会分配一个Linux IRQ号，并调用.map()回调，这样驱动就可以将Linux IRQ号编入硬件中。</p>
 <p>大多数驱动程序不能使用这个映射。</p>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h3>传统映射类型<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>irq_domain_add_simple()
 irq_domain_add_legacy()
@@ -407,8 +409,8 @@ irq_find_mapping()之前调用irq_create_mapping()是非常重要的，因为后
 irq_domain_add_legacy()和irq_domain_create_legacy()在功能上是等价的，只
 是第一个参数不同–前者接受Open Firmware特定的 ‘struct device_node’ ，而后者
 接受一个更通用的抽象 ‘struct fwnode_handle’ 。</p>
-</section>
-<section id="irq">
+</div>
+<div class="section" id="irq">
 <h3>IRQ域层级结构<a class="headerlink" href="#irq" title="Permalink to this headline">¶</a></h3>
 <p>在某些架构上，可能有多个中断控制器参与将一个中断从设备传送到目标CPU。
 让我们来看看x86平台上典型的中断传递路径吧</p>
@@ -463,13 +465,13 @@ irq_chip请求服务。所以我们可以实现更简洁的软件架构。</p>
 irq_domain中是不用的。</p></li>
 </ol>
 <p>irq_domain层次结构绝不是x86特有的，大量用于支持其他架构，如ARM、ARM64等。</p>
-</section>
-</section>
-<section id="id7">
+</div>
+</div>
+<div class="section" id="id7">
 <h2>调试功能<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <p>打开CONFIG_GENERIC_IRQ_DEBUGFS，可让IRQ子系统的大部分内部结构都在debugfs中暴露出来。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Examining Process Page Tables &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -348,7 +350,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="examining-process-page-tables">
+  <div class="section" id="examining-process-page-tables">
 <span id="pagemap"></span><h1>Examining Process Page Tables<a class="headerlink" href="#examining-process-page-tables" title="Permalink to this headline">¶</a></h1>
 <p>pagemap is a new (as of 2.6.25) set of interfaces in the kernel that allow
 userspace programs to examine the page tables and related information by
@@ -437,7 +439,7 @@ memory cgroup each page is charged to, indexed by PFN. Only available when
 CONFIG_MEMCG is set.</p></li>
 </ul>
 </div></blockquote>
-<section id="short-descriptions-to-the-page-flags">
+<div class="section" id="short-descriptions-to-the-page-flags">
 <h2>Short descriptions to the page flags<a class="headerlink" href="#short-descriptions-to-the-page-flags" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>0 - LOCKED</dt><dd><p>The page is being locked for exclusive access, e.g. by undergoing read/write
@@ -486,7 +488,7 @@ a PTE. To make sure the flag is up-to-date one has to read
 <dt>26 - PGTABLE</dt><dd><p>The page is in use as a page table.</p>
 </dd>
 </dl>
-<section id="io-related-page-flags">
+<div class="section" id="io-related-page-flags">
 <h3>IO related page flags<a class="headerlink" href="#io-related-page-flags" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>1 - ERROR</dt><dd><p>IO error occurred.</p>
@@ -500,8 +502,8 @@ i.e. for file backed page: (in-memory data revision &gt;  on-disk one)</p>
 <dt>8 - WRITEBACK</dt><dd><p>The page is being synced to disk.</p>
 </dd>
 </dl>
-</section>
-<section id="lru-related-page-flags">
+</div>
+<div class="section" id="lru-related-page-flags">
 <h3>LRU related page flags<a class="headerlink" href="#lru-related-page-flags" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>5 - LRU</dt><dd><p>The page is in one of the LRU lists.</p>
@@ -527,9 +529,9 @@ shmctl(SHM_LOCK) and mlock() memory segments.</p>
 </dl>
 <p>The page-types tool in the tools/vm directory can be used to query the
 above flags.</p>
-</section>
-</section>
-<section id="using-pagemap-to-do-something-useful">
+</div>
+</div>
+<div class="section" id="using-pagemap-to-do-something-useful">
 <h2>Using pagemap to do something useful<a class="headerlink" href="#using-pagemap-to-do-something-useful" title="Permalink to this headline">¶</a></h2>
 <p>The general procedure for using pagemap to find out about a process’ memory
 usage goes like this:</p>
@@ -550,8 +552,8 @@ memory that a process is using that is not shared with any other process,
 you can go through every map in the process, find the PFNs, look those up
 in kpagecount, and tally up the number of pages that are only referenced
 once.</p>
-</section>
-<section id="exceptions-for-shared-memory">
+</div>
+<div class="section" id="exceptions-for-shared-memory">
 <h2>Exceptions for Shared Memory<a class="headerlink" href="#exceptions-for-shared-memory" title="Permalink to this headline">¶</a></h2>
 <p>Page table entries for shared pages are cleared when the pages are zapped or
 swapped out. This makes swapped out pages indistinguishable from never-allocated
@@ -567,8 +569,8 @@ the pages are backed. For anonymous shared pages, the file can be found in
 <code class="docutils literal notranslate"><span class="pre">/proc/pid/map_files/</span></code>.</p>
 <p>mincore() can differentiate between pages in memory (present, including swap
 cache) and out of memory (swapped out or none/non-allocated).</p>
-</section>
-<section id="other-notes">
+</div>
+<div class="section" id="other-notes">
 <h2>Other notes<a class="headerlink" href="#other-notes" title="Permalink to this headline">¶</a></h2>
 <p>Reading from any of the files will return -EINVAL if you are not starting
 the read on an 8-byte boundary (e.g., if you sought an odd number of bytes
@@ -577,8 +579,8 @@ into the file), or if the size of the read is not a multiple of 8 bytes.</p>
 always 12 at most architectures). Since Linux 3.11 their meaning changes
 after first clear of soft-dirty bits. Since Linux 4.2 they are used for
 flags unconditionally.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

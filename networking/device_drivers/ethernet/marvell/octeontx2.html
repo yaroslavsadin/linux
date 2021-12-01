@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Marvell OcteonTx2 RVU Kernel Drivers &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
@@ -416,10 +418,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="marvell-octeontx2-rvu-kernel-drivers">
+  <div class="section" id="marvell-octeontx2-rvu-kernel-drivers">
 <h1>Marvell OcteonTx2 RVU Kernel Drivers<a class="headerlink" href="#marvell-octeontx2-rvu-kernel-drivers" title="Permalink to this headline">¶</a></h1>
 <p>Copyright (c) 2020 Marvell International Ltd.</p>
-<section id="contents">
+<div class="section" id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="#overview">Overview</a></p></li>
@@ -427,8 +429,8 @@
 <li><p><a class="reference internal" href="#basic-packet-flow">Basic packet flow</a></p></li>
 <li><p><a class="reference internal" href="#devlink-health-reporters">Devlink health reporters</a></p></li>
 </ul>
-</section>
-<section id="overview">
+</div>
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Resource virtualization unit (RVU) on Marvell’s OcteonTX2 SOC maps HW
 resources from the network, crypto and other functional blocks into
@@ -471,12 +473,12 @@ Based on config, firmware assigns VFs to each of the PFs.</p></li>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="drivers">
+</div>
+<div class="section" id="drivers">
 <h2>Drivers<a class="headerlink" href="#drivers" title="Permalink to this headline">¶</a></h2>
 <p>Linux kernel will have multiple drivers registering to different PF and VFs
 of RVU. Wrt networking there will be 3 flavours of drivers.</p>
-<section id="admin-function-driver">
+<div class="section" id="admin-function-driver">
 <h3>Admin Function driver<a class="headerlink" href="#admin-function-driver" title="Permalink to this headline">¶</a></h3>
 <p>As mentioned above RVU PF0 is called the admin function (AF), this driver
 supports resource provisioning and configuration of functional blocks.
@@ -516,8 +518,8 @@ NPA pools, NIX RQ, SQ and CQs, various stats etc which helps in debugging issues
 </ul>
 </dd>
 </dl>
-</section>
-<section id="physical-function-driver">
+</div>
+<div class="section" id="physical-function-driver">
 <h3>Physical Function driver<a class="headerlink" href="#physical-function-driver" title="Permalink to this headline">¶</a></h3>
 <p>This RVU PF handles IO, is mapped to a physical ethernet link and this
 driver registers a netdev. This supports SR-IOV. As said above this driver
@@ -526,8 +528,8 @@ links this driver talks to AF and AF gets that info from firmware and responds
 back ie cannot talk to firmware directly.</p>
 <p>Supports ethtool for configuring links, RSS, queue count, queue size,
 flow control, ntuple filters, dump PHY EEPROM, config FEC etc.</p>
-</section>
-<section id="virtual-function-driver">
+</div>
+<div class="section" id="virtual-function-driver">
 <h3>Virtual Function driver<a class="headerlink" href="#virtual-function-driver" title="Permalink to this headline">¶</a></h3>
 <p>There are two types VFs, VFs that share the physical link with their parent
 SR-IOV PF and the VFs which work in pairs using internal HW loopback channels (LBK).</p>
@@ -556,11 +558,11 @@ for loopback VFs.</p></li>
 <p>Except for the IO channels or links used for packet reception and transmission there is
 no other difference between these VF types. AF driver takes care of IO channel mapping,
 hence same VF driver works for both types of devices.</p>
-</section>
-</section>
-<section id="basic-packet-flow">
+</div>
+</div>
+<div class="section" id="basic-packet-flow">
 <h2>Basic packet flow<a class="headerlink" href="#basic-packet-flow" title="Permalink to this headline">¶</a></h2>
-<section id="ingress">
+<div class="section" id="ingress">
 <h3>Ingress<a class="headerlink" href="#ingress" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>CGX LMAC receives packet.</p></li>
@@ -570,8 +572,8 @@ hence same VF driver works for both types of devices.</p>
 <li><p>RQ may be selected by RSS or by configuring MCAM rule with a RQ number.</p></li>
 <li><p>Packet is DMA’ed and driver is notified.</p></li>
 </ol>
-</section>
-<section id="egress">
+</div>
+<div class="section" id="egress">
 <h3>Egress<a class="headerlink" href="#egress" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Driver prepares a send descriptor and submits to SQ for transmission.</p></li>
@@ -580,11 +582,11 @@ hence same VF driver works for both types of devices.</p>
 <li><p>NIX block transmits the pkt on the designated channel.</p></li>
 <li><p>NPC MCAM entries can be installed to divert pkt onto a different channel.</p></li>
 </ol>
-</section>
-</section>
-<section id="devlink-health-reporters">
+</div>
+</div>
+<div class="section" id="devlink-health-reporters">
 <h2>Devlink health reporters<a class="headerlink" href="#devlink-health-reporters" title="Permalink to this headline">¶</a></h2>
-<section id="npa-reporters">
+<div class="section" id="npa-reporters">
 <h3>NPA Reporters<a class="headerlink" href="#npa-reporters" title="Permalink to this headline">¶</a></h3>
 <p>The NPA reporters are responsible for reporting and recovering the following group of errors:</p>
 <ol class="arabic simple">
@@ -647,8 +649,8 @@ pci/0002:01:00.0:
         AQ Doorbell Error
 </pre></div>
 </div>
-</section>
-<section id="nix-reporters">
+</div>
+<div class="section" id="nix-reporters">
 <h3>NIX Reporters<a class="headerlink" href="#nix-reporters" title="Permalink to this headline">¶</a></h3>
 <p>The NIX reporters are responsible for reporting and recovering the following group of errors:</p>
 <ol class="arabic simple">
@@ -724,9 +726,9 @@ pci/0002:01:00.0:
         Rx on unmapped PF_FUNC
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

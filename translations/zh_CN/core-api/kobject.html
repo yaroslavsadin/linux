@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>关于kobjects、ksets和ktypes的一切你没想过需要了解的东西 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -290,7 +292,7 @@
 <dd class="field-even"><p>司延腾 Yanteng Si &lt;<a class="reference external" href="mailto:siyanteng&#37;&#52;&#48;loongson&#46;cn">siyanteng<span>&#64;</span>loongson<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="kobjectsksetsktypes">
+<div class="section" id="kobjectsksetsktypes">
 <span id="cn-core-api-kobject-rst"></span><h1>关于kobjects、ksets和ktypes的一切你没想过需要了解的东西<a class="headerlink" href="#kobjectsksetsktypes" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">作者</dt>
@@ -330,7 +332,7 @@ ktype。kset是kobjects集合的基本容器类型。Ksets包含它们自己的k
 <p>我们将研究如何创建和操作所有这些类型。将采取一种自下而上的方法，所以我们
 将回到kobjects。</p>
 </div></blockquote>
-<section id="kobjects">
+<div class="section" id="kobjects">
 <h2>嵌入kobjects<a class="headerlink" href="#kobjects" title="Permalink to this headline">¶</a></h2>
 <p>内核代码很少创建孤立的kobject，只有一个主要的例外，下面会解释。相反，
 kobjects被用来控制对一个更大的、特定领域的对象的访问。为此，kobjects会被
@@ -384,8 +386,8 @@ uio_map结构 <strong>中</strong> 的kobject结构体的指针kp可以被转换
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct uio_map *map = to_map(kobj);
 </pre></div>
 </div>
-</section>
-<section id="id1">
+</div>
+<div class="section" id="id1">
 <h2>kobjects的初始化<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>当然，创建kobject的代码必须初始化该对象。一些内部字段是通过（强制）调用<a class="reference internal" href="../../../driver-api/basics.html#c.kobject_init" title="kobject_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">kobject_init()</span></code></a>
 来设置的:</p>
@@ -422,8 +424,8 @@ kobject的父级可以在调用<a class="reference internal" href="../../../driv
 </pre></div>
 </div>
 <p>参数与上面描述的单个<a class="reference internal" href="../../../driver-api/basics.html#c.kobject_init" title="kobject_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">kobject_init()</span></code></a>和<a class="reference internal" href="../../../driver-api/basics.html#c.kobject_add" title="kobject_add"><code class="xref c c-func docutils literal notranslate"><span class="pre">kobject_add()</span></code></a>函数相同。</p>
-</section>
-<section id="uevents">
+</div>
+<div class="section" id="uevents">
 <h2>Uevents<a class="headerlink" href="#uevents" title="Permalink to this headline">¶</a></h2>
 <p>当一个kobject被注册到kobject核心后，你需要向全世界宣布它已经被创建了。这可以通
 过调用kobject_uevent()来实现:</p>
@@ -435,8 +437,8 @@ kobject的父级可以在调用<a class="reference internal" href="../../../driv
 找它们。</p>
 <p>当kobject从内核中移除时（关于如何做的细节在下面）， <strong>KOBJ_REMOVE</strong> 的uevent
 将由kobject核心自动创建，所以调用者不必担心手动操作。</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h2>引用计数<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>kobject的关键功能之一是作为它所嵌入的对象的一个引用计数器。只要对该对象的引用
 存在，该对象（以及支持它的代码）就必须继续存在。用于操作kobject的引用计数的低
@@ -455,8 +457,8 @@ void kobject_put(struct kobject *kobj);
 <p>如果你使用struct kobject只是为了给你的结构体提供一个引用计数器，请使用struct kref
 来代替；kobject是多余的。关于如何使用kref结构体的更多信息，请参见Linux内核源代
 码树中的文件Documentation/core-api/kref.rst</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>创建“简单的”kobjects<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>有时，开发者想要的只是在sysfs层次结构中创建一个简单的目录，而不必去搞那些复杂
 的ksets、显示和存储函数，以及其他细节。这是一个应该创建单个kobject的例外。要
@@ -477,8 +479,8 @@ void kobject_put(struct kobject *kobj);
 都可以是kobj_attribute类型，所以不需要创建特殊的自定义属性。</p>
 <p>参见示例模块， <code class="docutils literal notranslate"><span class="pre">samples/kobject/kobject-example.c</span></code> ，以了解一个简单的
 kobject和属性的实现。</p>
-</section>
-<section id="ktypes">
+</div>
+<div class="section" id="ktypes">
 <h2>ktypes和释放方法<a class="headerlink" href="#ktypes" title="Permalink to this headline">¶</a></h2>
 <p>以上讨论中还缺少一件重要的事情，那就是当一个kobject的引用次数达到零的时候
 会发生什么。创建kobject的代码通常不知道何时会发生这种情况；首先，如果它知
@@ -532,8 +534,8 @@ kobject和属性的实现。</p>
 类型的对象如何在 sysfs 中被表示；它们超出了本文的范围。</p>
 <p>default_attrs 指针是一个默认属性的列表，它将为任何用这个 ktype 注册
 的 kobject 自动创建。</p>
-</section>
-<section id="ksets">
+</div>
+<div class="section" id="ksets">
 <h2>ksets<a class="headerlink" href="#ksets" title="Permalink to this headline">¶</a></h2>
 <p>一个kset仅仅是一个希望相互关联的kobjects的集合。没有限制它们必须是相
 同的ktype，但是如果它们不是相同的，就要非常小心。</p>
@@ -595,8 +597,8 @@ kobject被传递给<a class="reference internal" href="../../../driver-api/basic
 录中。并非所有的kset成员都必须住在kset目录中。如果在添加kobject
 之前分配了一个明确的父kobject，那么该kobject将被注册到kset中，
 但是被添加到父kobject下面。</p>
-</section>
-<section id="kobject">
+</div>
+<div class="section" id="kobject">
 <h2>移除Kobject<a class="headerlink" href="#kobject" title="Permalink to this headline">¶</a></h2>
 <p>当一个kobject在kobject核心注册成功后，在代码使用完它时，必须将其
 清理掉。要做到这一点，请调用<a class="reference internal" href="../../../driver-api/basics.html#c.kobject_put" title="kobject_put"><code class="xref c c-func docutils literal notranslate"><span class="pre">kobject_put()</span></code></a>。通过这样做，kobject核
@@ -611,14 +613,14 @@ sysfs内务将被正确处理。</p>
 在某些情况下，一个父对象引用一个子对象是有效的。循环引用必须通过明
 确调用<a class="reference internal" href="../../../driver-api/basics.html#c.kobject_del" title="kobject_del"><code class="xref c c-func docutils literal notranslate"><span class="pre">kobject_del()</span></code></a>来打断，这样一个释放函数就会被调用，前一个循环
 中的对象会相互释放。</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h2>示例代码出处<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>关于正确使用ksets和kobjects的更完整的例子，请参见示例程序
 <code class="docutils literal notranslate"><span class="pre">samples/kobject/{kobject-example.c,kset-example.c}</span></code> ，如果
 您选择 <code class="docutils literal notranslate"><span class="pre">CONFIG_SAMPLE_KOBJECT</span></code> ，它们将被构建为可加载模块。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

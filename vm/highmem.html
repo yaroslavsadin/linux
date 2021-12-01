@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>High Memory Handling &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -278,7 +280,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="high-memory-handling">
+  <div class="section" id="high-memory-handling">
 <span id="highmem"></span><h1>High Memory Handling<a class="headerlink" href="#high-memory-handling" title="Permalink to this headline">¶</a></h1>
 <p>By: Peter Zijlstra &lt;<a class="reference external" href="mailto:a&#46;p&#46;zijlstra&#37;&#52;&#48;chello&#46;nl">a<span>&#46;</span>p<span>&#46;</span>zijlstra<span>&#64;</span>chello<span>&#46;</span>nl</a>&gt;</p>
 <div class="contents local topic" id="contents">
@@ -290,7 +292,7 @@
 <li><p><a class="reference internal" href="#i386-pae" id="id5">i386 PAE</a></p></li>
 </ul>
 </div>
-<section id="what-is-high-memory">
+<div class="section" id="what-is-high-memory">
 <h2><a class="toc-backref" href="#id1">What Is High Memory?</a><a class="headerlink" href="#what-is-high-memory" title="Permalink to this headline">¶</a></h2>
 <p>High memory (highmem) is used when the size of physical memory approaches or
 exceeds the maximum size of virtual memory.  At that point it becomes
@@ -322,8 +324,8 @@ map will typically be less (usually around ~896MiB).</p>
 <p>Other architectures that have mm context tagged TLBs can have separate kernel
 and user maps.  Some hardware (like some ARMs), however, have limited virtual
 space when they use mm context tags.</p>
-</section>
-<section id="temporary-virtual-mappings">
+</div>
+<div class="section" id="temporary-virtual-mappings">
 <h2><a class="toc-backref" href="#id2">Temporary Virtual Mappings</a><a class="headerlink" href="#temporary-virtual-mappings" title="Permalink to this headline">¶</a></h2>
 <p>The kernel contains several ways of creating temporary mappings:</p>
 <ul>
@@ -343,8 +345,8 @@ sleep and the caller may not sleep until after kunmap_atomic() is called.</p>
 <p>It may be assumed that k[un]map_atomic() won’t fail.</p>
 </li>
 </ul>
-</section>
-<section id="using-kmap-atomic">
+</div>
+<div class="section" id="using-kmap-atomic">
 <h2><a class="toc-backref" href="#id3">Using kmap_atomic</a><a class="headerlink" href="#using-kmap-atomic" title="Permalink to this headline">¶</a></h2>
 <p>When and where to use kmap_atomic() is straightforward.  It is used when code
 wants to access the contents of a page that might be allocated from high memory
@@ -376,8 +378,8 @@ kunmap_atomic(vaddr2);
 kunmap_atomic(vaddr1);
 </pre></div>
 </div>
-</section>
-<section id="cost-of-temporary-mappings">
+</div>
+<div class="section" id="cost-of-temporary-mappings">
 <h2><a class="toc-backref" href="#id4">Cost of Temporary Mappings</a><a class="headerlink" href="#cost-of-temporary-mappings" title="Permalink to this headline">¶</a></h2>
 <p>The cost of creating temporary mappings can be quite high.  The arch has to
 manipulate the kernel’s page tables, the data TLB and/or the MMU’s registers.</p>
@@ -387,8 +389,8 @@ a pointer to the page contents rather than juggling mappings about.  In such a
 case, the unmap operation may be a null operation.</p>
 <p>If CONFIG_MMU is not set, then there can be no temporary mappings and no
 highmem.  In such a case, the arithmetic approach will also be used.</p>
-</section>
-<section id="i386-pae">
+</div>
+<div class="section" id="i386-pae">
 <h2><a class="toc-backref" href="#id5">i386 PAE</a><a class="headerlink" href="#i386-pae" title="Permalink to this headline">¶</a></h2>
 <p>The i386 arch, under some circumstances, will permit you to stick up to 64GiB
 of RAM into your 32-bit machine.  This has a number of consequences:</p>
@@ -408,8 +410,8 @@ like NX and PAT.</p></li>
 machine - although more might work for you and your workload, you’re pretty
 much on your own - don’t expect kernel developers to really care much if things
 come apart.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

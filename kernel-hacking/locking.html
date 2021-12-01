@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Unreliable Guide To Locking &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -300,14 +302,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="unreliable-guide-to-locking">
+  <div class="section" id="unreliable-guide-to-locking">
 <span id="kernel-hacking-lock"></span><h1>Unreliable Guide To Locking<a class="headerlink" href="#unreliable-guide-to-locking" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Rusty Russell</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Welcome, to Rusty’s Remarkably Unreliable Guide to Kernel Locking
 issues. This document describes the locking systems in the Linux Kernel
@@ -315,8 +317,8 @@ in 2.6.</p>
 <p>With the wide availability of HyperThreading, and preemption in the
 Linux Kernel, everyone hacking on the kernel needs to know the
 fundamentals of concurrency and locking for SMP.</p>
-</section>
-<section id="the-problem-with-concurrency">
+</div>
+<div class="section" id="the-problem-with-concurrency">
 <h2>The Problem With Concurrency<a class="headerlink" href="#the-problem-with-concurrency" title="Permalink to this headline">¶</a></h2>
 <p>(Skip this if you know what a Race Condition is).</p>
 <p>In a normal program, you can increment a counter like so:</p>
@@ -389,7 +391,7 @@ fundamentals of concurrency and locking for SMP.</p>
 </tr>
 </tbody>
 </table>
-<section id="race-conditions-and-critical-regions">
+<div class="section" id="race-conditions-and-critical-regions">
 <h3>Race Conditions and Critical Regions<a class="headerlink" href="#race-conditions-and-critical-regions" title="Permalink to this headline">¶</a></h3>
 <p>This overlap, where the result depends on the relative timing of
 multiple tasks, is called a race condition. The piece of code containing
@@ -405,13 +407,13 @@ use locks to make sure that only one instance can enter the critical
 region at any time. There are many friendly primitives in the Linux
 kernel to help you do this. And then there are the unfriendly
 primitives, but I’ll pretend they don’t exist.</p>
-</section>
-</section>
-<section id="locking-in-the-linux-kernel">
+</div>
+</div>
+<div class="section" id="locking-in-the-linux-kernel">
 <h2>Locking in the Linux Kernel<a class="headerlink" href="#locking-in-the-linux-kernel" title="Permalink to this headline">¶</a></h2>
 <p>If I could give you one piece of advice on locking: <strong>keep it simple</strong>.</p>
 <p>Be reluctant to introduce new locks.</p>
-<section id="two-main-types-of-kernel-locks-spinlocks-and-mutexes">
+<div class="section" id="two-main-types-of-kernel-locks-spinlocks-and-mutexes">
 <h3>Two Main Types of Kernel Locks: Spinlocks and Mutexes<a class="headerlink" href="#two-main-types-of-kernel-locks-spinlocks-and-mutexes" title="Permalink to this headline">¶</a></h3>
 <p>There are two main types of kernel locks. The fundamental type is the
 spinlock (<code class="docutils literal notranslate"><span class="pre">include/asm/spinlock.h</span></code>), which is a very simple
@@ -427,8 +429,8 @@ waiting. There are many cases when you simply can’t sleep (see
 and so have to use a spinlock instead.</p>
 <p>Neither type of lock is recursive: see
 <a class="reference internal" href="#deadlock-simple-and-advanced">Deadlock: Simple and Advanced</a>.</p>
-</section>
-<section id="locks-and-uniprocessor-kernels">
+</div>
+<div class="section" id="locks-and-uniprocessor-kernels">
 <h3>Locks and Uniprocessor Kernels<a class="headerlink" href="#locks-and-uniprocessor-kernels" title="Permalink to this headline">¶</a></h3>
 <p>For kernels compiled without <code class="docutils literal notranslate"><span class="pre">CONFIG_SMP</span></code>, and without
 <code class="docutils literal notranslate"><span class="pre">CONFIG_PREEMPT</span></code> spinlocks do not exist at all. This is an excellent
@@ -443,8 +445,8 @@ equivalent to SMP, and not worry about it separately.</p>
 because it will still catch some kinds of locking bugs.</p>
 <p>Mutexes still exist, because they are required for synchronization
 between user contexts, as we will see below.</p>
-</section>
-<section id="locking-only-in-user-context">
+</div>
+<div class="section" id="locking-only-in-user-context">
 <h3>Locking Only In User Context<a class="headerlink" href="#locking-only-in-user-context" title="Permalink to this headline">¶</a></h3>
 <p>If you have a data structure which is only ever accessed from user
 context, then you can use a simple mutex (<code class="docutils literal notranslate"><span class="pre">include/linux/mutex.h</span></code>) to
@@ -461,8 +463,8 @@ no concurrency), and the list of registrations is only consulted for an
 unknown setsockopt() or getsockopt() system
 call. The <code class="docutils literal notranslate"><span class="pre">nf_sockopt_mutex</span></code> is perfect to protect this, especially
 since the setsockopt and getsockopt calls may well sleep.</p>
-</section>
-<section id="locking-between-user-context-and-softirqs">
+</div>
+<div class="section" id="locking-between-user-context-and-softirqs">
 <h3>Locking Between User Context and Softirqs<a class="headerlink" href="#locking-between-user-context-and-softirqs" title="Permalink to this headline">¶</a></h3>
 <p>If a softirq shares data with user context, you have two problems.
 Firstly, the current user context can be interrupted by a softirq, and
@@ -480,41 +482,41 @@ as well: see <a class="reference internal" href="#hard-irq-context">Hard IRQ Con
 macro simply becomes local_bh_disable()
 (<code class="docutils literal notranslate"><span class="pre">include/linux/interrupt.h</span></code>), which protects you from the softirq
 being run.</p>
-</section>
-<section id="locking-between-user-context-and-tasklets">
+</div>
+<div class="section" id="locking-between-user-context-and-tasklets">
 <h3>Locking Between User Context and Tasklets<a class="headerlink" href="#locking-between-user-context-and-tasklets" title="Permalink to this headline">¶</a></h3>
 <p>This is exactly the same as above, because tasklets are actually run
 from a softirq.</p>
-</section>
-<section id="locking-between-user-context-and-timers">
+</div>
+<div class="section" id="locking-between-user-context-and-timers">
 <h3>Locking Between User Context and Timers<a class="headerlink" href="#locking-between-user-context-and-timers" title="Permalink to this headline">¶</a></h3>
 <p>This, too, is exactly the same as above, because timers are actually run
 from a softirq. From a locking point of view, tasklets and timers are
 identical.</p>
-</section>
-<section id="locking-between-tasklets-timers">
+</div>
+<div class="section" id="locking-between-tasklets-timers">
 <h3>Locking Between Tasklets/Timers<a class="headerlink" href="#locking-between-tasklets-timers" title="Permalink to this headline">¶</a></h3>
 <p>Sometimes a tasklet or timer might want to share data with another
 tasklet or timer.</p>
-<section id="the-same-tasklet-timer">
+<div class="section" id="the-same-tasklet-timer">
 <h4>The Same Tasklet/Timer<a class="headerlink" href="#the-same-tasklet-timer" title="Permalink to this headline">¶</a></h4>
 <p>Since a tasklet is never run on two CPUs at once, you don’t need to
 worry about your tasklet being reentrant (running twice at once), even
 on SMP.</p>
-</section>
-<section id="different-tasklets-timers">
+</div>
+<div class="section" id="different-tasklets-timers">
 <h4>Different Tasklets/Timers<a class="headerlink" href="#different-tasklets-timers" title="Permalink to this headline">¶</a></h4>
 <p>If another tasklet/timer wants to share data with your tasklet or timer
 , you will both need to use spin_lock() and
 spin_unlock() calls. spin_lock_bh() is
 unnecessary here, as you are already in a tasklet, and none will be run
 on the same CPU.</p>
-</section>
-</section>
-<section id="locking-between-softirqs">
+</div>
+</div>
+<div class="section" id="locking-between-softirqs">
 <h3>Locking Between Softirqs<a class="headerlink" href="#locking-between-softirqs" title="Permalink to this headline">¶</a></h3>
 <p>Often a softirq might want to share data with itself or a tasklet/timer.</p>
-<section id="the-same-softirq">
+<div class="section" id="the-same-softirq">
 <h4>The Same Softirq<a class="headerlink" href="#the-same-softirq" title="Permalink to this headline">¶</a></h4>
 <p>The same softirq can run on the other CPUs: you can use a per-CPU array
 (see <a class="reference internal" href="#per-cpu-data">Per-CPU Data</a>) for better performance. If you’re
@@ -522,22 +524,22 @@ going so far as to use a softirq, you probably care about scalable
 performance enough to justify the extra complexity.</p>
 <p>You’ll need to use spin_lock() and
 spin_unlock() for shared data.</p>
-</section>
-<section id="different-softirqs">
+</div>
+<div class="section" id="different-softirqs">
 <h4>Different Softirqs<a class="headerlink" href="#different-softirqs" title="Permalink to this headline">¶</a></h4>
 <p>You’ll need to use spin_lock() and
 spin_unlock() for shared data, whether it be a timer,
 tasklet, different softirq or the same or another softirq: any of them
 could be running on a different CPU.</p>
-</section>
-</section>
-</section>
-<section id="hard-irq-context">
+</div>
+</div>
+</div>
+<div class="section" id="hard-irq-context">
 <h2>Hard IRQ Context<a class="headerlink" href="#hard-irq-context" title="Permalink to this headline">¶</a></h2>
 <p>Hardware interrupts usually communicate with a tasklet or softirq.
 Frequently this involves putting work in a queue, which the softirq will
 take out.</p>
-<section id="locking-between-hard-irq-and-softirqs-tasklets">
+<div class="section" id="locking-between-hard-irq-and-softirqs-tasklets">
 <h3>Locking Between Hard IRQ and Softirqs/Tasklets<a class="headerlink" href="#locking-between-hard-irq-and-softirqs-tasklets" title="Permalink to this headline">¶</a></h3>
 <p>If a hardware irq handler shares data with a softirq, you have two
 concerns. Firstly, the softirq processing can be interrupted by a
@@ -565,16 +567,16 @@ required).</p>
 from hardware interrupts, so spin_lock_irq() also stops
 these. In that sense, spin_lock_irqsave() is the most
 general and powerful locking function.</p>
-</section>
-<section id="locking-between-two-hard-irq-handlers">
+</div>
+<div class="section" id="locking-between-two-hard-irq-handlers">
 <h3>Locking Between Two Hard IRQ Handlers<a class="headerlink" href="#locking-between-two-hard-irq-handlers" title="Permalink to this headline">¶</a></h3>
 <p>It is rare to have to share data between two IRQ handlers, but if you
 do, spin_lock_irqsave() should be used: it is
 architecture-specific whether all interrupts are disabled inside irq
 handlers themselves.</p>
-</section>
-</section>
-<section id="cheat-sheet-for-locking">
+</div>
+</div>
+<div class="section" id="cheat-sheet-for-locking">
 <h2>Cheat Sheet For Locking<a class="headerlink" href="#cheat-sheet-for-locking" title="Permalink to this headline">¶</a></h2>
 <p>Pete Zaitcev gives the following summary:</p>
 <ul class="simple">
@@ -587,7 +589,7 @@ spin_unlock_irqrestore().</p></li>
 <li><p>Avoid holding spinlock for more than 5 lines of code and across any
 function call (except accessors like readb()).</p></li>
 </ul>
-<section id="table-of-minimum-requirements">
+<div class="section" id="table-of-minimum-requirements">
 <h3>Table of Minimum Requirements<a class="headerlink" href="#table-of-minimum-requirements" title="Permalink to this headline">¶</a></h3>
 <p>The following table lists the <strong>minimum</strong> locking requirements between
 various contexts. In some cases, the same context can only be running on
@@ -773,9 +775,9 @@ spinlock primitives.</p>
 </tbody>
 </table>
 <p>Table: Legend for Locking Requirements Table</p>
-</section>
-</section>
-<section id="the-trylock-functions">
+</div>
+</div>
+<div class="section" id="the-trylock-functions">
 <h2>The trylock Functions<a class="headerlink" href="#the-trylock-functions" title="Permalink to this headline">¶</a></h2>
 <p>There are functions that try to acquire a lock only once and immediately
 return a value telling about success or failure to acquire the lock.
@@ -791,13 +793,13 @@ lock.</p>
 non-zero if it could lock the mutex on the first try or 0 if not. This
 function cannot be safely used in hardware or software interrupt
 contexts despite not sleeping.</p>
-</section>
-<section id="common-examples">
+</div>
+<div class="section" id="common-examples">
 <h2>Common Examples<a class="headerlink" href="#common-examples" title="Permalink to this headline">¶</a></h2>
 <p>Let’s step through a simple example: a cache of number to name mappings.
 The cache keeps a count of how often each of the objects is used, and
 when it gets full, throws out the least used one.</p>
-<section id="all-in-user-context">
+<div class="section" id="all-in-user-context">
 <h3>All In User Context<a class="headerlink" href="#all-in-user-context" title="Permalink to this headline">¶</a></h3>
 <p>For our first example, we assume that all operations are in user context
 (ie. from system calls), so we can sleep. This means we can use a mutex
@@ -907,8 +909,8 @@ objects directly.</p>
 cache_add() we set up the fields of the object before
 grabbing the lock. This is safe, as no-one else can access it until we
 put it in cache.</p>
-</section>
-<section id="accessing-from-interrupt-context">
+</div>
+<div class="section" id="accessing-from-interrupt-context">
 <h3>Accessing From Interrupt Context<a class="headerlink" href="#accessing-from-interrupt-context" title="Permalink to this headline">¶</a></h3>
 <p>Now consider the case where cache_find() can be called
 from interrupt context: either a hardware interrupt or a softirq. An
@@ -985,8 +987,8 @@ with the <code class="docutils literal notranslate"><span class="pre">GFP_KERNEL
 have assumed that cache_add() is still only called in
 user context, otherwise this should become a parameter to
 cache_add().</p>
-</section>
-<section id="exposing-objects-outside-this-file">
+</div>
+<div class="section" id="exposing-objects-outside-this-file">
 <h3>Exposing Objects Outside This File<a class="headerlink" href="#exposing-objects-outside-this-file" title="Permalink to this headline">¶</a></h3>
 <p>If our objects contained more information, it might not be sufficient to
 copy the information in and out: other parts of the code might want to
@@ -1103,7 +1105,7 @@ name to userspace).</p>
 every pointer to the object: thus the reference count is 1 when first
 inserted into the cache. In some versions the framework does not hold a
 reference count, but they are more complicated.</p>
-<section id="using-atomic-operations-for-the-reference-count">
+<div class="section" id="using-atomic-operations-for-the-reference-count">
 <h4>Using Atomic Operations For The Reference Count<a class="headerlink" href="#using-atomic-operations-for-the-reference-count" title="Permalink to this headline">¶</a></h4>
 <p>In practice, <code class="xref c c-type docutils literal notranslate"><span class="pre">atomic_t</span></code> would usually be used for refcnt. There are a
 number of atomic operations defined in <code class="docutils literal notranslate"><span class="pre">include/asm/atomic.h</span></code>: these
@@ -1190,9 +1192,9 @@ the lock is no longer used to protect the reference count itself.</p>
  }
 </pre></div>
 </div>
-</section>
-</section>
-<section id="protecting-the-objects-themselves">
+</div>
+</div>
+<div class="section" id="protecting-the-objects-themselves">
 <h3>Protecting The Objects Themselves<a class="headerlink" href="#protecting-the-objects-themselves" title="Permalink to this headline">¶</a></h3>
 <p>In these examples, we assumed that the objects (except the reference
 counts) never changed once they are created. If we wanted to allow the
@@ -1264,11 +1266,11 @@ the name field.</p>
 which locks. This is extremely important, as it describes the runtime
 behavior of the code, and can be hard to gain from just reading. And as
 Alan Cox says, “Lock data, not code”.</p>
-</section>
-</section>
-<section id="common-problems">
+</div>
+</div>
+<div class="section" id="common-problems">
 <h2>Common Problems<a class="headerlink" href="#common-problems" title="Permalink to this headline">¶</a></h2>
-<section id="deadlock-simple-and-advanced">
+<div class="section" id="deadlock-simple-and-advanced">
 <h3>Deadlock: Simple and Advanced<a class="headerlink" href="#deadlock-simple-and-advanced" title="Permalink to this headline">¶</a></h3>
 <p>There is a coding bug where a piece of code tries to grab a spinlock
 twice: it will spin forever, waiting for the lock to be released
@@ -1322,8 +1324,8 @@ happen:</p>
 <p>Table: Consequences</p>
 <p>The two CPUs will spin forever, waiting for the other to give up their
 lock. It will look, smell, and feel like a crash.</p>
-</section>
-<section id="preventing-deadlock">
+</div>
+<div class="section" id="preventing-deadlock">
 <h3>Preventing Deadlock<a class="headerlink" href="#preventing-deadlock" title="Permalink to this headline">¶</a></h3>
 <p>Textbooks will tell you that if you always lock in the same order, you
 will never get this kind of deadlock. Practice will tell you that this
@@ -1340,16 +1342,16 @@ lock.</p>
 call these with the lock held, you risk simple deadlock, or a deadly
 embrace (who knows what the callback will do?). Remember, the other
 programmers are out to get you, so don’t do this.</p>
-<section id="overzealous-prevention-of-deadlocks">
+<div class="section" id="overzealous-prevention-of-deadlocks">
 <h4>Overzealous Prevention Of Deadlocks<a class="headerlink" href="#overzealous-prevention-of-deadlocks" title="Permalink to this headline">¶</a></h4>
 <p>Deadlocks are problematic, but not as bad as data corruption. Code which
 grabs a read lock, searches a list, fails to find what it wants, drops
 the read lock, grabs a write lock and inserts the object has a race
 condition.</p>
 <p>If you don’t see why, please stay away from my code.</p>
-</section>
-</section>
-<section id="racing-timers-a-kernel-pastime">
+</div>
+</div>
+<div class="section" id="racing-timers-a-kernel-pastime">
 <h3>Racing Timers: A Kernel Pastime<a class="headerlink" href="#racing-timers-a-kernel-pastime" title="Permalink to this headline">¶</a></h3>
 <p>Timers can produce their own special problems with races. Consider a
 collection of objects (list, hash, etc) where each object has a timer
@@ -1401,9 +1403,9 @@ Because this is a fairly common case which is prone to races, you should
 use <a class="reference internal" href="../driver-api/basics.html#c.del_timer_sync" title="del_timer_sync"><code class="xref c c-func docutils literal notranslate"><span class="pre">del_timer_sync()</span></code></a> (<code class="docutils literal notranslate"><span class="pre">include/linux/timer.h</span></code>) to
 handle this case. It returns the number of times the timer had to be
 deleted before we finally stopped it from adding itself back in.</p>
-</section>
-</section>
-<section id="locking-speed">
+</div>
+</div>
+<div class="section" id="locking-speed">
 <h2>Locking Speed<a class="headerlink" href="#locking-speed" title="Permalink to this headline">¶</a></h2>
 <p>There are three main things to worry about when considering speed of
 some code which does locking. First is concurrency: how many things are
@@ -1431,7 +1433,7 @@ results are often slower than having a single lock. This is another
 reason to advocate locking simplicity.</p>
 <p>The third concern is addressed below: there are some methods to reduce
 the amount of locking which needs to be done.</p>
-<section id="read-write-lock-variants">
+<div class="section" id="read-write-lock-variants">
 <h3>Read/Write Lock Variants<a class="headerlink" href="#read-write-lock-variants" title="Permalink to this headline">¶</a></h3>
 <p>Both spinlocks and mutexes have read/write variants: <code class="docutils literal notranslate"><span class="pre">rwlock_t</span></code> and
 <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">rw_semaphore</span></code>. These divide
@@ -1443,8 +1445,8 @@ be sole holder.</p>
 does), and the lock is held by readers for significant lengths of time,
 using these locks can help. They are slightly slower than the normal
 locks though, so in practice <code class="docutils literal notranslate"><span class="pre">rwlock_t</span></code> is not usually worthwhile.</p>
-</section>
-<section id="avoiding-locks-read-copy-update">
+</div>
+<div class="section" id="avoiding-locks-read-copy-update">
 <h3>Avoiding Locks: Read Copy Update<a class="headerlink" href="#avoiding-locks-read-copy-update" title="Permalink to this headline">¶</a></h3>
 <p>There is a special method of read/write locking called Read Copy Update.
 Using RCU, the readers can avoid taking a lock altogether: as we expect
@@ -1607,8 +1609,8 @@ callers could simply call that.</p>
 <p>The benefit here is that the reference count is not written to: the
 object is not altered in any way, which is much faster on SMP machines
 due to caching.</p>
-</section>
-<section id="per-cpu-data">
+</div>
+<div class="section" id="per-cpu-data">
 <h3>Per-CPU Data<a class="headerlink" href="#per-cpu-data" title="Permalink to this headline">¶</a></h3>
 <p>Another technique for avoiding locking which is used fairly widely is to
 duplicate information for each CPU. For example, if you wanted to keep a
@@ -1626,8 +1628,8 @@ more efficient than simple code on some architectures
 <p>Note that there is no simple, reliable way of getting an exact value of
 such a counter, without introducing more locks. This is not a problem
 for some uses.</p>
-</section>
-<section id="data-which-mostly-used-by-an-irq-handler">
+</div>
+<div class="section" id="data-which-mostly-used-by-an-irq-handler">
 <h3>Data Which Mostly Used By An IRQ Handler<a class="headerlink" href="#data-which-mostly-used-by-an-irq-handler" title="Permalink to this headline">¶</a></h3>
 <p>If data is always accessed from within the same IRQ handler, you don’t
 need a lock at all: the kernel already guarantees that the irq handler
@@ -1648,15 +1650,15 @@ The spinlock prevents any other accesses happening at the same time.
 Naturally, this is slower than just a spin_lock_irq()
 call, so it only makes sense if this type of access happens extremely
 rarely.</p>
-</section>
-</section>
-<section id="what-functions-are-safe-to-call-from-interrupts">
+</div>
+</div>
+<div class="section" id="what-functions-are-safe-to-call-from-interrupts">
 <h2>What Functions Are Safe To Call From Interrupts?<a class="headerlink" href="#what-functions-are-safe-to-call-from-interrupts" title="Permalink to this headline">¶</a></h2>
 <p>Many functions in the kernel sleep (ie. call schedule()) directly or
 indirectly: you can never call them while holding a spinlock, or with
 preemption disabled. This also means you need to be in user context:
 calling them from an interrupt is illegal.</p>
-<section id="some-functions-which-sleep">
+<div class="section" id="some-functions-which-sleep">
 <h3>Some Functions Which Sleep<a class="headerlink" href="#some-functions-which-sleep" title="Permalink to this headline">¶</a></h3>
 <p>The most common ones are listed below, but you usually have to read the
 code to find out if other calls are safe. If everyone else who calls it
@@ -1682,8 +1684,8 @@ will also never sleep. It cannot be used in interrupt context either
 since a mutex must be released by the same task that acquired it.</p>
 </li>
 </ul>
-</section>
-<section id="some-functions-which-don-t-sleep">
+</div>
+<div class="section" id="some-functions-which-don-t-sleep">
 <h3>Some Functions Which Don’t Sleep<a class="headerlink" href="#some-functions-which-don-t-sleep" title="Permalink to this headline">¶</a></h3>
 <p>Some functions are safe to call from any context, or holding almost any
 lock.</p>
@@ -1692,13 +1694,13 @@ lock.</p>
 <li><p><a class="reference internal" href="../core-api/mm-api.html#c.kfree" title="kfree"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree()</span></code></a></p></li>
 <li><p><a class="reference internal" href="../driver-api/basics.html#c.add_timer" title="add_timer"><code class="xref c c-func docutils literal notranslate"><span class="pre">add_timer()</span></code></a> and <a class="reference internal" href="../driver-api/basics.html#c.del_timer" title="del_timer"><code class="xref c c-func docutils literal notranslate"><span class="pre">del_timer()</span></code></a></p></li>
 </ul>
-</section>
-</section>
-<section id="mutex-api-reference">
+</div>
+</div>
+<div class="section" id="mutex-api-reference">
 <h2>Mutex API reference<a class="headerlink" href="#mutex-api-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="c macro">
-<dt id="c.mutex_init">
-<code class="sig-name descname"><span class="pre">mutex_init</span></code><a class="headerlink" href="#c.mutex_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.mutex_init">
+<span class="sig-name descname"><span class="n"><span class="pre">mutex_init</span></span></span><a class="headerlink" href="#c.mutex_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">mutex_init</span> <span class="pre">(mutex)</span></code></p>
@@ -1714,8 +1716,8 @@ lock.</p>
 <p>Initialize the mutex to unlocked state.</p>
 <p>It is not allowed to initialize an already locked mutex.</p>
 <dl class="c function">
-<dt id="c.mutex_is_locked">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">mutex_is_locked</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">mutex</span> <span class="pre">*</span><em><span class="pre">lock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_is_locked" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.mutex_is_locked">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mutex_is_locked</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_is_locked" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>is the mutex locked</p>
 </dd></dl>
 
@@ -1727,8 +1729,8 @@ lock.</p>
 <p><strong>Description</strong></p>
 <p>Returns true if the mutex is locked, false if unlocked.</p>
 <dl class="c function">
-<dt id="c.mutex_lock">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">mutex_lock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">mutex</span> <span class="pre">*</span><em><span class="pre">lock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_lock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.mutex_lock">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mutex_lock</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_lock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>acquire the mutex</p>
 </dd></dl>
 
@@ -1752,8 +1754,8 @@ checks that will enforce the restrictions and will also do
 deadlock debugging)</p>
 <p>This function is similar to (but not equivalent to) down().</p>
 <dl class="c function">
-<dt id="c.mutex_unlock">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">mutex_unlock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">mutex</span> <span class="pre">*</span><em><span class="pre">lock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_unlock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.mutex_unlock">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mutex_unlock</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_unlock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>release the mutex</p>
 </dd></dl>
 
@@ -1768,8 +1770,8 @@ deadlock debugging)</p>
 of a not locked mutex is not allowed.</p>
 <p>This function is similar to (but not equivalent to) up().</p>
 <dl class="c function">
-<dt id="c.ww_mutex_unlock">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ww_mutex_unlock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ww_mutex</span> <span class="pre">*</span><em><span class="pre">lock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ww_mutex_unlock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ww_mutex_unlock">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ww_mutex_unlock</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ww_mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ww_mutex_unlock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>release the w/w mutex</p>
 </dd></dl>
 
@@ -1785,8 +1787,8 @@ forbidden to release the locks after releasing the acquire context.</p>
 <p>This function must not be used in interrupt context. Unlocking
 of a unlocked mutex is not allowed.</p>
 <dl class="c function">
-<dt id="c.ww_mutex_trylock">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ww_mutex_trylock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ww_mutex</span> <span class="pre">*</span><em><span class="pre">ww</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ww_acquire_ctx</span> <span class="pre">*</span><em><span class="pre">ww_ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ww_mutex_trylock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ww_mutex_trylock">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ww_mutex_trylock</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ww_mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ww</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ww_acquire_ctx</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ww_ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ww_mutex_trylock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>tries to acquire the w/w mutex with optional acquire context</p>
 </dd></dl>
 
@@ -1804,8 +1806,8 @@ possible. Returns 1 if the mutex has been acquired successfully, 0 otherwise.</p
 specified, -EALREADY handling may happen in calls to ww_mutex_trylock.</p>
 <p>A mutex acquired with this function must be released with ww_mutex_unlock.</p>
 <dl class="c function">
-<dt id="c.mutex_lock_interruptible">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">mutex_lock_interruptible</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">mutex</span> <span class="pre">*</span><em><span class="pre">lock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_lock_interruptible" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.mutex_lock_interruptible">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mutex_lock_interruptible</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_lock_interruptible" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Acquire the mutex, interruptible by signals.</p>
 </dd></dl>
 
@@ -1824,8 +1826,8 @@ mutex.</p>
 <p>0 if the lock was successfully acquired or <code class="docutils literal notranslate"><span class="pre">-EINTR</span></code> if a
 signal arrived.</p>
 <dl class="c function">
-<dt id="c.mutex_lock_killable">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">mutex_lock_killable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">mutex</span> <span class="pre">*</span><em><span class="pre">lock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_lock_killable" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.mutex_lock_killable">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mutex_lock_killable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_lock_killable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Acquire the mutex, interruptible by fatal signals.</p>
 </dd></dl>
 
@@ -1844,8 +1846,8 @@ function will return without acquiring the mutex.</p>
 <p>0 if the lock was successfully acquired or <code class="docutils literal notranslate"><span class="pre">-EINTR</span></code> if a
 fatal signal arrived.</p>
 <dl class="c function">
-<dt id="c.mutex_lock_io">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">mutex_lock_io</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">mutex</span> <span class="pre">*</span><em><span class="pre">lock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_lock_io" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.mutex_lock_io">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mutex_lock_io</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_lock_io" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Acquire the mutex and mark the process as waiting for I/O</p>
 </dd></dl>
 
@@ -1861,8 +1863,8 @@ scheduler.</p>
 <p><strong>Context</strong></p>
 <p>Process context.</p>
 <dl class="c function">
-<dt id="c.mutex_trylock">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">mutex_trylock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">mutex</span> <span class="pre">*</span><em><span class="pre">lock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_trylock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.mutex_trylock">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mutex_trylock</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_trylock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>try to acquire the mutex, without waiting</p>
 </dd></dl>
 
@@ -1881,8 +1883,8 @@ mutex must be released by the same task that acquired it.</p>
 it is negated from the down_trylock() return values! Be careful
 about this when converting semaphore users to mutexes.</p>
 <dl class="c function">
-<dt id="c.atomic_dec_and_mutex_lock">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">atomic_dec_and_mutex_lock</span></code><span class="sig-paren">(</span><span class="pre">atomic_t</span> <span class="pre">*</span><em><span class="pre">cnt</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">mutex</span> <span class="pre">*</span><em><span class="pre">lock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.atomic_dec_and_mutex_lock" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.atomic_dec_and_mutex_lock">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">atomic_dec_and_mutex_lock</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">atomic_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cnt</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">lock</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.atomic_dec_and_mutex_lock" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return holding mutex if we dec to 0</p>
 </dd></dl>
 
@@ -1895,12 +1897,12 @@ about this when converting semaphore users to mutexes.</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>return true and hold lock if we dec to 0, return false otherwise</p>
-</section>
-<section id="futex-api-reference">
+</div>
+<div class="section" id="futex-api-reference">
 <h2>Futex API reference<a class="headerlink" href="#futex-api-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="c function">
-<dt id="c.futex_hash">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">futex_hash</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_hash" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_hash">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">futex_hash</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">futex_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_hash" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return the hash bucket in the global hash</p>
 </dd></dl>
 
@@ -1913,8 +1915,8 @@ about this when converting semaphore users to mutexes.</p>
 <p>We hash on the keys returned from get_futex_key (see below) and return the
 corresponding hash bucket in the global hash.</p>
 <dl class="c function">
-<dt id="c.futex_setup_timer">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">futex_setup_timer</span></code><span class="sig-paren">(</span><span class="pre">ktime_t</span> <span class="pre">*</span><em><span class="pre">time</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">timeout</span></em>, <span class="pre">int</span> <em><span class="pre">flags</span></em>, <span class="pre">u64</span> <em><span class="pre">range_ns</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_setup_timer" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_setup_timer">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="n"><span class="pre">hrtimer_sleeper</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">futex_setup_timer</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ktime_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">time</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="n"><span class="pre">hrtimer_sleeper</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">timeout</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">u64</span></span><span class="w"> </span><span class="n"><span class="pre">range_ns</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_setup_timer" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>set up the sleeping hrtimer.</p>
 </dd></dl>
 
@@ -1935,8 +1937,8 @@ corresponding hash bucket in the global hash.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.get_futex_key">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">get_futex_key</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em>, <span class="pre">bool</span> <em><span class="pre">fshared</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">futex_access</span> <em><span class="pre">rw</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.get_futex_key" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.get_futex_key">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get_futex_key</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">uaddr</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">fshared</span></span>, <span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">futex_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">futex_access</span></span><span class="w"> </span><span class="n"><span class="pre">rw</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.get_futex_key" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get parameters which are the keys for a futex</p>
 </dd></dl>
 
@@ -1969,8 +1971,8 @@ FUTEX_WRITE)</p>
 without keeping the page pinned for the duration of the FUTEX_WAIT.</p>
 <p>lock_page() might sleep, the caller should not hold a spinlock.</p>
 <dl class="c function">
-<dt id="c.fault_in_user_writeable">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">fault_in_user_writeable</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fault_in_user_writeable" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.fault_in_user_writeable">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fault_in_user_writeable</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">uaddr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fault_in_user_writeable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Fault in user address and verify RW access</p>
 </dd></dl>
 
@@ -1987,8 +1989,8 @@ user address. We know that we faulted in the atomic pagefault
 disabled section so we can as well avoid the #PF overhead by
 calling get_user_pages() right away.</p>
 <dl class="c function">
-<dt id="c.futex_top_waiter">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">futex_top_waiter</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_top_waiter" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_top_waiter">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_q" title="futex_q"><span class="n"><span class="pre">futex_q</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">futex_top_waiter</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb</span></span>, <span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">futex_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_top_waiter" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return the highest priority waiter on a futex</p>
 </dd></dl>
 
@@ -2002,8 +2004,8 @@ calling get_user_pages() right away.</p>
 <p><strong>Description</strong></p>
 <p>Must be called with the hb lock held.</p>
 <dl class="c function">
-<dt id="c.wait_for_owner_exiting">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">wait_for_owner_exiting</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">ret</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><em><span class="pre">exiting</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.wait_for_owner_exiting" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.wait_for_owner_exiting">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">wait_for_owner_exiting</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">ret</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">task_struct</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">exiting</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.wait_for_owner_exiting" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Block until the owner has exited</p>
 </dd></dl>
 
@@ -2017,8 +2019,8 @@ calling get_user_pages() right away.</p>
 <p><strong>Description</strong></p>
 <p>Caller must hold a refcount on <strong>exiting</strong>.</p>
 <dl class="c function">
-<dt id="c.__futex_unqueue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__futex_unqueue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__futex_unqueue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__futex_unqueue">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__futex_unqueue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_q" title="futex_q"><span class="n"><span class="pre">futex_q</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__futex_unqueue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Remove the futex_q from its futex_hash_bucket</p>
 </dd></dl>
 
@@ -2030,8 +2032,8 @@ calling get_user_pages() right away.</p>
 <p><strong>Description</strong></p>
 <p>The q-&gt;lock_ptr must not be NULL and must be held by the caller.</p>
 <dl class="c function">
-<dt id="c.futex_unqueue">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_unqueue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_unqueue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_unqueue">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_unqueue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_q" title="futex_q"><span class="n"><span class="pre">futex_q</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_unqueue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Remove the futex_q from its futex_hash_bucket</p>
 </dd></dl>
 
@@ -2051,8 +2053,8 @@ be paired with exactly one earlier call to <a class="reference internal" href="#
 </ul>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.futex_exit_recursive">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">futex_exit_recursive</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><em><span class="pre">tsk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_exit_recursive" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_exit_recursive">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_exit_recursive</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">task_struct</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">tsk</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_exit_recursive" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the tasks futex state to FUTEX_STATE_DEAD</p>
 </dd></dl>
 
@@ -2073,8 +2075,8 @@ take it over. If not, the problem is pushed back to user space. If the
 futex exit code did not run yet, then an already queued waiter might
 block forever, but there is nothing which can be done about that.</p>
 <dl class="c struct">
-<dt id="c.futex_q">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">futex_q</span></code><a class="headerlink" href="#c.futex_q" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_q">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_q</span></span></span><a class="headerlink" href="#c.futex_q" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The hashed futex queue entry, one per waiting task</p>
 </dd></dl>
 
@@ -2128,8 +2130,8 @@ the second.</p>
 <p>PI futexes are typically woken before they are removed from the hash list via
 the rt_mutex code. See futex_unqueue_pi().</p>
 <dl class="c function">
-<dt id="c.futex_match">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_match</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key1</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_match" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_match">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_match</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">futex_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key1</span></span>, <span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">futex_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_match" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check whether two futex keys are equal</p>
 </dd></dl>
 
@@ -2143,8 +2145,8 @@ the rt_mutex code. See futex_unqueue_pi().</p>
 <p><strong>Description</strong></p>
 <p>Return 1 if two futex_keys are equal, 0 otherwise.</p>
 <dl class="c function">
-<dt id="c.futex_queue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">futex_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_queue">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_q" title="futex_q"><span class="n"><span class="pre">futex_q</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_queue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Enqueue the futex_q on the futex_hash_bucket</p>
 </dd></dl>
 
@@ -2163,8 +2165,8 @@ or nothing if the unqueue is done as part of the wake process and the unqueue
 state is implicit in the state of woken task (see <a class="reference internal" href="#c.futex_wait_requeue_pi" title="futex_wait_requeue_pi"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_wait_requeue_pi()</span></code></a> for
 an example).</p>
 <dl class="c struct">
-<dt id="c.futex_vector">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">futex_vector</span></code><a class="headerlink" href="#c.futex_vector" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_vector">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_vector</span></span></span><a class="headerlink" href="#c.futex_vector" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Auxiliary struct for futex_waitv()</p>
 </dd></dl>
 
@@ -2185,8 +2187,8 @@ an example).</p>
 <p><strong>Description</strong></p>
 <p>Struct used to build an array with all data need for futex_waitv()</p>
 <dl class="c function">
-<dt id="c.futex_lock_pi_atomic">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_lock_pi_atomic</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_pi_state</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">ps</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><em><span class="pre">task</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">exiting</span></em>, <span class="pre">int</span> <em><span class="pre">set_waiters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_lock_pi_atomic" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_lock_pi_atomic">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_lock_pi_atomic</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">uaddr</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb</span></span>, <span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">futex_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_pi_state</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ps</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">task_struct</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">task</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">task_struct</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">exiting</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">set_waiters</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_lock_pi_atomic" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Atomic work required to acquire a pi aware futex</p>
 </dd></dl>
 
@@ -2224,8 +2226,8 @@ which is in the middle of exiting</p>
 a refcount on the exiting task on return and the caller needs to drop it
 after waiting for the exit to complete.</p>
 <dl class="c function">
-<dt id="c.fixup_pi_owner">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">fixup_pi_owner</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <span class="pre">int</span> <em><span class="pre">locked</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fixup_pi_owner" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.fixup_pi_owner">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fixup_pi_owner</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">uaddr</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_q" title="futex_q"><span class="n"><span class="pre">futex_q</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">locked</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fixup_pi_owner" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Post lock pi_state and corner case management</p>
 </dd></dl>
 
@@ -2251,8 +2253,8 @@ acquire the lock. Must be called with the hb lock held.</p>
 </ul>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.requeue_futex">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">requeue_futex</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb1</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb2</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.requeue_futex" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.requeue_futex">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">requeue_futex</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_q" title="futex_q"><span class="n"><span class="pre">futex_q</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb1</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb2</span></span>, <span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">futex_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.requeue_futex" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Requeue a futex_q from one hb to another</p>
 </dd></dl>
 
@@ -2268,8 +2270,8 @@ acquire the lock. Must be called with the hb lock held.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.requeue_pi_wake_futex">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">requeue_pi_wake_futex</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.requeue_pi_wake_futex" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.requeue_pi_wake_futex">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">requeue_pi_wake_futex</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_q" title="futex_q"><span class="n"><span class="pre">futex_q</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span>, <span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">futex_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.requeue_pi_wake_futex" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Wake a task that acquired the lock during requeue</p>
 </dd></dl>
 
@@ -2300,8 +2302,8 @@ case that the pi state does not have to be fixed up.</p></li>
 </ol>
 <p>Must be called with both q-&gt;lock_ptr and hb-&gt;lock held.</p>
 <dl class="c function">
-<dt id="c.futex_proxy_trylock_atomic">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_proxy_trylock_atomic</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">pifutex</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb1</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb2</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key1</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key2</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_pi_state</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">ps</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">exiting</span></em>, <span class="pre">int</span> <em><span class="pre">set_waiters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_proxy_trylock_atomic" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_proxy_trylock_atomic">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_proxy_trylock_atomic</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pifutex</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb1</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb2</span></span>, <span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">futex_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key1</span></span>, <span class="k"><span class="pre">union</span></span><span class="w"> </span><span class="n"><span class="pre">futex_key</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">key2</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_pi_state</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ps</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">task_struct</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">exiting</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">set_waiters</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_proxy_trylock_atomic" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Attempt an atomic lock for the top waiter</p>
 </dd></dl>
 
@@ -2342,8 +2344,8 @@ after waiting for the exit to complete.</p>
 </ul>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.futex_requeue">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_requeue</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr1</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em>, <span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr2</span></em>, <span class="pre">int</span> <em><span class="pre">nr_wake</span></em>, <span class="pre">int</span> <em><span class="pre">nr_requeue</span></em>, <span class="pre">u32</span> <span class="pre">*</span><em><span class="pre">cmpval</span></em>, <span class="pre">int</span> <em><span class="pre">requeue_pi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_requeue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_requeue">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_requeue</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">uaddr1</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">uaddr2</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nr_wake</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nr_requeue</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cmpval</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">requeue_pi</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_requeue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Requeue waiters from uaddr1 to uaddr2</p>
 </dd></dl>
 
@@ -2376,8 +2378,8 @@ uaddr2 atomically on behalf of the top waiter.</p>
 </ul>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.handle_early_requeue_pi_wakeup">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">handle_early_requeue_pi_wakeup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">timeout</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_early_requeue_pi_wakeup" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_early_requeue_pi_wakeup">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_early_requeue_pi_wakeup</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_q" title="futex_q"><span class="n"><span class="pre">futex_q</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="n"><span class="pre">hrtimer_sleeper</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_early_requeue_pi_wakeup" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle early wakeup on the initial futex</p>
 </dd></dl>
 
@@ -2397,8 +2399,8 @@ uaddr2 atomically on behalf of the top waiter.</p>
 <div><p>-EWOULDBLOCK or -ETIMEDOUT or -ERESTARTNOINTR</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.futex_wait_requeue_pi">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_wait_requeue_pi</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em>, <span class="pre">u32</span> <em><span class="pre">val</span></em>, <span class="pre">ktime_t</span> <span class="pre">*</span><em><span class="pre">abs_time</span></em>, <span class="pre">u32</span> <em><span class="pre">bitset</span></em>, <span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_requeue_pi" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_wait_requeue_pi">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_wait_requeue_pi</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">uaddr</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span>, <span class="n"><span class="pre">ktime_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">abs_time</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">bitset</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">uaddr2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_requeue_pi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Wait on uaddr and take uaddr2</p>
 </dd></dl>
 
@@ -2447,8 +2449,8 @@ via the following–
 </ul>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.futex_wait_queue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">futex_wait_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">timeout</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_wait_queue">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_wait_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_q" title="futex_q"><span class="n"><span class="pre">futex_q</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="n"><span class="pre">hrtimer_sleeper</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_queue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="#c.futex_queue" title="futex_queue"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_queue()</span></code></a> and wait for wakeup, timeout, or signal</p>
 </dd></dl>
 
@@ -2462,8 +2464,8 @@ via the following–
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.unqueue_multiple">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">unqueue_multiple</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="pre">futex_vector</span></a> <span class="pre">*</span><em><span class="pre">v</span></em>, <span class="pre">int</span> <em><span class="pre">count</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.unqueue_multiple" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.unqueue_multiple">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">unqueue_multiple</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="n"><span class="pre">futex_vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">v</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.unqueue_multiple" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Remove various futexes from their hash bucket</p>
 </dd></dl>
 
@@ -2491,8 +2493,8 @@ via the following–
 </ul>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.futex_wait_multiple_setup">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_wait_multiple_setup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="pre">futex_vector</span></a> <span class="pre">*</span><em><span class="pre">vs</span></em>, <span class="pre">int</span> <em><span class="pre">count</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">woken</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_multiple_setup" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_wait_multiple_setup">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_wait_multiple_setup</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="n"><span class="pre">futex_vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vs</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">count</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">woken</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_multiple_setup" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Prepare to wait and enqueue multiple futexes</p>
 </dd></dl>
 
@@ -2519,8 +2521,8 @@ task is ready to interruptible sleep.</p>
 </ul>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.futex_sleep_multiple">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">futex_sleep_multiple</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="pre">futex_vector</span></a> <span class="pre">*</span><em><span class="pre">vs</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">count</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">to</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_sleep_multiple" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_sleep_multiple">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_sleep_multiple</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="n"><span class="pre">futex_vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vs</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">count</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="n"><span class="pre">hrtimer_sleeper</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">to</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_sleep_multiple" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check sleeping conditions and sleep</p>
 </dd></dl>
 
@@ -2537,8 +2539,8 @@ task is ready to interruptible sleep.</p>
 <p>Sleep if and only if the timeout hasn’t expired and no futex on the list has
 been woken up.</p>
 <dl class="c function">
-<dt id="c.futex_wait_multiple">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_wait_multiple</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="pre">futex_vector</span></a> <span class="pre">*</span><em><span class="pre">vs</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">count</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">to</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_multiple" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_wait_multiple">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_wait_multiple</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="n"><span class="pre">futex_vector</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vs</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">count</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="n"><span class="pre">hrtimer_sleeper</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">to</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_multiple" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Prepare to wait on and enqueue several futexes</p>
 </dd></dl>
 
@@ -2563,8 +2565,8 @@ wake, or after the timeout has elapsed.</p>
 </ul>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.futex_wait_setup">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_wait_setup</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em>, <span class="pre">u32</span> <em><span class="pre">val</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">hb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_setup" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.futex_wait_setup">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">futex_wait_setup</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="pre">__user</span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">uaddr</span></span>, <span class="n"><span class="pre">u32</span></span><span class="w"> </span><span class="n"><span class="pre">val</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.futex_q" title="futex_q"><span class="n"><span class="pre">futex_q</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">futex_hash_bucket</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_setup" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Prepare to wait on a futex</p>
 </dd></dl>
 
@@ -2592,8 +2594,8 @@ Return with the hb lock held on success, and unlocked on failure.</p>
 <li><p>&lt;1 - -EFAULT or -EWOULDBLOCK (uaddr does not contain val) and hb is unlocked</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="further-reading">
+</div>
+<div class="section" id="further-reading">
 <h2>Further reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Documentation/locking/spinlocks.rst</span></code>: Linus Torvalds’ spinlocking
@@ -2606,8 +2608,8 @@ expensive, but really worth every penny to understand SMP locking.
 [ISBN: 0201633388]</p>
 </li>
 </ul>
-</section>
-<section id="thanks">
+</div>
+<div class="section" id="thanks">
 <h2>Thanks<a class="headerlink" href="#thanks" title="Permalink to this headline">¶</a></h2>
 <p>Thanks to Telsa Gwynne for DocBooking, neatening and adding style.</p>
 <p>Thanks to Martin Pool, Philipp Rumpf, Stephen Rothwell, Paul Mackerras,
@@ -2615,8 +2617,8 @@ Ruedi Aschwanden, Alan Cox, Manfred Spraul, Tim Waugh, Pete Zaitcev,
 James Morris, Robert Love, Paul McKenney, John Ashby for proofreading,
 correcting, flaming, commenting.</p>
 <p>Thanks to the cabal for having no influence on this document.</p>
-</section>
-<section id="glossary">
+</div>
+<div class="section" id="glossary">
 <h2>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h2>
 <dl>
 <dt>preemption</dt><dd><p>Prior to 2.5, or when <code class="docutils literal notranslate"><span class="pre">CONFIG_PREEMPT</span></code> is unset, processes in user
@@ -2665,8 +2667,8 @@ interrupted by software or hardware interrupts.</p>
 <dt>Userspace</dt><dd><p>A process executing its own code outside the kernel.</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Reliable Stacktrace &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -261,7 +263,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="reliable-stacktrace">
+  <div class="section" id="reliable-stacktrace">
 <h1>Reliable Stacktrace<a class="headerlink" href="#reliable-stacktrace" title="Permalink to this headline">¶</a></h1>
 <p>This document outlines basic information about reliable stacktracing.</p>
 <div class="contents local topic" id="contents">
@@ -281,7 +283,7 @@
 </li>
 </ul>
 </div>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2><a class="toc-backref" href="#id1">1. Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The kernel livepatch consistency model relies on accurately identifying which
 functions may have live state and therefore may not be safe to patch. One way
@@ -291,8 +293,8 @@ functions with live state, and best-effort approaches which can be helpful for
 debugging are unsound for livepatching. Livepatching depends on architectures
 to provide a <em>reliable</em> stacktrace which ensures it never omits any live
 functions from a trace.</p>
-</section>
-<section id="requirements">
+</div>
+<div class="section" id="requirements">
 <h2><a class="toc-backref" href="#id2">2. Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>Architectures must implement one of the reliable stacktrace functions.
 Architectures using CONFIG_ARCH_STACKWALK must implement
@@ -315,8 +317,8 @@ the stack or other unwind state is corrupt or otherwise unreliable. The
 function should attempt to detect such cases and return a non-zero error
 code, and should not get stuck in an infinite loop or access memory in
 an unsafe way.  Specific cases are described in further detail below.</p>
-</section>
-<section id="compile-time-analysis">
+</div>
+<div class="section" id="compile-time-analysis">
 <h2><a class="toc-backref" href="#id3">3. Compile-time analysis</a><a class="headerlink" href="#compile-time-analysis" title="Permalink to this headline">¶</a></h2>
 <p>To ensure that kernel code can be correctly unwound in all cases,
 architectures may need to verify that code has been compiled in a manner
@@ -328,13 +330,13 @@ objtool.</p>
 <p>In some cases, an unwinder may require metadata to correctly unwind.
 Where necessary, this metadata should be generated at build time using
 objtool.</p>
-</section>
-<section id="considerations">
+</div>
+<div class="section" id="considerations">
 <h2><a class="toc-backref" href="#id4">4. Considerations</a><a class="headerlink" href="#considerations" title="Permalink to this headline">¶</a></h2>
 <p>The unwinding process varies across architectures, their respective procedure
 call standards, and kernel configurations. This section describes common
 details that architectures should consider.</p>
-<section id="identifying-successful-termination">
+<div class="section" id="identifying-successful-termination">
 <h3><a class="toc-backref" href="#id5">4.1 Identifying successful termination</a><a class="headerlink" href="#identifying-successful-termination" title="Permalink to this headline">¶</a></h3>
 <p>Unwinding may terminate early for a number of reasons, including:</p>
 <ul class="simple">
@@ -352,8 +354,8 @@ architectures verify that a stacktrace ends at an expected location, e.g.</p>
 <li><p>On a specific stack expected for a kernel entry point (e.g. if the
 architecture has separate task and IRQ stacks).</p></li>
 </ul>
-</section>
-<section id="identifying-unwindable-code">
+</div>
+<div class="section" id="identifying-unwindable-code">
 <h3><a class="toc-backref" href="#id6">4.2 Identifying unwindable code</a><a class="headerlink" href="#identifying-unwindable-code" title="Permalink to this headline">¶</a></h3>
 <p>Unwinding typically relies on code following specific conventions (e.g.
 manipulating a frame pointer), but there can be code which may not follow these
@@ -379,8 +381,8 @@ unreliable to unwind from, e.g.</p>
 any code in these sections.</p></li>
 <li><p>Identifying specific portions of code using bounds information.</p></li>
 </ul>
-</section>
-<section id="unwinding-across-interrupts-and-exceptions">
+</div>
+<div class="section" id="unwinding-across-interrupts-and-exceptions">
 <h3><a class="toc-backref" href="#id7">4.3 Unwinding across interrupts and exceptions</a><a class="headerlink" href="#unwinding-across-interrupts-and-exceptions" title="Permalink to this headline">¶</a></h3>
 <p>At function call boundaries the stack and other unwind state is expected to be
 in a consistent state suitable for reliable unwinding, but this may not be the
@@ -402,8 +404,8 @@ exceptions (e.g. IRQ) but unreliable to unwind across other exceptions
 have no such cases) should attempt to unwind across exception boundaries, as
 doing so can prevent unnecessarily stalling livepatch consistency checks and
 permits livepatch transitions to complete more quickly.</p>
-</section>
-<section id="rewriting-of-return-addresses">
+</div>
+<div class="section" id="rewriting-of-return-addresses">
 <h3><a class="toc-backref" href="#id8">4.4 Rewriting of return addresses</a><a class="headerlink" href="#rewriting-of-return-addresses" title="Permalink to this headline">¶</a></h3>
 <p>Some trampolines temporarily modify the return address of a function in order
 to intercept when that function returns with a return trampoline, e.g.</p>
@@ -460,8 +462,8 @@ not yet been returned to, but architectures are not required to unwind from the
 middle of return_to_handler and can report this as unreliable. Architectures
 are not required to unwind from other trampolines which modify the return
 address.</p>
-</section>
-<section id="obscuring-of-return-addresses">
+</div>
+<div class="section" id="obscuring-of-return-addresses">
 <h3><a class="toc-backref" href="#id9">4.5 Obscuring of return addresses</a><a class="headerlink" href="#obscuring-of-return-addresses" title="Permalink to this headline">¶</a></h3>
 <p>Some trampolines do not rewrite the return address in order to intercept
 returns, but do transiently clobber the return address or other unwind state.</p>
@@ -481,8 +483,8 @@ start of the trampoline, the address of the traced function is in X9 rather
 than the link register as would usually be the case.</p>
 <p>Architectures must either ensure that unwinders either reliably unwind
 such cases, or report the unwinding as unreliable.</p>
-</section>
-<section id="link-register-unreliability">
+</div>
+<div class="section" id="link-register-unreliability">
 <h3><a class="toc-backref" href="#id10">4.6 Link register unreliability</a><a class="headerlink" href="#link-register-unreliability" title="Permalink to this headline">¶</a></h3>
 <p>On some other architectures, ‘call’ instructions place the return address into a
 link register, and ‘return’ instructions consume the return address from the
@@ -531,9 +533,9 @@ link register value at a function call boundary. Architectures where this is
 the case must reject unwinding across exception boundaries unless they can
 reliably identify when the LR or stack value should be used (e.g. using
 metadata generated by objtool).</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

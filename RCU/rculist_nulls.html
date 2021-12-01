@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Using RCU hlist_nulls to protect list and objects &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -277,20 +279,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="using-rcu-hlist-nulls-to-protect-list-and-objects">
+  <div class="section" id="using-rcu-hlist-nulls-to-protect-list-and-objects">
 <h1>Using RCU hlist_nulls to protect list and objects<a class="headerlink" href="#using-rcu-hlist-nulls-to-protect-list-and-objects" title="Permalink to this headline">¶</a></h1>
 <p>This section describes how to use hlist_nulls to
 protect read-mostly linked lists and
 objects using SLAB_TYPESAFE_BY_RCU allocations.</p>
 <p>Please read the basics in <a class="reference internal" href="listRCU.html"><span class="doc">Using RCU to Protect Read-Mostly Linked Lists</span></a></p>
-<section id="using-nulls">
+<div class="section" id="using-nulls">
 <h2>Using ‘nulls’<a class="headerlink" href="#using-nulls" title="Permalink to this headline">¶</a></h2>
 <p>Using special makers (called ‘nulls’) is a convenient way
 to solve following problem :</p>
 <p>A typical RCU linked list managing objects which are
 allocated with SLAB_TYPESAFE_BY_RCU kmem_cache can
 use following algos :</p>
-<section id="lookup-algo">
+<div class="section" id="lookup-algo">
 <h3>1) Lookup algo<a class="headerlink" href="#lookup-algo" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>rcu_read_lock()
 begin:
@@ -348,8 +350,8 @@ solved by pre-fetching the &quot;next&quot; field (with proper barriers) before
 checking the key.&quot;
 </pre></div>
 </div>
-</section>
-<section id="insert-algo">
+</div>
+<div class="section" id="insert-algo">
 <h3>2) Insert algo<a class="headerlink" href="#insert-algo" title="Permalink to this headline">¶</a></h3>
 <p>We need to make sure a reader cannot read the new ‘obj-&gt;obj_next’ value
 and previous value of ‘obj-&gt;key’. Or else, an item could be deleted
@@ -373,8 +375,8 @@ hlist_add_head_rcu(&amp;obj-&gt;obj_node, list);
 unlock_chain(); // typically a spin_unlock()
 </pre></div>
 </div>
-</section>
-<section id="remove-algo">
+</div>
+<div class="section" id="remove-algo">
 <h3>3) Remove algo<a class="headerlink" href="#remove-algo" title="Permalink to this headline">¶</a></h3>
 <p>Nothing special here, we can use a standard RCU hlist deletion.
 But thanks to SLAB_TYPESAFE_BY_RCU, beware a deleted object can be reused
@@ -387,10 +389,10 @@ very very fast (before the end of RCU grace period)</p>
 }
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 <hr class="docutils" />
-<section id="avoiding-extra-smp-rmb">
+<div class="section" id="avoiding-extra-smp-rmb">
 <h2>Avoiding extra smp_rmb()<a class="headerlink" href="#avoiding-extra-smp-rmb" title="Permalink to this headline">¶</a></h2>
 <p>With hlist_nulls we can avoid extra smp_rmb() in lockless_lookup()
 and extra smp_wmb() in insert function.</p>
@@ -403,7 +405,7 @@ is not the slot number, then we must restart the lookup at
 the beginning. If the object was moved to the same chain,
 then the reader doesn’t care : It might eventually
 scan the list again without harm.</p>
-<section id="id1">
+<div class="section" id="id1">
 <h3>1) lookup algo<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>head = &amp;table[slot];
 rcu_read_lock();
@@ -431,8 +433,8 @@ out:
 rcu_read_unlock();
 </pre></div>
 </div>
-</section>
-<section id="insert-function">
+</div>
+<div class="section" id="insert-function">
 <h3>2) Insert function<a class="headerlink" href="#insert-function" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/*
 * Please note that new inserts are done at the head of list,
@@ -453,9 +455,9 @@ hlist_nulls_add_head_rcu(&amp;obj-&gt;obj_node, list);
 unlock_chain(); // typically a spin_unlock()
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

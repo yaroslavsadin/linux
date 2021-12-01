@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>PPS - Pulse Per Second &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -344,7 +346,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="pps-pulse-per-second">
+  <div class="section" id="pps-pulse-per-second">
 <h1>PPS - Pulse Per Second<a class="headerlink" href="#pps-pulse-per-second" title="Permalink to this headline">¶</a></h1>
 <p>Copyright (C) 2007 Rodolfo Giometti &lt;<a class="reference external" href="mailto:giometti&#37;&#52;&#48;enneenne&#46;com">giometti<span>&#64;</span>enneenne<span>&#46;</span>com</a>&gt;</p>
 <p>This program is free software; you can redistribute it and/or modify
@@ -355,7 +357,7 @@ the Free Software Foundation; either version 2 of the License, or
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.</p>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>LinuxPPS provides a programming interface (API) to define in the
 system several PPS sources.</p>
@@ -370,8 +372,8 @@ and record it for userland.</p>
 <p>Common use is the combination of the NTPD as userland program, with a
 GPS receiver as PPS source, to obtain a wallclock-time with
 sub-millisecond synchronisation to UTC.</p>
-</section>
-<section id="rfc-considerations">
+</div>
+<div class="section" id="rfc-considerations">
 <h2>RFC considerations<a class="headerlink" href="#rfc-considerations" title="Permalink to this headline">¶</a></h2>
 <p>While implementing a PPS API as RFC 2783 defines and using an embedded
 CPU GPIO-Pin as physical link to the signal, I encountered a deeper
@@ -394,8 +396,8 @@ for instance) is a PPS source too, and if not they should provide the
 possibility to open another device as PPS source.</p>
 <p>In LinuxPPS the PPS sources are simply char devices usually mapped
 into files /dev/pps0, /dev/pps1, etc.</p>
-</section>
-<section id="pps-with-usb-to-serial-devices">
+</div>
+<div class="section" id="pps-with-usb-to-serial-devices">
 <h2>PPS with USB to serial devices<a class="headerlink" href="#pps-with-usb-to-serial-devices" title="Permalink to this headline">¶</a></h2>
 <p>It is possible to grab the PPS from an USB to serial device. However,
 you should take into account the latencies and jitter introduced by
@@ -408,8 +410,8 @@ of its undersampling and algorithms.</p>
 supported by its driver. Most of the time, you only need to add a call
 to usb_serial_handle_dcd_change after checking the DCD status (see
 ch341 and pl2303 examples).</p>
-</section>
-<section id="coding-example">
+</div>
+<div class="section" id="coding-example">
 <h2>Coding example<a class="headerlink" href="#coding-example" title="Permalink to this headline">¶</a></h2>
 <p>To register a PPS source into the kernel you should define a struct
 pps_source_info as follows:</p>
@@ -450,8 +452,8 @@ just using:</p>
 (pps_ktimer_echo(), passing to it the “ptr” pointer) if the user
 asked for that… etc..</p>
 <p>Please see the file drivers/pps/clients/pps-ktimer.c for example code.</p>
-</section>
-<section id="sysfs-support">
+</div>
+<div class="section" id="sysfs-support">
 <h2>SYSFS support<a class="headerlink" href="#sysfs-support" title="Permalink to this headline">¶</a></h2>
 <p>If the SYSFS filesystem is enabled in the kernel it provides a new class:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ ls /sys/class/pps/
@@ -482,8 +484,8 @@ sequence number. Other files are:</p>
 PPS source is connected to (if it exists).</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="testing-the-pps-support">
+</div>
+<div class="section" id="testing-the-pps-support">
 <h2>Testing the PPS support<a class="headerlink" href="#testing-the-pps-support" title="Permalink to this headline">¶</a></h2>
 <p>In order to test the PPS support even without specific hardware you can use
 the pps-ktimer driver (see the client subsection in the PPS configuration menu)
@@ -506,8 +508,8 @@ source 0 - assert 1186592701.389032765, sequence: 366 - clear  0.000000000, sequ
 </div>
 <p>Please note that to compile userland programs, you need the file timepps.h.
 This is available in the pps-tools repository mentioned above.</p>
-</section>
-<section id="generators">
+</div>
+<div class="section" id="generators">
 <h2>Generators<a class="headerlink" href="#generators" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes one needs to be able not only to catch PPS signals but to produce
 them also. For example, running a distributed simulation, which requires
@@ -549,8 +551,8 @@ delay between assert and clear edge as small as possible to reduce system
 latencies. But if it is too small slave won’t be able to capture clear edge
 transition. The default of 30us should be good enough in most situations.
 The delay can be selected using ‘delay’ pps_gen_parport module parameter.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

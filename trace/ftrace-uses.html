@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Using ftrace to hook to functions &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -274,18 +276,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="using-ftrace-to-hook-to-functions">
+  <div class="section" id="using-ftrace-to-hook-to-functions">
 <h1>Using ftrace to hook to functions<a class="headerlink" href="#using-ftrace-to-hook-to-functions" title="Permalink to this headline">¶</a></h1>
 <p>Written for: 4.14</p>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The ftrace infrastructure was originally created to attach callbacks to the
 beginning of functions in order to record and trace the flow of the kernel.
 But callbacks to the start of a function can have other use cases. Either
 for live kernel patching, or for security monitoring. This document describes
 how to use ftrace to implement your own function callbacks.</p>
-</section>
-<section id="the-ftrace-context">
+</div>
+<div class="section" id="the-ftrace-context">
 <h2>The ftrace context<a class="headerlink" href="#the-ftrace-context" title="Permalink to this headline">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -298,8 +300,8 @@ can be called outside the protective scope of RCU.</p>
 </div>
 <p>There are helper functions to help against recursion, and making sure
 RCU is watching. These are explained below.</p>
-</section>
-<section id="the-ftrace-ops-structure">
+</div>
+<div class="section" id="the-ftrace-ops-structure">
 <h2>The ftrace_ops structure<a class="headerlink" href="#the-ftrace-ops-structure" title="Permalink to this headline">¶</a></h2>
 <p>To register a function callback, a ftrace_ops is required. This structure
 is used to tell ftrace what function should be called as the callback
@@ -336,8 +338,8 @@ must begin at an exact moment.</p>
 no longer being called by functions after the unregister_ftrace_function()
 returns. Note that to perform this guarantee, the unregister_ftrace_function()
 may take some time to finish.</p>
-</section>
-<section id="the-callback-function">
+</div>
+<div class="section" id="the-callback-function">
 <h2>The callback function<a class="headerlink" href="#the-callback-function" title="Permalink to this headline">¶</a></h2>
 <p>The prototype of the callback function is as follows (as of v4.14):</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">callback_func</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">ip</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">parent_ip</span><span class="p">,</span>
@@ -361,8 +363,8 @@ at the start of the function where ftrace was tracing. Otherwise it
 either contains garbage, or NULL.</p>
 </dd>
 </dl>
-</section>
-<section id="protect-your-callback">
+</div>
+<div class="section" id="protect-your-callback">
 <h2>Protect your callback<a class="headerlink" href="#protect-your-callback" title="Permalink to this headline">¶</a></h2>
 <p>As functions can be called from anywhere, and it is possible that a function
 called by a callback may also be traced, and call that same callback,
@@ -404,8 +406,8 @@ case add:</p>
 for rcu_is_watching for the callback and no other test needs to be done.
 But this is at the expense of a slightly more overhead from an extra
 function call.</p>
-</section>
-<section id="the-ftrace-flags">
+</div>
+<div class="section" id="the-ftrace-flags">
 <h2>The ftrace FLAGS<a class="headerlink" href="#the-ftrace-flags" title="Permalink to this headline">¶</a></h2>
 <p>The ftrace_ops flags are all defined and documented in include/linux/ftrace.h.
 Some of the flags are used for internal infrastructure of ftrace, but the
@@ -457,8 +459,8 @@ the flag set cannot be registered if ftrace_enabled is 0.</p>
 stays protected.</p>
 </dd>
 </dl>
-</section>
-<section id="filtering-which-functions-to-trace">
+</div>
+<div class="section" id="filtering-which-functions-to-trace">
 <h2>Filtering which functions to trace<a class="headerlink" href="#filtering-which-functions-to-trace" title="Permalink to this headline">¶</a></h2>
 <p>If a callback is only to be called from specific functions, a filter must be
 set up. The filters are added by name, or ip if it is known.</p>
@@ -551,8 +553,8 @@ the ftrace_set_filter() call. At no time will all functions call the callback.</
 <p>As the latter will have a short time where all functions will call
 the callback, between the time of the reset, and the time of the
 new setting of the filter.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

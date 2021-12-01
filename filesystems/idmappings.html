@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Idmappings &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -272,13 +274,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="idmappings">
+  <div class="section" id="idmappings">
 <h1>Idmappings<a class="headerlink" href="#idmappings" title="Permalink to this headline">¶</a></h1>
 <p>Most filesystem developers will have encountered idmappings. They are used when
 reading from or writing ownership to disk, reporting ownership to userspace, or
 for permission checking. This document is aimed at filesystem developers that
 want to know how idmappings work.</p>
-<section id="formal-notes">
+<div class="section" id="formal-notes">
 <h2>Formal notes<a class="headerlink" href="#formal-notes" title="Permalink to this headline">¶</a></h2>
 <p>An idmapping is essentially a translation of a range of ids into another or the
 same range of ids. The notational convention for idmappings that is widely used
@@ -385,8 +387,8 @@ idmapping:</p>
 u1100 - u500 + k30000 = k30600
 </pre></div>
 </div>
-</section>
-<section id="general-notes">
+</div>
+<div class="section" id="general-notes">
 <h2>General notes<a class="headerlink" href="#general-notes" title="Permalink to this headline">¶</a></h2>
 <p>In the context of the kernel an idmapping can be interpreted as mapping a range
 of userspace ids into a range of kernel ids:</p>
@@ -443,12 +445,12 @@ would contain <code class="docutils literal notranslate"><span class="pre">k1000
 then <code class="docutils literal notranslate"><span class="pre">u1000</span></code> read from disk would be mapped to <code class="docutils literal notranslate"><span class="pre">k11000</span></code>. So an inode’s
 <code class="docutils literal notranslate"><span class="pre">i_uid</span></code> and <code class="docutils literal notranslate"><span class="pre">i_gid</span></code> would contain <code class="docutils literal notranslate"><span class="pre">k11000</span></code>.</p></li>
 </ul>
-</section>
-<section id="translation-algorithms">
+</div>
+<div class="section" id="translation-algorithms">
 <h2>Translation algorithms<a class="headerlink" href="#translation-algorithms" title="Permalink to this headline">¶</a></h2>
 <p>We’ve already seen briefly that it is possible to translate between different
 idmappings. We’ll now take a closer look how that works.</p>
-<section id="crossmapping">
+<div class="section" id="crossmapping">
 <h3>Crossmapping<a class="headerlink" href="#crossmapping" title="Permalink to this headline">¶</a></h3>
 <p>This translation algorithm is used by the kernel in quite a few places. For
 example, it is used when reporting back the ownership of a file to userspace
@@ -495,8 +497,8 @@ the caller is using an idmapping.</p>
 assume the caller has the slighly unconventional idmapping
 <code class="docutils literal notranslate"><span class="pre">u3000:k20000:r10000</span></code> then <code class="docutils literal notranslate"><span class="pre">k21000</span></code> would map back up to <code class="docutils literal notranslate"><span class="pre">u4000</span></code>.
 Consequently the user would see that this file is owned by <code class="docutils literal notranslate"><span class="pre">u4000</span></code>.</p>
-</section>
-<section id="remapping">
+</div>
+<div class="section" id="remapping">
 <h3>Remapping<a class="headerlink" href="#remapping" title="Permalink to this headline">¶</a></h3>
 <p>It is possible to translate a kernel id from one idmapping to another one via
 the userspace idmapset of the two idmappings. This is equivalent to remapping
@@ -548,8 +550,8 @@ make_kuid(u0:k10000:r10000, u1000) = k11000
 <p>Another way to look at this translation is to treat it as inverting one
 idmapping and applying another idmapping if both idmappings have the relevant
 userspace id mapped. This will come in handy when working with idmapped mounts.</p>
-</section>
-<section id="invalid-translations">
+</div>
+<div class="section" id="invalid-translations">
 <h3>Invalid translations<a class="headerlink" href="#invalid-translations" title="Permalink to this headline">¶</a></h3>
 <p>It is never valid to use an id in the kernel idmapset of one idmapping as the
 id in the userspace idmapset of another or the same idmapping. While the kernel
@@ -572,9 +574,9 @@ from_kuid(u20000:k0:r10000, u1000) = k21000
                             ~~~~~
 </pre></div>
 </div>
-</section>
-</section>
-<section id="idmappings-when-creating-filesystem-objects">
+</div>
+</div>
+<div class="section" id="idmappings-when-creating-filesystem-objects">
 <h2>Idmappings when creating filesystem objects<a class="headerlink" href="#idmappings-when-creating-filesystem-objects" title="Permalink to this headline">¶</a></h2>
 <p>The concepts of mapping an id down or mapping an id up are expressed in the two
 kernel functions filesystem developers are rather familiar with and which we’ve
@@ -618,7 +620,7 @@ crossmapping algorithm we mentioned above in a previous section. First, the
 kernel maps the caller’s userspace id down into a kernel id according to the
 caller’s idmapping and then maps that kernel id up according to the
 filesystem’s idmapping.</p>
-<section id="example-1">
+<div class="section" id="example-1">
 <h3>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>caller id:            u1000
 caller idmapping:     u0:k0:r4294967295
@@ -644,8 +646,8 @@ filesystem’s idmapping.</p>
 </ol>
 <p>In this example both idmappings are the same so there’s nothing exciting going
 on. Ultimately the userspace id that lands on disk will be <code class="docutils literal notranslate"><span class="pre">u1000</span></code>.</p>
-</section>
-<section id="example-2">
+</div>
+<div class="section" id="example-2">
 <h3>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>caller id:            u1000
 caller idmapping:     u0:k10000:r10000
@@ -673,8 +675,8 @@ kernel will deny this creation request.</p>
 <p>Note that while this example is less common, because most filesystem can’t be
 mounted with non-initial idmappings this is a general problem as we can see in
 the next examples.</p>
-</section>
-<section id="example-3">
+</div>
+<div class="section" id="example-3">
 <h3>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>caller id:            u1000
 caller idmapping:     u0:k10000:r10000
@@ -719,8 +721,8 @@ kernel ids map up into valid userspace ids in the caller’s idmapping</p>
 </div>
 </li>
 </ol>
-</section>
-<section id="example-4">
+</div>
+<div class="section" id="example-4">
 <h3>Example 4<a class="headerlink" href="#example-4" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>file id:              u1000
 caller idmapping:     u0:k10000:r10000
@@ -746,8 +748,8 @@ idmapping:</p>
 filesystem idmapping cannot be mapped up to a userspace id in the caller’s
 idmapping. Thus, the kernel will report the ownership of this file as the
 overflowid.</p>
-</section>
-<section id="example-5">
+</div>
+<div class="section" id="example-5">
 <h3>Example 5<a class="headerlink" href="#example-5" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>file id:              u1000
 caller idmapping:     u0:k10000:r10000
@@ -790,9 +792,9 @@ idmapping:</p>
 </div>
 </li>
 </ol>
-</section>
-</section>
-<section id="idmappings-on-idmapped-mounts">
+</div>
+</div>
+<div class="section" id="idmappings-on-idmapped-mounts">
 <h2>Idmappings on idmapped mounts<a class="headerlink" href="#idmappings-on-idmapped-mounts" title="Permalink to this headline">¶</a></h2>
 <p>The examples we’ve seen in the previous section where the caller’s idmapping
 and the filesystem’s idmapping are incompatible causes various issues for
@@ -868,7 +870,7 @@ advantage that filesystems can leave the creation of the superblock to
 privileged users in the initial user namespace.</p>
 <p>However, it is perfectly possible to combine idmapped mounts with filesystems
 mountable inside user namespaces. We will touch on this further below.</p>
-<section id="remapping-helpers">
+<div class="section" id="remapping-helpers">
 <h3>Remapping helpers<a class="headerlink" href="#remapping-helpers" title="Permalink to this headline">¶</a></h3>
 <p>Idmapping functions were added that translate between idmappings. They make use
 of the remapping algorithm we’ve introduced earlier. We’re going to look at
@@ -956,8 +958,8 @@ preserving algorithm. A file created from <code class="docutils literal notransl
 also be reported as being owned by <code class="docutils literal notranslate"><span class="pre">u1000</span></code> and vica versa.</p>
 <p>Let’s now briefly reconsider the failing examples from earlier in the context
 of idmapped mounts.</p>
-</section>
-<section id="example-2-reconsidered">
+</div>
+<div class="section" id="example-2-reconsidered">
 <h3>Example 2 reconsidered<a class="headerlink" href="#example-2-reconsidered" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>caller id:            u1000
 caller idmapping:     u0:k10000:r10000
@@ -994,8 +996,8 @@ filesystem’s idmapping:</p>
 </li>
 </ol>
 <p>So the ownership that lands on disk will be <code class="docutils literal notranslate"><span class="pre">u1000</span></code>.</p>
-</section>
-<section id="example-3-reconsidered">
+</div>
+<div class="section" id="example-3-reconsidered">
 <h3>Example 3 reconsidered<a class="headerlink" href="#example-3-reconsidered" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>caller id:            u1000
 caller idmapping:     u0:k10000:r10000
@@ -1031,8 +1033,8 @@ filesystem’s idmapping:</p>
 </li>
 </ol>
 <p>So the ownership that lands on disk will be <code class="docutils literal notranslate"><span class="pre">u1000</span></code>.</p>
-</section>
-<section id="example-4-reconsidered">
+</div>
+<div class="section" id="example-4-reconsidered">
 <h3>Example 4 reconsidered<a class="headerlink" href="#example-4-reconsidered" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>file id:              u1000
 caller idmapping:     u0:k10000:r10000
@@ -1069,8 +1071,8 @@ idmapping:</p>
 idmapping. With the idmapped mount in place it now can be crossmapped into the
 filesystem’s idmapping via the mount’s idmapping. The file will now be created
 with <code class="docutils literal notranslate"><span class="pre">u1000</span></code> according to the mount’s idmapping.</p>
-</section>
-<section id="example-5-reconsidered">
+</div>
+<div class="section" id="example-5-reconsidered">
 <h3>Example 5 reconsidered<a class="headerlink" href="#example-5-reconsidered" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>file id:              u1000
 caller idmapping:     u0:k10000:r10000
@@ -1107,8 +1109,8 @@ idmapping:</p>
 idmapping. With the idmapped mount in place it now can be crossmapped into the
 filesystem’s idmapping via the mount’s idmapping. The file is now owned by
 <code class="docutils literal notranslate"><span class="pre">u1000</span></code> according to the mount’s idmapping.</p>
-</section>
-<section id="changing-ownership-on-a-home-directory">
+</div>
+<div class="section" id="changing-ownership-on-a-home-directory">
 <h3>Changing ownership on a home directory<a class="headerlink" href="#changing-ownership-on-a-home-directory" title="Permalink to this headline">¶</a></h3>
 <p>We’ve seen above how idmapped mounts can be used to translate between
 idmappings when either the caller, the filesystem or both uses a non-initial
@@ -1210,9 +1212,9 @@ which is the caller’s userspace id on their workstation in our example.</p>
 their home directory back to their home computer where they are assigned
 <code class="docutils literal notranslate"><span class="pre">u1000</span></code> using the initial idmapping and mount the filesystem with the initial
 idmapping they will see all those files owned by <code class="docutils literal notranslate"><span class="pre">u1000</span></code>.</p>
-</section>
-</section>
-<section id="shortcircuting">
+</div>
+</div>
+<div class="section" id="shortcircuting">
 <h2>Shortcircuting<a class="headerlink" href="#shortcircuting" title="Permalink to this headline">¶</a></h2>
 <p>Currently, the implementation of idmapped mounts enforces that the filesystem
 is mounted with the initial idmapping. The reason is simply that none of the
@@ -1281,8 +1283,8 @@ shortened to:</p>
 <p>Handling filesystems mounted with non-initial idmappings requires that the
 translation functions be converted to their full form. They can still be
 shortcircuited on non-idmapped mounts. This has no user-visible consequences.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

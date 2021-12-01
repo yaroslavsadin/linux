@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>内核地址消毒剂(KASAN) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -287,9 +289,9 @@
 <dd class="field-even"><p>万家兵 Wan Jiabing &lt;<a class="reference external" href="mailto:wanjiabing&#37;&#52;&#48;vivo&#46;com">wanjiabing<span>&#64;</span>vivo<span>&#46;</span>com</a>&gt;</p>
 </dd>
 </dl>
-<section id="kasan">
+<div class="section" id="kasan">
 <h1>内核地址消毒剂(KASAN)<a class="headerlink" href="#kasan" title="Permalink to this headline">¶</a></h1>
-<section id="id1">
+<div class="section" id="id1">
 <h2>概述<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>KernelAddressSANitizer(KASAN)是一种动态内存安全错误检测工具，主要功能是
 检查内存越界访问和使用已释放内存的问题。KASAN有三种模式:</p>
@@ -313,8 +315,8 @@
 仅支持SLUB。</p>
 <p>目前x86_64、arm、arm64、xtensa、s390、riscv架构支持通用KASAN模式，仅
 arm64架构支持基于标签的KASAN模式。</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h2>用法<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>要启用KASAN，请使用以下命令配置内核:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CONFIG_KASAN=y
@@ -329,7 +331,7 @@ arm64架构支持基于标签的KASAN模式。</p>
 <p>要将受影响的slab对象的alloc和free堆栈跟踪包含到报告中，请启用
 <code class="docutils literal notranslate"><span class="pre">CONFIG_STACKTRACE</span></code> 。要包括受影响物理页面的分配和释放堆栈跟踪的话，
 请启用 <code class="docutils literal notranslate"><span class="pre">CONFIG_PAGE_OWNER</span></code> 并使用 <code class="docutils literal notranslate"><span class="pre">page_owner=on</span></code> 进行引导。</p>
-<section id="id3">
+<div class="section" id="id3">
 <h3>错误报告<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>典型的KASAN报告如下所示:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>==================================================================
@@ -425,8 +427,8 @@ slab对象的描述以及关于访问的内存页的信息。</p>
 可能会有所不同。</p>
 <p>通用KASAN还报告两个辅助调用堆栈跟踪。这些堆栈跟踪指向代码中与对象交互但不直接
 出现在错误访问堆栈跟踪中的位置。目前，这包括 <a class="reference internal" href="../../../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a> 和排队的工作队列。</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3>启动参数<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>KASAN受通用 <code class="docutils literal notranslate"><span class="pre">panic_on_warn</span></code> 命令行参数的影响。启用该功能后，KASAN在打印错误
 报告后会引起内核恐慌。</p>
@@ -445,11 +447,11 @@ TFSR_EL1寄存器中）。内核会定期检查硬件，并且仅在这些检查
 <li><p><code class="docutils literal notranslate"><span class="pre">kasan.fault=report</span></code> 或 <code class="docutils literal notranslate"><span class="pre">=panic</span></code> 控制是只打印KASAN报告还是同时使内核恐慌
 (默认: <code class="docutils literal notranslate"><span class="pre">report</span></code> )。即使启用了 <code class="docutils literal notranslate"><span class="pre">kasan_multi_shot</span></code> ，也会发生内核恐慌。</p></li>
 </ul>
-</section>
-</section>
-<section id="id5">
+</div>
+</div>
+<div class="section" id="id5">
 <h2>实施细则<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
-<section id="id6">
+<div class="section" id="id6">
 <h3>通用KASAN<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>软件KASAN模式使用影子内存来记录每个内存字节是否可以安全访问，并使用编译时工具
 在每次内存访问之前插入影子内存检查。</p>
@@ -471,8 +473,8 @@ TFSR_EL1寄存器中）。内核会定期检查硬件，并且仅在这些检查
 显著地增大了内核体积，但与outline插桩内核相比，它提供了x1.1-x2的性能提升。</p>
 <p>通用KASAN是唯一一种通过隔离延迟重新使用已释放对象的模式
 （参见 mm/kasan/quarantine.c 以了解实现）。</p>
-</section>
-<section id="id7">
+</div>
+<div class="section" id="id7">
 <h3>基于软件标签的KASAN模式<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>基于软件标签的KASAN使用软件内存标签方法来检查访问有效性。目前仅针对arm64架构实现。</p>
 <p>基于软件标签的KASAN使用arm64 CPU的顶部字节忽略(TBI)特性在内核指针的顶部字节中
@@ -490,8 +492,8 @@ TFSR_EL1寄存器中）。内核会定期检查硬件，并且仅在这些检查
 <p>基于软件标签的KASAN使用0xFF作为匹配所有指针标签（不检查通过带有0xFF指针标签
 的指针进行的访问）。值0xFE当前保留用于标记已释放的内存区域。</p>
 <p>基于软件标签的KASAN目前仅支持对Slab和page_alloc内存进行标记。</p>
-</section>
-<section id="id8">
+</div>
+<div class="section" id="id8">
 <h3>基于硬件标签的KASAN模式<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <p>基于硬件标签的KASAN在概念上类似于软件模式，但它是使用硬件内存标签作为支持而
 不是编译器插桩和影子内存。</p>
@@ -508,14 +510,14 @@ TFSR_EL1寄存器中）。内核会定期检查硬件，并且仅在这些检查
 <p>请注意，启用CONFIG_KASAN_HW_TAGS始终会导致启用内核中的TBI。即使提供了
 <code class="docutils literal notranslate"><span class="pre">kasan.mode=off</span></code> 或硬件不支持MTE（但支持TBI）。</p>
 <p>基于硬件标签的KASAN只报告第一个发现的错误。之后，MTE标签检查将被禁用。</p>
-</section>
-</section>
-<section id="id9">
+</div>
+</div>
+<div class="section" id="id9">
 <h2>影子内存<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
 <p>内核将内存映射到地址空间的几个不同部分。内核虚拟地址的范围很大：没有足够的真实
 内存来支持内核可以访问的每个地址的真实影子区域。因此，KASAN只为地址空间的某些
 部分映射真实的影子。</p>
-<section id="id10">
+<div class="section" id="id10">
 <h3>默认行为<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>默认情况下，体系结构仅将实际内存映射到用于线性映射的阴影区域（以及可能的其他
 小区域）。对于所有其他区域 —— 例如vmalloc和vmemmap空间 —— 一个只读页面被映射
@@ -525,8 +527,8 @@ TFSR_EL1寄存器中）。内核会定期检查硬件，并且仅在这些检查
 对模块全局变量的无效访问。</p>
 <p>这也造成了与 <code class="docutils literal notranslate"><span class="pre">VMAP_STACK</span></code> 的不兼容：如果堆栈位于vmalloc空间中，它将被分配
 只读页面的影子内存，并且内核在尝试为堆栈变量设置影子数据时会出错。</p>
-</section>
-<section id="config-kasan-vmalloc">
+</div>
+<div class="section" id="config-kasan-vmalloc">
 <h3>CONFIG_KASAN_VMALLOC<a class="headerlink" href="#config-kasan-vmalloc" title="Permalink to this headline">¶</a></h3>
 <p>使用 <code class="docutils literal notranslate"><span class="pre">CONFIG_KASAN_VMALLOC</span></code> ，KASAN可以以更大的内存使用为代价覆盖vmalloc
 空间。目前，这在x86、riscv、s390和powerpc上受支持。</p>
@@ -540,11 +542,11 @@ TFSR_EL1寄存器中）。内核会定期检查硬件，并且仅在这些检查
 <p>为了避免交换映射的困难，KASAN预测覆盖vmalloc空间的阴影区域部分将不会被早期
 的阴影页面覆盖，但是将不会被映射。这将需要更改特定于arch的代码。</p>
 <p>这允许在x86上支持 <code class="docutils literal notranslate"><span class="pre">VMAP_STACK</span></code> ，并且可以简化对没有固定模块区域的架构的支持。</p>
-</section>
-</section>
-<section id="id11">
+</div>
+</div>
+<div class="section" id="id11">
 <h2>对于开发者<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
-<section id="id12">
+<div class="section" id="id12">
 <h3>忽略访问<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <p>软件KASAN模式使用编译器插桩来插入有效性检查。此类检测可能与内核的某些部分
 不兼容，因此需要禁用。</p>
@@ -576,8 +578,8 @@ TFSR_EL1寄存器中）。内核会定期检查硬件，并且仅在这些检查
 <code class="docutils literal notranslate"><span class="pre">kasan_reset_tag()</span></code> 或 <code class="docutils literal notranslate"><span class="pre">page_kasan_tag_reset()</span></code> 。请注意，通过
 <code class="docutils literal notranslate"><span class="pre">page_kasan_tag_reset()</span></code> 临时禁用访问检查需要通过 <code class="docutils literal notranslate"><span class="pre">page_kasan_tag</span></code>
 / <code class="docutils literal notranslate"><span class="pre">page_kasan_tag_set</span></code> 保存和恢复每页KASAN标签。</p>
-</section>
-<section id="id13">
+</div>
+<div class="section" id="id13">
 <h3>测试<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <p>有一些KASAN测试可以验证KASAN是否正常工作并可以检测某些类型的内存损坏。
 测试由两部分组成:</p>
@@ -630,9 +632,9 @@ not ok 28 - kmalloc_double_kzfree
 <a class="reference external" href="https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html">KUnit文档</a> 。</p>
 </li>
 </ol>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

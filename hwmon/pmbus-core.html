@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>PMBus core driver and internal API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -266,9 +268,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="pmbus-core-driver-and-internal-api">
+  <div class="section" id="pmbus-core-driver-and-internal-api">
 <h1>PMBus core driver and internal API<a class="headerlink" href="#pmbus-core-driver-and-internal-api" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>[from pmbus.org] The Power Management Bus (PMBus) is an open standard
 power-management protocol with a fully defined command language that facilitates
@@ -301,8 +303,8 @@ for device specific initialization and, if needed, maps device specific
 functionality into generic functionality. This is to some degree comparable
 to PCI code, where generic code is augmented as needed with quirks for all kinds
 of devices.</p>
-</section>
-<section id="pmbus-device-capabilities-auto-detection">
+</div>
+<div class="section" id="pmbus-device-capabilities-auto-detection">
 <h2>PMBus device capabilities auto-detection<a class="headerlink" href="#pmbus-device-capabilities-auto-detection" title="Permalink to this headline">¶</a></h2>
 <p>For generic PMBus devices, code in pmbus.c attempts to auto-detect all supported
 PMBus commands. Auto-detection is somewhat limited, since there are simply too
@@ -317,18 +319,18 @@ chips.</p>
 (lcrit, min, max, and crit attributes) as well as associated alarm attributes.
 Limits and alarm attributes are auto-detected because there are simply too many
 possible combinations to provide a manual configuration interface.</p>
-</section>
-<section id="pmbus-internal-api">
+</div>
+<div class="section" id="pmbus-internal-api">
 <h2>PMBus internal API<a class="headerlink" href="#pmbus-internal-api" title="Permalink to this headline">¶</a></h2>
 <p>The API between core and device specific PMBus code is defined in
 drivers/hwmon/pmbus/pmbus.h. In addition to the internal API, pmbus.h defines
 standard PMBus commands and virtual PMBus commands.</p>
-<section id="standard-pmbus-commands">
+<div class="section" id="standard-pmbus-commands">
 <h3>Standard PMBus commands<a class="headerlink" href="#standard-pmbus-commands" title="Permalink to this headline">¶</a></h3>
 <p>Standard PMBus commands (commands values 0x00 to 0xff) are defined in the PMBUs
 specification.</p>
-</section>
-<section id="virtual-pmbus-commands">
+</div>
+<div class="section" id="virtual-pmbus-commands">
 <h3>Virtual PMBus commands<a class="headerlink" href="#virtual-pmbus-commands" title="Permalink to this headline">¶</a></h3>
 <p>Virtual PMBus commands are provided to enable support for non-standard
 functionality which has been implemented by several chip vendors and is thus
@@ -354,8 +356,8 @@ handled more efficiently and thus preferred. Either case, the calling PMBus
 core code will abort if the chip driver returns an error code when reading
 or writing virtual registers (in other words, the PMBus core code will never
 send a virtual command to a chip).</p>
-</section>
-<section id="pmbus-driver-information">
+</div>
+<div class="section" id="pmbus-driver-information">
 <h3>PMBus driver information<a class="headerlink" href="#pmbus-driver-information" title="Permalink to this headline">¶</a></h3>
 <p>PMBus driver information, defined in struct pmbus_driver_info, is the main means
 for device specific drivers to pass information to the core PMBus driver.
@@ -372,11 +374,11 @@ augmenting generic command execution. This functionality can be used to map
 non-standard PMBus commands to standard commands, or to augment standard
 command return values with device specific information.</p></li>
 </ul>
-</section>
-</section>
-<section id="api-functions">
+</div>
+</div>
+<div class="section" id="api-functions">
 <h2>API functions<a class="headerlink" href="#api-functions" title="Permalink to this headline">¶</a></h2>
-<section id="functions-provided-by-chip-driver">
+<div class="section" id="functions-provided-by-chip-driver">
 <h3>Functions provided by chip driver<a class="headerlink" href="#functions-provided-by-chip-driver" title="Permalink to this headline">¶</a></h3>
 <p>All functions return the command return value (read) or zero (write) if
 successful. A return value of -ENODATA indicates that there is no manufacturer
@@ -429,8 +431,8 @@ supports multiple phases, a phase value of 0xff indicates all phases.</p>
 if a chip driver supports multiple chips, and the chip functionality is not
 pre-determined. It is currently only used by the generic pmbus driver
 (pmbus.c).</p>
-</section>
-<section id="functions-exported-by-core-driver">
+</div>
+<div class="section" id="functions-exported-by-core-driver">
 <h3>Functions exported by core driver<a class="headerlink" href="#functions-exported-by-core-driver" title="Permalink to this headline">¶</a></h3>
 <p>Chip drivers are expected to use the following functions to read or write
 PMBus registers. Chip drivers may also use direct I2C commands. If direct I2C
@@ -500,9 +502,9 @@ function.</p>
 </pre></div>
 </div>
 <p>Return pointer to struct pmbus_driver_info as passed to pmbus_do_probe().</p>
-</section>
-</section>
-<section id="pmbus-driver-platform-data">
+</div>
+</div>
+<div class="section" id="pmbus-driver-platform-data">
 <h2>PMBus driver platform data<a class="headerlink" href="#pmbus-driver-platform-data" title="Permalink to this headline">¶</a></h2>
 <p>PMBus platform data is defined in include/linux/pmbus.h. Platform data
 currently provides a flags field with four bits used:</p>
@@ -523,7 +525,7 @@ struct pmbus_platform_data {
 };
 </pre></div>
 </div>
-<section id="flags">
+<div class="section" id="flags">
 <h3>Flags<a class="headerlink" href="#flags" title="Permalink to this headline">¶</a></h3>
 <p>PMBUS_SKIP_STATUS_CHECK</p>
 <p>During register detection, skip checking the status register for
@@ -553,9 +555,9 @@ This can be done by reading a known register. By setting this flag the
 driver will try to read the STATUS register after each failed
 register check. This read may fail, but it will put the chip into a
 known state.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

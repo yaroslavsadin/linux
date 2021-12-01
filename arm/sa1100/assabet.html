@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The Intel Assabet (SA-1110 evaluation) board &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -310,13 +312,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-intel-assabet-sa-1110-evaluation-board">
+  <div class="section" id="the-intel-assabet-sa-1110-evaluation-board">
 <h1>The Intel Assabet (SA-1110 evaluation) board<a class="headerlink" href="#the-intel-assabet-sa-1110-evaluation-board" title="Permalink to this headline">¶</a></h1>
 <p>Please see:
 <a class="reference external" href="http://developer.intel.com">http://developer.intel.com</a></p>
 <p>Also some notes from John G Dorsey &lt;<a class="reference external" href="mailto:jd5q&#37;&#52;&#48;andrew&#46;cmu&#46;edu">jd5q<span>&#64;</span>andrew<span>&#46;</span>cmu<span>&#46;</span>edu</a>&gt;:
 <a class="reference external" href="http://www.cs.cmu.edu/~wearable/software/assabet.html">http://www.cs.cmu.edu/~wearable/software/assabet.html</a></p>
-<section id="building-the-kernel">
+<div class="section" id="building-the-kernel">
 <h2>Building the kernel<a class="headerlink" href="#building-the-kernel" title="Permalink to this headline">¶</a></h2>
 <p>To build the kernel with current defaults:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>make assabet_defconfig
@@ -325,8 +327,8 @@ make zImage
 </pre></div>
 </div>
 <p>The resulting kernel image should be available in linux/arch/arm/boot/zImage.</p>
-</section>
-<section id="installing-a-bootloader">
+</div>
+<div class="section" id="installing-a-bootloader">
 <h2>Installing a bootloader<a class="headerlink" href="#installing-a-bootloader" title="Permalink to this headline">¶</a></h2>
 <p>A couple of bootloaders able to boot Linux on Assabet are available:</p>
 <p>BLOB (<a class="reference external" href="http://www.lartmaker.nl/lartware/blob/">http://www.lartmaker.nl/lartware/blob/</a>)</p>
@@ -360,8 +362,8 @@ precompiled RedBoot binary is available from the following location:</p>
 </ul>
 <p>Look for redboot-assabet*.tgz.  Some installation infos are provided in
 redboot-assabet*.txt.</p>
-</section>
-<section id="initial-redboot-configuration">
+</div>
+<div class="section" id="initial-redboot-configuration">
 <h2>Initial RedBoot configuration<a class="headerlink" href="#initial-redboot-configuration" title="Permalink to this headline">¶</a></h2>
 <p>The commands used here are explained in The RedBoot User’s Guide available
 on-line at <a class="reference external" href="http://sources.redhat.com/ecos/docs.html">http://sources.redhat.com/ecos/docs.html</a>.
@@ -379,8 +381,8 @@ a static IP address, etc, use this command:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>fconfig -i
 </pre></div>
 </div>
-</section>
-<section id="writing-a-kernel-image-into-flash">
+</div>
+<div class="section" id="writing-a-kernel-image-into-flash">
 <h2>Writing a kernel image into flash<a class="headerlink" href="#writing-a-kernel-image-into-flash" title="Permalink to this headline">¶</a></h2>
 <p>First, the kernel image must be loaded into RAM.  If you have the zImage file
 available on a TFTP server:</p>
@@ -395,8 +397,8 @@ available on a TFTP server:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>fis create &quot;Linux kernel&quot; -b 0x100000 -l 0xc0000
 </pre></div>
 </div>
-</section>
-<section id="booting-the-kernel">
+</div>
+<div class="section" id="booting-the-kernel">
 <h2>Booting the kernel<a class="headerlink" href="#booting-the-kernel" title="Permalink to this headline">¶</a></h2>
 <p>The kernel still requires a filesystem to boot.  A ramdisk image can be loaded
 as follows:</p>
@@ -415,8 +417,8 @@ by ‘-y ymodem’.</p>
 </div>
 <p>The ramdisk image could be stored into flash as well, but there are better
 solutions for on-flash filesystems as mentioned below.</p>
-</section>
-<section id="using-jffs2">
+</div>
+<div class="section" id="using-jffs2">
 <h2>Using JFFS2<a class="headerlink" href="#using-jffs2" title="Permalink to this headline">¶</a></h2>
 <p>Using JFFS2 (the Second Journalling Flash File System) is probably the most
 convenient way to store a writable filesystem into flash.  JFFS2 is used in
@@ -499,8 +501,8 @@ within Linux while booted from a ramdisk or NFS.  The Linux MTD repository has
 many tools to deal with flash memory as well, to erase it for example.  JFFS2
 can then be mounted directly on a freshly erased partition and files can be
 copied over directly.  Etc…</p>
-</section>
-<section id="redboot-scripting">
+</div>
+<div class="section" id="redboot-scripting">
 <h2>RedBoot scripting<a class="headerlink" href="#redboot-scripting" title="Permalink to this headline">¶</a></h2>
 <p>All the commands above aren’t so useful if they have to be typed in every
 time the Assabet is rebooted.  Therefore it’s possible to automate the boot
@@ -526,8 +528,8 @@ Update RedBoot non-volatile configuration - are you sure (y/n)? y
 <p>Nicolas Pitre
 <a class="reference external" href="mailto:nico&#37;&#52;&#48;fluxnic&#46;net">nico<span>&#64;</span>fluxnic<span>&#46;</span>net</a></p>
 <p>June 12, 2001</p>
-</section>
-<section id="status-of-peripherals-in-rmk-tree-updated-14-10-2001">
+</div>
+<div class="section" id="status-of-peripherals-in-rmk-tree-updated-14-10-2001">
 <h2>Status of peripherals in -rmk tree (updated 14/10/2001)<a class="headerlink" href="#status-of-peripherals-in-rmk-tree-updated-14-10-2001" title="Permalink to this headline">¶</a></h2>
 <dl>
 <dt>Assabet:</dt><dd><dl>
@@ -592,8 +594,8 @@ Update RedBoot non-volatile configuration - are you sure (y/n)? y
 </dd>
 </dl>
 <p>More stuff can be found in the -np (Nicolas Pitre’s) tree.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Multifunction Composite Gadget &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -277,9 +279,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="multifunction-composite-gadget">
+  <div class="section" id="multifunction-composite-gadget">
 <h1>Multifunction Composite Gadget<a class="headerlink" href="#multifunction-composite-gadget" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The Multifunction Composite Gadget (or g_multi) is a composite gadget
 that makes extensive use of the composite framework to provide
@@ -292,13 +294,13 @@ and RNDIS can be turned off.  If they are both enabled the gadget will
 have two configurations – one with RNDIS and another with CDC ECM[3].</p>
 <p>Please note that if you use non-standard configuration (that is enable
 CDC ECM) you may need to change vendor and/or product ID.</p>
-</section>
-<section id="host-drivers">
+</div>
+<div class="section" id="host-drivers">
 <h2>Host drivers<a class="headerlink" href="#host-drivers" title="Permalink to this headline">¶</a></h2>
 <p>To make use of the gadget one needs to make it work on host side –
 without that there’s no hope of achieving anything with the gadget.
 As one might expect, things one need to do very from system to system.</p>
-<section id="linux-host-drivers">
+<div class="section" id="linux-host-drivers">
 <h3>Linux host drivers<a class="headerlink" href="#linux-host-drivers" title="Permalink to this headline">¶</a></h3>
 <p>Since the gadget uses standard composite framework and appears as such
 to Linux host it does not need any additional drivers on Linux host
@@ -307,11 +309,11 @@ for them.</p>
 <p>This is also true for two configuration set-up with RNDIS
 configuration being the first one.  Linux host will use the second
 configuration with CDC ECM which should work better under Linux.</p>
-</section>
-<section id="windows-host-drivers">
+</div>
+<div class="section" id="windows-host-drivers">
 <h3>Windows host drivers<a class="headerlink" href="#windows-host-drivers" title="Permalink to this headline">¶</a></h3>
 <p>For the gadget to work under Windows two conditions have to be met:</p>
-<section id="detecting-as-composite-gadget">
+<div class="section" id="detecting-as-composite-gadget">
 <h4>Detecting as composite gadget<a class="headerlink" href="#detecting-as-composite-gadget" title="Permalink to this headline">¶</a></h4>
 <p>First of all, Windows need to detect the gadget as an USB composite
 gadget which on its own have some conditions[4].  If they are met,
@@ -323,15 +325,15 @@ conditions!</p>
 <p>The only thing to worry is that the gadget has to have a single
 configuration so a dual RNDIS and CDC ECM gadget won’t work unless you
 create a proper INF – and of course, if you do submit it!</p>
-</section>
-<section id="installing-drivers-for-each-function">
+</div>
+<div class="section" id="installing-drivers-for-each-function">
 <h4>Installing drivers for each function<a class="headerlink" href="#installing-drivers-for-each-function" title="Permalink to this headline">¶</a></h4>
 <p>The other, trickier thing is making Windows install drivers for each
 individual function.</p>
 <p>For mass storage it is trivial since Windows detect it’s an interface
 implementing USB Mass Storage class and selects appropriate driver.</p>
 <p>Things are harder with RDNIS and CDC ACM.</p>
-<section id="rndis">
+<div class="section" id="rndis">
 <h5>RNDIS<a class="headerlink" href="#rndis" title="Permalink to this headline">¶</a></h5>
 <p>To make Windows select RNDIS drivers for the first function in the
 gadget, one needs to use the [[<a class="reference external" href="file:linux.inf">file:linux.inf</a>]] file provided with this
@@ -341,12 +343,12 @@ of the gadget.</p>
 RNDIS was not the first interface.  You do not need to worry abut it
 unless you are trying to develop your own gadget in which case watch
 out for this bug.</p>
-</section>
-<section id="cdc-acm">
+</div>
+<div class="section" id="cdc-acm">
 <h5>CDC ACM<a class="headerlink" href="#cdc-acm" title="Permalink to this headline">¶</a></h5>
 <p>Similarly, [[<a class="reference external" href="file:linux-cdc-acm.inf">file:linux-cdc-acm.inf</a>]] is provided for CDC ACM.</p>
-</section>
-<section id="customising-the-gadget">
+</div>
+<div class="section" id="customising-the-gadget">
 <h5>Customising the gadget<a class="headerlink" href="#customising-the-gadget" title="Permalink to this headline">¶</a></h5>
 <p>If you intend to hack the g_multi gadget be advised that rearranging
 functions will obviously change interface numbers for each of the
@@ -361,17 +363,17 @@ original gadget.</p>
 things don’t work as intended before realising Windows have cached
 some drivers information (changing USB port may sometimes help plus
 you might try using USBDeview[8] to remove the phantom device).</p>
-</section>
-<section id="inf-testing">
+</div>
+<div class="section" id="inf-testing">
 <h5>INF testing<a class="headerlink" href="#inf-testing" title="Permalink to this headline">¶</a></h5>
 <p>Provided INF files have been tested on Windows XP SP3, Windows Vista
 and Windows 7, all 32-bit versions.  It should work on 64-bit versions
 as well.  It most likely won’t work on Windows prior to Windows XP
 SP2.</p>
-</section>
-</section>
-</section>
-<section id="other-systems">
+</div>
+</div>
+</div>
+<div class="section" id="other-systems">
 <h3>Other systems<a class="headerlink" href="#other-systems" title="Permalink to this headline">¶</a></h3>
 <p>At this moment, drivers for any other systems have not been tested.
 Knowing how MacOS is based on BSD and BSD is an Open Source it is
@@ -379,9 +381,9 @@ believed that it should (read: “I have no idea whether it will”) work
 out-of-the-box.</p>
 <p>For more exotic systems I have even less to say…</p>
 <p>Any testing and drivers <em>are</em> <em>welcome</em>!</p>
-</section>
-</section>
-<section id="authors">
+</div>
+</div>
+<div class="section" id="authors">
 <h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
 <p>This document has been written by Michal Nazarewicz
 ([[<a class="reference external" href="mailto:mina86&#37;&#52;&#48;mina86&#46;com">mailto:mina86<span>&#64;</span>mina86<span>&#46;</span>com</a>]]).  INF files have been hacked with
@@ -389,8 +391,8 @@ support of Marek Szyprowski ([[<a class="reference external" href="mailto:m&#46;
 Xiaofan Chen ([[<a class="reference external" href="mailto:xiaofanc&#37;&#52;&#48;gmail&#46;com">mailto:xiaofanc<span>&#64;</span>gmail<span>&#46;</span>com</a>]]) basing on the MS RNDIS
 template[9], Microchip’s CDC ACM INF file and David Brownell’s
 ([[<a class="reference external" href="mailto:dbrownell&#37;&#52;&#48;users&#46;sourceforge&#46;net">mailto:dbrownell<span>&#64;</span>users<span>&#46;</span>sourceforge<span>&#46;</span>net</a>]]) original INF files.</p>
-</section>
-<section id="footnotes">
+</div>
+<div class="section" id="footnotes">
 <h2>Footnotes<a class="headerlink" href="#footnotes" title="Permalink to this headline">¶</a></h2>
 <p>[1] Remote Network Driver Interface Specification,
 [[<a class="reference external" href="https://msdn.microsoft.com/en-us/library/ee484414.aspx">https://msdn.microsoft.com/en-us/library/ee484414.aspx</a>]].</p>
@@ -406,8 +408,8 @@ any user input.</p>
 useful.</p>
 <p>[8] <a class="reference external" href="https://www.nirsoft.net/utils/usb_devices_view.html">https://www.nirsoft.net/utils/usb_devices_view.html</a></p>
 <p>[9] [[<a class="reference external" href="https://msdn.microsoft.com/en-us/library/ff570620.aspx">https://msdn.microsoft.com/en-us/library/ff570620.aspx</a>]]</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

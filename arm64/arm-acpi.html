@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>ACPI on ARMv8 Servers &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -294,7 +296,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="acpi-on-armv8-servers">
+  <div class="section" id="acpi-on-armv8-servers">
 <h1>ACPI on ARMv8 Servers<a class="headerlink" href="#acpi-on-armv8-servers" title="Permalink to this headline">¶</a></h1>
 <p>ACPI can be used for ARMv8 general purpose servers designed to follow
 the ARM SBSA (Server Base System Architecture) [0] and SBBR (Server
@@ -314,7 +316,7 @@ industry-standard ARMv8 servers, they also apply to more than one operating
 system.  The purpose of this document is to describe the interaction between
 ACPI and Linux only, on an ARMv8 system – that is, what Linux expects of
 ACPI and what ACPI can expect of Linux.</p>
-<section id="why-acpi-on-arm">
+<div class="section" id="why-acpi-on-arm">
 <h2>Why ACPI on ARM?<a class="headerlink" href="#why-acpi-on-arm" title="Permalink to this headline">¶</a></h2>
 <p>Before examining the details of the interface between ACPI and Linux, it is
 useful to understand why ACPI is being used.  Several technologies already
@@ -367,8 +369,8 @@ really just duplicates something that already works.  ACPI already does what
 the hardware vendors need, Microsoft won’t collaborate on DT, and hardware
 vendors would still end up providing two completely separate firmware
 interfaces – one for Linux and one for Windows.</p>
-</section>
-<section id="kernel-compatibility">
+</div>
+<div class="section" id="kernel-compatibility">
 <h2>Kernel Compatibility<a class="headerlink" href="#kernel-compatibility" title="Permalink to this headline">¶</a></h2>
 <p>One of the primary motivations for ACPI is standardization, and using that
 to provide backward compatibility for Linux kernels.  In the server market,
@@ -385,8 +387,8 @@ for that baseline version of ACPI.  There may be a need for additional drivers,
 but adding new functionality (e.g., CPU power management) should not break
 older kernel versions.  Further, ACPI firmware must also work with the most
 recent version of the kernel.</p>
-</section>
-<section id="relationship-with-device-tree">
+</div>
+<div class="section" id="relationship-with-device-tree">
 <h2>Relationship with Device Tree<a class="headerlink" href="#relationship-with-device-tree" title="Permalink to this headline">¶</a></h2>
 <p>ACPI support in drivers and subsystems for ARMv8 should never be mutually
 exclusive with DT support at compile time.</p>
@@ -395,8 +397,8 @@ parameters passed from the boot loader (including kernel bootargs).</p>
 <p>Regardless of whether DT or ACPI is used, the kernel must always be capable
 of booting with either scheme (in kernels with both schemes enabled at compile
 time).</p>
-</section>
-<section id="booting-using-acpi-tables">
+</div>
+<div class="section" id="booting-using-acpi-tables">
 <h2>Booting using ACPI tables<a class="headerlink" href="#booting-using-acpi-tables" title="Permalink to this headline">¶</a></h2>
 <p>The only defined method for passing ACPI tables to the kernel on ARMv8
 is via the UEFI system configuration table.  Just so it is explicit, this
@@ -465,8 +467,8 @@ able to boot properly since it may not be able to configure all of the
 devices available.  This list of tables is not meant to be all inclusive;
 in some environments other tables may be needed (e.g., any of the APEI
 tables from section 18) to support specific functionality.</p>
-</section>
-<section id="acpi-detection">
+</div>
+<div class="section" id="acpi-detection">
 <h2>ACPI Detection<a class="headerlink" href="#acpi-detection" title="Permalink to this headline">¶</a></h2>
 <p>Drivers should determine their probe() type by checking for a null
 value for ACPI_HANDLE, or checking .of_node, or other information in
@@ -475,8 +477,8 @@ Recommendations” section.</p>
 <p>In non-driver code, if the presence of ACPI needs to be detected at
 run time, then check the value of acpi_disabled. If CONFIG_ACPI is not
 set, acpi_disabled will always be 1.</p>
-</section>
-<section id="device-enumeration">
+</div>
+<div class="section" id="device-enumeration">
 <h2>Device Enumeration<a class="headerlink" href="#device-enumeration" title="Permalink to this headline">¶</a></h2>
 <p>Device descriptions in ACPI should use standard recognized ACPI interfaces.
 These may contain less information than is typically provided via a Device
@@ -559,8 +561,8 @@ interface for looking up device properties in a manner independent of
 whether DT or ACPI is being used.  This API should be used [6]; it can
 eliminate some duplication of code paths in driver probing functions and
 discourage divergence between DT bindings and ACPI device properties.</p>
-</section>
-<section id="programmable-power-control-resources">
+</div>
+<div class="section" id="programmable-power-control-resources">
 <h2>Programmable Power Control Resources<a class="headerlink" href="#programmable-power-control-resources" title="Permalink to this headline">¶</a></h2>
 <p>Programmable power control resources include such resources as voltage/current
 providers (regulators) and clock sources.</p>
@@ -604,8 +606,8 @@ this allows the driver to abstract out the interface for operating the device
 and avoid having to read special non-standard values from ACPI tables. Further,
 abstracting the use of these resources allows the hardware to change over time
 without requiring updates to the driver.</p>
-</section>
-<section id="clocks">
+</div>
+<div class="section" id="clocks">
 <h2>Clocks<a class="headerlink" href="#clocks" title="Permalink to this headline">¶</a></h2>
 <p>ACPI makes the assumption that clocks are initialized by the firmware –
 UEFI, in this case – to some working value before control is handed over
@@ -626,8 +628,8 @@ such methods, even if they are provided.  Such methods are not currently
 standardized in the ACPI specification, and using them could tie a kernel
 to a very specific SoC, or tie an SoC to a very specific version of the
 kernel, both of which we are trying to avoid.</p>
-</section>
-<section id="driver-recommendations">
+</div>
+<div class="section" id="driver-recommendations">
 <h2>Driver Recommendations<a class="headerlink" href="#driver-recommendations" title="Permalink to this headline">¶</a></h2>
 <p>DO NOT remove any DT handling when adding ACPI support for a driver.  The
 same device may be used on many different systems.</p>
@@ -684,8 +686,8 @@ static const struct acpi_device_id virtio_mmio_acpi_match[] = {
 MODULE_DEVICE_TABLE(acpi, virtio_mmio_acpi_match);
 </pre></div>
 </div>
-</section>
-<section id="aswg">
+</div>
+<div class="section" id="aswg">
 <h2>ASWG<a class="headerlink" href="#aswg" title="Permalink to this headline">¶</a></h2>
 <p>The ACPI specification changes regularly.  During the year 2014, for instance,
 version 5.1 was released and version 6.0 substantially completed, with most of
@@ -705,8 +707,8 @@ it from being used on a platform, ECRs (Engineering Change Requests) should be
 submitted to ASWG and go through the normal approval process; for those that
 are not UEFI members, many other members of the Linux community are and would
 likely be willing to assist in submitting ECRs.</p>
-</section>
-<section id="linux-code">
+</div>
+<div class="section" id="linux-code">
 <h2>Linux Code<a class="headerlink" href="#linux-code" title="Permalink to this headline">¶</a></h2>
 <p>Individual items specific to Linux on ARM, contained in the Linux
 source code, are in the list that follows:</p>
@@ -720,13 +722,13 @@ default value for other architectures is “Microsoft
 Windows NT”, for example.</p>
 </dd>
 </dl>
-</section>
-<section id="acpi-objects">
+</div>
+<div class="section" id="acpi-objects">
 <h2>ACPI Objects<a class="headerlink" href="#acpi-objects" title="Permalink to this headline">¶</a></h2>
 <p>Detailed expectations for ACPI tables and object are listed in the file
 <a class="reference internal" href="acpi_object_usage.html"><span class="doc">ACPI Tables</span></a>.</p>
-</section>
-<section id="references">
+</div>
+<div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>[0] <a class="reference external" href="http://silver.arm.com">http://silver.arm.com</a></dt><dd><p>document ARM-DEN-0029, or newer:
@@ -750,8 +752,8 @@ Specific Data) Implementation Guide”</p>
 include/linux/property.h and drivers/base/property.c.</p>
 </dd>
 </dl>
-</section>
-<section id="authors">
+</div>
+<div class="section" id="authors">
 <h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Al Stone &lt;<a class="reference external" href="mailto:al&#46;stone&#37;&#52;&#48;linaro&#46;org">al<span>&#46;</span>stone<span>&#64;</span>linaro<span>&#46;</span>org</a>&gt;</p></li>
@@ -759,8 +761,8 @@ include/linux/property.h and drivers/base/property.c.</p>
 <li><p>Hanjun Guo &lt;<a class="reference external" href="mailto:hanjun&#46;guo&#37;&#52;&#48;linaro&#46;org">hanjun<span>&#46;</span>guo<span>&#64;</span>linaro<span>&#46;</span>org</a>&gt;</p></li>
 <li><p>Grant Likely &lt;<a class="reference external" href="mailto:grant&#46;likely&#37;&#52;&#48;linaro&#46;org">grant<span>&#46;</span>likely<span>&#64;</span>linaro<span>&#46;</span>org</a>&gt;, for the “Why ACPI on ARM?” section</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>LSM BPF Programs &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -263,18 +265,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="lsm-bpf-programs">
+  <div class="section" id="lsm-bpf-programs">
 <h1>LSM BPF Programs<a class="headerlink" href="#lsm-bpf-programs" title="Permalink to this headline">¶</a></h1>
 <p>These BPF programs allow runtime instrumentation of the LSM hooks by privileged
 users to implement system-wide MAC (Mandatory Access Control) and Audit
 policies using eBPF.</p>
-<section id="structure">
+<div class="section" id="structure">
 <h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
 <p>The example shows an eBPF program that can be attached to the <code class="docutils literal notranslate"><span class="pre">file_mprotect</span></code>
 LSM hook:</p>
 <dl class="c function">
-<dt id="c.file_mprotect">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">file_mprotect</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">vm_area_struct</span> <span class="pre">*</span><em><span class="pre">vma</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">reqprot</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">prot</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.file_mprotect" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.file_mprotect">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">file_mprotect</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">vm_area_struct</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vma</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">reqprot</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">prot</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.file_mprotect" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Other LSM hooks which can be instrumented can be found in
@@ -349,8 +351,8 @@ the BPF verifier to update the offsets for the access at runtime using the
 <a class="reference internal" href="btf.html"><span class="doc">BPF Type Format (BTF)</span></a> information. Since the BPF verifier is aware of the
 types, it also validates all the accesses made to the various types in the
 eBPF program.</p>
-</section>
-<section id="loading">
+</div>
+<div class="section" id="loading">
 <h2>Loading<a class="headerlink" href="#loading" title="Permalink to this headline">¶</a></h2>
 <p>eBPF programs can be loaded with the <em class="manpage">bpf(2)</em> syscall’s
 <code class="docutils literal notranslate"><span class="pre">BPF_PROG_LOAD</span></code> operation:</p>
@@ -366,8 +368,8 @@ eBPF program.</p>
 </div>
 <p>and the program can be loaded by including <code class="docutils literal notranslate"><span class="pre">my_prog.skel.h</span></code> and using
 the generated helper, <code class="docutils literal notranslate"><span class="pre">my_prog__open_and_load</span></code>.</p>
-</section>
-<section id="attachment-to-lsm-hooks">
+</div>
+<div class="section" id="attachment-to-lsm-hooks">
 <h2>Attachment to LSM Hooks<a class="headerlink" href="#attachment-to-lsm-hooks" title="Permalink to this headline">¶</a></h2>
 <p>The LSM allows attachment of eBPF programs as LSM hooks using <em class="manpage">bpf(2)</em>
 syscall’s <code class="docutils literal notranslate"><span class="pre">BPF_RAW_TRACEPOINT_OPEN</span></code> operation or more simply by
@@ -376,14 +378,14 @@ using the libbpf helper <code class="docutils literal notranslate"><span class="
 link returned by <code class="docutils literal notranslate"><span class="pre">bpf_program__attach_lsm</span></code> using <code class="docutils literal notranslate"><span class="pre">bpf_link__destroy</span></code>.</p>
 <p>One can also use the helpers generated in <code class="docutils literal notranslate"><span class="pre">my_prog.skel.h</span></code> i.e.
 <code class="docutils literal notranslate"><span class="pre">my_prog__attach</span></code> for attachment and <code class="docutils literal notranslate"><span class="pre">my_prog__destroy</span></code> for cleaning up.</p>
-</section>
-<section id="examples">
+</div>
+<div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>An example eBPF program can be found in
 <a class="reference external" href="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/progs/lsm.c">tools/testing/selftests/bpf/progs/lsm.c</a> and the corresponding
 userspace code in <a class="reference external" href="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/prog_tests/test_lsm.c">tools/testing/selftests/bpf/prog_tests/test_lsm.c</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

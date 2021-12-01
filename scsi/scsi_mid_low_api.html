@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>SCSI mid_level - lower_level driver interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -304,9 +306,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="scsi-mid-level-lower-level-driver-interface">
+  <div class="section" id="scsi-mid-level-lower-level-driver-interface">
 <h1>SCSI mid_level - lower_level driver interface<a class="headerlink" href="#scsi-mid-level-lower-level-driver-interface" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This document outlines the interface between the Linux SCSI mid level and
 SCSI lower level drivers. Lower level drivers (LLDs) are variously called
@@ -336,8 +338,8 @@ ISA adapters).]</p>
 <p>The SCSI mid level isolates an LLD from other layers such as the SCSI
 upper layer drivers and the block layer.</p>
 <p>This version of the document roughly matches linux kernel version 2.6.8 .</p>
-</section>
-<section id="documentation">
+</div>
+<div class="section" id="documentation">
 <h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
 <p>There is a SCSI documentation directory within the kernel source tree,
 typically Documentation/scsi . Most documents are in plain
@@ -353,8 +355,8 @@ drivers have documents in that directory: <a class="reference internal" href="st
 or in the same directory as the C source code. For example to find a url
 about the USB mass storage driver see the
 /usr/src/linux/drivers/usb/storage directory.</p>
-</section>
-<section id="driver-structure">
+</div>
+<div class="section" id="driver-structure">
 <h2>Driver structure<a class="headerlink" href="#driver-structure" title="Permalink to this headline">¶</a></h2>
 <p>Traditionally an LLD for the SCSI subsystem has been at least two files in
 the drivers/scsi directory. For example, a driver called “xyz” has a header
@@ -414,8 +416,8 @@ called “xxx” could be defined as
 named scsi_register() function in most situations.</p>
 </dd>
 </dl>
-</section>
-<section id="hotplug-initialization-model">
+</div>
+<div class="section" id="hotplug-initialization-model">
 <h2>Hotplug initialization model<a class="headerlink" href="#hotplug-initialization-model" title="Permalink to this headline">¶</a></h2>
 <p>In this model an LLD controls when SCSI hosts are introduced and removed
 from the SCSI subsystem. Hosts can be introduced as early as driver
@@ -513,8 +515,8 @@ scsi_remove_device() -------+
 (a pointer is passed as the parameter to slave_alloc() and
 slave_configure() callbacks). Such instances are “owned” by the mid-level.
 struct scsi_device instances are freed after slave_destroy().</p>
-</section>
-<section id="reference-counting">
+</div>
+<div class="section" id="reference-counting">
 <h2>Reference Counting<a class="headerlink" href="#reference-counting" title="Permalink to this headline">¶</a></h2>
 <p>The Scsi_Host structure has had reference counting infrastructure added.
 This effectively spreads the ownership of struct Scsi_Host instances
@@ -560,8 +562,8 @@ delete it).</p>
 <p>struct Scsi_Host actually has 2 reference counts which are manipulated
 in parallel by these functions.</p>
 </div>
-</section>
-<section id="conventions">
+</div>
+<div class="section" id="conventions">
 <h2>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h2>
 <p>First, Linus Torvalds’s thoughts on C coding style can be found in the
 <a class="reference internal" href="../process/coding-style.html"><span class="doc">Linux kernel coding style</span></a> file.</p>
@@ -574,8 +576,8 @@ VLAs are not properly supported yet.  An exception to this is the use of
 comply with the above conventions. For example, the aic7xxx driver
 comes to Linux from FreeBSD and Adaptec’s own labs. No doubt FreeBSD
 and Adaptec have their own coding conventions.</p>
-</section>
-<section id="mid-level-supplied-functions">
+</div>
+<div class="section" id="mid-level-supplied-functions">
 <h2>Mid level supplied functions<a class="headerlink" href="#mid-level-supplied-functions" title="Permalink to this headline">¶</a></h2>
 <p>These functions are supplied by the SCSI mid level for use by LLDs.
 The names (i.e. entry points) of these functions are exported
@@ -910,8 +912,8 @@ void scsi_unblock_requests(struct Scsi_Host * shost)
 void scsi_unregister(struct Scsi_Host * shp)
 </pre></div>
 </div>
-</section>
-<section id="interface-functions">
+</div>
+<div class="section" id="interface-functions">
 <h2>Interface Functions<a class="headerlink" href="#interface-functions" title="Permalink to this headline">¶</a></h2>
 <p>Interface functions are supplied (defined) by LLDs and their function
 pointers are placed in an instance of struct scsi_host_template which
@@ -1317,10 +1319,10 @@ In some cases more detail is given in scsi_host.h than below.</p>
     void slave_destroy(struct scsi_device *sdp)
 </pre></div>
 </div>
-</section>
-<section id="data-structures">
+</div>
+<div class="section" id="data-structures">
 <h2>Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<section id="struct-scsi-host-template">
+<div class="section" id="struct-scsi-host-template">
 <h3>struct scsi_host_template<a class="headerlink" href="#struct-scsi-host-template" title="Permalink to this headline">¶</a></h3>
 <p>There is one “struct scsi_host_template” instance per LLD <a class="footnote-reference brackets" href="#id4" id="id3">2</a>. It is
 typically initialized as a file scope static in a driver’s header file. That
@@ -1360,8 +1362,8 @@ that handles both ISA and PCI cards and has a separate instance of
 struct scsi_host_template for each class).</p>
 </dd>
 </dl>
-</section>
-<section id="struct-scsi-host">
+</div>
+<div class="section" id="struct-scsi-host">
 <h3>struct Scsi_Host<a class="headerlink" href="#struct-scsi-host" title="Permalink to this headline">¶</a></h3>
 <p>There is one struct Scsi_Host instance per host (HBA) that an LLD
 controls. The struct Scsi_Host structure has many members in common
@@ -1453,15 +1455,15 @@ See scsi_netlink.h for a description of valid formats.</p></li>
 </dl>
 </div></blockquote>
 <p>The scsi_host structure is defined in include/scsi/scsi_host.h</p>
-</section>
-<section id="struct-scsi-device">
+</div>
+<div class="section" id="struct-scsi-device">
 <h3>struct scsi_device<a class="headerlink" href="#struct-scsi-device" title="Permalink to this headline">¶</a></h3>
 <p>Generally, there is one instance of this structure for each SCSI logical unit
 on a host. Scsi devices connected to a host are uniquely identified by a
 channel number, target id and logical unit number (lun).
 The structure is defined in include/scsi/scsi_device.h</p>
-</section>
-<section id="struct-scsi-cmnd">
+</div>
+<div class="section" id="struct-scsi-cmnd">
 <h3>struct scsi_cmnd<a class="headerlink" href="#struct-scsi-cmnd" title="Permalink to this headline">¶</a></h3>
 <p>Instances of this structure convey SCSI commands to the LLD and responses
 back to the mid level. The SCSI mid level will ensure that no more SCSI
@@ -1583,9 +1585,9 @@ bytes blocks has been received ‘resid’ could be set like this:</p>
 </pre></div>
 </div>
 <p>The scsi_cmnd structure is defined in include/scsi/scsi_cmnd.h</p>
-</section>
-</section>
-<section id="locks">
+</div>
+</div>
+<div class="section" id="locks">
 <h2>Locks<a class="headerlink" href="#locks" title="Permalink to this headline">¶</a></h2>
 <p>Each struct Scsi_Host instance has a spin_lock called struct
 Scsi_Host::default_lock which is initialized in <a class="reference internal" href="../driver-api/scsi.html#c.scsi_host_alloc" title="scsi_host_alloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">scsi_host_alloc()</span></code></a> [found in
@@ -1594,8 +1596,8 @@ is initialized to point at default_lock.  Thereafter lock and unlock
 operations performed by the mid level use the struct Scsi_Host::host_lock
 pointer.  Previously drivers could override the host_lock pointer but
 this is not allowed anymore.</p>
-</section>
-<section id="autosense">
+</div>
+<div class="section" id="autosense">
 <h2>Autosense<a class="headerlink" href="#autosense" title="Permalink to this headline">¶</a></h2>
 <p>Autosense (or auto-sense) is defined in the SAM-2 document as “the
 automatic return of sense data to the application client coincident
@@ -1619,8 +1621,8 @@ issue a REQUEST SENSE command.</p>
 buffer data from the command that failed until a following REQUEST SENSE
 may get out of synchronization. This is why it is best for the LLD
 to perform autosense.</p>
-</section>
-<section id="changes-since-lk-2-4-series">
+</div>
+<div class="section" id="changes-since-lk-2-4-series">
 <h2>Changes since lk 2.4 series<a class="headerlink" href="#changes-since-lk-2-4-series" title="Permalink to this headline">¶</a></h2>
 <p>io_request_lock has been replaced by several finer grained locks. The lock
 relevant to LLDs is struct Scsi_Host::host_lock and there is
@@ -1636,8 +1638,8 @@ file that contains both configuration and help information.</p>
 <p>struct SHT has been renamed to struct scsi_host_template.</p>
 <p>Addition of the “hotplug initialization model” and many extra functions
 to support it.</p>
-</section>
-<section id="credits">
+</div>
+<div class="section" id="credits">
 <h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
 <p>The following people have contributed to this document:</p>
 <blockquote>
@@ -1655,8 +1657,8 @@ to support it.</p>
 <p>Douglas Gilbert
 dgilbert at interlog dot com</p>
 <p>21st September 2004</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

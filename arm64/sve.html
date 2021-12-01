@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Scalable Vector Extension support for AArch64 Linux &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -291,7 +293,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="scalable-vector-extension-support-for-aarch64-linux">
+  <div class="section" id="scalable-vector-extension-support-for-aarch64-linux">
 <h1>Scalable Vector Extension support for AArch64 Linux<a class="headerlink" href="#scalable-vector-extension-support-for-aarch64-linux" title="Permalink to this headline">¶</a></h1>
 <p>Author: Dave Martin &lt;<a class="reference external" href="mailto:Dave&#46;Martin&#37;&#52;&#48;arm&#46;com">Dave<span>&#46;</span>Martin<span>&#64;</span>arm<span>&#46;</span>com</a>&gt;</p>
 <p>Date:   4 August 2017</p>
@@ -302,7 +304,7 @@ intended to be exhaustive.</p>
 <p>This document does not aim to describe the SVE architecture or programmer’s
 model.  To aid understanding, a minimal description of relevant programmer’s
 model features for SVE is included in Appendix A.</p>
-<section id="general">
+<div class="section" id="general">
 <h2>1.  General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>SVE registers Z0..Z31, P0..P15 and FFR and the current vector length VL, are
@@ -350,8 +352,8 @@ values, with bits [(127 - 8 * i) : (120 - 8 * i)] of the register encoded at
 byte offset i.  (struct fpsimd_context, struct user_fpsimd_state).</p>
 </li>
 </ul>
-</section>
-<section id="vector-length-terminology">
+</div>
+<div class="section" id="vector-length-terminology">
 <h2>2.  Vector length terminology<a class="headerlink" href="#vector-length-terminology" title="Permalink to this headline">¶</a></h2>
 <p>The size of an SVE vector (Z) register is referred to as the “vector length”.</p>
 <p>To avoid confusion about the units used to express vector length, the kernel
@@ -365,8 +367,8 @@ adopts the following conventions:</p>
 as in data structure definitions.  In most other situations, the VL convention
 is used.  This is consistent with the meaning of the “VL” pseudo-register in
 the SVE instruction set architecture.</p>
-</section>
-<section id="system-call-behaviour">
+</div>
+<div class="section" id="system-call-behaviour">
 <h2>3.  System call behaviour<a class="headerlink" href="#system-call-behaviour" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>On syscall, V0..V31 are preserved (as without SVE).  Thus, bits [127:0] of
@@ -387,8 +389,8 @@ process or thread share identical SVE configuration, matching that of the
 parent before the call.</p>
 </li>
 </ul>
-</section>
-<section id="signal-handling">
+</div>
+<div class="section" id="signal-handling">
 <h2>4.  Signal handling<a class="headerlink" href="#signal-handling" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>A new signal frame record sve_context encodes the SVE registers on signal
@@ -413,8 +415,8 @@ space is allocated on the stack, an extra_context record is written in
 __reserved[] referencing this space.  sve_context is then written in the
 extra space.  Refer to [1] for further details about this mechanism.</p></li>
 </ul>
-</section>
-<section id="signal-return">
+</div>
+<div class="section" id="signal-return">
 <h2>5.  Signal return<a class="headerlink" href="#signal-return" title="Permalink to this headline">¶</a></h2>
 <p>When returning from a signal handler:</p>
 <ul class="simple">
@@ -432,8 +434,8 @@ irrespective of whether sve_context is present or not.</p></li>
 the signal frame does not match the current vector length, the signal return
 attempt is treated as illegal, resulting in a forced SIGSEGV.</p></li>
 </ul>
-</section>
-<section id="prctl-extensions">
+</div>
+<div class="section" id="prctl-extensions">
 <h2>6.  prctl extensions<a class="headerlink" href="#prctl-extensions" title="Permalink to this headline">¶</a></h2>
 <p>Some new prctl() calls are added to allow programs to manage the SVE vector
 length:</p>
@@ -515,8 +517,8 @@ PR_SVE_VL_LEN_MASK.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="ptrace-extensions">
+</div>
+<div class="section" id="ptrace-extensions">
 <h2>7.  ptrace extensions<a class="headerlink" href="#ptrace-extensions" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>A new regset NT_ARM_SVE is defined for use with PTRACE_GETREGSET and
@@ -604,8 +606,8 @@ unspecified.  It is up to the caller to translate the payload layout
 for the actual VL and retry.</p></li>
 <li><p>The effect of writing a partial, incomplete payload is unspecified.</p></li>
 </ul>
-</section>
-<section id="elf-coredump-extensions">
+</div>
+<div class="section" id="elf-coredump-extensions">
 <h2>8.  ELF coredump extensions<a class="headerlink" href="#elf-coredump-extensions" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>A NT_ARM_SVE note will be added to each coredump for each thread of the
@@ -613,8 +615,8 @@ dumped process.  The contents will be equivalent to the data that would have
 been read if a PTRACE_GETREGSET of NT_ARM_SVE were executed for each thread
 when the coredump was generated.</p></li>
 </ul>
-</section>
-<section id="system-runtime-configuration">
+</div>
+<div class="section" id="system-runtime-configuration">
 <h2>9.  System runtime configuration<a class="headerlink" href="#system-runtime-configuration" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>To mitigate the ABI impact of expansion of the signal frame, a policy
@@ -649,15 +651,15 @@ PR_SVE_SET_VL_ONEXEC flag (or SVE_PT_VL_ONEXEC).</p></li>
 <li><p>Modifying the system default vector length does not affect the vector length
 of any existing process or thread that does not make an execve() call.</p></li>
 </ul>
-<section id="appendix-a-sve-programmer-s-model-informative">
+<div class="section" id="appendix-a-sve-programmer-s-model-informative">
 <h3>Appendix A.  SVE programmer’s model (informative)<a class="headerlink" href="#appendix-a-sve-programmer-s-model-informative" title="Permalink to this headline">¶</a></h3>
 <p>This section provides a minimal description of the additions made by SVE to the
 ARMv8-A programmer’s model that are relevant to this document.</p>
 <p>Note: This section is for information only and not intended to be complete or
 to replace any architectural specification.</p>
-</section>
-</section>
-<section id="a-1-registers">
+</div>
+</div>
+<div class="section" id="a-1-registers">
 <h2>A.1.  Registers<a class="headerlink" href="#a-1-registers" title="Permalink to this headline">¶</a></h2>
 <p>In A64 state, SVE adds the following:</p>
 <ul>
@@ -714,8 +716,8 @@ FFR |                       |               +-----+
 FPCR contains callee-save and caller-save bits.  See [4] for details.</p>
 </dd>
 </dl>
-</section>
-<section id="a-2-procedure-call-standard">
+</div>
+<div class="section" id="a-2-procedure-call-standard">
 <h2>A.2.  Procedure call standard<a class="headerlink" href="#a-2-procedure-call-standard" title="Permalink to this headline">¶</a></h2>
 <p>The ARMv8-A base procedure call standard is extended as follows with respect to
 the additional SVE register state:</p>
@@ -726,7 +728,7 @@ the additional SVE register state:</p>
 save in the base procedure call standard.</p>
 </li>
 </ul>
-<section id="appendix-b-armv8-a-fp-simd-programmer-s-model">
+<div class="section" id="appendix-b-armv8-a-fp-simd-programmer-s-model">
 <h3>Appendix B.  ARMv8-A FP/SIMD programmer’s model<a class="headerlink" href="#appendix-b-armv8-a-fp-simd-programmer-s-model" title="Permalink to this headline">¶</a></h3>
 <p>Note: This section is for information only and not intended to be complete or
 to replace any architectural specification.</p>
@@ -762,8 +764,8 @@ to replace any architectural specification.</p>
 FPCR contains a mixture of callee-save and caller-save bits.</p>
 </dd>
 </dl>
-</section>
-<section id="references">
+</div>
+<div class="section" id="references">
 <h3>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>[1] arch/arm64/include/uapi/asm/sigcontext.h</dt><dd><p>AArch64 Linux signal ABI definitions</p>
@@ -778,9 +780,9 @@ FPCR contains a mixture of callee-save and caller-save bits.</p>
 Procedure Call Standard for the ARM 64-bit Architecture (AArch64)</p>
 </dd>
 </dl>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

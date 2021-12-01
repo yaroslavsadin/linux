@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Linux USB gadget configured through configfs &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -281,10 +283,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-usb-gadget-configured-through-configfs">
+  <div class="section" id="linux-usb-gadget-configured-through-configfs">
 <h1>Linux USB gadget configured through configfs<a class="headerlink" href="#linux-usb-gadget-configured-through-configfs" title="Permalink to this headline">¶</a></h1>
 <p>25th April 2013</p>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>A USB Linux Gadget is a device which has a UDC (USB Device Controller) and can
 be connected to a USB Host to extend it with additional functions like a serial
@@ -299,13 +301,13 @@ and which functions each configuration will provide.</p>
 for the purpose of telling the kernel about the above mentioned decision.
 This document is about how to do it.</p>
 <p>It also describes how configfs integration into gadget is designed.</p>
-</section>
-<section id="requirements">
+</div>
+<div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>In order for this to work configfs must be available, so CONFIGFS_FS must be
 ‘y’ or ‘m’ in .config. As of this writing USB_LIBCOMPOSITE selects CONFIGFS_FS.</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>(The original post describing the first function
 made available through configfs can be seen here:
@@ -315,7 +317,7 @@ $ mount none $CONFIGFS_HOME -t configfs
 </pre></div>
 </div>
 <p>where CONFIGFS_HOME is the mount point for configfs</p>
-<section id="creating-the-gadgets">
+<div class="section" id="creating-the-gadgets">
 <h3>1. Creating the gadgets<a class="headerlink" href="#creating-the-gadgets" title="Permalink to this headline">¶</a></h3>
 <p>For each gadget to be created its corresponding directory must be created:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mkdir $CONFIGFS_HOME/usb_gadget/&lt;gadget name&gt;
@@ -348,8 +350,8 @@ $ echo &lt;manufacturer&gt; &gt; strings/0x409/manufacturer
 $ echo &lt;product&gt; &gt; strings/0x409/product
 </pre></div>
 </div>
-</section>
-<section id="creating-the-configurations">
+</div>
+<div class="section" id="creating-the-configurations">
 <h3>2. Creating the configurations<a class="headerlink" href="#creating-the-configurations" title="Permalink to this headline">¶</a></h3>
 <p>Each gadget will consist of a number of configurations, their corresponding
 directories must be created:</p>
@@ -376,8 +378,8 @@ for each language, e.g.:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ echo 120 &gt; configs/c.1/MaxPower
 </pre></div>
 </div>
-</section>
-<section id="creating-the-functions">
+</div>
+<div class="section" id="creating-the-functions">
 <h3>3. Creating the functions<a class="headerlink" href="#creating-the-functions" title="Permalink to this headline">¶</a></h3>
 <p>The gadget will provide some functions, for each function its corresponding
 directory must be created:</p>
@@ -397,8 +399,8 @@ is an arbitrary string allowed in a filesystem, e.g.:</p>
 or read-write access. Where applicable they need to be written to as
 appropriate.
 Please refer to Documentation/ABI/testing/configfs-usb-gadget for more information.</p>
-</section>
-<section id="associating-the-functions-with-their-configurations">
+</div>
+<div class="section" id="associating-the-functions-with-their-configurations">
 <h3>4. Associating the functions with their configurations<a class="headerlink" href="#associating-the-functions-with-their-configurations" title="Permalink to this headline">¶</a></h3>
 <p>At this moment a number of gadgets is created, each of which has a number of
 configurations specified and a number of functions available. What remains
@@ -416,8 +418,8 @@ creating symbolic links:</p>
 ...
 </pre></div>
 </div>
-</section>
-<section id="enabling-the-gadget">
+</div>
+<div class="section" id="enabling-the-gadget">
 <h3>5. Enabling the gadget<a class="headerlink" href="#enabling-the-gadget" title="Permalink to this headline">¶</a></h3>
 <p>All the above steps serve the purpose of composing the gadget of
 configurations and functions.</p>
@@ -464,14 +466,14 @@ e.g.:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ echo s3c-hsotg &gt; UDC
 </pre></div>
 </div>
-</section>
-<section id="disabling-the-gadget">
+</div>
+<div class="section" id="disabling-the-gadget">
 <h3>6. Disabling the gadget<a class="headerlink" href="#disabling-the-gadget" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ echo &quot;&quot; &gt; UDC
 </pre></div>
 </div>
-</section>
-<section id="cleaning-up">
+</div>
+<div class="section" id="cleaning-up">
 <h3>7. Cleaning up<a class="headerlink" href="#cleaning-up" title="Permalink to this headline">¶</a></h3>
 <p>Remove functions from configurations:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ rm configs/&lt;config name&gt;.&lt;number&gt;/&lt;function&gt;
@@ -539,9 +541,9 @@ $ rmdir &lt;gadget name&gt;
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ rmdir g1
 </pre></div>
 </div>
-</section>
-</section>
-<section id="implementation-design">
+</div>
+</div>
+<div class="section" id="implementation-design">
 <h2>Implementation design<a class="headerlink" href="#implementation-design" title="Permalink to this headline">¶</a></h2>
 <p>Below the idea of how configfs works is presented.
 In configfs there are items and groups, both represented as directories.
@@ -632,8 +634,8 @@ in the functions implementation files drivers/usb/gadget/f_*.c.</p>
 So, provided that modprobe works, modules for particular functions
 are loaded automatically. Please note that the converse is not true:
 after a gadget is disabled and torn down, the modules remain loaded.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

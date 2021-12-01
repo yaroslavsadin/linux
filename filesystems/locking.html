@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Locking &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -279,7 +281,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="locking">
+  <div class="section" id="locking">
 <h1>Locking<a class="headerlink" href="#locking" title="Permalink to this headline">¶</a></h1>
 <p>The text below describes the locking rules for VFS-related methods.
 It is (believed to be) up-to-date. <em>Please</em>, if you change anything in
@@ -289,7 +291,7 @@ etc. At the very least, put the list of dubious cases in the end of this file.
 Don’t turn it into log - maintainers of out-of-the-tree code are supposed to
 be able to use diff(1).</p>
 <p>Thing currently missing here: socket operations. Alexey?</p>
-<section id="dentry-operations">
+<div class="section" id="dentry-operations">
 <h2>dentry_operations<a class="headerlink" href="#dentry-operations" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int (*d_revalidate)(struct dentry *, unsigned int);
@@ -405,8 +407,8 @@ struct dentry *(*d_real)(struct dentry *, const struct inode *);
 </tr>
 </tbody>
 </table>
-</section>
-<section id="inode-operations">
+</div>
+<div class="section" id="inode-operations">
 <h2>inode_operations<a class="headerlink" href="#inode-operations" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int (*create) (struct inode *,struct dentry *,umode_t, bool);
@@ -528,8 +530,8 @@ cross-directory -&gt;rename() has (per-superblock) -&gt;s_vfs_rename_sem.</p>
 </div></blockquote>
 <p>See <a class="reference internal" href="directory-locking.html"><span class="doc">Directory Locking</span></a> for more detailed discussion
 of the locking scheme for directory operations.</p>
-</section>
-<section id="xattr-handler-operations">
+</div>
+<div class="section" id="xattr-handler-operations">
 <h2>xattr_handler operations<a class="headerlink" href="#xattr-handler-operations" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bool (*list)(struct dentry *dentry);
@@ -568,8 +570,8 @@ int (*set)(const struct xattr_handler *handler,
 </tr>
 </tbody>
 </table>
-</section>
-<section id="super-operations">
+</div>
+<div class="section" id="super-operations">
 <h2>super_operations<a class="headerlink" href="#super-operations" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct inode *(*alloc_inode)(struct super_block *sb);
@@ -696,8 +698,8 @@ writes to quota files with quotas on). For other details about locking
 see also dquot_operations section.</p>
 <p>-&gt;bdev_try_to_free_page is called from the -&gt;releasepage handler of
 the block device inode.  See there for more details.</p>
-</section>
-<section id="file-system-type">
+</div>
+<div class="section" id="file-system-type">
 <h2>file_system_type<a class="headerlink" href="#file-system-type" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct dentry *(*mount) (struct file_system_type *, int,
@@ -729,8 +731,8 @@ void (*kill_sb) (struct super_block *);
 on return.</p>
 <p>-&gt;kill_sb() takes a write-locked superblock, does all shutdown work on it,
 unlocks and drops the reference.</p>
-</section>
-<section id="address-space-operations">
+</div>
+<div class="section" id="address-space-operations">
 <h2>address_space_operations<a class="headerlink" href="#address-space-operations" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int (*writepage)(struct page *page, struct writeback_control *wbc);
@@ -973,8 +975,8 @@ backing swapspace. The swapspace operations will be proxied to the
 address space operations.</p>
 <p>-&gt;swap_deactivate() will be called in the sys_swapoff()
 path after -&gt;swap_activate() returned success.</p>
-</section>
-<section id="file-lock-operations">
+</div>
+<div class="section" id="file-lock-operations">
 <h2>file_lock_operations<a class="headerlink" href="#file-lock-operations" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void (*fl_copy_lock)(struct file_lock *, struct file_lock *);
@@ -1005,8 +1007,8 @@ void (*fl_release_private)(struct file_lock *);
 </tr>
 </tbody>
 </table>
-</section>
-<section id="lock-manager-operations">
+</div>
+<div class="section" id="lock-manager-operations">
 <h2>lock_manager_operations<a class="headerlink" href="#lock-manager-operations" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void (*lm_notify)(struct file_lock *);  /* unblock callback */
@@ -1059,8 +1061,8 @@ bool (*lm_breaker_owns_lease)(struct file_lock *);
 </tr>
 </tbody>
 </table>
-</section>
-<section id="buffer-head">
+</div>
+<div class="section" id="buffer-head">
 <h2>buffer_head<a class="headerlink" href="#buffer-head" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void (*b_end_io)(struct buffer_head *bh, int uptodate);
@@ -1071,8 +1073,8 @@ bool (*lm_breaker_owns_lease)(struct file_lock *);
 bh is locked, but that’s all warranties we have here. Currently only RAID1,
 highmem, fs/buffer.c, and fs/ntfs/aops.c are providing these. Block devices
 call this method upon the IO completion.</p>
-</section>
-<section id="block-device-operations">
+</div>
+<div class="section" id="block-device-operations">
 <h2>block_device_operations<a class="headerlink" href="#block-device-operations" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int (*open) (struct block_device *, fmode_t);
@@ -1126,8 +1128,8 @@ void (*swap_slot_free_notify) (struct block_device *, unsigned long);
 </table>
 <p>swap_slot_free_notify is called with swap_lock and sometimes the page lock
 held.</p>
-</section>
-<section id="file-operations">
+</div>
+<div class="section" id="file-operations">
 <h2>file_operations<a class="headerlink" href="#file-operations" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>loff_t (*llseek) (struct file *, loff_t, int);
@@ -1214,8 +1216,8 @@ blocking changes through write(2) and similar operations inode-&gt;i_rwsem can b
 used. To block changes to file contents via a memory mapping during the
 operation, the filesystem must take mapping-&gt;invalidate_lock to coordinate
 with -&gt;page_mkwrite.</p>
-</section>
-<section id="dquot-operations">
+</div>
+<div class="section" id="dquot-operations">
 <h2>dquot_operations<a class="headerlink" href="#dquot-operations" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int (*write_dquot) (struct dquot *);
@@ -1269,8 +1271,8 @@ a proper locking wrt the filesystem and call the generic quota operations.</p>
 <p>FS recursion means calling -&gt;quota_read() and -&gt;quota_write() from superblock
 operations.</p>
 <p>More details about quota locking can be found in fs/dquot.c.</p>
-</section>
-<section id="vm-operations-struct">
+</div>
+<div class="section" id="vm-operations-struct">
 <h2>vm_operations_struct<a class="headerlink" href="#vm-operations-struct" title="Permalink to this headline">¶</a></h2>
 <p>prototypes:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void (*open)(struct vm_area_struct*);
@@ -1363,8 +1365,8 @@ VM_IO | VM_PFNMAP VMAs.</p>
 </div></blockquote>
 <p>(if you break something or notice that it is broken and do not fix it yourself
 - at least put it here)</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

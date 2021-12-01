@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>S390 Debug Feature &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -290,7 +292,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="s390-debug-feature">
+  <div class="section" id="s390-debug-feature">
 <h1>S390 Debug Feature<a class="headerlink" href="#s390-debug-feature" title="Permalink to this headline">¶</a></h1>
 <dl class="simple">
 <dt>files:</dt><dd><ul class="simple">
@@ -299,7 +301,7 @@
 </ul>
 </dd>
 </dl>
-<section id="description">
+<div class="section" id="description">
 <h2>Description:<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>The goal of this feature is to provide a kernel debug logging API
 where log records can be stored efficiently in memory, where each component
@@ -310,8 +312,8 @@ in order to analyze the reason for the crash.</p>
 it is possible to look at the debug logs on a live system via the Linux
 debugfs filesystem.</p>
 <p>The debug feature may also very useful for kernel and driver development.</p>
-</section>
-<section id="design">
+</div>
+<div class="section" id="design">
 <h2>Design:<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h2>
 <p>Kernel components (e.g. device drivers) can register themselves at the debug
 feature with the function call <a class="reference internal" href="#c.debug_register" title="debug_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">debug_register()</span></code></a>.
@@ -385,12 +387,12 @@ suggested to use an oopsed kernel in a production environment.</p>
 the <code class="docutils literal notranslate"><span class="pre">debug_stoppable</span></code> sysctl. If you set <code class="docutils literal notranslate"><span class="pre">debug_stoppable</span></code> to 0 the debug
 feature cannot be stopped. If the debug feature is already stopped, it
 will stay deactivated.</p>
-</section>
-<section id="kernel-interfaces">
+</div>
+<div class="section" id="kernel-interfaces">
 <h2>Kernel Interfaces:<a class="headerlink" href="#kernel-interfaces" title="Permalink to this headline">¶</a></h2>
 <dl class="c function">
-<dt id="c.debug_register_mode">
-<span class="pre">debug_info_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">debug_register_mode</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">int</span> <em><span class="pre">pages_per_area</span></em>, <span class="pre">int</span> <em><span class="pre">nr_areas</span></em>, <span class="pre">int</span> <em><span class="pre">buf_size</span></em>, <span class="pre">umode_t</span> <em><span class="pre">mode</span></em>, <span class="pre">uid_t</span> <em><span class="pre">uid</span></em>, <span class="pre">gid_t</span> <em><span class="pre">gid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_register_mode" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_register_mode">
+<span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">debug_register_mode</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">pages_per_area</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nr_areas</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">buf_size</span></span>, <span class="n"><span class="pre">umode_t</span></span><span class="w"> </span><span class="n"><span class="pre">mode</span></span>, <span class="n"><span class="pre">uid_t</span></span><span class="w"> </span><span class="n"><span class="pre">uid</span></span>, <span class="n"><span class="pre">gid_t</span></span><span class="w"> </span><span class="n"><span class="pre">gid</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_register_mode" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>creates and initializes debug area.</p>
 </dd></dl>
 
@@ -420,8 +422,8 @@ will stay deactivated.</p>
 <p>Allocates memory for a debug log.
 Must not be called within an interrupt handler.</p>
 <dl class="c function">
-<dt id="c.debug_register">
-<span class="pre">debug_info_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">debug_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">int</span> <em><span class="pre">pages_per_area</span></em>, <span class="pre">int</span> <em><span class="pre">nr_areas</span></em>, <span class="pre">int</span> <em><span class="pre">buf_size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_register" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_register">
+<span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">debug_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">pages_per_area</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nr_areas</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">buf_size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_register" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>creates and initializes debug area with default file mode.</p>
 </dd></dl>
 
@@ -446,8 +448,8 @@ Must not be called within an interrupt handler.</p>
 The debugfs file mode access permissions are read and write for user.
 Must not be called within an interrupt handler.</p>
 <dl class="c function">
-<dt id="c.debug_register_static">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">debug_register_static</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">pages_per_area</span></em>, <span class="pre">int</span> <em><span class="pre">nr_areas</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_register_static" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_register_static">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">debug_register_static</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">pages_per_area</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nr_areas</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_register_static" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>registers a static debug area</p>
 </dd></dl>
 
@@ -468,8 +470,8 @@ Must not be called within an interrupt handler.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.debug_unregister">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">debug_unregister</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_unregister" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_unregister">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">debug_unregister</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_unregister" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>give back debug area.</p>
 </dd></dl>
 
@@ -483,8 +485,8 @@ Must not be called within an interrupt handler.</p>
 <div><p>none</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.debug_set_level">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">debug_set_level</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">new_level</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_set_level" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_set_level">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">debug_set_level</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">new_level</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_set_level" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Sets new actual debug level if new_level is valid.</p>
 </dd></dl>
 
@@ -500,8 +502,8 @@ Must not be called within an interrupt handler.</p>
 <div><p>none</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.debug_stop_all">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">debug_stop_all</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_stop_all" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_stop_all">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">debug_stop_all</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_stop_all" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>stops the debug feature if stopping is allowed.</p>
 </dd></dl>
 
@@ -517,8 +519,8 @@ Must not be called within an interrupt handler.</p>
 <p><strong>Description</strong></p>
 <p>Currently used in case of a kernel oops.</p>
 <dl class="c function">
-<dt id="c.debug_set_critical">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">debug_set_critical</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_set_critical" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_set_critical">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">debug_set_critical</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_set_critical" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>event/exception functions try lock instead of spin.</p>
 </dd></dl>
 
@@ -537,8 +539,8 @@ Once in this state, functions to write a debug entry for an
 event or exception no longer spin on the debug area lock,
 but only try to get it and fail if they do not get the lock.</p>
 <dl class="c function">
-<dt id="c.debug_register_view">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">debug_register_view</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">debug_view</span> <span class="pre">*</span><em><span class="pre">view</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_register_view" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_register_view">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">debug_register_view</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">debug_view</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">view</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_register_view" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>registers new debug view and creates debugfs dir entry</p>
 </dd></dl>
 
@@ -555,8 +557,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p>&lt; 0: Error</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.debug_unregister_view">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">debug_unregister_view</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">debug_view</span> <span class="pre">*</span><em><span class="pre">view</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_unregister_view" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_unregister_view">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">debug_unregister_view</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">debug_view</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">view</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_unregister_view" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unregisters debug view and removes debugfs dir entry</p>
 </dd></dl>
 
@@ -573,8 +575,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p>&lt; 0: Error</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.debug_level_enabled">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">debug_level_enabled</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">level</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_level_enabled" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_level_enabled">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">debug_level_enabled</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">level</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_level_enabled" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Returns true if debug events for the specified level would be logged. Otherwise returns false.</p>
 </dd></dl>
 
@@ -590,8 +592,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if level is less or equal to the current debug level.</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.debug_event">
-<span class="pre">debug_entry_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">debug_event</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">level</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">int</span> <em><span class="pre">length</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_event">
+<span class="n"><span class="pre">debug_entry_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">debug_event</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">level</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">length</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>writes binary debug entry to active debug area (if level &lt;= actual debug level)</p>
 </dd></dl>
 
@@ -612,8 +614,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code> if error</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.debug_int_event">
-<span class="pre">debug_entry_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">debug_int_event</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">level</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">tag</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_int_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_int_event">
+<span class="n"><span class="pre">debug_entry_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">debug_int_event</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">level</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">tag</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_int_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>writes unsigned integer debug entry to active debug area (if level &lt;= actual debug level)</p>
 </dd></dl>
 
@@ -632,8 +634,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code> if error</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.debug_long_event">
-<span class="pre">debug_entry_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">debug_long_event</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">level</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">tag</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_long_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_long_event">
+<span class="n"><span class="pre">debug_entry_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">debug_long_event</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">level</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">tag</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_long_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>writes unsigned long debug entry to active debug area (if level &lt;= actual debug level)</p>
 </dd></dl>
 
@@ -652,8 +654,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code> if error</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.debug_text_event">
-<span class="pre">debug_entry_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">debug_text_event</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">level</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">txt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_text_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_text_event">
+<span class="n"><span class="pre">debug_entry_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">debug_text_event</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">level</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">txt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_text_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>writes string debug entry in ascii format to active debug area (if level &lt;= actual debug level)</p>
 </dd></dl>
 
@@ -672,8 +674,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code> if error</p></li>
 </ul>
 <dl class="c macro">
-<dt id="c.debug_sprintf_event">
-<code class="sig-name descname"><span class="pre">debug_sprintf_event</span></code><a class="headerlink" href="#c.debug_sprintf_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_sprintf_event">
+<span class="sig-name descname"><span class="n"><span class="pre">debug_sprintf_event</span></span></span><a class="headerlink" href="#c.debug_sprintf_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">debug_sprintf_event</span> <span class="pre">(_id,</span> <span class="pre">_level,</span> <span class="pre">_fmt,</span> <span class="pre">...)</span></code></p>
@@ -699,8 +701,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <p><strong>Description</strong></p>
 <p>floats and long long datatypes cannot be used as varargs.</p>
 <dl class="c function">
-<dt id="c.debug_exception">
-<span class="pre">debug_entry_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">debug_exception</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">level</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">int</span> <em><span class="pre">length</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_exception" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_exception">
+<span class="n"><span class="pre">debug_entry_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">debug_exception</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">level</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">length</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_exception" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>writes binary debug entry to active debug area (if level &lt;= actual debug level) and switches to next debug area</p>
 </dd></dl>
 
@@ -721,8 +723,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code> if error</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.debug_int_exception">
-<span class="pre">debug_entry_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">debug_int_exception</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">level</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">tag</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_int_exception" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_int_exception">
+<span class="n"><span class="pre">debug_entry_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">debug_int_exception</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">level</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">tag</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_int_exception" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>writes unsigned int debug entry to active debug area (if level &lt;= actual debug level) and switches to next debug area</p>
 </dd></dl>
 
@@ -741,8 +743,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code> if error</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.debug_long_exception">
-<span class="pre">debug_entry_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">debug_long_exception</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">level</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">tag</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_long_exception" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_long_exception">
+<span class="n"><span class="pre">debug_entry_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">debug_long_exception</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">level</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">tag</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_long_exception" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>writes long debug entry to active debug area (if level &lt;= actual debug level) and switches to next debug area</p>
 </dd></dl>
 
@@ -761,8 +763,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code> if error</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.debug_text_exception">
-<span class="pre">debug_entry_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">debug_text_exception</span></code><span class="sig-paren">(</span><span class="pre">debug_info_t</span> <span class="pre">*</span><em><span class="pre">id</span></em>, <span class="pre">int</span> <em><span class="pre">level</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">txt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_text_exception" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_text_exception">
+<span class="n"><span class="pre">debug_entry_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">debug_text_exception</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">debug_info_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">id</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">level</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">txt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.debug_text_exception" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>writes string debug entry in ascii format to active debug area (if level &lt;= actual debug level) and switches to next debug area area</p>
 </dd></dl>
 
@@ -781,8 +783,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">NULL</span></code> if error</p></li>
 </ul>
 <dl class="c macro">
-<dt id="c.debug_sprintf_exception">
-<code class="sig-name descname"><span class="pre">debug_sprintf_exception</span></code><a class="headerlink" href="#c.debug_sprintf_exception" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.debug_sprintf_exception">
+<span class="sig-name descname"><span class="n"><span class="pre">debug_sprintf_exception</span></span></span><a class="headerlink" href="#c.debug_sprintf_exception" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">debug_sprintf_exception</span> <span class="pre">(_id,</span> <span class="pre">_level,</span> <span class="pre">_fmt,</span> <span class="pre">...)</span></code></p>
@@ -808,8 +810,8 @@ but only try to get it and fail if they do not get the lock.</p>
 <p><strong>Description</strong></p>
 <p>floats and long long datatypes cannot be used as varargs.</p>
 <dl class="c macro">
-<dt id="c.DEFINE_STATIC_DEBUG_INFO">
-<code class="sig-name descname"><span class="pre">DEFINE_STATIC_DEBUG_INFO</span></code><a class="headerlink" href="#c.DEFINE_STATIC_DEBUG_INFO" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DEFINE_STATIC_DEBUG_INFO">
+<span class="sig-name descname"><span class="n"><span class="pre">DEFINE_STATIC_DEBUG_INFO</span></span></span><a class="headerlink" href="#c.DEFINE_STATIC_DEBUG_INFO" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DEFINE_STATIC_DEBUG_INFO</span> <span class="pre">(var,</span> <span class="pre">name,</span> <span class="pre">pages,</span> <span class="pre">nr_areas,</span> <span class="pre">buf_size,</span> <span class="pre">view)</span></code></p>
@@ -840,16 +842,16 @@ debug_register/_unregister() functions for this debug_info_t!</p>
 <p>Tracing will start with a fixed number of initial pages and areas.
 The debug area will be changed to use the specified numbers during
 arch_initcall.</p>
-</section>
-<section id="predefined-views">
+</div>
+<div class="section" id="predefined-views">
 <h2>Predefined views:<a class="headerlink" href="#predefined-views" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">extern</span> <span class="k">struct</span> <span class="nc">debug_view</span> <span class="n">debug_hex_ascii_view</span><span class="p">;</span>
 
 <span class="k">extern</span> <span class="k">struct</span> <span class="nc">debug_view</span> <span class="n">debug_sprintf_view</span><span class="p">;</span>
 </pre></div>
 </div>
-</section>
-<section id="examples">
+</div>
+<div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
 <span class="cm"> * hex_ascii-view Example</span>
@@ -915,8 +917,8 @@ arch_initcall.</p>
 <span class="n">module_exit</span><span class="p">(</span><span class="n">cleanup</span><span class="p">);</span>
 </pre></div>
 </div>
-</section>
-<section id="debugfs-interface">
+</div>
+<div class="section" id="debugfs-interface">
 <h2>Debugfs Interface<a class="headerlink" href="#debugfs-interface" title="Permalink to this headline">¶</a></h2>
 <p>Views to the debug logs can be investigated through reading the corresponding
 debugfs-files:</p>
@@ -937,8 +939,8 @@ flush  hex_ascii  level pages
 </pre></div>
 </div>
 <p>See section about predefined views for explanation of the above output!</p>
-</section>
-<section id="changing-the-debug-level">
+</div>
+<div class="section" id="changing-the-debug-level">
 <h2>Changing the debug level<a class="headerlink" href="#changing-the-debug-level" title="Permalink to this headline">¶</a></h2>
 <p>Example:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt; cat /sys/kernel/debug/s390dbf/dasd/level
@@ -948,8 +950,8 @@ flush  hex_ascii  level pages
 5
 </pre></div>
 </div>
-</section>
-<section id="flushing-debug-areas">
+</div>
+<div class="section" id="flushing-debug-areas">
 <h2>Flushing debug areas<a class="headerlink" href="#flushing-debug-areas" title="Permalink to this headline">¶</a></h2>
 <p>Debug areas can be flushed with piping the number of the desired
 area (0…n) to the debugfs file “flush”. When using “-” all debug areas
@@ -967,8 +969,8 @@ are flushed.</p>
 </div>
 </li>
 </ol>
-</section>
-<section id="changing-the-size-of-debug-areas">
+</div>
+<div class="section" id="changing-the-size-of-debug-areas">
 <h2>Changing the size of debug areas<a class="headerlink" href="#changing-the-size-of-debug-areas" title="Permalink to this headline">¶</a></h2>
 <p>It is possible the change the size of debug areas through piping
 the number of pages to the debugfs file “pages”. The resize request will
@@ -978,8 +980,8 @@ also flush the debug areas.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt; echo &quot;4&quot; &gt; /sys/kernel/debug/s390dbf/dasd/pages
 </pre></div>
 </div>
-</section>
-<section id="stopping-the-debug-feature">
+</div>
+<div class="section" id="stopping-the-debug-feature">
 <h2>Stopping the debug feature<a class="headerlink" href="#stopping-the-debug-feature" title="Permalink to this headline">¶</a></h2>
 <p>Example:</p>
 <ol class="arabic">
@@ -994,16 +996,16 @@ also flush the debug areas.</p>
 </div>
 </li>
 </ol>
-</section>
-<section id="crash-interface">
+</div>
+<div class="section" id="crash-interface">
 <h2>crash Interface<a class="headerlink" href="#crash-interface" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">crash</span></code> tool since v5.1.0 has a built-in command
 <code class="docutils literal notranslate"><span class="pre">s390dbf</span></code> to display all the debug logs or export them to the file system.
 With this tool it is possible
 to investigate the debug logs on a live system and with a memory dump after
 a system crash.</p>
-</section>
-<section id="investigating-raw-memory">
+</div>
+<div class="section" id="investigating-raw-memory">
 <h2>Investigating raw memory<a class="headerlink" href="#investigating-raw-memory" title="Permalink to this headline">¶</a></h2>
 <p>One last possibility to investigate the debug logs at a live
 system and after a system crash is to look at the raw memory
@@ -1019,8 +1021,8 @@ memory.</p>
 <p>For this method it is recommended to use ‘16 * x + 4’ byte (x = 0..n)
 for the length of the data field in <a class="reference internal" href="#c.debug_register" title="debug_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">debug_register()</span></code></a> in
 order to see the debug entries well formatted.</p>
-</section>
-<section id="id1">
+</div>
+<div class="section" id="id1">
 <h2>Predefined Views<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>There are two predefined views: hex_ascii and sprintf.
 The hex_ascii view shows the data field in hex and ascii representation
@@ -1062,8 +1064,8 @@ is only for explanation and will not be displayed when ‘cating’ the view):</
 00    00964419409:440690 1 -         00  88023fe
 </pre></div>
 </div>
-</section>
-<section id="defining-views">
+</div>
+<div class="section" id="defining-views">
 <h2>Defining views<a class="headerlink" href="#defining-views" title="Permalink to this headline">¶</a></h2>
 <p>Views are specified with the ‘debug_view’ structure. There are defined
 callback functions which are used for reading and writing the debugfs files:</p>
@@ -1163,7 +1165,7 @@ of the default views!</p>
 <span class="p">};</span>
 </pre></div>
 </div>
-<section id="test">
+<div class="section" id="test">
 <h3>test:<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">debug_info_t</span> <span class="o">*</span><span class="n">debug_info</span><span class="p">;</span>
 <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
@@ -1187,9 +1189,9 @@ of the default views!</p>
 00 00964419734:611428 1 - 00 88042ca   data: 00000009
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

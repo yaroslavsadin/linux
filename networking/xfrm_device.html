@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>XFRM device - offloading the IPsec computations &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -360,10 +362,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="xfrm-device-offloading-the-ipsec-computations">
+  <div class="section" id="xfrm-device-offloading-the-ipsec-computations">
 <h1>XFRM device - offloading the IPsec computations<a class="headerlink" href="#xfrm-device-offloading-the-ipsec-computations" title="Permalink to this headline">¶</a></h1>
 <p>Shannon Nelson &lt;<a class="reference external" href="mailto:shannon&#46;nelson&#37;&#52;&#48;oracle&#46;com">shannon<span>&#46;</span>nelson<span>&#64;</span>oracle<span>&#46;</span>com</a>&gt;</p>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>IPsec is a useful feature for securing network traffic, but the
 computational cost is high: a 10Gbps link can easily be brought down
@@ -384,8 +386,8 @@ like this:</p>
 </pre></div>
 </div>
 <p>Yes, that’s ugly, but that’s what shell scripts and/or libreswan are for.</p>
-</section>
-<section id="callbacks-to-implement">
+</div>
+<div class="section" id="callbacks-to-implement">
 <h2>Callbacks to implement<a class="headerlink" href="#callbacks-to-implement" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/* from include/linux/netdevice.h */
 struct xfrmdev_ops {
@@ -402,8 +404,8 @@ struct xfrmdev_ops {
 callbacks to make the offload available to the network stack’s
 XFRM subsystem.  Additionally, the feature bits NETIF_F_HW_ESP and
 NETIF_F_HW_ESP_TX_CSUM will signal the availability of the offload.</p>
-</section>
-<section id="flow">
+</div>
+<div class="section" id="flow">
 <h2>Flow<a class="headerlink" href="#flow" title="Permalink to this headline">¶</a></h2>
 <p>At probe time and before the call to <a class="reference internal" href="kapi.html#c.register_netdev" title="register_netdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">register_netdev()</span></code></a>, the driver should
 set up local data structures and XFRM callbacks, and set the feature bits.
@@ -504,8 +506,8 @@ hardware needs.</p>
 <p>As a netdev is set to DOWN the XFRM stack’s netdev listener will call
 xdo_dev_state_delete() and xdo_dev_state_free() on any remaining offloaded
 states.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>L’inaffidabile guida all’hacking del kernel Linux &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -281,14 +283,14 @@ Per maggiori informazioni consultate le <a class="reference internal" href="../i
 <dd class="field-even"><p>Federico Vaga &lt;<a class="reference external" href="mailto:federico&#46;vaga&#37;&#52;&#48;vaga&#46;pv&#46;it">federico<span>&#46;</span>vaga<span>&#64;</span>vaga<span>&#46;</span>pv<span>&#46;</span>it</a>&gt;</p>
 </dd>
 </dl>
-<section id="l-inaffidabile-guida-all-hacking-del-kernel-linux">
+<div class="section" id="l-inaffidabile-guida-all-hacking-del-kernel-linux">
 <span id="it-kernel-hacking-hack"></span><h1>L’inaffidabile guida all’hacking del kernel Linux<a class="headerlink" href="#l-inaffidabile-guida-all-hacking-del-kernel-linux" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Rusty Russell</p>
 </dd>
 </dl>
-<section id="introduzione">
+<div class="section" id="introduzione">
 <h2>Introduzione<a class="headerlink" href="#introduzione" title="Permalink to this headline">¶</a></h2>
 <p>Benvenuto, gentile lettore, alla notevole ed inaffidabile guida all’hacking
 del kernel Linux ad opera di Rusty. Questo documento descrive le procedure
@@ -301,8 +303,8 @@ essendo esageratamente sotto qualificato, ma ho sempre voluto leggere
 qualcosa di simile, e quindi questa era l’unica via. Spero che possa
 crescere e diventare un compendio di buone pratiche, punti di partenza
 e generiche informazioni.</p>
-</section>
-<section id="gli-attori">
+</div>
+<div class="section" id="gli-attori">
 <h2>Gli attori<a class="headerlink" href="#gli-attori" title="Permalink to this headline">¶</a></h2>
 <p>In qualsiasi momento ognuna delle CPU di un sistema può essere:</p>
 <ul class="simple">
@@ -320,7 +322,7 @@ nell’esecuzione, ma un’interruzione hardware può. Ciò nonostante, le altre
 del sistema operano indipendentemente.</p>
 <p>Più avanti vedremo alcuni modi in cui dal contesto utente è possibile bloccare
 le interruzioni, così da impedirne davvero il diritto di prelazione.</p>
-<section id="contesto-utente">
+<div class="section" id="contesto-utente">
 <h3>Contesto utente<a class="headerlink" href="#contesto-utente" title="Permalink to this headline">¶</a></h3>
 <p>Ci si trova nel contesto utente quando si arriva da una chiamata di sistema
 od altre eccezioni: come nello spazio utente, altre procedure più importanti,
@@ -340,8 +342,8 @@ momento in esecuzione) è valido, e <code class="xref c c-func docutils literal 
 <p>Attenzione che se avete la prelazione o i softirq disabilitati (vedere
 di seguito), <code class="xref c c-func docutils literal notranslate"><span class="pre">in_interrupt()</span></code> ritornerà un falso positivo.</p>
 </div>
-</section>
-<section id="interruzioni-hardware-hard-irqs">
+</div>
+<div class="section" id="interruzioni-hardware-hard-irqs">
 <h3>Interruzioni hardware (Hard IRQs)<a class="headerlink" href="#interruzioni-hardware-hard-irqs" title="Permalink to this headline">¶</a></h3>
 <p>Temporizzatori, schede di rete e tastiere sono esempi di vero hardware
 che possono produrre interruzioni in un qualsiasi momento. Il kernel esegue
@@ -359,8 +361,8 @@ ritorna vero.</p>
 <p>Attenzione, questa ritornerà un falso positivo se le interruzioni
 sono disabilitate (vedere di seguito).</p>
 </div>
-</section>
-<section id="contesto-d-interruzione-software-softirq-e-tasklet">
+</div>
+<div class="section" id="contesto-d-interruzione-software-softirq-e-tasklet">
 <h3>Contesto d’interruzione software: softirq e tasklet<a class="headerlink" href="#contesto-d-interruzione-software-softirq-e-tasklet" title="Permalink to this headline">¶</a></h3>
 <p>Quando una chiamata di sistema sta per tornare allo spazio utente,
 oppure un gestore d’interruzioni termina, qualsiasi ‘interruzione software’
@@ -396,9 +398,9 @@ macro <code class="xref c c-func docutils literal notranslate"><span class="pre"
 <p>State attenti che questa macro ritornerà un falso positivo
 se <a class="reference internal" href="#it-local-bh-disable"><span class="std std-ref">botton half lock</span></a> è bloccato.</p>
 </div>
-</section>
-</section>
-<section id="alcune-regole-basilari">
+</div>
+</div>
+<div class="section" id="alcune-regole-basilari">
 <h2>Alcune regole basilari<a class="headerlink" href="#alcune-regole-basilari" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Nessuna protezione della memoria</dt><dd><p>Se corrompete la memoria, che sia in contesto utente o d’interruzione,
@@ -427,8 +429,8 @@ per facilitarne la migrazione. Generalmente questo codice dovrebbe essere
 limitato alla parte di kernel specifica per un’architettura.</p>
 </dd>
 </dl>
-</section>
-<section id="ioctl-non-scrivere-nuove-chiamate-di-sistema">
+</div>
+<div class="section" id="ioctl-non-scrivere-nuove-chiamate-di-sistema">
 <h2>ioctl: non scrivere nuove chiamate di sistema<a class="headerlink" href="#ioctl-non-scrivere-nuove-chiamate-di-sistema" title="Permalink to this headline">¶</a></h2>
 <p>Una chiamata di sistema, generalmente, è scritta così:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>asmlinkage long sys_mycall(int arg)
@@ -472,8 +474,8 @@ Esempio:</p>
 </div>
 <p>Una breve nota sulla progettazione delle interfacce: il motto dei sistemi
 UNIX è “fornite meccanismi e non politiche”</p>
-</section>
-<section id="la-ricetta-per-uno-stallo">
+</div>
+<div class="section" id="la-ricetta-per-uno-stallo">
 <h2>La ricetta per uno stallo<a class="headerlink" href="#la-ricetta-per-uno-stallo" title="Permalink to this headline">¶</a></h2>
 <p>Non è permesso invocare una procedura che potrebbe dormire, fanno eccezione
 i seguenti casi:</p>
@@ -491,10 +493,10 @@ quelle per l’allocazione della memoria senza l’opzione <code class="docutils
 attiva, questa vi avviserà se infrangete una di queste regole.
 Se <strong>infrangete</strong> le regole, allora potreste bloccare il vostro scatolotto.</p>
 <p>Veramente.</p>
-</section>
-<section id="alcune-delle-procedure-piu-comuni">
+</div>
+<div class="section" id="alcune-delle-procedure-piu-comuni">
 <h2>Alcune delle procedure più comuni<a class="headerlink" href="#alcune-delle-procedure-piu-comuni" title="Permalink to this headline">¶</a></h2>
-<section id="printk">
+<div class="section" id="printk">
 <h3><a class="reference internal" href="../../../core-api/printk-basics.html#c.printk" title="printk"><code class="xref c c-func docutils literal notranslate"><span class="pre">printk()</span></code></a><a class="headerlink" href="#printk" title="Permalink to this headline">¶</a></h3>
 <p>Definita in <code class="docutils literal notranslate"><span class="pre">include/linux/printk.h</span></code></p>
 <p><a class="reference internal" href="../../../core-api/printk-basics.html#c.printk" title="printk"><code class="xref c c-func docutils literal notranslate"><span class="pre">printk()</span></code></a> fornisce messaggi alla console, dmesg, e al demone syslog.
@@ -527,8 +529,8 @@ nei vostri programmi utenti le printf come se fossero printk :)</p>
 sopra alla funzione printf: “Printf non dovrebbe essere usata per il
 chiacchiericcio”. Dovreste seguire questo consiglio.</p>
 </div>
-</section>
-<section id="copy-to-user-copy-from-user-get-user-put-user">
+</div>
+<div class="section" id="copy-to-user-copy-from-user-get-user-put-user">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">copy_to_user()</span></code> / <code class="xref c c-func docutils literal notranslate"><span class="pre">copy_from_user()</span></code> / <a class="reference internal" href="../../../core-api/mm-api.html#c.get_user" title="get_user"><code class="xref c c-func docutils literal notranslate"><span class="pre">get_user()</span></code></a> / <a class="reference internal" href="../../../core-api/mm-api.html#c.put_user" title="put_user"><code class="xref c c-func docutils literal notranslate"><span class="pre">put_user()</span></code></a><a class="headerlink" href="#copy-to-user-copy-from-user-get-user-put-user" title="Permalink to this headline">¶</a></h3>
 <p>Definite in <code class="docutils literal notranslate"><span class="pre">include/linux/uaccess.h</span></code> / <code class="docutils literal notranslate"><span class="pre">asm/uaccess.h</span></code></p>
 <p><strong>[DORMONO]</strong></p>
@@ -549,8 +551,8 @@ dopo anno. –RR]</p>
 <p>Le funzioni potrebbero dormire implicitamente. Queste non dovrebbero mai essere
 invocate fuori dal contesto utente (non ha senso), con le interruzioni
 disabilitate, o con uno spinlock trattenuto.</p>
-</section>
-<section id="kmalloc-kfree">
+</div>
+<div class="section" id="kmalloc-kfree">
 <h3><a class="reference internal" href="../../../core-api/mm-api.html#c.kmalloc" title="kmalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">kmalloc()</span></code></a>/<a class="reference internal" href="../../../core-api/mm-api.html#c.kfree" title="kfree"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree()</span></code></a><a class="headerlink" href="#kmalloc-kfree" title="Permalink to this headline">¶</a></h3>
 <p>Definite in <code class="docutils literal notranslate"><span class="pre">include/linux/slab.h</span></code></p>
 <p><strong>[POTREBBERO DORMIRE: LEGGI SOTTO]</strong></p>
@@ -595,8 +597,8 @@ all’inizio dell’avvio del sistema è attraverso la procedura
 <code class="xref c c-func docutils literal notranslate"><span class="pre">alloc_bootmem()</span></code>.</p>
 <p>Prima di inventare la vostra cache per gli oggetti più usati, considerate
 l’uso di una cache slab disponibile in <code class="docutils literal notranslate"><span class="pre">include/linux/slab.h</span></code>.</p>
-</section>
-<section id="current">
+</div>
+<div class="section" id="current">
 <h3><code class="xref c c-macro docutils literal notranslate"><span class="pre">current</span></code><a class="headerlink" href="#current" title="Permalink to this headline">¶</a></h3>
 <p>Definita in <code class="docutils literal notranslate"><span class="pre">include/asm/current.h</span></code></p>
 <p>Questa variabile globale (in realtà una macro) contiene un puntatore alla
@@ -604,16 +606,16 @@ struttura del processo corrente, quindi è valido solo dal contesto utente.
 Per esempio, quando un processo esegue una chiamata di sistema, questo
 punterà alla struttura dati del processo chiamate.
 Nel contesto d’interruzione in suo valore <strong>non è NULL</strong>.</p>
-</section>
-<section id="mdelay-udelay">
+</div>
+<div class="section" id="mdelay-udelay">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">mdelay()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">udelay()</span></code><a class="headerlink" href="#mdelay-udelay" title="Permalink to this headline">¶</a></h3>
 <p>Definite in <code class="docutils literal notranslate"><span class="pre">include/asm/delay.h</span></code> / <code class="docutils literal notranslate"><span class="pre">include/linux/delay.h</span></code></p>
 <p>Le funzioni <code class="xref c c-func docutils literal notranslate"><span class="pre">udelay()</span></code> e <code class="xref c c-func docutils literal notranslate"><span class="pre">ndelay()</span></code> possono essere utilizzate
 per brevi pause. Non usate grandi valori perché rischiate d’avere un
 overflow - in questo contesto la funzione <code class="xref c c-func docutils literal notranslate"><span class="pre">mdelay()</span></code> è utile,
 oppure considerate <a class="reference internal" href="../../../driver-api/basics.html#c.msleep" title="msleep"><code class="xref c c-func docutils literal notranslate"><span class="pre">msleep()</span></code></a>.</p>
-</section>
-<section id="cpu-to-be32-be32-to-cpu-cpu-to-le32-le32-to-cpu">
+</div>
+<div class="section" id="cpu-to-be32-be32-to-cpu-cpu-to-le32-le32-to-cpu">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_be32()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">be32_to_cpu()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_le32()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">le32_to_cpu()</span></code><a class="headerlink" href="#cpu-to-be32-be32-to-cpu-cpu-to-le32-le32-to-cpu" title="Permalink to this headline">¶</a></h3>
 <p>Definite in <code class="docutils literal notranslate"><span class="pre">include/asm/byteorder.h</span></code></p>
 <p>La famiglia di funzioni <code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_be32()</span></code> (dove “32” può essere
@@ -626,8 +628,8 @@ puntatori, come <code class="xref c c-func docutils literal notranslate"><span c
 ad un tipo, e ritorna il valore convertito. L’altra variante per
 la famiglia di conversioni “in-situ”, come <code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_be32s()</span></code>,
 che convertono il valore puntato da un puntatore, e ritornano void.</p>
-</section>
-<section id="local-irq-save-local-irq-restore">
+</div>
+<div class="section" id="local-irq-save-local-irq-restore">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_save()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_restore()</span></code><a class="headerlink" href="#local-irq-save-local-irq-restore" title="Permalink to this headline">¶</a></h3>
 <p>Definite in <code class="docutils literal notranslate"><span class="pre">include/linux/irqflags.h</span></code></p>
 <p>Queste funzioni abilitano e disabilitano le interruzioni hardware
@@ -635,8 +637,8 @@ sul processore locale. Entrambe sono rientranti; esse salvano lo stato
 precedente nel proprio argomento <code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">flags</span></code>. Se sapete
 che le interruzioni sono abilite, potete semplicemente utilizzare
 <code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_disable()</span></code> e <code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_enable()</span></code>.</p>
-</section>
-<section id="local-bh-disable-local-bh-enable">
+</div>
+<div class="section" id="local-bh-disable-local-bh-enable">
 <span id="it-local-bh-disable"></span><h3><code class="xref c c-func docutils literal notranslate"><span class="pre">local_bh_disable()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">local_bh_enable()</span></code><a class="headerlink" href="#local-bh-disable-local-bh-enable" title="Permalink to this headline">¶</a></h3>
 <p>Definite in <code class="docutils literal notranslate"><span class="pre">include/linux/bottom_half.h</span></code></p>
 <p>Queste funzioni abilitano e disabilitano le interruzioni software
@@ -645,8 +647,8 @@ software erano già state disabilitate in precedenza, rimarranno
 disabilitate anche dopo aver invocato questa coppia di funzioni.
 Lo scopo è di prevenire l’esecuzione di softirq e tasklet sul processore
 attuale.</p>
-</section>
-<section id="smp-processor-id">
+</div>
+<div class="section" id="smp-processor-id">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">smp_processor_id()</span></code><a class="headerlink" href="#smp-processor-id" title="Permalink to this headline">¶</a></h3>
 <p>Definita in <code class="docutils literal notranslate"><span class="pre">include/linux/smp.h</span></code></p>
 <p><code class="xref c c-func docutils literal notranslate"><span class="pre">get_cpu()</span></code> nega il diritto di prelazione (quindi non potete essere
@@ -657,8 +659,8 @@ ritornate allo stato precedente con <code class="xref c c-func docutils literal 
 <p>Se sapete che non dovete essere interrotti da altri processi (per esempio,
 se siete in un contesto d’interruzione, o il diritto di prelazione
 è disabilitato) potete utilizzare smp_processor_id().</p>
-</section>
-<section id="init-exit-initdata">
+</div>
+<div class="section" id="init-exit-initdata">
 <h3><code class="docutils literal notranslate"><span class="pre">__init</span></code>/<code class="docutils literal notranslate"><span class="pre">__exit</span></code>/<code class="docutils literal notranslate"><span class="pre">__initdata</span></code><a class="headerlink" href="#init-exit-initdata" title="Permalink to this headline">¶</a></h3>
 <p>Definite in  <code class="docutils literal notranslate"><span class="pre">include/linux/init.h</span></code></p>
 <p>Dopo l’avvio, il kernel libera una sezione speciale; le funzioni marcate
@@ -671,8 +673,8 @@ compilato come modulo. Guardate l’header file per informazioni. Da notare che
 non ha senso avere una funzione marcata come <code class="docutils literal notranslate"><span class="pre">__init</span></code> e al tempo stesso
 esportata ai moduli utilizzando <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL()</span></code> o
 <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_GPL()</span></code> - non funzionerà.</p>
-</section>
-<section id="initcall-module-init">
+</div>
+<div class="section" id="initcall-module-init">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">__initcall()</span></code>/<a class="reference internal" href="../../../driver-api/basics.html#c.module_init" title="module_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_init()</span></code></a><a class="headerlink" href="#initcall-module-init" title="Permalink to this headline">¶</a></h3>
 <p>Definite in  <code class="docutils literal notranslate"><span class="pre">include/linux/init.h</span></code> / <code class="docutils literal notranslate"><span class="pre">include/linux/module.h</span></code></p>
 <p>Molte parti del kernel funzionano bene come moduli (componenti del kernel
@@ -689,8 +691,8 @@ chiamata durante l’avvio.</p>
 fallimento del caricamento (sfortunatamente, questo non ha effetto se il
 modulo è compilato come parte integrante del kernel). Questa funzione è chiamata
 in contesto utente con le interruzioni abilitate, quindi potrebbe dormire.</p>
-</section>
-<section id="module-exit">
+</div>
+<div class="section" id="module-exit">
 <h3><a class="reference internal" href="../../../driver-api/basics.html#c.module_exit" title="module_exit"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_exit()</span></code></a><a class="headerlink" href="#module-exit" title="Permalink to this headline">¶</a></h3>
 <p>Definita in  <code class="docutils literal notranslate"><span class="pre">include/linux/module.h</span></code></p>
 <p>Questa macro definisce la funzione che dev’essere chiamata al momento della
@@ -700,8 +702,8 @@ zero. Questa funzione può anche dormire, ma non può fallire: tutto dev’esser
 ripulito prima che la funzione ritorni.</p>
 <p>Da notare che questa macro è opzionale: se non presente, il modulo non sarà
 removibile (a meno che non usiate ‘rmmod -f’ ).</p>
-</section>
-<section id="try-module-get-module-put">
+</div>
+<div class="section" id="try-module-get-module-put">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">try_module_get()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">module_put()</span></code><a class="headerlink" href="#try-module-get-module-put" title="Permalink to this headline">¶</a></h3>
 <p>Definite in <code class="docutils literal notranslate"><span class="pre">include/linux/module.h</span></code></p>
 <p>Queste funzioni maneggiano il contatore d’uso del modulo per proteggerlo dalla
@@ -715,9 +717,9 @@ chiamare <code class="xref c c-func docutils literal notranslate"><span class="p
 (proprietario), come nella struttura
 <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">file_operations</span></code>.
 Impostate questo campo al valore della macro <code class="docutils literal notranslate"><span class="pre">THIS_MODULE</span></code>.</p>
-</section>
-</section>
-<section id="code-d-attesa-include-linux-wait-h">
+</div>
+</div>
+<div class="section" id="code-d-attesa-include-linux-wait-h">
 <h2>Code d’attesa <code class="docutils literal notranslate"><span class="pre">include/linux/wait.h</span></code><a class="headerlink" href="#code-d-attesa-include-linux-wait-h" title="Permalink to this headline">¶</a></h2>
 <p><strong>[DORMONO]</strong></p>
 <p>Una coda d’attesa è usata per aspettare che qualcuno vi attivi quando una
@@ -726,13 +728,13 @@ con cautela. Dichiarate una <code class="xref c c-type docutils literal notransl
 che vogliono attendere il verificarsi di quella condizione dichiareranno
 una <code class="xref c c-type docutils literal notranslate"><span class="pre">wait_queue_entry_t</span></code> facendo riferimento a loro stessi, poi
 metteranno questa in coda.</p>
-<section id="dichiarazione">
+<div class="section" id="dichiarazione">
 <h3>Dichiarazione<a class="headerlink" href="#dichiarazione" title="Permalink to this headline">¶</a></h3>
 <p>Potere dichiarare una <code class="docutils literal notranslate"><span class="pre">wait_queue_head_t</span></code> utilizzando la macro
 <code class="xref c c-func docutils literal notranslate"><span class="pre">DECLARE_WAIT_QUEUE_HEAD()</span></code> oppure utilizzando la procedura
 <code class="xref c c-func docutils literal notranslate"><span class="pre">init_waitqueue_head()</span></code> nel vostro codice d’inizializzazione.</p>
-</section>
-<section id="accodamento">
+</div>
+<div class="section" id="accodamento">
 <h3>Accodamento<a class="headerlink" href="#accodamento" title="Permalink to this headline">¶</a></h3>
 <p>Mettersi in una coda d’attesa è piuttosto complesso, perché dovete
 mettervi in coda prima di verificare la condizione. Esiste una macro
@@ -741,16 +743,16 @@ Il primo argomento è la testa della coda d’attesa, e il secondo è
 un’espressione che dev’essere valutata; la macro ritorna 0 quando questa
 espressione è vera, altrimenti <code class="docutils literal notranslate"><span class="pre">-ERESTARTSYS</span></code> se è stato ricevuto un segnale.
 La versione <a class="reference internal" href="../../../driver-api/basics.html#c.wait_event" title="wait_event"><code class="xref c c-func docutils literal notranslate"><span class="pre">wait_event()</span></code></a> ignora i segnali.</p>
-</section>
-<section id="svegliare-una-procedura-in-coda">
+</div>
+<div class="section" id="svegliare-una-procedura-in-coda">
 <h3>Svegliare una procedura in coda<a class="headerlink" href="#svegliare-una-procedura-in-coda" title="Permalink to this headline">¶</a></h3>
 <p>Chiamate <code class="xref c c-func docutils literal notranslate"><span class="pre">wake_up()</span></code> (<code class="docutils literal notranslate"><span class="pre">include/linux/wait.h</span></code>); questa attiverà tutti
 i processi in coda. Ad eccezione se uno di questi è impostato come
 <code class="docutils literal notranslate"><span class="pre">TASK_EXCLUSIVE</span></code>, in questo caso i rimanenti non verranno svegliati.
 Nello stesso header file esistono altre varianti di questa funzione.</p>
-</section>
-</section>
-<section id="operazioni-atomiche">
+</div>
+</div>
+<div class="section" id="operazioni-atomiche">
 <h2>Operazioni atomiche<a class="headerlink" href="#operazioni-atomiche" title="Permalink to this headline">¶</a></h2>
 <p>Certe operazioni sono garantite come atomiche su tutte le piattaforme.
 Il primo gruppo di operazioni utilizza <code class="xref c c-type docutils literal notranslate"><span class="pre">atomic_t</span></code>
@@ -777,8 +779,8 @@ utili quando si vuole impostare atomicamente dei flag.</p>
 <p>Con queste operazioni è possibile utilizzare indici di bit che eccedono
 il valore <code class="docutils literal notranslate"><span class="pre">BITS_PER_LONG</span></code>. Il comportamento è strano sulle piattaforme
 big-endian quindi è meglio evitarlo.</p>
-</section>
-<section id="simboli">
+</div>
+<div class="section" id="simboli">
 <h2>Simboli<a class="headerlink" href="#simboli" title="Permalink to this headline">¶</a></h2>
 <p>All’interno del kernel, si seguono le normali regole del linker (ovvero,
 a meno che un simbolo non venga dichiarato con visibilita limitata ad un
@@ -786,13 +788,13 @@ file con la parola chiave <code class="docutils literal notranslate"><span class
 parte del kernel). Nonostante ciò, per i moduli, esiste una tabella dei
 simboli esportati che limita i punti di accesso al kernel. Anche i moduli
 possono esportare simboli.</p>
-<section id="export-symbol">
+<div class="section" id="export-symbol">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL()</span></code><a class="headerlink" href="#export-symbol" title="Permalink to this headline">¶</a></h3>
 <p>Definita in <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>Questo è il classico metodo per esportare un simbolo: i moduli caricati
 dinamicamente potranno utilizzare normalmente il simbolo.</p>
-</section>
-<section id="export-symbol-gpl">
+</div>
+<div class="section" id="export-symbol-gpl">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_GPL()</span></code><a class="headerlink" href="#export-symbol-gpl" title="Permalink to this headline">¶</a></h3>
 <p>Definita in <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>Essa è simile a <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL()</span></code> ad eccezione del fatto che i
@@ -803,32 +805,32 @@ funzione esportata è considerata interna, e non una vera e propria interfaccia.
 Alcuni manutentori e sviluppatori potrebbero comunque richiedere
 <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_GPL()</span></code> quando si aggiungono nuove funzionalità o
 interfacce.</p>
-</section>
-<section id="export-symbol-ns">
+</div>
+<div class="section" id="export-symbol-ns">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_NS()</span></code><a class="headerlink" href="#export-symbol-ns" title="Permalink to this headline">¶</a></h3>
 <p>Definita in <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>Questa è una variate di <cite>EXPORT_SYMBOL()</cite> che permette di specificare uno
 spazio dei nomi. Lo spazio dei nomi è documentato in
 <a class="reference internal" href="../core-api/symbol-namespaces.html"><span class="doc">Spazio dei nomi dei simboli</span></a>.</p>
-</section>
-<section id="export-symbol-ns-gpl">
+</div>
+<div class="section" id="export-symbol-ns-gpl">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_NS_GPL()</span></code><a class="headerlink" href="#export-symbol-ns-gpl" title="Permalink to this headline">¶</a></h3>
 <p>Definita in <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>Questa è una variate di <cite>EXPORT_SYMBOL_GPL()</cite> che permette di specificare uno
 spazio dei nomi. Lo spazio dei nomi è documentato in
 <a class="reference internal" href="../core-api/symbol-namespaces.html"><span class="doc">Spazio dei nomi dei simboli</span></a>.</p>
-</section>
-</section>
-<section id="procedure-e-convenzioni">
+</div>
+</div>
+<div class="section" id="procedure-e-convenzioni">
 <h2>Procedure e convenzioni<a class="headerlink" href="#procedure-e-convenzioni" title="Permalink to this headline">¶</a></h2>
-<section id="liste-doppiamente-concatenate-include-linux-list-h">
+<div class="section" id="liste-doppiamente-concatenate-include-linux-list-h">
 <h3>Liste doppiamente concatenate <code class="docutils literal notranslate"><span class="pre">include/linux/list.h</span></code><a class="headerlink" href="#liste-doppiamente-concatenate-include-linux-list-h" title="Permalink to this headline">¶</a></h3>
 <p>Un tempo negli header del kernel c’erano tre gruppi di funzioni per
 le liste concatenate, ma questa è stata la vincente. Se non avete particolari
 necessità per una semplice lista concatenata, allora questa è una buona scelta.</p>
 <p>In particolare, <a class="reference internal" href="../../../core-api/kernel-api.html#c.list_for_each_entry" title="list_for_each_entry"><code class="xref c c-func docutils literal notranslate"><span class="pre">list_for_each_entry()</span></code></a> è utile.</p>
-</section>
-<section id="convenzione-dei-valori-di-ritorno">
+</div>
+<div class="section" id="convenzione-dei-valori-di-ritorno">
 <h3>Convenzione dei valori di ritorno<a class="headerlink" href="#convenzione-dei-valori-di-ritorno" title="Permalink to this headline">¶</a></h3>
 <p>Per codice chiamato in contesto utente, è molto comune sfidare le convenzioni
 C e ritornare 0 in caso di successo, ed un codice di errore negativo
@@ -838,8 +840,8 @@ a prima vista, ma è abbastanza diffuso nel kernel.</p>
 un numero d’errore negativo in un puntatore, e <code class="xref c c-func docutils literal notranslate"><span class="pre">IS_ERR()</span></code> e
 <code class="xref c c-func docutils literal notranslate"><span class="pre">PTR_ERR()</span></code> per recuperarlo di nuovo: così si evita d’avere un
 puntatore dedicato per il numero d’errore. Da brividi, ma in senso positivo.</p>
-</section>
-<section id="rompere-la-compilazione">
+</div>
+<div class="section" id="rompere-la-compilazione">
 <h3>Rompere la compilazione<a class="headerlink" href="#rompere-la-compilazione" title="Permalink to this headline">¶</a></h3>
 <p>Linus e gli altri sviluppatori a volte cambiano i nomi delle funzioni e
 delle strutture nei kernel in sviluppo; questo non è solo per tenere
@@ -850,8 +852,8 @@ s’accompagna un’adeguata e completa nota sulla lista di discussone
 linux-kernel; cercate negli archivi.
 Solitamente eseguire una semplice sostituzione su tutto un file rendere
 le cose <strong>peggiori</strong>.</p>
-</section>
-<section id="inizializzazione-dei-campi-d-una-struttura">
+</div>
+<div class="section" id="inizializzazione-dei-campi-d-una-struttura">
 <h3>Inizializzazione dei campi d’una struttura<a class="headerlink" href="#inizializzazione-dei-campi-d-una-struttura" title="Permalink to this headline">¶</a></h3>
 <p>Il metodo preferito per l’inizializzazione delle strutture è quello
 di utilizzare gli inizializzatori designati, come definiti nello
@@ -866,8 +868,8 @@ standard ISO C99, eg:</p>
 </div>
 <p>Questo rende più facile la ricerca con grep, e rende più chiaro quale campo
 viene impostato. Dovreste fare così perché si mostra meglio.</p>
-</section>
-<section id="estensioni-gnu">
+</div>
+<div class="section" id="estensioni-gnu">
 <h3>Estensioni GNU<a class="headerlink" href="#estensioni-gnu" title="Permalink to this headline">¶</a></h3>
 <p>Le estensioni GNU sono esplicitamente permesse nel kernel Linux. Da notare
 che alcune delle più complesse non sono ben supportate, per via dello scarso
@@ -893,22 +895,22 @@ pagina info).</p>
 da gcc è orribile ed anche peggio: le divisioni e le moltiplicazioni non
 funzionano sulle piattaforme i386 perché le rispettive funzioni di runtime
 di GCC non sono incluse nell’ambiente del kernel.</p>
-</section>
-<section id="c">
+</div>
+<div class="section" id="c">
 <h3>C++<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h3>
 <p>Solitamente utilizzare il C++ nel kernel è una cattiva idea perché
 il kernel non fornisce il necessario ambiente di runtime e gli header file
 non sono stati verificati. Rimane comunque possibile, ma non consigliato.
 Se davvero volete usarlo, almeno evitate le eccezioni.</p>
-</section>
-<section id="numif">
+</div>
+<div class="section" id="numif">
 <h3>NUMif<a class="headerlink" href="#numif" title="Permalink to this headline">¶</a></h3>
 <p>Viene generalmente considerato più pulito l’uso delle macro negli header file
 (o all’inizio dei file .c) per astrarre funzioni piuttosto che utlizzare
 l’istruzione di pre-processore `#if’ all’interno del codice sorgente.</p>
-</section>
-</section>
-<section id="mettere-le-vostre-cose-nel-kernel">
+</div>
+</div>
+<div class="section" id="mettere-le-vostre-cose-nel-kernel">
 <h2>Mettere le vostre cose nel kernel<a class="headerlink" href="#mettere-le-vostre-cose-nel-kernel" title="Permalink to this headline">¶</a></h2>
 <p>Al fine d’avere le vostre cose in ordine per l’inclusione ufficiale, o
 anche per avere patch pulite, c’è del lavoro amministrativo da fare:</p>
@@ -948,8 +950,8 @@ di un semplice impegno su una parte del codice.</p></li>
 <code class="docutils literal notranslate"><span class="pre">Documentation/process/submitting-patches.rst</span></code> e possibilmente anche
 <code class="docutils literal notranslate"><span class="pre">Documentation/process/submitting-drivers.rst</span></code>.</p></li>
 </ul>
-</section>
-<section id="trucchetti-del-kernel">
+</div>
+<div class="section" id="trucchetti-del-kernel">
 <h2>Trucchetti del kernel<a class="headerlink" href="#trucchetti-del-kernel" title="Permalink to this headline">¶</a></h2>
 <p>Dopo una rapida occhiata al codice, questi sono i preferiti. Sentitevi liberi
 di aggiungerne altri.</p>
@@ -1005,8 +1007,8 @@ C_LABEL(cputypvar_sun4m):
  */
 </pre></div>
 </div>
-</section>
-<section id="ringraziamenti">
+</div>
+<div class="section" id="ringraziamenti">
 <h2>Ringraziamenti<a class="headerlink" href="#ringraziamenti" title="Permalink to this headline">¶</a></h2>
 <p>Ringrazio Andi Kleen per le sue idee, le risposte alle mie domande,
 le correzioni dei miei errori, l’aggiunta di contenuti, eccetera.
@@ -1016,8 +1018,8 @@ per avermi fornito un ottimo riassunto di <a class="reference internal" href="..
 e Jes Sorensen e Andrea Arcangeli per le precisazioni. Michael Elizabeth
 Chastain per aver verificato ed aggiunto la sezione configurazione.
 Telsa Gwynne per avermi insegnato DocBook.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

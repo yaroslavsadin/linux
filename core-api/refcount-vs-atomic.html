@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>refcount_t API compared to atomic_t &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -259,7 +261,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="refcount-t-api-compared-to-atomic-t">
+  <div class="section" id="refcount-t-api-compared-to-atomic-t">
 <h1>refcount_t API compared to atomic_t<a class="headerlink" href="#refcount-t-api-compared-to-atomic-t" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -278,7 +280,7 @@
 </li>
 </ul>
 </div>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2><a class="toc-backref" href="#id1">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The goal of refcount_t API is to provide a minimal API for implementing
 an object’s reference counters. While a generic architecture-independent
@@ -292,8 +294,8 @@ these memory ordering guarantees.</p>
 tools/memory-model/Documentation/explanation.txt.</p>
 <p>memory-barriers.txt and atomic_t.txt provide more background to the
 memory ordering in general and for atomic operations specifically.</p>
-</section>
-<section id="relevant-types-of-memory-ordering">
+</div>
+<div class="section" id="relevant-types-of-memory-ordering">
 <h2><a class="toc-backref" href="#id2">Relevant types of memory ordering</a><a class="headerlink" href="#relevant-types-of-memory-ordering" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -336,10 +338,10 @@ then further stores are ordered against this operation.
 Control dependency on stores are not implemented using any explicit
 barriers, but rely on CPU not to speculate on stores. This is only
 a single CPU relation and provides no guarantees for other CPUs.</p>
-</section>
-<section id="comparison-of-functions">
+</div>
+<div class="section" id="comparison-of-functions">
 <h2><a class="toc-backref" href="#id3">Comparison of functions</a><a class="headerlink" href="#comparison-of-functions" title="Permalink to this headline">¶</a></h2>
-<section id="case-1-non-read-modify-write-rmw-ops">
+<div class="section" id="case-1-non-read-modify-write-rmw-ops">
 <h3><a class="toc-backref" href="#id4">case 1) - non-“Read/Modify/Write” (RMW) ops</a><a class="headerlink" href="#case-1-non-read-modify-write-rmw-ops" title="Permalink to this headline">¶</a></h3>
 <p>Function changes:</p>
 <blockquote>
@@ -354,8 +356,8 @@ a single CPU relation and provides no guarantees for other CPUs.</p>
 <li><p>none (both fully unordered)</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="case-2-increment-based-ops-that-return-no-value">
+</div>
+<div class="section" id="case-2-increment-based-ops-that-return-no-value">
 <h3><a class="toc-backref" href="#id5">case 2) - increment-based ops that return no value</a><a class="headerlink" href="#case-2-increment-based-ops-that-return-no-value" title="Permalink to this headline">¶</a></h3>
 <p>Function changes:</p>
 <blockquote>
@@ -370,8 +372,8 @@ a single CPU relation and provides no guarantees for other CPUs.</p>
 <li><p>none (both fully unordered)</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="case-3-decrement-based-rmw-ops-that-return-no-value">
+</div>
+<div class="section" id="case-3-decrement-based-rmw-ops-that-return-no-value">
 <h3><a class="toc-backref" href="#id6">case 3) - decrement-based RMW ops that return no value</a><a class="headerlink" href="#case-3-decrement-based-rmw-ops-that-return-no-value" title="Permalink to this headline">¶</a></h3>
 <p>Function changes:</p>
 <blockquote>
@@ -385,8 +387,8 @@ a single CPU relation and provides no guarantees for other CPUs.</p>
 <li><p>fully unordered –&gt; RELEASE ordering</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="case-4-increment-based-rmw-ops-that-return-a-value">
+</div>
+<div class="section" id="case-4-increment-based-rmw-ops-that-return-a-value">
 <h3><a class="toc-backref" href="#id7">case 4) - increment-based RMW ops that return a value</a><a class="headerlink" href="#case-4-increment-based-rmw-ops-that-return-a-value" title="Permalink to this headline">¶</a></h3>
 <p>Function changes:</p>
 <blockquote>
@@ -406,8 +408,8 @@ a single CPU relation and provides no guarantees for other CPUs.</p>
 <p>We really assume here that necessary ordering is provided as a
 result of obtaining pointer to the object!</p>
 </div>
-</section>
-<section id="case-5-generic-dec-sub-decrement-based-rmw-ops-that-return-a-value">
+</div>
+<div class="section" id="case-5-generic-dec-sub-decrement-based-rmw-ops-that-return-a-value">
 <h3><a class="toc-backref" href="#id8">case 5) - generic dec/sub decrement-based RMW ops that return a value</a><a class="headerlink" href="#case-5-generic-dec-sub-decrement-based-rmw-ops-that-return-a-value" title="Permalink to this headline">¶</a></h3>
 <p>Function changes:</p>
 <blockquote>
@@ -422,8 +424,8 @@ result of obtaining pointer to the object!</p>
 <li><p>fully ordered –&gt; RELEASE ordering + ACQUIRE ordering on success</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="case-6-other-decrement-based-rmw-ops-that-return-a-value">
+</div>
+<div class="section" id="case-6-other-decrement-based-rmw-ops-that-return-a-value">
 <h3><a class="toc-backref" href="#id9">case 6) other decrement-based RMW ops that return a value</a><a class="headerlink" href="#case-6-other-decrement-based-rmw-ops-that-return-a-value" title="Permalink to this headline">¶</a></h3>
 <p>Function changes:</p>
 <blockquote>
@@ -442,8 +444,8 @@ result of obtaining pointer to the object!</p>
 <p class="admonition-title">Note</p>
 <p>atomic_add_unless() only provides full order on success.</p>
 </div>
-</section>
-<section id="case-7-lock-based-rmw">
+</div>
+<div class="section" id="case-7-lock-based-rmw">
 <h3><a class="toc-backref" href="#id10">case 7) - lock-based RMW</a><a class="headerlink" href="#case-7-lock-based-rmw" title="Permalink to this headline">¶</a></h3>
 <p>Function changes:</p>
 <blockquote>
@@ -459,9 +461,9 @@ result of obtaining pointer to the object!</p>
 spin_lock() on success</p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

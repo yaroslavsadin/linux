@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The Linux Journalling API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -255,11 +257,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-linux-journalling-api">
+  <div class="section" id="the-linux-journalling-api">
 <h1>The Linux Journalling API<a class="headerlink" href="#the-linux-journalling-api" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<section id="details">
+<div class="section" id="details">
 <h3>Details<a class="headerlink" href="#details" title="Permalink to this headline">¶</a></h3>
 <p>The journalling layer is easy to use. You need to first of all create a
 journal_t data structure. There are two calls to do this dependent on
@@ -368,8 +370,8 @@ jbd2_journal_unlock_updates() // carry on with filesystem use.
 <p>The opportunities for abuse and DOS attacks with this should be obvious,
 if you allow unprivileged userspace to trigger codepaths containing
 these calls.</p>
-</section>
-<section id="fast-commits">
+</div>
+<div class="section" id="fast-commits">
 <h3>Fast commits<a class="headerlink" href="#fast-commits" title="Permalink to this headline">¶</a></h3>
 <p>JBD2 to also allows you to perform file-system specific delta commits known as
 fast commits. In order to use fast commits, you will need to set following
@@ -393,25 +395,25 @@ and wait on IO completion of fast commit buffers.</p>
 <p>Currently, only Ext4 implements fast commits. For details of its implementation
 of fast commits, please refer to the top level comments in
 fs/ext4/fast_commit.c.</p>
-</section>
-<section id="summary">
+</div>
+<div class="section" id="summary">
 <h3>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
 <p>Using the journal is a matter of wrapping the different context changes,
 being each mount, each modification (transaction) and each changed
 buffer to tell the journalling layer about them.</p>
-</section>
-</section>
-<section id="data-types">
+</div>
+</div>
+<div class="section" id="data-types">
 <h2>Data Types<a class="headerlink" href="#data-types" title="Permalink to this headline">¶</a></h2>
 <p>The journalling layer uses typedefs to ‘hide’ the concrete definitions
 of the structures used. As a client of the JBD2 layer you can just rely
 on the using the pointer as a magic cookie of some sort. Obviously the
 hiding is not enforced as this is ‘C’.</p>
-<section id="structures">
+<div class="section" id="structures">
 <h3>Structures<a class="headerlink" href="#structures" title="Permalink to this headline">¶</a></h3>
 <dl class="c type">
-<dt id="c.handle_t">
-<em class="property"><span class="pre">type</span> </em><code class="sig-name descname"><span class="pre">handle_t</span></code><a class="headerlink" href="#c.handle_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.handle_t">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">handle_t</span></span></span><a class="headerlink" href="#c.handle_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The handle_t type represents a single atomic update being performed by some process.</p>
 </dd></dl>
 
@@ -428,8 +430,8 @@ the transaction, so that at all times we know how many buffers the
 outstanding updates on a transaction might possibly touch.</p>
 <p>This is an opaque datatype.</p>
 <dl class="c type">
-<dt id="c.journal_t">
-<em class="property"><span class="pre">type</span> </em><code class="sig-name descname"><span class="pre">journal_t</span></code><a class="headerlink" href="#c.journal_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.journal_t">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">journal_t</span></span></span><a class="headerlink" href="#c.journal_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The journal_t maintains all of the journaling state information for a single filesystem.</p>
 </dd></dl>
 
@@ -440,8 +442,8 @@ activity on the filesystem, and to manage the state of the log
 writing process.</p>
 <p>This is an opaque datatype.</p>
 <dl class="c struct">
-<dt id="c.jbd2_inode">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">jbd2_inode</span></code><a class="headerlink" href="#c.jbd2_inode" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_inode">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_inode</span></span></span><a class="headerlink" href="#c.jbd2_inode" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The jbd_inode type is the structure linking inodes in ordered mode present in a transaction so that we can sync them during commit.</p>
 </dd></dl>
 
@@ -479,8 +481,8 @@ ends. [j_list_lock]</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.jbd2_journal_handle">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">jbd2_journal_handle</span></code><a class="headerlink" href="#c.jbd2_journal_handle" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_handle">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_handle</span></span></span><a class="headerlink" href="#c.jbd2_journal_handle" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The jbd2_journal_handle type is the concrete type associated with handle_t.</p>
 </dd></dl>
 
@@ -549,8 +551,8 @@ journal. These are dirty buffers and revoke descriptor blocks.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.journal_s">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">journal_s</span></code><a class="headerlink" href="#c.journal_s" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.journal_s">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">journal_s</span></span></span><a class="headerlink" href="#c.journal_s" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The journal_s type is the concrete type associated with journal_t.</p>
 </dd></dl>
 
@@ -844,17 +846,17 @@ indicates the end of replay (no more blocks remaining). A negative
 return value indicates error.</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="functions">
+</div>
+</div>
+<div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <p>The functions here are split into two groups those that affect a journal
 as a whole, and those which are used to manage transactions</p>
-<section id="journal-level">
+<div class="section" id="journal-level">
 <h3>Journal Level<a class="headerlink" href="#journal-level" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
-<dt id="c.jbd2_journal_force_commit_nested">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_force_commit_nested</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_force_commit_nested" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_force_commit_nested">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_force_commit_nested</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_force_commit_nested" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Force and wait upon a commit if the calling process is not within transaction.</p>
 </dd></dl>
 
@@ -868,8 +870,8 @@ Returns true if progress was made.</p>
 <p>This is used for forcing out undo-protected data which contains
 bitmaps, when the fs is running out of space.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_force_commit">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_force_commit</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_force_commit" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_force_commit">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_force_commit</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_force_commit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>force any uncommitted transactions</p>
 </dd></dl>
 
@@ -882,8 +884,8 @@ bitmaps, when the fs is running out of space.</p>
 <p>Caller want unconditional commit. We can only force the running transaction
 if we don’t have an active handle, otherwise, we will deadlock.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_init_dev">
-<a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">jbd2_journal_init_dev</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">block_device</span> <span class="pre">*</span><em><span class="pre">bdev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">block_device</span> <span class="pre">*</span><em><span class="pre">fs_dev</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">long</span> <em><span class="pre">start</span></em>, <span class="pre">int</span> <em><span class="pre">len</span></em>, <span class="pre">int</span> <em><span class="pre">blocksize</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_init_dev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_init_dev">
+<a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_init_dev</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">block_device</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">block_device</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fs_dev</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">start</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">blocksize</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_init_dev" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>creates and initialises a journal structure</p>
 </dd></dl>
 
@@ -907,8 +909,8 @@ if we don’t have an active handle, otherwise, we will deadlock.</p>
 range of blocks on an arbitrary block device.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.jbd2_journal_init_inode">
-<a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">jbd2_journal_init_inode</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.jbd2_journal_init_inode" title="inode"><span class="pre">inode</span></a> <span class="pre">*</span><em><span class="pre">inode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_init_inode" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_init_inode">
+<a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_init_inode</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.jbd2_journal_init_inode" title="inode"><span class="n"><span class="pre">inode</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">inode</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_init_inode" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>creates a journal which maps to a inode.</p>
 </dd></dl>
 
@@ -922,8 +924,8 @@ range of blocks on an arbitrary block device.</p>
 the journal.  The inode must exist already, must support <a class="reference internal" href="api-summary.html#c.bmap" title="bmap"><code class="xref c c-func docutils literal notranslate"><span class="pre">bmap()</span></code></a> and
 must have all data blocks preallocated.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_update_sb_errno">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">jbd2_journal_update_sb_errno</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_update_sb_errno" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_update_sb_errno">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_update_sb_errno</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_update_sb_errno" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Update error in the journal.</p>
 </dd></dl>
 
@@ -936,8 +938,8 @@ must have all data blocks preallocated.</p>
 <p>Update a journal’s errno.  Write updated superblock to disk waiting for IO
 to complete.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_load">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_load</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_load" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_load">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_load</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_load" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Read journal from disk.</p>
 </dd></dl>
 
@@ -951,8 +953,8 @@ to complete.</p>
 a journal, read the journal from disk to initialise the in-memory
 structures.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_destroy">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_destroy</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_destroy" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_destroy">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_destroy</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_destroy" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Release a journal_t structure.</p>
 </dd></dl>
 
@@ -966,8 +968,8 @@ structures.</p>
 journaled object.
 Return &lt;0 if we couldn’t clean up the journal.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_check_used_features">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_check_used_features</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">compat</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">ro</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">incompat</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_check_used_features" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_check_used_features">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_check_used_features</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">compat</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">ro</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">incompat</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_check_used_features" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check if features specified are used.</p>
 </dd></dl>
 
@@ -986,8 +988,8 @@ Return &lt;0 if we couldn’t clean up the journal.</p>
 <p>Check whether the journal uses all of a given set of
 features.  Return true (non-zero) if it does.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_check_available_features">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_check_available_features</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">compat</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">ro</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">incompat</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_check_available_features" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_check_available_features">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_check_available_features</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">compat</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">ro</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">incompat</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_check_available_features" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check feature set in journalling layer</p>
 </dd></dl>
 
@@ -1006,8 +1008,8 @@ features.  Return true (non-zero) if it does.</p>
 <p>Check whether the journaling code supports the use of
 all of a given set of features on this journal.  Return true</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_set_features">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_set_features</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">compat</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">ro</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">incompat</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_set_features" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_set_features">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_set_features</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">compat</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">ro</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">incompat</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_set_features" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mark a given journal feature in the superblock</p>
 </dd></dl>
 
@@ -1026,8 +1028,8 @@ all of a given set of features on this journal.  Return true</p>
 <p>Mark a given journal feature as present on the
 superblock.  Returns true if the requested features could be set.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_flush">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_flush</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_flush" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_flush">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_flush</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_flush" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Flush journal</p>
 </dd></dl>
 
@@ -1049,8 +1051,8 @@ JBD2_JOURNAL_FLUSH_ZEROOUT: issues zeroouts for the journal blocks</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.jbd2_journal_wipe">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_wipe</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em>, <span class="pre">int</span> <em><span class="pre">write</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_wipe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_wipe">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_wipe</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">write</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_wipe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Wipe journal contents</p>
 </dd></dl>
 
@@ -1068,8 +1070,8 @@ Must be called between journal_init_*() and <a class="reference internal" href="
 <p>If ‘write’ is non-zero, then we wipe out the journal on disk; otherwise
 we merely suppress recovery.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_abort">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">jbd2_journal_abort</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em>, <span class="pre">int</span> <em><span class="pre">errno</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_abort" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_abort">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_abort</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">errno</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_abort" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Shutdown the journal immediately.</p>
 </dd></dl>
 
@@ -1109,8 +1111,8 @@ transaction without having to complete the transaction to record the
 failure to disk.  ext3_error, for example, now uses this
 functionality.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_errno">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_errno</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_errno" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_errno">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_errno</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_errno" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>returns the journal’s error state.</p>
 </dd></dl>
 
@@ -1126,8 +1128,8 @@ without calling abort this will be 0.</p>
 <p>If the journal has been aborted on this mount time -EROFS will
 be returned.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_clear_err">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_clear_err</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_clear_err" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_clear_err">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_clear_err</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_clear_err" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>clears the journal’s error state</p>
 </dd></dl>
 
@@ -1140,8 +1142,8 @@ be returned.</p>
 <p>An error must be cleared or acked to take a FS out of readonly
 mode.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_ack_err">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">jbd2_journal_ack_err</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_ack_err" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_ack_err">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_ack_err</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_ack_err" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Ack journal err.</p>
 </dd></dl>
 
@@ -1154,8 +1156,8 @@ mode.</p>
 <p>An error must be cleared or acked to take a FS out of readonly
 mode.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_recover">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_recover</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_recover" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_recover">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_recover</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_recover" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>recovers a on-disk journal</p>
 </dd></dl>
 
@@ -1172,8 +1174,8 @@ end of the log.  In the second, we assemble the list of revoke
 blocks.  In the third and final pass, we replay any un-revoked blocks
 in the log.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_skip_recovery">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_skip_recovery</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_skip_recovery" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_skip_recovery">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_skip_recovery</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_skip_recovery" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Start journal and wipe exiting records</p>
 </dd></dl>
 
@@ -1190,12 +1192,12 @@ This function doesn’t appear to be exported..</p>
 <p>We perform one pass over the journal to allow us to tell the user how
 much recovery information is being erased, and to let us initialise
 the journal transaction sequence numbers to the next unused ID.</p>
-</section>
-<section id="transasction-level">
+</div>
+<div class="section" id="transasction-level">
 <h3>Transasction Level<a class="headerlink" href="#transasction-level" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
-<dt id="c.jbd2_journal_start">
-<a class="reference internal" href="#c.handle_t" title="handle_t"><span class="pre">handle_t</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">jbd2_journal_start</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em>, <span class="pre">int</span> <em><span class="pre">nblocks</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_start" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_start">
+<a class="reference internal" href="#c.handle_t" title="handle_t"><span class="n"><span class="pre">handle_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_start</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nblocks</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_start" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Obtain a new handle.</p>
 </dd></dl>
 
@@ -1220,8 +1222,8 @@ it can be used.</p>
 <p>Return a pointer to a newly allocated handle, or an ERR_PTR() value
 on failure.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_start_reserved">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_start_reserved</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="pre">handle_t</span></a> <span class="pre">*</span><em><span class="pre">handle</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">type</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">line_no</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_start_reserved" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_start_reserved">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_start_reserved</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="n"><span class="pre">handle_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">handle</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">line_no</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_start_reserved" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>start reserved handle</p>
 </dd></dl>
 
@@ -1242,8 +1244,8 @@ block on journal commit, checkpointing, or similar stuff. It can block on
 memory allocation or frozen journal though.</p>
 <p>Return 0 on success, non-zero on error - handle is freed in that case.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_extend">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_extend</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="pre">handle_t</span></a> <span class="pre">*</span><em><span class="pre">handle</span></em>, <span class="pre">int</span> <em><span class="pre">nblocks</span></em>, <span class="pre">int</span> <em><span class="pre">revoke_records</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_extend" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_extend">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_extend</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="n"><span class="pre">handle_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">handle</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nblocks</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">revoke_records</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_extend" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>extend buffer credits.</p>
 </dd></dl>
 
@@ -1269,8 +1271,8 @@ extend here.</p>
 <p>return code &lt; 0 implies an error
 return code &gt; 0 implies normal transaction-full status.</p>
 <dl class="c function">
-<dt id="c.jbd2__journal_restart">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2__journal_restart</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="pre">handle_t</span></a> <span class="pre">*</span><em><span class="pre">handle</span></em>, <span class="pre">int</span> <em><span class="pre">nblocks</span></em>, <span class="pre">int</span> <em><span class="pre">revoke_records</span></em>, <a class="reference internal" href="../core-api/mm-api.html#c.gfp_t" title="gfp_t"><span class="pre">gfp_t</span></a> <em><span class="pre">gfp_mask</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2__journal_restart" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2__journal_restart">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2__journal_restart</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="n"><span class="pre">handle_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">handle</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nblocks</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">revoke_records</span></span>, <a class="reference internal" href="../core-api/mm-api.html#c.gfp_t" title="gfp_t"><span class="n"><span class="pre">gfp_t</span></span></a><span class="w"> </span><span class="n"><span class="pre">gfp_mask</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2__journal_restart" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>restart a handle .</p>
 </dd></dl>
 
@@ -1295,8 +1297,8 @@ transaction capable of guaranteeing the requested number of
 credits. We preserve reserved handle if there’s any attached to the
 passed in handle.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_lock_updates">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">jbd2_journal_lock_updates</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_lock_updates" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_lock_updates">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_lock_updates</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_lock_updates" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>establish a transaction barrier.</p>
 </dd></dl>
 
@@ -1311,8 +1313,8 @@ until all existing updates have completed, returning only once the
 journal is in a quiescent state with no updates running.</p>
 <p>The journal lock should not be held on entry.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_unlock_updates">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">jbd2_journal_unlock_updates</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_unlock_updates" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_unlock_updates">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_unlock_updates</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_unlock_updates" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>release barrier</p>
 </dd></dl>
 
@@ -1325,8 +1327,8 @@ journal is in a quiescent state with no updates running.</p>
 <p>Release a transaction barrier obtained with <a class="reference internal" href="#c.jbd2_journal_lock_updates" title="jbd2_journal_lock_updates"><code class="xref c c-func docutils literal notranslate"><span class="pre">jbd2_journal_lock_updates()</span></code></a>.</p>
 <p>Should be called without the journal lock held.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_get_write_access">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_get_write_access</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="pre">handle_t</span></a> <span class="pre">*</span><em><span class="pre">handle</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">buffer_head</span> <span class="pre">*</span><em><span class="pre">bh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_get_write_access" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_get_write_access">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_get_write_access</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="n"><span class="pre">handle_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">handle</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">buffer_head</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bh</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_get_write_access" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>notify intent to modify a buffer for metadata (not data) update.</p>
 </dd></dl>
 
@@ -1343,8 +1345,8 @@ journal is in a quiescent state with no updates running.</p>
 <p>In full data journalling mode the buffer may be of type BJ_AsyncData,
 because we’re <code class="docutils literal notranslate"><span class="pre">write()ing</span></code> a buffer which is also part of a shared mapping.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_get_create_access">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_get_create_access</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="pre">handle_t</span></a> <span class="pre">*</span><em><span class="pre">handle</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">buffer_head</span> <span class="pre">*</span><em><span class="pre">bh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_get_create_access" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_get_create_access">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_get_create_access</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="n"><span class="pre">handle_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">handle</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">buffer_head</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bh</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_get_create_access" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>notify intent to use newly created bh</p>
 </dd></dl>
 
@@ -1358,8 +1360,8 @@ because we’re <code class="docutils literal notranslate"><span class="pre">wri
 <p><strong>Description</strong></p>
 <p>Call this if you create a new bh.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_get_undo_access">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_get_undo_access</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="pre">handle_t</span></a> <span class="pre">*</span><em><span class="pre">handle</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">buffer_head</span> <span class="pre">*</span><em><span class="pre">bh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_get_undo_access" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_get_undo_access">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_get_undo_access</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="n"><span class="pre">handle_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">handle</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">buffer_head</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bh</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_get_undo_access" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Notify intent to modify metadata with non-rewindable consequences</p>
 </dd></dl>
 
@@ -1388,8 +1390,8 @@ will be committed to a new transaction in due course, at which point
 we can discard the old committed data pointer.</p>
 <p>Returns error number or 0 on success.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_set_triggers">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">jbd2_journal_set_triggers</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">buffer_head</span> <span class="pre">*</span><em><span class="pre">bh</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">jbd2_buffer_trigger_type</span> <span class="pre">*</span><em><span class="pre">type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_set_triggers" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_set_triggers">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_set_triggers</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">buffer_head</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bh</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">jbd2_buffer_trigger_type</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_set_triggers" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Add triggers for commit writeout</p>
 </dd></dl>
 
@@ -1406,8 +1408,8 @@ triggers for a committing buffer will be saved off, and triggers for
 a running transaction will match the buffer in that transaction.</p>
 <p>Call with NULL to clear the triggers.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_dirty_metadata">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_dirty_metadata</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="pre">handle_t</span></a> <span class="pre">*</span><em><span class="pre">handle</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">buffer_head</span> <span class="pre">*</span><em><span class="pre">bh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_dirty_metadata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_dirty_metadata">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_dirty_metadata</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="n"><span class="pre">handle_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">handle</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">buffer_head</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bh</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_dirty_metadata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>mark a buffer as containing dirty metadata</p>
 </dd></dl>
 
@@ -1433,8 +1435,8 @@ data present for that commit).  In that case, we don’t relink the
 buffer: that only gets done when the old transaction finally
 completes its commit.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_forget">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_forget</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="pre">handle_t</span></a> <span class="pre">*</span><em><span class="pre">handle</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">buffer_head</span> <span class="pre">*</span><em><span class="pre">bh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_forget" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_forget">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_forget</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="n"><span class="pre">handle_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">handle</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">buffer_head</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bh</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_forget" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>bforget() for potentially-journaled buffers.</p>
 </dd></dl>
 
@@ -1455,8 +1457,8 @@ buffer which came off the hashtable.  Check for this.</p>
 <p>Allow this call even if the handle has aborted — it may be part of
 the caller’s cleanup after an abort.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_stop">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_stop</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="pre">handle_t</span></a> <span class="pre">*</span><em><span class="pre">handle</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_stop" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_stop">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_stop</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.handle_t" title="handle_t"><span class="n"><span class="pre">handle_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">handle</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_stop" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>complete a transaction</p>
 </dd></dl>
 
@@ -1476,8 +1478,8 @@ do so in unusual circumstances.  In particular, expect it to
 return -EIO if a jbd2_journal_abort has been executed since the
 transaction began.</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_try_to_free_buffers">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_try_to_free_buffers</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.jbd2_journal_try_to_free_buffers" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_try_to_free_buffers" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_try_to_free_buffers">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_try_to_free_buffers</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.jbd2_journal_try_to_free_buffers" title="page"><span class="n"><span class="pre">page</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">page</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_try_to_free_buffers" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>try to free page buffers.</p>
 </dd></dl>
 
@@ -1512,8 +1514,8 @@ cannot happen because we never reallocate freed data as metadata
 while the data is part of a transaction.  Yes?</p>
 <p>Return 0 on failure, 1 on success</p>
 <dl class="c function">
-<dt id="c.jbd2_journal_invalidatepage">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">jbd2_journal_invalidatepage</span></code><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="pre">journal_t</span></a> <span class="pre">*</span><em><span class="pre">journal</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.jbd2_journal_invalidatepage" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">offset</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">length</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_invalidatepage" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.jbd2_journal_invalidatepage">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">jbd2_journal_invalidatepage</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#c.journal_t" title="journal_t"><span class="n"><span class="pre">journal_t</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">journal</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.jbd2_journal_invalidatepage" title="page"><span class="n"><span class="pre">page</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">page</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">length</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.jbd2_journal_invalidatepage" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Parameters</strong></p>
@@ -1532,16 +1534,16 @@ while the data is part of a transaction.  Yes?</p>
 Can return -EBUSY if buffers are part of the committing transaction and
 the page is straddling i_size. Caller then has to wait for current commit
 and try again.</p>
-</section>
-</section>
-<section id="see-also">
+</div>
+</div>
+<div class="section" id="see-also">
 <h2>See also<a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="http://kernel.org/pub/linux/kernel/people/sct/ext3/journal-design.ps.gz">Journaling the Linux ext2fs Filesystem, LinuxExpo 98, Stephen
 Tweedie</a></p>
 <p><a class="reference external" href="http://olstrans.sourceforge.net/release/OLS2000-ext3/OLS2000-ext3.html">Ext3 Journalling FileSystem, OLS 2000, Dr. Stephen
 Tweedie</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

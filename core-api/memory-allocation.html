@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Memory Allocation Guide &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -264,7 +266,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="memory-allocation-guide">
+  <div class="section" id="memory-allocation-guide">
 <span id="memory-allocation"></span><h1>Memory Allocation Guide<a class="headerlink" href="#memory-allocation-guide" title="Permalink to this headline">¶</a></h1>
 <p>Linux provides a variety of APIs for memory allocation. You can
 allocate small chunks using <cite>kmalloc</cite> or <cite>kmem_cache_alloc</cite> families,
@@ -283,7 +285,7 @@ answer, although very likely you should use</p>
 </div>
 <p>Of course there are cases when other allocation APIs and different GFP
 flags must be used.</p>
-<section id="get-free-page-flags">
+<div class="section" id="get-free-page-flags">
 <h2>Get Free Page flags<a class="headerlink" href="#get-free-page-flags" title="Permalink to this headline">¶</a></h2>
 <p>The GFP flags control the allocators behavior. They tell what memory
 zones can be used, how hard the allocator should try to find free
@@ -338,7 +340,7 @@ with limited addressing capabilities. So unless you are writing a
 driver for a device with such restrictions, avoid using these flags.
 And even with hardware with restrictions it is preferable to use
 <cite>dma_alloc*</cite> APIs.</p>
-<section id="gfp-flags-and-reclaim-behavior">
+<div class="section" id="gfp-flags-and-reclaim-behavior">
 <h3>GFP flags and reclaim behavior<a class="headerlink" href="#gfp-flags-and-reclaim-behavior" title="Permalink to this headline">¶</a></h3>
 <p>Memory allocations may trigger direct or background reclaim and it is
 useful to understand how hard the page allocator will try to satisfy that
@@ -378,9 +380,9 @@ and all allocation requests will loop endlessly until they succeed.
 This might be really dangerous especially for larger orders.</p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-<section id="selecting-memory-allocator">
+</div>
+</div>
+<div class="section" id="selecting-memory-allocator">
 <h2>Selecting memory allocator<a class="headerlink" href="#selecting-memory-allocator" title="Permalink to this headline">¶</a></h2>
 <p>The most straightforward way to allocate memory is to use a function
 from the <a class="reference internal" href="mm-api.html#c.kmalloc" title="kmalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">kmalloc()</span></code></a> family. And, to be on the safe side it’s best to use
@@ -418,8 +420,8 @@ wrappers can allocate memory from that cache.</p>
 use <a class="reference internal" href="mm-api.html#c.kvfree" title="kvfree"><code class="xref c c-func docutils literal notranslate"><span class="pre">kvfree()</span></code></a> for the memory allocated with <cite>kmalloc</cite>, <cite>vmalloc</cite> and
 <cite>kvmalloc</cite>. The slab caches should be freed with <a class="reference internal" href="mm-api.html#c.kmem_cache_free" title="kmem_cache_free"><code class="xref c c-func docutils literal notranslate"><span class="pre">kmem_cache_free()</span></code></a>. And
 don’t forget to destroy the cache with kmem_cache_destroy().</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

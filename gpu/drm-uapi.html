@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Userland interfaces &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -285,7 +287,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="userland-interfaces">
+  <div class="section" id="userland-interfaces">
 <h1>Userland interfaces<a class="headerlink" href="#userland-interfaces" title="Permalink to this headline">¶</a></h1>
 <p>The DRM core exports several interfaces to applications, generally
 intended to be used through corresponding libdrm wrapper functions. In
@@ -296,7 +298,7 @@ operations, AGP management, vblank control, fence management, memory
 management, and output management.</p>
 <p>Cover generic ioctls and sysfs layout here. We only need high-level
 info, since man pages should cover the rest.</p>
-<section id="libdrm-device-lookup">
+<div class="section" id="libdrm-device-lookup">
 <h2>libdrm Device Lookup<a class="headerlink" href="#libdrm-device-lookup" title="Permalink to this headline">¶</a></h2>
 <p>BEWARE THE DRAGONS! MIND THE TRAPDOORS!</p>
 <p>In an attempt to warn anyone else who’s trying to figure out what’s going
@@ -350,8 +352,8 @@ is totally irrelevant for actually opening the device because runtime
 assignable device instances were only support in drm 1.0, which is long dead.
 But the libdrm code in drmOpenByName somehow survived, hence this can’t be
 broken.</p>
-</section>
-<section id="primary-nodes-drm-master-and-authentication">
+</div>
+<div class="section" id="primary-nodes-drm-master-and-authentication">
 <span id="drm-primary-node"></span><h2>Primary Nodes, DRM Master and Authentication<a class="headerlink" href="#primary-nodes-drm-master-and-authentication" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="#c.drm_master" title="drm_master"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_master</span></code></a> is used to track groups of clients with open
 primary/legacy device nodes. For every <a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_file</span></code></a> which has had at
@@ -369,8 +371,8 @@ using the GETMAGIC and AUTHMAGIC IOCTLs. Together with exchanging masters,
 this allows controlled access to the device for an entire group of mutually
 trusted clients.</p>
 <dl class="c function">
-<dt id="c.drm_is_current_master">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">drm_is_current_master</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><span class="pre">drm_file</span></a> <span class="pre">*</span><em><span class="pre">fpriv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_is_current_master" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_is_current_master">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_is_current_master</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><span class="n"><span class="pre">drm_file</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fpriv</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_is_current_master" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>checks whether <strong>priv</strong> is the current master</p>
 </dd></dl>
 
@@ -385,8 +387,8 @@ client is allowed to run DRM_MASTER IOCTLs.</p>
 <p>Most of the modern IOCTL which require DRM_MASTER are for kernel modesetting
 - the current master is assumed to own the non-shareable display hardware.</p>
 <dl class="c function">
-<dt id="c.drm_master_get">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_master" title="drm_master"><span class="pre">drm_master</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">drm_master_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_master" title="drm_master"><span class="pre">drm_master</span></a> <span class="pre">*</span><em><span class="pre">master</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_master_get" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_master_get">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.drm_master" title="drm_master"><span class="n"><span class="pre">drm_master</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">drm_master_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.drm_master" title="drm_master"><span class="n"><span class="pre">drm_master</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">master</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_master_get" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>reference a master pointer</p>
 </dd></dl>
 
@@ -398,8 +400,8 @@ client is allowed to run DRM_MASTER IOCTLs.</p>
 <p><strong>Description</strong></p>
 <p>Increments the reference count of <strong>master</strong> and returns a pointer to <strong>master</strong>.</p>
 <dl class="c function">
-<dt id="c.drm_file_get_master">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_master" title="drm_master"><span class="pre">drm_master</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">drm_file_get_master</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><span class="pre">drm_file</span></a> <span class="pre">*</span><em><span class="pre">file_priv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_file_get_master" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_file_get_master">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.drm_master" title="drm_master"><span class="n"><span class="pre">drm_master</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">drm_file_get_master</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><span class="n"><span class="pre">drm_file</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">file_priv</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_file_get_master" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>reference <a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_file.master</span></code></a> of <strong>file_priv</strong></p>
 </dd></dl>
 
@@ -414,8 +416,8 @@ the <a class="reference internal" href="drm-internals.html#c.drm_file" title="dr
 <p>Master pointers returned from this function should be unreferenced using
 <a class="reference internal" href="#c.drm_master_put" title="drm_master_put"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_master_put()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.drm_master_put">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_master_put</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_master" title="drm_master"><span class="pre">drm_master</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">master</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_master_put" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_master_put">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_master_put</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.drm_master" title="drm_master"><span class="n"><span class="pre">drm_master</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">master</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_master_put" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unreference and clear a master pointer</p>
 </dd></dl>
 
@@ -427,8 +429,8 @@ the <a class="reference internal" href="drm-internals.html#c.drm_file" title="dr
 <p><strong>Description</strong></p>
 <p>This decrements the <a class="reference internal" href="#c.drm_master" title="drm_master"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_master</span></code></a> behind <strong>master</strong> and sets it to NULL.</p>
 <dl class="c struct">
-<dt id="c.drm_master">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_master</span></code><a class="headerlink" href="#c.drm_master" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_master">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_master</span></span></span><a class="headerlink" href="#c.drm_master" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>drm master structure</p>
 </dd></dl>
 
@@ -499,8 +501,8 @@ Protected by <a class="reference internal" href="drm-internals.html#c.drm_device
 <p><strong>Description</strong></p>
 <p>Note that master structures are only relevant for the legacy/primary device
 nodes, hence there can only be one per device, not one per drm_minor.</p>
-</section>
-<section id="drm-display-resource-leasing">
+</div>
+<div class="section" id="drm-display-resource-leasing">
 <span id="drm-leasing"></span><h2>DRM Display Resource Leasing<a class="headerlink" href="#drm-display-resource-leasing" title="Permalink to this headline">¶</a></h2>
 <p>DRM leases provide information about whether a DRM master may control a DRM
 mode setting object. This enables the creation of multiple DRM masters that
@@ -542,8 +544,8 @@ the owner at the top of the lease tree (i.e. the <a class="reference internal" h
 <a class="reference internal" href="#c.drm_master" title="drm_master"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_master.lessor</span></code></a> is NULL). The full list of lessees that are leasing
 objects from the owner can be searched via the owner’s
 <a class="reference internal" href="#c.drm_master" title="drm_master"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_master.lessee_idr</span></code></a>.</p>
-</section>
-<section id="open-source-userspace-requirements">
+</div>
+<div class="section" id="open-source-userspace-requirements">
 <h2>Open-Source Userspace Requirements<a class="headerlink" href="#open-source-userspace-requirements" title="Permalink to this headline">¶</a></h2>
 <p>The DRM subsystem has stricter requirements than most other kernel subsystems on
 what the userspace side for new uAPI needs to look like. This section here
@@ -606,8 +608,8 @@ Linux kernel’s guarantee to keep existing userspace running for 10+ years this
 is already rather painful for the DRM subsystem, with multiple different uAPIs
 for the same thing co-existing. If we add a few more complete mistakes into the
 mix every year it would be entirely unmanageable.</p>
-</section>
-<section id="render-nodes">
+</div>
+<div class="section" id="render-nodes">
 <span id="drm-render-node"></span><h2>Render nodes<a class="headerlink" href="#render-nodes" title="Permalink to this headline">¶</a></h2>
 <p>DRM core provides multiple character-devices for user-space to use.
 Depending on which device is opened, user-space can perform a different
@@ -654,8 +656,8 @@ to run without a master object if they support render nodes. If, on the
 other hand, a driver requires shared state between clients which is
 visible to user-space and accessible beyond open-file boundaries, they
 cannot support render nodes.</p>
-</section>
-<section id="device-hot-unplug">
+</div>
+<div class="section" id="device-hot-unplug">
 <h2>Device Hot-Unplug<a class="headerlink" href="#device-hot-unplug" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -692,7 +694,7 @@ previous one allocated, and wraps around when minor numbers are
 exhausted.</p>
 <p>The goal raises at least the following requirements for the kernel and
 drivers.</p>
-<section id="requirements-for-kms-uapi">
+<div class="section" id="requirements-for-kms-uapi">
 <h3>Requirements for KMS UAPI<a class="headerlink" href="#requirements-for-kms-uapi" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>KMS connectors must change their status to disconnected.</p></li>
@@ -707,8 +709,8 @@ fail with ENXIO.</p></li>
 fail with ENODEV. Existing DRM leases remain and work as listed
 above.</p></li>
 </ul>
-</section>
-<section id="requirements-for-render-and-cross-device-uapi">
+</div>
+<div class="section" id="requirements-for-render-and-cross-device-uapi">
 <h3>Requirements for Render and Cross-Device UAPI<a class="headerlink" href="#requirements-for-render-and-cross-device-uapi" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>All GPU jobs that can no longer run must have their fences
@@ -730,8 +732,8 @@ disappearance.</p></li>
 <li><p>open() on a device node whose underlying device has disappeared will
 fail with ENXIO.</p></li>
 </ul>
-</section>
-<section id="requirements-for-memory-maps">
+</div>
+<div class="section" id="requirements-for-memory-maps">
 <h3>Requirements for Memory Maps<a class="headerlink" href="#requirements-for-memory-maps" title="Permalink to this headline">¶</a></h3>
 <p>Memory maps have further requirements that apply to both existing maps
 and maps created after the device has disappeared. If the underlying
@@ -747,9 +749,9 @@ Signal handlers are not composable, you can’t have different handlers
 for GPU1 and GPU2 from different vendors, and a third handler for
 mmapped regular files. Threads cause additional pain with signal
 handling as well.</p>
-</section>
-</section>
-<section id="ioctl-support-on-device-nodes">
+</div>
+</div>
+<div class="section" id="ioctl-support-on-device-nodes">
 <span id="drm-driver-ioctl"></span><h2>IOCTL Support on Device Nodes<a class="headerlink" href="#ioctl-support-on-device-nodes" title="Permalink to this headline">¶</a></h2>
 <p>First things first, driver private IOCTLs should only be needed for drivers
 supporting rendering. Kernel modesetting is all standardized, and extended
@@ -789,7 +791,7 @@ up the handlers and set the access rights:</p>
 structure.</p>
 <p>See the separate chapter on <a class="reference internal" href="drm-internals.html#drm-driver-fops"><span class="std std-ref">file operations</span></a> for how
 the driver-specific IOCTLs are wired up.</p>
-<section id="recommended-ioctl-return-values">
+<div class="section" id="recommended-ioctl-return-values">
 <h3>Recommended IOCTL Return Values<a class="headerlink" href="#recommended-ioctl-return-values" title="Permalink to this headline">¶</a></h3>
 <p>In theory a driver’s IOCTL callback is only allowed to return very few error
 codes. In practice it’s good to abuse a few more. This section documents common
@@ -837,8 +839,8 @@ usage is in line with the common meanings. The above list tries to just document
 DRM specific patterns. Note that ENOTTY has the slightly unintuitive meaning of
 “this IOCTL does not exist”, and is used exactly as such in DRM.</p>
 <dl class="c macro">
-<dt id="c.drm_ioctl_t">
-<code class="sig-name descname"><span class="pre">drm_ioctl_t</span></code><a class="headerlink" href="#c.drm_ioctl_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_ioctl_t">
+<span class="sig-name descname"><span class="n"><span class="pre">drm_ioctl_t</span></span></span><a class="headerlink" href="#c.drm_ioctl_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><strong>Typedef</strong>: DRM ioctl function type.</p>
 </dd></dl>
 
@@ -860,8 +862,8 @@ DRM specific patterns. Note that ENOTTY has the slightly unintuitive meaning of
 into kernel-space, and will also copy it back, depending upon the read/write
 settings in the ioctl command code.</p>
 <dl class="c macro">
-<dt id="c.drm_ioctl_compat_t">
-<code class="sig-name descname"><span class="pre">drm_ioctl_compat_t</span></code><a class="headerlink" href="#c.drm_ioctl_compat_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_ioctl_compat_t">
+<span class="sig-name descname"><span class="n"><span class="pre">drm_ioctl_compat_t</span></span></span><a class="headerlink" href="#c.drm_ioctl_compat_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><strong>Typedef</strong>: compatibility DRM ioctl function type.</p>
 </dd></dl>
 
@@ -883,8 +885,8 @@ settings in the ioctl command code.</p>
 New drivers shouldn’t screw up the structure layout for their ioctl
 structures and hence never need this.</p>
 <dl class="c enum">
-<dt id="c.drm_ioctl_flags">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">drm_ioctl_flags</span></code><a class="headerlink" href="#c.drm_ioctl_flags" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_ioctl_flags">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_ioctl_flags</span></span></span><a class="headerlink" href="#c.drm_ioctl_flags" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>DRM ioctl flags</p>
 </dd></dl>
 
@@ -924,8 +926,8 @@ not set DRM_AUTH because they do not require authentication.</p>
 <p>Various flags that can be set in <a class="reference internal" href="#c.drm_ioctl_desc" title="drm_ioctl_desc"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_ioctl_desc.flags</span></code></a> to control how
 userspace can use a given ioctl.</p>
 <dl class="c struct">
-<dt id="c.drm_ioctl_desc">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_ioctl_desc</span></code><a class="headerlink" href="#c.drm_ioctl_desc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_ioctl_desc">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_ioctl_desc</span></span></span><a class="headerlink" href="#c.drm_ioctl_desc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>DRM driver ioctl entry</p>
 </dd></dl>
 
@@ -953,8 +955,8 @@ userspace can use a given ioctl.</p>
 <p>For convenience it’s easier to create these using the <a class="reference internal" href="#c.DRM_IOCTL_DEF_DRV" title="DRM_IOCTL_DEF_DRV"><code class="xref c c-func docutils literal notranslate"><span class="pre">DRM_IOCTL_DEF_DRV()</span></code></a>
 macro.</p>
 <dl class="c macro">
-<dt id="c.DRM_IOCTL_DEF_DRV">
-<code class="sig-name descname"><span class="pre">DRM_IOCTL_DEF_DRV</span></code><a class="headerlink" href="#c.DRM_IOCTL_DEF_DRV" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_IOCTL_DEF_DRV">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_IOCTL_DEF_DRV</span></span></span><a class="headerlink" href="#c.DRM_IOCTL_DEF_DRV" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_IOCTL_DEF_DRV</span> <span class="pre">(ioctl,</span> <span class="pre">_func,</span> <span class="pre">_flags)</span></code></p>
@@ -975,8 +977,8 @@ macro.</p>
 command number is constructed by prepending <code class="docutils literal notranslate"><span class="pre">DRM_IOCTL\_</span></code> and passing that
 to DRM_IOCTL_NR().</p>
 <dl class="c function">
-<dt id="c.drm_noop">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_noop</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="pre">drm_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><span class="pre">drm_file</span></a> <span class="pre">*</span><em><span class="pre">file_priv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_noop" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_noop">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_noop</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="n"><span class="pre">drm_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><span class="n"><span class="pre">drm_file</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">file_priv</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_noop" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>DRM no-op ioctl implementation</p>
 </dd></dl>
 
@@ -995,8 +997,8 @@ functionality where we can’t return a failure code because existing userspace
 checks the result of the ioctl, but doesn’t care about the action.</p>
 <p>Always returns successfully with 0.</p>
 <dl class="c function">
-<dt id="c.drm_invalid_op">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_invalid_op</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="pre">drm_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><span class="pre">drm_file</span></a> <span class="pre">*</span><em><span class="pre">file_priv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_invalid_op" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_invalid_op">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_invalid_op</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="n"><span class="pre">drm_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><span class="n"><span class="pre">drm_file</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">file_priv</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_invalid_op" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>DRM invalid ioctl implementation</p>
 </dd></dl>
 
@@ -1018,8 +1020,8 @@ only applies to radeon and i915 kms drivers, other drivers shouldn’t need to
 use this function.</p>
 <p>Always fails with a return value of -EINVAL.</p>
 <dl class="c function">
-<dt id="c.drm_ioctl">
-<span class="pre">long</span> <code class="sig-name descname"><span class="pre">drm_ioctl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">file</span> <span class="pre">*</span><em><span class="pre">filp</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">cmd</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_ioctl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_ioctl">
+<span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_ioctl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">file</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">filp</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cmd</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_ioctl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>ioctl callback implementation for DRM drivers</p>
 </dd></dl>
 
@@ -1039,8 +1041,8 @@ drm_ioctl_permit(), and dispatches to the respective function.</p>
 <p><strong>Return</strong></p>
 <p>Zero on success, negative error code on failure.</p>
 <dl class="c function">
-<dt>
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">drm_ioctl_flags</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">nr</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">flags</span></em><span class="sig-paren">)</span><br /></dt>
+<dt class="sig sig-object c">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_ioctl_flags</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nr</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Check for core ioctl and return ioctl permission flags</p>
 </dd></dl>
 
@@ -1058,8 +1060,8 @@ shouldn’t be used by any drivers.</p>
 <p><strong>Return</strong></p>
 <p>True if the <strong>nr</strong> corresponds to a DRM core ioctl number, false otherwise.</p>
 <dl class="c function">
-<dt id="c.drm_compat_ioctl">
-<span class="pre">long</span> <code class="sig-name descname"><span class="pre">drm_compat_ioctl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">file</span> <span class="pre">*</span><em><span class="pre">filp</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">cmd</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_compat_ioctl" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_compat_ioctl">
+<span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_compat_ioctl</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">file</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">filp</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cmd</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_compat_ioctl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>32bit IOCTL compatibility handler for DRM drivers</p>
 </dd></dl>
 
@@ -1079,26 +1081,26 @@ appropriate. Note that this only handles DRM core IOCTLs, if the driver has
 botched IOCTL itself, it must handle those by wrapping this function.</p>
 <p><strong>Return</strong></p>
 <p>Zero on success, negative error code on failure.</p>
-</section>
-</section>
-<section id="testing-and-validation">
+</div>
+</div>
+<div class="section" id="testing-and-validation">
 <h2>Testing and validation<a class="headerlink" href="#testing-and-validation" title="Permalink to this headline">¶</a></h2>
-<section id="testing-requirements-for-userspace-api">
+<div class="section" id="testing-requirements-for-userspace-api">
 <h3>Testing Requirements for userspace API<a class="headerlink" href="#testing-requirements-for-userspace-api" title="Permalink to this headline">¶</a></h3>
 <p>New cross-driver userspace interface extensions, like new IOCTL, new KMS
 properties, new files in sysfs or anything else that constitutes an API change
 should have driver-agnostic testcases in IGT for that feature, if such a test
 can be reasonably made using IGT for the target hardware.</p>
-</section>
-<section id="validating-changes-with-igt">
+</div>
+<div class="section" id="validating-changes-with-igt">
 <h3>Validating changes with IGT<a class="headerlink" href="#validating-changes-with-igt" title="Permalink to this headline">¶</a></h3>
 <p>There’s a collection of tests that aims to cover the whole functionality of
 DRM drivers and that can be used to check that changes to DRM drivers or the
 core don’t regress existing functionality. This test suite is called IGT and
 its code and instructions to build and run can be found in
 <a class="reference external" href="https://gitlab.freedesktop.org/drm/igt-gpu-tools/">https://gitlab.freedesktop.org/drm/igt-gpu-tools/</a>.</p>
-</section>
-<section id="using-vkms-to-test-drm-api">
+</div>
+<div class="section" id="using-vkms-to-test-drm-api">
 <h3>Using VKMS to test DRM API<a class="headerlink" href="#using-vkms-to-test-drm-api" title="Permalink to this headline">¶</a></h3>
 <p>VKMS is a software-only model of a KMS driver that is useful for testing
 and for running compositors. VKMS aims to enable a virtual display without
@@ -1133,8 +1135,8 @@ tests:</p>
 (-p option); it’s created html summary of the tests results and it’s saved
 in the folder “igt-gpu-tools/results”; it’s executed only the igt-tests
 matching the -t option.</p>
-</section>
-<section id="display-crc-support">
+</div>
+<div class="section" id="display-crc-support">
 <h3>Display CRC Support<a class="headerlink" href="#display-crc-support" title="Permalink to this headline">¶</a></h3>
 <p>DRM device drivers can provide to userspace CRC information of each frame as
 it reached a given hardware component (a CRC sampling “source”).</p>
@@ -1168,8 +1170,8 @@ CRC generation, then the driver must mark that commit as a full modeset
 consistent results, generic userspace must re-setup CRC generation after a
 legacy SETCRTC or an atomic commit with DRM_MODE_ATOMIC_ALLOW_MODESET.</p>
 <dl class="c function">
-<dt id="c.drm_crtc_add_crc_entry">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_crtc_add_crc_entry</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_crtc" title="drm_crtc"><span class="pre">drm_crtc</span></a> <span class="pre">*</span><em><span class="pre">crtc</span></em>, <span class="pre">bool</span> <em><span class="pre">has_frame</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">frame</span></em>, <span class="pre">uint32_t</span> <span class="pre">*</span><em><span class="pre">crcs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_crtc_add_crc_entry" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_crtc_add_crc_entry">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_crtc_add_crc_entry</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-kms.html#c.drm_crtc" title="drm_crtc"><span class="n"><span class="pre">drm_crtc</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">crtc</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">has_frame</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">frame</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">crcs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_crtc_add_crc_entry" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Add entry with CRC information for a frame</p>
 </dd></dl>
 
@@ -1187,12 +1189,12 @@ legacy SETCRTC or an atomic commit with DRM_MODE_ATOMIC_ALLOW_MODESET.</p>
 <p><strong>Description</strong></p>
 <p>For each frame, the driver polls the source of CRCs for new data and calls
 this function to add them to the buffer from where userspace reads.</p>
-</section>
-<section id="debugfs-support">
+</div>
+<div class="section" id="debugfs-support">
 <h3>Debugfs Support<a class="headerlink" href="#debugfs-support" title="Permalink to this headline">¶</a></h3>
 <dl class="c struct">
-<dt id="c.drm_info_list">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_info_list</span></code><a class="headerlink" href="#c.drm_info_list" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_info_list">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_info_list</span></span></span><a class="headerlink" href="#c.drm_info_list" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>debugfs info list entry</p>
 </dd></dl>
 
@@ -1222,8 +1224,8 @@ this function to add them to the buffer from where userspace reads.</p>
 <p>This structure represents a debugfs file to be created by the drm
 core.</p>
 <dl class="c struct">
-<dt id="c.drm_info_node">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_info_node</span></code><a class="headerlink" href="#c.drm_info_node" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_info_node">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_info_node</span></span></span><a class="headerlink" href="#c.drm_info_node" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Per-minor debugfs node structure</p>
 </dd></dl>
 
@@ -1249,8 +1251,8 @@ core.</p>
 both the render and the primary nodes, but that’s how this has organically
 grown. It should probably be fixed, with a compatibility link, if needed.</p>
 <dl class="c function">
-<dt id="c.drm_debugfs_create_files">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_debugfs_create_files</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_info_list" title="drm_info_list"><span class="pre">drm_info_list</span></a> <span class="pre">*</span><em><span class="pre">files</span></em>, <span class="pre">int</span> <em><span class="pre">count</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">dentry</span> <span class="pre">*</span><em><span class="pre">root</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_minor" title="drm_minor"><span class="pre">drm_minor</span></a> <span class="pre">*</span><em><span class="pre">minor</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_debugfs_create_files" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_debugfs_create_files">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_debugfs_create_files</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.drm_info_list" title="drm_info_list"><span class="n"><span class="pre">drm_info_list</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">files</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">count</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">dentry</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">root</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-internals.html#c.drm_minor" title="drm_minor"><span class="n"><span class="pre">drm_minor</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">minor</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_debugfs_create_files" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Initialize a given set of debugfs files for DRM minor</p>
 </dd></dl>
 
@@ -1269,9 +1271,9 @@ grown. It should probably be fixed, with a compatibility link, if needed.</p>
 <p>Create a given set of debugfs files represented by an array of
 <a class="reference internal" href="#c.drm_info_list" title="drm_info_list"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_info_list</span></code></a> in the given root directory. These files will be removed
 automatically on drm_debugfs_cleanup().</p>
-</section>
-</section>
-<section id="sysfs-support">
+</div>
+</div>
+<div class="section" id="sysfs-support">
 <h2>Sysfs Support<a class="headerlink" href="#sysfs-support" title="Permalink to this headline">¶</a></h2>
 <p>DRM provides very little additional support to drivers for sysfs
 interactions, beyond just all the standard stuff. Drivers who want to expose
@@ -1282,8 +1284,8 @@ additional sysfs properties and property groups can attach them at either
 also automatically handled by <a class="reference internal" href="drm-internals.html#c.drm_dev_unregister" title="drm_dev_unregister"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_dev_unregister()</span></code></a> and
 <a class="reference internal" href="drm-kms.html#c.drm_connector_unregister" title="drm_connector_unregister"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_connector_unregister()</span></code></a>.</p>
 <dl class="c function">
-<dt id="c.drm_sysfs_hotplug_event">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_sysfs_hotplug_event</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="pre">drm_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sysfs_hotplug_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_sysfs_hotplug_event">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_sysfs_hotplug_event</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="n"><span class="pre">drm_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sysfs_hotplug_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>generate a DRM uevent</p>
 </dd></dl>
 
@@ -1299,8 +1301,8 @@ deal with other types of events.</p>
 <p>Any new uapi should be using the <a class="reference internal" href="#c.drm_sysfs_connector_status_event" title="drm_sysfs_connector_status_event"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sysfs_connector_status_event()</span></code></a>
 for uevents on connector status change.</p>
 <dl class="c function">
-<dt id="c.drm_sysfs_connector_status_event">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_sysfs_connector_status_event</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_connector" title="drm_connector"><span class="pre">drm_connector</span></a> <span class="pre">*</span><em><span class="pre">connector</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_property" title="drm_property"><span class="pre">drm_property</span></a> <span class="pre">*</span><em><span class="pre">property</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sysfs_connector_status_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_sysfs_connector_status_event">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_sysfs_connector_status_event</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-kms.html#c.drm_connector" title="drm_connector"><span class="n"><span class="pre">drm_connector</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">connector</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-kms.html#c.drm_property" title="drm_property"><span class="n"><span class="pre">drm_property</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">property</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sysfs_connector_status_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>generate a DRM uevent for connector property status change</p>
 </dd></dl>
 
@@ -1316,8 +1318,8 @@ for uevents on connector status change.</p>
 set HOTPLUG=1 and connector id along with the attached property id
 related to the status change.</p>
 <dl class="c function">
-<dt id="c.drm_class_device_register">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_class_device_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_class_device_register" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_class_device_register">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_class_device_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_class_device_register" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>register new device with the DRM sysfs class</p>
 </dd></dl>
 
@@ -1331,8 +1333,8 @@ related to the status change.</p>
 used by ttm to have a place for its global settings. Drivers should never use
 this.</p>
 <dl class="c function">
-<dt id="c.drm_class_device_unregister">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_class_device_unregister</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_class_device_unregister" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_class_device_unregister">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_class_device_unregister</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_class_device_unregister" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unregister device with the DRM sysfs class</p>
 </dd></dl>
 
@@ -1345,8 +1347,8 @@ this.</p>
 <p>Unregisters a <a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span></code></a> from the DRM sysfs class. Essentially only used
 by ttm to have a place for its global settings. Drivers should never use
 this.</p>
-</section>
-<section id="vblank-event-handling">
+</div>
+<div class="section" id="vblank-event-handling">
 <h2>VBlank event handling<a class="headerlink" href="#vblank-event-handling" title="Permalink to this headline">¶</a></h2>
 <p>The DRM core exposes two vertical blank related ioctls:</p>
 <dl class="simple">
@@ -1361,14 +1363,14 @@ reset to 0 at some point during modeset. Modern drivers should not
 call this any more since with kernel mode setting it is a no-op.</p>
 </dd>
 </dl>
-</section>
-<section id="userspace-api-structures">
+</div>
+<div class="section" id="userspace-api-structures">
 <h2>Userspace API Structures<a class="headerlink" href="#userspace-api-structures" title="Permalink to this headline">¶</a></h2>
 <p>DRM exposes many UAPI and structure definition to have a consistent
 and standardized interface with user.
 Userspace can refer to these structure definitions and UAPI formats
 to communicate to driver</p>
-<section id="crtc-index">
+<div class="section" id="crtc-index">
 <span id="id1"></span><h3>CRTC index<a class="headerlink" href="#crtc-index" title="Permalink to this headline">¶</a></h3>
 <p>CRTC’s have both an object ID and an index, and they are not the same thing.
 The index is used in cases where a densely packed identifier for a CRTC is
@@ -1377,8 +1379,8 @@ needed, for instance a bitmask of CRTC’s. The member possible_crtcs of <a clas
 <p>DRM_IOCTL_MODE_GETRESOURCES populates a structure with an array of CRTC ID’s,
 and the CRTC index is its position in this array.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_DUMB_BUFFER">
-<code class="sig-name descname"><span class="pre">DRM_CAP_DUMB_BUFFER</span></code><a class="headerlink" href="#c.DRM_CAP_DUMB_BUFFER" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_DUMB_BUFFER">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_DUMB_BUFFER</span></span></span><a class="headerlink" href="#c.DRM_CAP_DUMB_BUFFER" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_DUMB_BUFFER</span> <span class="pre">()</span></code></p>
@@ -1387,8 +1389,8 @@ and the CRTC index is its position in this array.</p>
 <p>If set to 1, the driver supports creating dumb buffers via the
 <code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_IOCTL_MODE_CREATE_DUMB</span></code> ioctl.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_VBLANK_HIGH_CRTC">
-<code class="sig-name descname"><span class="pre">DRM_CAP_VBLANK_HIGH_CRTC</span></code><a class="headerlink" href="#c.DRM_CAP_VBLANK_HIGH_CRTC" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_VBLANK_HIGH_CRTC">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_VBLANK_HIGH_CRTC</span></span></span><a class="headerlink" href="#c.DRM_CAP_VBLANK_HIGH_CRTC" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_VBLANK_HIGH_CRTC</span> <span class="pre">()</span></code></p>
@@ -1398,8 +1400,8 @@ and the CRTC index is its position in this array.</p>
 in the high bits of <code class="xref c c-type docutils literal notranslate"><span class="pre">drm_wait_vblank_request.type</span></code>.</p>
 <p>Starting kernel version 2.6.39, this capability is always set to 1.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_DUMB_PREFERRED_DEPTH">
-<code class="sig-name descname"><span class="pre">DRM_CAP_DUMB_PREFERRED_DEPTH</span></code><a class="headerlink" href="#c.DRM_CAP_DUMB_PREFERRED_DEPTH" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_DUMB_PREFERRED_DEPTH">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_DUMB_PREFERRED_DEPTH</span></span></span><a class="headerlink" href="#c.DRM_CAP_DUMB_PREFERRED_DEPTH" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_DUMB_PREFERRED_DEPTH</span> <span class="pre">()</span></code></p>
@@ -1413,8 +1415,8 @@ pixel.</p>
 <p>Note that this preference only applies to dumb buffers, it’s irrelevant for
 other types of buffers.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_DUMB_PREFER_SHADOW">
-<code class="sig-name descname"><span class="pre">DRM_CAP_DUMB_PREFER_SHADOW</span></code><a class="headerlink" href="#c.DRM_CAP_DUMB_PREFER_SHADOW" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_DUMB_PREFER_SHADOW">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_DUMB_PREFER_SHADOW</span></span></span><a class="headerlink" href="#c.DRM_CAP_DUMB_PREFER_SHADOW" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_DUMB_PREFER_SHADOW</span> <span class="pre">()</span></code></p>
@@ -1427,8 +1429,8 @@ read from it.</p>
 <p>Note that this preference only applies to dumb buffers, it’s irrelevant for
 other types of buffers.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_PRIME">
-<code class="sig-name descname"><span class="pre">DRM_CAP_PRIME</span></code><a class="headerlink" href="#c.DRM_CAP_PRIME" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_PRIME">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_PRIME</span></span></span><a class="headerlink" href="#c.DRM_CAP_PRIME" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_PRIME</span> <span class="pre">()</span></code></p>
@@ -1439,8 +1441,8 @@ and <a class="reference internal" href="#c.DRM_PRIME_CAP_EXPORT" title="DRM_PRIM
 <p>PRIME buffers are exposed as dma-buf file descriptors. See
 <a class="reference internal" href="drm-mm.html"><span class="doc">DRM Memory Management</span></a>, section “PRIME Buffer Sharing”.</p>
 <dl class="c macro">
-<dt id="c.DRM_PRIME_CAP_IMPORT">
-<code class="sig-name descname"><span class="pre">DRM_PRIME_CAP_IMPORT</span></code><a class="headerlink" href="#c.DRM_PRIME_CAP_IMPORT" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_PRIME_CAP_IMPORT">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_PRIME_CAP_IMPORT</span></span></span><a class="headerlink" href="#c.DRM_PRIME_CAP_IMPORT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_PRIME_CAP_IMPORT</span> <span class="pre">()</span></code></p>
@@ -1449,8 +1451,8 @@ and <a class="reference internal" href="#c.DRM_PRIME_CAP_EXPORT" title="DRM_PRIM
 <p>If this bit is set in <a class="reference internal" href="#c.DRM_CAP_PRIME" title="DRM_CAP_PRIME"><code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_CAP_PRIME</span></code></a>, the driver supports importing PRIME
 buffers via the <code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_IOCTL_PRIME_FD_TO_HANDLE</span></code> ioctl.</p>
 <dl class="c macro">
-<dt id="c.DRM_PRIME_CAP_EXPORT">
-<code class="sig-name descname"><span class="pre">DRM_PRIME_CAP_EXPORT</span></code><a class="headerlink" href="#c.DRM_PRIME_CAP_EXPORT" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_PRIME_CAP_EXPORT">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_PRIME_CAP_EXPORT</span></span></span><a class="headerlink" href="#c.DRM_PRIME_CAP_EXPORT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_PRIME_CAP_EXPORT</span> <span class="pre">()</span></code></p>
@@ -1459,8 +1461,8 @@ buffers via the <code class="xref c c-type docutils literal notranslate"><span c
 <p>If this bit is set in <a class="reference internal" href="#c.DRM_CAP_PRIME" title="DRM_CAP_PRIME"><code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_CAP_PRIME</span></code></a>, the driver supports exporting PRIME
 buffers via the <code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_IOCTL_PRIME_HANDLE_TO_FD</span></code> ioctl.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_TIMESTAMP_MONOTONIC">
-<code class="sig-name descname"><span class="pre">DRM_CAP_TIMESTAMP_MONOTONIC</span></code><a class="headerlink" href="#c.DRM_CAP_TIMESTAMP_MONOTONIC" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_TIMESTAMP_MONOTONIC">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_TIMESTAMP_MONOTONIC</span></span></span><a class="headerlink" href="#c.DRM_CAP_TIMESTAMP_MONOTONIC" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_TIMESTAMP_MONOTONIC</span> <span class="pre">()</span></code></p>
@@ -1473,8 +1475,8 @@ clocks.</p>
 <p>Starting from kernel version 2.6.39, the default value for this capability
 is 1. Starting kernel version 4.15, this capability is always set to 1.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_ASYNC_PAGE_FLIP">
-<code class="sig-name descname"><span class="pre">DRM_CAP_ASYNC_PAGE_FLIP</span></code><a class="headerlink" href="#c.DRM_CAP_ASYNC_PAGE_FLIP" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_ASYNC_PAGE_FLIP">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_ASYNC_PAGE_FLIP</span></span></span><a class="headerlink" href="#c.DRM_CAP_ASYNC_PAGE_FLIP" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_ASYNC_PAGE_FLIP</span> <span class="pre">()</span></code></p>
@@ -1482,8 +1484,8 @@ is 1. Starting kernel version 4.15, this capability is always set to 1.</p>
 <p><strong>Description</strong></p>
 <p>If set to 1, the driver supports <code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_MODE_PAGE_FLIP_ASYNC</span></code>.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_CURSOR_WIDTH">
-<code class="sig-name descname"><span class="pre">DRM_CAP_CURSOR_WIDTH</span></code><a class="headerlink" href="#c.DRM_CAP_CURSOR_WIDTH" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_CURSOR_WIDTH">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_CURSOR_WIDTH</span></span></span><a class="headerlink" href="#c.DRM_CAP_CURSOR_WIDTH" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_CURSOR_WIDTH</span> <span class="pre">()</span></code></p>
@@ -1496,8 +1498,8 @@ hardware agnostic userspace can query a cursor plane size to use.</p>
 drivers are free to attach another meaning on top, eg. i915 returns the
 maximum plane size.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_CURSOR_HEIGHT">
-<code class="sig-name descname"><span class="pre">DRM_CAP_CURSOR_HEIGHT</span></code><a class="headerlink" href="#c.DRM_CAP_CURSOR_HEIGHT" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_CURSOR_HEIGHT">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_CURSOR_HEIGHT</span></span></span><a class="headerlink" href="#c.DRM_CAP_CURSOR_HEIGHT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_CURSOR_HEIGHT</span> <span class="pre">()</span></code></p>
@@ -1505,8 +1507,8 @@ maximum plane size.</p>
 <p><strong>Description</strong></p>
 <p>See <a class="reference internal" href="#c.DRM_CAP_CURSOR_WIDTH" title="DRM_CAP_CURSOR_WIDTH"><code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_CAP_CURSOR_WIDTH</span></code></a>.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_ADDFB2_MODIFIERS">
-<code class="sig-name descname"><span class="pre">DRM_CAP_ADDFB2_MODIFIERS</span></code><a class="headerlink" href="#c.DRM_CAP_ADDFB2_MODIFIERS" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_ADDFB2_MODIFIERS">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_ADDFB2_MODIFIERS</span></span></span><a class="headerlink" href="#c.DRM_CAP_ADDFB2_MODIFIERS" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_ADDFB2_MODIFIERS</span> <span class="pre">()</span></code></p>
@@ -1515,8 +1517,8 @@ maximum plane size.</p>
 <p>If set to 1, the driver supports supplying modifiers in the
 <code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_IOCTL_MODE_ADDFB2</span></code> ioctl.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_PAGE_FLIP_TARGET">
-<code class="sig-name descname"><span class="pre">DRM_CAP_PAGE_FLIP_TARGET</span></code><a class="headerlink" href="#c.DRM_CAP_PAGE_FLIP_TARGET" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_PAGE_FLIP_TARGET">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_PAGE_FLIP_TARGET</span></span></span><a class="headerlink" href="#c.DRM_CAP_PAGE_FLIP_TARGET" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_PAGE_FLIP_TARGET</span> <span class="pre">()</span></code></p>
@@ -1527,8 +1529,8 @@ maximum plane size.</p>
 <code class="xref c c-type docutils literal notranslate"><span class="pre">drm_mode_crtc_page_flip_target.flags</span></code> for the <code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_IOCTL_MODE_PAGE_FLIP</span></code>
 ioctl.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_CRTC_IN_VBLANK_EVENT">
-<code class="sig-name descname"><span class="pre">DRM_CAP_CRTC_IN_VBLANK_EVENT</span></code><a class="headerlink" href="#c.DRM_CAP_CRTC_IN_VBLANK_EVENT" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_CRTC_IN_VBLANK_EVENT">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_CRTC_IN_VBLANK_EVENT</span></span></span><a class="headerlink" href="#c.DRM_CAP_CRTC_IN_VBLANK_EVENT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_CRTC_IN_VBLANK_EVENT</span> <span class="pre">()</span></code></p>
@@ -1539,8 +1541,8 @@ ioctl.</p>
 <code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_EVENT_FLIP_COMPLETE</span></code> events.</p>
 <p>Starting kernel version 4.12, this capability is always set to 1.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_SYNCOBJ">
-<code class="sig-name descname"><span class="pre">DRM_CAP_SYNCOBJ</span></code><a class="headerlink" href="#c.DRM_CAP_SYNCOBJ" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_SYNCOBJ">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_SYNCOBJ</span></span></span><a class="headerlink" href="#c.DRM_CAP_SYNCOBJ" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_SYNCOBJ</span> <span class="pre">()</span></code></p>
@@ -1549,8 +1551,8 @@ ioctl.</p>
 <p>If set to 1, the driver supports sync objects. See
 <a class="reference internal" href="drm-mm.html"><span class="doc">DRM Memory Management</span></a>, section “DRM Sync Objects”.</p>
 <dl class="c macro">
-<dt id="c.DRM_CAP_SYNCOBJ_TIMELINE">
-<code class="sig-name descname"><span class="pre">DRM_CAP_SYNCOBJ_TIMELINE</span></code><a class="headerlink" href="#c.DRM_CAP_SYNCOBJ_TIMELINE" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CAP_SYNCOBJ_TIMELINE">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CAP_SYNCOBJ_TIMELINE</span></span></span><a class="headerlink" href="#c.DRM_CAP_SYNCOBJ_TIMELINE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CAP_SYNCOBJ_TIMELINE</span> <span class="pre">()</span></code></p>
@@ -1559,8 +1561,8 @@ ioctl.</p>
 <p>If set to 1, the driver supports timeline operations on sync objects. See
 <a class="reference internal" href="drm-mm.html"><span class="doc">DRM Memory Management</span></a>, section “DRM Sync Objects”.</p>
 <dl class="c macro">
-<dt id="c.DRM_CLIENT_CAP_STEREO_3D">
-<code class="sig-name descname"><span class="pre">DRM_CLIENT_CAP_STEREO_3D</span></code><a class="headerlink" href="#c.DRM_CLIENT_CAP_STEREO_3D" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CLIENT_CAP_STEREO_3D">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CLIENT_CAP_STEREO_3D</span></span></span><a class="headerlink" href="#c.DRM_CLIENT_CAP_STEREO_3D" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CLIENT_CAP_STEREO_3D</span> <span class="pre">()</span></code></p>
@@ -1572,8 +1574,8 @@ monitor by advertising the supported 3D layouts in the flags of <a class="refere
 <p>This capability is always supported for all drivers starting from kernel
 version 3.13.</p>
 <dl class="c macro">
-<dt id="c.DRM_CLIENT_CAP_UNIVERSAL_PLANES">
-<code class="sig-name descname"><span class="pre">DRM_CLIENT_CAP_UNIVERSAL_PLANES</span></code><a class="headerlink" href="#c.DRM_CLIENT_CAP_UNIVERSAL_PLANES" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CLIENT_CAP_UNIVERSAL_PLANES">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CLIENT_CAP_UNIVERSAL_PLANES</span></span></span><a class="headerlink" href="#c.DRM_CLIENT_CAP_UNIVERSAL_PLANES" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CLIENT_CAP_UNIVERSAL_PLANES</span> <span class="pre">()</span></code></p>
@@ -1584,8 +1586,8 @@ cursor) to userspace.</p>
 <p>This capability has been introduced in kernel version 3.15. Starting from
 kernel version 3.17, this capability is always supported for all drivers.</p>
 <dl class="c macro">
-<dt id="c.DRM_CLIENT_CAP_ATOMIC">
-<code class="sig-name descname"><span class="pre">DRM_CLIENT_CAP_ATOMIC</span></code><a class="headerlink" href="#c.DRM_CLIENT_CAP_ATOMIC" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CLIENT_CAP_ATOMIC">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CLIENT_CAP_ATOMIC</span></span></span><a class="headerlink" href="#c.DRM_CLIENT_CAP_ATOMIC" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CLIENT_CAP_ATOMIC</span> <span class="pre">()</span></code></p>
@@ -1600,8 +1602,8 @@ will fail with -EOPNOTSUPP.</p>
 kernel version 4.2, this capability is always supported for atomic-capable
 drivers.</p>
 <dl class="c macro">
-<dt id="c.DRM_CLIENT_CAP_ASPECT_RATIO">
-<code class="sig-name descname"><span class="pre">DRM_CLIENT_CAP_ASPECT_RATIO</span></code><a class="headerlink" href="#c.DRM_CLIENT_CAP_ASPECT_RATIO" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CLIENT_CAP_ASPECT_RATIO">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CLIENT_CAP_ASPECT_RATIO</span></span></span><a class="headerlink" href="#c.DRM_CLIENT_CAP_ASPECT_RATIO" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CLIENT_CAP_ASPECT_RATIO</span> <span class="pre">()</span></code></p>
@@ -1612,8 +1614,8 @@ See <code class="docutils literal notranslate"><span class="pre">DRM_MODE_FLAG_P
 <p>This capability is always supported for all drivers starting from kernel
 version 4.18.</p>
 <dl class="c macro">
-<dt id="c.DRM_CLIENT_CAP_WRITEBACK_CONNECTORS">
-<code class="sig-name descname"><span class="pre">DRM_CLIENT_CAP_WRITEBACK_CONNECTORS</span></code><a class="headerlink" href="#c.DRM_CLIENT_CAP_WRITEBACK_CONNECTORS" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_CLIENT_CAP_WRITEBACK_CONNECTORS">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_CLIENT_CAP_WRITEBACK_CONNECTORS</span></span></span><a class="headerlink" href="#c.DRM_CLIENT_CAP_WRITEBACK_CONNECTORS" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_CLIENT_CAP_WRITEBACK_CONNECTORS</span> <span class="pre">()</span></code></p>
@@ -1625,8 +1627,8 @@ writing back to memory the scene setup in the commit. The client must enable
 <p>This capability is always supported for atomic-capable drivers starting from
 kernel version 4.19.</p>
 <dl class="c macro">
-<dt id="c.DRM_IOCTL_MODE_RMFB">
-<code class="sig-name descname"><span class="pre">DRM_IOCTL_MODE_RMFB</span></code><a class="headerlink" href="#c.DRM_IOCTL_MODE_RMFB" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.DRM_IOCTL_MODE_RMFB">
+<span class="sig-name descname"><span class="n"><span class="pre">DRM_IOCTL_MODE_RMFB</span></span></span><a class="headerlink" href="#c.DRM_IOCTL_MODE_RMFB" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">DRM_IOCTL_MODE_RMFB</span> <span class="pre">()</span></code></p>
@@ -1641,8 +1643,8 @@ argument is a framebuffer object ID.</p>
 disable that plane. The CRTC the plane is linked to may also be disabled
 (depending on driver capabilities).</p>
 <dl class="c struct">
-<dt id="c.drm_mode_modeinfo">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_modeinfo</span></code><a class="headerlink" href="#c.drm_mode_modeinfo" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_modeinfo">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_modeinfo</span></span></span><a class="headerlink" href="#c.drm_mode_modeinfo" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Display mode information.</p>
 </dd></dl>
 
@@ -1703,8 +1705,8 @@ disable that plane. The CRTC the plane is linked to may also be disabled
 <p>This is the user-space API display mode information structure. For the
 kernel version see <a class="reference internal" href="drm-kms.html#c.drm_display_mode" title="drm_display_mode"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_display_mode</span></code></a>.</p>
 <dl class="c struct">
-<dt id="c.drm_mode_get_plane">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_get_plane</span></code><a class="headerlink" href="#c.drm_mode_get_plane" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_get_plane">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_get_plane</span></span></span><a class="headerlink" href="#c.drm_mode_get_plane" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get plane metadata.</p>
 </dd></dl>
 
@@ -1752,8 +1754,8 @@ and call the ioctl. <strong>count_format_types</strong> will be updated with the
 the ioctl again (with <strong>count_format_types</strong> still set to the value returned in
 the first ioctl call).</p>
 <dl class="c struct">
-<dt id="c.drm_mode_get_connector">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_get_connector</span></code><a class="headerlink" href="#c.drm_mode_get_connector" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_get_connector">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_get_connector</span></span></span><a class="headerlink" href="#c.drm_mode_get_connector" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get connector metadata.</p>
 </dd></dl>
 
@@ -1844,8 +1846,8 @@ up-to-date at startup and after receiving a hot-plug event. User-space
 may perform a forced-probe when the user explicitly requests it. User-space
 shouldn’t perform a forced-probe in other situations.</p>
 <dl class="c struct">
-<dt id="c.drm_mode_property_enum">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_property_enum</span></code><a class="headerlink" href="#c.drm_mode_property_enum" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_property_enum">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_property_enum</span></span></span><a class="headerlink" href="#c.drm_mode_property_enum" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Description for an enum/bitfield entry.</p>
 </dd></dl>
 
@@ -1866,8 +1868,8 @@ shouldn’t perform a forced-probe in other situations.</p>
 <p><strong>Description</strong></p>
 <p>See <a class="reference internal" href="drm-kms.html#c.drm_property_enum" title="drm_property_enum"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_property_enum</span></code></a> for details.</p>
 <dl class="c struct">
-<dt id="c.drm_mode_get_property">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_get_property</span></code><a class="headerlink" href="#c.drm_mode_get_property" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_get_property">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_get_property</span></span></span><a class="headerlink" href="#c.drm_mode_get_property" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get property metadata.</p>
 </dd></dl>
 
@@ -1927,8 +1929,8 @@ set <strong>count_values</strong> to its capacity. If the property has the type
 <strong>enum_blob_ptr</strong> and set <strong>count_enum_blobs</strong> to its capacity. Calling the ioctl
 again will fill the arrays.</p>
 <dl class="c struct">
-<dt id="c.hdr_metadata_infoframe">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">hdr_metadata_infoframe</span></code><a class="headerlink" href="#c.hdr_metadata_infoframe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.hdr_metadata_infoframe">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">hdr_metadata_infoframe</span></span></span><a class="headerlink" href="#c.hdr_metadata_infoframe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>HDR Metadata Infoframe Data.</p>
 </dd></dl>
 
@@ -1994,8 +1996,8 @@ to match exactly with the spec.</p>
 <p>Userspace is expected to pass the metadata information as per
 the format described in this structure.</p>
 <dl class="c struct">
-<dt id="c.hdr_output_metadata">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">hdr_output_metadata</span></code><a class="headerlink" href="#c.hdr_output_metadata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.hdr_output_metadata">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">hdr_output_metadata</span></span></span><a class="headerlink" href="#c.hdr_output_metadata" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>HDR output metadata</p>
 </dd></dl>
 
@@ -2020,8 +2022,8 @@ the format described in this structure.</p>
 <p><strong>Description</strong></p>
 <p>Metadata Information to be passed from userspace</p>
 <dl class="c struct">
-<dt id="c.drm_mode_create_blob">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_create_blob</span></code><a class="headerlink" href="#c.drm_mode_create_blob" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_create_blob">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_create_blob</span></span></span><a class="headerlink" href="#c.drm_mode_create_blob" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create New blob property</p>
 </dd></dl>
 
@@ -2046,8 +2048,8 @@ the format described in this structure.</p>
 <p>Create a new ‘blob’ data property, copying length bytes from data pointer,
 and returning new blob ID.</p>
 <dl class="c struct">
-<dt id="c.drm_mode_destroy_blob">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_destroy_blob</span></code><a class="headerlink" href="#c.drm_mode_destroy_blob" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_destroy_blob">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_destroy_blob</span></span></span><a class="headerlink" href="#c.drm_mode_destroy_blob" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Destroy user blob</p>
 </dd></dl>
 
@@ -2070,8 +2072,8 @@ atomic commit and you will not make another commit re-using the same ID, you
 can destroy the blob as soon as the commit has been issued, without waiting
 for it to complete.</p>
 <dl class="c struct">
-<dt id="c.drm_mode_create_lease">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_create_lease</span></code><a class="headerlink" href="#c.drm_mode_create_lease" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_create_lease">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_create_lease</span></span></span><a class="headerlink" href="#c.drm_mode_create_lease" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create lease</p>
 </dd></dl>
 
@@ -2104,8 +2106,8 @@ for it to complete.</p>
 one plane if <a class="reference internal" href="#c.DRM_CLIENT_CAP_UNIVERSAL_PLANES" title="DRM_CLIENT_CAP_UNIVERSAL_PLANES"><code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_CLIENT_CAP_UNIVERSAL_PLANES</span></code></a> is enabled. Alternatively,
 the lease can be completely empty.</p>
 <dl class="c struct">
-<dt id="c.drm_mode_list_lessees">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_list_lessees</span></code><a class="headerlink" href="#c.drm_mode_list_lessees" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_list_lessees">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_list_lessees</span></span></span><a class="headerlink" href="#c.drm_mode_list_lessees" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>List lessees</p>
 </dd></dl>
 
@@ -2135,8 +2137,8 @@ the size and then the data.</p>
 <p><strong>Description</strong></p>
 <p>List lesses from a drm_master.</p>
 <dl class="c struct">
-<dt id="c.drm_mode_get_lease">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_get_lease</span></code><a class="headerlink" href="#c.drm_mode_get_lease" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_get_lease">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_get_lease</span></span></span><a class="headerlink" href="#c.drm_mode_get_lease" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get Lease</p>
 </dd></dl>
 
@@ -2166,8 +2168,8 @@ the size and then the data.</p>
 <p><strong>Description</strong></p>
 <p>Get leased objects.</p>
 <dl class="c struct">
-<dt id="c.drm_mode_revoke_lease">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_revoke_lease</span></code><a class="headerlink" href="#c.drm_mode_revoke_lease" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_revoke_lease">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_revoke_lease</span></span></span><a class="headerlink" href="#c.drm_mode_revoke_lease" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Revoke lease</p>
 </dd></dl>
 
@@ -2183,8 +2185,8 @@ the size and then the data.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.drm_mode_rect">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_rect</span></code><a class="headerlink" href="#c.drm_mode_rect" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.drm_mode_rect">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">drm_mode_rect</span></span></span><a class="headerlink" href="#c.drm_mode_rect" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Two dimensional rectangle.</p>
 </dd></dl>
 
@@ -2212,9 +2214,9 @@ the size and then the data.</p>
 <p>With drm subsystem using <a class="reference internal" href="drm-kms-helpers.html#c.drm_rect" title="drm_rect"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_rect</span></code></a> to manage rectangular area this
 export it to user-space.</p>
 <p>Currently used by drm_mode_atomic blob property FB_DAMAGE_CLIPS.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

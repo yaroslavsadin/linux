@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Overview of the Linux Virtual File System &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -275,14 +277,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="overview-of-the-linux-virtual-file-system">
+  <div class="section" id="overview-of-the-linux-virtual-file-system">
 <h1>Overview of the Linux Virtual File System<a class="headerlink" href="#overview-of-the-linux-virtual-file-system" title="Permalink to this headline">¶</a></h1>
 <p>Original author: Richard Gooch &lt;<a class="reference external" href="mailto:rgooch&#37;&#52;&#48;atnf&#46;csiro&#46;au">rgooch<span>&#64;</span>atnf<span>&#46;</span>csiro<span>&#46;</span>au</a>&gt;</p>
 <ul class="simple">
 <li><p>Copyright (C) 1999 Richard Gooch</p></li>
 <li><p>Copyright (C) 2005 Pekka Enberg</p></li>
 </ul>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The Virtual File System (also known as the Virtual Filesystem Switch) is
 the software layer in the kernel that provides the filesystem interface
@@ -291,7 +293,7 @@ kernel which allows different filesystem implementations to coexist.</p>
 <p>VFS system calls open(2), stat(2), read(2), write(2), chmod(2) and so on
 are called from a process context.  Filesystem locking is described in
 the document <a class="reference internal" href="locking.html"><span class="doc">Locking</span></a>.</p>
-<section id="directory-entry-cache-dcache">
+<div class="section" id="directory-entry-cache-dcache">
 <h3>Directory Entry Cache (dcache)<a class="headerlink" href="#directory-entry-cache-dcache" title="Permalink to this headline">¶</a></h3>
 <p>The VFS implements the open(2), stat(2), chmod(2), and similar system
 calls.  The pathname argument that is passed to them is used by the VFS
@@ -304,8 +306,8 @@ most computers cannot fit all dentries in the RAM at the same time, some
 bits of the cache are missing.  In order to resolve your pathname into a
 dentry, the VFS may have to resort to creating dentries along the way,
 and then loading the inode.  This is done by looking up the inode.</p>
-</section>
-<section id="the-inode-object">
+</div>
+<div class="section" id="the-inode-object">
 <h3>The Inode Object<a class="headerlink" href="#the-inode-object" title="Permalink to this headline">¶</a></h3>
 <p>An individual dentry usually has a pointer to an inode.  Inodes are
 filesystem objects such as regular files, directories, FIFOs and other
@@ -321,8 +323,8 @@ required dentry (and hence the inode), we can do all those boring things
 like open(2) the file, or stat(2) it to peek at the inode data.  The
 stat(2) operation is fairly simple: once the VFS has the dentry, it
 peeks at the inode data and passes some of it back to userspace.</p>
-</section>
-<section id="the-file-object">
+</div>
+<div class="section" id="the-file-object">
 <h3>The File Object<a class="headerlink" href="#the-file-object" title="Permalink to this headline">¶</a></h3>
 <p>Opening a file requires another operation: allocation of a file
 structure (this is the kernel-side implementation of file descriptors).
@@ -337,9 +339,9 @@ is done by using the userspace file descriptor to grab the appropriate
 file structure, and then calling the required file structure method to
 do whatever is required.  For as long as the file is open, it keeps the
 dentry in use, which in turn means that the VFS inode is still in use.</p>
-</section>
-</section>
-<section id="registering-and-mounting-a-filesystem">
+</div>
+</div>
+<div class="section" id="registering-and-mounting-a-filesystem">
 <h2>Registering and Mounting a Filesystem<a class="headerlink" href="#registering-and-mounting-a-filesystem" title="Permalink to this headline">¶</a></h2>
 <p>To register and unregister a filesystem, use the following API
 functions:</p>
@@ -358,7 +360,7 @@ resolution reaches the mountpoint it will jump into the root of that
 vfsmount.</p>
 <p>You can see all filesystems that are registered to the kernel in the
 file /proc/filesystems.</p>
-<section id="struct-file-system-type">
+<div class="section" id="struct-file-system-type">
 <h3>struct file_system_type<a class="headerlink" href="#struct-file-system-type" title="Permalink to this headline">¶</a></h3>
 <p>This describes the filesystem.  As of kernel 2.6.39, the following
 members are defined:</p>
@@ -447,12 +449,12 @@ properly.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">silent</span></code></dt><dd><p>whether or not to be silent on error</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="the-superblock-object">
+</div>
+</div>
+<div class="section" id="the-superblock-object">
 <h2>The Superblock Object<a class="headerlink" href="#the-superblock-object" title="Permalink to this headline">¶</a></h2>
 <p>A superblock object represents a mounted filesystem.</p>
-<section id="struct-super-operations">
+<div class="section" id="struct-super-operations">
 <h3>struct super_operations<a class="headerlink" href="#struct-super-operations" title="Permalink to this headline">¶</a></h3>
 <p>This describes how the VFS can manipulate the superblock of your
 filesystem.  As of kernel 2.6.22, the following members are defined:</p>
@@ -572,8 +574,8 @@ large scan batch sizes.</p>
 <p>Whoever sets up the inode is responsible for filling in the “i_op”
 field.  This is a pointer to a “struct inode_operations” which describes
 the methods that can be performed on individual inodes.</p>
-</section>
-<section id="struct-xattr-handlers">
+</div>
+<div class="section" id="struct-xattr-handlers">
 <h3>struct xattr_handlers<a class="headerlink" href="#struct-xattr-handlers" title="Permalink to this headline">¶</a></h3>
 <p>On filesystems that support extended attributes (xattrs), the s_xattr
 superblock field points to a NULL-terminated array of xattr handlers.
@@ -604,12 +606,12 @@ setxattr(2) and removexattr(2) system calls.</p>
 <p>When none of the xattr handlers of a filesystem match the specified
 attribute name or when a filesystem doesn’t support extended attributes,
 the various <code class="docutils literal notranslate"><span class="pre">*xattr(2)</span></code> system calls return -EOPNOTSUPP.</p>
-</section>
-</section>
-<section id="id1">
+</div>
+</div>
+<div class="section" id="id1">
 <h2>The Inode Object<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>An inode object represents an object within the filesystem.</p>
-<section id="struct-inode-operations">
+<div class="section" id="struct-inode-operations">
 <h3>struct inode_operations<a class="headerlink" href="#struct-inode-operations" title="Permalink to this headline">¶</a></h3>
 <p>This describes how the VFS can manipulate an inode in your filesystem.
 As of kernel 2.6.22, the following members are defined:</p>
@@ -777,9 +779,9 @@ change miscellaneous file flags and attributes.  Callers hold
 i_rwsem exclusive.  If unset, then fall back to f_op-&gt;ioctl().</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="the-address-space-object">
+</div>
+</div>
+<div class="section" id="the-address-space-object">
 <h2>The Address Space Object<a class="headerlink" href="#the-address-space-object" title="Permalink to this headline">¶</a></h2>
 <p>The address space object is used to group and manage pages in the page
 cache.  It can be used to keep track of the pages in a file (or anything
@@ -838,7 +840,7 @@ information about the nature of and reason for the writeback request,
 and the constraints under which it is being done.  It is also used to
 return information back to the caller about the result of a writepage or
 writepages request.</p>
-<section id="handling-errors-during-writeback">
+<div class="section" id="handling-errors-during-writeback">
 <h3>Handling errors during writeback<a class="headerlink" href="#handling-errors-during-writeback" title="Permalink to this headline">¶</a></h3>
 <p>Most applications that do buffered I/O will periodically call a file
 synchronization call (fsync, fdatasync, msync or sync_file_range) to
@@ -866,8 +868,8 @@ occurs.  Then, after writing back data from the pagecache in their
 file-&gt;fsync operation, they should call file_check_and_advance_wb_err to
 ensure that the struct file’s error cursor has advanced to the correct
 point in the stream of errors emitted by the backing device(s).</p>
-</section>
-<section id="struct-address-space-operations">
+</div>
+<div class="section" id="struct-address-space-operations">
 <h3>struct address_space_operations<a class="headerlink" href="#struct-address-space-operations" title="Permalink to this headline">¶</a></h3>
 <p>This describes how the VFS can manipulate mapping of a file to page
 cache in your filesystem.  The following members are defined:</p>
@@ -1090,13 +1092,13 @@ can be used to back swapspace.</p>
 successful.</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="id2">
+</div>
+</div>
+<div class="section" id="id2">
 <h2>The File Object<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>A file object represents a file opened by a process.  This is also known
 as an “open file description” in POSIX parlance.</p>
-<section id="struct-file-operations">
+<div class="section" id="struct-file-operations">
 <h3>struct file_operations<a class="headerlink" href="#struct-file-operations" title="Permalink to this headline">¶</a></h3>
 <p>This describes how the VFS can manipulate an open file.  As of kernel
 4.18, the following members are defined:</p>
@@ -1243,11 +1245,11 @@ operations with those for the device driver, and then proceed to call
 the new open() method for the file.  This is how opening a device file
 in the filesystem eventually ends up calling the device driver open()
 method.</p>
-</section>
-</section>
-<section id="id3">
+</div>
+</div>
+<div class="section" id="id3">
 <h2>Directory Entry Cache (dcache)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
-<section id="struct-dentry-operations">
+<div class="section" id="struct-dentry-operations">
 <h3>struct dentry_operations<a class="headerlink" href="#struct-dentry-operations" title="Permalink to this headline">¶</a></h3>
 <p>This describes how a filesystem can overload the standard dentry
 operations.  Dentries and the dcache are the domain of the VFS and the
@@ -1412,8 +1414,8 @@ mode is selected with a non-NULL inode argument.</p>
 <p>Each dentry has a pointer to its parent dentry, as well as a hash list
 of child dentries.  Child dentries are basically like files in a
 directory.</p>
-</section>
-<section id="directory-entry-cache-api">
+</div>
+<div class="section" id="directory-entry-cache-api">
 <h3>Directory Entry Cache API<a class="headerlink" href="#directory-entry-cache-api" title="Permalink to this headline">¶</a></h3>
 <p>There are a number of functions defined which permit a filesystem to
 manipulate dentries:</p>
@@ -1454,11 +1456,11 @@ the dentry is returned.  The caller must use dput() to free the
 dentry when it finishes using it.</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="mount-options">
+</div>
+</div>
+<div class="section" id="mount-options">
 <h2>Mount Options<a class="headerlink" href="#mount-options" title="Permalink to this headline">¶</a></h2>
-<section id="parsing-options">
+<div class="section" id="parsing-options">
 <h3>Parsing options<a class="headerlink" href="#parsing-options" title="Permalink to this headline">¶</a></h3>
 <p>On mount and remount the filesystem is passed a string containing a
 comma separated list of mount options.  The options can have either of
@@ -1470,8 +1472,8 @@ option=value</p>
 <p>The &lt;linux/parser.h&gt; header defines an API that helps parse these
 options.  There are plenty of examples on how to use it in existing
 filesystems.</p>
-</section>
-<section id="showing-options">
+</div>
+<div class="section" id="showing-options">
 <h3>Showing options<a class="headerlink" href="#showing-options" title="Permalink to this headline">¶</a></h3>
 <p>If a filesystem accepts mount options, it must define show_options() to
 show all the currently active options.  The rules are:</p>
@@ -1490,9 +1492,9 @@ above rules.</p>
 <p>The underlying reason for the above rules is to make sure, that a mount
 can be accurately replicated (e.g. umounting and mounting again) based
 on the information found in /proc/mounts.</p>
-</section>
-</section>
-<section id="resources">
+</div>
+</div>
+<div class="section" id="resources">
 <h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>(Note some of these resources are not up-to-date with the latest kernel</dt><dd><p>version.)</p>
@@ -1506,8 +1508,8 @@ on the information found in /proc/mounts.</p>
 <dt>A small trail through the Linux kernel by Andries Brouwer. 2001</dt><dd><p>&lt;<a class="reference external" href="https://www.win.tue.nl/~aeb/linux/vfs/trail.html">https://www.win.tue.nl/~aeb/linux/vfs/trail.html</a>&gt;</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>1. 如何写Linux PCI驱动 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -254,7 +256,7 @@
 <dt class="field-odd">校译</dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
-<section id="linux-pci">
+<div class="section" id="linux-pci">
 <span id="cn-pci-pci-rst"></span><h1><span class="section-number">1. </span>如何写Linux PCI驱动<a class="headerlink" href="#linux-pci" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">作者</dt>
@@ -275,7 +277,7 @@ Linux APIs。</p>
 样进行，请参考源代码。</p>
 <p>请将有关Linux PCI API的问题/评论/补丁发送到“Linux PCI”
 &lt;<a class="reference external" href="mailto:linux-pci&#37;&#52;&#48;atrey&#46;karlin&#46;mff&#46;cuni&#46;cz">linux-pci<span>&#64;</span>atrey<span>&#46;</span>karlin<span>&#46;</span>mff<span>&#46;</span>cuni<span>&#46;</span>cz</a>&gt; 邮件列表。</p>
-<section id="pci">
+<div class="section" id="pci">
 <h2><span class="section-number">1.1. </span>PCI驱动的结构体<a class="headerlink" href="#pci" title="Permalink to this headline">¶</a></h2>
 <p>PCI驱动通过pci_register_driver()在系统中“发现”PCI设备。实际上，它是反过来的。
 当PCI通用代码发现一个新设备时，具有匹配“描述”的驱动程序将被通知。下面是这方面的细
@@ -312,8 +314,8 @@ Linux APIs。</p>
 <p>如果没有配置PCI子系统（没有设置 <code class="docutils literal notranslate"><span class="pre">CONFIG_PCI</span></code> ），下面描述的大多数PCI函数被定
 义为内联函数，要么完全为空，要么只是返回一个适当的错误代码，以避免在驱动程序中出现
 大量的 <code class="docutils literal notranslate"><span class="pre">ifdef</span></code> 。</p>
-</section>
-<section id="pci-register-driver">
+</div>
+<div class="section" id="pci-register-driver">
 <h2><span class="section-number">1.2. </span>调用pci_register_driver()<a class="headerlink" href="#pci-register-driver" title="Permalink to this headline">¶</a></h2>
 <p>PCI设备驱动程序在初始化过程中调用 <code class="docutils literal notranslate"><span class="pre">pci_register_driver()</span></code> ，并提供一个指向
 描述驱动程序的结构体的指针（ <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pci_driver</span></code> ）：</p>
@@ -349,7 +351,7 @@ pci_device_id表。</p>
 任何无人认领的PCI设备。</p>
 <p>当驱动退出时，它只是调用 <code class="docutils literal notranslate"><span class="pre">pci_unregister_driver()</span></code> ，PCI层会自动调用驱动处理
 的所有设备的移除钩子。</p>
-<section id="id1">
+<div class="section" id="id1">
 <h3><span class="section-number">1.2.1. </span>驱动程序功能/数据的“属性”<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>请在适当的地方标记初始化和清理函数（相应的宏在&lt;linux/init.h&gt;中定义）：</p>
 <blockquote>
@@ -377,9 +379,9 @@ pci_device_id表。</p>
 <li><p>如果你不确定应该使用哪种标记，请不要标记一个函数。不标记函数比标记错误的函数更好。</p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-<section id="id2">
+</div>
+</div>
+<div class="section" id="id2">
 <h2><span class="section-number">1.3. </span>如何手动搜索PCI设备<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>PCI驱动最好有一个非常好的理由不使用 <code class="docutils literal notranslate"><span class="pre">pci_register_driver()</span></code> 接口来搜索PCI设备。
 PCI设备被多个驱动程序控制的主要原因是一个PCI设备实现了几个不同的HW服务。例如，组合的
@@ -403,8 +405,8 @@ while (dev = pci_get_device(VENDOR_ID, DEVICE_ID, dev))
 配符替代。例如，这允许搜索来自一个特定供应商的任何设备。</p>
 <p>这些函数是热拔插安全的。它们会增加它们所返回的 <code class="docutils literal notranslate"><span class="pre">pci_dev</span></code> 的参考计数。你最终
 必须通过调用 <code class="docutils literal notranslate"><span class="pre">pci_dev_put()</span></code> 来减少这些设备上的参考计数（可能在模块卸载时）。</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2><span class="section-number">1.4. </span>设备初始化步骤<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>正如介绍中所指出的，大多数PCI驱动需要以下步骤进行设备初始化：</p>
 <blockquote>
@@ -421,7 +423,7 @@ while (dev = pci_get_device(VENDOR_ID, DEVICE_ID, dev))
 </div></blockquote>
 <p>驱动程序可以在任何时候访问PCI配置空间寄存器。（嗯，几乎如此。当运行BIST时，配置
 空间可以消失……但这只会导致PCI总线主控中止，读取配置将返回垃圾值）。）</p>
-<section id="id4">
+<div class="section" id="id4">
 <h3><span class="section-number">1.4.1. </span>启用PCI设备<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>在接触任何设备寄存器之前，驱动程序需要通过调用 <code class="docutils literal notranslate"><span class="pre">pci_enable_device()</span></code> 启用
 PCI设备。这将:</p>
@@ -453,8 +455,8 @@ PCI设备。这将:</p>
 查 <code class="docutils literal notranslate"><span class="pre">pci_set_mwi()</span></code> 的返回值，因为不是所有的架构或芯片组都支持 <code class="docutils literal notranslate"><span class="pre">Memory-Write-Invalidate</span></code> 。
 另外，如果 <code class="docutils literal notranslate"><span class="pre">Mem-Wr-Inval</span></code> 是好的，但不是必须的，可以调用 <code class="docutils literal notranslate"><span class="pre">pci_try_set_mwi()</span></code> ，让
 系统尽最大努力来启用 <code class="docutils literal notranslate"><span class="pre">Mem-Wr-Inval</span></code> 。</p>
-</section>
-<section id="mmio-iop">
+</div>
+<div class="section" id="mmio-iop">
 <h3><span class="section-number">1.4.2. </span>请求MMIO/IOP资源<a class="headerlink" href="#mmio-iop" title="Permalink to this headline">¶</a></h3>
 <p>内存（MMIO）和I/O端口地址不应该直接从PCI设备配置空间中读取。使用 <code class="docutils literal notranslate"><span class="pre">pci_dev</span></code> 结构体
 中的值，因为PCI “总线地址”可能已经被arch/chip-set特定的内核支持重新映射为“主机物理”
@@ -472,8 +474,8 @@ PCI设备。这将:</p>
 范围）和 <code class="docutils literal notranslate"><span class="pre">request_region()</span></code> （用于IO端口范围）。对于那些不被 “正常 “PCI BAR描
 述的地址资源，使用这些方法。</p>
 <p>也请看下面的 <code class="docutils literal notranslate"><span class="pre">pci_request_selected_regions()</span></code> 。</p>
-</section>
-<section id="dma">
+</div>
+<div class="section" id="dma">
 <h3><span class="section-number">1.4.3. </span>设置DMA掩码大小<a class="headerlink" href="#dma" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -491,19 +493,19 @@ PCI设备。这将:</p>
 样，这包括所有PCI-X和PCIe兼容设备的驱动程序。许多64位“PCI”设备（在PCI-X之前）
 和一些PCI-X设备对有效载荷（“流式”）数据具有64位DMA功能，但对控制（“一致性”）数
 据则没有。</p>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h3><span class="section-number">1.4.4. </span>设置共享控制数据<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>一旦DMA掩码设置完毕，驱动程序就可以分配“一致的”（又称共享的）内存。参见使用通
 用设备的动态DMA映射，了解DMA API的完整描述。本节只是提醒大家，需要在设备上启
 用DMA之前完成。</p>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h3><span class="section-number">1.4.5. </span>初始化设备寄存器<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>一些驱动程序需要对特定的“功能”字段进行编程，或对其他“供应商专用”寄存器进行初始
 化或重置。例如，清除挂起的中断。</p>
-</section>
-<section id="irq">
+</div>
+<div class="section" id="irq">
 <h3><span class="section-number">1.4.6. </span>注册IRQ处理函数<a class="headerlink" href="#irq" title="Permalink to this headline">¶</a></h3>
 <p>虽然调用 <code class="docutils literal notranslate"><span class="pre">request_irq()</span></code> 是这里描述的最后一步，但这往往只是初始化设备的另
 一个中间步骤。这一步通常可以推迟到设备被打开使用时进行。</p>
@@ -535,9 +537,9 @@ MSI-X可以分配几个单独的向量。</p>
 </ol>
 <p>参见drivers/infiniband/hw/mthca/或drivers/net/tg3.c了解MSI/MSI-X的使
 用实例。</p>
-</section>
-</section>
-<section id="id7">
+</div>
+</div>
+<div class="section" id="id7">
 <h2><span class="section-number">1.5. </span>PCI设备关闭<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <p>当一个PCI设备驱动程序被卸载时，需要执行以下大部分步骤:</p>
 <blockquote>
@@ -551,7 +553,7 @@ MSI-X可以分配几个单独的向量。</p>
 <li><p>释放MMIO/IO端口资源</p></li>
 </ul>
 </div></blockquote>
-<section id="id8">
+<div class="section" id="id8">
 <h3><span class="section-number">1.5.1. </span>停止设备上的IRQ<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <p>如何做到这一点是针对芯片/设备的。如果不这样做，如果（也只有在）IRQ与另一个设备
 共享，就会出现“尖叫中断”的可能性。</p>
@@ -562,47 +564,47 @@ MSI-X可以分配几个单独的向量。</p>
 一个好事情。</p>
 <p>这是使用MSI或MSI-X的另一个原因，如果它可用的话。MSI和MSI-X被定义为独占中断，
 因此不容易受到“尖叫中断”问题的影响。</p>
-</section>
-<section id="id9">
+</div>
+<div class="section" id="id9">
 <h3><span class="section-number">1.5.2. </span>释放IRQ<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <p>一旦设备被静止（不再有IRQ），就可以调用<a class="reference internal" href="../../../core-api/genericirq.html#c.free_irq" title="free_irq"><code class="xref c c-func docutils literal notranslate"><span class="pre">free_irq()</span></code></a>。这个函数将在任何待处理
 的IRQ被处理后返回控制，从该IRQ上“解钩”驱动程序的IRQ处理程序，最后如果没有人
 使用该IRQ，则释放它。</p>
-</section>
-<section id="id10">
+</div>
+<div class="section" id="id10">
 <h3><span class="section-number">1.5.3. </span>停止所有DMA活动<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>在试图取消分配DMA控制数据之前，停止所有的DMA操作是非常重要的。如果不这样做，
 可能会导致内存损坏、挂起，在某些芯片组上还会导致硬崩溃。</p>
 <p>在停止IRQ后停止DMA可以避免IRQ处理程序可能重新启动DMA引擎的竞争。</p>
 <p>虽然这个步骤听起来很明显，也很琐碎，但过去有几个“成熟”的驱动程序没有做好这个
 步骤。</p>
-</section>
-<section id="id11">
+</div>
+<div class="section" id="id11">
 <h3><span class="section-number">1.5.4. </span>释放DMA缓冲区<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
 <p>一旦DMA被停止，首先要清理流式DMA。即取消数据缓冲区的映射，如果有的话，将缓
 冲区返回给“上游”所有者。</p>
 <p>然后清理包含控制数据的“一致的”缓冲区。</p>
 <p>关于取消映射接口的细节，请参见Documentation/core-api/dma-api.rst。</p>
-</section>
-<section id="id12">
+</div>
+<div class="section" id="id12">
 <h3><span class="section-number">1.5.5. </span>从其他子系统取消注册<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
 <p>大多数低级别的PCI设备驱动程序支持其他一些子系统，如USB、ALSA、SCSI、NetDev、
 Infiniband等。请确保你的驱动程序没有从其他子系统中丢失资源。如果发生这种情况，
 典型的症状是当子系统试图调用已经卸载的驱动程序时，会出现Oops（恐慌）。</p>
-</section>
-<section id="mmio-io">
+</div>
+<div class="section" id="mmio-io">
 <h3><span class="section-number">1.5.6. </span>禁止设备对MMIO/IO端口地址做出响应<a class="headerlink" href="#mmio-io" title="Permalink to this headline">¶</a></h3>
 <p>io_unmap() MMIO或IO端口资源，然后调用<a class="reference internal" href="../../../driver-api/pci/pci.html#c.pci_disable_device" title="pci_disable_device"><code class="xref c c-func docutils literal notranslate"><span class="pre">pci_disable_device()</span></code></a>。
 这与<a class="reference internal" href="../../../driver-api/pci/pci.html#c.pci_enable_device" title="pci_enable_device"><code class="xref c c-func docutils literal notranslate"><span class="pre">pci_enable_device()</span></code></a>对称相反。
 在调用<a class="reference internal" href="../../../driver-api/pci/pci.html#c.pci_disable_device" title="pci_disable_device"><code class="xref c c-func docutils literal notranslate"><span class="pre">pci_disable_device()</span></code></a>后不要访问设备寄存器。</p>
-</section>
-<section id="id13">
+</div>
+<div class="section" id="id13">
 <h3><span class="section-number">1.5.7. </span>释放MMIO/IO端口资源<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <p>调用<a class="reference internal" href="../../../driver-api/pci/pci.html#c.pci_release_region" title="pci_release_region"><code class="xref c c-func docutils literal notranslate"><span class="pre">pci_release_region()</span></code></a>来标记MMIO或IO端口范围为可用。
 如果不这样做，通常会导致无法重新加载驱动程序。</p>
-</section>
-</section>
-<section id="id14">
+</div>
+</div>
+<div class="section" id="id14">
 <h2><span class="section-number">1.6. </span>如何访问PCI配置空间<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h2>
 <p>你可以使用 <cite>pci_(read|write)_config_(byte|word|dword)</cite> 来访问由
 <cite>struct pci_dev *</cite> 表示的设备的配置空间。所有这些函数在成功时返回0，或者返回一个
@@ -614,8 +616,8 @@ Infiniband等。请确保你的驱动程序没有从其他子系统中丢失资�
 <p>如果你访问配置头的标准部分的字段，请使用&lt;linux/pci.h&gt;中声明的位置和位的符号名称。</p>
 <p>如果你需要访问扩展的PCI功能寄存器，只要为特定的功能调用<a class="reference internal" href="../../../driver-api/pci/pci.html#c.pci_find_capability" title="pci_find_capability"><code class="xref c c-func docutils literal notranslate"><span class="pre">pci_find_capability()</span></code></a>，
 它就会为你找到相应的寄存器块。</p>
-</section>
-<section id="id15">
+</div>
+<div class="section" id="id15">
 <h2><span class="section-number">1.7. </span>其它有趣的函数<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h2>
 <table class="docutils align-default">
 <colgroup>
@@ -656,8 +658,8 @@ Infiniband等。请确保你的驱动程序没有从其他子系统中丢失资�
 </tr>
 </tbody>
 </table>
-</section>
-<section id="id16">
+</div>
+<div class="section" id="id16">
 <h2><span class="section-number">1.8. </span>杂项提示<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h2>
 <p>当向用户显示PCI设备名称时(例如，当驱动程序想告诉用户它找到了什么卡时)，请使
 用pci_name(pci_dev)。</p>
@@ -666,8 +668,8 @@ Infiniband等。请确保你的驱动程序没有从其他子系统中丢失资�
 主总线的系统上，它们的语义可能相当复杂。</p>
 <p>不要试图在你的驱动程序中开启快速寻址周期写入功能。总线上的所有设备都需要有这样
 的功能，所以这需要由平台和通用代码来处理，而不是由单个驱动程序来处理。</p>
-</section>
-<section id="id17">
+</div>
+<div class="section" id="id17">
 <h2><span class="section-number">1.9. </span>供应商和设备标识<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h2>
 <p>不要在include/linux/pci_ids.h中添加新的设备或供应商ID，除非它们是在多个驱
 动程序中共享。如果有需要的话，你可以在你的驱动程序中添加私有定义，或者直接使用
@@ -676,8 +678,8 @@ Infiniband等。请确保你的驱动程序没有从其他子系统中丢失资�
 表。</p>
 <p>请务必提交新的供应商/设备ID到https://pci-ids.ucw.cz/。在
 <a class="reference external" href="https://github.com/pciutils/pciids">https://github.com/pciutils/pciids</a>，有一个pci.ids文件的镜像。</p>
-</section>
-<section id="id18">
+</div>
+<div class="section" id="id18">
 <h2><span class="section-number">1.10. </span>过时的函数<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h2>
 <p>当你试图将一个旧的驱动程序移植到新的PCI接口时，你可能会遇到几个函数。它们不再存
 在于内核中，因为它们与热插拔或PCI域或具有健全的锁不兼容。</p>
@@ -702,8 +704,8 @@ Infiniband等。请确保你的驱动程序没有从其他子系统中丢失资�
 </tbody>
 </table>
 <p>另一种方法是传统的PCI设备驱动，即走PCI设备列表。这仍然是可能的，但不鼓励这样做。</p>
-</section>
-<section id="mmio">
+</div>
+<div class="section" id="mmio">
 <h2><span class="section-number">1.11. </span>MMIO空间和“写通知”<a class="headerlink" href="#mmio" title="Permalink to this headline">¶</a></h2>
 <p>将驱动程序从使用I/O端口空间转换为使用MMIO空间，通常需要一些额外的改变。具体来说，
 需要处理“写通知”。许多驱动程序（如tg3，acenic，sym53c8xx_2）已经做了这个。I/O
@@ -730,8 +732,8 @@ Infiniband等。请确保你的驱动程序没有从其他子系统中丢失资�
 <p>另一种需要注意的情况是在重置PCI设备时。使用PCI配置空间读数来刷新writeel()。如果预期
 PCI设备不响应readl()，这将在所有平台上优雅地处理PCI主控器的中止。大多数x86平台将允许
 MMIO读取主控中止（又称“软失败”），并返回垃圾（例如~0）。但许多RISC平台会崩溃（又称“硬失败”）。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>kAFS: AFS FILESYSTEM &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -317,9 +319,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kafs-afs-filesystem">
+  <div class="section" id="kafs-afs-filesystem">
 <h1>kAFS: AFS FILESYSTEM<a class="headerlink" href="#kafs-afs-filesystem" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This filesystem provides a fairly simple secure AFS filesystem driver. It is
 under development and does not yet provide the full feature set.  The features
@@ -334,8 +336,8 @@ it does support include:</p>
 <blockquote>
 <div><p>(*) pioctl() system call.</p>
 </div></blockquote>
-</section>
-<section id="compilation">
+</div>
+<div class="section" id="compilation">
 <h2>Compilation<a class="headerlink" href="#compilation" title="Permalink to this headline">¶</a></h2>
 <p>The filesystem should be enabled by turning on the kernel configuration
 options:</p>
@@ -355,8 +357,8 @@ the masks in the following files:</p>
 /sys/module/kafs/parameters/debug
 </pre></div>
 </div>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>When inserting the driver modules the root cell must be specified along with a
 list of volume location server IP addresses:</p>
@@ -393,8 +395,8 @@ specify connection to only volumes of those types.</p>
 <p>The name of the cell is optional, and if not given during a mount, then the
 named volume will be looked up in the cell specified during modprobe.</p>
 <p>Additional cells can be added through /proc (see later section).</p>
-</section>
-<section id="mountpoints">
+</div>
+<div class="section" id="mountpoints">
 <h2>Mountpoints<a class="headerlink" href="#mountpoints" title="Permalink to this headline">¶</a></h2>
 <p>AFS has a concept of mountpoints. In AFS terms, these are specially formatted
 symbolic links (of the same form as the “device name” passed to mount).  kAFS
@@ -412,8 +414,8 @@ mounted on /afs in one go by doing:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>umount /afs
 </pre></div>
 </div>
-</section>
-<section id="dynamic-root">
+</div>
+<div class="section" id="dynamic-root">
 <h2>Dynamic Root<a class="headerlink" href="#dynamic-root" title="Permalink to this headline">¶</a></h2>
 <p>A mount option is available to create a serverless mount that is only usable
 for dynamic lookup.  Creating such a mount can be done by, for example:</p>
@@ -426,8 +428,8 @@ looks up a cell of the same name, for example:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ls /afs/grand.central.org/
 </pre></div>
 </div>
-</section>
-<section id="proc-filesystem">
+</div>
+<div class="section" id="proc-filesystem">
 <h2>Proc Filesystem<a class="headerlink" href="#proc-filesystem" title="Permalink to this headline">¶</a></h2>
 <p>The AFS module creates a “/proc/fs/afs/” directory and populates it:</p>
 <blockquote>
@@ -454,8 +456,8 @@ USE STT VLID[0]  VLID[1]  VLID[2]  NAME
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="the-cell-database">
+</div>
+<div class="section" id="the-cell-database">
 <h2>The Cell Database<a class="headerlink" href="#the-cell-database" title="Permalink to this headline">¶</a></h2>
 <p>The filesystem maintains an internal database of all the cells it knows and the
 IP addresses of the volume location servers for those cells.  The cell to which
@@ -468,8 +470,8 @@ echo add grand.central.org 18.9.48.14:128.2.203.61:130.237.48.87 &gt;/proc/fs/af
 </pre></div>
 </div>
 <p>No other cell database operations are available at this time.</p>
-</section>
-<section id="security">
+</div>
+<div class="section" id="security">
 <h2>Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h2>
 <p>Secure operations are initiated by acquiring a key using the klog program.  A
 very primitive klog program is available at:</p>
@@ -505,8 +507,8 @@ made by a possessor of that key will be secured with that key.</p>
 passed to a process that doesn’t have that key (perhaps over an AF_UNIX
 socket), then the operations on the file will be made with key that was used to
 open the file.</p>
-</section>
-<section id="the-sys-substitution">
+</div>
+<div class="section" id="the-sys-substitution">
 <h2>The &#64;sys Substitution<a class="headerlink" href="#the-sys-substitution" title="Permalink to this headline">¶</a></h2>
 <p>The list of up to 16 &#64;sys substitutions for the current network namespace can
 be configured by writing a list to /proc/fs/afs/sysname:</p>
@@ -527,8 +529,8 @@ amd64_linux_26
 order given.</p>
 <p>By default, the list will contain one item that conforms to the pattern
 “&lt;arch&gt;_linux_26”, amd64 being the name for x86_64.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

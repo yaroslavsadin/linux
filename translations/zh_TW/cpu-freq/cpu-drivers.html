@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>如何實現一個新的CPUFreq處理器驅動程序？ &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -286,7 +288,7 @@
 Hu Haowen &lt;<a class="reference external" href="mailto:src&#46;res&#37;&#52;&#48;email&#46;cn">src<span>&#46;</span>res<span>&#64;</span>email<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="cpufreq">
+<div class="section" id="cpufreq">
 <span id="tw-cpu-drivers-rst"></span><h1>如何實現一個新的CPUFreq處理器驅動程序？<a class="headerlink" href="#cpufreq" title="Permalink to this headline">¶</a></h1>
 <p>作者:</p>
 <blockquote>
@@ -296,11 +298,11 @@ Hu Haowen &lt;<a class="reference external" href="mailto:src&#46;res&#37;&#52;&#
 <li><p>Viresh Kumar &lt;<a class="reference external" href="mailto:viresh&#46;kumar&#37;&#52;&#48;linaro&#46;org">viresh<span>&#46;</span>kumar<span>&#64;</span>linaro<span>&#46;</span>org</a>&gt;</p></li>
 </ul>
 </div></blockquote>
-<section id="id1">
+<div class="section" id="id1">
 <h2>1. 怎麼做？<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>如此，你剛剛得到了一個全新的CPU/晶片組及其數據手冊，並希望爲這個CPU/晶片組添加cpufreq
 支持？很好，這裡有一些至關重要的提示：</p>
-<section id="id2">
+<div class="section" id="id2">
 <h3>1.1 初始化<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>首先，在__initcall_level_7 (<a class="reference internal" href="../../../driver-api/basics.html#c.module_init" title="module_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_init()</span></code></a>)或更靠後的函數中檢查這個內核是否
 運行在正確的CPU和正確的晶片組上。如果是，則使用cpufreq_register_driver()向
@@ -333,8 +335,8 @@ sysfs。</p>
 <p>.boost_enabled - 如果設置，則啓用提升(boost)頻率。</p>
 <p>.set_boost - 一個指向per-policy函數的指針，該函數用來開啓/關閉提升(boost)頻率功能。</p>
 </div></blockquote>
-</section>
-<section id="per-cpu">
+</div>
+<div class="section" id="per-cpu">
 <h3>1.2 Per-CPU 初始化<a class="headerlink" href="#per-cpu" title="Permalink to this headline">¶</a></h3>
 <p>每當一個新的CPU被註冊到設備模型中，或者在cpufreq驅動註冊自己之後，如果此CPU的cpufreq策
 略不存在，則會調用per-policy的初始化函數cpufreq_driver.init。請注意，.init()和.exit()程序
@@ -379,8 +381,8 @@ CPU(即與它共享時鐘/電壓軌)的掩碼更新
 </table>
 <p>對於設置其中的一些值(cpuinfo.min[max]_freq, policy-&gt;min[max])，頻率表助手可能會有幫
 助。關於它們的更多信息，請參見第2節。</p>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h3>1.3 驗證<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>當用戶決定設置一個新的策略(由 「policy,governor,min,max組成」)時，必須對這個策略進行驗證，
 以便糾正不兼容的值。爲了驗證這些值，cpufreq_verify_within_limits(<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">cpufreq_policy</span>
@@ -388,21 +390,21 @@ CPU(即與它共享時鐘/電壓軌)的掩碼更新
 關於頻率表助手的詳細內容請參見第2節。</p>
 <p>您需要確保至少有一個有效頻率（或工作範圍）在 policy-&gt;min 和 policy-&gt;max 範圍內。如果有必
 要，先增加policy-&gt;max，只有在沒有辦法的情況下，才減少policy-&gt;min。</p>
-</section>
-<section id="target-target-index-setpolicy-fast-switch">
+</div>
+<div class="section" id="target-target-index-setpolicy-fast-switch">
 <h3>1.4 target 或 target_index 或 setpolicy 或 fast_switch?<a class="headerlink" href="#target-target-index-setpolicy-fast-switch" title="Permalink to this headline">¶</a></h3>
 <p>大多數cpufreq驅動甚至大多數cpu頻率升降算法只允許將CPU頻率設置爲預定義的固定值。對於這些，你
 可以使用-&gt;target()，-&gt;target_index()或-&gt;fast_switch()回調。</p>
 <p>有些cpufreq功能的處理器可以自己在某些限制之間切換頻率。這些應使用-&gt;setpolicy()回調。</p>
-</section>
-<section id="target-target-index">
+</div>
+<div class="section" id="target-target-index">
 <h3>1.5. target/target_index<a class="headerlink" href="#target-target-index" title="Permalink to this headline">¶</a></h3>
 <p>target_index調用有兩個參數：<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">cpufreq_policy</span> <span class="pre">*</span> <span class="pre">policy``和``unsigned</span> <span class="pre">int</span></code>
 索引(於列出的頻率表)。</p>
 <p>當調用這裡時，CPUfreq驅動必須設置新的頻率。實際頻率必須由freq_table[index].frequency決定。</p>
 <p>它應該總是在錯誤的情況下恢復到之前的頻率(即policy-&gt;restore_freq)，即使我們之前切換到中間頻率。</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3>已棄用<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>目標調用有三個參數。<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">cpufreq_policy</span> <span class="pre">*</span> <span class="pre">policy</span></code>, unsigned int target_frequency,
 unsigned int relation.</p>
@@ -416,21 +418,21 @@ unsigned int relation.</p>
 最高，但不能高於”)</p></li>
 </ul>
 <p>這裡，頻率表助手可能會幫助你–詳見第2節。</p>
-</section>
-<section id="fast-switch">
+</div>
+<div class="section" id="fast-switch">
 <h3>1.6. fast_switch<a class="headerlink" href="#fast-switch" title="Permalink to this headline">¶</a></h3>
 <p>這個函數用於從調度器的上下文進行頻率切換。並非所有的驅動都要實現它，因爲不允許在這個回調中睡眠。這
 個回調必須經過高度優化，以儘可能快地進行切換。</p>
 <p>這個函數有兩個參數： <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">cpufreq_policy</span> <span class="pre">*policy</span></code> 和 <code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">target_frequency</span></code>。</p>
-</section>
-<section id="setpolicy">
+</div>
+<div class="section" id="setpolicy">
 <h3>1.7 setpolicy<a class="headerlink" href="#setpolicy" title="Permalink to this headline">¶</a></h3>
 <p>setpolicy調用只需要一個``struct cpufreq_policy * policy``作爲參數。需要將處理器內或晶片組內動態頻
 率切換的下限設置爲policy-&gt;min，上限設置爲policy-&gt;max，如果支持的話，當policy-&gt;policy爲
 CPUFREQ_POLICY_PERFORMANCE時選擇面向性能的設置，當CPUFREQ_POLICY_POWERSAVE時選擇面向省電的設置。
 也可以查看drivers/cpufreq/longrun.c中的參考實現。</p>
-</section>
-<section id="get-intermediate-target-intermediate">
+</div>
+<div class="section" id="get-intermediate-target-intermediate">
 <h3>1.8 get_intermediate 和 target_intermediate<a class="headerlink" href="#get-intermediate-target-intermediate" title="Permalink to this headline">¶</a></h3>
 <p>僅適用於 target_index() 和 CPUFREQ_ASYNC_NOTIFICATION 未設置的驅動。</p>
 <p>get_intermediate應該返回一個平台想要切換到的穩定的中間頻率，target_intermediate()應該將CPU設置爲
@@ -439,9 +441,9 @@ target_index()中處理。</p>
 <p>在驅動程序不想因爲某個目標頻率切換到中間頻率的情況下，它們可以從get_intermediate()中返回’0’。在這種情況
 下，核心將直接調用-&gt;target_index()。</p>
 <p>注意：-&gt;target_index()應該在失敗的情況下恢復到policy-&gt;restore_freq，因爲core會爲此發送通知。</p>
-</section>
-</section>
-<section id="id5">
+</div>
+</div>
+<div class="section" id="id5">
 <h2>2. 頻率表助手<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <p>由於大多數cpufreq處理器只允許被設置爲幾個特定的頻率，因此，一個帶有一些函數的 「頻率表」可能會輔助處理器驅動
 程序的一些工作。這樣的 “頻率表” 由一個cpufreq_frequency_table條目構成的數組組成，”driver_data” 中包
@@ -470,8 +472,8 @@ cpufreq_for_each_entry(pos, driver_freq_table) {
 </div>
 <p>如果你需要在driver_freq_table中處理pos的位置，不要減去指針，因爲它的代價相當高。相反，使用宏
 cpufreq_for_each_entry_idx() 和 cpufreq_for_each_valid_entry_idx() 。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

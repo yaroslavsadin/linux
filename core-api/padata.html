@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The padata parallel execution mechanism &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -259,7 +261,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-padata-parallel-execution-mechanism">
+  <div class="section" id="the-padata-parallel-execution-mechanism">
 <h1>The padata parallel execution mechanism<a class="headerlink" href="#the-padata-parallel-execution-mechanism" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Date</dt>
@@ -273,9 +275,9 @@ decryption on large numbers of packets without reordering those packets.  This
 is currently the sole consumer of padata’s serialized job support.</p>
 <p>Padata also supports multithreaded jobs, splitting up the job evenly while load
 balancing and coordinating between threads.</p>
-<section id="running-serialized-jobs">
+<div class="section" id="running-serialized-jobs">
 <h2>Running Serialized Jobs<a class="headerlink" href="#running-serialized-jobs" title="Permalink to this headline">¶</a></h2>
-<section id="initializing">
+<div class="section" id="initializing">
 <h3>Initializing<a class="headerlink" href="#initializing" title="Permalink to this headline">¶</a></h3>
 <p>The first step in using padata to run serialized jobs is to set up a
 padata_instance structure for overall control of how jobs are to be run:</p>
@@ -292,8 +294,8 @@ struct padata_instance *padata_alloc(const char *name);
 <p>A padata_shell is used to submit a job to padata and allows a series of such
 jobs to be serialized independently.  A padata_instance may have one or more
 padata_shells associated with it, each allowing a separate series of jobs.</p>
-</section>
-<section id="modifying-cpumasks">
+</div>
+<div class="section" id="modifying-cpumasks">
 <h3>Modifying cpumasks<a class="headerlink" href="#modifying-cpumasks" title="Permalink to this headline">¶</a></h3>
 <p>The CPUs used to run jobs can be changed in two ways, programatically with
 <a class="reference internal" href="#c.padata_set_cpumask" title="padata_set_cpumask"><code class="xref c c-func docutils literal notranslate"><span class="pre">padata_set_cpumask()</span></code></a> or via sysfs.  The former is defined:</p>
@@ -326,8 +328,8 @@ offline CPU in the user-supplied cpumask comes online, padata is going to use
 it.</p>
 <p>Changing the CPU masks are expensive operations, so it should not be done with
 great frequency.</p>
-</section>
-<section id="running-a-job">
+</div>
+<div class="section" id="running-a-job">
 <h3>Running A Job<a class="headerlink" href="#running-a-job" title="Permalink to this headline">¶</a></h3>
 <p>Actually submitting work to the padata instance requires the creation of a
 padata_priv structure, which represents one job:</p>
@@ -370,8 +372,8 @@ parallel() will take responsibility for the job from this point.  The job
 need not be completed during this call, but, if parallel() leaves work
 outstanding, it should be prepared to be called again with a new job before
 the previous one completes.</p>
-</section>
-<section id="serializing-jobs">
+</div>
+<div class="section" id="serializing-jobs">
 <h3>Serializing Jobs<a class="headerlink" href="#serializing-jobs" title="Permalink to this headline">¶</a></h3>
 <p>When a job does complete, parallel() (or whatever function actually finishes
 the work) should inform padata of the fact with a call to:</p>
@@ -385,8 +387,8 @@ run with local software interrupts disabled.
 Note that this call may be deferred for a while since the padata code takes
 pains to ensure that jobs are completed in the order in which they were
 submitted.</p>
-</section>
-<section id="destroying">
+</div>
+<div class="section" id="destroying">
 <h3>Destroying<a class="headerlink" href="#destroying" title="Permalink to this headline">¶</a></h3>
 <p>Cleaning up a padata instance predictably involves calling the two free
 functions that correspond to the allocation in reverse:</p>
@@ -396,9 +398,9 @@ void padata_free(struct padata_instance *pinst);
 </div>
 <p>It is the user’s responsibility to ensure all outstanding jobs are complete
 before any of the above are called.</p>
-</section>
-</section>
-<section id="running-multithreaded-jobs">
+</div>
+</div>
+<div class="section" id="running-multithreaded-jobs">
 <h2>Running Multithreaded Jobs<a class="headerlink" href="#running-multithreaded-jobs" title="Permalink to this headline">¶</a></h2>
 <p>A multithreaded job has a main thread and zero or more helper threads, with the
 main thread participating in the job and then waiting until all helpers have
@@ -413,12 +415,12 @@ the first two delimit the range that the thread operates on and the last is a
 pointer to the job’s shared state, if any.  Prepare the shared state, which is
 typically allocated on the main thread’s stack.  Last, call
 <a class="reference internal" href="#c.padata_do_multithreaded" title="padata_do_multithreaded"><code class="xref c c-func docutils literal notranslate"><span class="pre">padata_do_multithreaded()</span></code></a>, which will return once the job is finished.</p>
-</section>
-<section id="interface">
+</div>
+<div class="section" id="interface">
 <h2>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h2>
 <dl class="c struct">
-<dt id="c.padata_priv">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">padata_priv</span></code><a class="headerlink" href="#c.padata_priv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_priv">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_priv</span></span></span><a class="headerlink" href="#c.padata_priv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Represents one job</p>
 </dd></dl>
 
@@ -452,8 +454,8 @@ typically allocated on the main thread’s stack.  Last, call
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.padata_list">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">padata_list</span></code><a class="headerlink" href="#c.padata_list" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_list">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_list</span></span></span><a class="headerlink" href="#c.padata_list" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>one per work type per CPU</p>
 </dd></dl>
 
@@ -472,8 +474,8 @@ typically allocated on the main thread’s stack.  Last, call
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.padata_serial_queue">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">padata_serial_queue</span></code><a class="headerlink" href="#c.padata_serial_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_serial_queue">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_serial_queue</span></span></span><a class="headerlink" href="#c.padata_serial_queue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The percpu padata serial queue</p>
 </dd></dl>
 
@@ -495,8 +497,8 @@ typically allocated on the main thread’s stack.  Last, call
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.padata_cpumask">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">padata_cpumask</span></code><a class="headerlink" href="#c.padata_cpumask" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_cpumask">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_cpumask</span></span></span><a class="headerlink" href="#c.padata_cpumask" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The cpumasks for the parallel/serial workers</p>
 </dd></dl>
 
@@ -515,8 +517,8 @@ typically allocated on the main thread’s stack.  Last, call
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.parallel_data">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">parallel_data</span></code><a class="headerlink" href="#c.parallel_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.parallel_data">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">parallel_data</span></span></span><a class="headerlink" href="#c.parallel_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Internal control structure, covers everything that depends on the cpumask in use.</p>
 </dd></dl>
 
@@ -559,8 +561,8 @@ typically allocated on the main thread’s stack.  Last, call
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.padata_shell">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">padata_shell</span></code><a class="headerlink" href="#c.padata_shell" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_shell">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_shell</span></span></span><a class="headerlink" href="#c.padata_shell" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Wrapper around <a class="reference internal" href="#c.parallel_data" title="parallel_data"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">parallel_data</span></code></a>, its purpose is to allow the underlying control structure to be replaced on the fly using RCU.</p>
 </dd></dl>
 
@@ -585,8 +587,8 @@ typically allocated on the main thread’s stack.  Last, call
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.padata_mt_job">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">padata_mt_job</span></code><a class="headerlink" href="#c.padata_mt_job" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_mt_job">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_mt_job</span></span></span><a class="headerlink" href="#c.padata_mt_job" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>represents one multithreaded job</p>
 </dd></dl>
 
@@ -624,8 +626,8 @@ depending on task size and minimum chunk size.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.padata_instance">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">padata_instance</span></code><a class="headerlink" href="#c.padata_instance" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_instance">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_instance</span></span></span><a class="headerlink" href="#c.padata_instance" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The overall control structure.</p>
 </dd></dl>
 
@@ -668,8 +670,8 @@ depending on task size and minimum chunk size.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.padata_do_parallel">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">padata_do_parallel</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.padata_shell" title="padata_shell"><span class="pre">padata_shell</span></a> <span class="pre">*</span><em><span class="pre">ps</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.padata_priv" title="padata_priv"><span class="pre">padata_priv</span></a> <span class="pre">*</span><em><span class="pre">padata</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">cb_cpu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_do_parallel" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_do_parallel">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_do_parallel</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.padata_shell" title="padata_shell"><span class="n"><span class="pre">padata_shell</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ps</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.padata_priv" title="padata_priv"><span class="n"><span class="pre">padata_priv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">padata</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cb_cpu</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_do_parallel" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>padata parallelization function</p>
 </dd></dl>
 
@@ -693,8 +695,8 @@ must be seen by padata_do_serial.</p>
 <p><strong>Return</strong></p>
 <p>0 on success or else negative error code.</p>
 <dl class="c function">
-<dt id="c.padata_do_serial">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">padata_do_serial</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.padata_priv" title="padata_priv"><span class="pre">padata_priv</span></a> <span class="pre">*</span><em><span class="pre">padata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_do_serial" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_do_serial">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_do_serial</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.padata_priv" title="padata_priv"><span class="n"><span class="pre">padata_priv</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">padata</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_do_serial" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>padata serialization function</p>
 </dd></dl>
 
@@ -707,8 +709,8 @@ must be seen by padata_do_serial.</p>
 <p>padata_do_serial must be called for every parallelized object.
 The serialization callback function will run with BHs off.</p>
 <dl class="c function">
-<dt id="c.padata_do_multithreaded">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">padata_do_multithreaded</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.padata_mt_job" title="padata_mt_job"><span class="pre">padata_mt_job</span></a> <span class="pre">*</span><em><span class="pre">job</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_do_multithreaded" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_do_multithreaded">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_do_multithreaded</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.padata_mt_job" title="padata_mt_job"><span class="n"><span class="pre">padata_mt_job</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">job</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_do_multithreaded" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>run a multithreaded job</p>
 </dd></dl>
 
@@ -720,8 +722,8 @@ The serialization callback function will run with BHs off.</p>
 <p><strong>Description</strong></p>
 <p>See the definition of <a class="reference internal" href="#c.padata_mt_job" title="padata_mt_job"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">padata_mt_job</span></code></a> for more details.</p>
 <dl class="c function">
-<dt id="c.padata_set_cpumask">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">padata_set_cpumask</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.padata_instance" title="padata_instance"><span class="pre">padata_instance</span></a> <span class="pre">*</span><em><span class="pre">pinst</span></em>, <span class="pre">int</span> <em><span class="pre">cpumask_type</span></em>, <span class="pre">cpumask_var_t</span> <em><span class="pre">cpumask</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_set_cpumask" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_set_cpumask">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_set_cpumask</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.padata_instance" title="padata_instance"><span class="n"><span class="pre">padata_instance</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pinst</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">cpumask_type</span></span>, <span class="n"><span class="pre">cpumask_var_t</span></span><span class="w"> </span><span class="n"><span class="pre">cpumask</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_set_cpumask" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Sets specified by <strong>cpumask_type</strong> cpumask to the value equivalent to <strong>cpumask</strong>.</p>
 </dd></dl>
 
@@ -738,8 +740,8 @@ to parallel and serial cpumasks respectively.</p>
 <p><strong>Return</strong></p>
 <p>0 on success or negative error code</p>
 <dl class="c function">
-<dt id="c.padata_alloc">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.padata_instance" title="padata_instance"><span class="pre">padata_instance</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">padata_alloc</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_alloc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_alloc">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.padata_instance" title="padata_instance"><span class="n"><span class="pre">padata_instance</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">padata_alloc</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_alloc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate and initialize a padata instance</p>
 </dd></dl>
 
@@ -751,8 +753,8 @@ to parallel and serial cpumasks respectively.</p>
 <p><strong>Return</strong></p>
 <p>new instance on success, NULL on error</p>
 <dl class="c function">
-<dt id="c.padata_free">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">padata_free</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.padata_instance" title="padata_instance"><span class="pre">padata_instance</span></a> <span class="pre">*</span><em><span class="pre">pinst</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_free">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.padata_instance" title="padata_instance"><span class="n"><span class="pre">padata_instance</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pinst</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free a padata instance</p>
 </dd></dl>
 
@@ -762,8 +764,8 @@ to parallel and serial cpumasks respectively.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.padata_alloc_shell">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.padata_shell" title="padata_shell"><span class="pre">padata_shell</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">padata_alloc_shell</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.padata_instance" title="padata_instance"><span class="pre">padata_instance</span></a> <span class="pre">*</span><em><span class="pre">pinst</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_alloc_shell" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_alloc_shell">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.padata_shell" title="padata_shell"><span class="n"><span class="pre">padata_shell</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">padata_alloc_shell</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.padata_instance" title="padata_instance"><span class="n"><span class="pre">padata_instance</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pinst</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_alloc_shell" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Allocate and initialize padata shell.</p>
 </dd></dl>
 
@@ -775,8 +777,8 @@ to parallel and serial cpumasks respectively.</p>
 <p><strong>Return</strong></p>
 <p>new shell on success, NULL on error</p>
 <dl class="c function">
-<dt id="c.padata_free_shell">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">padata_free_shell</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.padata_shell" title="padata_shell"><span class="pre">padata_shell</span></a> <span class="pre">*</span><em><span class="pre">ps</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_free_shell" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.padata_free_shell">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">padata_free_shell</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.padata_shell" title="padata_shell"><span class="n"><span class="pre">padata_shell</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ps</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.padata_free_shell" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free a padata shell</p>
 </dd></dl>
 
@@ -785,8 +787,8 @@ to parallel and serial cpumasks respectively.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">padata_shell</span> <span class="pre">*ps</span></code></dt><dd><p>padata shell to free</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

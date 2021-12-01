@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>How to instantiate I2C devices &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -262,14 +264,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="how-to-instantiate-i2c-devices">
+  <div class="section" id="how-to-instantiate-i2c-devices">
 <h1>How to instantiate I2C devices<a class="headerlink" href="#how-to-instantiate-i2c-devices" title="Permalink to this headline">¶</a></h1>
 <p>Unlike PCI or USB devices, I2C devices are not enumerated at the hardware
 level. Instead, the software must know which devices are connected on each
 I2C bus segment, and what address these devices are using. For this
 reason, the kernel code must instantiate I2C devices explicitly. There are
 several ways to achieve this, depending on the context and requirements.</p>
-<section id="method-1-declare-the-i2c-devices-statically">
+<div class="section" id="method-1-declare-the-i2c-devices-statically">
 <h2>Method 1: Declare the I2C devices statically<a class="headerlink" href="#method-1-declare-the-i2c-devices-statically" title="Permalink to this headline">¶</a></h2>
 <p>This method is appropriate when the I2C bus is a system bus as is the case
 for many embedded systems. On such systems, each I2C bus has a number which
@@ -280,7 +282,7 @@ architectures: device tree, ACPI or board files.</p>
 <p>When the I2C bus in question is registered, the I2C devices will be
 instantiated automatically by i2c-core. The devices will be automatically
 unbound and destroyed when the I2C bus they sit on goes away (if ever).</p>
-<section id="declare-the-i2c-devices-via-devicetree">
+<div class="section" id="declare-the-i2c-devices-via-devicetree">
 <h3>Declare the I2C devices via devicetree<a class="headerlink" href="#declare-the-i2c-devices-via-devicetree" title="Permalink to this headline">¶</a></h3>
 <p>On platforms using devicetree, the declaration of I2C devices is done in
 subnodes of the master controller.</p>
@@ -306,13 +308,13 @@ subnodes of the master controller.</p>
 <p>Here, two devices are attached to the bus using a speed of 100kHz. For
 additional properties which might be needed to set up the device, please refer
 to its devicetree documentation in Documentation/devicetree/bindings/.</p>
-</section>
-<section id="declare-the-i2c-devices-via-acpi">
+</div>
+<div class="section" id="declare-the-i2c-devices-via-acpi">
 <h3>Declare the I2C devices via ACPI<a class="headerlink" href="#declare-the-i2c-devices-via-acpi" title="Permalink to this headline">¶</a></h3>
 <p>ACPI can also describe I2C devices. There is special documentation for this
 which is currently located at <a class="reference internal" href="../firmware-guide/acpi/enumeration.html"><span class="doc">ACPI Based Device Enumeration</span></a>.</p>
-</section>
-<section id="declare-the-i2c-devices-in-board-files">
+</div>
+<div class="section" id="declare-the-i2c-devices-in-board-files">
 <h3>Declare the I2C devices in board files<a class="headerlink" href="#declare-the-i2c-devices-in-board-files" title="Permalink to this headline">¶</a></h3>
 <p>In many embedded architectures, devicetree has replaced the old hardware
 description based on board files, but the latter are still used in old
@@ -346,9 +348,9 @@ static void __init omap_h4_init(void)
 </div>
 <p>The above code declares 3 devices on I2C bus 1, including their respective
 addresses and custom data needed by their drivers.</p>
-</section>
-</section>
-<section id="method-2-instantiate-the-devices-explicitly">
+</div>
+</div>
+<div class="section" id="method-2-instantiate-the-devices-explicitly">
 <h2>Method 2: Instantiate the devices explicitly<a class="headerlink" href="#method-2-instantiate-the-devices-explicitly" title="Permalink to this headline">¶</a></h2>
 <p>This method is appropriate when a larger device uses an I2C bus for
 internal communication. A typical case is TV adapters. These can have a
@@ -408,8 +410,8 @@ simply gives up.</p>
 it on cleanup. This is done by calling <a class="reference internal" href="../driver-api/i2c.html#c.i2c_unregister_device" title="i2c_unregister_device"><code class="xref c c-func docutils literal notranslate"><span class="pre">i2c_unregister_device()</span></code></a> on the
 pointer that was earlier returned by <a class="reference internal" href="../driver-api/i2c.html#c.i2c_new_client_device" title="i2c_new_client_device"><code class="xref c c-func docutils literal notranslate"><span class="pre">i2c_new_client_device()</span></code></a> or
 i2c_new_scanned_device().</p>
-</section>
-<section id="method-3-probe-an-i2c-bus-for-certain-devices">
+</div>
+<div class="section" id="method-3-probe-an-i2c-bus-for-certain-devices">
 <h2>Method 3: Probe an I2C bus for certain devices<a class="headerlink" href="#method-3-probe-an-i2c-bus-for-certain-devices" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes you do not have enough information about an I2C device, not even
 to call i2c_new_scanned_device(). The typical case is hardware monitoring
@@ -454,8 +456,8 @@ the aforementioned undesirable side effects.</p></li>
 <p>Once again, method 3 should be avoided wherever possible. Explicit device
 instantiation (methods 1 and 2) is much preferred for it is safer and
 faster.</p>
-</section>
-<section id="method-4-instantiate-from-user-space">
+</div>
+<div class="section" id="method-4-instantiate-from-user-space">
 <h2>Method 4: Instantiate from user-space<a class="headerlink" href="#method-4-instantiate-from-user-space" title="Permalink to this headline">¶</a></h2>
 <p>In general, the kernel should know which I2C devices are connected and
 what addresses they live at. However, in certain cases, it does not, so a
@@ -495,8 +497,8 @@ device driver individually, it is much more efficient, and also has the
 advantage that you do not have to reload the driver to change a setting.
 You can also instantiate the device before the driver is loaded or even
 available, and you don’t need to know what driver the device needs.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

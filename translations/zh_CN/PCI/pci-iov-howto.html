@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>3. PCI Express I/O 虚拟化指南 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -254,7 +256,7 @@
 <dt class="field-odd">校译</dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
-<section id="pci-express-i-o">
+<div class="section" id="pci-express-i-o">
 <span id="cn-pci-iov-howto"></span><h1><span class="section-number">3. </span>PCI Express I/O 虚拟化指南<a class="headerlink" href="#pci-express-i-o" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">版权</dt>
@@ -267,9 +269,9 @@
 </ul>
 </dd>
 </dl>
-<section id="id1">
+<div class="section" id="id1">
 <h2><span class="section-number">3.1. </span>概述<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
-<section id="sr-iov">
+<div class="section" id="sr-iov">
 <h3><span class="section-number">3.1.1. </span>什么是SR-IOV<a class="headerlink" href="#sr-iov" title="Permalink to this headline">¶</a></h3>
 <p>单根I/O虚拟化（SR-IOV）是一种PCI Express扩展功能，它使一个物理设备显示为多个
 虚拟设备。物理设备被称为物理功能（PF），而虚拟设备被称为虚拟功能（VF）。VF的分
@@ -278,11 +280,11 @@
 功能编号（路由ID）来访问。而且每个VF也有PCI内存空间，用于映射其寄存器集。VF设
 备驱动程序对寄存器集进行操作，这样它就可以发挥功能，并作为一个真正的现有PCI设备
 出现。</p>
-</section>
-</section>
-<section id="id2">
+</div>
+</div>
+<div class="section" id="id2">
 <h2><span class="section-number">3.2. </span>使用指南<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
-<section id="id3">
+<div class="section" id="id3">
 <h3><span class="section-number">3.2.1. </span>我怎样才能启用SR-IOV功能<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>有多种方法可用于SR-IOV的启用。在第一种方法中，设备驱动（PF驱动）将通过SR-IOV
 核心提供的API控制功能的启用和禁用。如果硬件具有SR-IOV能力，加载其PF驱动器将启
@@ -292,16 +294,16 @@
 PCI SRIOV核心支持确保启用/禁用操作是有效的，以减少同一检查在多个驱动程序中的重
 复，例如，如果启用VF，检查numvfs == 0，确保numvfs &lt;= totalvfs。
 第二种方法是对新的/未来的VF设备的推荐方法。</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3><span class="section-number">3.2.2. </span>我怎样才能使用虚拟功能<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>在内核中，VF被视为热插拔的PCI设备，所以它们应该能够以与真正的PCI设备相同的方式
 工作。VF需要的设备驱动与普通PCI设备的驱动相同。</p>
-</section>
-</section>
-<section id="id5">
+</div>
+</div>
+<div class="section" id="id5">
 <h2><span class="section-number">3.3. </span>开发者指南<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
-<section id="sr-iov-api">
+<div class="section" id="sr-iov-api">
 <h3><span class="section-number">3.3.1. </span>SR-IOV API<a class="headerlink" href="#sr-iov-api" title="Permalink to this headline">¶</a></h3>
 <p>用来开启SR-IOV功能:</p>
 <ol class="loweralpha">
@@ -346,8 +348,8 @@ PCI SRIOV核心支持确保启用/禁用操作是有效的，以减少同一检�
 /sys/bus/pci/devices/&lt;DOMAIN:BUS:DEVICE.FUNCTION&gt;/sriov_drivers_autoprobe
 </pre></div>
 </div>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h3><span class="section-number">3.3.2. </span>用例<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>下面的代码演示了SR-IOV API的用法</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int dev_probe(struct pci_dev *dev, const struct pci_device_id *id)
@@ -413,9 +415,9 @@ static struct pci_driver dev_driver = {
 };
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

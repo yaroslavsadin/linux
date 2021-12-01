@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>In-Kernel Cache Object Representation and Management &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -274,10 +276,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="in-kernel-cache-object-representation-and-management">
+  <div class="section" id="in-kernel-cache-object-representation-and-management">
 <h1>In-Kernel Cache Object Representation and Management<a class="headerlink" href="#in-kernel-cache-object-representation-and-management" title="Permalink to this headline">¶</a></h1>
 <p>By: David Howells &lt;<a class="reference external" href="mailto:dhowells&#37;&#52;&#48;redhat&#46;com">dhowells<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
-<section id="representation">
+<div class="section" id="representation">
 <h2>Representation<a class="headerlink" href="#representation" title="Permalink to this headline">¶</a></h2>
 <p>FS-Cache maintains an in-kernel representation of each object that a netfs is
 currently interested in.  Such objects are represented by the fscache_cookie
@@ -340,8 +342,8 @@ may also be entirely unrepresented.</p>
 <p>As far as the netfs API goes, the netfs is only actually permitted to see
 pointers to the cookies.  The cookies themselves and any objects attached to
 those cookies are hidden from it.</p>
-</section>
-<section id="object-management-state-machine">
+</div>
+<div class="section" id="object-management-state-machine">
 <h2>Object Management State Machine<a class="headerlink" href="#object-management-state-machine" title="Permalink to this headline">¶</a></h2>
 <p>Within FS-Cache, each active object is managed by its own individual state
 machine.  The state for an object is kept in the fscache_object struct, in
@@ -369,7 +371,7 @@ which it is interested (object-&gt;event_mask) and relinquish the worker thread.
 Then when an event is raised (by calling fscache_raise_event()), if the event
 is not masked, the object will be queued for processing (by calling
 fscache_enqueue_object()).</p>
-<section id="provision-of-cpu-time">
+<div class="section" id="provision-of-cpu-time">
 <h3>Provision of CPU Time<a class="headerlink" href="#provision-of-cpu-time" title="Permalink to this headline">¶</a></h3>
 <p>The work to be done by the various states was given CPU time by the threads of
 the slow work facility.  This was used in preference to the workqueue facility
@@ -385,17 +387,17 @@ sleeping on I/O.  This means that single-threaded and 1-per-CPU-threaded
 workqueues don’t necessarily have the right numbers of threads.</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="locking-simplification">
+</div>
+<div class="section" id="locking-simplification">
 <h3>Locking Simplification<a class="headerlink" href="#locking-simplification" title="Permalink to this headline">¶</a></h3>
 <p>Because only one worker thread may be operating on any particular object’s
 state machine at once, this simplifies the locking, particularly with respect
 to disconnecting the netfs’s representation of a cache object (fscache_cookie)
 from the cache backend’s representation (fscache_object) - which may be
 requested from either end.</p>
-</section>
-</section>
-<section id="the-set-of-states">
+</div>
+</div>
+<div class="section" id="the-set-of-states">
 <h2>The Set of States<a class="headerlink" href="#the-set-of-states" title="Permalink to this headline">¶</a></h2>
 <p>The object state machine has a set of states that it can be in.  There are
 preparation states in which the object sets itself up and waits for its parent
@@ -512,7 +514,7 @@ ready to be deleted.  The object processor shouldn’t ever see an object in
 this state.</p>
 </li>
 </ol>
-<section id="the-set-of-events">
+<div class="section" id="the-set-of-events">
 <h3>The Set of Events<a class="headerlink" href="#the-set-of-events" title="Permalink to this headline">¶</a></h3>
 <p>There are a number of events that can be raised to an object state machine:</p>
 <blockquote>
@@ -545,9 +547,9 @@ cookie.</p>
 state machine, it doesn’t matter if there’s a collision with both ends trying
 to sever the connection at the same time.  The state machine can just pick
 which one it wants to honour, and that effects the other.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

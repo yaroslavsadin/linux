@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>System Suspend and Device Interrupts &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -274,11 +276,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="system-suspend-and-device-interrupts">
+  <div class="section" id="system-suspend-and-device-interrupts">
 <h1>System Suspend and Device Interrupts<a class="headerlink" href="#system-suspend-and-device-interrupts" title="Permalink to this headline">¶</a></h1>
 <p>Copyright (C) 2014 Intel Corp.
 Author: Rafael J. Wysocki &lt;<a class="reference external" href="mailto:rafael&#46;j&#46;wysocki&#37;&#52;&#48;intel&#46;com">rafael<span>&#46;</span>j<span>&#46;</span>wysocki<span>&#64;</span>intel<span>&#46;</span>com</a>&gt;</p>
-<section id="suspending-and-resuming-device-irqs">
+<div class="section" id="suspending-and-resuming-device-irqs">
 <h2>Suspending and Resuming Device IRQs<a class="headerlink" href="#suspending-and-resuming-device-irqs" title="Permalink to this headline">¶</a></h2>
 <p>Device interrupt request lines (IRQs) are generally disabled during system
 suspend after the “late” phase of suspending devices (that is, after all of the
@@ -298,8 +300,8 @@ resume, was the only practical way to mitigate them.</p>
 <p>Device IRQs are re-enabled during system resume, right before the “early” phase
 of resuming devices (that is, before starting to execute -&gt;resume_early
 callbacks for devices).  The function doing that is resume_device_irqs().</p>
-</section>
-<section id="the-irqf-no-suspend-flag">
+</div>
+<div class="section" id="the-irqf-no-suspend-flag">
 <h2>The IRQF_NO_SUSPEND Flag<a class="headerlink" href="#the-irqf-no-suspend-flag" title="Permalink to this headline">¶</a></h2>
 <p>There are interrupts that can legitimately trigger during the entire system
 suspend-resume cycle, including the “noirq” phases of suspending and resuming
@@ -318,8 +320,8 @@ for it will be executed as usual after suspend_device_irqs(), even if the
 IRQF_NO_SUSPEND flag was not passed to <a class="reference internal" href="../core-api/genericirq.html#c.request_irq" title="request_irq"><code class="xref c c-func docutils literal notranslate"><span class="pre">request_irq()</span></code></a> (or equivalent) by some of
 the IRQ’s users.  For this reason, using IRQF_NO_SUSPEND and IRQF_SHARED at the
 same time should be avoided.</p>
-</section>
-<section id="system-wakeup-interrupts-enable-irq-wake-and-disable-irq-wake">
+</div>
+<div class="section" id="system-wakeup-interrupts-enable-irq-wake-and-disable-irq-wake">
 <h2>System Wakeup Interrupts, enable_irq_wake() and disable_irq_wake()<a class="headerlink" href="#system-wakeup-interrupts-enable-irq-wake-and-disable-irq-wake" title="Permalink to this headline">¶</a></h2>
 <p>System wakeup interrupts generally need to be configured to wake up the system
 from sleep states, especially if they are used for different purposes (e.g. as
@@ -350,8 +352,8 @@ already suspended.  However, after suspend_device_irqs() interrupt handlers are
 not executed for system wakeup IRQs.  They are only executed for IRQF_NO_SUSPEND
 IRQs at that time, but those IRQs should not be configured for system wakeup
 using enable_irq_wake().</p>
-</section>
-<section id="interrupts-and-suspend-to-idle">
+</div>
+<div class="section" id="interrupts-and-suspend-to-idle">
 <h2>Interrupts and Suspend-to-Idle<a class="headerlink" href="#interrupts-and-suspend-to-idle" title="Permalink to this headline">¶</a></h2>
 <p>Suspend-to-idle (also known as the “freeze” sleep state) is a relatively new
 system sleep state that works by idling all of the processors and waiting for
@@ -364,8 +366,8 @@ analogy with what they do in the full system suspend case.  The only difference
 is that the wakeup from suspend-to-idle is signaled using the usual working
 state interrupt delivery mechanisms and doesn’t require the platform to use
 any special interrupt handling logic for it to work.</p>
-</section>
-<section id="irqf-no-suspend-and-enable-irq-wake">
+</div>
+<div class="section" id="irqf-no-suspend-and-enable-irq-wake">
 <h2>IRQF_NO_SUSPEND and enable_irq_wake()<a class="headerlink" href="#irqf-no-suspend-and-enable-irq-wake" title="Permalink to this headline">¶</a></h2>
 <p>There are very few valid reasons to use both enable_irq_wake() and the
 IRQF_NO_SUSPEND flag on the same IRQ, and it is never valid to use both for the
@@ -385,8 +387,8 @@ the latter to the core with pm_system_wakeup()), must use enable_irq_wake() to
 ensure that the IRQ will function as a wakeup source, and must request the IRQ
 with IRQF_COND_SUSPEND to tell the core that it meets these requirements. If
 these requirements are not met, it is not valid to use IRQF_COND_SUSPEND.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

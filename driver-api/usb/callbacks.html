@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>USB core callbacks &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -363,9 +365,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="usb-core-callbacks">
+  <div class="section" id="usb-core-callbacks">
 <h1>USB core callbacks<a class="headerlink" href="#usb-core-callbacks" title="Permalink to this headline">¶</a></h1>
-<section id="what-callbacks-will-usbcore-do">
+<div class="section" id="what-callbacks-will-usbcore-do">
 <h2>What callbacks will usbcore do?<a class="headerlink" href="#what-callbacks-will-usbcore-do" title="Permalink to this headline">¶</a></h2>
 <p>Usbcore will call into a driver through callbacks defined in the driver
 structure and through the completion handler of URBs a driver submits.
@@ -451,20 +453,20 @@ of being resumed.</p>
 <p>The ioctl interface (2) should be used only if you have a very good
 reason. Sysfs is preferred these days. The PM callbacks are covered
 separately in <a class="reference internal" href="power-management.html#usb-power-management"><span class="std std-ref">Power Management for USB</span></a>.</p>
-</section>
-<section id="calling-conventions">
+</div>
+<div class="section" id="calling-conventions">
 <h2>Calling conventions<a class="headerlink" href="#calling-conventions" title="Permalink to this headline">¶</a></h2>
 <p>All callbacks are mutually exclusive. There’s no need for locking
 against other USB callbacks. All callbacks are called from a task
 context. You may sleep. However, it is important that all sleeps have a
 small fixed upper limit in time. In particular you must not call out to
 user space and await results.</p>
-</section>
-<section id="hotplugging-callbacks">
+</div>
+<div class="section" id="hotplugging-callbacks">
 <h2>Hotplugging callbacks<a class="headerlink" href="#hotplugging-callbacks" title="Permalink to this headline">¶</a></h2>
 <p>These callbacks are intended to associate and disassociate a driver with
 an interface. A driver’s bond to an interface is exclusive.</p>
-<section id="the-probe-callback">
+<div class="section" id="the-probe-callback">
 <h3>The probe() callback<a class="headerlink" href="#the-probe-callback" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int (*probe) (struct usb_interface *intf,
               const struct usb_device_id *id);
@@ -480,8 +482,8 @@ that you know which internal state and identity you associate with a
 particular interface. The device will not be suspended and you may do IO
 to the interface you are called for and endpoint 0 of the device. Device
 initialisation that doesn’t take too long is a good idea here.</p>
-</section>
-<section id="the-disconnect-callback">
+</div>
+<div class="section" id="the-disconnect-callback">
 <h3>The disconnect() callback<a class="headerlink" href="#the-disconnect-callback" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>void (*disconnect) (struct usb_interface *intf);
 </pre></div>
@@ -495,11 +497,11 @@ If you are called due to a physical disconnection, all your URBs will be
 killed by usbcore. Note that in this case disconnect will be called some
 time after the physical disconnection. Thus your driver must be prepared
 to deal with failing IO even prior to the callback.</p>
-</section>
-</section>
-<section id="device-level-callbacks">
+</div>
+</div>
+<div class="section" id="device-level-callbacks">
 <h2>Device level callbacks<a class="headerlink" href="#device-level-callbacks" title="Permalink to this headline">¶</a></h2>
-<section id="pre-reset">
+<div class="section" id="pre-reset">
 <h3>pre_reset<a class="headerlink" href="#pre-reset" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int (*pre_reset)(struct usb_interface *intf);
 </pre></div>
@@ -511,8 +513,8 @@ restore.  No more URBs may be submitted until the post_reset method
 is called.</p>
 <p>If you need to allocate memory here, use GFP_NOIO or GFP_ATOMIC, if you
 are in atomic context.</p>
-</section>
-<section id="post-reset">
+</div>
+<div class="section" id="post-reset">
 <h3>post_reset<a class="headerlink" href="#post-reset" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int (*post_reset)(struct usb_interface *intf);
 </pre></div>
@@ -521,9 +523,9 @@ are in atomic context.</p>
 using the device again.</p>
 <p>If you need to allocate memory here, use GFP_NOIO or GFP_ATOMIC, if you
 are in atomic context.</p>
-</section>
-</section>
-<section id="call-sequences">
+</div>
+</div>
+<div class="section" id="call-sequences">
 <h2>Call sequences<a class="headerlink" href="#call-sequences" title="Permalink to this headline">¶</a></h2>
 <p>No callbacks other than probe will be invoked for an interface
 that isn’t bound to your driver.</p>
@@ -536,8 +538,8 @@ pre_reset is always followed by post_reset, even if the reset
 failed or the device has been unplugged.</p>
 <p>suspend is always followed by one of: resume, reset_resume, or
 disconnect.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>BPF sk_lookup program &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -264,7 +266,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bpf-sk-lookup-program">
+  <div class="section" id="bpf-sk-lookup-program">
 <h1>BPF sk_lookup program<a class="headerlink" href="#bpf-sk-lookup-program" title="Permalink to this headline">¶</a></h1>
 <p>BPF sk_lookup program type (<code class="docutils literal notranslate"><span class="pre">BPF_PROG_TYPE_SK_LOOKUP</span></code>) introduces programmability
 into the socket lookup performed by the transport layer when a packet is to be
@@ -272,7 +274,7 @@ delivered locally.</p>
 <p>When invoked BPF sk_lookup program can select a socket that will receive the
 incoming packet by calling the <code class="docutils literal notranslate"><span class="pre">bpf_sk_assign()</span></code> BPF helper function.</p>
 <p>Hooks for a common attach point (<code class="docutils literal notranslate"><span class="pre">BPF_SK_LOOKUP</span></code>) exist for both TCP and UDP.</p>
-<section id="motivation">
+<div class="section" id="motivation">
 <h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
 <p>BPF sk_lookup program type was introduced to address setup scenarios where
 binding sockets to an address with <code class="docutils literal notranslate"><span class="pre">bind()</span></code> socket call is impractical, such
@@ -287,16 +289,16 @@ case.</p></li>
 <p>Such setups would require creating and <code class="docutils literal notranslate"><span class="pre">bind()</span></code>’ing one socket to each of the
 IP address/port in the range, leading to resource consumption and potential
 latency spikes during socket lookup.</p>
-</section>
-<section id="attachment">
+</div>
+<div class="section" id="attachment">
 <h2>Attachment<a class="headerlink" href="#attachment" title="Permalink to this headline">¶</a></h2>
 <p>BPF sk_lookup program can be attached to a network namespace with
 <code class="docutils literal notranslate"><span class="pre">bpf(BPF_LINK_CREATE,</span> <span class="pre">...)</span></code> syscall using the <code class="docutils literal notranslate"><span class="pre">BPF_SK_LOOKUP</span></code> attach type and a
 netns FD as attachment <code class="docutils literal notranslate"><span class="pre">target_fd</span></code>.</p>
 <p>Multiple programs can be attached to one network namespace. Programs will be
 invoked in the same order as they were attached.</p>
-</section>
-<section id="hooks">
+</div>
+<div class="section" id="hooks">
 <h2>Hooks<a class="headerlink" href="#hooks" title="Permalink to this headline">¶</a></h2>
 <p>The attached BPF sk_lookup programs run whenever the transport layer needs to
 find a listening (TCP) or an unconnected (UDP) socket for an incoming packet.</p>
@@ -325,8 +327,8 @@ selected a socket, socket lookup fails.</p></li>
 <li><p>If all programs returned <code class="docutils literal notranslate"><span class="pre">SK_PASS</span></code> and none of them selected a socket,
 socket lookup continues on.</p></li>
 </ol>
-</section>
-<section id="api">
+</div>
+<div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p>In its context, an instance of <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">bpf_sk_lookup</span></code>, BPF sk_lookup program
 receives information about the packet that triggered the socket lookup. Namely:</p>
@@ -340,13 +342,13 @@ receives information about the packet that triggered the socket lookup. Namely:<
 <p>Refer to <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">bpf_sk_lookup</span></code> declaration in <code class="docutils literal notranslate"><span class="pre">linux/bpf.h</span></code> user API
 header, and <a class="reference external" href="https://man7.org/linux/man-pages/man7/bpf-helpers.7.html">bpf-helpers(7)</a> man-page section
 for <code class="docutils literal notranslate"><span class="pre">bpf_sk_assign()</span></code> for details.</p>
-</section>
-<section id="example">
+</div>
+<div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>See <code class="docutils literal notranslate"><span class="pre">tools/testing/selftests/bpf/prog_tests/sk_lookup.c</span></code> for the reference
 implementation.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

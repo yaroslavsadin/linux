@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>dm-log-writes &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -361,7 +363,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="dm-log-writes">
+  <div class="section" id="dm-log-writes">
 <h1>dm-log-writes<a class="headerlink" href="#dm-log-writes" title="Permalink to this headline">¶</a></h1>
 <p>This target takes 2 devices, one to pass all IO to normally, and one to log all
 of the write operations to.  This is intended for file system developers wishing
@@ -370,7 +372,7 @@ There is a log_write_entry written for every WRITE request and the target is
 able to take arbitrary data from userspace to insert into the log.  The data
 that is in the WRITE requests is copied into the log to make the replay happen
 exactly as it happened originally.</p>
-<section id="log-ordering">
+<div class="section" id="log-ordering">
 <h2>Log Ordering<a class="headerlink" href="#log-ordering" title="Permalink to this headline">¶</a></h2>
 <p>We log things in order of completion once we are sure the write is no longer in
 cache.  This means that normal WRITE requests are not actually logged until the
@@ -406,8 +408,8 @@ request.  Consider the following example:</p>
 <div><p>DISCARD 1, WRITE 1, FLUSH</p>
 </div></blockquote>
 <p>which isn’t quite what happened and wouldn’t be caught during the log replay.</p>
-</section>
-<section id="target-interface">
+</div>
+<div class="section" id="target-interface">
 <h2>Target interface<a class="headerlink" href="#target-interface" title="Permalink to this headline">¶</a></h2>
 <ol class="lowerroman">
 <li><p>Constructor</p>
@@ -465,13 +467,13 @@ interval that you want.</p>
 <p>Every log has a mark at the end labeled “dm-log-writes-end”.</p>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="userspace-component">
+</div>
+<div class="section" id="userspace-component">
 <h2>Userspace component<a class="headerlink" href="#userspace-component" title="Permalink to this headline">¶</a></h2>
 <p>There is a userspace tool that will replay the log for you in various ways.
 It can be found here: <a class="reference external" href="https://github.com/josefbacik/log-writes">https://github.com/josefbacik/log-writes</a></p>
-</section>
-<section id="example-usage">
+</div>
+<div class="section" id="example-usage">
 <h2>Example usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h2>
 <p>Say you want to test fsync on your file system.  You would do something like
 this:</p>
@@ -515,8 +517,8 @@ replay-log --log /dev/sdc --replay /dev/sdb --start-mark mkfs \
 <p>And that will replay the log until it sees a FUA request, run the fsck command
 and if the fsck passes it will replay to the next FUA, until it is completed or
 the fsck command exists abnormally.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

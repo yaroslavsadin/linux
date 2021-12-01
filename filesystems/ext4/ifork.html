@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The Contents of inode.i_block &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -234,19 +236,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-contents-of-inode-i-block">
+  <div class="section" id="the-contents-of-inode-i-block">
 <h1>The Contents of inode.i_block<a class="headerlink" href="#the-contents-of-inode-i-block" title="Permalink to this headline">¶</a></h1>
 <p>Depending on the type of file an inode describes, the 60 bytes of
 storage in <code class="docutils literal notranslate"><span class="pre">inode.i_block</span></code> can be used in different ways. In general,
 regular files and directories will use it for file block indexing
 information, and special files will use it for special purposes.</p>
-<section id="symbolic-links">
+<div class="section" id="symbolic-links">
 <h2>Symbolic Links<a class="headerlink" href="#symbolic-links" title="Permalink to this headline">¶</a></h2>
 <p>The target of a symbolic link will be stored in this field if the target
 string is less than 60 bytes long. Otherwise, either extents or block
 maps will be used to allocate data blocks to store the link target.</p>
-</section>
-<section id="direct-indirect-block-addressing">
+</div>
+<div class="section" id="direct-indirect-block-addressing">
 <h2>Direct/Indirect Block Addressing<a class="headerlink" href="#direct-indirect-block-addressing" title="Permalink to this headline">¶</a></h2>
 <p>In ext2/3, file block numbers were mapped to logical block numbers by
 means of an (up to) three level 1-1 block map. To find the logical block
@@ -288,7 +290,7 @@ block isn’t full of garbage.</p>
 </table>
 </td>
 </tr>
-<tr class="row-odd"><td><p>13</p></td>
+<tr class="row-even"><td><p>13</p></td>
 <td><p>Double-indirect block: (file blocks <code class="docutils literal notranslate"><span class="pre">$block_size</span></code>/4 + 12 to (<code class="docutils literal notranslate"><span class="pre">$block_size</span></code> / 4) ^ 2 + (<code class="docutils literal notranslate"><span class="pre">$block_size</span></code> / 4) + 11, or 1036 to 1049611 if 4KiB blocks)</p>
 <table class="docutils align-default">
 <colgroup>
@@ -386,8 +388,8 @@ lot of mapping data even for a large contiguous file! This inefficiency
 led to the creation of the extent mapping scheme, discussed below.</p>
 <p>Notice also that a file using this mapping scheme cannot be placed
 higher than 2^32 blocks.</p>
-</section>
-<section id="extent-tree">
+</div>
+<div class="section" id="extent-tree">
 <h2>Extent Tree<a class="headerlink" href="#extent-tree" title="Permalink to this headline">¶</a></h2>
 <p>In ext4, the file to logical block map has been replaced with an extent
 tree. Under the old scheme, allocating a contiguous run of 1,000 blocks
@@ -571,14 +573,14 @@ including) the checksum itself.</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="inline-data">
+</div>
+<div class="section" id="inline-data">
 <h2>Inline Data<a class="headerlink" href="#inline-data" title="Permalink to this headline">¶</a></h2>
 <p>If the inline data feature is enabled for the filesystem and the flag is
 set for the inode, it is possible that the first 60 bytes of the file
 data are stored here.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

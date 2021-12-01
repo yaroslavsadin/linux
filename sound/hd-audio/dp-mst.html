@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>HD-Audio DP-MST Support &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -262,7 +264,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="hd-audio-dp-mst-support">
+  <div class="section" id="hd-audio-dp-mst-support">
 <h1>HD-Audio DP-MST Support<a class="headerlink" href="#hd-audio-dp-mst-support" title="Permalink to this headline">¶</a></h1>
 <p>To support DP MST audio, HD Audio hdmi codec driver introduces virtual pin
 and dynamic pcm assignment.</p>
@@ -274,11 +276,11 @@ several pins, if we use one pcm per per_pin, there will be many PCMs.
 The new solution is to create a few PCMs and to dynamically bind pcm to
 per_pin. Driver uses spec-&gt;dyn_pcm_assign flag to indicate whether to use
 the new solution.</p>
-<section id="pcm">
+<div class="section" id="pcm">
 <h2>PCM<a class="headerlink" href="#pcm" title="Permalink to this headline">¶</a></h2>
 <p>To be added</p>
-</section>
-<section id="pin-initialization">
+</div>
+<div class="section" id="pin-initialization">
 <h2>Pin Initialization<a class="headerlink" href="#pin-initialization" title="Permalink to this headline">¶</a></h2>
 <p>Each pin may have several device entries (virtual pins). On Intel platform,
 the device entries number is dynamically changed. If DP MST hub is connected,
@@ -286,15 +288,15 @@ it is in DP MST mode, and the device entries number is 3. Otherwise, the
 device entries number is 1.</p>
 <p>To simplify the implementation, all the device entries will be initialized
 when bootup no matter whether it is in DP MST mode or not.</p>
-</section>
-<section id="connection-list">
+</div>
+<div class="section" id="connection-list">
 <h2>Connection list<a class="headerlink" href="#connection-list" title="Permalink to this headline">¶</a></h2>
 <p>DP MST reuses connection list code. The code can be reused because
 device entries on the same pin have the same connection list.</p>
 <p>This means DP MST gets the device entry connection list without the
 device entry setting.</p>
-</section>
-<section id="jack">
+</div>
+<div class="section" id="jack">
 <h2>Jack<a class="headerlink" href="#jack" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>Presume:</dt><dd><ul class="simple">
@@ -316,7 +318,7 @@ a member of hdmi_pcm. Each pin has one struct hdmi_pcm * pcm pointer.</p>
 <p>For !dyn_pcm_assign, per_pin-&gt;pcm will assigned to spec-&gt;pcm[n] statically.</p>
 <p>For dyn_pcm_assign, per_pin-&gt;pcm will assigned to spec-&gt;pcm[n]
 when monitor is hotplugged.</p>
-<section id="build-jack">
+<div class="section" id="build-jack">
 <h3>Build Jack<a class="headerlink" href="#build-jack" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p>dyn_pcm_assign</p>
@@ -326,12 +328,12 @@ when monitor is hotplugged.</p>
 <p>Use hda_jack and assign spec-&gt;pcm_rec[pcm_idx].jack = jack-&gt;jack statically.</p>
 </li>
 </ul>
-</section>
-<section id="unsolicited-event-enabling">
+</div>
+<div class="section" id="unsolicited-event-enabling">
 <h3>Unsolicited Event Enabling<a class="headerlink" href="#unsolicited-event-enabling" title="Permalink to this headline">¶</a></h3>
 <p>Enable unsolicited event if !acomp.</p>
-</section>
-<section id="monitor-hotplug-event-handling">
+</div>
+<div class="section" id="monitor-hotplug-event-handling">
 <h3>Monitor Hotplug Event Handling<a class="headerlink" href="#monitor-hotplug-event-handling" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p>acomp</p>
@@ -347,12 +349,12 @@ hdmi_present_sense() -&gt; hdmi_prepsent_sense_via_verbs()</p>
 Use hda_jack mechanism to handle jack events.</p>
 </li>
 </ul>
-</section>
-</section>
-<section id="others-to-be-added-later">
+</div>
+</div>
+<div class="section" id="others-to-be-added-later">
 <h2>Others to be added later<a class="headerlink" href="#others-to-be-added-later" title="Permalink to this headline">¶</a></h2>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

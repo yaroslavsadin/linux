@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Generic Mutex Subsystem &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -265,11 +267,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="generic-mutex-subsystem">
+  <div class="section" id="generic-mutex-subsystem">
 <h1>Generic Mutex Subsystem<a class="headerlink" href="#generic-mutex-subsystem" title="Permalink to this headline">¶</a></h1>
 <p>started by Ingo Molnar &lt;<a class="reference external" href="mailto:mingo&#37;&#52;&#48;redhat&#46;com">mingo<span>&#64;</span>redhat<span>&#46;</span>com</a>&gt;</p>
 <p>updated by Davidlohr Bueso &lt;<a class="reference external" href="mailto:davidlohr&#37;&#52;&#48;hp&#46;com">davidlohr<span>&#64;</span>hp<span>&#46;</span>com</a>&gt;</p>
-<section id="what-are-mutexes">
+<div class="section" id="what-are-mutexes">
 <h2>What are mutexes?<a class="headerlink" href="#what-are-mutexes" title="Permalink to this headline">¶</a></h2>
 <p>In the Linux kernel, mutexes refer to a particular locking primitive
 that enforces serialization on shared memory systems, and not only to
@@ -280,8 +282,8 @@ as an alternative to these. This new data structure provided a number
 of advantages, including simpler interfaces, and at that time smaller
 code (see Disadvantages).</p>
 <p>[1] <a class="reference external" href="https://lwn.net/Articles/164802/">https://lwn.net/Articles/164802/</a></p>
-</section>
-<section id="implementation">
+</div>
+<div class="section" id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p>Mutexes are represented by ‘struct mutex’, defined in include/linux/mutex.h
 and implemented in kernel/locking/mutex.c. These locks use an atomic variable
@@ -327,8 +329,8 @@ makes them more practically a hybrid type. By simply not interrupting a
 task and busy-waiting for a few cycles instead of immediately sleeping,
 the performance of this lock has been seen to significantly improve a
 number of workloads. Note that this technique is also used for rw-semaphores.</p>
-</section>
-<section id="semantics">
+</div>
+<div class="section" id="semantics">
 <h2>Semantics<a class="headerlink" href="#semantics" title="Permalink to this headline">¶</a></h2>
 <p>The mutex subsystem checks and enforces the following rules:</p>
 <blockquote>
@@ -360,8 +362,8 @@ list of all locks held in the system, printout of them.</p></li>
 locks and tasks (and only those tasks).</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="interfaces">
+</div>
+<div class="section" id="interfaces">
 <h2>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h2>
 <p>Statically define the mutex:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DEFINE_MUTEX(name);
@@ -395,21 +397,21 @@ int mutex_lock_interruptible(struct mutex *lock);
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int mutex_is_locked(struct mutex *lock);
 </pre></div>
 </div>
-</section>
-<section id="disadvantages">
+</div>
+<div class="section" id="disadvantages">
 <h2>Disadvantages<a class="headerlink" href="#disadvantages" title="Permalink to this headline">¶</a></h2>
 <p>Unlike its original design and purpose, ‘struct mutex’ is among the largest
 locks in the kernel. E.g: on x86-64 it is 32 bytes, where ‘struct semaphore’
 is 24 bytes and rw_semaphore is 40 bytes. Larger structure sizes mean more CPU
 cache and memory footprint.</p>
-</section>
-<section id="when-to-use-mutexes">
+</div>
+<div class="section" id="when-to-use-mutexes">
 <h2>When to use mutexes<a class="headerlink" href="#when-to-use-mutexes" title="Permalink to this headline">¶</a></h2>
 <p>Unless the strict semantics of mutexes are unsuitable and/or the critical
 region prevents the lock from being shared, always prefer them to any other
 locking primitive.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

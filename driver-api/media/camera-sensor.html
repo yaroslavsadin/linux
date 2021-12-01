@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>8. Writing camera sensor drivers &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -355,13 +357,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="writing-camera-sensor-drivers">
+  <div class="section" id="writing-camera-sensor-drivers">
 <h1><span class="section-number">8. </span>Writing camera sensor drivers<a class="headerlink" href="#writing-camera-sensor-drivers" title="Permalink to this headline">¶</a></h1>
-<section id="csi-2-and-parallel-bt-601-and-bt-656-busses">
+<div class="section" id="csi-2-and-parallel-bt-601-and-bt-656-busses">
 <h2><span class="section-number">8.1. </span>CSI-2 and parallel (BT.601 and BT.656) busses<a class="headerlink" href="#csi-2-and-parallel-bt-601-and-bt-656-busses" title="Permalink to this headline">¶</a></h2>
 <p>Please see <a class="reference internal" href="tx-rx.html#transmitter-receiver"><span class="std std-ref">Pixel data transmitter and receiver drivers</span></a>.</p>
-</section>
-<section id="handling-clocks">
+</div>
+<div class="section" id="handling-clocks">
 <h2><span class="section-number">8.2. </span>Handling clocks<a class="headerlink" href="#handling-clocks" title="Permalink to this headline">¶</a></h2>
 <p>Camera sensors have an internal clock tree including a PLL and a number of
 divisors. The clock tree is generally configured by the driver based on a few
@@ -373,12 +375,12 @@ come out of the SoC, and in many cases a specific frequency is designed to be
 used in the system. Using another frequency may cause harmful effects
 elsewhere. Therefore only the pre-determined frequencies are configurable by the
 user.</p>
-<section id="acpi">
+<div class="section" id="acpi">
 <h3><span class="section-number">8.2.1. </span>ACPI<a class="headerlink" href="#acpi" title="Permalink to this headline">¶</a></h3>
 <p>Read the <code class="docutils literal notranslate"><span class="pre">clock-frequency</span></code> _DSD property to denote the frequency. The driver
 can rely on this frequency being used.</p>
-</section>
-<section id="devicetree">
+</div>
+<div class="section" id="devicetree">
 <h3><span class="section-number">8.2.2. </span>Devicetree<a class="headerlink" href="#devicetree" title="Permalink to this headline">¶</a></h3>
 <p>The currently preferred way to achieve this is using <code class="docutils literal notranslate"><span class="pre">assigned-clocks</span></code>,
 <code class="docutils literal notranslate"><span class="pre">assigned-clock-parents</span></code> and <code class="docutils literal notranslate"><span class="pre">assigned-clock-rates</span></code> properties. See
@@ -388,21 +390,21 @@ information. The driver then gets the frequency using <code class="docutils lite
 hasn’t been modified directly or indirectly by another driver, or supported by
 the board’s clock tree to begin with. Changes to the Common Clock Framework API
 are required to ensure reliability.</p>
-</section>
-</section>
-<section id="frame-size">
+</div>
+</div>
+<div class="section" id="frame-size">
 <h2><span class="section-number">8.3. </span>Frame size<a class="headerlink" href="#frame-size" title="Permalink to this headline">¶</a></h2>
 <p>There are two distinct ways to configure the frame size produced by camera
 sensors.</p>
-<section id="freely-configurable-camera-sensor-drivers">
+<div class="section" id="freely-configurable-camera-sensor-drivers">
 <h3><span class="section-number">8.3.1. </span>Freely configurable camera sensor drivers<a class="headerlink" href="#freely-configurable-camera-sensor-drivers" title="Permalink to this headline">¶</a></h3>
 <p>Freely configurable camera sensor drivers expose the device’s internal
 processing pipeline as one or more sub-devices with different cropping and
 scaling configurations. The output size of the device is the result of a series
 of cropping and scaling operations from the device’s pixel array’s size.</p>
 <p>An example of such a driver is the CCS driver (see <code class="docutils literal notranslate"><span class="pre">drivers/media/i2c/ccs</span></code>).</p>
-</section>
-<section id="register-list-based-drivers">
+</div>
+<div class="section" id="register-list-based-drivers">
 <h3><span class="section-number">8.3.2. </span>Register list based drivers<a class="headerlink" href="#register-list-based-drivers" title="Permalink to this headline">¶</a></h3>
 <p>Register list based drivers generally, instead of able to configure the device
 they control based on user requests, are limited to a number of preset
@@ -411,14 +413,14 @@ level are independent. How a driver picks such configuration is based on the
 format set on a source pad at the end of the device’s internal pipeline.</p>
 <p>Most sensor drivers are implemented this way, see e.g.
 <code class="docutils literal notranslate"><span class="pre">drivers/media/i2c/imx319.c</span></code> for an example.</p>
-</section>
-</section>
-<section id="frame-interval-configuration">
+</div>
+</div>
+<div class="section" id="frame-interval-configuration">
 <h2><span class="section-number">8.4. </span>Frame interval configuration<a class="headerlink" href="#frame-interval-configuration" title="Permalink to this headline">¶</a></h2>
 <p>There are two different methods for obtaining possibilities for different frame
 intervals as well as configuring the frame interval. Which one to implement
 depends on the type of the device.</p>
-<section id="raw-camera-sensors">
+<div class="section" id="raw-camera-sensors">
 <h3><span class="section-number">8.4.1. </span>Raw camera sensors<a class="headerlink" href="#raw-camera-sensors" title="Permalink to this headline">¶</a></h3>
 <p>Instead of a high level parameter such as frame interval, the frame interval is
 a result of the configuration of a number of camera sensor implementation
@@ -443,17 +445,17 @@ device’s internal processing pipeline.</p>
 <p>The first entity in the linear pipeline is the pixel array. The pixel array may
 be followed by other entities that are there to allow configuring binning,
 skipping, scaling or digital crop <a class="reference internal" href="../../userspace-api/media/v4l/dev-subdev.html#v4l2-subdev-selections"><span class="std std-ref">Selections: cropping, scaling and composition</span></a>.</p>
-</section>
-<section id="usb-cameras-etc-devices">
+</div>
+<div class="section" id="usb-cameras-etc-devices">
 <h3><span class="section-number">8.4.2. </span>USB cameras etc. devices<a class="headerlink" href="#usb-cameras-etc-devices" title="Permalink to this headline">¶</a></h3>
 <p>USB video class hardware, as well as many cameras offering a similar higher
 level interface natively, generally use the concept of frame interval (or frame
 rate) on device level in firmware or hardware. This means lower level controls
 implemented by raw cameras may not be used on uAPI (or even kAPI) to control the
 frame interval on these devices.</p>
-</section>
-</section>
-<section id="power-management">
+</div>
+</div>
+<div class="section" id="power-management">
 <h2><span class="section-number">8.5. </span>Power management<a class="headerlink" href="#power-management" title="Permalink to this headline">¶</a></h2>
 <p>Always use runtime PM to manage the power states of your device. Camera sensor
 drivers are in no way special in this respect: they are responsible for
@@ -469,7 +471,7 @@ should not use s_power.</p>
 <p>Please see examples in e.g. <code class="docutils literal notranslate"><span class="pre">drivers/media/i2c/ov8856.c</span></code> and
 <code class="docutils literal notranslate"><span class="pre">drivers/media/i2c/ccs/ccs-core.c</span></code>. The two drivers work in both ACPI
 and DT based systems.</p>
-<section id="control-framework">
+<div class="section" id="control-framework">
 <h3><span class="section-number">8.5.1. </span>Control framework<a class="headerlink" href="#control-framework" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">v4l2_ctrl_handler_setup()</span></code> function may not be used in the device’s runtime
 PM <code class="docutils literal notranslate"><span class="pre">runtime_resume</span></code> callback, as it has no way to figure out the power state
@@ -477,16 +479,16 @@ of the device. This is because the power state of the device is only changed
 after the power state transition has taken place. The <code class="docutils literal notranslate"><span class="pre">s_ctrl</span></code> callback can be
 used to obtain device’s power state after the power state transition:</p>
 <dl class="c function">
-<dt id="c.pm_runtime_get_if_in_use">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">pm_runtime_get_if_in_use</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><span class="pre">;</span><a class="headerlink" href="#c.pm_runtime_get_if_in_use" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.pm_runtime_get_if_in_use">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pm_runtime_get_if_in_use</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../infrastructure.html#c.device" title="device"><span class="n"><span class="pre">device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><span class="p"><span class="pre">;</span></span><a class="headerlink" href="#c.pm_runtime_get_if_in_use" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>The function returns a non-zero value if it succeeded getting the power count or
 runtime PM was disabled, in either of which cases the driver may proceed to
 access the device.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>MD Cluster &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -351,11 +353,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="md-cluster">
+  <div class="section" id="md-cluster">
 <h1>MD Cluster<a class="headerlink" href="#md-cluster" title="Permalink to this headline">¶</a></h1>
 <p>The cluster MD is a shared-device RAID for a cluster, it supports
 two levels: raid1 and raid10 (limited support).</p>
-<section id="on-disk-format">
+<div class="section" id="on-disk-format">
 <h2>1. On-disk format<a class="headerlink" href="#on-disk-format" title="Permalink to this headline">¶</a></h2>
 <p>Separate write-intent-bitmaps are used for each cluster node.
 The bitmaps record all writes that may have been started on that node,
@@ -380,11 +382,11 @@ one node writes to any given block at a time, so a write request will</p>
 <p>Reads are just handled normally. It is up to the filesystem to ensure
 one node doesn’t read from a location where another node (or the same
 node) is writing.</p>
-</section>
-<section id="dlm-locks-for-management">
+</div>
+<div class="section" id="dlm-locks-for-management">
 <h2>2. DLM Locks for management<a class="headerlink" href="#dlm-locks-for-management" title="Permalink to this headline">¶</a></h2>
 <p>There are three groups of locks for managing the device:</p>
-<section id="bitmap-lock-resource-bm-lockres">
+<div class="section" id="bitmap-lock-resource-bm-lockres">
 <h3>2.1 Bitmap lock resource (bm_lockres)<a class="headerlink" href="#bitmap-lock-resource-bm-lockres" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The bm_lockres protects individual node bitmaps. They are named in
@@ -400,8 +402,8 @@ of sectors that are being re-synced by that node.  No other
 node may write to those sectors.  This is used when a new nodes
 joins the cluster.</p>
 </div></blockquote>
-</section>
-<section id="message-passing-locks">
+</div>
+<div class="section" id="message-passing-locks">
 <h3>2.2 Message passing locks<a class="headerlink" href="#message-passing-locks" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Each node has to communicate with other nodes when starting or ending
@@ -409,29 +411,29 @@ resync, and for metadata superblock updates.  This communication is
 managed through three locks: “token”, “message”, and “ack”, together
 with the Lock Value Block (LVB) of one of the “message” lock.</p>
 </div></blockquote>
-</section>
-<section id="new-device-management">
+</div>
+<div class="section" id="new-device-management">
 <h3>2.3 new-device management<a class="headerlink" href="#new-device-management" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>A single lock: “no-new-dev” is used to co-ordinate the addition of
 new devices - this must be synchronized across the array.
 Normally all nodes hold a concurrent-read lock on this device.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="communication">
+</div>
+</div>
+<div class="section" id="communication">
 <h2>3. Communication<a class="headerlink" href="#communication" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Messages can be broadcast to all nodes, and the sender waits for all
 other nodes to acknowledge the message before proceeding.  Only one
 message can be processed at a time.</p>
 </div></blockquote>
-<section id="message-types">
+<div class="section" id="message-types">
 <h3>3.1 Message Types<a class="headerlink" href="#message-types" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>There are six types of messages which are passed:</p>
 </div></blockquote>
-<section id="metadata-updated">
+<div class="section" id="metadata-updated">
 <h4>3.1.1 METADATA_UPDATED<a class="headerlink" href="#metadata-updated" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>informs other nodes that the metadata has
@@ -439,8 +441,8 @@ been updated, and the node must re-read the md superblock. This is
 performed synchronously. It is primarily used to signal device
 failure.</p>
 </div></blockquote>
-</section>
-<section id="resyncing">
+</div>
+<div class="section" id="resyncing">
 <h4>3.1.2 RESYNCING<a class="headerlink" href="#resyncing" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>informs other nodes that a resync is initiated or
@@ -450,16 +452,16 @@ sending node is about to resync. This overrides any previous
 notification from that node: only one ranged can be resynced at a
 time per-node.</p>
 </div></blockquote>
-</section>
-<section id="newdisk">
+</div>
+<div class="section" id="newdisk">
 <h4>3.1.3 NEWDISK<a class="headerlink" href="#newdisk" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>informs other nodes that a device is being added to
 the array. Message contains an identifier for that device.  See
 below for further details.</p>
 </div></blockquote>
-</section>
-<section id="remove">
+</div>
+<div class="section" id="remove">
 <h4>3.1.4 REMOVE<a class="headerlink" href="#remove" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><blockquote>
@@ -478,29 +480,29 @@ isn’t clean, then another node is informed to take the ownership of
 resync.</p>
 </div></blockquote>
 </div></blockquote>
-</section>
-</section>
-<section id="communication-mechanism">
+</div>
+</div>
+<div class="section" id="communication-mechanism">
 <h3>3.2 Communication mechanism<a class="headerlink" href="#communication-mechanism" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The DLM LVB is used to communicate within nodes of the cluster. There
 are three resources used for the purpose:</p>
 </div></blockquote>
-<section id="token">
+<div class="section" id="token">
 <h4>3.2.1 token<a class="headerlink" href="#token" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>The resource which protects the entire communication
 system. The node having the token resource is allowed to
 communicate.</p>
 </div></blockquote>
-</section>
-<section id="message">
+</div>
+<div class="section" id="message">
 <h4>3.2.2 message<a class="headerlink" href="#message" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>The lock resource which carries the data to communicate.</p>
 </div></blockquote>
-</section>
-<section id="ack">
+</div>
+<div class="section" id="ack">
 <h4>3.2.3 ack<a class="headerlink" href="#ack" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>The resource, acquiring which means the message has been
@@ -565,12 +567,12 @@ sender                      receiver                   receiver
 </li>
 </ol>
 </div></blockquote>
-</section>
-</section>
-</section>
-<section id="handling-failures">
+</div>
+</div>
+</div>
+<div class="section" id="handling-failures">
 <h2>4. Handling Failures<a class="headerlink" href="#handling-failures" title="Permalink to this headline">¶</a></h2>
-<section id="node-failure">
+<div class="section" id="node-failure">
 <h3>4.1 Node Failure<a class="headerlink" href="#node-failure" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>When a node fails, the DLM informs the cluster with the slot
@@ -605,9 +607,9 @@ suspend_list.</p>
 <p>A helper function, -&gt;area_resyncing() can be used to check if a
 particular I/O range should be suspended or not.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="device-failure">
+</div>
+</div>
+<div class="section" id="device-failure">
 <h2>4.2 Device Failure<a class="headerlink" href="#device-failure" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Device failures are handled and communicated with the metadata update
@@ -615,7 +617,7 @@ routine.  When a node detects a device failure it does not allow
 any further writes to that device until the failure has been
 acknowledged by all other nodes.</p>
 </div></blockquote>
-<section id="adding-a-new-device">
+<div class="section" id="adding-a-new-device">
 <h3>5. Adding a new Device<a class="headerlink" href="#adding-a-new-device" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>For adding a new device, it is necessary that all nodes “see” the new
@@ -645,16 +647,16 @@ by the following METADATA_UPDATED.</p></li>
 </ol>
 </div></blockquote>
 </div></blockquote>
-</section>
-</section>
-<section id="module-interface">
+</div>
+</div>
+<div class="section" id="module-interface">
 <h2>6. Module interface<a class="headerlink" href="#module-interface" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>There are 17 call-backs which the md core can make to the cluster
 module.  Understanding these can give a good overview of the whole
 process.</p>
 </div></blockquote>
-<section id="join-nodes-and-leave">
+<div class="section" id="join-nodes-and-leave">
 <h3>6.1 join(nodes) and leave()<a class="headerlink" href="#join-nodes-and-leave" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>These are called when an array is started with a clustered bitmap,
@@ -662,15 +664,15 @@ and when the array is stopped.  join() ensures the cluster is
 available and initializes the various resources.
 Only the first ‘nodes’ nodes in the cluster can use the array.</p>
 </div></blockquote>
-</section>
-<section id="slot-number">
+</div>
+<div class="section" id="slot-number">
 <h3>6.2 slot_number()<a class="headerlink" href="#slot-number" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Reports the slot number advised by the cluster infrastructure.
 Range is from 0 to nodes-1.</p>
 </div></blockquote>
-</section>
-<section id="resync-info-update">
+</div>
+<div class="section" id="resync-info-update">
 <h3>6.3 resync_info_update()<a class="headerlink" href="#resync-info-update" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>This updates the resync range that is stored in the bitmap lock.
@@ -678,8 +680,8 @@ The starting point is updated as the resync progresses.  The
 end point is always the end of the array.
 It does <em>not</em> send a RESYNCING message.</p>
 </div></blockquote>
-</section>
-<section id="resync-start-resync-finish">
+</div>
+<div class="section" id="resync-start-resync-finish">
 <h3>6.4 resync_start(), resync_finish()<a class="headerlink" href="#resync-start-resync-finish" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>These are called when resync/recovery/reshape starts or stops.
@@ -689,8 +691,8 @@ array as resyncing, resync_finish reports none of it.</p>
 <p>resync_finish() also sends a BITMAP_NEEDS_SYNC message which
 allows some other node to take over.</p>
 </div></blockquote>
-</section>
-<section id="metadata-update-start-metadata-update-finish-metadata-update-cancel">
+</div>
+<div class="section" id="metadata-update-start-metadata-update-finish-metadata-update-cancel">
 <h3>6.5 metadata_update_start(), metadata_update_finish(), metadata_update_cancel()<a class="headerlink" href="#metadata-update-start-metadata-update-finish-metadata-update-cancel" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>metadata_update_start is used to get exclusive access to
@@ -699,8 +701,8 @@ gained, metadata_update_finish() will send a METADATA_UPDATE
 message to all other nodes, otherwise metadata_update_cancel()
 can be used to release the lock.</p>
 </div></blockquote>
-</section>
-<section id="area-resyncing">
+</div>
+<div class="section" id="area-resyncing">
 <h3>6.6 area_resyncing()<a class="headerlink" href="#area-resyncing" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>This combines two elements of functionality.</p>
@@ -713,8 +715,8 @@ all areas are resyncing for READ requests.  This avoids races
 between the cluster-filesystem and the cluster-RAID handling
 a node failure.</p>
 </div></blockquote>
-</section>
-<section id="add-new-disk-start-add-new-disk-finish-new-disk-ack">
+</div>
+<div class="section" id="add-new-disk-start-add-new-disk-finish-new-disk-ack">
 <h3>6.7 add_new_disk_start(), add_new_disk_finish(), new_disk_ack()<a class="headerlink" href="#add-new-disk-start-add-new-disk-finish-new-disk-ack" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>These are used to manage the new-disk protocol described above.
@@ -725,23 +727,23 @@ is called the device is fully added.</p>
 request, or when the device is declared “unavailable”,
 new_disk_ack() is called.</p>
 </div></blockquote>
-</section>
-<section id="remove-disk">
+</div>
+<div class="section" id="remove-disk">
 <h3>6.8 remove_disk()<a class="headerlink" href="#remove-disk" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>This is called when a spare or failed device is removed from
 the array.  It causes a REMOVE message to be send to other nodes.</p>
 </div></blockquote>
-</section>
-<section id="gather-bitmaps">
+</div>
+<div class="section" id="gather-bitmaps">
 <h3>6.9 gather_bitmaps()<a class="headerlink" href="#gather-bitmaps" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>This sends a RE_ADD message to all other nodes and then
 gathers bitmap information from all bitmaps.  This combined
 bitmap is then used to recovery the re-added device.</p>
 </div></blockquote>
-</section>
-<section id="lock-all-bitmaps-and-unlock-all-bitmaps">
+</div>
+<div class="section" id="lock-all-bitmaps-and-unlock-all-bitmaps">
 <h3>6.10 lock_all_bitmaps() and unlock_all_bitmaps()<a class="headerlink" href="#lock-all-bitmaps-and-unlock-all-bitmaps" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>These are called when change bitmap to none. If a node plans
@@ -750,16 +752,16 @@ nodes are using the raid which is achieved by lock all bitmap
 locks within the cluster, and also those locks are unlocked
 accordingly.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="unsupported-features">
+</div>
+</div>
+<div class="section" id="unsupported-features">
 <h2>7. Unsupported features<a class="headerlink" href="#unsupported-features" title="Permalink to this headline">¶</a></h2>
 <p>There are somethings which are not supported by cluster MD yet.</p>
 <ul class="simple">
 <li><p>change array_sectors.</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

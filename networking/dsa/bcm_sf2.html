@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Broadcom Starfighter 2 Ethernet switch driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -368,7 +370,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="broadcom-starfighter-2-ethernet-switch-driver">
+  <div class="section" id="broadcom-starfighter-2-ethernet-switch-driver">
 <h1>Broadcom Starfighter 2 Ethernet switch driver<a class="headerlink" href="#broadcom-starfighter-2-ethernet-switch-driver" title="Permalink to this headline">¶</a></h1>
 <p>Broadcom’s Starfighter 2 Ethernet switch hardware block is commonly found and
 deployed in the following products:</p>
@@ -402,7 +404,7 @@ which is used for indirect PHY accesses)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SWITCH_ACB</span></code>: Admission control block</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SWITCH_FCB</span></code>: Fail-over control block</p></li>
 </ul>
-<section id="implementation-details">
+<div class="section" id="implementation-details">
 <h2>Implementation details<a class="headerlink" href="#implementation-details" title="Permalink to this headline">¶</a></h2>
 <p>The driver is located in <code class="docutils literal notranslate"><span class="pre">drivers/net/dsa/bcm_sf2.c</span></code> and is implemented as a DSA
 driver; see <code class="docutils literal notranslate"><span class="pre">Documentation/networking/dsa/dsa.rst</span></code> for details on the subsystem
@@ -414,7 +416,7 @@ packets entering the CPU port. The tag format is described in
 <code class="docutils literal notranslate"><span class="pre">net/dsa/tag_brcm.c</span></code>.</p>
 <p>Overall, the SF2 driver is a fairly regular DSA driver; there are a few
 specifics covered below.</p>
-<section id="device-tree-probing">
+<div class="section" id="device-tree-probing">
 <h3>Device Tree probing<a class="headerlink" href="#device-tree-probing" title="Permalink to this headline">¶</a></h3>
 <p>The DSA platform device driver is probed using a specific compatible string
 provided in <code class="docutils literal notranslate"><span class="pre">net/dsa/dsa.c</span></code>. The reason for that is because the DSA subsystem gets
@@ -424,8 +426,8 @@ function to setup resources such as register ranges and interrupts. This
 currently works very well because none of the of_* functions utilized by the
 driver require a <a class="reference internal" href="../../driver-api/infrastructure.html#c.device" title="device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span></code></a> to be bound to a struct device_node, but things
 may change in the future.</p>
-</section>
-<section id="mdio-indirect-accesses">
+</div>
+<div class="section" id="mdio-indirect-accesses">
 <h3>MDIO indirect accesses<a class="headerlink" href="#mdio-indirect-accesses" title="Permalink to this headline">¶</a></h3>
 <p>Due to a limitation in how Broadcom switches have been designed, external
 Broadcom switches connected to a SF2 require the use of the DSA slave MDIO bus
@@ -436,8 +438,8 @@ transactions, since they are at the same address (30), resulting in some kind of
 selectively divert reads and writes towards external Broadcom switches
 pseudo-PHY addresses. Newer revisions of the SF2 hardware have introduced a
 configurable pseudo-PHY address which circumvents the initial design limitation.</p>
-</section>
-<section id="multimedia-over-coaxial-moca-interfaces">
+</div>
+<div class="section" id="multimedia-over-coaxial-moca-interfaces">
 <h3>Multimedia over CoAxial (MoCA) interfaces<a class="headerlink" href="#multimedia-over-coaxial-moca-interfaces" title="Permalink to this headline">¶</a></h3>
 <p>MoCA interfaces are fairly specific and require the use of a firmware blob which
 gets loaded onto the MoCA processor(s) for packet processing. The switch
@@ -448,8 +450,8 @@ MoCA interface carrier state and properly report this to the networking stack.</
 <p>The MoCA interfaces are supported using the PHY library’s fixed PHY/emulated PHY
 device and the switch driver registers a <code class="docutils literal notranslate"><span class="pre">fixed_link_update</span></code> callback for such
 PHYs which reflects the link state obtained from the interrupt handler.</p>
-</section>
-<section id="power-management">
+</div>
+<div class="section" id="power-management">
 <h3>Power Management<a class="headerlink" href="#power-management" title="Permalink to this headline">¶</a></h3>
 <p>Whenever possible, the SF2 driver tries to minimize the overall switch power
 consumption by applying a combination of:</p>
@@ -461,8 +463,8 @@ consumption by applying a combination of:</p>
 <li><p>enabling and advertising EEE</p></li>
 <li><p>turning off RGMII data processing logic when the link goes down</p></li>
 </ul>
-</section>
-<section id="wake-on-lan">
+</div>
+<div class="section" id="wake-on-lan">
 <h3>Wake-on-LAN<a class="headerlink" href="#wake-on-lan" title="Permalink to this headline">¶</a></h3>
 <p>Wake-on-LAN is currently implemented by utilizing the host processor Ethernet
 MAC controller wake-on logic. Whenever Wake-on-LAN is requested, an intersection
@@ -470,9 +472,9 @@ between the user request and the supported host Ethernet interface WoL
 capabilities is done and the intersection result gets configured. During
 system-wide suspend/resume, only ports not participating in Wake-on-LAN are
 disabled.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

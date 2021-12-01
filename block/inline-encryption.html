@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Inline Encryption &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -269,9 +271,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="inline-encryption">
+  <div class="section" id="inline-encryption">
 <span id="id1"></span><h1>Inline Encryption<a class="headerlink" href="#inline-encryption" title="Permalink to this headline">¶</a></h1>
-<section id="background">
+<div class="section" id="background">
 <h2>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
 <p>Inline encryption hardware sits logically between memory and disk, and can
 en/decrypt data as it goes in/out of the disk.  For each I/O request, software
@@ -294,8 +296,8 @@ drives don’t provide fine-grained control of encryption and provide no way to
 verify the correctness of the resulting ciphertext.  Inline encryption hardware
 provides fine-grained control of encryption, including the choice of key and
 initialization vector for each sector, and can be tested for correctness.</p>
-</section>
-<section id="objective">
+</div>
+<div class="section" id="objective">
 <h2>Objective<a class="headerlink" href="#objective" title="Permalink to this headline">¶</a></h2>
 <p>We want to support inline encryption in the kernel.  To make testing easier, we
 also want support for falling back to the kernel crypto API when actual inline
@@ -303,8 +305,8 @@ encryption hardware is absent.  We also want inline encryption to work with
 layered devices like device-mapper and loopback (i.e. we want to be able to use
 the inline encryption hardware of the underlying devices if present, or else
 fall back to crypto API en/decryption).</p>
-</section>
-<section id="constraints-and-notes">
+</div>
+<div class="section" id="constraints-and-notes">
 <h2>Constraints and notes<a class="headerlink" href="#constraints-and-notes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>We need a way for upper layers (e.g. filesystems) to specify an encryption
@@ -329,8 +331,8 @@ layers to also evict keys from any keyslots they are present in.</p></li>
 encryption support of their underlying devices.  However, it doesn’t make
 sense for device-mapper devices to have keyslots themselves.</p></li>
 </ul>
-</section>
-<section id="basic-design">
+</div>
+<div class="section" id="basic-design">
 <h2>Basic design<a class="headerlink" href="#basic-design" title="Permalink to this headline">¶</a></h2>
 <p>We introduce <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">blk_crypto_key</span></code> to represent an inline encryption key and
 how it will be used.  This includes the actual bytes of the key; the size of the
@@ -378,8 +380,8 @@ with the first bio.</p>
 layered devices, when a request is cloned, its encryption context is cloned as
 well.  When the cloned request is submitted, it is then processed as usual; this
 includes getting a keyslot from the clone’s target device if needed.</p>
-</section>
-<section id="blk-crypto-fallback">
+</div>
+<div class="section" id="blk-crypto-fallback">
 <h2>blk-crypto-fallback<a class="headerlink" href="#blk-crypto-fallback" title="Permalink to this headline">¶</a></h2>
 <p>It is desirable for the inline encryption support of upper layers (e.g.
 filesystems) to be testable without real inline encryption hardware, and
@@ -423,8 +425,8 @@ encryption hardware’s implementation and the kernel crypto API’s implementat
 of the algorithm being used adhere to spec and function correctly).</p>
 <p>blk-crypto-fallback is optional and is controlled by the
 <code class="docutils literal notranslate"><span class="pre">CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK</span></code> kernel configuration option.</p>
-</section>
-<section id="api-presented-to-users-of-the-block-layer">
+</div>
+<div class="section" id="api-presented-to-users-of-the-block-layer">
 <h2>API presented to users of the block layer<a class="headerlink" href="#api-presented-to-users-of-the-block-layer" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">blk_crypto_config_supported()</span></code> allows users to check ahead of time whether
 inline encryption with particular crypto settings will work on a particular
@@ -460,8 +462,8 @@ as follows:</p>
 <p>If a blk_crypto_key is being used on multiple request_queues, then
 <code class="docutils literal notranslate"><span class="pre">blk_crypto_config_supported()</span></code> (if used), <code class="docutils literal notranslate"><span class="pre">blk_crypto_start_using_key()</span></code>,
 and <code class="docutils literal notranslate"><span class="pre">blk_crypto_evict_key()</span></code> must be called on each request_queue.</p>
-</section>
-<section id="api-presented-to-device-drivers">
+</div>
+<div class="section" id="api-presented-to-device-drivers">
 <h2>API presented to device drivers<a class="headerlink" href="#api-presented-to-device-drivers" title="Permalink to this headline">¶</a></h2>
 <p>A device driver that wants to support inline encryption must set up a
 blk_crypto_profile in the request_queue of its device.  To do this, it first
@@ -491,8 +493,8 @@ keyslots.  To do this, the driver may call <code class="docutils literal notrans
 <p>Finally, if the driver used <code class="docutils literal notranslate"><span class="pre">blk_crypto_profile_init()</span></code> instead of
 <code class="docutils literal notranslate"><span class="pre">devm_blk_crypto_profile_init()</span></code>, then it is responsible for calling
 <code class="docutils literal notranslate"><span class="pre">blk_crypto_profile_destroy()</span></code> when the crypto profile is no longer needed.</p>
-</section>
-<section id="layered-devices">
+</div>
+<div class="section" id="layered-devices">
 <h2>Layered Devices<a class="headerlink" href="#layered-devices" title="Permalink to this headline">¶</a></h2>
 <p>Request queue based layered devices like dm-rq that wish to support inline
 encryption need to create their own blk_crypto_profile for their request_queue,
@@ -500,8 +502,8 @@ and expose whatever functionality they choose. When a layered device wants to
 pass a clone of that request to another request_queue, blk-crypto will
 initialize and prepare the clone as necessary; see
 <code class="docutils literal notranslate"><span class="pre">blk_crypto_insert_cloned_request()</span></code>.</p>
-</section>
-<section id="interaction-between-inline-encryption-and-blk-integrity">
+</div>
+<div class="section" id="interaction-between-inline-encryption-and-blk-integrity">
 <h2>Interaction between inline encryption and blk integrity<a class="headerlink" href="#interaction-between-inline-encryption-and-blk-integrity" title="Permalink to this headline">¶</a></h2>
 <p>At the time of this patch, there is no real hardware that supports both these
 features. However, these features do interact with each other, and it’s not
@@ -528,8 +530,8 @@ kernel will pretend that the device does not support hardware inline encryption
 When the crypto API fallback is enabled, this means that all bios with and
 encryption context will use the fallback, and IO will complete as usual.  When
 the fallback is disabled, a bio with an encryption context will be failed.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

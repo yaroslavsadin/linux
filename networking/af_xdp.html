@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>AF_XDP &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -379,9 +381,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="af-xdp">
+  <div class="section" id="af-xdp">
 <h1>AF_XDP<a class="headerlink" href="#af-xdp" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>AF_XDP is an address family that is optimized for high performance
 packet processing.</p>
@@ -454,8 +456,8 @@ space. A fallback mode that works for any network device. On the other
 hand, if the driver has support for XDP, it will be used by the AF_XDP
 code to provide better performance, but there is still a copy of the
 data into user space.</p>
-</section>
-<section id="concepts">
+</div>
+<div class="section" id="concepts">
 <h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline">¶</a></h2>
 <p>In order to use an AF_XDP socket, a number of associated objects need
 to be setup. These objects and their options are explained in the
@@ -467,7 +469,7 @@ NOT consult the paper from 2017 on “AF_PACKET v4”, the first attempt
 at AF_XDP. Nearly everything changed since then. Jonathan Corbet has
 also written an excellent article on LWN, “Accelerating networking
 with AF_XDP”. It can be found at <a class="reference external" href="https://lwn.net/Articles/750845/">https://lwn.net/Articles/750845/</a>.</p>
-<section id="umem">
+<div class="section" id="umem">
 <h3>UMEM<a class="headerlink" href="#umem" title="Permalink to this headline">¶</a></h3>
 <p>UMEM is a region of virtual contiguous memory, divided into
 equal-sized frames. An UMEM is associated to a netdev and a specific
@@ -483,8 +485,8 @@ of A to struct sockaddr_xdp member sxdp_shared_umem_fd.</p>
 <p>The UMEM has two single-producer/single-consumer rings that are used
 to transfer ownership of UMEM frames between the kernel and the
 user-space application.</p>
-</section>
-<section id="rings">
+</div>
+<div class="section" id="rings">
 <h3>Rings<a class="headerlink" href="#rings" title="Permalink to this headline">¶</a></h3>
 <p>There are a four different kind of rings: FILL, COMPLETION, RX and
 TX. All rings are single-producer/single-consumer, so the user-space
@@ -504,7 +506,7 @@ calls and mmapped to user-space using the appropriate offset to mmap()
 (XDP_PGOFF_RX_RING, XDP_PGOFF_TX_RING, XDP_UMEM_PGOFF_FILL_RING and
 XDP_UMEM_PGOFF_COMPLETION_RING).</p>
 <p>The size of the rings need to be of size power of two.</p>
-<section id="umem-fill-ring">
+<div class="section" id="umem-fill-ring">
 <h4>UMEM Fill Ring<a class="headerlink" href="#umem-fill-ring" title="Permalink to this headline">¶</a></h4>
 <p>The FILL ring is used to transfer ownership of UMEM frames from
 user-space to kernel-space. The UMEM addrs are passed in the ring. As
@@ -517,8 +519,8 @@ the incoming addr.  E.g. for a chunk size of 2k, the log2(2048) LSB of
 the addr will be masked off, meaning that 2048, 2050 and 3000 refers
 to the same chunk. If the user application is run in the unaligned
 chunks mode, then the incoming addr will be left untouched.</p>
-</section>
-<section id="umem-completion-ring">
+</div>
+<div class="section" id="umem-completion-ring">
 <h4>UMEM Completion Ring<a class="headerlink" href="#umem-completion-ring" title="Permalink to this headline">¶</a></h4>
 <p>The COMPLETION Ring is used transfer ownership of UMEM frames from
 kernel-space to user-space. Just like the FILL ring, UMEM indices are
@@ -526,8 +528,8 @@ used.</p>
 <p>Frames passed from the kernel to user-space are frames that has been
 sent (TX ring) and can be used by user-space again.</p>
 <p>The user application consumes UMEM addrs from this ring.</p>
-</section>
-<section id="rx-ring">
+</div>
+<div class="section" id="rx-ring">
 <h4>RX Ring<a class="headerlink" href="#rx-ring" title="Permalink to this headline">¶</a></h4>
 <p>The RX ring is the receiving side of a socket. Each entry in the ring
 is a struct xdp_desc descriptor. The descriptor contains UMEM offset
@@ -536,8 +538,8 @@ is a struct xdp_desc descriptor. The descriptor contains UMEM offset
 descriptors will (or can) appear on the RX ring.</p>
 <p>The user application consumes struct xdp_desc descriptors from this
 ring.</p>
-</section>
-<section id="tx-ring">
+</div>
+<div class="section" id="tx-ring">
 <h4>TX Ring<a class="headerlink" href="#tx-ring" title="Permalink to this headline">¶</a></h4>
 <p>The TX ring is used to send frames. The struct xdp_desc descriptor is
 filled (index, length and offset) and passed into the ring.</p>
@@ -545,10 +547,10 @@ filled (index, length and offset) and passed into the ring.</p>
 be relaxed in the future.</p>
 <p>The user application produces struct xdp_desc descriptors to this
 ring.</p>
-</section>
-</section>
-</section>
-<section id="libbpf">
+</div>
+</div>
+</div>
+<div class="section" id="libbpf">
 <h2>Libbpf<a class="headerlink" href="#libbpf" title="Permalink to this headline">¶</a></h2>
 <p>Libbpf is a helper library for eBPF and XDP that makes using these
 technologies a lot simpler. It also contains specific helper functions
@@ -561,8 +563,8 @@ samples/bpf/xdpsock_usr.c which uses libbpf for both setup and data
 plane operations.</p>
 <p>We recommend that you use this library unless you have become a power
 user. It will make your program a lot simpler.</p>
-</section>
-<section id="xskmap-bpf-map-type-xskmap">
+</div>
+<div class="section" id="xskmap-bpf-map-type-xskmap">
 <h2>XSKMAP / BPF_MAP_TYPE_XSKMAP<a class="headerlink" href="#xskmap-bpf-map-type-xskmap" title="Permalink to this headline">¶</a></h2>
 <p>On XDP side there is a BPF map type BPF_MAP_TYPE_XSKMAP (XSKMAP) that
 is used in conjunction with bpf_redirect_map() to pass the ingress
@@ -575,12 +577,12 @@ dropped. E.g. an AF_XDP socket is bound to netdev eth0 and
 queue 17. Only the XDP program executing for eth0 and queue 17 will
 successfully pass data to the socket. Please refer to the sample
 application (samples/bpf/) in for an example.</p>
-</section>
-<section id="configuration-flags-and-socket-options">
+</div>
+<div class="section" id="configuration-flags-and-socket-options">
 <h2>Configuration Flags and Socket Options<a class="headerlink" href="#configuration-flags-and-socket-options" title="Permalink to this headline">¶</a></h2>
 <p>These are the various configuration flags that can be used to control
 and monitor the behavior of AF_XDP sockets.</p>
-<section id="xdp-copy-and-xdp-zerocopy-bind-flags">
+<div class="section" id="xdp-copy-and-xdp-zerocopy-bind-flags">
 <h3>XDP_COPY and XDP_ZEROCOPY bind flags<a class="headerlink" href="#xdp-copy-and-xdp-zerocopy-bind-flags" title="Permalink to this headline">¶</a></h3>
 <p>When you bind to a socket, the kernel will first try to use zero-copy
 copy. If zero-copy is not supported, it will fall back on using copy
@@ -590,8 +592,8 @@ pass the XDP_COPY flag to the bind call, the kernel will force the
 socket into copy mode. If it cannot use copy mode, the bind call will
 fail with an error. Conversely, the XDP_ZEROCOPY flag will force the
 socket into zero-copy mode or fail.</p>
-</section>
-<section id="xdp-shared-umem-bind-flag">
+</div>
+<div class="section" id="xdp-shared-umem-bind-flag">
 <h3>XDP_SHARED_UMEM bind flag<a class="headerlink" href="#xdp-shared-umem-bind-flag" title="Permalink to this headline">¶</a></h3>
 <p>This flag enables you to bind multiple sockets to the same UMEM. It
 works on the same queue id, between queue ids and between
@@ -672,8 +674,8 @@ one. Both methods yield the same result.</p>
 <p>Note that a UMEM can be shared between sockets on the same queue id
 and device, as well as between queues on the same device and between
 devices at the same time.</p>
-</section>
-<section id="xdp-use-need-wakeup-bind-flag">
+</div>
+<div class="section" id="xdp-use-need-wakeup-bind-flag">
 <h3>XDP_USE_NEED_WAKEUP bind flag<a class="headerlink" href="#xdp-use-need-wakeup-bind-flag" title="Permalink to this headline">¶</a></h3>
 <p>This option adds support for a new flag called need_wakeup that is
 present in the FILL ring and the TX ring, the rings for which user
@@ -707,8 +709,8 @@ better performance especially if you run the application and the
 driver on the same core, but also if you use different cores for the
 application and the kernel driver, as it reduces the number of
 syscalls needed for the TX path.</p>
-</section>
-<section id="xdp-rx-tx-umem-fill-umem-completion-ring-setsockopts">
+</div>
+<div class="section" id="xdp-rx-tx-umem-fill-umem-completion-ring-setsockopts">
 <h3>XDP_{RX|TX|UMEM_FILL|UMEM_COMPLETION}_RING setsockopts<a class="headerlink" href="#xdp-rx-tx-umem-fill-umem-completion-ring-setsockopts" title="Permalink to this headline">¶</a></h3>
 <p>These setsockopts sets the number of descriptors that the RX, TX,
 FILL, and COMPLETION rings respectively should have. It is mandatory
@@ -730,8 +732,8 @@ xsk_socket__create function.</p>
 packets on the fill ring. If you do this, drivers might think you are
 going to receive something when you in fact will not, and this can
 negatively impact performance.</p>
-</section>
-<section id="xdp-umem-reg-setsockopt">
+</div>
+<div class="section" id="xdp-umem-reg-setsockopt">
 <h3>XDP_UMEM_REG setsockopt<a class="headerlink" href="#xdp-umem-reg-setsockopt" title="Permalink to this headline">¶</a></h3>
 <p>This setsockopt registers a UMEM to a socket. This is the area that
 contain all the buffers that packet can recide in. The call takes a
@@ -746,8 +748,8 @@ the UMEM. If you set this to N bytes, it means that the packet will
 start N bytes into the buffer leaving the first N bytes for the
 application to use. The final option is the flags field, but it will
 be dealt with in separate sections for each UMEM flag.</p>
-</section>
-<section id="xdp-statistics-getsockopt">
+</div>
+<div class="section" id="xdp-statistics-getsockopt">
 <h3>XDP_STATISTICS getsockopt<a class="headerlink" href="#xdp-statistics-getsockopt" title="Permalink to this headline">¶</a></h3>
 <p>Gets drop statistics of a socket that can be useful for debug
 purposes. The supported statistics are shown below:</p>
@@ -758,14 +760,14 @@ purposes. The supported statistics are shown below:</p>
 <span class="p">};</span>
 </pre></div>
 </div>
-</section>
-<section id="xdp-options-getsockopt">
+</div>
+<div class="section" id="xdp-options-getsockopt">
 <h3>XDP_OPTIONS getsockopt<a class="headerlink" href="#xdp-options-getsockopt" title="Permalink to this headline">¶</a></h3>
 <p>Gets options from an XDP socket. The only one supported so far is
 XDP_OPTIONS_ZEROCOPY which tells you if zero-copy is on or not.</p>
-</section>
-</section>
-<section id="usage">
+</div>
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>In order to use AF_XDP sockets two parts are needed. The
 user-space application and the XDP program. For a complete setup and
@@ -837,8 +839,8 @@ like this:</p>
 </div>
 <p>But please use the libbpf functions as they are optimized and ready to
 use. Will make your life easier.</p>
-</section>
-<section id="sample-application">
+</div>
+<div class="section" id="sample-application">
 <h2>Sample application<a class="headerlink" href="#sample-application" title="Permalink to this headline">¶</a></h2>
 <p>There is a xdpsock benchmarking/test application included that
 demonstrates how to use AF_XDP sockets with private UMEMs. Say that
@@ -860,8 +862,8 @@ can be displayed with “-h”, as usual.</p>
 AF_XDP simpler. If you want to know how the raw uapi of AF_XDP is
 really used to make something more advanced, take a look at the libbpf
 code in tools/lib/bpf/xsk.[ch].</p>
-</section>
-<section id="faq">
+</div>
+<div class="section" id="faq">
 <h2>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h2>
 <p>Q: I am not seeing any traffic on the socket. What am I doing wrong?</p>
 <dl>
@@ -915,8 +917,8 @@ belonging to different queue ids or netdevs bound with the
 XDP_SHARED_UMEM flag.</p>
 </dd>
 </dl>
-</section>
-<section id="credits">
+</div>
+<div class="section" id="credits">
 <h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Björn Töpel (AF_XDP core)</p></li>
@@ -931,8 +933,8 @@ XDP_SHARED_UMEM flag.</p>
 <li><p>Qi Z Zhang</p></li>
 <li><p>Willem de Bruijn</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

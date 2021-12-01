@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Kernel TLS offload &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -398,9 +400,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kernel-tls-offload">
+  <div class="section" id="kernel-tls-offload">
 <h1>Kernel TLS offload<a class="headerlink" href="#kernel-tls-offload" title="Permalink to this headline">¶</a></h1>
-<section id="kernel-tls-operation">
+<div class="section" id="kernel-tls-operation">
 <h2>Kernel TLS operation<a class="headerlink" href="#kernel-tls-operation" title="Permalink to this headline">¶</a></h2>
 <p>Linux kernel provides TLS connection offload infrastructure. Once a TCP
 connection is in <code class="docutils literal notranslate"><span class="pre">ESTABLISHED</span></code> state user space can enable the TLS Upper
@@ -430,7 +432,7 @@ abilities or QoS and packet scheduling (<code class="docutils literal notranslat
 </div></blockquote>
 <p>The operation mode is selected automatically based on device configuration,
 offload opt-in or opt-out on per-connection basis is not currently supported.</p>
-<section id="tx">
+<div class="section" id="tx">
 <h3>TX<a class="headerlink" href="#tx" title="Permalink to this headline">¶</a></h3>
 <p>At a high level user write requests are turned into a scatter list, the TLS ULP
 intercepts them, inserts record framing, performs encryption (in <code class="docutils literal notranslate"><span class="pre">TLS_SW</span></code>
@@ -440,8 +442,8 @@ point on the TCP stack proceeds as normal.</p>
 Instead packets reach a device driver, the driver will mark the packets
 for crypto offload based on the socket the packet is attached to,
 and send them to the device for encryption and transmission.</p>
-</section>
-<section id="rx">
+</div>
+<div class="section" id="rx">
 <h3>RX<a class="headerlink" href="#rx" title="Permalink to this headline">¶</a></h3>
 <p>On the receive side if the device handled decryption and authentication
 successfully, the driver will set the decrypted bit in the associated
@@ -451,14 +453,12 @@ and the <code class="docutils literal notranslate"><span class="pre">strparser</
 request, records are retrieved from the socket and passed to decryption routine.
 If device decrypted all the segments of the record the decryption is skipped,
 otherwise software path handles decryption.</p>
-<figure class="align-center" id="id9" style="width: 28em">
-<img alt="TLS offload layers" src="../_images/tls-offload-layers.svg" /><figcaption>
-<p><span class="caption-text">Layers of Kernel TLS stack</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-</section>
-</section>
-<section id="device-configuration">
+<div class="figure align-center" id="id9" style="width: 28em">
+<img alt="TLS offload layers" src="../_images/tls-offload-layers.svg" /><p class="caption"><span class="caption-text">Layers of Kernel TLS stack</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="device-configuration">
 <h2>Device configuration<a class="headerlink" href="#device-configuration" title="Permalink to this headline">¶</a></h2>
 <p>During driver initialization device sets the <code class="docutils literal notranslate"><span class="pre">NETIF_F_HW_TLS_RX</span></code> and
 <code class="docutils literal notranslate"><span class="pre">NETIF_F_HW_TLS_TX</span></code> features and installs its
@@ -489,7 +489,7 @@ sequence number from <code class="docutils literal notranslate"><span class="pre
 at the end of kernel structures (see <code class="xref c c-member docutils literal notranslate"><span class="pre">driver_state</span></code> members
 in <code class="docutils literal notranslate"><span class="pre">include/net/tls.h</span></code>) to avoid additional allocations and pointer
 dereferences.</p>
-<section id="id1">
+<div class="section" id="id1">
 <h3>TX<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>After TX state is installed, the stack guarantees that the first segment
 of the stream will start exactly at the <code class="docutils literal notranslate"><span class="pre">start_offload_tcp_sn</span></code> sequence
@@ -499,14 +499,14 @@ through the driver and which belong to the offloaded socket will be after
 the expected sequence number and will have kernel record information.
 In particular, already encrypted data may have been queued to the socket
 before installing the connection state in the kernel.</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h3>RX<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>In RX direction local networking stack has little control over the segmentation,
 so the initial records’ TCP sequence number may be anywhere inside the segment.</p>
-</section>
-</section>
-<section id="normal-operation">
+</div>
+</div>
+<div class="section" id="normal-operation">
 <h2>Normal operation<a class="headerlink" href="#normal-operation" title="Permalink to this headline">¶</a></h2>
 <p>At the minimum the device maintains the following state for each connection, in
 each direction:</p>
@@ -535,7 +535,7 @@ authentication tag has to be written or read from the subsequent segment)</p></l
 <p>Record reassembly is not necessary for TLS offload. If the packets arrive
 in order the device should be able to handle them separately and make
 forward progress.</p>
-<section id="id3">
+<div class="section" id="id3">
 <h3>TX<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>The kernel stack performs record framing reserving space for the authentication
 tag and populating all other TLS header and tailer fields.</p>
@@ -549,8 +549,8 @@ and hands them to the device. The device identifies the packet as requiring
 TLS handling and confirms the sequence number matches its expectation.
 The device performs encryption and authentication of the record data.
 It replaces the authentication tag and TCP checksum with correct values.</p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3>RX<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>Before a packet is DMAed to the host (but after NIC’s embedded switching
 and packet transformation functions) the device validates the Layer 4
@@ -568,9 +568,9 @@ the <code class="xref c c-member docutils literal notranslate"><span class="pre"
 corresponding to the segment. Networking stack makes sure decrypted
 and non-decrypted segments do not get coalesced (e.g. by GRO or socket layer)
 and takes care of partial decryption.</p>
-</section>
-</section>
-<section id="resync-handling">
+</div>
+</div>
+<div class="section" id="resync-handling">
 <h2>Resync handling<a class="headerlink" href="#resync-handling" title="Permalink to this headline">¶</a></h2>
 <p>In presence of packet drops or network packet reordering, the device may lose
 synchronization with the TLS stream, and require a resync with the kernel’s
@@ -580,13 +580,13 @@ added to the device table and are in TLS_HW mode. For example,
 if the table was full when cryptographic state was installed in the kernel,
 such connection will never get offloaded. Therefore the resync request
 does not carry any cryptographic connection state.</p>
-<section id="id5">
+<div class="section" id="id5">
 <h3>TX<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>Segments transmitted from an offloaded socket can get out of sync
 in similar ways to the receive side-retransmissions - local drops
 are possible, though network reorders are not. There are currently
 two mechanisms for dealing with out of order segments.</p>
-<section id="crypto-state-rebuilding">
+<div class="section" id="crypto-state-rebuilding">
 <h4>Crypto state rebuilding<a class="headerlink" href="#crypto-state-rebuilding" title="Permalink to this headline">¶</a></h4>
 <p>Whenever an out of order segment is transmitted the driver provides
 the device with enough information to perform cryptographic operations.
@@ -603,8 +603,8 @@ with the previous stream state - assuming that the out of order segment
 was just a retransmission. The former is simpler, and does not require
 retransmission detection therefore it is the recommended method until
 such time it is proven inefficient.</p>
-</section>
-<section id="next-record-sync">
+</div>
+<div class="section" id="next-record-sync">
 <h4>Next record sync<a class="headerlink" href="#next-record-sync" title="Permalink to this headline">¶</a></h4>
 <p>Whenever an out of order segment is detected the driver requests
 that the <code class="docutils literal notranslate"><span class="pre">ktls</span></code> software fallback code encrypt it. If the segment’s
@@ -626,18 +626,16 @@ Following helper should be used to test if resync is complete:</p>
 and TLS record number to the driver. Stack will also make sure that
 the new record will start on a segment boundary (like it does when
 the connection is initially added).</p>
-</section>
-</section>
-<section id="id6">
+</div>
+</div>
+<div class="section" id="id6">
 <h3>RX<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>A small amount of RX reorder events may not require a full resynchronization.
 In particular the device should not lose synchronization
 when record boundary can be recovered:</p>
-<figure class="align-center" id="id10">
-<img alt="reorder of non-header segment" src="../_images/tls-offload-reorder-good.svg" /><figcaption>
-<p><span class="caption-text">Reorder of non-header segment</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+<div class="figure align-center" id="id10">
+<img alt="reorder of non-header segment" src="../_images/tls-offload-reorder-good.svg" /><p class="caption"><span class="caption-text">Reorder of non-header segment</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
 <p>Green segments are successfully decrypted, blue ones are passed
 as received on wire, red stripes mark start of new records.</p>
 <p>In above case segment 1 is received and decrypted successfully.
@@ -654,16 +652,14 @@ spanning segments 1, 2 and 3. The device did not get out of sync,
 even though two segments did not get decrypted.</p>
 <p>Kernel synchronization may be necessary if the lost segment contained
 a record header and arrived after the next record header has already passed:</p>
-<figure class="align-center" id="id11">
-<img alt="reorder of header segment" src="../_images/tls-offload-reorder-bad.svg" /><figcaption>
-<p><span class="caption-text">Reorder of segment with a TLS header</span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+<div class="figure align-center" id="id11">
+<img alt="reorder of header segment" src="../_images/tls-offload-reorder-bad.svg" /><p class="caption"><span class="caption-text">Reorder of segment with a TLS header</span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
+</div>
 <p>In this example segment 2 gets dropped, and it contains a record header.
 Device can only detect that segment 4 also contains a TLS header
 if it knows the length of the previous record from segment 2. In this case
 the device will lose synchronization with the stream.</p>
-<section id="stream-scan-resynchronization">
+<div class="section" id="stream-scan-resynchronization">
 <h4>Stream scan resynchronization<a class="headerlink" href="#stream-scan-resynchronization" title="Permalink to this headline">¶</a></h4>
 <p>When the device gets out of sync and the stream reaches TCP sequence
 numbers more than a max size record past the expected TCP sequence number,
@@ -691,8 +687,8 @@ periodic restart is not deemed necessary.</p>
 <p>Special care has to be taken if the confirmation request is passed
 asynchronously to the packet stream and record may get processed
 by the kernel before the confirmation request.</p>
-</section>
-<section id="stack-driven-resynchronization">
+</div>
+<div class="section" id="stack-driven-resynchronization">
 <h4>Stack-driven resynchronization<a class="headerlink" href="#stack-driven-resynchronization" title="Permalink to this headline">¶</a></h4>
 <p>The driver may also request the stack to perform resynchronization
 whenever it sees the records are no longer getting decrypted.
@@ -705,12 +701,12 @@ records continue to be received fully encrypted stack retries the
 synchronization with an exponential back off (first after 2 encrypted
 records, then after 4 records, after 8, after 16… up until every
 128 records).</p>
-</section>
-</section>
-</section>
-<section id="error-handling">
+</div>
+</div>
+</div>
+<div class="section" id="error-handling">
 <h2>Error handling<a class="headerlink" href="#error-handling" title="Permalink to this headline">¶</a></h2>
-<section id="id7">
+<div class="section" id="id7">
 <h3>TX<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>Packets may be redirected or rerouted by the stack to a different
 device than the selected TLS offload device. The stack will handle
@@ -723,8 +719,8 @@ by software fallback.</p>
 in the packet being dropped. For example if a packet got out of order
 due to a bug in the stack or the device, reached the device and can’t
 be encrypted such packet must be dropped.</p>
-</section>
-<section id="id8">
+</div>
+<div class="section" id="id8">
 <h3>RX<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <p>If the device encounters any problems with TLS offload on the receive
 side it should pass the packet to the host’s networking stack as it was
@@ -741,9 +737,9 @@ decryption and authentication errors, packets with errors must simply not
 have the <code class="xref c c-member docutils literal notranslate"><span class="pre">decrypted</span></code> mark set.</p>
 <p>A packet should also not be handled by the TLS offload if it contains
 incorrect checksums.</p>
-</section>
-</section>
-<section id="performance-metrics">
+</div>
+</div>
+<div class="section" id="performance-metrics">
 <h2>Performance metrics<a class="headerlink" href="#performance-metrics" title="Permalink to this headline">¶</a></h2>
 <p>TLS offload can be characterized by the following basic metrics:</p>
 <blockquote>
@@ -756,19 +752,19 @@ incorrect checksums.</p>
 </div></blockquote>
 <p>Note that each TCP connection requires a TLS session in both directions,
 the performance may be reported treating each direction separately.</p>
-<section id="max-connection-count">
+<div class="section" id="max-connection-count">
 <h3>Max connection count<a class="headerlink" href="#max-connection-count" title="Permalink to this headline">¶</a></h3>
 <p>The number of connections device can support can be exposed via
 <code class="docutils literal notranslate"><span class="pre">devlink</span> <span class="pre">resource</span></code> API.</p>
-</section>
-<section id="total-cryptographic-performance">
+</div>
+<div class="section" id="total-cryptographic-performance">
 <h3>Total cryptographic performance<a class="headerlink" href="#total-cryptographic-performance" title="Permalink to this headline">¶</a></h3>
 <p>Offload performance may depend on segment and record size.</p>
 <p>Overload of the cryptographic subsystem of the device should not have
 significant performance impact on non-offloaded streams.</p>
-</section>
-</section>
-<section id="statistics">
+</div>
+</div>
+<div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>Following minimum set of TLS-related statistics should be reported
 by the driver:</p>
@@ -834,10 +830,10 @@ stream dropped, because they contain both data that has been encrypted by
 software and data that expects hardware crypto offload.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="notable-corner-cases-exceptions-and-additional-requirements">
+</div>
+<div class="section" id="notable-corner-cases-exceptions-and-additional-requirements">
 <h2>Notable corner cases, exceptions and additional requirements<a class="headerlink" href="#notable-corner-cases-exceptions-and-additional-requirements" title="Permalink to this headline">¶</a></h2>
-<section id="tuple-matching-limitations">
+<div class="section" id="tuple-matching-limitations">
 <span id="tuple-problems"></span><h3>5-tuple matching limitations<a class="headerlink" href="#tuple-matching-limitations" title="Permalink to this headline">¶</a></h3>
 <p>The device can only recognize received packets based on the 5-tuple
 of the socket. Current <code class="docutils literal notranslate"><span class="pre">ktls</span></code> implementation will not offload sockets
@@ -848,40 +844,40 @@ any intermediate software device, therefore a 5-tuple match may
 consistently miss at the device level. In such cases the device
 should still be able to perform TX offload (encryption) and should
 fallback cleanly to software decryption (RX).</p>
-</section>
-<section id="out-of-order">
+</div>
+<div class="section" id="out-of-order">
 <h3>Out of order<a class="headerlink" href="#out-of-order" title="Permalink to this headline">¶</a></h3>
 <p>Introducing extra processing in NICs should not cause packets to be
 transmitted or received out of order, for example pure ACK packets
 should not be reordered with respect to data segments.</p>
-</section>
-<section id="ingress-reorder">
+</div>
+<div class="section" id="ingress-reorder">
 <h3>Ingress reorder<a class="headerlink" href="#ingress-reorder" title="Permalink to this headline">¶</a></h3>
 <p>A device is permitted to perform packet reordering for consecutive
 TCP segments (i.e. placing packets in the correct order) but any form
 of additional buffering is disallowed.</p>
-</section>
-<section id="coexistence-with-standard-networking-offload-features">
+</div>
+<div class="section" id="coexistence-with-standard-networking-offload-features">
 <h3>Coexistence with standard networking offload features<a class="headerlink" href="#coexistence-with-standard-networking-offload-features" title="Permalink to this headline">¶</a></h3>
 <p>Offloaded <code class="docutils literal notranslate"><span class="pre">ktls</span></code> sockets should support standard TCP stack features
 transparently. Enabling device TLS offload should not cause any difference
 in packets as seen on the wire.</p>
-</section>
-<section id="transport-layer-transparency">
+</div>
+<div class="section" id="transport-layer-transparency">
 <h3>Transport layer transparency<a class="headerlink" href="#transport-layer-transparency" title="Permalink to this headline">¶</a></h3>
 <p>The device should not modify any packet headers for the purpose
 of the simplifying TLS offload.</p>
 <p>The device should not depend on any packet headers beyond what is strictly
 necessary for TLS offload.</p>
-</section>
-<section id="segment-drops">
+</div>
+<div class="section" id="segment-drops">
 <h3>Segment drops<a class="headerlink" href="#segment-drops" title="Permalink to this headline">¶</a></h3>
 <p>Dropping packets is acceptable only in the event of catastrophic
 system errors and should never be used as an error handling mechanism
 in cases arising from normal operation. In other words, reliance
 on TCP retransmissions to handle corner cases is not acceptable.</p>
-</section>
-<section id="tls-device-features">
+</div>
+<div class="section" id="tls-device-features">
 <h3>TLS device features<a class="headerlink" href="#tls-device-features" title="Permalink to this headline">¶</a></h3>
 <p>Drivers should ignore the changes to the TLS device feature flags.
 These flags will be acted upon accordingly by the core <code class="docutils literal notranslate"><span class="pre">ktls</span></code> code.
@@ -895,9 +891,9 @@ calculation does not break for them.
 Similarly, device-offloaded TLS decryption implies doing RXCSUM. If the user
 does not want to enable RX csum offload, TLS RX device feature is disabled
 as well.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

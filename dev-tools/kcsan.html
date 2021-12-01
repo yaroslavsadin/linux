@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The Kernel Concurrency Sanitizer (KCSAN) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -274,12 +276,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-kernel-concurrency-sanitizer-kcsan">
+  <div class="section" id="the-kernel-concurrency-sanitizer-kcsan">
 <h1>The Kernel Concurrency Sanitizer (KCSAN)<a class="headerlink" href="#the-kernel-concurrency-sanitizer-kcsan" title="Permalink to this headline">¶</a></h1>
 <p>The Kernel Concurrency Sanitizer (KCSAN) is a dynamic race detector, which
 relies on compile-time instrumentation, and uses a watchpoint-based sampling
 approach to detect races. KCSAN’s primary purpose is to detect <a class="reference internal" href="#data-races">data races</a>.</p>
-<section id="usage">
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>KCSAN is supported by both GCC and Clang. With GCC we require version 11 or
 later, and with Clang also require version 11 or later.</p>
@@ -289,7 +291,7 @@ later, and with Clang also require version 11 or later.</p>
 </div>
 <p>KCSAN provides several other configuration options to customize behaviour (see
 the respective help text in <code class="docutils literal notranslate"><span class="pre">lib/Kconfig.kcsan</span></code> for more info).</p>
-<section id="error-reports">
+<div class="section" id="error-reports">
 <h3>Error reports<a class="headerlink" href="#error-reports" title="Permalink to this headline">¶</a></h3>
 <p>A typical data race report looks like this:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>==================================================================
@@ -344,8 +346,8 @@ line. A common reason for reports of this type are missing instrumentation in
 the racing thread, but could also occur due to e.g. DMA accesses. Such reports
 are shown only if <code class="docutils literal notranslate"><span class="pre">CONFIG_KCSAN_REPORT_RACE_UNKNOWN_ORIGIN=y</span></code>, which is
 enabled by default.</p>
-</section>
-<section id="selective-analysis">
+</div>
+<div class="section" id="selective-analysis">
 <h3>Selective analysis<a class="headerlink" href="#selective-analysis" title="Permalink to this headline">¶</a></h3>
 <p>It may be desirable to disable data race detection for specific accesses,
 functions, compilation units, or entire subsystems.  For static blacklisting,
@@ -401,8 +403,8 @@ recommended to disable this option.</p></li>
 <p>To use the strictest possible rules, select <code class="docutils literal notranslate"><span class="pre">CONFIG_KCSAN_STRICT=y</span></code>, which
 configures KCSAN to follow the Linux-kernel memory consistency model (LKMM) as
 closely as possible.</p>
-</section>
-<section id="debugfs-interface">
+</div>
+<div class="section" id="debugfs-interface">
 <h3>DebugFS interface<a class="headerlink" href="#debugfs-interface" title="Permalink to this headline">¶</a></h3>
 <p>The file <code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/kcsan</span></code> provides the following interface:</p>
 <ul class="simple">
@@ -418,8 +420,8 @@ changes the report filtering behaviour. For example, the blacklist feature
 can be used to silence frequently occurring data races; the whitelist feature
 can help with reproduction and testing of fixes.</p></li>
 </ul>
-</section>
-<section id="tuning-performance">
+</div>
+<div class="section" id="tuning-performance">
 <h3>Tuning performance<a class="headerlink" href="#tuning-performance" title="Permalink to this headline">¶</a></h3>
 <p>Core parameters that affect KCSAN’s overall performance and bug detection
 ability are exposed as kernel command-line arguments whose defaults can also be
@@ -440,16 +442,16 @@ been set up. Interrupts have tighter latency requirements, and their delay
 should generally be smaller than the one chosen for tasks.</p></li>
 </ul>
 <p>They may be tweaked at runtime via <code class="docutils literal notranslate"><span class="pre">/sys/module/kcsan/parameters/</span></code>.</p>
-</section>
-</section>
-<section id="data-races">
+</div>
+</div>
+<div class="section" id="data-races">
 <h2>Data Races<a class="headerlink" href="#data-races" title="Permalink to this headline">¶</a></h2>
 <p>In an execution, two memory accesses form a <em>data race</em> if they <em>conflict</em>,
 they happen concurrently in different threads, and at least one of them is a
 <em>plain access</em>; they <em>conflict</em> if both access the same memory location, and at
 least one is a write. For a more thorough discussion and definition, see <a class="reference external" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/memory-model/Documentation/explanation.txt#n1922">“Plain
 Accesses and Data Races” in the LKMM</a>.</p>
-<section id="relationship-with-the-linux-kernel-memory-consistency-model-lkmm">
+<div class="section" id="relationship-with-the-linux-kernel-memory-consistency-model-lkmm">
 <h3>Relationship with the Linux-Kernel Memory Consistency Model (LKMM)<a class="headerlink" href="#relationship-with-the-linux-kernel-memory-consistency-model-lkmm" title="Permalink to this headline">¶</a></h3>
 <p>The LKMM defines the propagation and ordering rules of various memory
 operations, which gives developers the ability to reason about concurrent code.
@@ -466,9 +468,9 @@ memory ordering requirements that remain unchecked. If, however, missing
 memory ordering (that is observable with a particular compiler and
 architecture) leads to an observable data race (e.g. entering a critical
 section erroneously), KCSAN would report the resulting data race.</p>
-</section>
-</section>
-<section id="race-detection-beyond-data-races">
+</div>
+</div>
+<div class="section" id="race-detection-beyond-data-races">
 <h2>Race Detection Beyond Data Races<a class="headerlink" href="#race-detection-beyond-data-races" title="Permalink to this headline">¶</a></h2>
 <p>For code with complex concurrency design, race-condition bugs may not always
 manifest as data races. Race conditions occur if concurrently executing
@@ -476,8 +478,8 @@ operations result in unexpected system behaviour. On the other hand, data races
 are defined at the C-language level. The following macros can be used to check
 properties of concurrent code where bugs would not manifest as data races.</p>
 <dl class="c macro">
-<dt id="c.ASSERT_EXCLUSIVE_WRITER">
-<code class="sig-name descname"><span class="pre">ASSERT_EXCLUSIVE_WRITER</span></code><a class="headerlink" href="#c.ASSERT_EXCLUSIVE_WRITER" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ASSERT_EXCLUSIVE_WRITER">
+<span class="sig-name descname"><span class="n"><span class="pre">ASSERT_EXCLUSIVE_WRITER</span></span></span><a class="headerlink" href="#c.ASSERT_EXCLUSIVE_WRITER" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">ASSERT_EXCLUSIVE_WRITER</span> <span class="pre">(var)</span></code></p>
@@ -514,8 +516,8 @@ like these, we can use the macro as follows:</p>
 <p><a class="reference internal" href="#c.ASSERT_EXCLUSIVE_WRITER_SCOPED" title="ASSERT_EXCLUSIVE_WRITER_SCOPED"><code class="xref c c-func docutils literal notranslate"><span class="pre">ASSERT_EXCLUSIVE_WRITER_SCOPED()</span></code></a>, if applicable, performs more thorough
 checking if a clear scope where no concurrent writes are expected exists.</p>
 <dl class="c macro">
-<dt id="c.ASSERT_EXCLUSIVE_WRITER_SCOPED">
-<code class="sig-name descname"><span class="pre">ASSERT_EXCLUSIVE_WRITER_SCOPED</span></code><a class="headerlink" href="#c.ASSERT_EXCLUSIVE_WRITER_SCOPED" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ASSERT_EXCLUSIVE_WRITER_SCOPED">
+<span class="sig-name descname"><span class="n"><span class="pre">ASSERT_EXCLUSIVE_WRITER_SCOPED</span></span></span><a class="headerlink" href="#c.ASSERT_EXCLUSIVE_WRITER_SCOPED" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">ASSERT_EXCLUSIVE_WRITER_SCOPED</span> <span class="pre">(var)</span></code></p>
@@ -552,8 +554,8 @@ state changes within the scope itself:</p>
 </pre></div>
 </div>
 <dl class="c macro">
-<dt id="c.ASSERT_EXCLUSIVE_ACCESS">
-<code class="sig-name descname"><span class="pre">ASSERT_EXCLUSIVE_ACCESS</span></code><a class="headerlink" href="#c.ASSERT_EXCLUSIVE_ACCESS" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ASSERT_EXCLUSIVE_ACCESS">
+<span class="sig-name descname"><span class="n"><span class="pre">ASSERT_EXCLUSIVE_ACCESS</span></span></span><a class="headerlink" href="#c.ASSERT_EXCLUSIVE_ACCESS" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">ASSERT_EXCLUSIVE_ACCESS</span> <span class="pre">(var)</span></code></p>
@@ -587,8 +589,8 @@ fit to detect use-after-free bugs.</p></li>
 </ol>
 <p><strong>Note</strong></p>
 <dl class="c macro">
-<dt id="c.ASSERT_EXCLUSIVE_ACCESS_SCOPED">
-<code class="sig-name descname"><span class="pre">ASSERT_EXCLUSIVE_ACCESS_SCOPED</span></code><a class="headerlink" href="#c.ASSERT_EXCLUSIVE_ACCESS_SCOPED" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ASSERT_EXCLUSIVE_ACCESS_SCOPED">
+<span class="sig-name descname"><span class="n"><span class="pre">ASSERT_EXCLUSIVE_ACCESS_SCOPED</span></span></span><a class="headerlink" href="#c.ASSERT_EXCLUSIVE_ACCESS_SCOPED" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">ASSERT_EXCLUSIVE_ACCESS_SCOPED</span> <span class="pre">(var)</span></code></p>
@@ -608,8 +610,8 @@ a better way to fully cover the enclosing scope, compared to multiple
 <a class="reference internal" href="#c.ASSERT_EXCLUSIVE_ACCESS" title="ASSERT_EXCLUSIVE_ACCESS"><code class="xref c c-func docutils literal notranslate"><span class="pre">ASSERT_EXCLUSIVE_ACCESS()</span></code></a>, and increases the likelihood for KCSAN to detect
 racing accesses.</p>
 <dl class="c macro">
-<dt id="c.ASSERT_EXCLUSIVE_BITS">
-<code class="sig-name descname"><span class="pre">ASSERT_EXCLUSIVE_BITS</span></code><a class="headerlink" href="#c.ASSERT_EXCLUSIVE_BITS" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ASSERT_EXCLUSIVE_BITS">
+<span class="sig-name descname"><span class="n"><span class="pre">ASSERT_EXCLUSIVE_BITS</span></span></span><a class="headerlink" href="#c.ASSERT_EXCLUSIVE_BITS" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">ASSERT_EXCLUSIVE_BITS</span> <span class="pre">(var,</span> <span class="pre">mask)</span></code></p>
@@ -665,8 +667,8 @@ it may still be advisable to do so, since we cannot reason about all compiler
 optimizations when it comes to bit manipulations (on the reader and writer
 side). If you are sure nothing can go wrong, we can write the above simply
 as:</p>
-</section>
-<section id="implementation-details">
+</div>
+<div class="section" id="implementation-details">
 <h2>Implementation Details<a class="headerlink" href="#implementation-details" title="Permalink to this headline">¶</a></h2>
 <p>KCSAN relies on observing that two accesses happen concurrently. Crucially, we
 want to (a) increase the chances of observing races (especially for races that
@@ -697,7 +699,7 @@ sets up a watchpoint on marked accesses. By never setting up watchpoints for
 marked operations, if all accesses to a variable that is accessed concurrently
 are properly marked, KCSAN will never trigger a watchpoint and therefore never
 report the accesses.</p>
-<section id="key-properties">
+<div class="section" id="key-properties">
 <h3>Key Properties<a class="headerlink" href="#key-properties" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p><strong>Memory Overhead:</strong>  The overall memory overhead is only a few MiB
@@ -723,9 +725,9 @@ rules; this may result in missed data races (false negatives).</p></li>
 strategy, the analysis is <em>unsound</em> (false negatives possible), but aims to
 be complete (no false positives).</p></li>
 </ol>
-</section>
-</section>
-<section id="alternatives-considered">
+</div>
+</div>
+<div class="section" id="alternatives-considered">
 <h2>Alternatives Considered<a class="headerlink" href="#alternatives-considered" title="Permalink to this headline">¶</a></h2>
 <p>An alternative data race detection approach for the kernel can be found in the
 <a class="reference external" href="https://github.com/google/ktsan/wiki">Kernel Thread Sanitizer (KTSAN)</a>.
@@ -740,8 +742,8 @@ mechanisms. To track the happens-before relation, KTSAN’s implementation
 requires metadata for each memory location (shadow memory), which for each page
 corresponds to 4 pages of shadow memory, and can translate into overhead of
 tens of GiB on a large system.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

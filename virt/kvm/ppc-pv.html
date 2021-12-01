@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The PPC KVM paravirtual interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -279,7 +281,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-ppc-kvm-paravirtual-interface">
+  <div class="section" id="the-ppc-kvm-paravirtual-interface">
 <h1>The PPC KVM paravirtual interface<a class="headerlink" href="#the-ppc-kvm-paravirtual-interface" title="Permalink to this headline">¶</a></h1>
 <p>The basic execution principle by which KVM on PowerPC works is to run all kernel
 space code in PR=1 which is user space. This way we trap all privileged
@@ -291,15 +293,15 @@ could be handled differently.</p>
 and transforms them into unprivileged ones with some help from the hypervisor.
 This cuts down virtualization costs by about 50% on some of my benchmarks.</p>
 <p>The code for that interface can be found in arch/powerpc/kernel/kvm*</p>
-<section id="querying-for-existence">
+<div class="section" id="querying-for-existence">
 <h2>Querying for existence<a class="headerlink" href="#querying-for-existence" title="Permalink to this headline">¶</a></h2>
 <p>To find out if we’re running on KVM or not, we leverage the device tree. When
 Linux is running on KVM, a node /hypervisor exists. That node contains a
 compatible property with the value “linux,kvm”.</p>
 <p>Once you determined you’re running under a PV capable KVM, you can now use
 hypercalls as described below.</p>
-</section>
-<section id="kvm-hypercalls">
+</div>
+<div class="section" id="kvm-hypercalls">
 <h2>KVM hypercalls<a class="headerlink" href="#kvm-hypercalls" title="Permalink to this headline">¶</a></h2>
 <p>Inside the device tree’s /hypervisor node there’s a property called
 ‘hypercall-instructions’. This property contains at most 4 opcodes that make
@@ -400,8 +402,8 @@ also needs to be ORed with the KVM vendor code which is (42 &lt;&lt; 16).</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="the-magic-page">
+</div>
+<div class="section" id="the-magic-page">
 <h2>The magic page<a class="headerlink" href="#the-magic-page" title="Permalink to this headline">¶</a></h2>
 <p>To enable communication between the hypervisor and guest there is a new shared
 page that contains parts of supervisor visible register state. The guest can
@@ -421,8 +423,8 @@ also define a new hypercall feature to indicate that the host can give you more
 registers. Only if the host supports the additional features, make use of them.</p>
 <p>The magic page layout is described by struct kvm_vcpu_arch_shared
 in arch/powerpc/include/asm/kvm_para.h.</p>
-</section>
-<section id="magic-page-features">
+</div>
+<div class="section" id="magic-page-features">
 <h2>Magic page features<a class="headerlink" href="#magic-page-features" title="Permalink to this headline">¶</a></h2>
 <p>When mapping the magic page using the KVM hypercall KVM_HC_PPC_MAP_MAGIC_PAGE,
 a second return value is passed to the guest. This second return value contains
@@ -446,8 +448,8 @@ a bitmap of available features inside the magic page.</p>
 </div></blockquote>
 <p>For enhanced features in the magic page, please check for the existence of the
 feature before using them!</p>
-</section>
-<section id="magic-page-flags">
+</div>
+<div class="section" id="magic-page-flags">
 <h2>Magic page flags<a class="headerlink" href="#magic-page-flags" title="Permalink to this headline">¶</a></h2>
 <p>In addition to features that indicate whether a host is capable of a particular
 feature we also have a channel for a guest to tell the guest whether it’s capable
@@ -457,8 +459,8 @@ of something. This is what we call “flags”.</p>
 <blockquote>
 <div><p>MAGIC_PAGE_FLAG_NOT_MAPPED_NX Guest handles NX bits correctly wrt magic page</p>
 </div></blockquote>
-</section>
-<section id="msr-bits">
+</div>
+<div class="section" id="msr-bits">
 <h2>MSR bits<a class="headerlink" href="#msr-bits" title="Permalink to this headline">¶</a></h2>
 <p>The MSR contains bits that require hypervisor intervention and bits that do
 not require direct hypervisor intervention because they only get interpreted
@@ -471,8 +473,8 @@ when entering the guest or don’t have any impact on the hypervisor’s behavio
 </ul>
 </div></blockquote>
 <p>If any other bit changes in the MSR, please still use mtmsr(d).</p>
-</section>
-<section id="patched-instructions">
+</div>
+<div class="section" id="patched-instructions">
 <h2>Patched instructions<a class="headerlink" href="#patched-instructions" title="Permalink to this headline">¶</a></h2>
 <p>The “ld” and “std” instructions are transformed to “lwz” and “stw” instructions
 respectively on 32 bit systems with an added offset of 4 to accommodate for big
@@ -587,8 +589,8 @@ following:</p>
 <p>That way we can inject an arbitrary amount of code as replacement for a single
 instruction. This allows us to check for pending interrupts when setting EE=1
 for example.</p>
-</section>
-<section id="hypercall-abis-in-kvm-on-powerpc">
+</div>
+<div class="section" id="hypercall-abis-in-kvm-on-powerpc">
 <h2>Hypercall ABIs in KVM on PowerPC<a class="headerlink" href="#hypercall-abis-in-kvm-on-powerpc" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>KVM hypercalls (ePAPR)</p></li>
@@ -610,8 +612,8 @@ available on book3s_64.</p>
 before KVM). This is supported to maintain compatibility. All these hypercalls get
 forwarded to user space. This is only useful on book3s_32, but can be used with
 book3s_64 as well.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

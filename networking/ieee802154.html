@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>IEEE 802.15.4 Developer’s Guide &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -367,9 +369,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ieee-802-15-4-developer-s-guide">
+  <div class="section" id="ieee-802-15-4-developer-s-guide">
 <h1>IEEE 802.15.4 Developer’s Guide<a class="headerlink" href="#ieee-802-15-4-developer-s-guide" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The IEEE 802.15.4 working group focuses on standardization of the bottom
 two layers: Medium Access Control (MAC) and Physical access (PHY). And there
@@ -389,8 +391,8 @@ messages and a special protocol over netlink for configuration/management</p></l
 <li><p>MAC - provides access to shared channel and reliable data delivery</p></li>
 <li><p>PHY - represents device drivers</p></li>
 </ul>
-</section>
-<section id="socket-api">
+</div>
+<div class="section" id="socket-api">
 <h2>Socket API<a class="headerlink" href="#socket-api" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int sd = socket(PF_IEEE802154, SOCK_DGRAM, 0);
 </pre></div>
@@ -399,8 +401,8 @@ messages and a special protocol over netlink for configuration/management</p></l
 include/net/af_ieee802154.h header or in the special header
 in the userspace package (see either <a class="reference external" href="https://linux-wpan.org/wpan-tools.html">https://linux-wpan.org/wpan-tools.html</a>
 or the git tree at <a class="reference external" href="https://github.com/linux-wpan/wpan-tools">https://github.com/linux-wpan/wpan-tools</a>).</p>
-</section>
-<section id="lowpan-linux-implementation">
+</div>
+<div class="section" id="lowpan-linux-implementation">
 <h2>6LoWPAN Linux implementation<a class="headerlink" href="#lowpan-linux-implementation" title="Permalink to this headline">¶</a></h2>
 <p>The IEEE 802.15.4 standard specifies an MTU of 127 bytes, yielding about 80
 octets of actual MAC payload once security is turned on, on a wireless link
@@ -422,8 +424,8 @@ and net/ieee802154/6lowpan/*</p>
 2. Add 6lowpan interface by command like:
 # ip link add link wpan0 name lowpan0 type lowpan
 3. Bring up ‘lowpan0’ interface</p>
-</section>
-<section id="drivers">
+</div>
+<div class="section" id="drivers">
 <h2>Drivers<a class="headerlink" href="#drivers" title="Permalink to this headline">¶</a></h2>
 <p>Like with WiFi, there are several types of devices implementing IEEE 802.15.4.
 1) ‘HardMAC’. The MAC layer is implemented in the device itself, the device
@@ -432,7 +434,7 @@ exports a management (e.g. MLME) and data API.
 possibly with some kinds of acceleration like automatic CRC computation and
 comparation, automagic ACK handling, address matching, etc.</p>
 <p>Those types of devices require different approach to be hooked into Linux kernel.</p>
-<section id="hardmac">
+<div class="section" id="hardmac">
 <h3>HardMAC<a class="headerlink" href="#hardmac" title="Permalink to this headline">¶</a></h3>
 <p>See the header include/net/ieee802154_netdev.h. You have to implement Linux
 net_device, with .type = ARPHRD_IEEE802154. Data is exchanged with socket family
@@ -446,8 +448,8 @@ store info in the skb-&gt;data on your own.</p>
 net_device with a pointer to struct ieee802154_mlme_ops instance. The fields
 assoc_req, assoc_resp, disassoc_req, start_req, and scan_req are optional.
 All other fields are required.</p>
-</section>
-<section id="softmac">
+</div>
+<div class="section" id="softmac">
 <h3>SoftMAC<a class="headerlink" href="#softmac" title="Permalink to this headline">¶</a></h3>
 <p>The MAC is the middle layer in the IEEE 802.15.4 Linux stack. This moment it
 provides interface for drivers registration and management of slave interfaces.</p>
@@ -456,51 +458,51 @@ stack interface for network sniffers (e.g. WireShark).</p>
 <p>This layer is going to be extended soon.</p>
 <p>See header include/net/mac802154.h and several drivers in
 drivers/net/ieee802154/.</p>
-</section>
-<section id="fake-drivers">
+</div>
+<div class="section" id="fake-drivers">
 <h3>Fake drivers<a class="headerlink" href="#fake-drivers" title="Permalink to this headline">¶</a></h3>
 <p>In addition there is a driver available which simulates a real device with
 SoftMAC (fakelb - IEEE 802.15.4 loopback driver) interface. This option
 provides a possibility to test and debug the stack without usage of real hardware.</p>
-</section>
-</section>
-<section id="device-drivers-api">
+</div>
+</div>
+<div class="section" id="device-drivers-api">
 <h2>Device drivers API<a class="headerlink" href="#device-drivers-api" title="Permalink to this headline">¶</a></h2>
 <p>The include/net/mac802154.h defines following functions:</p>
 <dl class="c function">
-<dt id="c.ieee802154_alloc_device">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_dev</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ieee802154_alloc_device</span></code><span class="sig-paren">(</span><span class="pre">size_t</span> <em><span class="pre">priv_size</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_ops</span> <span class="pre">*</span><em><span class="pre">ops</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_alloc_device" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ieee802154_alloc_device">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ieee802154_alloc_device</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">priv_size</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_ops</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_alloc_device" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Allocation of IEEE 802.15.4 compatible device.</p>
 <dl class="c function">
-<dt id="c.ieee802154_free_device">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ieee802154_free_device</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_free_device" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ieee802154_free_device">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ieee802154_free_device</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_free_device" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Freeing allocated device.</p>
 <dl class="c function">
-<dt id="c.ieee802154_register_device">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ieee802154_register_device</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_register_device" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ieee802154_register_device">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ieee802154_register_device</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_register_device" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Register PHY in the system.</p>
 <dl class="c function">
-<dt id="c.ieee802154_unregister_device">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ieee802154_unregister_device</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_unregister_device" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ieee802154_unregister_device">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ieee802154_unregister_device</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_dev</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_unregister_device" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Freeing registered PHY.</p>
 <dl class="c function">
-<dt id="c.ieee802154_rx_irqsafe">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ieee802154_rx_irqsafe</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_hw</span> <span class="pre">*</span><em><span class="pre">hw</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="kapi.html#c.sk_buff" title="sk_buff"><span class="pre">sk_buff</span></a> <span class="pre">*</span><em><span class="pre">skb</span></em>, <span class="pre">u8</span> <em><span class="pre">lqi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_rx_irqsafe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ieee802154_rx_irqsafe">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ieee802154_rx_irqsafe</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_hw</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hw</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="kapi.html#c.sk_buff" title="sk_buff"><span class="n"><span class="pre">sk_buff</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">skb</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">lqi</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_rx_irqsafe" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Telling 802.15.4 module there is a new received frame in the skb with
 the RF Link Quality Indicator (LQI) from the hardware device.</p>
 <dl class="c function">
-<dt id="c.ieee802154_xmit_complete">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ieee802154_xmit_complete</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_hw</span> <span class="pre">*</span><em><span class="pre">hw</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="kapi.html#c.sk_buff" title="sk_buff"><span class="pre">sk_buff</span></a> <span class="pre">*</span><em><span class="pre">skb</span></em>, <span class="pre">bool</span> <em><span class="pre">ifs_handling</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_xmit_complete" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ieee802154_xmit_complete">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ieee802154_xmit_complete</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_hw</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hw</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="kapi.html#c.sk_buff" title="sk_buff"><span class="n"><span class="pre">sk_buff</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">skb</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">ifs_handling</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ieee802154_xmit_complete" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Telling 802.15.4 module the frame in the skb is or going to be
@@ -520,40 +522,40 @@ operations structure at least:</p>
 </pre></div>
 </div>
 <dl class="c function">
-<dt id="c.start">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_hw</span> <span class="pre">*</span><em><span class="pre">hw</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.start" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.start">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_hw</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hw</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.start" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Handler that 802.15.4 module calls for the hardware device initialization.</p>
 <dl class="c function">
-<dt id="c.stop">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_hw</span> <span class="pre">*</span><em><span class="pre">hw</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.stop" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.stop">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_hw</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hw</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.stop" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Handler that 802.15.4 module calls for the hardware device cleanup.</p>
 <dl class="c function">
-<dt id="c.xmit_async">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">xmit_async</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_hw</span> <span class="pre">*</span><em><span class="pre">hw</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="kapi.html#c.sk_buff" title="sk_buff"><span class="pre">sk_buff</span></a> <span class="pre">*</span><em><span class="pre">skb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xmit_async" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.xmit_async">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xmit_async</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_hw</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hw</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="kapi.html#c.sk_buff" title="sk_buff"><span class="n"><span class="pre">sk_buff</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">skb</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.xmit_async" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Handler that 802.15.4 module calls for each frame in the skb going to be
 transmitted through the hardware device.</p>
 <dl class="c function">
-<dt id="c.ed">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ed</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_hw</span> <span class="pre">*</span><em><span class="pre">hw</span></em>, <span class="pre">u8</span> <span class="pre">*</span><em><span class="pre">level</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ed" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ed">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ed</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_hw</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hw</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">level</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ed" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Handler that 802.15.4 module calls for Energy Detection from the hardware
 device.</p>
 <dl class="c function">
-<dt id="c.set_channel">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">set_channel</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ieee802154_hw</span> <span class="pre">*</span><em><span class="pre">hw</span></em>, <span class="pre">u8</span> <em><span class="pre">page</span></em>, <span class="pre">u8</span> <em><span class="pre">channel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.set_channel" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.set_channel">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">set_channel</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">ieee802154_hw</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hw</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">page</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">channel</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.set_channel" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p>Set radio for listening on specific channel of the hardware device.</p>
 <p>Moreover IEEE 802.15.4 device operations structure should be filled.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

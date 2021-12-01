@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>CFS Scheduler &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -261,9 +263,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="cfs-scheduler">
+  <div class="section" id="cfs-scheduler">
 <h1>CFS Scheduler<a class="headerlink" href="#cfs-scheduler" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>1.  OVERVIEW<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>CFS stands for “Completely Fair Scheduler,” and is the new “desktop” process
 scheduler implemented by Ingo Molnar and merged in Linux 2.6.23.  It is the
@@ -280,8 +282,8 @@ introduce the concept of “virtual runtime.”  The virtual runtime of a task
 specifies when its next timeslice would start execution on the ideal
 multi-tasking CPU described above.  In practice, the virtual runtime of a task
 is its actual runtime normalized to the total number of running tasks.</p>
-</section>
-<section id="few-implementation-details">
+</div>
+<div class="section" id="few-implementation-details">
 <h2>2.  FEW IMPLEMENTATION DETAILS<a class="headerlink" href="#few-implementation-details" title="Permalink to this headline">¶</a></h2>
 <p>In CFS the virtual runtime is expressed and tracked via the per-task
 p-&gt;se.vruntime (nanosec-unit) value.  This way, it’s possible to accurately
@@ -299,8 +301,8 @@ possible.</p>
 <p>Most of the rest of CFS’s design just falls out of this really simple concept,
 with a few add-on embellishments like nice levels, multiprocessing and various
 algorithm variants to recognize sleepers.</p>
-</section>
-<section id="the-rbtree">
+</div>
+<div class="section" id="the-rbtree">
 <h2>3.  THE RBTREE<a class="headerlink" href="#the-rbtree" title="Permalink to this headline">¶</a></h2>
 <p>CFS’s design is quite radical: it does not use the old data structures for the
 runqueues, but it uses a time-ordered rbtree to build a “timeline” of future
@@ -328,8 +330,8 @@ becomes the “leftmost task” of the time-ordered rbtree it maintains (plus a
 small amount of “granularity” distance relative to the leftmost task so that we
 do not over-schedule tasks and trash the cache), then the new leftmost task is
 picked and the current task is preempted.</p>
-</section>
-<section id="some-features-of-cfs">
+</div>
+<div class="section" id="some-features-of-cfs">
 <h2>4.  SOME FEATURES OF CFS<a class="headerlink" href="#some-features-of-cfs" title="Permalink to this headline">¶</a></h2>
 <p>CFS uses nanosecond granularity accounting and does not rely on any jiffies or
 other HZ detail.  Thus the CFS scheduler has no notion of “timeslices” in the
@@ -352,8 +354,8 @@ more aggressively.</p>
 assumptions are gone from the load-balancing code now, and iterators of the
 scheduling modules are used.  The balancing code got quite a bit simpler as a
 result.</p>
-</section>
-<section id="scheduling-policies">
+</div>
+<div class="section" id="scheduling-policies">
 <h2>5. Scheduling policies<a class="headerlink" href="#scheduling-policies" title="Permalink to this headline">¶</a></h2>
 <p>CFS implements three scheduling policies:</p>
 <blockquote>
@@ -373,8 +375,8 @@ inversion problems which would deadlock the machine.</p></li>
 POSIX.</p>
 <p>The command chrt from util-linux-ng 2.13.1.1 can set all of these except
 SCHED_IDLE.</p>
-</section>
-<section id="scheduling-classes">
+</div>
+<div class="section" id="scheduling-classes">
 <h2>6.  SCHEDULING CLASSES<a class="headerlink" href="#scheduling-classes" title="Permalink to this headline">¶</a></h2>
 <p>The new CFS scheduler has been designed in such a way to introduce “Scheduling
 Classes,” an extensible hierarchy of scheduler modules.  These modules
@@ -423,8 +425,8 @@ process switch.  This drives the running preemption.</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="group-scheduler-extensions-to-cfs">
+</div>
+<div class="section" id="group-scheduler-extensions-to-cfs">
 <h2>7.  GROUP SCHEDULER EXTENSIONS TO CFS<a class="headerlink" href="#group-scheduler-extensions-to-cfs" title="Permalink to this headline">¶</a></h2>
 <p>Normally, the scheduler operates on individual tasks and strives to provide
 fair CPU time to each task.  Sometimes, it may be desirable to group tasks and
@@ -466,8 +468,8 @@ task groups and modify their CPU share using the “cgroups” pseudo filesystem
 # echo &lt;movie_player_pid&gt; &gt; multimedia/tasks
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

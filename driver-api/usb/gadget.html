@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>USB Gadget API for Linux &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -364,7 +366,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="usb-gadget-api-for-linux">
+  <div class="section" id="usb-gadget-api-for-linux">
 <h1>USB Gadget API for Linux<a class="headerlink" href="#usb-gadget-api-for-linux" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -374,7 +376,7 @@
 <dd class="field-even"><p>20 August 2004</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This document presents a Linux-USB “Gadget” kernel mode API, for use
 within peripherals and other USB devices that embed Linux. It provides
@@ -420,8 +422,8 @@ the model for control transfers and configuration management is
 necessarily different (one side is a hardware-neutral master, the other
 is a hardware-aware slave), the endpoint I/0 API used here should also
 be usable for an overhead-reduced host side API.</p>
-</section>
-<section id="structure-of-gadget-drivers">
+</div>
+<div class="section" id="structure-of-gadget-drivers">
 <h2>Structure of Gadget Drivers<a class="headerlink" href="#structure-of-gadget-drivers" title="Permalink to this headline">¶</a></h2>
 <p>A system running inside a USB peripheral normally has at least three
 layers inside the kernel to handle USB protocol processing, and may have
@@ -515,8 +517,8 @@ be remotely debugged. Most such USB protocol code doesn’t need to be
 hardware-specific, any more than network protocols like X11, HTTP, or
 NFS are. Such gadget-side interface drivers should eventually be
 combined, to implement composite devices.</p>
-</section>
-<section id="kernel-mode-gadget-api">
+</div>
+<div class="section" id="kernel-mode-gadget-api">
 <h2>Kernel Mode Gadget API<a class="headerlink" href="#kernel-mode-gadget-api" title="Permalink to this headline">¶</a></h2>
 <p>Gadget drivers declare themselves through a struct
 <a class="reference internal" href="#c.usb_gadget_driver" title="usb_gadget_driver"><code class="xref c c-type docutils literal notranslate"><span class="pre">usb_gadget_driver</span></code></a>, which is responsible for most parts of enumeration
@@ -570,7 +572,7 @@ drivers won’t buffer two single byte writes into a single two-byte USB
 IN packet, although gadget drivers may do so when they implement
 protocols where packet boundaries (and “short packets”) are not
 significant.</p>
-<section id="driver-life-cycle">
+<div class="section" id="driver-life-cycle">
 <h3>Driver Life Cycle<a class="headerlink" href="#driver-life-cycle" title="Permalink to this headline">¶</a></h3>
 <p>Gadget drivers make endpoint I/O requests to hardware without needing to
 know many details of the hardware, but driver setup/configuration code
@@ -629,21 +631,21 @@ only the HNP-related differences are particularly visible to driver
 code. They involve reporting requirements during the <code class="docutils literal notranslate"><span class="pre">SET_CONFIGURATION</span></code>
 request, and the option to invoke HNP during some suspend callbacks.
 Also, SRP changes the semantics of <code class="docutils literal notranslate"><span class="pre">usb_gadget_wakeup</span></code> slightly.</p>
-</section>
-<section id="usb-2-0-chapter-9-types-and-constants">
+</div>
+<div class="section" id="usb-2-0-chapter-9-types-and-constants">
 <h3>USB 2.0 Chapter 9 Types and Constants<a class="headerlink" href="#usb-2-0-chapter-9-types-and-constants" title="Permalink to this headline">¶</a></h3>
 <p>Gadget drivers rely on common USB structures and constants defined in
 the <a class="reference internal" href="usb.html#usb-chapter9"><span class="std std-ref">linux/usb/ch9.h</span></a> header file, which is standard in
 Linux 2.6+ kernels. These are the same types and constants used by host side
 drivers (and usbcore).</p>
-</section>
-<section id="core-objects-and-methods">
+</div>
+<div class="section" id="core-objects-and-methods">
 <h3>Core Objects and Methods<a class="headerlink" href="#core-objects-and-methods" title="Permalink to this headline">¶</a></h3>
 <p>These are declared in <code class="docutils literal notranslate"><span class="pre">&lt;linux/usb/gadget.h&gt;</span></code>, and are used by gadget
 drivers to interact with USB peripheral controller drivers.</p>
 <dl class="c struct">
-<dt id="c.usb_request">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_request</span></code><a class="headerlink" href="#c.usb_request" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_request">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_request</span></span></span><a class="headerlink" href="#c.usb_request" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>describes one i/o request</p>
 </dd></dl>
 
@@ -752,8 +754,8 @@ transfers. interrupt-only endpoints can be much less functional.</p>
 <p>this is analogous to ‘<a class="reference internal" href="usb.html#c.urb" title="urb"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">urb</span></code></a>’ on the host side, except that
 it’s thinner and promotes more pre-allocation.</p>
 <dl class="c struct">
-<dt id="c.usb_ep_caps">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_ep_caps</span></code><a class="headerlink" href="#c.usb_ep_caps" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_ep_caps">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_ep_caps</span></span></span><a class="headerlink" href="#c.usb_ep_caps" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>endpoint capabilities description</p>
 </dd></dl>
 
@@ -784,8 +786,8 @@ it’s thinner and promotes more pre-allocation.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.usb_ep">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_ep</span></code><a class="headerlink" href="#c.usb_ep" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_ep">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_ep</span></span></span><a class="headerlink" href="#c.usb_ep" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>device side representation of USB endpoint</p>
 </dd></dl>
 
@@ -855,8 +857,8 @@ descriptor that is used to configure the endpoint</p>
 gadget-&gt;ep_list.  the control endpoint (gadget-&gt;ep0) is not in that list,
 and is accessed only in response to a driver setup() callback.</p>
 <dl class="c struct">
-<dt id="c.usb_gadget">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_gadget</span></code><a class="headerlink" href="#c.usb_gadget" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_gadget">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_gadget</span></span></span><a class="headerlink" href="#c.usb_gadget" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>represents a usb device</p>
 </dd></dl>
 
@@ -1007,8 +1009,8 @@ setup() call corresponding to USB_REQ_SET_CONFIGURATION, and before
 driver suspend() calls.  They are valid only when is_otg, and when the
 device is acting as a B-Peripheral (so is_a_peripheral is false).</p>
 <dl class="c function">
-<dt id="c.usb_ep_align">
-<span class="pre">size_t</span> <code class="sig-name descname"><span class="pre">usb_ep_align</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_ep" title="usb_ep"><span class="pre">usb_ep</span></a> <span class="pre">*</span><em><span class="pre">ep</span></em>, <span class="pre">size_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_ep_align" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_ep_align">
+<span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_ep_align</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_ep" title="usb_ep"><span class="n"><span class="pre">usb_ep</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ep</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_ep_align" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>returns <strong>len</strong> aligned to ep’s maxpacketsize.</p>
 </dd></dl>
 
@@ -1022,8 +1024,8 @@ device is acting as a B-Peripheral (so is_a_peripheral is false).</p>
 <p><strong>Description</strong></p>
 <p>This helper is used to align buffer’s size to an ep’s maxpacketsize.</p>
 <dl class="c function">
-<dt id="c.usb_ep_align_maybe">
-<span class="pre">size_t</span> <code class="sig-name descname"><span class="pre">usb_ep_align_maybe</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_ep" title="usb_ep"><span class="pre">usb_ep</span></a> <span class="pre">*</span><em><span class="pre">ep</span></em>, <span class="pre">size_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_ep_align_maybe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_ep_align_maybe">
+<span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_ep_align_maybe</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_ep" title="usb_ep"><span class="n"><span class="pre">usb_ep</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ep</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_ep_align_maybe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>returns <strong>len</strong> aligned to ep’s maxpacketsize if gadget requires quirk_ep_out_aligned_size, otherwise returns len.</p>
 </dd></dl>
 
@@ -1040,8 +1042,8 @@ device is acting as a B-Peripheral (so is_a_peripheral is false).</p>
 <p>This helper is used in case it’s required for any reason to check and maybe
 align buffer’s size to an ep’s maxpacketsize.</p>
 <dl class="c function">
-<dt id="c.gadget_is_altset_supported">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">gadget_is_altset_supported</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_altset_supported" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.gadget_is_altset_supported">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gadget_is_altset_supported</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_altset_supported" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return true iff the hardware supports altsettings</p>
 </dd></dl>
 
@@ -1051,8 +1053,8 @@ align buffer’s size to an ep’s maxpacketsize.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.gadget_is_stall_supported">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">gadget_is_stall_supported</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_stall_supported" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.gadget_is_stall_supported">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gadget_is_stall_supported</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_stall_supported" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return true iff the hardware supports stalling</p>
 </dd></dl>
 
@@ -1062,8 +1064,8 @@ align buffer’s size to an ep’s maxpacketsize.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.gadget_is_zlp_supported">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">gadget_is_zlp_supported</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_zlp_supported" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.gadget_is_zlp_supported">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gadget_is_zlp_supported</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_zlp_supported" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return true iff the hardware supports zlp</p>
 </dd></dl>
 
@@ -1073,8 +1075,8 @@ align buffer’s size to an ep’s maxpacketsize.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.gadget_avoids_skb_reserve">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">gadget_avoids_skb_reserve</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_avoids_skb_reserve" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.gadget_avoids_skb_reserve">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gadget_avoids_skb_reserve</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_avoids_skb_reserve" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return true iff the hardware would like to avoid skb_reserve to improve performance.</p>
 </dd></dl>
 
@@ -1084,8 +1086,8 @@ align buffer’s size to an ep’s maxpacketsize.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.gadget_is_dualspeed">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">gadget_is_dualspeed</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_dualspeed" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.gadget_is_dualspeed">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gadget_is_dualspeed</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_dualspeed" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return true iff the hardware handles high speed</p>
 </dd></dl>
 
@@ -1095,8 +1097,8 @@ align buffer’s size to an ep’s maxpacketsize.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.gadget_is_superspeed">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">gadget_is_superspeed</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_superspeed" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.gadget_is_superspeed">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gadget_is_superspeed</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_superspeed" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return true if the hardware handles superspeed</p>
 </dd></dl>
 
@@ -1106,8 +1108,8 @@ align buffer’s size to an ep’s maxpacketsize.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.gadget_is_superspeed_plus">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">gadget_is_superspeed_plus</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_superspeed_plus" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.gadget_is_superspeed_plus">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gadget_is_superspeed_plus</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_superspeed_plus" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return true if the hardware handles superspeed plus</p>
 </dd></dl>
 
@@ -1117,8 +1119,8 @@ align buffer’s size to an ep’s maxpacketsize.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.gadget_is_otg">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">gadget_is_otg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_otg" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.gadget_is_otg">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">gadget_is_otg</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.gadget_is_otg" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return true iff the hardware is OTG-ready</p>
 </dd></dl>
 
@@ -1131,8 +1133,8 @@ align buffer’s size to an ep’s maxpacketsize.</p>
 <p>This is a runtime test, since kernels with a USB-OTG stack sometimes
 run on boards which only have a Mini-B (or Mini-A) connector.</p>
 <dl class="c struct">
-<dt id="c.usb_gadget_driver">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_gadget_driver</span></code><a class="headerlink" href="#c.usb_gadget_driver" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_gadget_driver">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_gadget_driver</span></span></span><a class="headerlink" href="#c.usb_gadget_driver" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>driver for usb gadget devices</p>
 </dd></dl>
 
@@ -1233,8 +1235,8 @@ the (remote) host can’t do that any longer; or an error state might
 be cleared, to make the device behave identically whether or not
 power is maintained.</p>
 <dl class="c function">
-<dt id="c.usb_gadget_probe_driver">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_gadget_probe_driver</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget_driver" title="usb_gadget_driver"><span class="pre">usb_gadget_driver</span></a> <span class="pre">*</span><em><span class="pre">driver</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_gadget_probe_driver" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_gadget_probe_driver">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_gadget_probe_driver</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget_driver" title="usb_gadget_driver"><span class="n"><span class="pre">usb_gadget_driver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">driver</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_gadget_probe_driver" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>probe a gadget driver</p>
 </dd></dl>
 
@@ -1252,8 +1254,8 @@ The <strong>bind()</strong> function will be called to bind it to a gadget befor
 registration call returns.  It’s expected that the <strong>bind()</strong> function will
 be in init sections.</p>
 <dl class="c function">
-<dt id="c.usb_gadget_unregister_driver">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_gadget_unregister_driver</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget_driver" title="usb_gadget_driver"><span class="pre">usb_gadget_driver</span></a> <span class="pre">*</span><em><span class="pre">driver</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_gadget_unregister_driver" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_gadget_unregister_driver">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_gadget_unregister_driver</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget_driver" title="usb_gadget_driver"><span class="n"><span class="pre">usb_gadget_driver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">driver</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_gadget_unregister_driver" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unregister a gadget driver</p>
 </dd></dl>
 
@@ -1273,8 +1275,8 @@ to unbind() and clean up any device state, before this procedure
 finally returns.  It’s expected that the unbind() functions
 will be in exit sections, so may not be linked in some kernels.</p>
 <dl class="c struct">
-<dt id="c.usb_string">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_string</span></code><a class="headerlink" href="#c.usb_string" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_string">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_string</span></span></span><a class="headerlink" href="#c.usb_string" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>wraps a C string and its USB id</p>
 </dd></dl>
 
@@ -1296,8 +1298,8 @@ will be in exit sections, so may not be linked in some kernels.</p>
 <p>If you’re using <a class="reference internal" href="#c.usb_gadget_get_string" title="usb_gadget_get_string"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_gadget_get_string()</span></code></a>, use this to wrap a string
 together with its ID.</p>
 <dl class="c struct">
-<dt id="c.usb_gadget_strings">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_gadget_strings</span></code><a class="headerlink" href="#c.usb_gadget_strings" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_gadget_strings">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_gadget_strings</span></span></span><a class="headerlink" href="#c.usb_gadget_strings" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>a set of USB strings in a given language</p>
 </dd></dl>
 
@@ -1319,8 +1321,8 @@ together with its ID.</p>
 <p>If you’re using <a class="reference internal" href="#c.usb_gadget_get_string" title="usb_gadget_get_string"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_gadget_get_string()</span></code></a>, use this to wrap all the
 strings for a given language.</p>
 <dl class="c function">
-<dt id="c.usb_free_descriptors">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">usb_free_descriptors</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">usb_descriptor_header</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">v</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_free_descriptors" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_free_descriptors">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_free_descriptors</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">usb_descriptor_header</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">v</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_free_descriptors" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free descriptors returned by <a class="reference internal" href="#c.usb_copy_descriptors" title="usb_copy_descriptors"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_copy_descriptors()</span></code></a></p>
 </dd></dl>
 
@@ -1329,15 +1331,15 @@ strings for a given language.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">usb_descriptor_header</span> <span class="pre">**v</span></code></dt><dd><p>vector of descriptors</p>
 </dd>
 </dl>
-</section>
-<section id="optional-utilities">
+</div>
+<div class="section" id="optional-utilities">
 <h3>Optional Utilities<a class="headerlink" href="#optional-utilities" title="Permalink to this headline">¶</a></h3>
 <p>The core API is sufficient for writing a USB Gadget Driver, but some
 optional utilities are provided to simplify common tasks. These
 utilities include endpoint autoconfiguration.</p>
 <dl class="c function">
-<dt id="c.usb_gadget_get_string">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_gadget_get_string</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget_strings" title="usb_gadget_strings"><span class="pre">usb_gadget_strings</span></a> <span class="pre">*</span><em><span class="pre">table</span></em>, <span class="pre">int</span> <em><span class="pre">id</span></em>, <span class="pre">u8</span> <span class="pre">*</span><em><span class="pre">buf</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_gadget_get_string" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_gadget_get_string">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_gadget_get_string</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget_strings" title="usb_gadget_strings"><span class="n"><span class="pre">usb_gadget_strings</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">table</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">id</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_gadget_get_string" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>fill out a string descriptor</p>
 </dd></dl>
 
@@ -1361,8 +1363,8 @@ Note that US-ASCII is a strict subset of UTF-8; any string bytes with
 the eighth bit set will be multibyte UTF-8 characters, not ISO-8859/1
 characters (which are also widely used in C strings).</p>
 <dl class="c function">
-<dt id="c.usb_validate_langid">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">usb_validate_langid</span></code><span class="sig-paren">(</span><span class="pre">u16</span> <em><span class="pre">langid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_validate_langid" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_validate_langid">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_validate_langid</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">u16</span></span><span class="w"> </span><span class="n"><span class="pre">langid</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_validate_langid" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>validate usb language identifiers</p>
 </dd></dl>
 
@@ -1374,8 +1376,8 @@ characters (which are also widely used in C strings).</p>
 <p><strong>Description</strong></p>
 <p>Returns true for valid language identifier, otherwise false.</p>
 <dl class="c function">
-<dt id="c.usb_descriptor_fillbuf">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_descriptor_fillbuf</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">buf</span></em>, <span class="pre">unsigned</span> <em><span class="pre">buflen</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">usb_descriptor_header</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">src</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_descriptor_fillbuf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_descriptor_fillbuf">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_descriptor_fillbuf</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n"><span class="pre">buflen</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">usb_descriptor_header</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">src</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_descriptor_fillbuf" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>fill buffer with descriptors</p>
 </dd></dl>
 
@@ -1395,8 +1397,8 @@ assembling descriptors for an associated set of interfaces used
 as part of configuring a composite device; or in other cases where
 sets of descriptors need to be marshaled.</p>
 <dl class="c function">
-<dt id="c.usb_gadget_config_buf">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_gadget_config_buf</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">usb_config_descriptor</span> <span class="pre">*</span><em><span class="pre">config</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">buf</span></em>, <span class="pre">unsigned</span> <em><span class="pre">length</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">usb_descriptor_header</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">desc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_gadget_config_buf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_gadget_config_buf">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_gadget_config_buf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">usb_config_descriptor</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">config</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">buf</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n"><span class="pre">length</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">usb_descriptor_header</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">desc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_gadget_config_buf" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>builts a complete configuration descriptor</p>
 </dd></dl>
 
@@ -1424,8 +1426,8 @@ interface count) must be set by the caller.</p>
 in response to USB_REQ_GET_DESCRIPTOR.  They will need to patch the
 resulting bDescriptorType value if USB_DT_OTHER_SPEED_CONFIG is needed.</p>
 <dl class="c function">
-<dt id="c.usb_copy_descriptors">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">usb_descriptor_header</span> <span class="pre">*</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">usb_copy_descriptors</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">usb_descriptor_header</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">src</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_copy_descriptors" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_copy_descriptors">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">usb_descriptor_header</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">usb_copy_descriptors</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">usb_descriptor_header</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">src</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_copy_descriptors" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>copy a vector of USB descriptors</p>
 </dd></dl>
 
@@ -1443,8 +1445,8 @@ each needing different descriptors.  Functions may have static
 tables of descriptors, which are used as templates and customized
 with identifiers (for interfaces, strings, endpoints, and more)
 as needed by a given function instance.</p>
-</section>
-<section id="composite-device-framework">
+</div>
+<div class="section" id="composite-device-framework">
 <h3>Composite Device Framework<a class="headerlink" href="#composite-device-framework" title="Permalink to this headline">¶</a></h3>
 <p>The core API is sufficient for writing drivers for composite USB devices
 (with more than one function in a given configuration), and also
@@ -1458,8 +1460,8 @@ instances. Each such configuration includes at least one struct
 link” or “mass storage device”. Management functions may also exist,
 such as “Device Firmware Upgrade”.</p>
 <dl class="c struct">
-<dt id="c.usb_os_desc_ext_prop">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_os_desc_ext_prop</span></code><a class="headerlink" href="#c.usb_os_desc_ext_prop" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_os_desc_ext_prop">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_os_desc_ext_prop</span></span></span><a class="headerlink" href="#c.usb_os_desc_ext_prop" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>describes one “Extended Property”</p>
 </dd></dl>
 
@@ -1493,8 +1495,8 @@ such as “Device Firmware Upgrade”.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.usb_os_desc">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_os_desc</span></code><a class="headerlink" href="#c.usb_os_desc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_os_desc">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_os_desc</span></span></span><a class="headerlink" href="#c.usb_os_desc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>describes OS descriptors associated with one interface</p>
 </dd></dl>
 
@@ -1528,8 +1530,8 @@ such as “Device Firmware Upgrade”.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.usb_os_desc_table">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_os_desc_table</span></code><a class="headerlink" href="#c.usb_os_desc_table" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_os_desc_table">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_os_desc_table</span></span></span><a class="headerlink" href="#c.usb_os_desc_table" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>describes OS descriptors associated with one interface of a usb_function</p>
 </dd></dl>
 
@@ -1552,8 +1554,8 @@ interface</p>
 <p>Each interface can have at most one “Extended Compatibility ID” and a
 number of “Extended Properties”.</p>
 <dl class="c struct">
-<dt id="c.usb_function">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_function</span></code><a class="headerlink" href="#c.usb_function" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_function">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_function</span></span></span><a class="headerlink" href="#c.usb_function" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>describes one function of a configuration</p>
 </dd></dl>
 
@@ -1676,8 +1678,8 @@ example of multiple activations might be a CDC ACM function that supports
 two or more distinct instances within the same configuration, providing
 several independent logical data links to a USB host.</p>
 <dl class="c struct">
-<dt id="c.usb_configuration">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_configuration</span></code><a class="headerlink" href="#c.usb_configuration" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_configuration">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_configuration</span></span></span><a class="headerlink" href="#c.usb_configuration" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>represents one gadget configuration</p>
 </dd></dl>
 
@@ -1746,8 +1748,8 @@ Such interdependency may be managed in any way, so long as all of the
 descriptors complete by the time the composite driver returns from
 its bind() routine.</p>
 <dl class="c struct">
-<dt id="c.usb_composite_driver">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_composite_driver</span></code><a class="headerlink" href="#c.usb_composite_driver" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_composite_driver">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_composite_driver</span></span></span><a class="headerlink" href="#c.usb_composite_driver" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>groups configurations into a gadget</p>
 </dd></dl>
 
@@ -1814,8 +1816,8 @@ meaningful device identifiers.  (The strings will not be defined unless
 they are defined in <strong>dev</strong> and <strong>strings</strong>.)  The correct ep0 maxpacket size
 is also reported, as defined by the underlying controller driver.</p>
 <dl class="c macro">
-<dt id="c.module_usb_composite_driver">
-<code class="sig-name descname"><span class="pre">module_usb_composite_driver</span></code><a class="headerlink" href="#c.module_usb_composite_driver" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.module_usb_composite_driver">
+<span class="sig-name descname"><span class="n"><span class="pre">module_usb_composite_driver</span></span></span><a class="headerlink" href="#c.module_usb_composite_driver" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><code class="docutils literal notranslate"><span class="pre">module_usb_composite_driver</span> <span class="pre">(__usb_composite_driver)</span></code></p>
@@ -1833,8 +1835,8 @@ special in module init/exit. This eliminates a lot of boilerplate. Each
 module may only use this macro once, and calling it replaces <a class="reference internal" href="../basics.html#c.module_init" title="module_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_init()</span></code></a>
 and <a class="reference internal" href="../basics.html#c.module_exit" title="module_exit"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_exit()</span></code></a></p>
 <dl class="c struct">
-<dt id="c.usb_composite_dev">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">usb_composite_dev</span></code><a class="headerlink" href="#c.usb_composite_dev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_composite_dev">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_composite_dev</span></span></span><a class="headerlink" href="#c.usb_composite_dev" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>represents one composite usb gadget</p>
 </dd></dl>
 
@@ -1902,8 +1904,8 @@ configs, including appropriate association setup support;</p></li>
 <li><p>more, TBD.</p></li>
 </ol>
 <dl class="c function">
-<dt id="c.config_ep_by_speed_and_alt">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">config_ep_by_speed_and_alt</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_function" title="usb_function"><span class="pre">usb_function</span></a> <span class="pre">*</span><em><span class="pre">f</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_ep" title="usb_ep"><span class="pre">usb_ep</span></a> <span class="pre">*</span><em><span class="pre">_ep</span></em>, <span class="pre">u8</span> <em><span class="pre">alt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.config_ep_by_speed_and_alt" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.config_ep_by_speed_and_alt">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_ep_by_speed_and_alt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_function" title="usb_function"><span class="n"><span class="pre">usb_function</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">f</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_ep" title="usb_ep"><span class="n"><span class="pre">usb_ep</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">_ep</span></span>, <span class="n"><span class="pre">u8</span></span><span class="w"> </span><span class="n"><span class="pre">alt</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.config_ep_by_speed_and_alt" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>configures the given endpoint according to gadget speed.</p>
 </dd></dl>
 
@@ -1931,8 +1933,8 @@ to the chosen descriptor.</p>
 <p>the supplied function should hold all the descriptors
 for supported speeds</p>
 <dl class="c function">
-<dt id="c.config_ep_by_speed">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">config_ep_by_speed</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="pre">usb_gadget</span></a> <span class="pre">*</span><em><span class="pre">g</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_function" title="usb_function"><span class="pre">usb_function</span></a> <span class="pre">*</span><em><span class="pre">f</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_ep" title="usb_ep"><span class="pre">usb_ep</span></a> <span class="pre">*</span><em><span class="pre">_ep</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.config_ep_by_speed" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.config_ep_by_speed">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_ep_by_speed</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget" title="usb_gadget"><span class="n"><span class="pre">usb_gadget</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">g</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_function" title="usb_function"><span class="n"><span class="pre">usb_function</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">f</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_ep" title="usb_ep"><span class="n"><span class="pre">usb_ep</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">_ep</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.config_ep_by_speed" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>configures the given endpoint according to gadget speed.</p>
 </dd></dl>
 
@@ -1958,8 +1960,8 @@ to the chosen descriptor.</p>
 <p>the supplied function should hold all the descriptors
 for supported speeds</p>
 <dl class="c function">
-<dt id="c.usb_add_function">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_add_function</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_configuration" title="usb_configuration"><span class="pre">usb_configuration</span></a> <span class="pre">*</span><em><span class="pre">config</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_function" title="usb_function"><span class="pre">usb_function</span></a> <span class="pre">*</span><em><span class="pre">function</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_add_function" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_add_function">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_add_function</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_configuration" title="usb_configuration"><span class="n"><span class="pre">usb_configuration</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">config</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_function" title="usb_function"><span class="n"><span class="pre">usb_function</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">function</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_add_function" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>add a function to a configuration</p>
 </dd></dl>
 
@@ -1980,8 +1982,8 @@ and endpoints.</p>
 <p>This function returns the value of the function’s bind(), which is
 zero for success else a negative errno value.</p>
 <dl class="c function">
-<dt id="c.usb_function_deactivate">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_function_deactivate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_function" title="usb_function"><span class="pre">usb_function</span></a> <span class="pre">*</span><em><span class="pre">function</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_function_deactivate" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_function_deactivate">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_function_deactivate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_function" title="usb_function"><span class="n"><span class="pre">usb_function</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">function</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_function_deactivate" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>prevent function and gadget enumeration</p>
 </dd></dl>
 
@@ -2003,8 +2005,8 @@ MTP, or print server) is ready to handle host requests.</p>
 data pullups.</p>
 <p>Returns zero on success, else negative errno.</p>
 <dl class="c function">
-<dt id="c.usb_function_activate">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_function_activate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_function" title="usb_function"><span class="pre">usb_function</span></a> <span class="pre">*</span><em><span class="pre">function</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_function_activate" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_function_activate">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_function_activate</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_function" title="usb_function"><span class="n"><span class="pre">usb_function</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">function</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_function_activate" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allow function and gadget enumeration</p>
 </dd></dl>
 
@@ -2019,8 +2021,8 @@ are delaying their activation, the gadget driver will respond to
 host enumeration procedures.</p>
 <p>Returns zero on success, else negative errno.</p>
 <dl class="c function">
-<dt id="c.usb_interface_id">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_interface_id</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_configuration" title="usb_configuration"><span class="pre">usb_configuration</span></a> <span class="pre">*</span><em><span class="pre">config</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_function" title="usb_function"><span class="pre">usb_function</span></a> <span class="pre">*</span><em><span class="pre">function</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_interface_id" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_interface_id">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_interface_id</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_configuration" title="usb_configuration"><span class="n"><span class="pre">usb_configuration</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">config</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_function" title="usb_function"><span class="n"><span class="pre">usb_function</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">function</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_interface_id" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate an unused interface ID</p>
 </dd></dl>
 
@@ -2049,8 +2051,8 @@ multiple versions of the relevant descriptors.</p>
 <p>Returns the interface ID which was allocated; or -ENODEV if no
 more interface IDs can be allocated.</p>
 <dl class="c function">
-<dt id="c.usb_add_config">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_add_config</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="pre">usb_composite_dev</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_configuration" title="usb_configuration"><span class="pre">usb_configuration</span></a> <span class="pre">*</span><em><span class="pre">config</span></em>, <span class="pre">int</span> <span class="pre">(</span><span class="pre">*</span><em><span class="pre">bind</span></em><span class="pre">)</span><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_configuration" title="usb_configuration"><span class="pre">usb_configuration</span></a><span class="pre">*</span><span class="sig-paren">)</span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_add_config" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_add_config">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_add_config</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="n"><span class="pre">usb_composite_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_configuration" title="usb_configuration"><span class="n"><span class="pre">usb_configuration</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">config</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bind</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_configuration" title="usb_configuration"><span class="n"><span class="pre">usb_configuration</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_add_config" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>add a configuration to a device.</p>
 </dd></dl>
 
@@ -2073,8 +2075,8 @@ is zero for success else a negative errno value.  Binding configurations
 assigns global resources including string IDs, and per-configuration
 resources such as interface IDs and endpoints.</p>
 <dl class="c function">
-<dt id="c.usb_string_id">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_string_id</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="pre">usb_composite_dev</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_string_id" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_string_id">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_string_id</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="n"><span class="pre">usb_composite_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_string_id" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate an unused string ID</p>
 </dd></dl>
 
@@ -2094,8 +2096,8 @@ then store that ID in the appropriate descriptors and string table.</p>
 that for example different functions don’t wrongly assign different
 meanings to the same identifier.</p>
 <dl class="c function">
-<dt id="c.usb_string_ids_tab">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_string_ids_tab</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="pre">usb_composite_dev</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_string" title="usb_string"><span class="pre">usb_string</span></a> <span class="pre">*</span><em><span class="pre">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_string_ids_tab" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_string_ids_tab">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_string_ids_tab</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="n"><span class="pre">usb_composite_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_string" title="usb_string"><span class="n"><span class="pre">usb_string</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_string_ids_tab" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate unused string IDs in batch</p>
 </dd></dl>
 
@@ -2118,8 +2120,8 @@ and string table for other languages.</p>
 example different functions don’t wrongly assign different meanings
 to the same identifier.</p>
 <dl class="c function">
-<dt id="c.usb_gstrings_attach">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_string" title="usb_string"><span class="pre">usb_string</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">usb_gstrings_attach</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="pre">usb_composite_dev</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_gadget_strings" title="usb_gadget_strings"><span class="pre">usb_gadget_strings</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">sp</span></em>, <span class="pre">unsigned</span> <em><span class="pre">n_strings</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_gstrings_attach" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_gstrings_attach">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_string" title="usb_string"><span class="n"><span class="pre">usb_string</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">usb_gstrings_attach</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="n"><span class="pre">usb_composite_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_gadget_strings" title="usb_gadget_strings"><span class="n"><span class="pre">usb_gadget_strings</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sp</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n"><span class="pre">n_strings</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_gstrings_attach" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>attach gadget strings to a cdev and assign ids</p>
 </dd></dl>
 
@@ -2144,8 +2146,8 @@ For instance: sp[0] is en-US, sp[1] is es-ES. It is expected that the first
 usb_string entry of es-ES contains the translation of the first usb_string
 entry of en-US. Therefore both entries become the same id assign.</p>
 <dl class="c function">
-<dt id="c.usb_string_ids_n">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_string_ids_n</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="pre">usb_composite_dev</span></a> <span class="pre">*</span><em><span class="pre">c</span></em>, <span class="pre">unsigned</span> <em><span class="pre">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_string_ids_n" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_string_ids_n">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_string_ids_n</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="n"><span class="pre">usb_composite_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">c</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_string_ids_n" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate unused string IDs in batch</p>
 </dd></dl>
 
@@ -2170,8 +2172,8 @@ then store that ID in the appropriate descriptors and string table.</p>
 example different functions don’t wrongly assign different meanings
 to the same identifier.</p>
 <dl class="c function">
-<dt id="c.usb_composite_probe">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">usb_composite_probe</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_composite_driver" title="usb_composite_driver"><span class="pre">usb_composite_driver</span></a> <span class="pre">*</span><em><span class="pre">driver</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_composite_probe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_composite_probe">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_composite_probe</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_composite_driver" title="usb_composite_driver"><span class="n"><span class="pre">usb_composite_driver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">driver</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_composite_probe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>register a composite driver</p>
 </dd></dl>
 
@@ -2192,8 +2194,8 @@ the host, unless one of its components invokes usb_gadget_disconnect()
 while it was binding.  That would usually be done in order to wait for
 some userspace participation.</p>
 <dl class="c function">
-<dt id="c.usb_composite_unregister">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">usb_composite_unregister</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_composite_driver" title="usb_composite_driver"><span class="pre">usb_composite_driver</span></a> <span class="pre">*</span><em><span class="pre">driver</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_composite_unregister" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_composite_unregister">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_composite_unregister</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_composite_driver" title="usb_composite_driver"><span class="n"><span class="pre">usb_composite_driver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">driver</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_composite_unregister" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>unregister a composite driver</p>
 </dd></dl>
 
@@ -2206,8 +2208,8 @@ some userspace participation.</p>
 <p>This function is used to unregister drivers using the composite
 driver framework.</p>
 <dl class="c function">
-<dt id="c.usb_composite_setup_continue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">usb_composite_setup_continue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="pre">usb_composite_dev</span></a> <span class="pre">*</span><em><span class="pre">cdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_composite_setup_continue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.usb_composite_setup_continue">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usb_composite_setup_continue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.usb_composite_dev" title="usb_composite_dev"><span class="n"><span class="pre">usb_composite_dev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.usb_composite_setup_continue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Continue with the control transfer</p>
 </dd></dl>
 
@@ -2222,15 +2224,15 @@ with the control transfer’s data/status stage in case it had requested to
 delay the data/status stages. A USB function’s setup handler (e.g. set_alt())
 can request the composite framework to delay the setup request’s data/status
 stages by returning USB_GADGET_DELAYED_STATUS.</p>
-</section>
-<section id="composite-device-functions">
+</div>
+<div class="section" id="composite-device-functions">
 <h3>Composite Device Functions<a class="headerlink" href="#composite-device-functions" title="Permalink to this headline">¶</a></h3>
 <p>At this writing, a few of the current gadget drivers have been converted
 to this framework. Near-term plans include converting all of them,
 except for <code class="docutils literal notranslate"><span class="pre">gadgetfs</span></code>.</p>
-</section>
-</section>
-<section id="peripheral-controller-drivers">
+</div>
+</div>
+<div class="section" id="peripheral-controller-drivers">
 <h2>Peripheral Controller Drivers<a class="headerlink" href="#peripheral-controller-drivers" title="Permalink to this headline">¶</a></h2>
 <p>The first hardware supporting this API was the NetChip 2280 controller,
 which supports USB 2.0 high speed and is based on PCI. This is the
@@ -2258,8 +2260,8 @@ help debug subsystems where the runtime hardware is unfriendly to
 software development, or is not yet available.</p>
 <p>Support for other controllers is expected to be developed and
 contributed over time, as this driver framework evolves.</p>
-</section>
-<section id="gadget-drivers">
+</div>
+<div class="section" id="gadget-drivers">
 <h2>Gadget Drivers<a class="headerlink" href="#gadget-drivers" title="Permalink to this headline">¶</a></h2>
 <p>In addition to <em>Gadget Zero</em> (used primarily for testing and development
 with drivers for usb controller hardware), other gadget drivers exist.</p>
@@ -2302,8 +2304,8 @@ a BIOS), which can sometimes use that model with very small systems
 without real serial lines.</p>
 <p>Support for other kinds of gadget is expected to be developed and
 contributed over time, as this driver framework evolves.</p>
-</section>
-<section id="usb-on-the-go-otg">
+</div>
+<div class="section" id="usb-on-the-go-otg">
 <h2>USB On-The-GO (OTG)<a class="headerlink" href="#usb-on-the-go-otg" title="Permalink to this headline">¶</a></h2>
 <p>USB OTG support on Linux 2.6 was initially developed by Texas
 Instruments for <a class="reference external" href="http://www.omap.com">OMAP</a> 16xx and 17xx series
@@ -2362,8 +2364,8 @@ The OTG controller driver needs to activate and deactivate USB
 controllers depending on the relevant device role. Some related changes
 were needed inside usbcore, so that it can identify OTG-capable devices
 and respond appropriately to HNP or SRP protocols.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

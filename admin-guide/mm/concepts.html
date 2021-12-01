@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Concepts overview &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -353,7 +355,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="concepts-overview">
+  <div class="section" id="concepts-overview">
 <span id="mm-concepts"></span><h1>Concepts overview<a class="headerlink" href="#concepts-overview" title="Permalink to this headline">¶</a></h1>
 <p>The memory management in Linux is a complex system that evolved over the
 years and included more and more functionality to support a variety of
@@ -376,7 +378,7 @@ address to a physical address.</p>
 <li><p><a class="reference internal" href="#oom-killer" id="id9">OOM killer</a></p></li>
 </ul>
 </div>
-<section id="virtual-memory-primer">
+<div class="section" id="virtual-memory-primer">
 <h2><a class="toc-backref" href="#id1">Virtual Memory Primer</a><a class="headerlink" href="#virtual-memory-primer" title="Permalink to this headline">¶</a></h2>
 <p>The physical memory in a computer system is a limited resource and
 even for systems that support memory hotplug there is a hard limit on
@@ -416,8 +418,8 @@ table. That entry is then used to access the next level in the
 hierarchy with the next bits of the virtual address as the index to
 that level page table. The lowest bits in the virtual address define
 the offset inside the actual page.</p>
-</section>
-<section id="huge-pages">
+</div>
+<div class="section" id="huge-pages">
 <h2><a class="toc-backref" href="#id2">Huge Pages</a><a class="headerlink" href="#huge-pages" title="Permalink to this headline">¶</a></h2>
 <p>The address translation requires several memory accesses and memory
 accesses are slow relatively to CPU speed. To avoid spending precious
@@ -446,8 +448,8 @@ manages such mappings transparently to the user and hence the
 name. See
 <a class="reference internal" href="transhuge.html#admin-guide-transhuge"><span class="std std-ref"><a class="reference internal" href="transhuge.html"><span class="doc">Transparent Hugepage Support</span></a></span></a>
 for more details about THP.</p>
-</section>
-<section id="zones">
+</div>
+<div class="section" id="zones">
 <h2><a class="toc-backref" href="#id3">Zones</a><a class="headerlink" href="#zones" title="Permalink to this headline">¶</a></h2>
 <p>Often hardware poses restrictions on how different physical memory
 ranges can be accessed. In some cases, devices cannot perform DMA to
@@ -462,8 +464,8 @@ contain normally addressed pages.</p>
 <p>The actual layout of the memory zones is hardware dependent as not all
 architectures define all zones, and requirements for DMA are different
 for different platforms.</p>
-</section>
-<section id="nodes">
+</div>
+<div class="section" id="nodes">
 <h2><a class="toc-backref" href="#id4">Nodes</a><a class="headerlink" href="#nodes" title="Permalink to this headline">¶</a></h2>
 <p>Many multi-processor machines are NUMA - Non-Uniform Memory Access -
 systems. In such systems the memory is arranged into banks that have
@@ -474,8 +476,8 @@ own set of zones, lists of free and used pages and various statistics
 counters. You can find more details about NUMA in
 <a class="reference internal" href="../../vm/numa.html#numa"><span class="std std-ref"><a class="reference internal" href="../../vm/numa.html"><span class="doc">What is NUMA?</span></a></span></a> and in
 <a class="reference internal" href="numa_memory_policy.html#numa-memory-policy"><span class="std std-ref"><a class="reference internal" href="numa_memory_policy.html"><span class="doc">NUMA Memory Policy</span></a></span></a>.</p>
-</section>
-<section id="page-cache">
+</div>
+<div class="section" id="page-cache">
 <h2><a class="toc-backref" href="#id5">Page cache</a><a class="headerlink" href="#page-cache" title="Permalink to this headline">¶</a></h2>
 <p>The physical memory is volatile and the common case for getting data
 into the memory is to read it from files. Whenever a file is read, the
@@ -485,8 +487,8 @@ is placed in the page cache and eventually gets into the backing
 storage device. The written pages are marked as <cite>dirty</cite> and when Linux
 decides to reuse them for other purposes, it makes sure to synchronize
 the file contents on the device with the updated data.</p>
-</section>
-<section id="anonymous-memory">
+</div>
+<div class="section" id="anonymous-memory">
 <h2><a class="toc-backref" href="#id6">Anonymous Memory</a><a class="headerlink" href="#anonymous-memory" title="Permalink to this headline">¶</a></h2>
 <p>The <cite>anonymous memory</cite> or <cite>anonymous mappings</cite> represent memory that
 is not backed by a filesystem. Such mappings are implicitly created
@@ -498,8 +500,8 @@ page filled with zeroes. When the program performs a write, a regular
 physical page will be allocated to hold the written data. The page
 will be marked dirty and if the kernel decides to repurpose it,
 the dirty page will be swapped out.</p>
-</section>
-<section id="reclaim">
+</div>
+<div class="section" id="reclaim">
 <h2><a class="toc-backref" href="#id7">Reclaim</a><a class="headerlink" href="#reclaim" title="Permalink to this headline">¶</a></h2>
 <p>Throughout the system lifetime, a physical page can be used for storing
 different types of data. It can be kernel internal data structures,
@@ -533,8 +535,8 @@ device (remember those dirty pages?). As memory usage increases even
 more and reaches another threshold - min watermark - an allocation
 will trigger <cite>direct reclaim</cite>. In this case allocation is stalled
 until enough memory pages are reclaimed to satisfy the request.</p>
-</section>
-<section id="compaction">
+</div>
+<div class="section" id="compaction">
 <h2><a class="toc-backref" href="#id8">Compaction</a><a class="headerlink" href="#compaction" title="Permalink to this headline">¶</a></h2>
 <p>As the system runs, tasks allocate and free the memory and it becomes
 fragmented. Although with virtual memory it is possible to present
@@ -549,8 +551,8 @@ together at the beginning of the zone and allocations of large
 physically contiguous areas become possible.</p>
 <p>Like reclaim, the compaction may happen asynchronously in the <code class="docutils literal notranslate"><span class="pre">kcompactd</span></code>
 daemon or synchronously as a result of a memory allocation request.</p>
-</section>
-<section id="oom-killer">
+</div>
+<div class="section" id="oom-killer">
 <h2><a class="toc-backref" href="#id9">OOM killer</a><a class="headerlink" href="#oom-killer" title="Permalink to this headline">¶</a></h2>
 <p>It is possible that on a loaded machine memory will be exhausted and the
 kernel will be unable to reclaim enough memory to continue to operate. In
@@ -558,8 +560,8 @@ order to save the rest of the system, it invokes the <cite>OOM killer</cite>.</p
 <p>The <cite>OOM killer</cite> selects a task to sacrifice for the sake of the overall
 system health. The selected task is killed in a hope that after it exits
 enough memory will be freed to continue normal operation.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

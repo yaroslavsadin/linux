@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>4. Request API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -279,7 +281,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="request-api">
+  <div class="section" id="request-api">
 <span id="media-request-api"></span><h1><span class="section-number">4. </span>Request API<a class="headerlink" href="#request-api" title="Permalink to this headline">¶</a></h1>
 <p>The Request API has been designed to allow V4L2 to deal with requirements of
 modern devices (stateless codecs, complex camera pipelines, …) and APIs
@@ -301,7 +303,7 @@ specific buffers. This allows user-space to schedule several tasks (“requests�
 with different configurations in advance, knowing that the configuration will be
 applied when needed to get the expected result. Configuration values at the time
 of request completion are also available for reading.</p>
-<section id="general-usage">
+<div class="section" id="general-usage">
 <h2><span class="section-number">4.1. </span>General Usage<a class="headerlink" href="#general-usage" title="Permalink to this headline">¶</a></h2>
 <p>The Request API extends the Media Controller API and cooperates with
 subsystem-specific APIs to support request usage. At the Media Controller
@@ -311,14 +313,14 @@ an opaque way. Configuration data, buffer handles and processing results
 stored in requests are accessed through subsystem-specific APIs extended for
 request support, such as V4L2 APIs that take an explicit <code class="docutils literal notranslate"><span class="pre">request_fd</span></code>
 parameter.</p>
-</section>
-<section id="request-allocation">
+</div>
+<div class="section" id="request-allocation">
 <h2><span class="section-number">4.2. </span>Request Allocation<a class="headerlink" href="#request-allocation" title="Permalink to this headline">¶</a></h2>
 <p>User-space allocates requests using <a class="reference internal" href="media-ioc-request-alloc.html#media-ioc-request-alloc"><span class="std std-ref">ioctl MEDIA_IOC_REQUEST_ALLOC</span></a>
 for the media device node. This returns a file descriptor representing the
 request. Typically, several such requests will be allocated.</p>
-</section>
-<section id="request-preparation">
+</div>
+<div class="section" id="request-preparation">
 <h2><span class="section-number">4.3. </span>Request Preparation<a class="headerlink" href="#request-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Standard V4L2 ioctls can then receive a request file descriptor to express the
 fact that the ioctl is part of said request, and is not to be applied
@@ -326,8 +328,8 @@ immediately. See <a class="reference internal" href="media-ioc-request-alloc.htm
 support this. Configurations set with a <code class="docutils literal notranslate"><span class="pre">request_fd</span></code> parameter are stored
 instead of being immediately applied, and buffers queued to a request do not
 enter the regular buffer queue until the request itself is queued.</p>
-</section>
-<section id="request-submission">
+</div>
+<div class="section" id="request-submission">
 <h2><span class="section-number">4.4. </span>Request Submission<a class="headerlink" href="#request-submission" title="Permalink to this headline">¶</a></h2>
 <p>Once the configuration and buffers of the request are specified, it can be
 queued by calling <a class="reference internal" href="media-request-ioc-queue.html#media-request-ioc-queue"><span class="std std-ref">ioctl MEDIA_REQUEST_IOC_QUEUE</span></a> on the request file descriptor.
@@ -373,8 +375,8 @@ descriptor. Calling <a class="reference internal" href="../v4l/vidioc-g-ext-ctrl
 request that has been queued but not yet completed will return <code class="docutils literal notranslate"><span class="pre">EBUSY</span></code>
 since the control values might be changed at any time by the driver while the
 request is in flight.</p>
-</section>
-<section id="recycling-and-destruction">
+</div>
+<div class="section" id="recycling-and-destruction">
 <span id="media-request-life-time"></span><h2><span class="section-number">4.5. </span>Recycling and Destruction<a class="headerlink" href="#recycling-and-destruction" title="Permalink to this headline">¶</a></h2>
 <p>Finally, a completed request can either be discarded or be reused. Calling
 <a class="reference internal" href="media-func-close.html#c.MC.close" title="close"><code class="xref c c-func docutils literal notranslate"><span class="pre">close()</span></code></a> on a request file descriptor will make
@@ -385,8 +387,8 @@ the request.</p>
 <p>The <a class="reference internal" href="media-request-ioc-reinit.html#media-request-ioc-reinit"><span class="std std-ref">ioctl MEDIA_REQUEST_IOC_REINIT</span></a> will clear a request’s state and make it
 available again. No state is retained by this operation: the request is as
 if it had just been allocated.</p>
-</section>
-<section id="example-for-a-codec-device">
+</div>
+<div class="section" id="example-for-a-codec-device">
 <h2><span class="section-number">4.6. </span>Example for a Codec Device<a class="headerlink" href="#example-for-a-codec-device" title="Permalink to this headline">¶</a></h2>
 <p>For use-cases such as <a class="reference internal" href="../v4l/dev-mem2mem.html#mem2mem"><span class="std std-ref">codecs</span></a>, the request API can be used
 to associate specific controls to
@@ -460,8 +462,8 @@ query values as soon as the capture buffer is produced.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">close</span><span class="p">(</span><span class="n">req_fd</span><span class="p">);</span>
 </pre></div>
 </div>
-</section>
-<section id="example-for-a-simple-capture-device">
+</div>
+<div class="section" id="example-for-a-simple-capture-device">
 <h2><span class="section-number">4.7. </span>Example for a Simple Capture Device<a class="headerlink" href="#example-for-a-simple-capture-device" title="Permalink to this headline">¶</a></h2>
 <p>With a simple capture device, requests can be used to specify controls to apply
 for a given CAPTURE buffer.</p>
@@ -491,8 +493,8 @@ for a given CAPTURE buffer.</p>
 </div>
 <p>User-space can then dequeue buffers, wait for the request completion, query
 controls and recycle the request as in the M2M example above.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

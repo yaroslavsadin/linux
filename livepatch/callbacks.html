@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>(Un)patching Callbacks &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -257,7 +259,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="un-patching-callbacks">
+  <div class="section" id="un-patching-callbacks">
 <h1>(Un)patching Callbacks<a class="headerlink" href="#un-patching-callbacks" title="Permalink to this headline">¶</a></h1>
 <p>Livepatch (un)patch-callbacks provide a mechanism for livepatch modules
 to execute callback functions when a kernel object is (un)patched.  They
@@ -273,7 +275,7 @@ to include:</p>
 <p>In most cases, (un)patch callbacks will need to be used in conjunction
 with memory barriers and kernel synchronization primitives, like
 mutexes/spinlocks, or even stop_machine(), to avoid concurrency issues.</p>
-<section id="motivation">
+<div class="section" id="motivation">
 <h2>1. Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
 <p>Callbacks differ from existing kernel facilities:</p>
 <blockquote>
@@ -286,8 +288,8 @@ patch.</p></li>
 <p>Callbacks are part of the klp_object structure and their implementation
 is specific to that klp_object.  Other livepatch objects may or may not
 be patched, irrespective of the target klp_object’s current state.</p>
-</section>
-<section id="callback-types">
+</div>
+<div class="section" id="callback-types">
 <h2>2. Callback types<a class="headerlink" href="#callback-types" title="Permalink to this headline">¶</a></h2>
 <p>Callbacks can be registered for the following livepatch actions:</p>
 <blockquote>
@@ -327,8 +329,8 @@ used to cleanup pre-patch callback resources</p></li>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="how-it-works">
+</div>
+<div class="section" id="how-it-works">
 <h2>3. How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
 <p>Each callback is optional, omitting one does not preclude specifying any
 other.  However, the livepatching core executes the handlers in
@@ -369,13 +371,13 @@ will only occur if their corresponding post-patch callback executed).</p>
 <p>If the object did successfully patch, but the patch transition never
 started for some reason (e.g., if another object failed to patch),
 only the post-unpatch callback will be called.</p>
-</section>
-<section id="use-cases">
+</div>
+<div class="section" id="use-cases">
 <h2>4. Use cases<a class="headerlink" href="#use-cases" title="Permalink to this headline">¶</a></h2>
 <p>Sample livepatch modules demonstrating the callback API can be found in
 samples/livepatch/ directory.  These samples were modified for use in
 kselftests and can be found in the lib/livepatch directory.</p>
-<section id="global-data-update">
+<div class="section" id="global-data-update">
 <h3>Global data update<a class="headerlink" href="#global-data-update" title="Permalink to this headline">¶</a></h3>
 <p>A pre-patch callback can be useful to update a global variable.  For
 example, 75ff39ccc1bd (“tcp: make challenge acks less predictable”)
@@ -385,8 +387,8 @@ function.</p>
 patch the data <em>after</em> patching is complete with a post-patch callback,
 so that tcp_send_challenge_ack() could first be changed to read
 sysctl_tcp_challenge_ack_limit with READ_ONCE.</p>
-</section>
-<section id="init-and-probe-function-patches-support">
+</div>
+<div class="section" id="init-and-probe-function-patches-support">
 <h3>__init and probe function patches support<a class="headerlink" href="#init-and-probe-function-patches-support" title="Permalink to this headline">¶</a></h3>
 <p>Although __init and probe functions are not directly livepatch-able, it
 may be possible to implement similar updates via pre/post-patch
@@ -396,9 +398,9 @@ virtnet_probe() initialized its driver’s net_device features.  A
 pre/post-patch callback could iterate over all such devices, making a
 similar change to their hw_features value.  (Client functions of the
 value may need to be updated accordingly.)</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

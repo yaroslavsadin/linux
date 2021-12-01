@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Netlink interface for ethtool &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -398,9 +400,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="netlink-interface-for-ethtool">
+  <div class="section" id="netlink-interface-for-ethtool">
 <h1>Netlink interface for ethtool<a class="headerlink" href="#netlink-interface-for-ethtool" title="Permalink to this headline">¶</a></h1>
-<section id="basic-information">
+<div class="section" id="basic-information">
 <h2>Basic information<a class="headerlink" href="#basic-information" title="Permalink to this headline">¶</a></h2>
 <p>Netlink interface for ethtool uses generic netlink family <code class="docutils literal notranslate"><span class="pre">ethtool</span></code>
 (userspace application should use macros <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GENL_NAME</span></code> and
@@ -418,8 +420,8 @@ anyone but there are exceptions (where the response contains sensitive
 information). In some cases, the request as such is allowed for anyone but
 unprivileged users have attributes with sensitive information (e.g.
 wake-on-lan password) omitted.</p>
-</section>
-<section id="conventions">
+</div>
+<div class="section" id="conventions">
 <h2>Conventions<a class="headerlink" href="#conventions" title="Permalink to this headline">¶</a></h2>
 <p>Attributes which represent a boolean value usually use NLA_U8 type so that we
 can distinguish three states: “on”, “off” and “not present” (meaning the
@@ -434,8 +436,8 @@ implements an array of entries.</p>
 user space based on whether they are valid or not should not use zero as a
 valid value. This avoids the need to explicitly signal the validity of the
 attribute in the device driver API.</p>
-</section>
-<section id="request-header">
+</div>
+<div class="section" id="request-header">
 <h2>Request header<a class="headerlink" href="#request-header" title="Permalink to this headline">¶</a></h2>
 <p>Each request or reply message contains a nested attribute with common header.
 Structure of this header is</p>
@@ -494,8 +496,8 @@ the flags may not apply to requests. Recognized flags are:</p>
 the behaviour is backward compatible, i.e. requests from old clients not aware
 of the flag should be interpreted the way the client expects. A client must
 not set flags it does not understand.</p>
-</section>
-<section id="bit-sets">
+</div>
+<div class="section" id="bit-sets">
 <h2>Bit sets<a class="headerlink" href="#bit-sets" title="Permalink to this headline">¶</a></h2>
 <p>For short bitmaps of (reasonably) fixed length, standard <code class="docutils literal notranslate"><span class="pre">NLA_BITFIELD32</span></code>
 type is used. For arbitrary length bitmaps, ethtool netlink uses a nested
@@ -618,8 +620,8 @@ zero.</p>
 <p>In requests, application can use either form. Form used by kernel in reply is
 determined by <code class="docutils literal notranslate"><span class="pre">ETHTOOL_FLAG_COMPACT_BITSETS</span></code> flag in flags field of request
 header. Semantics of value and mask depends on the attribute.</p>
-</section>
-<section id="list-of-message-types">
+</div>
+<div class="section" id="list-of-message-types">
 <h2>List of message types<a class="headerlink" href="#list-of-message-types" title="Permalink to this headline">¶</a></h2>
 <p>All constants identifying message types use <code class="docutils literal notranslate"><span class="pre">ETHTOOL_CMD_</span></code> prefix and suffix
 according to message purpose:</p>
@@ -911,8 +913,8 @@ information is reported by kernel (which can be suppressed by setting
 an <code class="docutils literal notranslate"><span class="pre">ACT_REPLY</span></code> message. Performing an action also triggers a notification
 (<code class="docutils literal notranslate"><span class="pre">NTF</span></code> message).</p>
 <p>Later sections describe the format and semantics of these messages.</p>
-</section>
-<section id="strset-get">
+</div>
+<div class="section" id="strset-get">
 <h2>STRSET_GET<a class="headerlink" href="#strset-get" title="Permalink to this headline">¶</a></h2>
 <p>Requests contents of a string set as provided by ioctl commands
 <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GSSET_INFO</span></code> and <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GSTRINGS.</span></code> String sets are not user
@@ -1040,8 +1042,8 @@ a and <code class="docutils literal notranslate"><span class="pre">NLM_F_DUMP</s
 requested type are returned, otherwise only those specified in the request.
 Flag <code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_STRSET_COUNTS_ONLY</span></code> tells kernel to only return string
 counts of the sets, not the actual strings.</p>
-</section>
-<section id="linkinfo-get">
+</div>
+<div class="section" id="linkinfo-get">
 <h2>LINKINFO_GET<a class="headerlink" href="#linkinfo-get" title="Permalink to this headline">¶</a></h2>
 <p>Requests link settings as provided by <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GLINKSETTINGS</span></code> except for
 link modes and autonegotiation related information. The request does not use
@@ -1102,8 +1104,8 @@ any attributes.</p>
 corresponding ioctl structures.</p>
 <p><code class="docutils literal notranslate"><span class="pre">LINKINFO_GET</span></code> allows dump requests (kernel returns reply message for all
 devices supporting the request).</p>
-</section>
-<section id="linkinfo-set">
+</div>
+<div class="section" id="linkinfo-set">
 <h2>LINKINFO_SET<a class="headerlink" href="#linkinfo-set" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">LINKINFO_SET</span></code> request allows setting some of the attributes reported by
 <code class="docutils literal notranslate"><span class="pre">LINKINFO_GET</span></code>.</p>
@@ -1137,8 +1139,8 @@ devices supporting the request).</p>
 </div></blockquote>
 <p>MDI(-X) status and transceiver cannot be set, request with the corresponding
 attributes is rejected.</p>
-</section>
-<section id="linkmodes-get">
+</div>
+<div class="section" id="linkmodes-get">
 <h2>LINKMODES_GET<a class="headerlink" href="#linkmodes-get" title="Permalink to this headline">¶</a></h2>
 <p>Requests link modes (supported, advertised and peer advertised) and related
 information (autonegotiation status, link speed and duplex) as provided by
@@ -1208,8 +1210,8 @@ represents supported modes. <code class="docutils literal notranslate"><span cla
 list.</p>
 <p><code class="docutils literal notranslate"><span class="pre">LINKMODES_GET</span></code> allows dump requests (kernel returns reply messages for all
 devices supporting the request).</p>
-</section>
-<section id="linkmodes-set">
+</div>
+<div class="section" id="linkmodes-set">
 <h2>LINKMODES_SET<a class="headerlink" href="#linkmodes-set" title="Permalink to this headline">¶</a></h2>
 <p>Request contents:</p>
 <blockquote>
@@ -1263,8 +1265,8 @@ supported modes matching speed, duplex, lanes or all (whatever is specified).
 This autoselection is done on ethtool side with ioctl interface, netlink
 interface is supposed to allow requesting changes without knowing what exactly
 kernel supports.</p>
-</section>
-<section id="linkstate-get">
+</div>
+<div class="section" id="linkstate-get">
 <h2>LINKSTATE_GET<a class="headerlink" href="#linkstate-get" title="Permalink to this headline">¶</a></h2>
 <p>Requests link state information. Link up/down flag (as provided by
 <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GLINK</span></code> ioctl command) is provided. Optionally, extended state might
@@ -1533,8 +1535,8 @@ module is stuck at ModuleFault state</p></td>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="debug-get">
+</div>
+<div class="section" id="debug-get">
 <h2>DEBUG_GET<a class="headerlink" href="#debug-get" title="Permalink to this headline">¶</a></h2>
 <p>Requests debugging settings of a device. At the moment, only message mask is
 provided.</p>
@@ -1582,8 +1584,8 @@ classes (represented by <code class="docutils literal notranslate"><span class="
 interface follows its actual use in practice.</p>
 <p><code class="docutils literal notranslate"><span class="pre">DEBUG_GET</span></code> allows dump requests (kernel returns reply messages for all
 devices supporting the request).</p>
-</section>
-<section id="debug-set">
+</div>
+<div class="section" id="debug-set">
 <h2>DEBUG_SET<a class="headerlink" href="#debug-set" title="Permalink to this headline">¶</a></h2>
 <p>Set or update debugging settings of a device. At the moment, only message mask
 is supported.</p>
@@ -1609,8 +1611,8 @@ is supported.</p>
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_DEBUG_MSGMASK</span></code> bit set allows setting or modifying mask of
 enabled debugging message types for the device.</p>
-</section>
-<section id="wol-get">
+</div>
+<div class="section" id="wol-get">
 <h2>WOL_GET<a class="headerlink" href="#wol-get" title="Permalink to this headline">¶</a></h2>
 <p>Query device wake-on-lan settings. Unlike most “GET” type requests,
 <code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_WOL_GET</span></code> requires (netns) <code class="docutils literal notranslate"><span class="pre">CAP_NET_ADMIN</span></code> privileges as it
@@ -1658,8 +1660,8 @@ enabled debugging message types for the device.</p>
 <p>In reply, <code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_WOL_MODES</span></code> mask consists of modes supported by the
 device, value of modes which are enabled. <code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_WOL_SOPASS</span></code> is only
 included in reply if <code class="docutils literal notranslate"><span class="pre">WAKE_MAGICSECURE</span></code> mode is supported.</p>
-</section>
-<section id="wol-set">
+</div>
+<div class="section" id="wol-set">
 <h2>WOL_SET<a class="headerlink" href="#wol-set" title="Permalink to this headline">¶</a></h2>
 <p>Set or update wake-on-lan settings.</p>
 <p>Request contents:</p>
@@ -1688,8 +1690,8 @@ included in reply if <code class="docutils literal notranslate"><span class="pre
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_WOL_SOPASS</span></code> is only allowed for devices supporting
 <code class="docutils literal notranslate"><span class="pre">WAKE_MAGICSECURE</span></code> mode.</p>
-</section>
-<section id="features-get">
+</div>
+<div class="section" id="features-get">
 <h2>FEATURES_GET<a class="headerlink" href="#features-get" title="Permalink to this headline">¶</a></h2>
 <p>Gets netdev features like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GFEATURES</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -1748,8 +1750,8 @@ it can calculate their values from related feature bits itself.
 ETHA_FEATURES_HW uses mask consisting of all features recognized by kernel (to
 provide all names when using verbose bitmap format), the other three use no
 mask (simple bit lists).</p>
-</section>
-<section id="features-set">
+</div>
+<div class="section" id="features-set">
 <h2>FEATURES_SET<a class="headerlink" href="#features-set" title="Permalink to this headline">¶</a></h2>
 <p>Request to set netdev features like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_SFEATURES</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -1813,8 +1815,8 @@ the operation).</p>
 are modified using <code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_FEATURES_SET</span></code> request or on of ethtool ioctl
 request but also each time features are modified with <a class="reference internal" href="kapi.html#c.netdev_update_features" title="netdev_update_features"><code class="xref c c-func docutils literal notranslate"><span class="pre">netdev_update_features()</span></code></a>
 or <a class="reference internal" href="kapi.html#c.netdev_change_features" title="netdev_change_features"><code class="xref c c-func docutils literal notranslate"><span class="pre">netdev_change_features()</span></code></a>.</p>
-</section>
-<section id="privflags-get">
+</div>
+<div class="section" id="privflags-get">
 <h2>PRIVFLAGS_GET<a class="headerlink" href="#privflags-get" title="Permalink to this headline">¶</a></h2>
 <p>Gets private flags like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GPFLAGS</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -1859,8 +1861,8 @@ are device dependent. For compact bitset format, names can be retrieved as
 <code class="docutils literal notranslate"><span class="pre">ETH_SS_PRIV_FLAGS</span></code> string set. If verbose bitset format is requested,
 response uses all private flags supported by the device as mask so that client
 gets the full information without having to fetch the string set with names.</p>
-</section>
-<section id="privflags-set">
+</div>
+<div class="section" id="privflags-set">
 <h2>PRIVFLAGS_SET<a class="headerlink" href="#privflags-set" title="Permalink to this headline">¶</a></h2>
 <p>Sets or modifies values of device private flags like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_SPFLAGS</span></code>
 ioctl request.</p>
@@ -1886,8 +1888,8 @@ ioctl request.</p>
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_PRIVFLAGS_FLAGS</span></code> can either set the whole set of private flags or
 modify only values of some of them.</p>
-</section>
-<section id="rings-get">
+</div>
+<div class="section" id="rings-get">
 <h2>RINGS_GET<a class="headerlink" href="#rings-get" title="Permalink to this headline">¶</a></h2>
 <p>Gets ring sizes like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GRINGPARAM</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -1954,8 +1956,8 @@ modify only values of some of them.</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="rings-set">
+</div>
+<div class="section" id="rings-set">
 <h2>RINGS_SET<a class="headerlink" href="#rings-set" title="Permalink to this headline">¶</a></h2>
 <p>Sets ring sizes like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_SRINGPARAM</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -1993,8 +1995,8 @@ modify only values of some of them.</p>
 <p>Kernel checks that requested ring sizes do not exceed limits reported by
 driver. Driver may impose additional constraints and may not suspport all
 attributes.</p>
-</section>
-<section id="channels-get">
+</div>
+<div class="section" id="channels-get">
 <h2>CHANNELS_GET<a class="headerlink" href="#channels-get" title="Permalink to this headline">¶</a></h2>
 <p>Gets channel counts like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GCHANNELS</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -2061,8 +2063,8 @@ attributes.</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="channels-set">
+</div>
+<div class="section" id="channels-set">
 <h2>CHANNELS_SET<a class="headerlink" href="#channels-set" title="Permalink to this headline">¶</a></h2>
 <p>Sets channel counts like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_SCHANNELS</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -2100,8 +2102,8 @@ attributes.</p>
 <p>Kernel checks that requested channel counts do not exceed limits reported by
 driver. Driver may impose additional constraints and may not suspport all
 attributes.</p>
-</section>
-<section id="coalesce-get">
+</div>
+<div class="section" id="coalesce-get">
 <h2>COALESCE_GET<a class="headerlink" href="#coalesce-get" title="Permalink to this headline">¶</a></h2>
 <p>Gets coalescing parameters like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GCOALESCE</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -2246,8 +2248,8 @@ Setting the appropriate attribute to 1 will enable <code class="docutils literal
 each packet event resets the timer. In this mode timer is used to force
 the interrupt if queue goes idle, while busy queues depend on the packet
 limit to trigger interrupts.</p>
-</section>
-<section id="coalesce-set">
+</div>
+<div class="section" id="coalesce-set">
 <h2>COALESCE_SET<a class="headerlink" href="#coalesce-set" title="Permalink to this headline">¶</a></h2>
 <p>Sets coalescing parameters like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_SCOALESCE</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -2366,8 +2368,8 @@ limit to trigger interrupts.</p>
 such that the corresponding bit in <code class="docutils literal notranslate"><span class="pre">ethtool_ops::supported_coalesce_params</span></code>
 is not set), regardless of their values. Driver may impose additional
 constraints on coalescing parameters and their values.</p>
-</section>
-<section id="pause-get">
+</div>
+<div class="section" id="pause-get">
 <h2>PAUSE_GET<a class="headerlink" href="#pause-get" title="Permalink to this headline">¶</a></h2>
 <p>Gets pause frame settings like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GPAUSEPARAM</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -2423,8 +2425,8 @@ in <code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_HEADER
 It will be empty if driver did not report any statistics. Drivers fill in
 the statistics in the following structure:</p>
 <dl class="c struct">
-<dt id="c.ethtool_pause_stats">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ethtool_pause_stats</span></code><a class="headerlink" href="#c.ethtool_pause_stats" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ethtool_pause_stats">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ethtool_pause_stats</span></span></span><a class="headerlink" href="#c.ethtool_pause_stats" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>statistics for IEEE 802.3x pause frames</p>
 </dd></dl>
 
@@ -2449,8 +2451,8 @@ from the standard.</p>
 </dd>
 </dl>
 <p>Each member has a corresponding attribute defined.</p>
-</section>
-<section id="pause-set">
+</div>
+<div class="section" id="pause-set">
 <h2>PAUSE_SET<a class="headerlink" href="#pause-set" title="Permalink to this headline">¶</a></h2>
 <p>Sets pause parameters like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GPAUSEPARAM</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -2481,8 +2483,8 @@ from the standard.</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="eee-get">
+</div>
+<div class="section" id="eee-get">
 <h2>EEE_GET<a class="headerlink" href="#eee-get" title="Permalink to this headline">¶</a></h2>
 <p>Gets Energy Efficient Ethernet settings like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GEEE</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -2546,8 +2548,8 @@ enabled, value of link modes for which EEE is advertised. Link modes for which
 peer advertises EEE are listed in <code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_EEE_MODES_PEER</span></code> (no mask). The
 netlink interface allows reporting EEE status for all link modes but only
 first 32 are provided by the <code class="docutils literal notranslate"><span class="pre">ethtool_ops</span></code> callback.</p>
-</section>
-<section id="eee-set">
+</div>
+<div class="section" id="eee-set">
 <h2>EEE_SET<a class="headerlink" href="#eee-set" title="Permalink to this headline">¶</a></h2>
 <p>Sets Energy Efficient Ethernet parameters like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_SEEE</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -2587,8 +2589,8 @@ EEE for (if there is no mask) or specify changes to the list (if there is
 a mask). The netlink interface allows reporting EEE status for all link modes
 but only first 32 can be set at the moment as that is what the <code class="docutils literal notranslate"><span class="pre">ethtool_ops</span></code>
 callback supports.</p>
-</section>
-<section id="tsinfo-get">
+</div>
+<div class="section" id="tsinfo-get">
 <h2>TSINFO_GET<a class="headerlink" href="#tsinfo-get" title="Permalink to this headline">¶</a></h2>
 <p>Gets timestamping information like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GET_TS_INFO</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -2642,8 +2644,8 @@ callback supports.</p>
 <p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_TSINFO_PHC_INDEX</span></code> is absent if there is no associated PHC (there
 is no special value for this case). The bitset attributes are omitted if they
 would be empty (no bit set).</p>
-</section>
-<section id="cable-test">
+</div>
+<div class="section" id="cable-test">
 <h2>CABLE_TEST<a class="headerlink" href="#cable-test" title="Permalink to this headline">¶</a></h2>
 <p>Start a cable test.</p>
 <p>Request contents:</p>
@@ -2750,8 +2752,8 @@ information.</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="cable-test-tdr">
+</div>
+<div class="section" id="cable-test-tdr">
 <h2>CABLE_TEST TDR<a class="headerlink" href="#cable-test-tdr" title="Permalink to this headline">¶</a></h2>
 <p>Start a cable test and report raw TDR data</p>
 <p>Request contents:</p>
@@ -2933,8 +2935,8 @@ used to report the amplitude of the reflection for a given pair.</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="tunnel-info">
+</div>
+<div class="section" id="tunnel-info">
 <h2>TUNNEL_INFO<a class="headerlink" href="#tunnel-info" title="Permalink to this headline">¶</a></h2>
 <p>Gets information about the tunnel state NIC is aware of.</p>
 <p>Request contents:</p>
@@ -3017,8 +3019,8 @@ table can hold</p></td>
 </div></blockquote>
 <p>For UDP tunnel table empty <code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_TUNNEL_UDP_TABLE_TYPES</span></code> indicates that
 the table contains static entries, hard-coded by the NIC.</p>
-</section>
-<section id="fec-get">
+</div>
+<div class="section" id="fec-get">
 <h2>FEC_GET<a class="headerlink" href="#fec-get" title="Permalink to this headline">¶</a></h2>
 <p>Gets FEC configuration and state like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GFECPARAM</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -3103,8 +3105,8 @@ the array will be:</p>
 </table>
 <p>Drivers fill in the statistics in the following structure:</p>
 <dl class="c struct">
-<dt id="c.ethtool_fec_stats">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ethtool_fec_stats</span></code><a class="headerlink" href="#c.ethtool_fec_stats" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ethtool_fec_stats">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ethtool_fec_stats</span></span></span><a class="headerlink" href="#c.ethtool_fec_stats" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>statistics for IEEE 802.3 FEC</p>
 </dd></dl>
 
@@ -3136,8 +3138,8 @@ Reported to user space as <code class="docutils literal notranslate"><span class
 <p><strong>Description</strong></p>
 <p>Drivers should fill in either only total or per-lane statistics, core
 will take care of adding lane values up to produce the total.</p>
-</section>
-<section id="fec-set">
+</div>
+<div class="section" id="fec-set">
 <h2>FEC_SET<a class="headerlink" href="#fec-set" title="Permalink to this headline">¶</a></h2>
 <p>Sets FEC parameters like <code class="docutils literal notranslate"><span class="pre">ETHTOOL_SFECPARAM</span></code> ioctl request.</p>
 <p>Request contents:</p>
@@ -3171,8 +3173,8 @@ to set only one bit, if multiple bits are set driver may choose between them
 in an implementation specific way.</p>
 <p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_FEC_AUTO</span></code> requests the driver to choose FEC mode based on SFP
 module parameters. This does not mean autonegotiation.</p>
-</section>
-<section id="module-eeprom-get">
+</div>
+<div class="section" id="module-eeprom-get">
 <h2>MODULE_EEPROM_GET<a class="headerlink" href="#module-eeprom-get" title="Permalink to this headline">¶</a></h2>
 <p>Fetch module EEPROM data dump.
 This interface is designed to allow dumps of at most 1/2 page at once. This
@@ -3239,8 +3241,8 @@ module EEPROM</p></td>
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_MODULE_EEPROM_DATA</span></code> has an attribute length equal to the amount of
 bytes driver actually read.</p>
-</section>
-<section id="stats-get">
+</div>
+<div class="section" id="stats-get">
 <h2>STATS_GET<a class="headerlink" href="#stats-get" title="Permalink to this headline">¶</a></h2>
 <p>Get standard statistics for the interface. Note that this is not
 a re-implementation of <code class="docutils literal notranslate"><span class="pre">ETHTOOL_GSTATS</span></code> which exposed driver-defined
@@ -3408,8 +3410,8 @@ contain the following attributes:</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="phc-vclocks-get">
+</div>
+<div class="section" id="phc-vclocks-get">
 <h2>PHC_VCLOCKS_GET<a class="headerlink" href="#phc-vclocks-get" title="Permalink to this headline">¶</a></h2>
 <p>Query device PHC virtual clocks information.</p>
 <p>Request contents:</p>
@@ -3452,8 +3454,8 @@ contain the following attributes:</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="module-get">
+</div>
+<div class="section" id="module-get">
 <h2>MODULE_GET<a class="headerlink" href="#module-get" title="Permalink to this headline">¶</a></h2>
 <p>Gets transceiver module parameters.</p>
 <p>Request contents:</p>
@@ -3505,8 +3507,8 @@ is not critical.</p>
 power mode policy of the transceiver module. It is only reported when a module
 is plugged-in. Possible values are:</p>
 <dl class="c enum">
-<dt id="c.ethtool_module_power_mode">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">ethtool_module_power_mode</span></code><a class="headerlink" href="#c.ethtool_module_power_mode" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ethtool_module_power_mode">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ethtool_module_power_mode</span></span></span><a class="headerlink" href="#c.ethtool_module_power_mode" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>plug-in module power mode</p>
 </dd></dl>
 
@@ -3517,8 +3519,8 @@ is plugged-in. Possible values are:</p>
 <dt><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MODULE_POWER_MODE_HIGH</span></code></dt><dd><p>Module is in high power mode.</p>
 </dd>
 </dl>
-</section>
-<section id="module-set">
+</div>
+<div class="section" id="module-set">
 <h2>MODULE_SET<a class="headerlink" href="#module-set" title="Permalink to this headline">¶</a></h2>
 <p>Sets transceiver module parameters.</p>
 <p>Request contents:</p>
@@ -3545,8 +3547,8 @@ is plugged-in. Possible values are:</p>
 to set the transceiver module power policy enforced by the host. Possible
 values are:</p>
 <dl class="c enum">
-<dt id="c.ethtool_module_power_mode_policy">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">ethtool_module_power_mode_policy</span></code><a class="headerlink" href="#c.ethtool_module_power_mode_policy" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.ethtool_module_power_mode_policy">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ethtool_module_power_mode_policy</span></span></span><a class="headerlink" href="#c.ethtool_module_power_mode_policy" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>plug-in module power mode policy</p>
 </dd></dl>
 
@@ -3564,8 +3566,8 @@ administratively down.</p>
 6-10 in revision 2.10a of the specification.</p>
 <p>For CMIS modules, low power mode is forced by the host according to table 6-12
 in revision 5.0 of the specification.</p>
-</section>
-<section id="request-translation">
+</div>
+<div class="section" id="request-translation">
 <h2>Request translation<a class="headerlink" href="#request-translation" title="Permalink to this headline">¶</a></h2>
 <p>The following table maps ioctl commands to netlink commands providing their
 functionality. Entries with “n/a” in right column are commands which do not
@@ -3848,8 +3850,8 @@ are netlink only.</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

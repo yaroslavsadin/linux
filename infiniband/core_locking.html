@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>InfiniBand Midlayer Locking &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -255,7 +257,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="infiniband-midlayer-locking">
+  <div class="section" id="infiniband-midlayer-locking">
 <h1>InfiniBand Midlayer Locking<a class="headerlink" href="#infiniband-midlayer-locking" title="Permalink to this headline">¶</a></h1>
 <blockquote>
 <div><p>This guide is an attempt to make explicit the locking assumptions
@@ -263,7 +265,7 @@ made by the InfiniBand midlayer.  It describes the requirements on
 both low-level drivers that sit below the midlayer and upper level
 protocols that use the midlayer.</p>
 </div></blockquote>
-<section id="sleeping-and-interrupt-context">
+<div class="section" id="sleeping-and-interrupt-context">
 <h2>Sleeping and interrupt context<a class="headerlink" href="#sleeping-and-interrupt-context" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>With the following exceptions, a low-level driver implementation of
@@ -305,7 +307,7 @@ consumers:</p>
 <p>used by low-level drivers to dispatch asynchronous events through
 the midlayer is also safe to call from any context.</p>
 </div></blockquote>
-<section id="reentrancy">
+<div class="section" id="reentrancy">
 <h3>Reentrancy<a class="headerlink" href="#reentrancy" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>All of the methods in struct ib_device exported by a low-level
@@ -321,8 +323,8 @@ example, a consumer may safely call ib_poll_cq() on multiple CPUs
 simultaneously.  However, the ordering of the work completion
 information between different calls of ib_poll_cq() is not defined.</p>
 </div></blockquote>
-</section>
-<section id="callbacks">
+</div>
+<div class="section" id="callbacks">
 <h3>Callbacks<a class="headerlink" href="#callbacks" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>A low-level driver must not perform a callback directly from the
@@ -353,8 +355,8 @@ callbacks run is not defined.  Depending on the low-level driver, it
 may be process context, softirq context, or interrupt context.
 Upper level protocol consumers may not sleep in a callback.</p>
 </div></blockquote>
-</section>
-<section id="hot-plug">
+</div>
+<div class="section" id="hot-plug">
 <h3>Hot-plug<a class="headerlink" href="#hot-plug" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>A low-level driver announces that a device is ready for use by
@@ -371,9 +373,9 @@ device.  A consumer must finish all cleanup and free all resources
 relating to a device before returning from the remove method.</p>
 <p>A consumer is permitted to sleep in its add and remove methods.</p>
 </div></blockquote>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

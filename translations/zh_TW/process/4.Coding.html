@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>4. 使代碼正確 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -290,16 +292,16 @@
 胡皓文 Hu Haowen &lt;<a class="reference external" href="mailto:src&#46;res&#37;&#52;&#48;email&#46;cn">src<span>&#46;</span>res<span>&#64;</span>email<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="tw-development-coding">
+<div class="section" id="tw-development-coding">
 <span id="id1"></span><h1><span class="section-number">4. </span>使代碼正確<a class="headerlink" href="#tw-development-coding" title="Permalink to this headline">¶</a></h1>
 <p>雖然一個堅實的、面向社區的設計過程有很多值得說道的，但是任何內核開發項目工作
 的證明都反映在代碼中。它是將由其他開發人員檢查併合並（或不合併）到主線樹中
 的代碼。所以這段代碼的質量決定了項目的最終成功。</p>
 <p>本節將檢查編碼過程。我們將從內核開發人員常犯的幾種錯誤開始。然後重點將轉移
 到正確的做法和相關有用的工具上。</p>
-<section id="id2">
+<div class="section" id="id2">
 <h2><span class="section-number">4.1. </span>陷阱<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
-<section id="id3">
+<div class="section" id="id3">
 <h3><span class="section-number">4.1.1. </span>代碼風格<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>內核長期以來都有其標準的代碼風格，如
 <a class="reference internal" href="coding-style.html#tw-codingstyle"><span class="std std-ref"><a class="reference internal" href="coding-style.html"><span class="doc">Linux 內核代碼風格</span></a></span></a>
@@ -323,8 +325,8 @@
 化部分代碼，和審閱完整的文件以發現代碼樣式錯誤、拼寫錯誤和可能的改進。它還
 可以方便地排序 <code class="docutils literal notranslate"><span class="pre">#includes</span></code> 、對齊變量/宏、重排文本和其他類似任務。有關詳細
 信息，請參閱文檔 <a class="reference internal" href="../../../process/clang-format.html#clangformat"><span class="std std-ref"><a class="reference internal" href="../../../process/clang-format.html"><span class="doc">clang-format</span></a></span></a></p>
-</section>
-<section id="id4">
+</div>
+<div class="section" id="id4">
 <h3><span class="section-number">4.1.2. </span>抽象層<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>計算機科學教授教學生以靈活性和信息隱藏的名義廣泛使用抽象層。當然，內核廣泛
 地使用了抽象；任何涉及數百萬行代碼的項目都必須做到這一點以存續下來。但經驗
@@ -340,8 +342,8 @@
 <p>另一方面，如果您發現自己從另一個內核子系統複製了大量的代碼，那麼是時候
 了解一下：是否需要將這些代碼中的部分提取到單獨的庫中，或者在更高的層次上
 實現這些功能。在整個內核中複製相同的代碼沒有價值。</p>
-</section>
-<section id="ifdef">
+</div>
+<div class="section" id="ifdef">
 <h3><span class="section-number">4.1.3. </span>#ifdef 和預處理<a class="headerlink" href="#ifdef" title="Permalink to this headline">¶</a></h3>
 <p>C預處理器似乎給一些C程式設計師帶來了強大的誘惑，他們認爲它是一種將大量靈活性加入
 原始碼中的方法。但是預處理器不是C，大量使用它會導致代碼對其他人來說更難閱讀，
@@ -354,8 +356,8 @@
 <p>C預處理器宏存在許多危險性，包括可能對具有副作用且沒有類型安全的表達式進行多
 重評估。如果您試圖定義宏，請考慮創建一個內聯函數替代。結果相同的代碼，內聯
 函數更容易閱讀，不會多次計算其參數，並且允許編譯器對參數和返回值執行類型檢查。</p>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h3><span class="section-number">4.1.4. </span>內聯函數<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>不過，內聯函數本身也存在風險。程式設計師可以傾心於避免函數調用和用內聯函數填充源
 文件所固有的效率。然而，這些功能實際上會降低性能。因爲它們的代碼在每個調用站
@@ -367,8 +369,8 @@
 更緊湊的程序運行得慢。</p>
 <p>較新的編譯器越來越激進地決定一個給定函數是否應該內聯。因此，隨意放置使用
 「inline」關鍵字可能不僅僅是過度的，也可能是無用的。</p>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h3><span class="section-number">4.1.5. </span>鎖<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>2006年5月，「deviceescape」網絡堆棧在前呼後擁下以GPL發布，並被納入主線內核。
 這是一個受歡迎的消息；Linux中對無線網絡的支持充其量被認爲是不合格的，而
@@ -385,8 +387,8 @@ Deviceescape堆棧承諾修復這種情況。然而直到2007年6月（2.6.22）
 的代碼應該謹記這一要求；事後修改鎖是一項相當困難的任務。內核開發人員應該花
 時間充分了解可用的鎖原語，以便爲工作選擇正確的工具。對並發性缺乏關注的代碼
 很難進入主線。</p>
-</section>
-<section id="id7">
+</div>
+<div class="section" id="id7">
 <h3><span class="section-number">4.1.6. </span>回歸<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>最後一個值得一提的危險是回歸：它可能會引起導致現有用戶的某些東西中斷的改變
 （這也可能會帶來很大的改進）。這種變化被稱爲「回歸」，回歸已經成爲主線內核
@@ -404,9 +406,9 @@ Linus對這個問題給出了最佳答案:</p>
 就必須無限期地支持它。這一事實使得用戶空間接口的創建特別具有挑戰性：因爲它們
 不能以不兼容的方式進行更改，所以必須一次就對。因此，用戶空間接口總是需要大量
 的思考、清晰的文檔和廣泛的審查。</p>
-</section>
-</section>
-<section id="id8">
+</div>
+</div>
+<div class="section" id="id8">
 <h2><span class="section-number">4.2. </span>代碼檢查工具<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
 <p>至少目前，編寫無錯誤代碼仍然是我們中很少人能達到的理想狀態。不過，我們希望做
 的是，在代碼進入主線內核之前，儘可能多地捕獲並修復這些錯誤。爲此，內核開發人
@@ -467,8 +469,8 @@ scripts/coccinelle目錄下已經打包了相當多的內核「語義補丁」�
 <div><p><a class="reference external" href="https://www.kernel.org/pub/tools/crosstool/">https://www.kernel.org/pub/tools/crosstool/</a></p>
 </div></blockquote>
 <p>花一些時間安裝和使用這些編譯器將有助於避免以後的尷尬。</p>
-</section>
-<section id="id9">
+</div>
+<div class="section" id="id9">
 <h2><span class="section-number">4.3. </span>文檔<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
 <p>文檔通常比內核開發規則更爲例外。即便如此，足夠的文檔將有助於簡化將新代碼合併
 到內核中的過程，使其他開發人員的生活更輕鬆，並對您的用戶有所幫助。在許多情況
@@ -497,8 +499,8 @@ Documentation/ABI/README，了解如何此文檔格式以及需要提供哪些�
 屏障。數據結構的鎖規則通常需要在某個地方解釋。一般來說，主要數據結構需要全面
 的文檔。應該指出代碼中分立的位之間不明顯的依賴性。任何可能誘使代碼管理人進行
 錯誤的「清理」的事情都需要一個注釋來說明爲什麼要這樣做。等等。</p>
-</section>
-<section id="api">
+</div>
+<div class="section" id="api">
 <h2><span class="section-number">4.4. </span>內部API更改<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p>內核提供給用戶空間的二進位接口不能被破壞，除非逼不得已。而內核的內部編程接口
 是高度流動的，當需要時可以更改。如果你發現自己不得不處理一個內核API，或者僅
@@ -515,8 +517,8 @@ Documentation/ABI/README，了解如何此文檔格式以及需要提供哪些�
 到該接口的樹內用處。它還將警告開發人員樹外代碼存在他們需要響應的更改。支持樹外
 代碼不是內核開發人員需要擔心的事情，但是我們也不必使樹外開發人員的生活有不必要
 的困難。</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

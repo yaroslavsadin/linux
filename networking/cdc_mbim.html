@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>cdc_mbim - Driver for CDC MBIM Mobile Broadband modems &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -384,7 +386,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="cdc-mbim-driver-for-cdc-mbim-mobile-broadband-modems">
+  <div class="section" id="cdc-mbim-driver-for-cdc-mbim-mobile-broadband-modems">
 <h1>cdc_mbim - Driver for CDC MBIM Mobile Broadband modems<a class="headerlink" href="#cdc-mbim-driver-for-cdc-mbim-mobile-broadband-modems" title="Permalink to this headline">¶</a></h1>
 <p>The cdc_mbim driver supports USB devices conforming to the “Universal
 Serial Bus Communications Class Subclass Specification for Mobile
@@ -392,13 +394,13 @@ Broadband Interface Model” [1], which is a further development of
 “Universal Serial Bus Communications Class Subclass Specifications for
 Network Control Model Devices” [2] optimized for Mobile Broadband
 devices, aka “3G/LTE modems”.</p>
-<section id="command-line-parameters">
+<div class="section" id="command-line-parameters">
 <h2>Command Line Parameters<a class="headerlink" href="#command-line-parameters" title="Permalink to this headline">¶</a></h2>
 <p>The cdc_mbim driver has no parameters of its own.  But the probing
 behaviour for NCM 1.0 backwards compatible MBIM functions (an
 “NCM/MBIM function” as defined in section 3.2 of [1]) is affected
 by a cdc_ncm driver parameter:</p>
-<section id="prefer-mbim">
+<div class="section" id="prefer-mbim">
 <h3>prefer_mbim<a class="headerlink" href="#prefer-mbim" title="Permalink to this headline">¶</a></h3>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -419,9 +421,9 @@ driver handle them instead.</p>
 <p>The parameter is writable, and can be changed at any time. A manual
 unbind/bind is required to make the change effective for NCM/MBIM
 functions bound to the “wrong” driver</p>
-</section>
-</section>
-<section id="basic-usage">
+</div>
+</div>
+<div class="section" id="basic-usage">
 <h2>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
 <p>MBIM functions are inactive when unmanaged. The cdc_mbim driver only
 provides a userspace interface to the MBIM control channel, and will
@@ -445,15 +447,15 @@ management application:</p>
 <li><p>configure IP interface</p></li>
 </ul>
 </div></blockquote>
-<section id="management-application-development">
+<div class="section" id="management-application-development">
 <h3>Management application development<a class="headerlink" href="#management-application-development" title="Permalink to this headline">¶</a></h3>
 <p>The driver &lt;-&gt; userspace interfaces are described below.  The MBIM
 control channel protocol is described in [1].</p>
-</section>
-</section>
-<section id="mbim-control-channel-userspace-abi">
+</div>
+</div>
+<div class="section" id="mbim-control-channel-userspace-abi">
 <h2>MBIM control channel userspace ABI<a class="headerlink" href="#mbim-control-channel-userspace-abi" title="Permalink to this headline">¶</a></h2>
-<section id="dev-cdc-wdmx-character-device">
+<div class="section" id="dev-cdc-wdmx-character-device">
 <h3>/dev/cdc-wdmX character device<a class="headerlink" href="#dev-cdc-wdmx-character-device" title="Permalink to this headline">¶</a></h3>
 <p>The driver creates a two-way pipe to the MBIM function control channel
 using the cdc-wdm driver as a subdriver.  The userspace end of the
@@ -472,8 +474,8 @@ bjorn@nemi:~$ grep . /sys/bus/usb/drivers/cdc_mbim/2-4:2.12/usbmisc/cdc-wdm0/dev
 180:0
 </pre></div>
 </div>
-</section>
-<section id="usb-configuration-descriptors">
+</div>
+<div class="section" id="usb-configuration-descriptors">
 <h3>USB configuration descriptors<a class="headerlink" href="#usb-configuration-descriptors" title="Permalink to this headline">¶</a></h3>
 <p>The wMaxControlMessage field of the CDC MBIM functional descriptor
 limits the maximum control message size. The managament application is
@@ -484,23 +486,23 @@ into consideration.</p>
 descriptor of a MBIM function using either of the two USB
 configuration descriptor kernel interfaces described in [6] or [7].</p>
 <p>See also the ioctl documentation below.</p>
-</section>
-<section id="fragmentation">
+</div>
+<div class="section" id="fragmentation">
 <h3>Fragmentation<a class="headerlink" href="#fragmentation" title="Permalink to this headline">¶</a></h3>
 <p>The userspace application is responsible for all control message
 fragmentation and defragmentaion, as described in section 9.5 of [1].</p>
-</section>
-<section id="dev-cdc-wdmx-write">
+</div>
+<div class="section" id="dev-cdc-wdmx-write">
 <h3>/dev/cdc-wdmX write()<a class="headerlink" href="#dev-cdc-wdmx-write" title="Permalink to this headline">¶</a></h3>
 <p>The MBIM control messages from the management application <em>must not</em>
 exceed the negotiated control message size.</p>
-</section>
-<section id="dev-cdc-wdmx-read">
+</div>
+<div class="section" id="dev-cdc-wdmx-read">
 <h3>/dev/cdc-wdmX read()<a class="headerlink" href="#dev-cdc-wdmx-read" title="Permalink to this headline">¶</a></h3>
 <p>The management application <em>must</em> accept control messages of up the
 negotiated control message size.</p>
-</section>
-<section id="dev-cdc-wdmx-ioctl">
+</div>
+<div class="section" id="dev-cdc-wdmx-ioctl">
 <h3>/dev/cdc-wdmX ioctl()<a class="headerlink" href="#dev-cdc-wdmx-ioctl" title="Permalink to this headline">¶</a></h3>
 <p>IOCTL_WDM_MAX_COMMAND: Get Maximum Command Size
 This ioctl returns the wMaxControlMessage field of the CDC MBIM
@@ -521,8 +523,8 @@ int main()
 }
 </pre></div>
 </div>
-</section>
-<section id="custom-device-services">
+</div>
+<div class="section" id="custom-device-services">
 <h3>Custom device services<a class="headerlink" href="#custom-device-services" title="Permalink to this headline">¶</a></h3>
 <p>The MBIM specification allows vendors to freely define additional
 services.  This is fully supported by the cdc_mbim driver.</p>
@@ -530,17 +532,17 @@ services.  This is fully supported by the cdc_mbim driver.</p>
 implemented entirely in userspace, like the rest of the MBIM control
 protocol</p>
 <p>New services should be registered in the MBIM Registry [5].</p>
-</section>
-</section>
-<section id="mbim-data-channel-userspace-abi">
+</div>
+</div>
+<div class="section" id="mbim-data-channel-userspace-abi">
 <h2>MBIM data channel userspace ABI<a class="headerlink" href="#mbim-data-channel-userspace-abi" title="Permalink to this headline">¶</a></h2>
-<section id="wwany-network-device">
+<div class="section" id="wwany-network-device">
 <h3>wwanY network device<a class="headerlink" href="#wwany-network-device" title="Permalink to this headline">¶</a></h3>
 <p>The cdc_mbim driver represents the MBIM data channel as a single
 network device of the “wwan” type. This network device is initially
 mapped to MBIM IP session 0.</p>
-</section>
-<section id="multiplexed-ip-sessions-ips">
+</div>
+<div class="section" id="multiplexed-ip-sessions-ips">
 <h3>Multiplexed IP sessions (IPS)<a class="headerlink" href="#multiplexed-ip-sessions-ips" title="Permalink to this headline">¶</a></h3>
 <p>MBIM allows multiplexing up to 256 IP sessions over a single USB data
 channel.  The cdc_mbim driver models such IP sessions as 802.1q VLAN
@@ -558,8 +560,8 @@ kernel interfaces, either ioctl or netlink.</p>
 </div>
 <p>The driver will automatically map the “wwan0.3” network device to MBIM
 IP session 3.</p>
-</section>
-<section id="device-service-streams-dss">
+</div>
+<div class="section" id="device-service-streams-dss">
 <h3>Device Service Streams (DSS)<a class="headerlink" href="#device-service-streams-dss" title="Permalink to this headline">¶</a></h3>
 <p>MBIM also allows up to 256 non-IP data streams to be multiplexed over
 the same shared USB data channel.  The cdc_mbim driver models these
@@ -627,8 +629,8 @@ example:</p>
 };
 </pre></div>
 </div>
-</section>
-<section id="tagged-ip-session-0-vlan">
+</div>
+<div class="section" id="tagged-ip-session-0-vlan">
 <h3>Tagged IP session 0 VLAN<a class="headerlink" href="#tagged-ip-session-0-vlan" title="Permalink to this headline">¶</a></h3>
 <p>As described above, MBIM IP session 0 is treated as special by the
 driver.  It is initially mapped to untagged frames on the wwanY
@@ -655,8 +657,8 @@ example:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ip link add link wwan0 name wwan0.0 type vlan id 4094
 </pre></div>
 </div>
-</section>
-<section id="vlan-mapping">
+</div>
+<div class="section" id="vlan-mapping">
 <h3>VLAN mapping<a class="headerlink" href="#vlan-mapping" title="Permalink to this headline">¶</a></h3>
 <p>Summarizing the cdc_mbim driver mapping described above, we have this
 relationship between VLAN tags on the wwanY network device and MBIM
@@ -674,9 +676,9 @@ untagged      IPS         0                        a)
   c) if a VLAN ID 4094 link exists, else dropped
 </pre></div>
 </div>
-</section>
-</section>
-<section id="references">
+</div>
+</div>
+<div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ol class="arabic">
@@ -738,8 +740,8 @@ broadband (2G/3G/4G) devices and connections”</p>
 </li>
 </ol>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

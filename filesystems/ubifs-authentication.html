@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>UBIFS Authentication Support &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -312,9 +314,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ubifs-authentication-support">
+  <div class="section" id="ubifs-authentication-support">
 <h1>UBIFS Authentication Support<a class="headerlink" href="#ubifs-authentication-support" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>UBIFS utilizes the fscrypt framework to provide confidentiality for file
 contents and file names. This prevents attacks where an attacker is able to
@@ -340,7 +342,7 @@ authentication for UBIFS. Since UBIFS uses fscrypt for file contents and file
 name encryption, the authentication system could be tied into fscrypt such that
 existing features like key derivation can be utilized. It should however also
 be possible to use UBIFS authentication without using encryption.</p>
-<section id="mtd-ubi-ubifs">
+<div class="section" id="mtd-ubi-ubifs">
 <h3>MTD, UBI &amp; UBIFS<a class="headerlink" href="#mtd-ubi-ubifs" title="Permalink to this headline">¶</a></h3>
 <p>On Linux, the MTD (Memory Technology Devices) subsystem provides a uniform
 interface to access raw flash devices. One of the more prominent subsystems that
@@ -384,7 +386,7 @@ UBI LEB.</p></li>
 structures in more detail. The TNC is of less importance here since it is never
 persisted onto the flash directly. More details on UBIFS can also be found in
 [UBIFS-WP].</p>
-<section id="ubifs-index-tree-node-cache">
+<div class="section" id="ubifs-index-tree-node-cache">
 <h4>UBIFS Index &amp; Tree Node Cache<a class="headerlink" href="#ubifs-index-tree-node-cache" title="Permalink to this headline">¶</a></h4>
 <p>Basic on-flash UBIFS entities are called <em>nodes</em>. UBIFS knows different types
 of nodes. Eg. data nodes (<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ubifs_data_node</span></code>) which store chunks of file
@@ -414,8 +416,8 @@ the TNC does not have to mirror the full index into memory, but reads parts of
 it from flash whenever needed. A <em>commit</em> is the UBIFS operation of updating the
 on-flash filesystem structures like the index. On every commit, the TNC nodes
 marked as dirty are written to the flash to update the persisted index.</p>
-</section>
-<section id="journal">
+</div>
+<div class="section" id="journal">
 <h4>Journal<a class="headerlink" href="#journal" title="Permalink to this headline">¶</a></h4>
 <p>To avoid wearing out the flash, the index is only persisted (<em>commited</em>) when
 certain conditions are met (eg. <code class="docutils literal notranslate"><span class="pre">fsync(2)</span></code>). The journal is used to record
@@ -464,8 +466,8 @@ for every other LEB will directly cause UBIFS to fail the mount operation.</p>
                    containing their buds
 </pre></div>
 </div>
-</section>
-<section id="leb-property-tree-table">
+</div>
+<div class="section" id="leb-property-tree-table">
 <h4>LEB Property Tree/Table<a class="headerlink" href="#leb-property-tree-table" title="Permalink to this headline">¶</a></h4>
 <p>The LEB property tree is used to store per-LEB information. This includes the
 LEB type and amount of free and <em>dirty</em> (old, obsolete content) space <a class="footnote-reference brackets" href="#id2" id="id1">1</a> on
@@ -483,14 +485,14 @@ written to without erasing it and previously written content that is obsolete
 but can’t be overwritten without erasing the full LEB.</p>
 </dd>
 </dl>
-</section>
-</section>
-</section>
-<section id="ubifs-authentication">
+</div>
+</div>
+</div>
+<div class="section" id="ubifs-authentication">
 <h2>UBIFS Authentication<a class="headerlink" href="#ubifs-authentication" title="Permalink to this headline">¶</a></h2>
 <p>This chapter introduces UBIFS authentication which enables UBIFS to verify
 the authenticity and integrity of metadata and file contents stored on flash.</p>
-<section id="threat-model">
+<div class="section" id="threat-model">
 <h3>Threat Model<a class="headerlink" href="#threat-model" title="Permalink to this headline">¶</a></h3>
 <p>UBIFS authentication enables detection of offline data modification. While it
 does not prevent it, it enables (trusted) code to check the integrity and
@@ -513,8 +515,8 @@ eraseblock to another and does not atomically erase the first eraseblock.</p>
 execute code on the device after the authentication key was provided.
 Additional measures like secure boot and trusted boot have to be taken to
 ensure that only trusted code is executed on a device.</p>
-</section>
-<section id="authentication">
+</div>
+<div class="section" id="authentication">
 <h3>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h3>
 <p>To be able to fully trust data read from flash, all UBIFS data structures
 stored on flash are authenticated. That is:</p>
@@ -525,7 +527,7 @@ attributes, file length etc.</p></li>
 to the filesystem</p></li>
 <li><p>The LPT which stores UBI LEB metadata which UBIFS uses for free space accounting</p></li>
 </ul>
-<section id="index-authentication">
+<div class="section" id="index-authentication">
 <h4>Index Authentication<a class="headerlink" href="#index-authentication" title="Permalink to this headline">¶</a></h4>
 <p>Through UBIFS’ concept of a wandering tree, it already takes care of only
 updating and persisting changed parts from leaf node up to the root node
@@ -585,8 +587,8 @@ changed nodes are persisted is already designed for this purpose such that
 UBIFS can safely recover if a power-cut occurs while persisting. Adding
 hashes to index nodes does not change this since each hash will be persisted
 atomically together with its respective node.</p>
-</section>
-<section id="journal-authentication">
+</div>
+<div class="section" id="journal-authentication">
 <h4>Journal Authentication<a class="headerlink" href="#journal-authentication" title="Permalink to this headline">¶</a></h4>
 <p>The journal is authenticated too. Since the journal is continuously written
 it is necessary to also add authentication information frequently to the
@@ -631,8 +633,8 @@ the filesystem is created using <cite>mkfs.ubifs</cite> and stored in the superb
 To avoid tampering with this and other values stored there, a HMAC is added to
 the superblock struct. The superblock node is stored in LEB 0 and is only
 modified on feature flag or similar changes, but never on file changes.</p>
-</section>
-<section id="lpt-authentication">
+</div>
+<div class="section" id="lpt-authentication">
 <h4>LPT Authentication<a class="headerlink" href="#lpt-authentication" title="Permalink to this headline">¶</a></h4>
 <p>The location of the LPT root node on the flash is stored in the UBIFS master
 node. Since the LPT is written and read atomically on every commit, there is
@@ -641,9 +643,9 @@ protect the integrity of the full LPT by a simple hash stored in the master
 node. Since the master node itself is authenticated, the LPTs authenticity can
 be verified by verifying the authenticity of the master node and comparing the
 LTP hash stored there with the hash computed from the read on-flash LPT.</p>
-</section>
-</section>
-<section id="key-management">
+</div>
+</div>
+<div class="section" id="key-management">
 <h3>Key Management<a class="headerlink" href="#key-management" title="Permalink to this headline">¶</a></h3>
 <p>For simplicity, UBIFS authentication uses a single key to compute the HMACs
 of superblock, master, commit start and reference nodes. This key has to be
@@ -673,9 +675,9 @@ encryption.</p>
 superblock node will additionally store a hash of the authentication key. This
 approach is similar to the approach proposed for fscrypt encryption policy v2
 [FSCRYPT-POLICY2].</p>
-</section>
-</section>
-<section id="future-extensions">
+</div>
+</div>
+<div class="section" id="future-extensions">
 <h2>Future Extensions<a class="headerlink" href="#future-extensions" title="Permalink to this headline">¶</a></h2>
 <p>In certain cases where a vendor wants to provide an authenticated filesystem
 image to customers, it should be possible to do so without sharing the secret
@@ -685,8 +687,8 @@ filesystem image. In case this filesystem has to be modified afterwards,
 UBIFS can exchange all digital signatures with HMACs on first mount similar
 to the way the IMA/EVM subsystem deals with such situations. The HMAC key
 will then have to be provided beforehand in the normal way.</p>
-</section>
-<section id="references">
+</div>
+<div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <p>[CRYPTSETUP2]        <a class="reference external" href="https://www.saout.de/pipermail/dm-crypt/2017-November/005745.html">https://www.saout.de/pipermail/dm-crypt/2017-November/005745.html</a></p>
 <p>[DMC-CBC-ATTACK]     <a class="reference external" href="https://www.jakoblell.com/blog/2013/12/22/practical-malleability-attack-against-cbc-encrypted-luks-partitions/">https://www.jakoblell.com/blog/2013/12/22/practical-malleability-attack-against-cbc-encrypted-luks-partitions/</a></p>
@@ -694,8 +696,8 @@ will then have to be provided beforehand in the normal way.</p>
 <p>[DM-VERITY]          <a class="reference external" href="https://www.kernel.org/doc/Documentation/device-mapper/verity.rst">https://www.kernel.org/doc/Documentation/device-mapper/verity.rst</a></p>
 <p>[FSCRYPT-POLICY2]    <a class="reference external" href="https://www.spinics.net/lists/linux-ext4/msg58710.html">https://www.spinics.net/lists/linux-ext4/msg58710.html</a></p>
 <p>[UBIFS-WP]           <a class="reference external" href="http://www.linux-mtd.infradead.org/doc/ubifs_whitepaper.pdf">http://www.linux-mtd.infradead.org/doc/ubifs_whitepaper.pdf</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

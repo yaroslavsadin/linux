@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>ACPI Based Device Enumeration &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -279,7 +281,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="acpi-based-device-enumeration">
+  <div class="section" id="acpi-based-device-enumeration">
 <h1>ACPI Based Device Enumeration<a class="headerlink" href="#acpi-based-device-enumeration" title="Permalink to this headline">¶</a></h1>
 <p>ACPI 5 introduced a set of new resources (UartTSerialBus, I2cSerialBus,
 SpiSerialBus, GpioIo and GpioInt) which can be used in enumerating slave
@@ -307,7 +309,7 @@ the ACPI namespace.</p>
 <p>This means that when ACPI_HANDLE(dev) returns non-NULL the device was
 enumerated from ACPI namespace. This handle can be used to extract other
 device-specific configuration. There is an example of this below.</p>
-<section id="platform-bus-support">
+<div class="section" id="platform-bus-support">
 <h2>Platform bus support<a class="headerlink" href="#platform-bus-support" title="Permalink to this headline">¶</a></h2>
 <p>Since we are using platform devices to represent devices that are not
 connected to any physical bus we only need to implement a platform driver
@@ -335,8 +337,8 @@ static struct platform_driver my_driver = {
 <p>If the driver needs to perform more complex initialization like getting and
 configuring GPIOs it can get its ACPI handle and extract this information
 from ACPI tables.</p>
-</section>
-<section id="dma-support">
+</div>
+<div class="section" id="dma-support">
 <h2>DMA support<a class="headerlink" href="#dma-support" title="Permalink to this headline">¶</a></h2>
 <p>DMA controllers enumerated via ACPI should be registered in the system to
 provide generic access to their resources. For example, a driver that would
@@ -410,8 +412,8 @@ this example.</p>
 <p>In robust cases the client unfortunately needs to call
 acpi_dma_request_slave_chan_by_index() directly and therefore choose the
 specific FixedDMA resource by its index.</p>
-</section>
-<section id="spi-serial-bus-support">
+</div>
+<div class="section" id="spi-serial-bus-support">
 <h2>SPI serial bus support<a class="headerlink" href="#spi-serial-bus-support" title="Permalink to this headline">¶</a></h2>
 <p>Slave devices behind SPI bus have SpiSerialBus resource attached to them.
 This is extracted automatically by the SPI core and the slave devices are
@@ -492,8 +494,8 @@ if (ACPI_FAILURE(status))
 kfree(output.pointer);
 </pre></div>
 </div>
-</section>
-<section id="i2c-serial-bus-support">
+</div>
+<div class="section" id="i2c-serial-bus-support">
 <h2>I2C serial bus support<a class="headerlink" href="#i2c-serial-bus-support" title="Permalink to this headline">¶</a></h2>
 <p>The slaves behind I2C bus controller only need to add the ACPI IDs like
 with the platform and SPI drivers. The I2C core automatically enumerates
@@ -523,8 +525,8 @@ static struct i2c_driver mpu3050_i2c_driver = {
 };
 </pre></div>
 </div>
-</section>
-<section id="reference-to-pwm-device">
+</div>
+<div class="section" id="reference-to-pwm-device">
 <h2>Reference to PWM device<a class="headerlink" href="#reference-to-pwm-device" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes a device can be a consumer of PWM channel. Obviously OS would like
 to know which one. To provide this mapping the special property has been
@@ -554,8 +556,8 @@ introduced, i.e.:</p>
 <p>In the above example the PWM-based LED driver references to the PWM channel 0
 of _SB.PCI0.PWM device with initial period setting equal to 600 ms (note that
 value is given in nanoseconds).</p>
-</section>
-<section id="gpio-support">
+</div>
+<div class="section" id="gpio-support">
 <h2>GPIO support<a class="headerlink" href="#gpio-support" title="Permalink to this headline">¶</a></h2>
 <p>ACPI 5 introduced two new resources to describe GPIO connections: GpioIo
 and GpioInt. These resources can be used to pass GPIO numbers used by
@@ -633,8 +635,8 @@ if (IS_ERR(power_desc))
 descriptors once the device is released.</p>
 <p>See <a class="reference internal" href="gpio-properties.html"><span class="doc">_DSD Device Properties Related to GPIO</span></a> for more information
 about the _DSD binding related to GPIOs.</p>
-</section>
-<section id="mfd-devices">
+</div>
+<div class="section" id="mfd-devices">
 <h2>MFD devices<a class="headerlink" href="#mfd-devices" title="Permalink to this headline">¶</a></h2>
 <p>The MFD devices register their children as platform devices. For the child
 devices there needs to be an ACPI handle that they can use to reference
@@ -666,8 +668,8 @@ static struct mfd_cell my_subdevice_cell = {
 <p>The ACPI id “XYZ0001” is then used to lookup an ACPI device directly under
 the MFD device and if found, that ACPI companion device is bound to the
 resulting child platform device.</p>
-</section>
-<section id="device-tree-namespace-link-device-id">
+</div>
+<div class="section" id="device-tree-namespace-link-device-id">
 <h2>Device Tree namespace link device ID<a class="headerlink" href="#device-tree-namespace-link-device-id" title="Permalink to this headline">¶</a></h2>
 <p>The Device Tree protocol uses device identification based on the “compatible”
 property whose value is a string or an array of strings recognized as device
@@ -747,8 +749,8 @@ Otherwise, the _DSD itself is regarded as invalid and therefore the “compatibl
 property returned by it is meaningless.</p>
 <p>Refer to <a class="reference internal" href="DSD-properties-rules.html"><span class="doc">_DSD Device Properties Usage Rules</span></a> for more
 information.</p>
-</section>
-<section id="pci-hierarchy-representation">
+</div>
+<div class="section" id="pci-hierarchy-representation">
 <h2>PCI hierarchy representation<a class="headerlink" href="#pci-hierarchy-representation" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes could be useful to enumerate a PCI device, knowing its position on the
 PCI bus.</p>
@@ -886,8 +888,8 @@ names:</p>
 <p>The location “_SB.PCI0.RP02” is obtained by the above investigation in the
 dsdt.dsl table, whereas the device names “BRG1”, “BRG2” and “EXAR” are
 created analyzing the position of the Exar UART in the PCI bus topology.</p>
-</section>
-<section id="references">
+</div>
+<div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <p>[1] <a class="reference internal" href="gpio-properties.html"><span class="doc">_DSD Device Properties Related to GPIO</span></a></p>
 <p>[2] <a class="reference internal" href="../../admin-guide/acpi/initrd_table_override.html"><span class="doc">Upgrading ACPI tables via initrd</span></a></p>
@@ -896,8 +898,8 @@ created analyzing the position of the Exar UART in the PCI bus topology.</p>
 referenced 2020-11-18</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>How to Implement a new CPUFreq Processor Driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -260,7 +262,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="how-to-implement-a-new-cpufreq-processor-driver">
+  <div class="section" id="how-to-implement-a-new-cpufreq-processor-driver">
 <h1>How to Implement a new CPUFreq Processor Driver<a class="headerlink" href="#how-to-implement-a-new-cpufreq-processor-driver" title="Permalink to this headline">¶</a></h1>
 <p>Authors:</p>
 <blockquote>
@@ -270,12 +272,12 @@
 <li><p>Viresh Kumar &lt;<a class="reference external" href="mailto:viresh&#46;kumar&#37;&#52;&#48;linaro&#46;org">viresh<span>&#46;</span>kumar<span>&#64;</span>linaro<span>&#46;</span>org</a>&gt;</p></li>
 </ul>
 </div></blockquote>
-<section id="what-to-do">
+<div class="section" id="what-to-do">
 <h2>1. What To Do?<a class="headerlink" href="#what-to-do" title="Permalink to this headline">¶</a></h2>
 <p>So, you just got a brand-new CPU / chipset with datasheets and want to
 add cpufreq support for this CPU / chipset? Great. Here are some hints
 on what is necessary:</p>
-<section id="initialization">
+<div class="section" id="initialization">
 <h3>1.1 Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h3>
 <p>First of all, in an __initcall level 7 (<a class="reference internal" href="../driver-api/basics.html#c.module_init" title="module_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_init()</span></code></a>) or later
 function check whether this kernel runs on the right CPU and the right
@@ -310,8 +312,8 @@ allow to export values to sysfs.</p>
 <p>.set_boost - A pointer to a per-policy function to enable/disable boost
 frequencies.</p>
 </div></blockquote>
-</section>
-<section id="per-cpu-initialization">
+</div>
+<div class="section" id="per-cpu-initialization">
 <h3>1.2 Per-CPU Initialization<a class="headerlink" href="#per-cpu-initialization" title="Permalink to this headline">¶</a></h3>
 <p>Whenever a new CPU is registered with the device model, or after the
 cpufreq driver registers itself, the per-policy initialization function
@@ -365,8 +367,8 @@ clock/voltage rails with it).</p></td>
 <p>For setting some of these values (cpuinfo.min[max]_freq, policy-&gt;min[max]), the
 frequency table helpers might be helpful. See the section 2 for more information
 on them.</p>
-</section>
-<section id="verify">
+</div>
+<div class="section" id="verify">
 <h3>1.3 verify<a class="headerlink" href="#verify" title="Permalink to this headline">¶</a></h3>
 <p>When the user decides a new policy (consisting of
 “policy,governor,min,max”) shall be set, this policy must be validated
@@ -377,8 +379,8 @@ See section 2 for details on frequency table helpers.</p>
 <p>You need to make sure that at least one valid frequency (or operating
 range) is within policy-&gt;min and policy-&gt;max. If necessary, increase
 policy-&gt;max first, and only if this is no solution, decrease policy-&gt;min.</p>
-</section>
-<section id="target-or-target-index-or-setpolicy-or-fast-switch">
+</div>
+<div class="section" id="target-or-target-index-or-setpolicy-or-fast-switch">
 <h3>1.4 target or target_index or setpolicy or fast_switch?<a class="headerlink" href="#target-or-target-index-or-setpolicy-or-fast-switch" title="Permalink to this headline">¶</a></h3>
 <p>Most cpufreq drivers or even most cpu frequency scaling algorithms
 only allow the CPU frequency to be set to predefined fixed values. For
@@ -386,8 +388,8 @@ these, you use the -&gt;target(), -&gt;target_index() or -&gt;fast_switch()
 callbacks.</p>
 <p>Some cpufreq capable processors switch the frequency between certain
 limits on their own. These shall use the -&gt;setpolicy() callback.</p>
-</section>
-<section id="target-target-index">
+</div>
+<div class="section" id="target-target-index">
 <h3>1.5. target/target_index<a class="headerlink" href="#target-target-index" title="Permalink to this headline">¶</a></h3>
 <p>The target_index call has two arguments: <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">cpufreq_policy</span> <span class="pre">*policy</span></code>,
 and <code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span></code> index (into the exposed frequency table).</p>
@@ -395,8 +397,8 @@ and <code class="docutils literal notranslate"><span class="pre">unsigned</span>
 actual frequency must be determined by freq_table[index].frequency.</p>
 <p>It should always restore to earlier frequency (i.e. policy-&gt;restore_freq) in
 case of errors, even if we switched to intermediate frequency earlier.</p>
-</section>
-<section id="deprecated">
+</div>
+<div class="section" id="deprecated">
 <h3>Deprecated<a class="headerlink" href="#deprecated" title="Permalink to this headline">¶</a></h3>
 <p>The target call has three arguments: <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">cpufreq_policy</span> <span class="pre">*policy</span></code>,
 unsigned int target_frequency, unsigned int relation.</p>
@@ -412,8 +414,8 @@ target_freq. (“H for highest, but no higher than”)</p></li>
 </ul>
 <p>Here again the frequency table helper might assist you - see section 2
 for details.</p>
-</section>
-<section id="fast-switch">
+</div>
+<div class="section" id="fast-switch">
 <h3>1.6. fast_switch<a class="headerlink" href="#fast-switch" title="Permalink to this headline">¶</a></h3>
 <p>This function is used for frequency switching from scheduler’s context.
 Not all drivers are expected to implement it, as sleeping from within
@@ -421,8 +423,8 @@ this callback isn’t allowed. This callback must be highly optimized to
 do switching as fast as possible.</p>
 <p>This function has two arguments: <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">cpufreq_policy</span> <span class="pre">*policy</span></code> and
 <code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">target_frequency</span></code>.</p>
-</section>
-<section id="setpolicy">
+</div>
+<div class="section" id="setpolicy">
 <h3>1.7 setpolicy<a class="headerlink" href="#setpolicy" title="Permalink to this headline">¶</a></h3>
 <p>The setpolicy call only takes a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">cpufreq_policy</span> <span class="pre">*policy</span></code> as
 argument. You need to set the lower limit of the in-processor or
@@ -431,8 +433,8 @@ to policy-&gt;max, and -if supported- select a performance-oriented
 setting when policy-&gt;policy is CPUFREQ_POLICY_PERFORMANCE, and a
 powersaving-oriented setting when CPUFREQ_POLICY_POWERSAVE. Also check
 the reference implementation in drivers/cpufreq/longrun.c</p>
-</section>
-<section id="get-intermediate-and-target-intermediate">
+</div>
+<div class="section" id="get-intermediate-and-target-intermediate">
 <h3>1.8 get_intermediate and target_intermediate<a class="headerlink" href="#get-intermediate-and-target-intermediate" title="Permalink to this headline">¶</a></h3>
 <p>Only for drivers with target_index() and CPUFREQ_ASYNC_NOTIFICATION unset.</p>
 <p>get_intermediate should return a stable intermediate frequency platform wants to
@@ -445,9 +447,9 @@ to intermediate frequency for some target frequency. In that case core will
 directly call -&gt;target_index().</p>
 <p>NOTE: -&gt;target_index() should restore to policy-&gt;restore_freq in case of
 failures as core would send notifications for that.</p>
-</section>
-</section>
-<section id="frequency-table-helpers">
+</div>
+</div>
+<div class="section" id="frequency-table-helpers">
 <h2>2. Frequency Table Helpers<a class="headerlink" href="#frequency-table-helpers" title="Permalink to this headline">¶</a></h2>
 <p>As most cpufreq processors only allow for being set to a few specific
 frequencies, a “frequency table” with some functions might assist in
@@ -488,8 +490,8 @@ cpufreq_for_each_entry(pos, driver_freq_table) {
 <p>If you need to work with the position of pos within driver_freq_table,
 do not subtract the pointers, as it is quite costly. Instead, use the
 macros cpufreq_for_each_entry_idx() and cpufreq_for_each_valid_entry_idx().</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

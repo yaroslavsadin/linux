@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>GPIO Driver Interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -358,7 +360,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="gpio-driver-interface">
+  <div class="section" id="gpio-driver-interface">
 <h1>GPIO Driver Interface<a class="headerlink" href="#gpio-driver-interface" title="Permalink to this headline">¶</a></h1>
 <p>This document serves as a guide for writers of GPIO chip drivers.</p>
 <p>Each GPIO controller driver needs to include the following header, which defines
@@ -366,7 +368,7 @@ the structures used to define a GPIO driver:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#include &lt;linux/gpio/driver.h&gt;
 </pre></div>
 </div>
-<section id="internal-representation-of-gpios">
+<div class="section" id="internal-representation-of-gpios">
 <h2>Internal Representation of GPIOs<a class="headerlink" href="#internal-representation-of-gpios" title="Permalink to this headline">¶</a></h2>
 <p>A GPIO chip handles one or more GPIO lines. To be considered a GPIO chip, the
 lines must conform to the definition: General Purpose Input/Output. If the
@@ -397,8 +399,8 @@ global numbers 0..63 with one set of GPIO controllers, 64-79 with another type
 of GPIO controller, and on one particular board 80-95 with an FPGA. The legacy
 numbers need not be contiguous; either of those platforms could also use numbers
 2000-2063 to identify GPIO lines in a bank of I2C GPIO expanders.</p>
-</section>
-<section id="controller-drivers-gpio-chip">
+</div>
+<div class="section" id="controller-drivers-gpio-chip">
 <h2>Controller Drivers: gpio_chip<a class="headerlink" href="#controller-drivers-gpio-chip" title="Permalink to this headline">¶</a></h2>
 <p>In the gpiolib framework each GPIO controller is packaged as a “<a class="reference internal" href="index.html#c.gpio_chip" title="gpio_chip"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span>
 <span class="pre">gpio_chip</span></code></a>” (see &lt;linux/gpio/driver.h&gt; for its complete definition) with members
@@ -433,7 +435,7 @@ sleepable APIs (like PM runtime) in its gpio_chip implementation (.get/.set
 and direction control callbacks) if it is expected to call GPIO APIs from
 atomic context on realtime kernels (inside hard IRQ handlers and similar
 contexts). Normally this should not be required.</p>
-<section id="gpio-electrical-configuration">
+<div class="section" id="gpio-electrical-configuration">
 <h3>GPIO electrical configuration<a class="headerlink" href="#gpio-electrical-configuration" title="Permalink to this headline">¶</a></h3>
 <p>GPIO lines can be configured for several electrical modes of operation by using
 the .set_config() callback. Currently this API supports setting:</p>
@@ -453,8 +455,8 @@ listed GPIO configurations.</p>
 <p>If a pin controller back-end is used, the GPIO controller or hardware
 description needs to provide “GPIO ranges” mapping the GPIO line offsets to pin
 numbers on the pin controller so they can properly cross-reference each other.</p>
-</section>
-<section id="gpio-lines-with-debounce-support">
+</div>
+<div class="section" id="gpio-lines-with-debounce-support">
 <h3>GPIO lines with debounce support<a class="headerlink" href="#gpio-lines-with-debounce-support" title="Permalink to this headline">¶</a></h3>
 <p>Debouncing is a configuration set to a pin indicating that it is connected to
 a mechanical switch or button, or similar that may bounce. Bouncing means the
@@ -467,8 +469,8 @@ still has the same value (low or high). This could also be repeated by a clever
 state machine, waiting for a line to become stable. In either case, it sets
 a certain number of milliseconds for debouncing, or just “on/off” if that time
 is not configurable.</p>
-</section>
-<section id="gpio-lines-with-open-drain-source-support">
+</div>
+<div class="section" id="gpio-lines-with-open-drain-source-support">
 <h3>GPIO lines with open drain/source support<a class="headerlink" href="#gpio-lines-with-open-drain-source-support" title="Permalink to this headline">¶</a></h3>
 <p>Open drain (CMOS) or open collector (TTL) means the line is not actively driven
 high: instead you provide the drain/collector as output, so when the transistor
@@ -552,8 +554,8 @@ be identical, with the exception of possible hardware glitches when switching
 the mode of the line.</p>
 <p>For open source configuration the same principle is used, just that instead
 of actively driving the line low, it is set to input.</p>
-</section>
-<section id="gpio-lines-with-pull-up-down-resistor-support">
+</div>
+<div class="section" id="gpio-lines-with-pull-up-down-resistor-support">
 <h3>GPIO lines with pull up/down resistor support<a class="headerlink" href="#gpio-lines-with-pull-up-down-resistor-support" title="Permalink to this headline">¶</a></h3>
 <p>A GPIO line can support pull-up/down using the .set_config() callback. This
 means that a pull up or pull-down resistor is available on the output of the
@@ -571,9 +573,9 @@ suffice. For these complex use cases, a combined GPIO chip and pin controller
 need to be implemented, as the pin config interface of a pin controller
 supports more versatile control over electrical properties and can handle
 different pull-up or pull-down resistance values.</p>
-</section>
-</section>
-<section id="gpio-drivers-providing-irqs">
+</div>
+</div>
+<div class="section" id="gpio-drivers-providing-irqs">
 <h2>GPIO drivers providing IRQs<a class="headerlink" href="#gpio-drivers-providing-irqs" title="Permalink to this headline">¶</a></h2>
 <p>It is custom that GPIO drivers (GPIO chips) are also providing interrupts,
 most often cascaded off a parent interrupt controller, and in some special
@@ -620,7 +622,7 @@ implementation.</p>
 and .irq_bus_unlock() callbacks, as these are the only slowpath callbacks
 on an irqchip. Create the callbacks if needed.[2]</p></li>
 </ul>
-<section id="cascaded-gpio-irqchips">
+<div class="section" id="cascaded-gpio-irqchips">
 <h3>Cascaded GPIO irqchips<a class="headerlink" href="#cascaded-gpio-irqchips" title="Permalink to this headline">¶</a></h3>
 <p>Cascaded GPIO irqchips usually fall in one of three categories:</p>
 <ul>
@@ -696,8 +698,8 @@ when accessing the GPIOs.</p>
 already set up to handle sleeping contexts.</p>
 </li>
 </ul>
-</section>
-<section id="infrastructure-helpers-for-gpio-irqchips">
+</div>
+<div class="section" id="infrastructure-helpers-for-gpio-irqchips">
 <h3>Infrastructure helpers for GPIO irqchips<a class="headerlink" href="#infrastructure-helpers-for-gpio-irqchips" title="Permalink to this headline">¶</a></h3>
 <p>To help out in handling the set-up and management of GPIO irqchips and the
 associated irqdomain and resource allocation callbacks. These are activated
@@ -868,8 +870,8 @@ is cascaded, set the handler to <a class="reference internal" href="../../core-a
 in the irqchip .set_type() callback depending on what your controller
 supports and what is requested by the consumer.</p></li>
 </ul>
-</section>
-<section id="locking-irq-usage">
+</div>
+<div class="section" id="locking-irq-usage">
 <h3>Locking IRQ usage<a class="headerlink" href="#locking-irq-usage" title="Permalink to this headline">¶</a></h3>
 <p>Since GPIO and irq_chip are orthogonal, we can get conflicts between different
 use cases. For example a GPIO line used for IRQs should be an input line,
@@ -892,8 +894,8 @@ typically be called in the .startup() and .shutdown() callbacks from the
 irqchip.</p>
 <p>When using the gpiolib irqchip helpers, these callbacks are automatically
 assigned.</p>
-</section>
-<section id="disabling-and-enabling-irqs">
+</div>
+<div class="section" id="disabling-and-enabling-irqs">
 <h3>Disabling and enabling IRQs<a class="headerlink" href="#disabling-and-enabling-irqs" title="Permalink to this headline">¶</a></h3>
 <p>In some (fringe) use cases, a driver may be using a GPIO line as input for IRQs,
 but occasionally switch that line over to drive output and then back to being
@@ -915,8 +917,8 @@ typically be called in the .<a class="reference internal" href="../../core-api/g
 irqchip.</p>
 <p>When using the gpiolib irqchip helpers, these callbacks are automatically
 assigned.</p>
-</section>
-<section id="real-time-compliance-for-gpio-irq-chips">
+</div>
+<div class="section" id="real-time-compliance-for-gpio-irq-chips">
 <h3>Real-Time compliance for GPIO IRQ chips<a class="headerlink" href="#real-time-compliance-for-gpio-irq-chips" title="Permalink to this headline">¶</a></h3>
 <p>Any provider of irqchips needs to be carefully tailored to support Real-Time
 preemption. It is desirable that all irqchips in the GPIO subsystem keep this
@@ -945,9 +947,9 @@ level and edge IRQs</p></li>
 <li><p>[2] <a class="reference external" href="https://lore.kernel.org/r/1443209283-20781-2-git-send-email-grygorii.strashko&#64;ti.com">https://lore.kernel.org/r/1443209283-20781-2-git-send-email-grygorii.strashko&#64;ti.com</a></p></li>
 <li><p>[3] <a class="reference external" href="https://lore.kernel.org/r/1443209283-20781-3-git-send-email-grygorii.strashko&#64;ti.com">https://lore.kernel.org/r/1443209283-20781-3-git-send-email-grygorii.strashko&#64;ti.com</a></p></li>
 </ul>
-</section>
-</section>
-<section id="requesting-self-owned-gpio-pins">
+</div>
+</div>
+<div class="section" id="requesting-self-owned-gpio-pins">
 <h2>Requesting self-owned GPIO pins<a class="headerlink" href="#requesting-self-owned-gpio-pins" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes it is useful to allow a GPIO chip driver to request its own GPIO
 descriptors through the gpiolib API. A GPIO driver can use the following
@@ -965,8 +967,8 @@ void gpiochip_free_own_desc(struct gpio_desc *desc)
 <p>These functions must be used with care since they do not affect module use
 count. Do not use the functions to request gpio descriptors not owned by the
 calling driver.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

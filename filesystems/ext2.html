@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The Second Extended Filesystem &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -311,14 +313,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-second-extended-filesystem">
+  <div class="section" id="the-second-extended-filesystem">
 <h1>The Second Extended Filesystem<a class="headerlink" href="#the-second-extended-filesystem" title="Permalink to this headline">¶</a></h1>
 <p>ext2 was originally released in January 1993.  Written by R'emy Card,
 Theodore Ts’o and Stephen Tweedie, it was a major rewrite of the
 Extended Filesystem.  It is currently still (April 2001) the predominant
 filesystem in use by Linux.  There are also implementations available
 for NetBSD, FreeBSD, the GNU HURD, Windows 95/98/NT, OS/2 and RISC OS.</p>
-<section id="options">
+<div class="section" id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
 <p>Most defaults are determined by the filesystem superblock, and can be
 set using tune2fs(8). Kernel-determined defaults are indicated by (*).</p>
@@ -435,8 +437,8 @@ feedback if it’s the contrary for you.</p></td>
 </tbody>
 </table>
 <p>noquota option ls silently ignored by ext2.</p>
-</section>
-<section id="specification">
+</div>
+<div class="section" id="specification">
 <h2>Specification<a class="headerlink" href="#specification" title="Permalink to this headline">¶</a></h2>
 <p>ext2 shares many properties with traditional Unix filesystems.  It has
 the concepts of blocks, inodes and directories.  It has space in the
@@ -445,15 +447,15 @@ compression though these are not yet implemented (some are available as
 separate patches).  There is also a versioning mechanism to allow new
 features (such as journalling) to be added in a maximally compatible
 manner.</p>
-<section id="blocks">
+<div class="section" id="blocks">
 <h3>Blocks<a class="headerlink" href="#blocks" title="Permalink to this headline">¶</a></h3>
 <p>The space in the device or file is split up into blocks.  These are
 a fixed size, of 1024, 2048 or 4096 bytes (8192 bytes on Alpha systems),
 which is decided when the filesystem is created.  Smaller blocks mean
 less wasted space per file, but require slightly more accounting overhead,
 and also impose other limits on the size of files and the filesystem.</p>
-</section>
-<section id="block-groups">
+</div>
+<div class="section" id="block-groups">
 <h3>Block Groups<a class="headerlink" href="#block-groups" title="Permalink to this headline">¶</a></h3>
 <p>Blocks are clustered into block groups in order to reduce fragmentation
 and minimise the amount of head seeking when reading a large amount
@@ -467,8 +469,8 @@ that the maximum size of a block group is 8 times the size of a block.</p>
 as the inode table for that block group and the remainder are the data
 blocks.  The block allocation algorithm attempts to allocate data blocks
 in the same block group as the inode which contains them.</p>
-</section>
-<section id="the-superblock">
+</div>
+<div class="section" id="the-superblock">
 <h3>The Superblock<a class="headerlink" href="#the-superblock" title="Permalink to this headline">¶</a></h3>
 <p>The superblock contains all the information about the configuration of
 the filing system.  The primary copy of the superblock is stored at an
@@ -493,8 +495,8 @@ and space for optional filesystem features to store configuration info.</p>
 <p>All fields in the superblock (as in all other ext2 structures) are stored
 on the disc in little endian format, so a filesystem is portable between
 machines without having to know what machine it was created on.</p>
-</section>
-<section id="inodes">
+</div>
+<div class="section" id="inodes">
 <h3>Inodes<a class="headerlink" href="#inodes" title="Permalink to this headline">¶</a></h3>
 <p>The inode (index node) is a fundamental concept in the ext2 filesystem.
 Each object in the filesystem is represented by an inode.  The inode
@@ -526,8 +528,8 @@ behaviour on a per-file basis.  There are flags for secure deletion,
 undeletable, compression, synchronous updates, immutability, append-only,
 dumpable, no-atime, indexed directories, and data-journaling.  Not all
 of these are supported yet.</p>
-</section>
-<section id="directories">
+</div>
+<div class="section" id="directories">
 <h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
 <p>A directory is a filesystem object and has an inode just like a file.
 It is a specially formatted file containing records which associate
@@ -543,8 +545,8 @@ the filenames in the directory; a pending enhancement uses hashing of the
 filenames to allow lookup without the need to scan the entire directory.</p>
 <p>The current implementation never removes empty directory blocks once they
 have been allocated to hold more files.</p>
-</section>
-<section id="special-files">
+</div>
+<div class="section" id="special-files">
 <h3>Special files<a class="headerlink" href="#special-files" title="Permalink to this headline">¶</a></h3>
 <p>Symbolic links are also filesystem objects with inodes.  They deserve
 special mention because the data for them is stored within the inode
@@ -555,8 +557,8 @@ block for the symlink, and most symlinks are less than 60 characters long.</p>
 <p>Character and block special devices never have data blocks assigned to
 them.  Instead, their device number is stored in the inode, again reusing
 the fields which would be used to point to the data blocks.</p>
-</section>
-<section id="reserved-space">
+</div>
+<div class="section" id="reserved-space">
 <h3>Reserved Space<a class="headerlink" href="#reserved-space" title="Permalink to this headline">¶</a></h3>
 <p>In ext2, there is a mechanism for reserving a certain number of blocks
 for a particular user (normally the super-user).  This is intended to
@@ -564,8 +566,8 @@ allow for the system to continue functioning even if non-privileged users
 fill up all the space available to them (this is independent of filesystem
 quotas).  It also keeps the filesystem from filling up entirely which
 helps combat fragmentation.</p>
-</section>
-<section id="filesystem-check">
+</div>
+<div class="section" id="filesystem-check">
 <h3>Filesystem check<a class="headerlink" href="#filesystem-check" title="Permalink to this headline">¶</a></h3>
 <p>At boot time, most systems run a consistency check (e2fsck) on their
 filesystems.  The superblock of the ext2 filesystem contains several
@@ -574,8 +576,8 @@ the filesystem at boot can take a long time if it is large).  fsck will
 run if the filesystem was not cleanly unmounted, if the maximum mount
 count has been exceeded or if the maximum time between checks has been
 exceeded.</p>
-</section>
-<section id="feature-compatibility">
+</div>
+<div class="section" id="feature-compatibility">
 <h3>Feature Compatibility<a class="headerlink" href="#feature-compatibility" title="Permalink to this headline">¶</a></h3>
 <p>The compatibility feature mechanism used in ext2 is sophisticated.
 It safely allows features to be added to the filesystem, without
@@ -625,8 +627,8 @@ feature is a false sense of security for the user.  Refusing to check
 a filesystem with unknown features is a good incentive for the user to
 update to the latest e2fsck.  This also means that anyone adding feature
 flags to ext2 also needs to update e2fsck to verify these features.</p>
-</section>
-<section id="metadata">
+</div>
+<div class="section" id="metadata">
 <h3>Metadata<a class="headerlink" href="#metadata" title="Permalink to this headline">¶</a></h3>
 <p>It is frequently claimed that the ext2 implementation of writing
 asynchronous metadata is faster than the ffs synchronous metadata
@@ -641,8 +643,8 @@ writes synchronous on ext2:</p>
 </ul>
 <p>the first and last are not ext2 specific but do force the metadata to
 be written synchronously.  See also Journaling below.</p>
-</section>
-<section id="limitations">
+</div>
+<div class="section" id="limitations">
 <h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h3>
 <p>There are various limits imposed by the on-disk layout of ext2.  Other
 limits are imposed by the current implementation of the kernel code.
@@ -703,8 +705,8 @@ is over 130 trillion files.  It would be higher except there are not
 enough 4-character names to make up unique directory entries, so they
 have to be 8 character filenames, even then we are fairly close to
 running out of unique filenames.</p>
-</section>
-<section id="journaling">
+</div>
+<div class="section" id="journaling">
 <h3>Journaling<a class="headerlink" href="#journaling" title="Permalink to this headline">¶</a></h3>
 <p>A journaling extension to the ext2 code has been developed by Stephen
 Tweedie.  It avoids the risks of metadata corruption and the need to
@@ -725,9 +727,9 @@ the blocks in that transaction so they are discarded (which means any
 filesystem changes they represent are also lost).
 Check Documentation/filesystems/ext4/ if you want to read more about
 ext4 and journaling.</p>
-</section>
-</section>
-<section id="references">
+</div>
+</div>
+<div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <table class="docutils align-default">
 <colgroup>
@@ -787,8 +789,8 @@ ext4 and journaling.</p>
 <dd><p>no longer actively developed/supported (as of Mar 2009)</p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

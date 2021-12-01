@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>WHAT IS Flash-Friendly File System (F2FS)? &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -315,7 +317,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="what-is-flash-friendly-file-system-f2fs">
+  <div class="section" id="what-is-flash-friendly-file-system-f2fs">
 <h1>WHAT IS Flash-Friendly File System (F2FS)?<a class="headerlink" href="#what-is-flash-friendly-file-system-f2fs" title="Permalink to this headline">¶</a></h1>
 <p>NAND flash memory-based storage devices, such as SSD, eMMC, and SD cards, have
 been equipped on a variety systems ranging from mobile to server systems. Since
@@ -339,9 +341,9 @@ a consistency checking tool (fsck.f2fs), and a debugging tool (dump.f2fs).</p>
 <ul class="simple">
 <li><p><a class="reference external" href="mailto:linux-f2fs-devel&#37;&#52;&#48;lists&#46;sourceforge&#46;net">linux-f2fs-devel<span>&#64;</span>lists<span>&#46;</span>sourceforge<span>&#46;</span>net</a></p></li>
 </ul>
-<section id="background-and-design-issues">
+<div class="section" id="background-and-design-issues">
 <h2>Background and Design issues<a class="headerlink" href="#background-and-design-issues" title="Permalink to this headline">¶</a></h2>
-<section id="log-structured-file-system-lfs">
+<div class="section" id="log-structured-file-system-lfs">
 <h3>Log-structured File System (LFS)<a class="headerlink" href="#log-structured-file-system-lfs" title="Permalink to this headline">¶</a></h3>
 <p>“A log-structured file system writes all modifications to disk sequentially in
 a log-like structure, thereby speeding up  both file writing and crash recovery.
@@ -352,8 +354,8 @@ segment cleaner to compress the live information from heavily fragmented
 segments.” from Rosenblum, M. and Ousterhout, J. K., 1992, “The design and
 implementation of a log-structured file system”, ACM Trans. Computer Systems
 10, 1, 26–52.</p>
-</section>
-<section id="wandering-tree-problem">
+</div>
+<div class="section" id="wandering-tree-problem">
 <h3>Wandering Tree Problem<a class="headerlink" href="#wandering-tree-problem" title="Permalink to this headline">¶</a></h3>
 <p>In LFS, when a file data is updated and written to the end of log, its direct
 pointer block is updated due to the changed location. Then the indirect pointer
@@ -363,8 +365,8 @@ also updated recursively. This problem is called as wandering tree problem [1],
 and in order to enhance the performance, it should eliminate or relax the update
 propagation as much as possible.</p>
 <p>[1] Bityutskiy, A. 2005. JFFS3 design issues. <a class="reference external" href="http://www.linux-mtd.infradead.org/">http://www.linux-mtd.infradead.org/</a></p>
-</section>
-<section id="cleaning-overhead">
+</div>
+<div class="section" id="cleaning-overhead">
 <h3>Cleaning Overhead<a class="headerlink" href="#cleaning-overhead" title="Permalink to this headline">¶</a></h3>
 <p>Since LFS is based on out-of-place writes, it produces so many obsolete blocks
 scattered across the whole storage. In order to serve new empty log space, it
@@ -381,27 +383,27 @@ segment summary blocks.</p></li>
 <p>This cleaning job may cause unexpected long delays, so the most important goal
 is to hide the latencies to users. And also definitely, it should reduce the
 amount of valid data to be moved, and move them quickly as well.</p>
-</section>
-</section>
-<section id="key-features">
+</div>
+</div>
+<div class="section" id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Permalink to this headline">¶</a></h2>
-<section id="flash-awareness">
+<div class="section" id="flash-awareness">
 <h3>Flash Awareness<a class="headerlink" href="#flash-awareness" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Enlarge the random write area for better performance, but provide the high
 spatial locality</p></li>
 <li><p>Align FS data structures to the operational units in FTL as best efforts</p></li>
 </ul>
-</section>
-<section id="id1">
+</div>
+<div class="section" id="id1">
 <h3>Wandering Tree Problem<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Use a term, “node”, that represents inodes as well as various pointer blocks</p></li>
 <li><p>Introduce Node Address Table (NAT) containing the locations of all the “node”
 blocks; this will cut off the update propagation.</p></li>
 </ul>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h3>Cleaning Overhead<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Support a background cleaning process</p></li>
@@ -409,9 +411,9 @@ blocks; this will cut off the update propagation.</p></li>
 <li><p>Support multi-head logs for static/dynamic hot and cold data separation</p></li>
 <li><p>Introduce adaptive logging for efficient block allocation</p></li>
 </ul>
-</section>
-</section>
-<section id="mount-options">
+</div>
+</div>
+<div class="section" id="mount-options">
 <h2>Mount Options<a class="headerlink" href="#mount-options" title="Permalink to this headline">¶</a></h2>
 <table class="docutils align-default">
 <colgroup>
@@ -617,7 +619,7 @@ is shown below, it supports single or combined type.</p>
 </table>
 </td>
 </tr>
-<tr class="row-odd"><td><p>mode=%s</p></td>
+<tr class="row-even"><td><p>mode=%s</p></td>
 <td><p>Control block allocation mode which supports “adaptive”
 and “lfs”. In “lfs” mode, there should be no random
 writes towards main area.
@@ -640,47 +642,47 @@ option for more randomness.
 Please, use these options for your experiments and we strongly
 recommend to re-format the filesystem after using these options.</p></td>
 </tr>
-<tr class="row-even"><td><p>io_bits=%u</p></td>
+<tr class="row-odd"><td><p>io_bits=%u</p></td>
 <td><p>Set the bit size of write IO requests. It should be set
 with “mode=lfs”.</p></td>
 </tr>
-<tr class="row-odd"><td><p>usrquota</p></td>
+<tr class="row-even"><td><p>usrquota</p></td>
 <td><p>Enable plain user disk quota accounting.</p></td>
 </tr>
-<tr class="row-even"><td><p>grpquota</p></td>
+<tr class="row-odd"><td><p>grpquota</p></td>
 <td><p>Enable plain group disk quota accounting.</p></td>
 </tr>
-<tr class="row-odd"><td><p>prjquota</p></td>
+<tr class="row-even"><td><p>prjquota</p></td>
 <td><p>Enable plain project quota accounting.</p></td>
 </tr>
-<tr class="row-even"><td><p>usrjquota=&lt;file&gt;</p></td>
+<tr class="row-odd"><td><p>usrjquota=&lt;file&gt;</p></td>
 <td><p>Appoint specified file and type during mount, so that quota</p></td>
 </tr>
-<tr class="row-odd"><td><p>grpjquota=&lt;file&gt;</p></td>
+<tr class="row-even"><td><p>grpjquota=&lt;file&gt;</p></td>
 <td><p>information can be properly updated during recovery flow,</p></td>
 </tr>
-<tr class="row-even"><td><p>prjjquota=&lt;file&gt;</p></td>
+<tr class="row-odd"><td><p>prjjquota=&lt;file&gt;</p></td>
 <td><p>&lt;quota file&gt;: must be in root directory;</p></td>
 </tr>
-<tr class="row-odd"><td><p>jqfmt=&lt;quota type&gt;</p></td>
+<tr class="row-even"><td><p>jqfmt=&lt;quota type&gt;</p></td>
 <td><p>&lt;quota type&gt;: [vfsold,vfsv0,vfsv1].</p></td>
 </tr>
-<tr class="row-even"><td><p>offusrjquota</p></td>
+<tr class="row-odd"><td><p>offusrjquota</p></td>
 <td><p>Turn off user journalled quota.</p></td>
 </tr>
-<tr class="row-odd"><td><p>offgrpjquota</p></td>
+<tr class="row-even"><td><p>offgrpjquota</p></td>
 <td><p>Turn off group journalled quota.</p></td>
 </tr>
-<tr class="row-even"><td><p>offprjjquota</p></td>
+<tr class="row-odd"><td><p>offprjjquota</p></td>
 <td><p>Turn off project journalled quota.</p></td>
 </tr>
-<tr class="row-odd"><td><p>quota</p></td>
+<tr class="row-even"><td><p>quota</p></td>
 <td><p>Enable plain user disk quota accounting.</p></td>
 </tr>
-<tr class="row-even"><td><p>noquota</p></td>
+<tr class="row-odd"><td><p>noquota</p></td>
 <td><p>Disable all plain disk quota option.</p></td>
 </tr>
-<tr class="row-odd"><td><p>whint_mode=%s</p></td>
+<tr class="row-even"><td><p>whint_mode=%s</p></td>
 <td><p>Control which write hints are passed down to block
 layer. This supports “off”, “user-based”, and
 “fs-based”.  In “off” mode (default), f2fs does not pass
@@ -688,11 +690,11 @@ down hints. In “user-based” mode, f2fs tries to pass
 down hints given by users. And in “fs-based” mode, f2fs
 passes down hints with its policy.</p></td>
 </tr>
-<tr class="row-even"><td><p>alloc_mode=%s</p></td>
+<tr class="row-odd"><td><p>alloc_mode=%s</p></td>
 <td><p>Adjust block allocation policy, which supports “reuse”
 and “default”.</p></td>
 </tr>
-<tr class="row-odd"><td><p>fsync_mode=%s</p></td>
+<tr class="row-even"><td><p>fsync_mode=%s</p></td>
 <td><p>Control the policy of fsync. Currently supports “posix”,
 “strict”, and “nobarrier”. In “posix” mode, which is
 default, fsync will follow POSIX semantics and does a
@@ -703,16 +705,16 @@ pass, but the performance will regress. “nobarrier” is
 based on “posix”, but doesn’t issue flush command for
 non-atomic files likewise “nobarrier” mount option.</p></td>
 </tr>
-<tr class="row-even"><td><p>test_dummy_encryption</p></td>
+<tr class="row-odd"><td><p>test_dummy_encryption</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p>test_dummy_encryption=%s</p></td>
+<tr class="row-even"><td><p>test_dummy_encryption=%s</p></td>
 <td><p>Enable dummy encryption, which provides a fake fscrypt
 context. The fake fscrypt context is used by xfstests.
 The argument may be either “v1” or “v2”, in order to
 select the corresponding fscrypt policy version.</p></td>
 </tr>
-<tr class="row-even"><td><p>checkpoint=%s[:%u[%]]</p></td>
+<tr class="row-odd"><td><p>checkpoint=%s[:%u[%]]</p></td>
 <td><p>Set to “disable” to turn off checkpointing. Set to “enable”
 to reenable checkpointing. Is enabled by default. While
 disabled, any unmounting or unexpected shutdowns will cause
@@ -730,7 +732,7 @@ hide up to all remaining free space. The actual space that
 would be unusable can be viewed at /sys/fs/f2fs/&lt;disk&gt;/unusable
 This space is reclaimed once checkpoint=enable.</p></td>
 </tr>
-<tr class="row-odd"><td><p>checkpoint_merge</p></td>
+<tr class="row-even"><td><p>checkpoint_merge</p></td>
 <td><p>When checkpoint is enabled, this can be used to create a kernel
 daemon and make it to merge concurrent checkpoint requests as
 much as possible to eliminate redundant checkpoint issues. Plus,
@@ -742,26 +744,26 @@ to “3”, to give one higher priority than other kernel threads.
 This is the same way to give a I/O priority to the jbd2
 journaling thread of ext4 filesystem.</p></td>
 </tr>
-<tr class="row-even"><td><p>nocheckpoint_merge</p></td>
+<tr class="row-odd"><td><p>nocheckpoint_merge</p></td>
 <td><p>Disable checkpoint merge feature.</p></td>
 </tr>
-<tr class="row-odd"><td><p>compress_algorithm=%s</p></td>
+<tr class="row-even"><td><p>compress_algorithm=%s</p></td>
 <td><p>Control compress algorithm, currently f2fs supports “lzo”,
 “lz4”, “zstd” and “lzo-rle” algorithm.</p></td>
 </tr>
-<tr class="row-even"><td><p>compress_algorithm=%s:%d</p></td>
+<tr class="row-odd"><td><p>compress_algorithm=%s:%d</p></td>
 <td><p>Control compress algorithm and its compress level, now, only
 “lz4” and “zstd” support compress level config.
 algorithm      level range
 lz4            3 - 16
 zstd           1 - 22</p></td>
 </tr>
-<tr class="row-odd"><td><p>compress_log_size=%u</p></td>
+<tr class="row-even"><td><p>compress_log_size=%u</p></td>
 <td><p>Support configuring compress cluster size, the size will
 be 4KB * (1 &lt;&lt; %u), 16KB is minimum size, also it’s
 default size.</p></td>
 </tr>
-<tr class="row-even"><td><p>compress_extension=%s</p></td>
+<tr class="row-odd"><td><p>compress_extension=%s</p></td>
 <td><p>Support adding specified extension, so that f2fs can enable
 compression on those corresponding files, e.g. if all files
 with ‘.ext’ has high compression rate, we can set the ‘.ext’
@@ -771,7 +773,7 @@ For other files, we can still enable compression via ioctl.
 Note that, there is one reserved special extension ‘*’, it
 can be set to enable compression for all files.</p></td>
 </tr>
-<tr class="row-odd"><td><p>nocompress_extension=%s</p></td>
+<tr class="row-even"><td><p>nocompress_extension=%s</p></td>
 <td><p>Support adding specified extension, so that f2fs can disable
 compression on those corresponding files, just contrary to compression extension.
 If you know exactly which files cannot be compressed, you can use this.
@@ -784,10 +786,10 @@ After add nocompress_extension, the priority should be:
 dir_flag &lt; comp_extention,nocompress_extension &lt; comp_file_flag,no_comp_file_flag.
 See more in compression sections.</p></td>
 </tr>
-<tr class="row-even"><td><p>compress_chksum</p></td>
+<tr class="row-odd"><td><p>compress_chksum</p></td>
 <td><p>Support verifying chksum of raw data in compressed cluster.</p></td>
 </tr>
-<tr class="row-odd"><td><p>compress_mode=%s</p></td>
+<tr class="row-even"><td><p>compress_mode=%s</p></td>
 <td><p>Control file compression mode. This supports “fs” and “user”
 modes. In “fs” mode (default), f2fs does automatic compression
 on the compression enabled files. In “user” mode, f2fs disables
@@ -796,12 +798,12 @@ choosing the target file and the timing. The user can do manual
 compression/decompression on the compression enabled files using
 ioctls.</p></td>
 </tr>
-<tr class="row-even"><td><p>compress_cache</p></td>
+<tr class="row-odd"><td><p>compress_cache</p></td>
 <td><p>Support to use address space of a filesystem managed inode to
 cache compressed block, in order to improve cache hit ratio of
 random read.</p></td>
 </tr>
-<tr class="row-odd"><td><p>inlinecrypt</p></td>
+<tr class="row-even"><td><p>inlinecrypt</p></td>
 <td><p>When possible, encrypt/decrypt the contents of encrypted
 files using the blk-crypto framework rather than
 filesystem-layer encryption. This allows the use of
@@ -809,11 +811,11 @@ inline encryption hardware. The on-disk format is
 unaffected. For more details, see
 <a class="reference internal" href="../block/inline-encryption.html"><span class="doc">Inline Encryption</span></a>.</p></td>
 </tr>
-<tr class="row-even"><td><p>atgc</p></td>
+<tr class="row-odd"><td><p>atgc</p></td>
 <td><p>Enable age-threshold garbage collection, it provides high
 effectiveness and efficiency on background GC.</p></td>
 </tr>
-<tr class="row-odd"><td><p>discard_unit=%s</p></td>
+<tr class="row-even"><td><p>discard_unit=%s</p></td>
 <td><p>Control discard unit, the argument can be “block”, “segment”
 and “section”, issued discard command’s offset/size will be
 aligned to the unit, by default, “discard_unit=block” is set,
@@ -825,8 +827,8 @@ discard.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="debugfs-entries">
+</div>
+<div class="section" id="debugfs-entries">
 <h2>Debugfs Entries<a class="headerlink" href="#debugfs-entries" title="Permalink to this headline">¶</a></h2>
 <p>/sys/kernel/debug/f2fs/ contains information about all the partitions mounted as
 f2fs. Each file shows the whole f2fs information.</p>
@@ -838,8 +840,8 @@ f2fs. Each file shows the whole f2fs information.</p>
 <li><p>current memory footprint consumed by f2fs.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="sysfs-entries">
+</div>
+<div class="section" id="sysfs-entries">
 <h2>Sysfs Entries<a class="headerlink" href="#sysfs-entries" title="Permalink to this headline">¶</a></h2>
 <p>Information about mounted f2fs file systems can be found in
 /sys/fs/f2fs.  Each mounted filesystem will have a directory in
@@ -847,8 +849,8 @@ f2fs. Each file shows the whole f2fs information.</p>
 The files in each per-device directory are shown in table below.</p>
 <p>Files in /sys/fs/f2fs/&lt;devname&gt;
 (see also Documentation/ABI/testing/sysfs-fs-f2fs)</p>
-</section>
-<section id="usage">
+</div>
+<div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
 <li><p>Download userland tools and compile them.</p></li>
@@ -870,7 +872,7 @@ Otherwise, insert the f2fs.ko module:</p>
 </div>
 </li>
 </ol>
-<section id="mkfs-f2fs">
+<div class="section" id="mkfs-f2fs">
 <h3>mkfs.f2fs<a class="headerlink" href="#mkfs-f2fs" title="Permalink to this headline">¶</a></h3>
 <p>The mkfs.f2fs is for the use of formatting a partition as the f2fs filesystem,
 which builds a basic on-disk layout.</p>
@@ -915,8 +917,8 @@ which builds a basic on-disk layout.</p>
 </tbody>
 </table>
 <p>Note: please refer to the manpage of mkfs.f2fs(8) to get full option list.</p>
-</section>
-<section id="fsck-f2fs">
+</div>
+<div class="section" id="fsck-f2fs">
 <h3>fsck.f2fs<a class="headerlink" href="#fsck-f2fs" title="Permalink to this headline">¶</a></h3>
 <p>The fsck.f2fs is a tool to check the consistency of an f2fs-formatted
 partition, which examines whether the filesystem metadata and user-made data
@@ -927,8 +929,8 @@ Note that, initial version of the tool does not fix any inconsistency.</p>
 </pre></div>
 </div>
 <p>Note: please refer to the manpage of fsck.f2fs(8) to get full option list.</p>
-</section>
-<section id="dump-f2fs">
+</div>
+<div class="section" id="dump-f2fs">
 <h3>dump.f2fs<a class="headerlink" href="#dump-f2fs" title="Permalink to this headline">¶</a></h3>
 <p>The dump.f2fs shows the information of specific inode and dumps SSA and SIT to
 file. Each file is dump_ssa and dump_sit.</p>
@@ -950,36 +952,36 @@ able to dump all the SSA and SIT entries into predefined files, ./dump_ssa and
 </pre></div>
 </div>
 <p>Note: please refer to the manpage of dump.f2fs(8) to get full option list.</p>
-</section>
-<section id="sload-f2fs">
+</div>
+<div class="section" id="sload-f2fs">
 <h3>sload.f2fs<a class="headerlink" href="#sload-f2fs" title="Permalink to this headline">¶</a></h3>
 <p>The sload.f2fs gives a way to insert files and directories in the exisiting disk
 image. This tool is useful when building f2fs images given compiled files.</p>
 <p>Note: please refer to the manpage of sload.f2fs(8) to get full option list.</p>
-</section>
-<section id="resize-f2fs">
+</div>
+<div class="section" id="resize-f2fs">
 <h3>resize.f2fs<a class="headerlink" href="#resize-f2fs" title="Permalink to this headline">¶</a></h3>
 <p>The resize.f2fs lets a user resize the f2fs-formatted disk image, while preserving
 all the files and directories stored in the image.</p>
 <p>Note: please refer to the manpage of resize.f2fs(8) to get full option list.</p>
-</section>
-<section id="defrag-f2fs">
+</div>
+<div class="section" id="defrag-f2fs">
 <h3>defrag.f2fs<a class="headerlink" href="#defrag-f2fs" title="Permalink to this headline">¶</a></h3>
 <p>The defrag.f2fs can be used to defragment scattered written data as well as
 filesystem metadata across the disk. This can improve the write speed by giving
 more free consecutive space.</p>
 <p>Note: please refer to the manpage of defrag.f2fs(8) to get full option list.</p>
-</section>
-<section id="f2fs-io">
+</div>
+<div class="section" id="f2fs-io">
 <h3>f2fs_io<a class="headerlink" href="#f2fs-io" title="Permalink to this headline">¶</a></h3>
 <p>The f2fs_io is a simple tool to issue various filesystem APIs as well as
 f2fs-specific ones, which is very useful for QA tests.</p>
 <p>Note: please refer to the manpage of f2fs_io(8) to get full option list.</p>
-</section>
-</section>
-<section id="design">
+</div>
+</div>
+<div class="section" id="design">
 <h2>Design<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h2>
-<section id="on-disk-layout">
+<div class="section" id="on-disk-layout">
 <h3>On-disk Layout<a class="headerlink" href="#on-disk-layout" title="Permalink to this headline">¶</a></h3>
 <p>F2FS divides the whole volume into a number of segments, each of which is fixed
 to 2MB in size. A section is composed of consecutive segments, and a zone
@@ -1051,8 +1053,8 @@ start block address of Main area with the zone size by reserving some segments
 in SSA area.</p>
 <p>Reference the following survey for additional technical details.
 <a class="reference external" href="https://wiki.linaro.org/WorkingGroups/Kernel/Projects/FlashCardSurvey">https://wiki.linaro.org/WorkingGroups/Kernel/Projects/FlashCardSurvey</a></p>
-</section>
-<section id="file-system-metadata-structure">
+</div>
+<div class="section" id="file-system-metadata-structure">
 <h3>File System Metadata Structure<a class="headerlink" href="#file-system-metadata-structure" title="Permalink to this headline">¶</a></h3>
 <p>F2FS adopts the checkpointing scheme to maintain file system consistency. At
 mount time, F2FS first tries to find the last valid checkpoint data by scanning
@@ -1075,8 +1077,8 @@ valid, as shown as below:</p>
    `----------------------------------------&#39;
 </pre></div>
 </div>
-</section>
-<section id="index-structure">
+</div>
+<div class="section" id="index-structure">
 <h3>Index Structure<a class="headerlink" href="#index-structure" title="Permalink to this headline">¶</a></h3>
 <p>The key data structure to manage the data locations is a “node”. Similar to
 traditional file structures, F2FS has three types of node: inode, direct node,
@@ -1104,8 +1106,8 @@ one inode block (i.e., a file) covers:</p>
 each node is translated by the NAT table. In the consideration of the wandering
 tree problem, F2FS is able to cut off the propagation of node updates caused by
 leaf data writes.</p>
-</section>
-<section id="directory-structure">
+</div>
+<div class="section" id="directory-structure">
 <h3>Directory Structure<a class="headerlink" href="#directory-structure" title="Permalink to this headline">¶</a></h3>
 <p>A directory entry occupies 11 bytes, which consists of the following attributes.</p>
 <ul class="simple">
@@ -1198,8 +1200,8 @@ Number of children = 6,           Number of children = 3,
 File size = 7                     File size = 7
 </pre></div>
 </div>
-</section>
-<section id="default-block-allocation">
+</div>
+<div class="section" id="default-block-allocation">
 <h3>Default Block Allocation<a class="headerlink" href="#default-block-allocation" title="Permalink to this headline">¶</a></h3>
 <p>At runtime, F2FS manages six active logs inside “Main” area: Hot/Warm/Cold node
 and Hot/Warm/Cold data.</p>
@@ -1226,8 +1228,8 @@ same as the unit size of garbage collection in FTL. Furthermore, with respect
 to the mapping granularity in FTL, F2FS allocates each section of the active
 logs from different zones as much as possible, since FTL can write the data in
 the active logs into one allocation unit according to its mapping granularity.</p>
-</section>
-<section id="cleaning-process">
+</div>
+<div class="section" id="cleaning-process">
 <h3>Cleaning process<a class="headerlink" href="#cleaning-process" title="Permalink to this headline">¶</a></h3>
 <p>F2FS does cleaning both on demand and in the background. On-demand cleaning is
 triggered when there are not enough free segments to serve VFS calls. Background
@@ -1243,8 +1245,8 @@ algorithm.</p>
 <p>In order to identify whether the data in the victim segment are valid or not,
 F2FS manages a bitmap. Each bit represents the validity of a block, and the
 bitmap is composed of a bit stream covering whole blocks in main area.</p>
-</section>
-<section id="write-hint-policy">
+</div>
+<div class="section" id="write-hint-policy">
 <h3>Write-hint Policy<a class="headerlink" href="#write-hint-policy" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li><p>whint_mode=off. F2FS only passes down WRITE_LIFE_NOT_SET.</p></li>
@@ -1444,8 +1446,8 @@ users.</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="fallocate-2-policy">
+</div>
+<div class="section" id="fallocate-2-policy">
 <h3>Fallocate(2) Policy<a class="headerlink" href="#fallocate-2-policy" title="Permalink to this headline">¶</a></h3>
 <p>The default policy follows the below POSIX rule.</p>
 <dl class="simple">
@@ -1472,8 +1474,8 @@ zero or random data, which is useful to the below scenario where:</p>
 <li><p>write(blkdev, address)</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="compression-implementation">
+</div>
+<div class="section" id="compression-implementation">
 <h3>Compression implementation<a class="headerlink" href="#compression-implementation" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>New term named cluster is defined as basic unit of compression, file can
@@ -1544,8 +1546,8 @@ ioctl(F2FS_IOC_RESERVE_COMPRESS_BLOCKS) or truncating filesize to zero.</p></li>
     +-------------+-------------+----------+----------------------------+
 </pre></div>
 </div>
-</section>
-<section id="compression-mode">
+</div>
+<div class="section" id="compression-mode">
 <h3>Compression mode<a class="headerlink" href="#compression-mode" title="Permalink to this headline">¶</a></h3>
 <p>f2fs supports “fs” and “user” compression modes with “compression_mode” mount option.
 With this option, f2fs provides a choice to select the way how to compress the
@@ -1565,8 +1567,8 @@ ret = ioctl(fd, F2FS_IOC_DECOMPRESS_FILE);</p>
 <p>To compress a file,</p>
 <p>fd = open(filename, O_WRONLY, 0);
 ret = ioctl(fd, F2FS_IOC_COMPRESS_FILE);</p>
-</section>
-<section id="nvme-zoned-namespace-devices">
+</div>
+<div class="section" id="nvme-zoned-namespace-devices">
 <h3>NVMe Zoned Namespace devices<a class="headerlink" href="#nvme-zoned-namespace-devices" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>ZNS defines a per-zone capacity which can be equal or less than the
@@ -1581,9 +1583,9 @@ can start before the zone-capacity and span across zone-capacity boundary.
 Such spanning segments are also considered as usable segments. All blocks
 past the zone-capacity are considered unusable in these segments.</p></li>
 </ul>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

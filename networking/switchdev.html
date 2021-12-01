@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Ethernet switch device driver model (switchdev) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -386,7 +388,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ethernet-switch-device-driver-model-switchdev">
+  <div class="section" id="ethernet-switch-device-driver-model-switchdev">
 <h1>Ethernet switch device driver model (switchdev)<a class="headerlink" href="#ethernet-switch-device-driver-model-switchdev" title="Permalink to this headline">¶</a></h1>
 <p>Copyright © 2014 Jiri Pirko &lt;<a class="reference external" href="mailto:jiri&#37;&#52;&#48;resnulli&#46;us">jiri<span>&#64;</span>resnulli<span>&#46;</span>us</a>&gt;</p>
 <p>Copyright © 2014-2015 Scott Feldman &lt;<a class="reference external" href="mailto:sfeldma&#37;&#52;&#48;gmail&#46;com">sfeldma<span>&#64;</span>gmail<span>&#46;</span>com</a>&gt;</p>
@@ -437,19 +439,19 @@ with SR-IOV or soft switches, such as OVS, are possible.</p>
                               Fig 1.
 </pre></div>
 </div>
-<section id="include-files">
+<div class="section" id="include-files">
 <h2>Include Files<a class="headerlink" href="#include-files" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#include &lt;linux/netdevice.h&gt;
 #include &lt;net/switchdev.h&gt;
 </pre></div>
 </div>
-</section>
-<section id="configuration">
+</div>
+<div class="section" id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <p>Use “depends NET_SWITCHDEV” in driver’s Kconfig to ensure switchdev model
 support is built for driver.</p>
-</section>
-<section id="switch-ports">
+</div>
+<div class="section" id="switch-ports">
 <h2>Switch Ports<a class="headerlink" href="#switch-ports" title="Permalink to this headline">¶</a></h2>
 <p>On switchdev driver initialization, the driver will allocate and register a
 <a class="reference internal" href="kapi.html#c.net_device" title="net_device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">net_device</span></code></a> (using <a class="reference internal" href="kapi.html#c.register_netdev" title="register_netdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">register_netdev()</span></code></a>) for each enumerated physical switch
@@ -466,7 +468,7 @@ port netdevs.  All of the switchdev driver ops are netdev ops or switchdev ops.<
 Typically, the management port is not participating in offloaded data plane and
 is loaded with a different driver, such as a NIC driver, on the management port
 device.</p>
-<section id="switch-id">
+<div class="section" id="switch-id">
 <h3>Switch ID<a class="headerlink" href="#switch-id" title="Permalink to this headline">¶</a></h3>
 <p>The switchdev driver must implement the net_device operation
 ndo_get_port_parent_id for each port netdev, returning the same physical ID for
@@ -475,8 +477,8 @@ system. The ID does not need to be unique between switches on different
 systems.</p>
 <p>The switch ID is used to locate ports on a switch and to know if aggregated
 ports belong to the same switch.</p>
-</section>
-<section id="port-netdev-naming">
+</div>
+<div class="section" id="port-netdev-naming">
 <h3>Port Netdev Naming<a class="headerlink" href="#port-netdev-naming" title="Permalink to this headline">¶</a></h3>
 <p>Udev rules should be used for port netdev naming, using some unique attribute
 of the port as a key, for example the port MAC address or the port PHYS name.
@@ -495,8 +497,8 @@ name for each port using port PHYS name.  The udev rule would be:</p>
 <p>Suggested naming convention is “swXpYsZ”, where X is the switch name or ID, Y
 is the port name or ID, and Z is the sub-port name or ID.  For example, sw1p1s0
 would be sub-port 0 on port 1 on switch 1.</p>
-</section>
-<section id="port-features">
+</div>
+<div class="section" id="port-features">
 <h3>Port Features<a class="headerlink" href="#port-features" title="Permalink to this headline">¶</a></h3>
 <p>NETIF_F_NETNS_LOCAL</p>
 <p>If the switchdev driver (and device) only supports offloading of the default
@@ -505,8 +507,8 @@ the port netdev from being moved out of the default netns.  A netns-aware
 driver/device would not set this flag and be responsible for partitioning
 hardware to preserve netns containment.  This means hardware cannot forward
 traffic from a port in one namespace to another port in another namespace.</p>
-</section>
-<section id="port-topology">
+</div>
+<div class="section" id="port-topology">
 <h3>Port Topology<a class="headerlink" href="#port-topology" title="Permalink to this headline">¶</a></h3>
 <p>The port netdevs representing the physical switch ports can be organized into
 higher-level switching constructs.  The default construct is a standalone
@@ -522,9 +524,9 @@ bond will see it’s upper master change.  If that bond is moved into a bridge,
 the bond’s upper master will change.  And so on.  The driver will track such
 movements to know what position a port is in in the overall topology by
 registering for netdevice events and acting on NETDEV_CHANGEUPPER.</p>
-</section>
-</section>
-<section id="l2-forwarding-offload">
+</div>
+</div>
+<div class="section" id="l2-forwarding-offload">
 <h2>L2 Forwarding Offload<a class="headerlink" href="#l2-forwarding-offload" title="Permalink to this headline">¶</a></h2>
 <p>The idea is to offload the L2 data forwarding (switching) path from the kernel
 to the switchdev device by mirroring bridge FDB entries down to the device.  An
@@ -538,7 +540,7 @@ FDB entry is the {port, MAC, VLAN} tuple forwarding destination.</p>
 <li><p>VLAN flooding of multicast/broadcast and unknown unicast packets</p></li>
 </ul>
 </div></blockquote>
-<section id="static-fdb-entries">
+<div class="section" id="static-fdb-entries">
 <h3>Static FDB Entries<a class="headerlink" href="#static-fdb-entries" title="Permalink to this headline">¶</a></h3>
 <p>A driver which implements the <code class="docutils literal notranslate"><span class="pre">ndo_fdb_add</span></code>, <code class="docutils literal notranslate"><span class="pre">ndo_fdb_del</span></code> and
 <code class="docutils literal notranslate"><span class="pre">ndo_fdb_dump</span></code> operations is able to support the command below, which adds a
@@ -577,8 +579,8 @@ traffic.  To enable VLAN support, turn on VLAN filtering:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>echo 1 &gt;/sys/class/net/&lt;bridge&gt;/bridge/vlan_filtering
 </pre></div>
 </div>
-</section>
-<section id="notification-of-learned-forgotten-source-mac-vlans">
+</div>
+<div class="section" id="notification-of-learned-forgotten-source-mac-vlans">
 <h3>Notification of Learned/Forgotten Source MAC/VLANs<a class="headerlink" href="#notification-of-learned-forgotten-source-mac-vlans" title="Permalink to this headline">¶</a></h3>
 <p>The switch device will learn/forget source MAC address/VLAN on ingress packets
 and notify the switch driver of the mac/vlan/port tuples.  The switch driver,
@@ -621,8 +623,8 @@ the bridge’s FDB.  It’s possible, but not optimal, to enable learning on the
 device port and on the bridge port, and disable learning_sync.</p>
 <p>To support learning, the driver implements switchdev op
 switchdev_port_attr_set for SWITCHDEV_ATTR_PORT_ID_{PRE}_BRIDGE_FLAGS.</p>
-</section>
-<section id="fdb-ageing">
+</div>
+<div class="section" id="fdb-ageing">
 <h3>FDB Ageing<a class="headerlink" href="#fdb-ageing" title="Permalink to this headline">¶</a></h3>
 <p>The bridge will skip ageing FDB entries marked with NTF_EXT_LEARNED and it is
 the responsibility of the port driver/device to age out these entries.  If the
@@ -637,8 +639,8 @@ entry by calling call_switchdev_notifiers(SWITCHDEV_FDB_ADD, …).  The
 notification will reset the FDB entry’s last-used time to now.  The driver
 should rate limit refresh notifications, for example, no more than once a
 second.  (The last-used time is visible using the bridge -s fdb option).</p>
-</section>
-<section id="stp-state-change-on-port">
+</div>
+<div class="section" id="stp-state-change-on-port">
 <h3>STP State Change on Port<a class="headerlink" href="#stp-state-change-on-port" title="Permalink to this headline">¶</a></h3>
 <p>Internally or with a third-party STP protocol implementation (e.g. mstpd), the
 bridge driver maintains the STP state for ports, and will notify the switch
@@ -651,8 +653,8 @@ and other IEEE 01:80:c2:xx:xx:xx link-local multicast packets can pass.</p>
 <p>Note that STP BDPUs are untagged and STP state applies to all VLANs on the port
 so packet filters should be applied consistently across untagged and tagged
 VLANs on the port.</p>
-</section>
-<section id="flooding-l2-domain">
+</div>
+<div class="section" id="flooding-l2-domain">
 <h3>Flooding L2 domain<a class="headerlink" href="#flooding-l2-domain" title="Permalink to this headline">¶</a></h3>
 <p>For a given L2 VLAN domain, the switch device should flood multicast/broadcast
 and unknown unicast packets to all ports in domain, if allowed by port’s
@@ -671,8 +673,8 @@ of ports scale in the L2 domain as the device is much more efficient at
 flooding packets that software.</p>
 <p>If supported by the device, flood control can be offloaded to it, preventing
 certain netdevs from flooding unicast traffic for which there is no FDB entry.</p>
-</section>
-<section id="igmp-snooping">
+</div>
+<div class="section" id="igmp-snooping">
 <h3>IGMP Snooping<a class="headerlink" href="#igmp-snooping" title="Permalink to this headline">¶</a></h3>
 <p>In order to support IGMP snooping, the port netdevs should trap to the bridge
 driver all IGMP join and leave messages.
@@ -680,9 +682,9 @@ The bridge multicast module will notify port netdevs on every multicast group
 changed whether it is static configured or dynamically joined/leave.
 The hardware implementation should be forwarding all registered multicast
 traffic groups only to the configured ports.</p>
-</section>
-</section>
-<section id="l3-routing-offload">
+</div>
+</div>
+<div class="section" id="l3-routing-offload">
 <h2>L3 Routing Offload<a class="headerlink" href="#l3-routing-offload" title="Permalink to this headline">¶</a></h2>
 <p>Offloading L3 routing requires that device be programmed with FIB entries from
 the kernel, with the device doing the FIB lookup and forwarding.  The device
@@ -745,7 +747,7 @@ default via 192.168.0.2 dev eth0
 </div>
 <p>The “offload” flag is set in case at least one device offloads the FIB entry.</p>
 <p>XXX: add/mod/del IPv6 FIB API</p>
-<section id="nexthop-resolution">
+<div class="section" id="nexthop-resolution">
 <h3>Nexthop Resolution<a class="headerlink" href="#nexthop-resolution" title="Permalink to this headline">¶</a></h3>
 <p>The FIB entry’s nexthop list contains the nexthop tuple (gateway, dev), but for
 the switch device to forward the packet with the correct dst mac address, the
@@ -758,13 +760,13 @@ driver’s rocker_port_ipv4_resolve() for an example.</p>
 NETEVENT_NEIGH_UPDATE.  The device can be programmed with resolved nexthops
 for the routes as arp_tbl updates.  The driver implements ndo_neigh_destroy
 to know when arp_tbl neighbor entries are purged from the port.</p>
-</section>
-</section>
-<section id="device-driver-expected-behavior">
+</div>
+</div>
+<div class="section" id="device-driver-expected-behavior">
 <h2>Device driver expected behavior<a class="headerlink" href="#device-driver-expected-behavior" title="Permalink to this headline">¶</a></h2>
 <p>Below is a set of defined behavior that switchdev enabled network devices must
 adhere to.</p>
-<section id="configuration-less-state">
+<div class="section" id="configuration-less-state">
 <h3>Configuration-less state<a class="headerlink" href="#configuration-less-state" title="Permalink to this headline">¶</a></h3>
 <p>Upon driver bring up, the network devices must be fully operational, and the
 backing driver must configure the network device such that it is possible to
@@ -786,15 +788,15 @@ of a VLAN-aware bridge doing ingress VID checking). See below for details.</p>
 <p>If the device implements e.g.: VLAN filtering, putting the interface in
 promiscuous mode should allow the reception of all VLAN tags (including those
 not present in the filter(s)).</p>
-</section>
-<section id="bridged-switch-ports">
+</div>
+<div class="section" id="bridged-switch-ports">
 <h3>Bridged switch ports<a class="headerlink" href="#bridged-switch-ports" title="Permalink to this headline">¶</a></h3>
 <p>When a switchdev enabled network device is added as a bridge member, it should
 not disrupt any functionality of non-bridged network devices and they
 should continue to behave as normal network devices. Depending on the bridge
 configuration knobs below, the expected behavior is documented.</p>
-</section>
-<section id="bridge-vlan-filtering">
+</div>
+<div class="section" id="bridge-vlan-filtering">
 <h3>Bridge VLAN filtering<a class="headerlink" href="#bridge-vlan-filtering" title="Permalink to this headline">¶</a></h3>
 <p>The Linux bridge allows the configuration of a VLAN filtering mode (statically,
 at device creation time, and dynamically, during run time) which must be
@@ -869,8 +871,8 @@ priority-tagged packets must be accepted and forwarded according to the
 bridge’s port membership of the PVID VLAN. When the bridge has VLAN filtering
 disabled, the presence/lack of a PVID should not influence the packet
 forwarding decision.</p>
-</section>
-<section id="bridge-igmp-snooping">
+</div>
+<div class="section" id="bridge-igmp-snooping">
 <h3>Bridge IGMP snooping<a class="headerlink" href="#bridge-igmp-snooping" title="Permalink to this headline">¶</a></h3>
 <p>The Linux bridge allows the configuration of IGMP snooping (statically, at
 interface creation time, or dynamically, during runtime) which must be observed
@@ -897,9 +899,9 @@ toggling of that option and behave appropriately.</p>
 snooping knob at runtime and require the destruction of the bridge device(s)
 and creation of a new bridge device(s) with a different multicast snooping
 value.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

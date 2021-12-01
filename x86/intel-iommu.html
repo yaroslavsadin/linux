@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>14. Linux IOMMU Support &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -301,7 +303,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-iommu-support">
+  <div class="section" id="linux-iommu-support">
 <h1><span class="section-number">14. </span>Linux IOMMU Support<a class="headerlink" href="#linux-iommu-support" title="Permalink to this headline">¶</a></h1>
 <p>The architecture spec can be obtained from the below location.</p>
 <p><a class="reference external" href="http://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/vt-directed-io-spec.pdf">http://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/vt-directed-io-spec.pdf</a></p>
@@ -314,13 +316,13 @@
 <li><p>ZLR  - Zero length reads from PCI devices</p></li>
 <li><p>IOVA - IO Virtual address.</p></li>
 </ul>
-<section id="basic-stuff">
+<div class="section" id="basic-stuff">
 <h2><span class="section-number">14.1. </span>Basic stuff<a class="headerlink" href="#basic-stuff" title="Permalink to this headline">¶</a></h2>
 <p>ACPI enumerates and lists the different DMA engines in the platform, and
 device scope relationships between PCI devices and which DMA engine  controls
 them.</p>
-</section>
-<section id="what-is-rmrr">
+</div>
+<div class="section" id="what-is-rmrr">
 <h2><span class="section-number">14.2. </span>What is RMRR?<a class="headerlink" href="#what-is-rmrr" title="Permalink to this headline">¶</a></h2>
 <p>There are some devices the BIOS controls, for e.g USB devices to perform
 PS2 emulation. The regions of memory used for these devices are marked
@@ -328,8 +330,8 @@ reserved in the e820 map. When we turn on DMA translation, DMA to those
 regions will fail. Hence BIOS uses RMRR to specify these regions along with
 devices that need to access these regions. OS is expected to setup
 unity mappings for these regions for these devices to access these regions.</p>
-</section>
-<section id="how-is-iova-generated">
+</div>
+<div class="section" id="how-is-iova-generated">
 <h2><span class="section-number">14.3. </span>How is IOVA generated?<a class="headerlink" href="#how-is-iova-generated" title="Permalink to this headline">¶</a></h2>
 <p>Well behaved drivers call pci_map_*() calls before sending command to device
 that needs to perform DMA. Once DMA is completed and mapping is no longer
@@ -343,26 +345,26 @@ but these are not global address spaces, but separate for each domain.
 Different DMA engines may support different number of domains.</p>
 <p>We also allocate guard pages with each mapping, so we can attempt to catch
 any overflow that might happen.</p>
-</section>
-<section id="graphics-problems">
+</div>
+<div class="section" id="graphics-problems">
 <h2><span class="section-number">14.4. </span>Graphics Problems?<a class="headerlink" href="#graphics-problems" title="Permalink to this headline">¶</a></h2>
 <p>If you encounter issues with graphics devices, you can try adding
 option intel_iommu=igfx_off to turn off the integrated graphics engine.
 If this fixes anything, please ensure you file a bug reporting the problem.</p>
-</section>
-<section id="some-exceptions-to-iova">
+</div>
+<div class="section" id="some-exceptions-to-iova">
 <h2><span class="section-number">14.5. </span>Some exceptions to IOVA<a class="headerlink" href="#some-exceptions-to-iova" title="Permalink to this headline">¶</a></h2>
 <p>Interrupt ranges are not address translated, (0xfee00000 - 0xfeefffff).
 The same is true for peer to peer transactions. Hence we reserve the
 address from PCI MMIO ranges so they are not allocated for IOVA addresses.</p>
-</section>
-<section id="fault-reporting">
+</div>
+<div class="section" id="fault-reporting">
 <h2><span class="section-number">14.6. </span>Fault reporting<a class="headerlink" href="#fault-reporting" title="Permalink to this headline">¶</a></h2>
 <p>When errors are reported, the DMA engine signals via an interrupt. The fault
 reason and device that caused it with fault reason is printed on console.</p>
 <p>See below for sample.</p>
-</section>
-<section id="boot-message-sample">
+</div>
+<div class="section" id="boot-message-sample">
 <h2><span class="section-number">14.7. </span>Boot Message Sample<a class="headerlink" href="#boot-message-sample" title="Permalink to this headline">¶</a></h2>
 <p>Something like this gets printed indicating presence of DMAR tables
 in ACPI.</p>
@@ -378,10 +380,10 @@ ACPI DMAR:RMRR base: 0x000000007f600000 end: 0x000000007fffffff
 </pre></div>
 </div>
 <p>When DMAR is enabled for use, you will notice..</p>
-</section>
-<section id="pci-dma-using-dmar-iommu">
+</div>
+<div class="section" id="pci-dma-using-dmar-iommu">
 <h2><span class="section-number">14.8. </span>PCI-DMA: Using DMAR IOMMU<a class="headerlink" href="#pci-dma-using-dmar-iommu" title="Permalink to this headline">¶</a></h2>
-<section id="id1">
+<div class="section" id="id1">
 <h3><span class="section-number">14.8.1. </span>Fault reporting<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DMAR:[DMA Write] Request device [00:02.0] fault addr 6df084000
 DMAR:[fault reason 05] PTE Write access is not set
@@ -389,17 +391,17 @@ DMAR:[DMA Write] Request device [00:02.0] fault addr 6df084000
 DMAR:[fault reason 05] PTE Write access is not set
 </pre></div>
 </div>
-</section>
-</section>
-<section id="tbd">
+</div>
+</div>
+<div class="section" id="tbd">
 <h2><span class="section-number">14.9. </span>TBD<a class="headerlink" href="#tbd" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>For compatibility testing, could use unity map domain for all devices, just
 provide a 1-1 for all useful memory under a single domain for all devices.</p></li>
 <li><p>API for paravirt ops for abstracting functionality for VMM folks.</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Cluster-wide Power-up/power-down race avoidance algorithm &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -286,7 +288,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="cluster-wide-power-up-power-down-race-avoidance-algorithm">
+  <div class="section" id="cluster-wide-power-up-power-down-race-avoidance-algorithm">
 <h1>Cluster-wide Power-up/power-down race avoidance algorithm<a class="headerlink" href="#cluster-wide-power-up-power-down-race-avoidance-algorithm" title="Permalink to this headline">¶</a></h1>
 <p>This file documents the algorithm which is used to coordinate CPU and
 cluster setup and teardown operations and to manage hardware coherency
@@ -295,7 +297,7 @@ controls safely.</p>
 needed.  “Basic model” explains general concepts using a simplified view
 of the system.  The other sections explain the actual details of the
 algorithm in use.</p>
-<section id="rationale">
+<div class="section" id="rationale">
 <h2>Rationale<a class="headerlink" href="#rationale" title="Permalink to this headline">¶</a></h2>
 <p>In a system containing multiple CPUs, it is desirable to have the
 ability to turn off individual CPUs when the system is idle, reducing
@@ -318,8 +320,8 @@ power-down and power-up at the cluster level.</p>
 <p>The mechanism presented in this document describes a coherent memory
 based protocol for performing the needed coordination.  It aims to be as
 lightweight as possible, while providing the required safety properties.</p>
-</section>
-<section id="basic-model">
+</div>
+<div class="section" id="basic-model">
 <h2>Basic model<a class="headerlink" href="#basic-model" title="Permalink to this headline">¶</a></h2>
 <p>Each cluster and CPU is assigned a state, as follows:</p>
 <blockquote>
@@ -366,8 +368,8 @@ level states are described in the “Cluster state” section.</p>
 <p>To help distinguish the CPU states from cluster states in this
 discussion, the state names are given a <cite>CPU_</cite> prefix for the CPU states,
 and a <cite>CLUSTER_</cite> or <cite>INBOUND_</cite> prefix for the cluster states.</p>
-</section>
-<section id="cpu-state">
+</div>
+<div class="section" id="cpu-state">
 <h2>CPU state<a class="headerlink" href="#cpu-state" title="Permalink to this headline">¶</a></h2>
 <p>In this algorithm, each individual core in a multi-core processor is
 referred to as a “CPU”.  CPUs are assumed to be single-threaded:
@@ -467,8 +469,8 @@ caches).</p>
 </dl>
 </dd>
 </dl>
-</section>
-<section id="cluster-state">
+</div>
+<div class="section" id="cluster-state">
 <h2>Cluster state<a class="headerlink" href="#cluster-state" title="Permalink to this headline">¶</a></h2>
 <p>A cluster is a group of connected CPUs with some common resources.
 Because a cluster contains multiple CPUs, it can be doing multiple
@@ -686,8 +688,8 @@ coherency complete</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="last-man-and-first-man-selection">
+</div>
+<div class="section" id="last-man-and-first-man-selection">
 <h2>Last man and First man selection<a class="headerlink" href="#last-man-and-first-man-selection" title="Permalink to this headline">¶</a></h2>
 <p>The CPU which performs cluster tear-down operations on the outbound side
 is commonly referred to as the “last man”.</p>
@@ -711,8 +713,8 @@ coherency controls in the bus fabric.</p>
 <p>The current implementation in mcpm_head.S uses a separate mutual exclusion
 mechanism to do this arbitration.  This mechanism is documented in
 detail in <a class="reference internal" href="vlocks.html"><span class="doc">vlocks for Bare-Metal Mutual Exclusion</span></a>.</p>
-</section>
-<section id="features-and-limitations">
+</div>
+<div class="section" id="features-and-limitations">
 <h2>Features and Limitations<a class="headerlink" href="#features-and-limitations" title="Permalink to this headline">¶</a></h2>
 <p>Implementation:</p>
 <blockquote>
@@ -749,16 +751,16 @@ extended by replicating the cluster-level states for the
 additional topological levels, and modifying the transition
 rules for the intermediate (non-outermost) cluster levels.</p>
 </div></blockquote>
-</section>
-<section id="colophon">
+</div>
+<div class="section" id="colophon">
 <h2>Colophon<a class="headerlink" href="#colophon" title="Permalink to this headline">¶</a></h2>
 <p>Originally created and documented by Dave Martin for Linaro Limited, in
 collaboration with Nicolas Pitre and Achin Gupta.</p>
 <p>Copyright (C) 2012-2013  Linaro Limited
 Distributed under the terms of Version 2 of the GNU General Public
 License, as defined in linux/COPYING.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

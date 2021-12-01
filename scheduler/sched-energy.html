@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Energy Aware Scheduling &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -268,9 +270,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="energy-aware-scheduling">
+  <div class="section" id="energy-aware-scheduling">
 <h1>Energy Aware Scheduling<a class="headerlink" href="#energy-aware-scheduling" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Energy Aware Scheduling (or EAS) gives the scheduler the ability to predict
 the impact of its decisions on the energy consumed by CPUs. EAS relies on an
@@ -288,8 +290,8 @@ the highest.</p>
 <p>The actual EM used by EAS is _not_ maintained by the scheduler, but by a
 dedicated framework. For details about this framework and what it provides,
 please refer to its documentation (see <a class="reference internal" href="../power/energy-model.html"><span class="doc">Energy Model of devices</span></a>).</p>
-</section>
-<section id="background-and-terminology">
+</div>
+<div class="section" id="background-and-terminology">
 <h2>2. Background and Terminology<a class="headerlink" href="#background-and-terminology" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>To make it clear from the start:</dt><dd><ul class="simple">
@@ -327,8 +329,8 @@ that is predicted to yield the best energy consumption without harming the
 system’s throughput. The predictions made by EAS rely on specific elements of
 knowledge about the platform’s topology, which include the ‘capacity’ of CPUs,
 and their respective energy costs.</p>
-</section>
-<section id="topology-information">
+</div>
+<div class="section" id="topology-information">
 <h2>3. Topology information<a class="headerlink" href="#topology-information" title="Permalink to this headline">¶</a></h2>
 <p>EAS (as well as the rest of the scheduler) uses the notion of ‘capacity’ to
 differentiate CPUs with different computing throughput. The ‘capacity’ of a CPU
@@ -383,8 +385,8 @@ manipulated by the scheduler.</p>
 <p>EAS also maintains a static key (sched_energy_present) which is enabled when at
 least one root domain meets all conditions for EAS to start. Those conditions
 are summarized in Section 6.</p>
-</section>
-<section id="energy-aware-task-placement">
+</div>
+<div class="section" id="energy-aware-task-placement">
 <h2>4. Energy-Aware task placement<a class="headerlink" href="#energy-aware-task-placement" title="Permalink to this headline">¶</a></h2>
 <p>EAS overrides the CFS task wake-up balancing code. It uses the EM of the
 platform and the PELT signals to choose an energy-efficient target CPU during
@@ -520,8 +522,8 @@ CPUs of the system. Thanks to its EM-based design, EAS should cope with them
 correctly without too many troubles. However, in order to ensure a minimal
 impact on throughput for high-utilization scenarios, EAS also implements another
 mechanism called ‘over-utilization’.</p>
-</section>
-<section id="over-utilization">
+</div>
+<div class="section" id="over-utilization">
 <h2>5. Over-utilization<a class="headerlink" href="#over-utilization" title="Permalink to this headline">¶</a></h2>
 <p>From a general standpoint, the use-cases where EAS can help the most are those
 involving a light/medium CPU utilization. Whenever long CPU-bound tasks are
@@ -558,13 +560,13 @@ there is some idle time in the system, the CPU capacity ‘stolen’ by higher
 (than CFS) scheduling classes (as well as IRQ) must be taken into account. As
 such, the detection of overutilization accounts for the capacity used not only
 by CFS tasks, but also by the other scheduling classes and IRQ.</p>
-</section>
-<section id="dependencies-and-requirements-for-eas">
+</div>
+<div class="section" id="dependencies-and-requirements-for-eas">
 <h2>6. Dependencies and requirements for EAS<a class="headerlink" href="#dependencies-and-requirements-for-eas" title="Permalink to this headline">¶</a></h2>
 <p>Energy Aware Scheduling depends on the CPUs of the system having specific
 hardware properties and on other features of the kernel being enabled. This
 section lists these dependencies and provides hints as to how they can be met.</p>
-<section id="asymmetric-cpu-topology">
+<div class="section" id="asymmetric-cpu-topology">
 <h3>6.1 - Asymmetric CPU topology<a class="headerlink" href="#asymmetric-cpu-topology" title="Permalink to this headline">¶</a></h3>
 <p>As mentioned in the introduction, EAS is only supported on platforms with
 asymmetric CPU topologies for now. This requirement is checked at run-time by
@@ -575,8 +577,8 @@ flag to be set in the sched_domain hierarchy.</p>
 <p>Please note that EAS is not fundamentally incompatible with SMP, but no
 significant savings on SMP platforms have been observed yet. This restriction
 could be amended in the future if proven otherwise.</p>
-</section>
-<section id="energy-model-presence">
+</div>
+<div class="section" id="energy-model-presence">
 <h3>6.2 - Energy Model presence<a class="headerlink" href="#energy-model-presence" title="Permalink to this headline">¶</a></h3>
 <p>EAS uses the EM of a platform to estimate the impact of scheduling decisions on
 energy. So, your platform must provide power cost tables to the EM framework in
@@ -588,8 +590,8 @@ EM has been registered in order to start EAS.</p>
 more focused on the difference when checking possible options for task
 placement. For EAS it doesn’t matter whether the EM power values are expressed
 in milli-Watts or in an ‘abstract scale’.</p>
-</section>
-<section id="energy-model-complexity">
+</div>
+<div class="section" id="energy-model-complexity">
 <h3>6.3 - Energy Model complexity<a class="headerlink" href="#energy-model-complexity" title="Permalink to this headline">¶</a></h3>
 <p>The task wake-up path is very latency-sensitive. When the EM of a platform is
 too complex (too many CPUs, too many performance domains, too many performance
@@ -618,8 +620,8 @@ overall;</p></li>
 hence enabling it to cope with larger EMs in reasonable time.</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="schedutil-governor">
+</div>
+<div class="section" id="schedutil-governor">
 <h3>6.4 - Schedutil governor<a class="headerlink" href="#schedutil-governor" title="Permalink to this headline">¶</a></h3>
 <p>EAS tries to predict at which OPP will the CPUs be running in the close future
 in order to estimate their energy consumption. To do so, it is assumed that OPPs
@@ -632,8 +634,8 @@ Consequently, the only sane governor to use together with EAS is schedutil,
 because it is the only one providing some degree of consistency between
 frequency requests and energy predictions.</p>
 <p>Using EAS with any other governor than schedutil is not supported.</p>
-</section>
-<section id="scale-invariant-utilization-signals">
+</div>
+<div class="section" id="scale-invariant-utilization-signals">
 <h3>6.5 Scale-invariant utilization signals<a class="headerlink" href="#scale-invariant-utilization-signals" title="Permalink to this headline">¶</a></h3>
 <p>In order to make accurate prediction across CPUs and for all performance
 states, EAS needs frequency-invariant and CPU-invariant PELT signals. These can
@@ -641,16 +643,16 @@ be obtained using the architecture-defined arch_scale{cpu,freq}_capacity()
 callbacks.</p>
 <p>Using EAS on a platform that doesn’t implement these two callbacks is not
 supported.</p>
-</section>
-<section id="multithreading-smt">
+</div>
+<div class="section" id="multithreading-smt">
 <h3>6.6 Multithreading (SMT)<a class="headerlink" href="#multithreading-smt" title="Permalink to this headline">¶</a></h3>
 <p>EAS in its current form is SMT unaware and is not able to leverage
 multithreaded hardware to save energy. EAS considers threads as independent
 CPUs, which can actually be counter-productive for both performance and energy.</p>
 <p>EAS on SMT is not supported.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

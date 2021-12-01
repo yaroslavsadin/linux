@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Supporting PMUs on RISC-V platforms &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -275,10 +277,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="supporting-pmus-on-risc-v-platforms">
+  <div class="section" id="supporting-pmus-on-risc-v-platforms">
 <h1>Supporting PMUs on RISC-V platforms<a class="headerlink" href="#supporting-pmus-on-risc-v-platforms" title="Permalink to this headline">¶</a></h1>
 <p>Alan Kao &lt;<a class="reference external" href="mailto:alankao&#37;&#52;&#48;andestech&#46;com">alankao<span>&#64;</span>andestech<span>&#46;</span>com</a>&gt;, Mar 2018</p>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>As of this writing, perf_event-related features mentioned in The RISC-V ISA
 Privileged Version 1.10 are as follows:
@@ -310,8 +312,8 @@ PMUs in the kernel.  The following sections briefly explain perf’ mechanism
 and todos.</p>
 <p>You may check previous discussions here [1][2].  Also, it might be helpful
 to check the appendix for related kernel structures.</p>
-</section>
-<section id="initialization">
+</div>
+<div class="section" id="initialization">
 <h2>1. Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
 <p><em>riscv_pmu</em> is a global pointer of type <em>struct riscv_pmu</em>, which contains
 various methods according to perf’s internal convention and PMU-specific
@@ -325,8 +327,8 @@ own <em>riscv_init_platform_pmu</em> implementation.</p>
 reference implementation.  Developers can flexibly decide how many parts they
 can leverage, and in the most extreme case, they can customize every function
 according to their needs.</p>
-</section>
-<section id="event-initialization">
+</div>
+<div class="section" id="event-initialization">
 <h2>2. Event Initialization<a class="headerlink" href="#event-initialization" title="Permalink to this headline">¶</a></h2>
 <p>When a user launches a perf command to monitor some events, it is first
 interpreted by the userspace perf tool into multiple <em>perf_event_open</em>
@@ -354,8 +356,8 @@ manipulated.  The translation is based on the mappings and methods provided in
 </li>
 </ol>
 <p>In the case of <em>riscv_base_pmu</em>, only (3) is provided for now.</p>
-</section>
-<section id="interrupt">
+</div>
+<div class="section" id="interrupt">
 <h2>3. Interrupt<a class="headerlink" href="#interrupt" title="Permalink to this headline">¶</a></h2>
 <p>3.1. Interrupt Initialization</p>
 <p>This often occurs at the beginning of the <em>event_init</em> method. In common
@@ -415,8 +417,8 @@ end for
 </div>
 <p>However as of this writing, none of the RISC-V implementations have designed an
 interrupt for perf, so the details are to be completed in the future.</p>
-</section>
-<section id="reading-writing-counters">
+</div>
+<div class="section" id="reading-writing-counters">
 <h2>4. Reading/Writing Counters<a class="headerlink" href="#reading-writing-counters" title="Permalink to this headline">¶</a></h2>
 <p>They seem symmetric but perf treats them quite differently.  For reading, there
 is a <em>read</em> interface in <em>struct pmu</em>, but it serves more than just reading.
@@ -429,8 +431,8 @@ has to set the counter to a good value for the next interrupt; 2) inside the IRQ
 it should set the counter to the same resonable value.</p>
 <p>Reading is not a problem in RISC-V but writing would need some effort, since
 counters are not allowed to be written by S-mode.</p>
-</section>
-<section id="add-del-start-stop">
+</div>
+<div class="section" id="add-del-start-stop">
 <h2>5. add()/del()/start()/stop()<a class="headerlink" href="#add-del-start-stop" title="Permalink to this headline">¶</a></h2>
 <p>Basic idea: add()/del() adds/deletes events to/from a PMU, and <a class="reference internal" href="../networking/ieee802154.html#c.start" title="start"><code class="xref c c-func docutils literal notranslate"><span class="pre">start()</span></code></a>/<a class="reference internal" href="../networking/ieee802154.html#c.stop" title="stop"><code class="xref c c-func docutils literal notranslate"><span class="pre">stop()</span></code></a>
 starts/stop the counter of some event in the PMU.  All of them take the same
@@ -476,8 +478,8 @@ adjusted.</p></li>
 </ul>
 <p>Current implementation is sufficient for now and can be easily extended to
 features in the future.</p>
-</section>
-<section id="a-related-structures">
+</div>
+<div class="section" id="a-related-structures">
 <h2>A. Related Structures<a class="headerlink" href="#a-related-structures" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>struct pmu: include/linux/perf_event.h</p></li>
@@ -499,13 +501,13 @@ details.</p>
 the number of events and the array of the events.</p>
 </li>
 </ul>
-</section>
-<section id="references">
+</div>
+<div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <p>[1] <a class="reference external" href="https://github.com/riscv/riscv-linux/pull/124">https://github.com/riscv/riscv-linux/pull/124</a></p>
 <p>[2] <a class="reference external" href="https://groups.google.com/a/groups.riscv.org/forum/#!topic/sw-dev/f19TmCNP6yA">https://groups.google.com/a/groups.riscv.org/forum/#!topic/sw-dev/f19TmCNP6yA</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

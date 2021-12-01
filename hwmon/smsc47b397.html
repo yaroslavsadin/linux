@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Kernel driver smsc47b397 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -450,7 +452,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kernel-driver-smsc47b397">
+  <div class="section" id="kernel-driver-smsc47b397">
 <h1>Kernel driver smsc47b397<a class="headerlink" href="#kernel-driver-smsc47b397" title="Permalink to this headline">¶</a></h1>
 <p>Supported chips:</p>
 <blockquote>
@@ -483,7 +485,7 @@ otherwise compatible.</p>
 </dd>
 </dl>
 <hr class="docutils" />
-<section id="methods-for-detecting-the-hp-sio-and-reading-the-thermal-data-on-a-dc7100">
+<div class="section" id="methods-for-detecting-the-hp-sio-and-reading-the-thermal-data-on-a-dc7100">
 <h2>Methods for detecting the HP SIO and reading the thermal data on a dc7100<a class="headerlink" href="#methods-for-detecting-the-hp-sio-and-reading-the-thermal-data-on-a-dc7100" title="Permalink to this headline">¶</a></h2>
 <p>The thermal information on the dc7100 is contained in the SIO Hardware Monitor
 (HWM). The information is accessed through an index/data pair. The index/data
@@ -568,8 +570,8 @@ fan speed on all systems).</p></td>
 <p>Reading the tach LSB locks the tach MSB.
 The LSB Must be read first.</p>
 </div>
-</section>
-<section id="how-to-convert-the-tach-reading-to-rpm">
+</div>
+<div class="section" id="how-to-convert-the-tach-reading-to-rpm">
 <h2>How to convert the tach reading to RPM<a class="headerlink" href="#how-to-convert-the-tach-reading-to-rpm" title="Permalink to this headline">¶</a></h2>
 <p>The tach reading (TCount) is given by: (Tach MSB * 256) + (Tach LSB)
 The SIO counts the number of 90kHz (11.111us) pulses per revolution.
@@ -582,19 +584,19 @@ Reg 0x29 = 0x08
 <p>TCount = 0x89B = 2203</p>
 <p>RPM = 60 / (2203 * 11.11111 E-6) = 2451 RPM</p>
 <p>Obtaining the SIO version.</p>
-</section>
-<section id="configuration-sequence">
+</div>
+<div class="section" id="configuration-sequence">
 <h2>Configuration Sequence<a class="headerlink" href="#configuration-sequence" title="Permalink to this headline">¶</a></h2>
 <p>To program the configuration registers, the following sequence must be followed:
 1. Enter Configuration Mode
 2. Configure the Configuration Registers
 3. Exit Configuration Mode.</p>
-<section id="enter-configuration-mode">
+<div class="section" id="enter-configuration-mode">
 <h3>Enter Configuration Mode<a class="headerlink" href="#enter-configuration-mode" title="Permalink to this headline">¶</a></h3>
 <p>To place the chip into the Configuration State The config key (0x55) is written
 to the CONFIG PORT (0x2E).</p>
-</section>
-<section id="configuration-mode">
+</div>
+<div class="section" id="configuration-mode">
 <h3>Configuration Mode<a class="headerlink" href="#configuration-mode" title="Permalink to this headline">¶</a></h3>
 <p>In configuration mode, the INDEX PORT is located at the CONFIG PORT address and
 the DATA PORT is at INDEX PORT address + 1.</p>
@@ -611,13 +613,13 @@ uration register through the DATA PORT.</p></li>
 <dt>Note:</dt><dd><p>If accessing the Global Configuration Registers, step (a) is not required.</p>
 </dd>
 </dl>
-</section>
-<section id="exit-configuration-mode">
+</div>
+<div class="section" id="exit-configuration-mode">
 <h3>Exit Configuration Mode<a class="headerlink" href="#exit-configuration-mode" title="Permalink to this headline">¶</a></h3>
 <p>To exit the Configuration State the write 0xAA to the CONFIG PORT (0x2E).
 The chip returns to the RUN State.  (This is important).</p>
-</section>
-<section id="programming-example">
+</div>
+<div class="section" id="programming-example">
 <h3>Programming Example<a class="headerlink" href="#programming-example" title="Permalink to this headline">¶</a></h3>
 <p>The following is an example of how to read the SIO Device ID located at 0x20:</p>
 <blockquote>
@@ -641,9 +643,9 @@ OUT     DX,AL</p>
 (0x20) and Device Rev  (0x21).</p>
 <p>The Device ID will read 0x6F (0x81 for SCH5307-NS, and 0x85 for SCH5317)
 The Device Rev currently reads 0x01</p>
-</section>
-</section>
-<section id="obtaining-the-hwm-base-address">
+</div>
+</div>
+<div class="section" id="obtaining-the-hwm-base-address">
 <h2>Obtaining the HWM Base Address<a class="headerlink" href="#obtaining-the-hwm-base-address" title="Permalink to this headline">¶</a></h2>
 <p>The following is an example of how to read the HWM Base Address located in
 Logical Device 8:</p>
@@ -671,8 +673,8 @@ MOV     AX,0AAH
 OUT     DX,AL
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

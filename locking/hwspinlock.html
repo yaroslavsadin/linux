@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Hardware Spinlock Framework &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -265,9 +267,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="hardware-spinlock-framework">
+  <div class="section" id="hardware-spinlock-framework">
 <h1>Hardware Spinlock Framework<a class="headerlink" href="#hardware-spinlock-framework" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Hardware spinlock modules provide hardware assistance for synchronization
 and mutual exclusion between heterogeneous processors and those not operating
@@ -292,8 +294,8 @@ module (remote processor directly places new messages in this shared data
 structure).</p>
 <p>A common hwspinlock interface makes it possible to have generic, platform-
 independent, drivers.</p>
-</section>
-<section id="user-api">
+</div>
+<div class="section" id="user-api">
 <h2>User API<a class="headerlink" href="#user-api" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct hwspinlock *hwspin_lock_request(void);
 </pre></div>
@@ -496,8 +498,8 @@ hwspinlock is dynamically assigned: before it can be used to achieve
 mutual exclusion with a remote cpu, the id number should be communicated
 to the remote task with which we want to synchronize.</p>
 <p>Returns the hwspinlock id number, or -EINVAL if hwlock is null.</p>
-</section>
-<section id="typical-usage">
+</div>
+<div class="section" id="typical-usage">
 <h2>Typical usage<a class="headerlink" href="#typical-usage" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#include &lt;linux/hwspinlock.h&gt;
 #include &lt;linux/err.h&gt;
@@ -571,8 +573,8 @@ int hwspinlock_example2(void)
 }
 </pre></div>
 </div>
-</section>
-<section id="api-for-implementors">
+</div>
+<div class="section" id="api-for-implementors">
 <h2>API for implementors<a class="headerlink" href="#api-for-implementors" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int hwspin_lock_register(struct hwspinlock_device *bank, struct device *dev,
               const struct hwspinlock_ops *ops, int base_id, int num_locks);
@@ -592,8 +594,8 @@ locks).</p>
 <p>Should be called from a process context (this function might sleep).</p>
 <p>Returns the address of hwspinlock on success, or NULL on error (e.g.
 if the hwspinlock is still in use).</p>
-</section>
-<section id="important-structs">
+</div>
+<div class="section" id="important-structs">
 <h2>Important structs<a class="headerlink" href="#important-structs" title="Permalink to this headline">¶</a></h2>
 <p>struct hwspinlock_device is a device which usually contains a bank
 of hardware locks. It is registered by the underlying hwspinlock
@@ -633,8 +635,8 @@ struct hwspinlock {
 <p>When registering a bank of locks, the hwspinlock driver only needs to
 set the priv members of the locks. The rest of the members are set and
 initialized by the hwspinlock core itself.</p>
-</section>
-<section id="implementation-callbacks">
+</div>
+<div class="section" id="implementation-callbacks">
 <h2>Implementation callbacks<a class="headerlink" href="#implementation-callbacks" title="Permalink to this headline">¶</a></h2>
 <p>There are three possible callbacks defined in ‘struct hwspinlock_ops’:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct hwspinlock_ops {
@@ -652,8 +654,8 @@ may <strong>not</strong> sleep.</p>
 <p>The -&gt;relax() callback is optional. It is called by hwspinlock core while
 spinning on a lock, and can be used by the underlying implementation to force
 a delay between two successive invocations of -&gt;trylock(). It may <strong>not</strong> sleep.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

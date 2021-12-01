@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Hypercall Op-codes (hcalls) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -297,9 +299,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="hypercall-op-codes-hcalls">
+  <div class="section" id="hypercall-op-codes-hcalls">
 <h1>Hypercall Op-codes (hcalls)<a class="headerlink" href="#hypercall-op-codes-hcalls" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Virtualization on 64-bit Power Book3S Platforms is based on the PAPR
 specification <a class="footnote-reference brackets" href="#id9" id="id1">1</a> which describes the run-time environment for a guest
@@ -322,8 +324,8 @@ asking hypervisor to perform a privileged operation on behalf of the guest. The
 guest issues a with necessary input operands. The hypervisor after performing
 the privilege operation returns a status code and output operands back to the
 guest.</p>
-</section>
-<section id="hcall-abi">
+</div>
+<div class="section" id="hcall-abi">
 <h2>HCALL ABI<a class="headerlink" href="#hcall-abi" title="Permalink to this headline">¶</a></h2>
 <p>The ABI specification for a hcall between a pseries guest and PAPR hypervisor
 is covered in section 14.5.3 of ref <a class="footnote-reference brackets" href="#id10" id="id4">2</a>. Switch to the  Hypervisor context is
@@ -338,8 +340,8 @@ any out values stored in a memory buffer will be in Big-endian byte order.</p>
 <p>Powerpc arch code provides convenient wrappers named <strong>plpar_hcall_xxx</strong> defined
 in a arch specific header <a class="footnote-reference brackets" href="#id12" id="id5">4</a> to issue hcalls from the linux kernel
 running as pseries guest.</p>
-</section>
-<section id="register-conventions">
+</div>
+<div class="section" id="register-conventions">
 <h2>Register Conventions<a class="headerlink" href="#register-conventions" title="Permalink to this headline">¶</a></h2>
 <p>Any hcall should follow same register convention as described in section 2.2.1.1
 of “64-Bit ELF V2 ABI Specification: Power Architecture”<a class="footnote-reference brackets" href="#id13" id="id6">5</a>. Table below
@@ -426,8 +428,8 @@ global entry point</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="drc-drc-indexes">
+</div>
+<div class="section" id="drc-drc-indexes">
 <h2>DRC &amp; DRC Indexes<a class="headerlink" href="#drc-drc-indexes" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DR1                                  Guest
 +--+        +------------+         +---------+
@@ -447,8 +449,8 @@ to manage LPAR access. An LPAR refers to a DRC via an opaque 32-bit number
 called DRC-Index. The DRC-index value is provided to the LPAR via device-tree
 where its present as an attribute in the device tree node associated with the
 DR.</p>
-</section>
-<section id="hcall-return-values">
+</div>
+<div class="section" id="hcall-return-values">
 <h2>HCALL Return-values<a class="headerlink" href="#hcall-return-values" title="Permalink to this headline">¶</a></h2>
 <p>After servicing the hcall, hypervisor sets the return-value in <em>r3</em> indicating
 success or failure of the hcall. In case of a failure an error code indicates
@@ -463,8 +465,8 @@ servicing the hcall yet.</p>
 initial call and use the hypervisor returned value of <em>continue-token</em>
 for each subsequent hcall until hypervisor returns a non <em>H_CONTINUE</em>
 return value.</p>
-</section>
-<section id="hcall-op-codes">
+</div>
+<div class="section" id="hcall-op-codes">
 <h2>HCALL Op-codes<a class="headerlink" href="#hcall-op-codes" title="Permalink to this headline">¶</a></h2>
 <p>Below is a partial list of HCALLs that are supported by PHYP. For the
 corresponding opcode values please look into the arch specific header <a class="footnote-reference brackets" href="#id12" id="id8">4</a>:</p>
@@ -623,8 +625,8 @@ to be issued multiple times in order to be completely serviced. The
 <em>continue-token</em> from the output to be passed in the argument list of
 subsequent hcalls to the hypervisor until the hcall is completely serviced
 at which point H_SUCCESS or other error is returned by the hypervisor.</p>
-</section>
-<section id="references">
+</div>
+<div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <dl class="footnote brackets">
 <dt class="label" id="id9"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
@@ -647,8 +649,8 @@ at which point H_SUCCESS or other error is returned by the hypervisor.</p>
 <a class="reference external" href="https://openpowerfoundation.org/?resource_lib=64-bit-elf-v2-abi-specification-power-architecture">https://openpowerfoundation.org/?resource_lib=64-bit-elf-v2-abi-specification-power-architecture</a></p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

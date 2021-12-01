@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Squashfs 4.0 Filesystem &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -322,7 +324,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="squashfs-4-0-filesystem">
+  <div class="section" id="squashfs-4-0-filesystem">
 <h1>Squashfs 4.0 Filesystem<a class="headerlink" href="#squashfs-4-0-filesystem" title="Permalink to this headline">¶</a></h1>
 <p>Squashfs is a compressed read-only filesystem for Linux.</p>
 <p>It uses zlib, lz4, lzo, or xz compression to compress files, inodes and
@@ -335,7 +337,7 @@ block device/memory systems (e.g. embedded systems) where low overhead is
 needed.</p>
 <p>Mailing list: <a class="reference external" href="mailto:squashfs-devel&#37;&#52;&#48;lists&#46;sourceforge&#46;net">squashfs-devel<span>&#64;</span>lists<span>&#46;</span>sourceforge<span>&#46;</span>net</a>
 Web site: www.squashfs.org</p>
-<section id="filesystem-features">
+<div class="section" id="filesystem-features">
 <h2>1. Filesystem Features<a class="headerlink" href="#filesystem-features" title="Permalink to this headline">¶</a></h2>
 <p>Squashfs filesystem features versus Cramfs:</p>
 <table class="docutils align-default">
@@ -430,8 +432,8 @@ directory data are highly compacted, and packed on byte boundaries.  Each
 compressed inode is on average 8 bytes in length (the exact length varies on
 file type, i.e. regular file, directory, symbolic link, and block/char device
 inodes have different sizes).</p>
-</section>
-<section id="using-squashfs">
+</div>
+<div class="section" id="using-squashfs">
 <h2>2. Using Squashfs<a class="headerlink" href="#using-squashfs" title="Permalink to this headline">¶</a></h2>
 <p>As squashfs is a read-only filesystem, the mksquashfs program must be used to
 create populated squashfs filesystems.  This and other squashfs utilities
@@ -441,8 +443,8 @@ obtained from this site also.</p>
 <dt>The squashfs-tools development tree is now located on kernel.org</dt><dd><p>git://git.kernel.org/pub/scm/fs/squashfs/squashfs-tools.git</p>
 </dd>
 </dl>
-</section>
-<section id="squashfs-filesystem-design">
+</div>
+<div class="section" id="squashfs-filesystem-design">
 <h2>3. Squashfs Filesystem Design<a class="headerlink" href="#squashfs-filesystem-design" title="Permalink to this headline">¶</a></h2>
 <p>A squashfs filesystem consists of a maximum of nine parts, packed together on a
 byte alignment:</p>
@@ -478,14 +480,14 @@ byte alignment:</p>
 the source directory, and checked for duplicates.  Once all file data has been
 written the completed inode, directory, fragment, export, uid/gid lookup and
 xattr tables are written.</p>
-</section>
-<section id="compression-options">
+</div>
+<div class="section" id="compression-options">
 <h2>3.1 Compression options<a class="headerlink" href="#compression-options" title="Permalink to this headline">¶</a></h2>
 <p>Compressors can optionally support compression specific options (e.g.
 dictionary size).  If non-default compression options have been used, then
 these are stored here.</p>
-</section>
-<section id="inodes">
+</div>
+<div class="section" id="inodes">
 <h2>3.2 Inodes<a class="headerlink" href="#inodes" title="Permalink to this headline">¶</a></h2>
 <p>Metadata (inodes and directories) are compressed in 8Kbyte blocks.  Each
 compressed block is prefixed by a two byte length, the top bit is set if the
@@ -503,8 +505,8 @@ varying with the type.</p>
 directory inode are defined: inodes optimised for frequently occurring
 regular files and directories, and extended types where extra
 information has to be stored.</p>
-</section>
-<section id="directories">
+</div>
+<div class="section" id="directories">
 <h2>3.3 Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h2>
 <p>Like inodes, directories are packed into compressed metadata blocks, stored
 in a directory table.  Directories are accessed using the start address of
@@ -530,8 +532,8 @@ The general idea of the index is to ensure only one metadata block needs to be
 decompressed to do a lookup irrespective of the length of the directory.
 This scheme has the advantage that it doesn’t require extra memory overhead
 and doesn’t require much extra storage on disk.</p>
-</section>
-<section id="file-data">
+</div>
+<div class="section" id="file-data">
 <h2>3.4 File data<a class="headerlink" href="#file-data" title="Permalink to this headline">¶</a></h2>
 <p>Regular files consist of a sequence of contiguous compressed blocks, and/or a
 compressed fragment block (tail-end packed block).   The compressed size
@@ -546,8 +548,8 @@ is split into slots, caching up to eight 224 GiB files (128 KiB blocks).
 Larger files use multiple slots, with 1.75 TiB files using all 8 slots.
 The index cache is designed to be memory efficient, and by default uses
 16 KiB.</p>
-</section>
-<section id="fragment-lookup-table">
+</div>
+<div class="section" id="fragment-lookup-table">
 <h2>3.5 Fragment lookup table<a class="headerlink" href="#fragment-lookup-table" title="Permalink to this headline">¶</a></h2>
 <p>Regular files can contain a fragment index which is mapped to a fragment
 location on disk and compressed size using a fragment lookup table.  This
@@ -555,16 +557,16 @@ fragment lookup table is itself stored compressed into metadata blocks.
 A second index table is used to locate these.  This second index table for
 speed of access (and because it is small) is read at mount time and cached
 in memory.</p>
-</section>
-<section id="uid-gid-lookup-table">
+</div>
+<div class="section" id="uid-gid-lookup-table">
 <h2>3.6 Uid/gid lookup table<a class="headerlink" href="#uid-gid-lookup-table" title="Permalink to this headline">¶</a></h2>
 <p>For space efficiency regular files store uid and gid indexes, which are
 converted to 32-bit uids/gids using an id look up table.  This table is
 stored compressed into metadata blocks.  A second index table is used to
 locate these.  This second index table for speed of access (and because it
 is small) is read at mount time and cached in memory.</p>
-</section>
-<section id="export-table">
+</div>
+<div class="section" id="export-table">
 <h2>3.7 Export table<a class="headerlink" href="#export-table" title="Permalink to this headline">¶</a></h2>
 <p>To enable Squashfs filesystems to be exportable (via NFS etc.) filesystems
 can optionally (disabled with the -no-exports Mksquashfs option) contain
@@ -575,8 +577,8 @@ expired/flushed inodes.</p>
 <p>This table is stored compressed into metadata blocks.  A second index table is
 used to locate these.  This second index table for speed of access (and because
 it is small) is read at mount time and cached in memory.</p>
-</section>
-<section id="xattr-table">
+</div>
+<div class="section" id="xattr-table">
 <h2>3.8 Xattr table<a class="headerlink" href="#xattr-table" title="Permalink to this headline">¶</a></h2>
 <p>The xattr table contains extended attributes for each inode.  The xattrs
 for each inode are stored in a list, each list entry containing a type,
@@ -594,15 +596,15 @@ To reduce overhead in inodes, rather than storing the on-disk
 location of the xattr list inside each inode, a 32-bit xattr id
 is stored.  This xattr id is mapped into the location of the xattr
 list using a second xattr id lookup table.</p>
-</section>
-<section id="todos-and-outstanding-issues">
+</div>
+<div class="section" id="todos-and-outstanding-issues">
 <h2>4. TODOs and Outstanding Issues<a class="headerlink" href="#todos-and-outstanding-issues" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="todo-list">
+</div>
+<div class="section" id="todo-list">
 <h2>4.1 TODO list<a class="headerlink" href="#todo-list" title="Permalink to this headline">¶</a></h2>
 <p>Implement ACL support.</p>
-</section>
-<section id="squashfs-internal-cache">
+</div>
+<div class="section" id="squashfs-internal-cache">
 <h2>4.2 Squashfs Internal Cache<a class="headerlink" href="#squashfs-internal-cache" title="Permalink to this headline">¶</a></h2>
 <p>Blocks in Squashfs are compressed.  To avoid repeatedly decompressing
 recently accessed data Squashfs uses two small metadata and fragment caches.</p>
@@ -619,8 +621,8 @@ for near future access without requiring an additional read and decompress.</p>
 uses the kernel page cache.  Because the page cache operates on page sized
 units this may introduce additional complexity in terms of locking and
 associated race conditions.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

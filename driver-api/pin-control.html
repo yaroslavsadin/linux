@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>PINCTRL (PIN CONTROL) subsystem &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -357,7 +359,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="pinctrl-pin-control-subsystem">
+  <div class="section" id="pinctrl-pin-control-subsystem">
 <h1>PINCTRL (PIN CONTROL) subsystem<a class="headerlink" href="#pinctrl-pin-control-subsystem" title="Permalink to this headline">¶</a></h1>
 <p>This document outlines the pin control subsystem in Linux</p>
 <p>This subsystem deals with:</p>
@@ -368,7 +370,7 @@
 biasing and driving mode specific pins, such as pull-up/down, open drain,
 load capacitance etc.</p></li>
 </ul>
-<section id="top-level-interface">
+<div class="section" id="top-level-interface">
 <h2>Top-level interface<a class="headerlink" href="#top-level-interface" title="Permalink to this headline">¶</a></h2>
 <p>Definition of PIN CONTROLLER:</p>
 <ul class="simple">
@@ -468,8 +470,8 @@ standard too (all these pads had names, too):</p>
  357 .... 225
 </pre></div>
 </div>
-</section>
-<section id="pin-groups">
+</div>
+<div class="section" id="pin-groups">
 <h2>Pin groups<a class="headerlink" href="#pin-groups" title="Permalink to this headline">¶</a></h2>
 <p>Many controllers need to deal with groups of pins, so the pin controller
 subsystem has a mechanism for enumerating groups of pins and retrieving the
@@ -543,8 +545,8 @@ to retrieve the name and pins of the group. Maintaining the data structure of
 the groups is up to the driver, this is just a simple example - in practice you
 may need more entries in your group structure, for example specific register
 ranges associated with each group and so on.</p>
-</section>
-<section id="pin-configuration">
+</div>
+<div class="section" id="pin-configuration">
 <h2>Pin configuration<a class="headerlink" href="#pin-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Pins can sometimes be software-configured in various ways, mostly related
 to their electronic properties when used as inputs or outputs. For example you
@@ -615,8 +617,8 @@ static struct pinctrl_desc foo_desc = {
 };
 </pre></div>
 </div>
-</section>
-<section id="interaction-with-the-gpio-subsystem">
+</div>
+<div class="section" id="interaction-with-the-gpio-subsystem">
 <h2>Interaction with the GPIO subsystem<a class="headerlink" href="#interaction-with-the-gpio-subsystem" title="Permalink to this headline">¶</a></h2>
 <p>The GPIO drivers may want to perform operations of various types on the same
 physical pins that are also registered as pin controller pins.</p>
@@ -720,13 +722,13 @@ deal with.</p>
 <p>Calling pinctrl_add_gpio_range from pinctrl driver is DEPRECATED. Please see
 section 2.1 of Documentation/devicetree/bindings/gpio/gpio.txt on how to bind
 pinctrl and gpio drivers.</p>
-</section>
-<section id="pinmux-interfaces">
+</div>
+<div class="section" id="pinmux-interfaces">
 <h2>PINMUX interfaces<a class="headerlink" href="#pinmux-interfaces" title="Permalink to this headline">¶</a></h2>
 <p>These calls use the pinmux_* naming prefix.  No other calls should use that
 prefix.</p>
-</section>
-<section id="what-is-pinmuxing">
+</div>
+<div class="section" id="what-is-pinmuxing">
 <h2>What is pinmuxing?<a class="headerlink" href="#what-is-pinmuxing" title="Permalink to this headline">¶</a></h2>
 <p>PINMUX, also known as padmux, ballmux, alternate functions or mission modes
 is a way for chip vendors producing some kind of electrical packages to use
@@ -784,8 +786,8 @@ different pins by pinmux settings.</p>
 <p>Since general-purpose I/O pins (GPIO) are typically always in shortage, it is
 common to be able to use almost any pin as a GPIO pin if it is not currently
 in use by some other I/O port.</p>
-</section>
-<section id="pinmux-conventions">
+</div>
+<div class="section" id="pinmux-conventions">
 <h2>Pinmux conventions<a class="headerlink" href="#pinmux-conventions" title="Permalink to this headline">¶</a></h2>
 <p>The purpose of the pinmux functionality in the pin controller subsystem is to
 abstract and provide pinmux settings to the devices you choose to instantiate
@@ -872,8 +874,8 @@ not hundreds or any amount of choices. This is the characteristic we have found
 by inspecting available pinmux hardware, and a necessary assumption since we
 expect pinmux drivers to present <em>all</em> possible function vs pin group mappings
 to the subsystem.</p>
-</section>
-<section id="pinmux-drivers">
+</div>
+<div class="section" id="pinmux-drivers">
 <h2>Pinmux drivers<a class="headerlink" href="#pinmux-drivers" title="Permalink to this headline">¶</a></h2>
 <p>The pinmux core takes care of preventing conflicts on pins and calling
 the pin controller driver to execute different settings.</p>
@@ -1047,8 +1049,8 @@ sure no other device or GPIO assignment is already using the selected
 pins. Thus bits 0 and 1 in the control register will never be set at the
 same time.</p>
 <p>All the above functions are mandatory to implement for a pinmux driver.</p>
-</section>
-<section id="pin-control-interaction-with-the-gpio-subsystem">
+</div>
+<div class="section" id="pin-control-interaction-with-the-gpio-subsystem">
 <h2>Pin control interaction with the GPIO subsystem<a class="headerlink" href="#pin-control-interaction-with-the-gpio-subsystem" title="Permalink to this headline">¶</a></h2>
 <p>Note that the following implies that the use case is to use a certain pin
 from the Linux kernel using the API in &lt;linux/gpio.h&gt; with gpio_request()
@@ -1085,8 +1087,8 @@ will be passed along to this function.</p>
 named functions for each GPIO pin, the pinctrl_gpio_request() will attempt to
 obtain the function “gpioN” where “N” is the global GPIO pin number if no
 special GPIO-handler is registered.</p>
-</section>
-<section id="gpio-mode-pitfalls">
+</div>
+<div class="section" id="gpio-mode-pitfalls">
 <h2>GPIO mode pitfalls<a class="headerlink" href="#gpio-mode-pitfalls" title="Permalink to this headline">¶</a></h2>
 <p>Due to the naming conventions used by hardware engineers, where “GPIO”
 is taken to mean different things than what the kernel does, the developer
@@ -1218,7 +1220,7 @@ retval = pinctrl_select_state(pinctrl, pins_default);
 retval = pinctrl_select_state(pinctrl, pins_sleep);
 </pre></div>
 </div>
-<section id="and-your-machine-configuration-may-look-like-this">
+<div class="section" id="and-your-machine-configuration-may-look-like-this">
 <h3>And your machine configuration may look like this:<a class="headerlink" href="#and-your-machine-configuration-may-look-like-this" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static unsigned long uart_default_mode[] = {
         PIN_CONF_PACKED(PIN_CONFIG_DRIVE_PUSH_PULL, 0),
@@ -1265,9 +1267,9 @@ the same thing electrically speaking, but in this latter case the
 software engineers will usually quickly identify that this is some
 specific muxing or configuration rather than anything related to the GPIO
 API.</p>
-</section>
-</section>
-<section id="board-machine-configuration">
+</div>
+</div>
+<div class="section" id="board-machine-configuration">
 <h2>Board/machine configuration<a class="headerlink" href="#board-machine-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Boards and machines define how a certain complete running system is put
 together, including how GPIOs and devices are muxed, how regulators are
@@ -1358,8 +1360,8 @@ a named state without causing any pin controller to be programmed:</p>
 };
 </pre></div>
 </div>
-</section>
-<section id="complex-mappings">
+</div>
+<div class="section" id="complex-mappings">
 <h2>Complex mappings<a class="headerlink" href="#complex-mappings" title="Permalink to this headline">¶</a></h2>
 <p>As it is possible to map a function to different groups of pins an optional
 .group can be specified like this:</p>
@@ -1458,8 +1460,8 @@ once. Since they share the same name, pin controller device, function and
 device, and since we allow multiple groups to match to a single device, they
 all get selected, and they all get enabled and disable simultaneously by the
 pinmux core.</p>
-</section>
-<section id="pin-control-requests-from-drivers">
+</div>
+<div class="section" id="pin-control-requests-from-drivers">
 <h2>Pin control requests from drivers<a class="headerlink" href="#pin-control-requests-from-drivers" title="Permalink to this headline">¶</a></h2>
 <p>When a device driver is about to probe the device core will automatically
 attempt to issue pinctrl_get_select_default() on these devices.
@@ -1559,8 +1561,8 @@ pins.</p>
 requested pinctrl handles, for example if the pinctrl driver has not yet
 registered. Thus make sure that the error path in your driver gracefully
 cleans up and is ready to retry the probing later in the startup process.</p>
-</section>
-<section id="drivers-needing-both-pin-control-and-gpios">
+</div>
+<div class="section" id="drivers-needing-both-pin-control-and-gpios">
 <h2>Drivers needing both pin control and GPIOs<a class="headerlink" href="#drivers-needing-both-pin-control-and-gpios" title="Permalink to this headline">¶</a></h2>
 <p>Again, it is discouraged to let drivers lookup and select pin control states
 themselves, but again sometimes this is unavoidable.</p>
@@ -1598,8 +1600,8 @@ as a back-end for the GPIO driver like this, unless your hardware design
 is such that the GPIO controller can override the pin controller’s
 multiplexing state through hardware without the need to interact with the
 pin control system.</p>
-</section>
-<section id="system-pin-control-hogging">
+</div>
+<div class="section" id="system-pin-control-hogging">
 <h2>System pin control hogging<a class="headerlink" href="#system-pin-control-hogging" title="Permalink to this headline">¶</a></h2>
 <p>Pin control map entries can be hogged by the core when the pin controller
 is registered. This means that the core will attempt to call pinctrl_get(),
@@ -1624,8 +1626,8 @@ this:</p>
 </pre></div>
 </div>
 <p>This gives the exact same result as the above construction.</p>
-</section>
-<section id="runtime-pinmuxing">
+</div>
+<div class="section" id="runtime-pinmuxing">
 <h2>Runtime pinmuxing<a class="headerlink" href="#runtime-pinmuxing" title="Permalink to this headline">¶</a></h2>
 <p>It is possible to mux a certain function in and out at runtime, say to move
 an SPI port from one set of pins to another set of pins. Say for example for
@@ -1678,8 +1680,8 @@ foo_switch()
 <p>The above has to be done from process context. The reservation of the pins
 will be done when the state is activated, so in effect one specific pin
 can be used by different functions at different times on a running system.</p>
-</section>
-<section id="debugfs-files">
+</div>
+<div class="section" id="debugfs-files">
 <h2>Debugfs files<a class="headerlink" href="#debugfs-files" title="Permalink to this headline">¶</a></h2>
 <p>These files are created in <code class="docutils literal notranslate"><span class="pre">/sys/kernel/debug/pinctrl</span></code>:</p>
 <ul class="simple">
@@ -1708,8 +1710,8 @@ and if the pin is a hog</p></li>
 </div>
 </li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Tips For Running KUnit Tests &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -274,11 +276,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="tips-for-running-kunit-tests">
+  <div class="section" id="tips-for-running-kunit-tests">
 <h1>Tips For Running KUnit Tests<a class="headerlink" href="#tips-for-running-kunit-tests" title="Permalink to this headline">¶</a></h1>
-<section id="using-kunit-py-run-kunit-tool">
+<div class="section" id="using-kunit-py-run-kunit-tool">
 <h2>Using <code class="docutils literal notranslate"><span class="pre">kunit.py</span> <span class="pre">run</span></code> (“kunit tool”)<a class="headerlink" href="#using-kunit-py-run-kunit-tool" title="Permalink to this headline">¶</a></h2>
-<section id="running-from-any-directory">
+<div class="section" id="running-from-any-directory">
 <h3>Running from any directory<a class="headerlink" href="#running-from-any-directory" title="Permalink to this headline">¶</a></h3>
 <p>It can be handy to create a bash function like:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> run_kunit<span class="o">()</span> <span class="o">{</span>
@@ -291,8 +293,8 @@
 <p>Early versions of <code class="docutils literal notranslate"><span class="pre">kunit.py</span></code> (before 5.6) didn’t work unless run from
 the kernel root, hence the use of a subshell and <code class="docutils literal notranslate"><span class="pre">cd</span></code>.</p>
 </div>
-</section>
-<section id="running-a-subset-of-tests">
+</div>
+<div class="section" id="running-a-subset-of-tests">
 <h3>Running a subset of tests<a class="headerlink" href="#running-a-subset-of-tests" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">kunit.py</span> <span class="pre">run</span></code> accepts an optional glob argument to filter tests. The format
 is <code class="docutils literal notranslate"><span class="pre">&quot;&lt;suite_glob&gt;[.test_glob]&quot;</span></code>.</p>
@@ -311,8 +313,8 @@ easier than fiddling with <code class="docutils literal notranslate"><span class
 <code class="docutils literal notranslate"><span class="pre">kunit_suite</span></code>’s.</p>
 <p>However, if we wanted to define a set of tests in a less ad hoc way, the next
 tip is useful.</p>
-</section>
-<section id="defining-a-set-of-tests">
+</div>
+<div class="section" id="defining-a-set-of-tests">
 <h3>Defining a set of tests<a class="headerlink" href="#defining-a-set-of-tests" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">kunit.py</span> <span class="pre">run</span></code> (along with <code class="docutils literal notranslate"><span class="pre">build</span></code>, and <code class="docutils literal notranslate"><span class="pre">config</span></code>) supports a
 <code class="docutils literal notranslate"><span class="pre">--kunitconfig</span></code> flag. So if you have a set of tests that you want to run on a
@@ -345,15 +347,15 @@ longer just simple .config fragments.</p>
 automagically, but tests could theoretically depend on incompatible
 options, so handling that would be tricky.</p>
 </div>
-</section>
-<section id="setting-kernel-commandline-parameters">
+</div>
+<div class="section" id="setting-kernel-commandline-parameters">
 <h3>Setting kernel commandline parameters<a class="headerlink" href="#setting-kernel-commandline-parameters" title="Permalink to this headline">¶</a></h3>
 <p>You can use <code class="docutils literal notranslate"><span class="pre">--kernel_args</span></code> to pass arbitrary kernel arguments, e.g.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ./tools/testing/kunit/kunit.py run --kernel_args<span class="o">=</span><span class="nv">param</span><span class="o">=</span><span class="m">42</span> --kernel_args<span class="o">=</span><span class="nv">param2</span><span class="o">=</span><span class="nb">false</span>
 </pre></div>
 </div>
-</section>
-<section id="generating-code-coverage-reports-under-uml">
+</div>
+<div class="section" id="generating-code-coverage-reports-under-uml">
 <h3>Generating code coverage reports under UML<a class="headerlink" href="#generating-code-coverage-reports-under-uml" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -386,9 +388,9 @@ $ genhtml -o /tmp/coverage_html coverage.info
 $ lcov -t <span class="s2">&quot;my_kunit_tests&quot;</span> -o coverage.info -c -d .kunit/ --gcov-tool<span class="o">=</span>/usr/bin/gcov-6
 </pre></div>
 </div>
-</section>
-</section>
-<section id="running-tests-manually">
+</div>
+</div>
+<div class="section" id="running-tests-manually">
 <h2>Running tests manually<a class="headerlink" href="#running-tests-manually" title="Permalink to this headline">¶</a></h2>
 <p>Running tests without using <code class="docutils literal notranslate"><span class="pre">kunit.py</span> <span class="pre">run</span></code> is also an important use case.
 Currently it’s your only option if you want to test on architectures other than
@@ -396,7 +398,7 @@ UML.</p>
 <p>As running the tests under UML is fairly straightforward (configure and compile
 the kernel, run the <code class="docutils literal notranslate"><span class="pre">./linux</span></code> binary), this section will focus on testing
 non-UML architectures.</p>
-<section id="running-built-in-tests">
+<div class="section" id="running-built-in-tests">
 <h3>Running built-in tests<a class="headerlink" href="#running-built-in-tests" title="Permalink to this headline">¶</a></h3>
 <p>When setting tests to <code class="docutils literal notranslate"><span class="pre">=y</span></code>, the tests will run as part of boot and print
 results to dmesg in TAP format. So you just need to add your tests to your
@@ -416,8 +418,8 @@ CONFIG_KUNIT_EXAMPLE_TEST=y
 ok 1 - example
 </pre></div>
 </div>
-</section>
-<section id="running-tests-as-modules">
+</div>
+<div class="section" id="running-tests-as-modules">
 <h3>Running tests as modules<a class="headerlink" href="#running-tests-as-modules" title="Permalink to this headline">¶</a></h3>
 <p>Depending on the tests, you can build them as loadable modules.</p>
 <p>For example, we’d change the config options from before to</p>
@@ -444,16 +446,16 @@ most test authors won’t think about.
 As of 5.13, the only difference is that <code class="docutils literal notranslate"><span class="pre">current-&gt;kunit_test</span></code> will
 not exist.</p>
 </div>
-</section>
-<section id="pretty-printing-results">
+</div>
+<div class="section" id="pretty-printing-results">
 <h3>Pretty-printing results<a class="headerlink" href="#pretty-printing-results" title="Permalink to this headline">¶</a></h3>
 <p>You can use <code class="docutils literal notranslate"><span class="pre">kunit.py</span> <span class="pre">parse</span></code> to parse dmesg for test output and print out
 results in the same familiar format that <code class="docutils literal notranslate"><span class="pre">kunit.py</span> <span class="pre">run</span></code> does.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ./tools/testing/kunit/kunit.py parse /var/log/dmesg
 </pre></div>
 </div>
-</section>
-<section id="retrieving-per-suite-results">
+</div>
+<div class="section" id="retrieving-per-suite-results">
 <h3>Retrieving per suite results<a class="headerlink" href="#retrieving-per-suite-results" title="Permalink to this headline">¶</a></h3>
 <p>Regardless of how you’re running your tests, you can enable
 <code class="docutils literal notranslate"><span class="pre">CONFIG_KUNIT_DEBUGFS</span></code> to expose per-suite TAP-formatted results:</p>
@@ -475,8 +477,8 @@ $ cat /sys/kernel/debug/kunit/example/results
 /sys/kernel/debug/kunit/example/results: No such file or directory
 </pre></div>
 </div>
-</section>
-<section id="generating-code-coverage-reports">
+</div>
+<div class="section" id="generating-code-coverage-reports">
 <h3>Generating code coverage reports<a class="headerlink" href="#generating-code-coverage-reports" title="Permalink to this headline">¶</a></h3>
 <p>See <a class="reference internal" href="../gcov.html"><span class="doc">Using gcov with the Linux kernel</span></a> for details on how to do this.</p>
 <p>The only vaguely KUnit-specific advice here is that you probably want to build
@@ -487,9 +489,9 @@ $ <span class="nb">echo</span> <span class="m">0</span> &gt; /sys/kernel/debug/g
 $ modprobe kunit-example-test
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

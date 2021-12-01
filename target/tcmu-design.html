@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>TCM Userspace Design &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -261,9 +263,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="tcm-userspace-design">
+  <div class="section" id="tcm-userspace-design">
 <h1>TCM Userspace Design<a class="headerlink" href="#tcm-userspace-design" title="Permalink to this headline">¶</a></h1>
-<section id="design">
+<div class="section" id="design">
 <h2>Design<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h2>
 <p>TCM is another name for LIO, an in-kernel iSCSI target (server).
 Existing TCM targets run in the kernel.  TCMU (TCM in Userspace)
@@ -274,7 +276,7 @@ protocols.  TCM also modularizes the data storage.  There are existing
 modules for file, block device, RAM or using another SCSI device as
 storage.  These are called “backstores” or “storage engines”.  These
 built-in modules are implemented entirely as kernel code.</p>
-<section id="background">
+<div class="section" id="background">
 <h3>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h3>
 <p>In addition to modularizing the transport protocol used for carrying
 SCSI commands (“fabrics”), the Linux kernel target, LIO, also modularizes
@@ -297,8 +299,8 @@ difficult, because LIO is entirely kernel code. Instead of undertaking
 the significant work to port the GLFS or RBD APIs and protocols to the
 kernel, another approach is to create a userspace pass-through
 backstore for LIO, “TCMU”.</p>
-</section>
-<section id="benefits">
+</div>
+<div class="section" id="benefits">
 <h3>Benefits<a class="headerlink" href="#benefits" title="Permalink to this headline">¶</a></h3>
 <p>In addition to allowing relatively easy support for RBD and GLFS, TCMU
 will also allow easier development of new backstores. TCMU combines
@@ -308,8 +310,8 @@ filesystem layer. A SUSE, if you will.</p>
 <p>The disadvantage is there are more distinct components to configure, and
 potentially to malfunction. This is unavoidable, but hopefully not
 fatal if we’re careful to keep things as simple as possible.</p>
-</section>
-<section id="design-constraints">
+</div>
+<div class="section" id="design-constraints">
 <h3>Design constraints<a class="headerlink" href="#design-constraints" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p>Good performance: high throughput, low latency</p></li>
@@ -328,8 +330,8 @@ fatal if we’re careful to keep things as simple as possible.</p>
 <li><p>Simple to configure &amp; run</p></li>
 <li><p>Simple to write a userspace backend</p></li>
 </ul>
-</section>
-<section id="implementation-overview">
+</div>
+<div class="section" id="implementation-overview">
 <h3>Implementation overview<a class="headerlink" href="#implementation-overview" title="Permalink to this headline">¶</a></h3>
 <p>The core of the TCMU interface is a memory region that is shared
 between kernel and userspace. Within this region is: a control area
@@ -347,8 +349,8 @@ expressed as an offset from the region’s starting address. This allows
 the ring to still work if the user process dies and is restarted with
 the region mapped at a different virtual address.</p>
 <p>See target_core_user.h for the struct definitions.</p>
-</section>
-<section id="the-mailbox">
+</div>
+<div class="section" id="the-mailbox">
 <h3>The Mailbox<a class="headerlink" href="#the-mailbox" title="Permalink to this headline">¶</a></h3>
 <p>The mailbox is always at the start of the shared memory region, and
 contains a version, details about the starting offset and size of the
@@ -379,8 +381,8 @@ placed on the ring.</p>
 processing of a command.</p>
 </dd>
 </dl>
-</section>
-<section id="the-command-ring">
+</div>
+<div class="section" id="the-command-ring">
 <h3>The Command Ring<a class="headerlink" href="#the-command-ring" title="Permalink to this headline">¶</a></h3>
 <p>Commands are placed on the ring by the kernel incrementing
 mailbox.cmd_head by the size of the command, modulo cmdr_size, and
@@ -423,14 +425,14 @@ is contiguous within the command ring.)</p>
 opcode it does not handle, it must set UNKNOWN_OP bit (bit 0) in
 hdr.uflags, update cmd_tail, and proceed with processing additional
 commands, if any.</p>
-</section>
-<section id="the-data-area">
+</div>
+<div class="section" id="the-data-area">
 <h3>The Data Area<a class="headerlink" href="#the-data-area" title="Permalink to this headline">¶</a></h3>
 <p>This is shared-memory space after the command ring. The organization
 of this area is not defined in the TCMU interface, and userspace
 should access only the parts referenced by pending iovs.</p>
-</section>
-<section id="device-discovery">
+</div>
+<div class="section" id="device-discovery">
 <h3>Device Discovery<a class="headerlink" href="#device-discovery" title="Permalink to this headline">¶</a></h3>
 <p>Other devices may be using UIO besides TCMU. Unrelated user processes
 may also be handling different sets of TCMU devices. TCMU userspace
@@ -461,8 +463,8 @@ calls mmap():</p>
 </div>
 <p>where size must be equal to the value read from
 /sys/class/uio/uioX/maps/map0/size.</p>
-</section>
-<section id="device-events">
+</div>
+<div class="section" id="device-events">
 <h3>Device Events<a class="headerlink" href="#device-events" title="Permalink to this headline">¶</a></h3>
 <p>If a new device is added or removed, a notification will be broadcast
 over netlink, using a generic netlink family name of “TCM-USER” and a
@@ -471,8 +473,8 @@ described in the previous section, as well as the UIO minor
 number. This should allow userspace to identify both the UIO device and
 the LIO device, so that after determining the device is supported
 (based on subtype) it can take the appropriate action.</p>
-</section>
-<section id="other-contingencies">
+</div>
+<div class="section" id="other-contingencies">
 <h3>Other contingencies<a class="headerlink" href="#other-contingencies" title="Permalink to this headline">¶</a></h3>
 <p>Userspace handler process never attaches:</p>
 <ul class="simple">
@@ -495,9 +497,9 @@ the kernel will abort pending tasks.</p></li>
 but should not be able to access kernel memory outside its shared
 memory areas.</p></li>
 </ul>
-</section>
-</section>
-<section id="writing-a-user-pass-through-handler-with-example-code">
+</div>
+</div>
+<div class="section" id="writing-a-user-pass-through-handler-with-example-code">
 <h2>Writing a user pass-through handler (with example code)<a class="headerlink" href="#writing-a-user-pass-through-handler-with-example-code" title="Permalink to this headline">¶</a></h2>
 <p>A user process handing a TCMU device must support the following:</p>
 <ol class="loweralpha simple">
@@ -613,15 +615,15 @@ int handle_device_events(int fd, void *map)
 </div>
 </li>
 </ol>
-</section>
-<section id="a-final-note">
+</div>
+<div class="section" id="a-final-note">
 <h2>A final note<a class="headerlink" href="#a-final-note" title="Permalink to this headline">¶</a></h2>
 <p>Please be careful to return codes as defined by the SCSI
 specifications. These are different than some values defined in the
 scsi/scsi.h include file. For example, CHECK CONDITION’s status code
 is 2, not 1.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

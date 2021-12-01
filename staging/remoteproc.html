@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Remote Processor Framework &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -258,9 +260,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="remote-processor-framework">
+  <div class="section" id="remote-processor-framework">
 <h1>Remote Processor Framework<a class="headerlink" href="#remote-processor-framework" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Modern SoCs typically have heterogeneous remote processor devices in asymmetric
 multiprocessing (AMP) configurations, which may be running different instances
@@ -283,8 +285,8 @@ just need to publish what kind of virtio devices do they support, and then
 remoteproc will add those devices. This makes it possible to reuse the
 existing virtio drivers with remote processor backends at a minimal development
 cost.</p>
-</section>
-<section id="user-api">
+</div>
+<div class="section" id="user-api">
 <h2>User API<a class="headerlink" href="#user-api" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int rproc_boot(struct rproc *rproc)
 </pre></div>
@@ -320,8 +322,8 @@ rproc_boot(), if needed.</p>
 handle on success, and NULL on failure. This function increments
 the remote processor’s refcount, so always use rproc_put() to
 decrement it back once rproc isn’t needed anymore.</p>
-</section>
-<section id="typical-usage">
+</div>
+<div class="section" id="typical-usage">
 <h2>Typical usage<a class="headerlink" href="#typical-usage" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#include &lt;linux/remoteproc.h&gt;
 
@@ -347,8 +349,8 @@ int dummy_rproc_example(struct rproc *my_rproc)
 }
 </pre></div>
 </div>
-</section>
-<section id="api-for-implementors">
+</div>
+<div class="section" id="api-for-implementors">
 <h2>API for implementors<a class="headerlink" href="#api-for-implementors" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct rproc *rproc_alloc(struct device *dev, const char *name,
                               const struct rproc_ops *ops,
@@ -412,8 +414,8 @@ last refcount should be decremented by calling rproc_free().</p>
 platform specific rproc implementation. This should not be called from a
 non-remoteproc driver. This function can be called from atomic/interrupt
 context.</p>
-</section>
-<section id="implementation-callbacks">
+</div>
+<div class="section" id="implementation-callbacks">
 <h2>Implementation callbacks<a class="headerlink" href="#implementation-callbacks" title="Permalink to this headline">¶</a></h2>
 <p>These callbacks should be provided by platform-specific remoteproc
 drivers:</p>
@@ -446,8 +448,8 @@ processor and let it know it has pending messages. Notifying remote processors
 the exact virtqueue index to look in is optional: it is easy (and not
 too expensive) to go through the existing virtqueues and look for new buffers
 in the used rings.</p>
-</section>
-<section id="binary-firmware-structure">
+</div>
+<div class="section" id="binary-firmware-structure">
 <h2>Binary Firmware Structure<a class="headerlink" href="#binary-firmware-structure" title="Permalink to this headline">¶</a></h2>
 <p>At this point remoteproc supports ELF32 and ELF64 firmware binaries. However,
 it is quite expected that other platforms/devices which we’d want to
@@ -549,8 +551,8 @@ dedicated structure in include/linux/remoteproc.h.</p>
 <p>We also expect that platform-specific resource entries will show up
 at some point. When that happens, we could easily add a new RSC_PLATFORM
 type, and hand those resources to the platform-specific rproc driver to handle.</p>
-</section>
-<section id="virtio-and-remoteproc">
+</div>
+<div class="section" id="virtio-and-remoteproc">
 <h2>Virtio and remoteproc<a class="headerlink" href="#virtio-and-remoteproc" title="Permalink to this headline">¶</a></h2>
 <p>The firmware should provide remoteproc information about virtio devices
 that it supports, and their configurations: a RSC_VDEV resource entry
@@ -565,8 +567,8 @@ rpmsg virtio devices this way, if desired).</p>
 allocation of virtio devices. Dynamic allocations will also be made possible
 using the rpmsg bus (similar to how we already do dynamic allocations of
 rpmsg channels; read more about it in <a class="reference internal" href="rpmsg.html"><span class="doc">Remote Processor Messaging (rpmsg) Framework</span></a>).</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Timestamping &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -373,9 +375,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="timestamping">
+  <div class="section" id="timestamping">
 <h1>Timestamping<a class="headerlink" href="#timestamping" title="Permalink to this headline">¶</a></h1>
-<section id="control-interfaces">
+<div class="section" id="control-interfaces">
 <h2>1. Control Interfaces<a class="headerlink" href="#control-interfaces" title="Permalink to this headline">¶</a></h2>
 <p>The interfaces for receiving network packages timestamps are:</p>
 <dl class="simple">
@@ -404,7 +406,7 @@ multiple timestamp sources, including hardware. Supports generating
 timestamps for stream sockets.</p>
 </dd>
 </dl>
-<section id="so-timestamp-also-so-timestamp-old-and-so-timestamp-new">
+<div class="section" id="so-timestamp-also-so-timestamp-old-and-so-timestamp-new">
 <h3>1.1 SO_TIMESTAMP (also SO_TIMESTAMP_OLD and SO_TIMESTAMP_NEW)<a class="headerlink" href="#so-timestamp-also-so-timestamp-old-and-so-timestamp-new" title="Permalink to this headline">¶</a></h3>
 <p>This socket option enables timestamping of datagrams on the reception
 path. Because the destination socket, if any, is not known early in
@@ -415,8 +417,8 @@ same is true for all early receive timestamp options.</p>
 struct __kernel_sock_timeval format.</p>
 <p>SO_TIMESTAMP_OLD returns incorrect timestamps after the year 2038
 on 32 bit machines.</p>
-</section>
-<section id="so-timestampns-also-so-timestampns-old-and-so-timestampns-new">
+</div>
+<div class="section" id="so-timestampns-also-so-timestampns-old-and-so-timestampns-new">
 <h3>1.2 SO_TIMESTAMPNS (also SO_TIMESTAMPNS_OLD and SO_TIMESTAMPNS_NEW)<a class="headerlink" href="#so-timestampns-also-so-timestampns-old-and-so-timestampns-new" title="Permalink to this headline">¶</a></h3>
 <p>This option is identical to SO_TIMESTAMP except for the returned data type.
 Its struct timespec allows for higher resolution (ns) timestamps than the
@@ -425,8 +427,8 @@ timeval of SO_TIMESTAMP (ms).</p>
 struct __kernel_timespec format.</p>
 <p>SO_TIMESTAMPNS_OLD returns incorrect timestamps after the year 2038
 on 32 bit machines.</p>
-</section>
-<section id="so-timestamping-also-so-timestamping-old-and-so-timestamping-new">
+</div>
+<div class="section" id="so-timestamping-also-so-timestamping-old-and-so-timestamping-new">
 <h3>1.3 SO_TIMESTAMPING (also SO_TIMESTAMPING_OLD and SO_TIMESTAMPING_NEW)<a class="headerlink" href="#so-timestamping-also-so-timestamping-old-and-so-timestamping-new" title="Permalink to this headline">¶</a></h3>
 <p>Supports multiple types of timestamp requests. As a result, this
 socket option takes a bitmap of flags, not a boolean. In:</p>
@@ -439,7 +441,7 @@ bit returns EINVAL and does not change the current state.</p>
 sk_buffs (1.3.1), timestamp reporting to the socket’s error
 queue (1.3.2) and options (1.3.3). Timestamp generation can also
 be enabled for individual sendmsg calls using cmsg (1.3.4).</p>
-<section id="timestamp-generation">
+<div class="section" id="timestamp-generation">
 <h4>1.3.1 Timestamp Generation<a class="headerlink" href="#timestamp-generation" title="Permalink to this headline">¶</a></h4>
 <p>Some bits are requests to the stack to try to generate timestamps. Any
 combination of them is valid. Changes to these bits apply to newly
@@ -488,8 +490,8 @@ cumulative acknowledgment. The mechanism ignores SACK and FACK.
 This flag can be enabled via both socket options and control messages.</p>
 </dd>
 </dl>
-</section>
-<section id="timestamp-reporting">
+</div>
+<div class="section" id="timestamp-reporting">
 <h4>1.3.2 Timestamp Reporting<a class="headerlink" href="#timestamp-reporting" title="Permalink to this headline">¶</a></h4>
 <p>The other three bits control which timestamps will be reported in a
 generated control message. Changes to the bits take immediate
@@ -505,8 +507,8 @@ generation request set.</p>
 SOF_TIMESTAMPING_TX_HARDWARE when available.</p>
 </dd>
 </dl>
-</section>
-<section id="timestamp-options">
+</div>
+<div class="section" id="timestamp-options">
 <h4>1.3.3 Timestamp Options<a class="headerlink" href="#timestamp-options" title="Permalink to this headline">¶</a></h4>
 <p>The interface supports the options</p>
 <dl>
@@ -578,8 +580,8 @@ instance SOL_IP/IP_PKTINFO to detect the egress network interface.
 Then pass option SOF_TIMESTAMPING_OPT_CMSG. This option depends on
 having access to the contents of the original packet, so cannot be
 combined with SOF_TIMESTAMPING_OPT_TSONLY.</p>
-</section>
-<section id="enabling-timestamps-via-control-messages">
+</div>
+<div class="section" id="enabling-timestamps-via-control-messages">
 <h4>1.3.4. Enabling timestamps via control messages<a class="headerlink" href="#enabling-timestamps-via-control-messages" title="Permalink to this headline">¶</a></h4>
 <p>In addition to socket options, timestamp generation can be requested
 per write via cmsg, only for SOF_TIMESTAMPING_TX_* (see Section 1.3.1).
@@ -607,9 +609,9 @@ setsockopt to receive timestamps:</p>
 err = setsockopt(fd, SOL_SOCKET, SO_TIMESTAMPING, &amp;val, sizeof(val));
 </pre></div>
 </div>
-</section>
-</section>
-<section id="bytestream-timestamps">
+</div>
+</div>
+<div class="section" id="bytestream-timestamps">
 <h3>1.4 Bytestream Timestamps<a class="headerlink" href="#bytestream-timestamps" title="Permalink to this headline">¶</a></h3>
 <p>The SO_TIMESTAMPING interface supports timestamping of bytes in a
 bytestream. Each request is interpreted as a request for when the
@@ -660,15 +662,15 @@ reordering. The one exception is under administrator control: it is
 possible to construct a packet scheduler configuration that delays
 segments from the same stream differently. Such a setup would be
 unusual.</p>
-</section>
-</section>
-<section id="data-interfaces">
+</div>
+</div>
+<div class="section" id="data-interfaces">
 <h2>2 Data Interfaces<a class="headerlink" href="#data-interfaces" title="Permalink to this headline">¶</a></h2>
 <p>Timestamps are read using the ancillary data feature of recvmsg().
 See <cite>man 3 cmsg</cite> for details of this interface. The socket manual
 page (<cite>man 7 socket</cite>) describes how timestamps generated with
 SO_TIMESTAMP and SO_TIMESTAMPNS records can be retrieved.</p>
-<section id="scm-timestamping-records">
+<div class="section" id="scm-timestamping-records">
 <h3>2.1 SCM_TIMESTAMPING records<a class="headerlink" href="#scm-timestamping-records" title="Permalink to this headline">¶</a></h3>
 <p>These timestamps are returned in a control message with cmsg_level
 SOL_SOCKET, cmsg_type SCM_TIMESTAMPING, and payload of type</p>
@@ -700,7 +702,7 @@ together with SO_TIMESTAMPING using SOF_TIMESTAMPING_SOFTWARE, a false
 software timestamp will be generated in the recvmsg() call and passed
 in ts[0] when a real software timestamp is missing. This happens also
 on hardware transmit timestamps.</p>
-<section id="transmit-timestamps-with-msg-errqueue">
+<div class="section" id="transmit-timestamps-with-msg-errqueue">
 <h4>2.1.1 Transmit timestamps with MSG_ERRQUEUE<a class="headerlink" href="#transmit-timestamps-with-msg-errqueue" title="Permalink to this headline">¶</a></h4>
 <p>For transmit timestamps the outgoing packet is looped back to the
 socket’s error queue with the send timestamp(s) attached. A process
@@ -713,7 +715,7 @@ embeds a struct sock_extended_err. This defines the error type. For
 timestamps, the ee_errno field is ENOMSG. The other ancillary message
 will have cm_level SOL_SOCKET and cm_type SCM_TIMESTAMPING. This
 embeds the struct scm_timestamping.</p>
-<section id="timestamp-types">
+<div class="section" id="timestamp-types">
 <h5>2.1.1.2 Timestamp types<a class="headerlink" href="#timestamp-types" title="Permalink to this headline">¶</a></h5>
 <p>The semantics of the three struct timespec are defined by field
 ee_info in the extended error structure. It contains a value of
@@ -725,15 +727,15 @@ reasons, SCM_TSTAMP_SND is equal to zero and can be set for both
 SOF_TIMESTAMPING_TX_HARDWARE and SOF_TIMESTAMPING_TX_SOFTWARE. It
 is the first if ts[2] is non-zero, the second otherwise, in which
 case the timestamp is stored in ts[0].</p>
-</section>
-<section id="fragmentation">
+</div>
+<div class="section" id="fragmentation">
 <h5>2.1.1.3 Fragmentation<a class="headerlink" href="#fragmentation" title="Permalink to this headline">¶</a></h5>
 <p>Fragmentation of outgoing datagrams is rare, but is possible, e.g., by
 explicitly disabling PMTU discovery. If an outgoing packet is fragmented,
 then only the first fragment is timestamped and returned to the sending
 socket.</p>
-</section>
-<section id="packet-payload">
+</div>
+<div class="section" id="packet-payload">
 <h5>2.1.1.4 Packet Payload<a class="headerlink" href="#packet-payload" title="Permalink to this headline">¶</a></h5>
 <p>The calling application is often not interested in receiving the whole
 packet payload that it passed to the stack originally: the socket
@@ -742,17 +744,17 @@ In this case, the application can choose to read datagrams with a
 smaller buffer, possibly even of length 0. The payload is truncated
 accordingly. Until the process calls recvmsg() on the error queue,
 however, the full packet is queued, taking up budget from SO_RCVBUF.</p>
-</section>
-<section id="blocking-read">
+</div>
+<div class="section" id="blocking-read">
 <h5>2.1.1.5 Blocking Read<a class="headerlink" href="#blocking-read" title="Permalink to this headline">¶</a></h5>
 <p>Reading from the error queue is always a non-blocking operation. To
 block waiting on a timestamp, use poll or select. poll() will return
 POLLERR in pollfd.revents if any data is ready on the error queue.
 There is no need to pass this flag in pollfd.events. This flag is
 ignored on request. See also <cite>man 2 poll</cite>.</p>
-</section>
-</section>
-<section id="receive-timestamps">
+</div>
+</div>
+<div class="section" id="receive-timestamps">
 <h4>2.1.2 Receive timestamps<a class="headerlink" href="#receive-timestamps" title="Permalink to this headline">¶</a></h4>
 <p>On reception, there is no reason to read from the socket error queue.
 The SCM_TIMESTAMPING ancillary data is sent along with the packet data
@@ -761,10 +763,10 @@ accompanied by a message SOL_IP(V6)/IP(V6)_RECVERROR. In this case,
 the meaning of the three fields in struct scm_timestamping is
 implicitly defined. ts[0] holds a software timestamp if set, ts[1]
 is again deprecated and ts[2] holds a hardware timestamp if set.</p>
-</section>
-</section>
-</section>
-<section id="hardware-timestamping-configuration-siocshwtstamp-and-siocghwtstamp">
+</div>
+</div>
+</div>
+<div class="section" id="hardware-timestamping-configuration-siocshwtstamp-and-siocghwtstamp">
 <h2>3. Hardware Timestamping configuration: SIOCSHWTSTAMP and SIOCGHWTSTAMP<a class="headerlink" href="#hardware-timestamping-configuration-siocshwtstamp-and-siocghwtstamp" title="Permalink to this headline">¶</a></h2>
 <p>Hardware time stamping must also be initialized for each device driver
 that is expected to do hardware time stamping. The parameter is defined in
@@ -838,7 +840,7 @@ enum {
 };
 </pre></div>
 </div>
-<section id="hardware-timestamping-implementation-device-drivers">
+<div class="section" id="hardware-timestamping-implementation-device-drivers">
 <h3>3.1 Hardware Timestamping Implementation: Device Drivers<a class="headerlink" href="#hardware-timestamping-implementation-device-drivers" title="Permalink to this headline">¶</a></h3>
 <p>A driver which supports hardware time stamping must support the
 SIOCSHWTSTAMP ioctl and update the supplied struct hwtstamp_config with
@@ -885,8 +887,8 @@ this would occur at a later time in the processing pipeline than other
 software time stamping and therefore could lead to unexpected deltas
 between time stamps.</p></li>
 </ul>
-</section>
-<section id="special-considerations-for-stacked-ptp-hardware-clocks">
+</div>
+<div class="section" id="special-considerations-for-stacked-ptp-hardware-clocks">
 <h3>3.2 Special considerations for stacked PTP Hardware Clocks<a class="headerlink" href="#special-considerations-for-stacked-ptp-hardware-clocks" title="Permalink to this headline">¶</a></h3>
 <p>There are situations when there may be more than one PHC (PTP Hardware Clock)
 in the data path of a packet. The kernel has no explicit mechanism to allow the
@@ -894,7 +896,7 @@ user to select which PHC to use for timestamping Ethernet frames. Instead, the
 assumption is that the outermost PHC is always the most preferable, and that
 kernel drivers collaborate towards achieving that goal. Currently there are 3
 cases of stacked PHCs, detailed below:</p>
-<section id="dsa-distributed-switch-architecture-switches">
+<div class="section" id="dsa-distributed-switch-architecture-switches">
 <h4>3.2.1 DSA (Distributed Switch Architecture) switches<a class="headerlink" href="#dsa-distributed-switch-architecture-switches" title="Permalink to this headline">¶</a></h4>
 <p>These are Ethernet switches which have one of their ports connected to an
 (otherwise completely unaware) host Ethernet interface, and perform the role of
@@ -958,8 +960,8 @@ necessary when retrieving the timestamp needs a sleepable context. In
 that case, it is the responsibility of the DSA driver to call
 <code class="docutils literal notranslate"><span class="pre">netif_rx_ni()</span></code> on the freshly timestamped skb.</p></li>
 </ul>
-</section>
-<section id="ethernet-phys">
+</div>
+<div class="section" id="ethernet-phys">
 <h4>3.2.2 Ethernet PHYs<a class="headerlink" href="#ethernet-phys" title="Permalink to this headline">¶</a></h4>
 <p>These are devices that typically fulfill a Layer 1 role in the network stack,
 hence they do not have a representation in terms of a network interface as DSA
@@ -1001,8 +1003,8 @@ drivers already perform for software timestamping purposes. Therefore, if a
 MAC supports software timestamping, it does not need to do anything further
 at this stage.</p></li>
 </ul>
-</section>
-<section id="mii-bus-snooping-devices">
+</div>
+<div class="section" id="mii-bus-snooping-devices">
 <h4>3.2.3 MII bus snooping devices<a class="headerlink" href="#mii-bus-snooping-devices" title="Permalink to this headline">¶</a></h4>
 <p>These perform the same role as timestamping Ethernet PHYs, save for the fact
 that they are discrete devices and can therefore be used in conjunction with
@@ -1010,8 +1012,8 @@ any PHY even if it doesn’t support timestamping. In Linux, they are
 discoverable and attachable to a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">phy_device</span></code> through Device Tree, and
 for the rest, they use the same mii_ts infrastructure as those. See
 Documentation/devicetree/bindings/ptp/timestamper.txt for more details.</p>
-</section>
-<section id="other-caveats-for-mac-drivers">
+</div>
+<div class="section" id="other-caveats-for-mac-drivers">
 <h4>3.2.4 Other caveats for MAC drivers<a class="headerlink" href="#other-caveats-for-mac-drivers" title="Permalink to this headline">¶</a></h4>
 <p>Stacked PHCs, especially DSA (but not only) - since that doesn’t require any
 modification to MAC drivers, so it is more difficult to ensure correctness of
@@ -1030,8 +1032,8 @@ For example, a typical driver design for TX timestamping might be to split the
 transmission part into 2 portions:</p>
 <ol class="arabic simple">
 <li><p>“TX”: checks whether PTP timestamping has been previously enabled through
-the <code class="docutils literal notranslate"><span class="pre">.ndo_eth_ioctl</span></code> (”<code class="docutils literal notranslate"><span class="pre">priv-&gt;hwtstamp_tx_enabled</span> <span class="pre">==</span> <span class="pre">true</span></code>”) and the
-current skb requires a TX timestamp (”<code class="docutils literal notranslate"><span class="pre">skb_shinfo(skb)-&gt;tx_flags</span> <span class="pre">&amp;</span>
+the <code class="docutils literal notranslate"><span class="pre">.ndo_eth_ioctl</span></code> (“<code class="docutils literal notranslate"><span class="pre">priv-&gt;hwtstamp_tx_enabled</span> <span class="pre">==</span> <span class="pre">true</span></code>”) and the
+current skb requires a TX timestamp (“<code class="docutils literal notranslate"><span class="pre">skb_shinfo(skb)-&gt;tx_flags</span> <span class="pre">&amp;</span>
 <span class="pre">SKBTX_HW_TSTAMP</span></code>”). If this is true, it sets the
 “<code class="docutils literal notranslate"><span class="pre">skb_shinfo(skb)-&gt;tx_flags</span> <span class="pre">|=</span> <span class="pre">SKBTX_IN_PROGRESS</span></code>” flag. Note: as
 described above, in the case of a stacked PHC system, this condition should
@@ -1052,10 +1054,10 @@ check in their “TX confirmation” portion, not only for
 that PTP timestamping is not enabled for anything other than the outermost PHC,
 this enhanced check will avoid delivering a duplicated TX timestamp to user
 space.</p>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>

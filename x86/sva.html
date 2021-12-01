@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>26. Shared Virtual Addressing (SVA) with ENQCMD &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -300,9 +302,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="shared-virtual-addressing-sva-with-enqcmd">
+  <div class="section" id="shared-virtual-addressing-sva-with-enqcmd">
 <h1><span class="section-number">26. </span>Shared Virtual Addressing (SVA) with ENQCMD<a class="headerlink" href="#shared-virtual-addressing-sva-with-enqcmd" title="Permalink to this headline">¶</a></h1>
-<section id="background">
+<div class="section" id="background">
 <h2><span class="section-number">26.1. </span>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
 <p>Shared Virtual Addressing (SVA) allows the processor and device to use the
 same virtual addresses avoiding the need for software to translate virtual
@@ -322,8 +324,8 @@ sync. When an ATS lookup fails for a virtual address, the device should
 use the PRI in order to request the virtual address to be paged into the
 CPU page tables. The device must use ATS again in order the fetch the
 translation before use.</p>
-</section>
-<section id="shared-hardware-workqueues">
+</div>
+<div class="section" id="shared-hardware-workqueues">
 <h2><span class="section-number">26.2. </span>Shared Hardware Workqueues<a class="headerlink" href="#shared-hardware-workqueues" title="Permalink to this headline">¶</a></h2>
 <p>Unlike Single Root I/O Virtualization (SR-IOV), Scalable IOV (SIOV) permits
 the use of Shared Work Queues (SWQ) by both applications and Virtual
@@ -335,8 +337,8 @@ ID (PASID), which is a 20-bit number defined by the PCIe SIG.</p>
 <p>PASID value is encoded in all transactions from the device. This allows the
 IOMMU to track I/O on a per-PASID granularity in addition to using the PCIe
 Resource Identifier (RID) which is the Bus/Device/Function.</p>
-</section>
-<section id="enqcmd">
+</div>
+<div class="section" id="enqcmd">
 <h2><span class="section-number">26.3. </span>ENQCMD<a class="headerlink" href="#enqcmd" title="Permalink to this headline">¶</a></h2>
 <p>ENQCMD is a new instruction on Intel platforms that atomically submits a
 work descriptor to a device. The descriptor includes the operation to be
@@ -349,8 +351,8 @@ implement fairness or ensure forward progress should be provided.</p>
 <p>ENQCMD is the glue that ensures applications can directly submit commands
 to the hardware and also permits hardware to be aware of application context
 to perform I/O operations via use of PASID.</p>
-</section>
-<section id="process-address-space-tagging">
+</div>
+<div class="section" id="process-address-space-tagging">
 <h2><span class="section-number">26.4. </span>Process Address Space Tagging<a class="headerlink" href="#process-address-space-tagging" title="Permalink to this headline">¶</a></h2>
 <p>A new thread-scoped MSR (IA32_PASID) provides the connection between
 user processes and the rest of the hardware. When an application first
@@ -372,8 +374,8 @@ protocol before performing I/O.</p></li>
 </ul>
 <p>This MSR is managed with the XSAVE feature set as “supervisor state” to
 ensure the MSR is updated during context switch.</p>
-</section>
-<section id="pasid-management">
+</div>
+<div class="section" id="pasid-management">
 <h2><span class="section-number">26.5. </span>PASID Management<a class="headerlink" href="#pasid-management" title="Permalink to this headline">¶</a></h2>
 <p>The kernel must allocate a PASID on behalf of each process which will use
 ENQCMD and program it into the new MSR to communicate the process identity to
@@ -398,8 +400,8 @@ with multiple devices since they all share the same address space.</p>
 <p>One thread can call iommu_sva_unbind_device() to free the allocated PASID.
 The kernel will clear the PASID MSR for all threads belonging to the process.</p>
 <p>New threads inherit the MSR value from the parent.</p>
-</section>
-<section id="relationships">
+</div>
+<div class="section" id="relationships">
 <h2><span class="section-number">26.6. </span>Relationships<a class="headerlink" href="#relationships" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
@@ -419,8 +421,8 @@ with all devices.  There is not, for instance, a PASID for each
 thread or each thread&lt;-&gt;device pair.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="faq">
+</div>
+<div class="section" id="faq">
 <h2><span class="section-number">26.7. </span>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>What is SVA/SVM?</p></li>
@@ -519,8 +521,8 @@ a translation and continues.</p>
 device. When removing pages, it interacts with the device to remove any
 device TLB entry that might have been cached before removing the mappings from
 the OS.</p>
-</section>
-<section id="references">
+</div>
+<div class="section" id="references">
 <h2><span class="section-number">26.8. </span>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <p>VT-D:
 <a class="reference external" href="https://01.org/blogs/ashokraj/2018/recent-enhancements-intel-virtualization-technology-directed-i/o-intel-vt-d">https://01.org/blogs/ashokraj/2018/recent-enhancements-intel-virtualization-technology-directed-i/o-intel-vt-d</a></p>
@@ -530,8 +532,8 @@ the OS.</p>
 <a class="reference external" href="https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf">https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf</a></p>
 <p>DSA spec:
 <a class="reference external" href="https://software.intel.com/sites/default/files/341204-intel-data-streaming-accelerator-spec.pdf">https://software.intel.com/sites/default/files/341204-intel-data-streaming-accelerator-spec.pdf</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

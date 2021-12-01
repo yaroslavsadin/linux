@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>6.6. Programming Interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -265,14 +267,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="programming-interface">
+  <div class="section" id="programming-interface">
 <span id="joystick-api"></span><h1><span class="section-number">6.6. </span>Programming Interface<a class="headerlink" href="#programming-interface" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Ragnar Hojland Espinosa &lt;<a class="reference external" href="mailto:ragnar&#37;&#52;&#48;macula&#46;net">ragnar<span>&#64;</span>macula<span>&#46;</span>net</a>&gt; - 7 Aug 1998</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2><span class="section-number">6.6.1. </span>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -290,8 +292,8 @@ Any call to the joystick driver using the old interface will return values
 that are compatible to the old interface. This interface is still limited
 to 2 axes, and applications using it usually decode only 2 buttons, although
 the driver provides up to 32.</p>
-</section>
-<section id="initialization">
+</div>
+<div class="section" id="initialization">
 <h2><span class="section-number">6.6.2. </span>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
 <p>Open the joystick device following the usual semantics (that is, with open).
 Since the driver now reports events instead of polling for changes,
@@ -302,8 +304,8 @@ joystick.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int fd = open (&quot;/dev/input/js0&quot;, O_RDONLY);
 </pre></div>
 </div>
-</section>
-<section id="event-reading">
+</div>
+<div class="section" id="event-reading">
 <h2><span class="section-number">6.6.3. </span>Event Reading<a class="headerlink" href="#event-reading" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct js_event e;
 read (fd, &amp;e, sizeof(e));
@@ -320,7 +322,7 @@ read (fd, &amp;e, sizeof(e));
 </div>
 <p>If the read is successful, it will return sizeof(e), unless you wanted to read
 more than one event per read as described in section 3.1.</p>
-<section id="js-event-type">
+<div class="section" id="js-event-type">
 <h3><span class="section-number">6.6.3.1. </span>js_event.type<a class="headerlink" href="#js-event-type" title="Permalink to this headline">¶</a></h3>
 <p>The possible values of <code class="docutils literal notranslate"><span class="pre">type</span></code> are:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#define JS_EVENT_BUTTON         0x01    /* button pressed/released */
@@ -339,8 +341,8 @@ you can turn off the JS_EVENT_INIT bits:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>type &amp;= ~JS_EVENT_INIT;                         /* 0x01 */
 </pre></div>
 </div>
-</section>
-<section id="js-event-number">
+</div>
+<div class="section" id="js-event-number">
 <h3><span class="section-number">6.6.3.2. </span>js_event.number<a class="headerlink" href="#js-event-number" title="Permalink to this headline">¶</a></h3>
 <p>The values of <code class="docutils literal notranslate"><span class="pre">number</span></code> correspond to the axis or button that
 generated the event. Note that they carry separate numeration (that
@@ -378,8 +380,8 @@ is, you have both an axis 0 and a button 0). Generally,</p>
 <p>Hats vary from one joystick type to another. Some can be moved in 8
 directions, some only in 4. The driver, however, always reports a hat as two
 independent axes, even if the hardware doesn’t allow independent movement.</p>
-</section>
-<section id="js-event-value">
+</div>
+<div class="section" id="js-event-value">
 <h3><span class="section-number">6.6.3.3. </span>js_event.value<a class="headerlink" href="#js-event-value" title="Permalink to this headline">¶</a></h3>
 <p>For an axis, <code class="docutils literal notranslate"><span class="pre">value</span></code> is a signed integer between -32767 and +32767
 representing the position of the joystick along that axis. If you
@@ -405,16 +407,16 @@ button event is 0.</p>
 <p>is much safer since it can’t lose sync with the driver. As you would
 have to write a separate handler for JS_EVENT_INIT events in the first
 snippet, this ends up being shorter.</p>
-</section>
-<section id="js-event-time">
+</div>
+<div class="section" id="js-event-time">
 <h3><span class="section-number">6.6.3.4. </span>js_event.time<a class="headerlink" href="#js-event-time" title="Permalink to this headline">¶</a></h3>
 <p>The time an event was generated is stored in <code class="docutils literal notranslate"><span class="pre">js_event.time</span></code>. It’s a time
 in milliseconds since … well, since sometime in the past.  This eases the
 task of detecting double clicks, figuring out if movement of axis and button
 presses happened at the same time, and similar.</p>
-</section>
-</section>
-<section id="reading">
+</div>
+</div>
+<div class="section" id="reading">
 <h2><span class="section-number">6.6.4. </span>Reading<a class="headerlink" href="#reading" title="Permalink to this headline">¶</a></h2>
 <p>If you open the device in blocking mode, a read will block (that is,
 wait) forever until an event is generated and effectively read. There
@@ -428,7 +430,7 @@ man page.</p></li>
 <li><p>open the device in non-blocking mode (O_NONBLOCK)</p></li>
 </ol>
 </div></blockquote>
-<section id="o-nonblock">
+<div class="section" id="o-nonblock">
 <h3><span class="section-number">6.6.4.1. </span>O_NONBLOCK<a class="headerlink" href="#o-nonblock" title="Permalink to this headline">¶</a></h3>
 <p>If read returns -1 when reading in O_NONBLOCK mode, this isn’t
 necessarily a “real” error (check errno(3)); it can just mean there
@@ -477,9 +479,9 @@ int i = read (fd, mybuffer, sizeof(mybuffer));
 other value in which the number of events read would be i /
 sizeof(js_event)  Again, if the buffer was full, it’s a good idea to
 process the events and keep reading it until you empty the driver queue.</p>
-</section>
-</section>
-<section id="ioctls">
+</div>
+</div>
+<div class="section" id="ioctls">
 <h2><span class="section-number">6.6.5. </span>IOCTLs<a class="headerlink" href="#ioctls" title="Permalink to this headline">¶</a></h2>
 <p>The joystick driver defines the following ioctl(2) operations:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>                        /* function                     3rd arg  */
@@ -496,7 +498,7 @@ process the events and keep reading it until you empty the driver queue.</p>
 ioctl (fd, JSIOCGAXES, &amp;number_of_axes);
 </pre></div>
 </div>
-<section id="jsiogcversion">
+<div class="section" id="jsiogcversion">
 <h3><span class="section-number">6.6.5.1. </span>JSIOGCVERSION<a class="headerlink" href="#jsiogcversion" title="Permalink to this headline">¶</a></h3>
 <p>JSIOGCVERSION is a good way to check in run-time whether the running
 driver is 1.0+ and supports the event interface. If it is not, the
@@ -506,8 +508,8 @@ JS_VERSION symbol:</p>
 #if JS_VERSION &gt; 0xsomething
 </pre></div>
 </div>
-</section>
-<section id="jsiocgname">
+</div>
+<div class="section" id="jsiocgname">
 <h3><span class="section-number">6.6.5.2. </span>JSIOCGNAME<a class="headerlink" href="#jsiocgname" title="Permalink to this headline">¶</a></h3>
 <p>JSIOCGNAME(len) allows you to get the name string of the joystick - the same
 as is being printed at boot time. The ‘len’ argument is the length of the
@@ -519,8 +521,8 @@ if (ioctl(fd, JSIOCGNAME(sizeof(name)), name) &lt; 0)
 printf(&quot;Name: %s\n&quot;, name);
 </pre></div>
 </div>
-</section>
-<section id="jsioc-sg-corr">
+</div>
+<div class="section" id="jsioc-sg-corr">
 <h3><span class="section-number">6.6.5.3. </span>JSIOC[SG]CORR<a class="headerlink" href="#jsioc-sg-corr" title="Permalink to this headline">¶</a></h3>
 <p>For usage on JSIOC[SG]CORR I suggest you to look into jscal.c  They are
 not needed in a normal program, only in joystick calibration software
@@ -542,9 +544,9 @@ information for all axes. That is, struct js_corr corr[MAX_AXIS];</p>
 #define JS_CORR_BROKEN          0x01    /* broken line */
 </pre></div>
 </div>
-</section>
-</section>
-<section id="backward-compatibility">
+</div>
+</div>
+<div class="section" id="backward-compatibility">
 <h2><span class="section-number">6.6.6. </span>Backward compatibility<a class="headerlink" href="#backward-compatibility" title="Permalink to this headline">¶</a></h2>
 <p>The 0.x joystick driver API is quite limited and its usage is deprecated.
 The driver offers backward compatibility, though. Here’s a quick summary:</p>
@@ -582,8 +584,8 @@ center, and 255 maximum value.</p>
 <p>The v0.8.0.2 driver also had an interface for ‘digital joysticks’, (now
 called Multisystem joysticks in this driver), under /dev/djsX. This driver
 doesn’t try to be compatible with that interface.</p>
-</section>
-<section id="final-notes">
+</div>
+<div class="section" id="final-notes">
 <h2><span class="section-number">6.6.7. </span>Final Notes<a class="headerlink" href="#final-notes" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>____/|        Comments, additions, and specially corrections are welcome.
 \ o.O|        Documentation valid for at least version 1.2.8 of the joystick
@@ -591,8 +593,8 @@ doesn’t try to be compatible with that interface.</p>
    U          to &quot;Use The Source Luke&quot; or, at your convenience, Vojtech ;)
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

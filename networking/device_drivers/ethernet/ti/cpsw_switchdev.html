@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Texas Instruments CPSW switchdev based ethernet driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
@@ -416,14 +418,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="texas-instruments-cpsw-switchdev-based-ethernet-driver">
+  <div class="section" id="texas-instruments-cpsw-switchdev-based-ethernet-driver">
 <h1>Texas Instruments CPSW switchdev based ethernet driver<a class="headerlink" href="#texas-instruments-cpsw-switchdev-based-ethernet-driver" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Version</dt>
 <dd class="field-odd"><p>2.0</p>
 </dd>
 </dl>
-<section id="port-renaming">
+<div class="section" id="port-renaming">
 <h2>Port renaming<a class="headerlink" href="#port-renaming" title="Permalink to this headline">¶</a></h2>
 <p>On older udev versions renaming of ethX to swXpY will not be automatically
 supported</p>
@@ -434,8 +436,8 @@ SUBSYSTEM==&quot;net&quot;, ACTION==&quot;add&quot;, ATTR{phys_switch_id}==&lt;s
         ATTR{phys_port_name}!=&quot;&quot;, NAME=&quot;sw0$attr{phys_port_name}&quot;
 </pre></div>
 </div>
-</section>
-<section id="dual-mac-mode">
+</div>
+<div class="section" id="dual-mac-mode">
 <h2>Dual mac mode<a class="headerlink" href="#dual-mac-mode" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The new (cpsw_new.c) driver is operating in dual-emac mode by default, thus
@@ -469,12 +471,12 @@ values:
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="devlink-configuration-parameters">
+</div>
+<div class="section" id="devlink-configuration-parameters">
 <h2>Devlink configuration parameters<a class="headerlink" href="#devlink-configuration-parameters" title="Permalink to this headline">¶</a></h2>
 <p>See <a class="reference internal" href="../../../devlink/ti-cpsw-switch.html"><span class="doc">ti-cpsw-switch devlink support</span></a></p>
-</section>
-<section id="bridging-in-dual-mac-mode">
+</div>
+<div class="section" id="bridging-in-dual-mac-mode">
 <h2>Bridging in dual mac mode<a class="headerlink" href="#bridging-in-dual-mac-mode" title="Permalink to this headline">¶</a></h2>
 <p>The dual_mac mode requires two vids to be reserved for internal purposes,
 which, by default, equal CPSW Port numbers. As result, bridge has to be
@@ -495,8 +497,8 @@ ip link set dev sw0p1 master br0
 ip link set dev sw0p2 master br0
 </pre></div>
 </div>
-</section>
-<section id="enabling-switch">
+</div>
+<div class="section" id="enabling-switch">
 <h2>Enabling “switch”<a class="headerlink" href="#enabling-switch" title="Permalink to this headline">¶</a></h2>
 <p>The Switch mode can be enabled by configuring devlink driver parameter
 “switch_mode” to 1/true:</p>
@@ -511,8 +513,8 @@ configuration when first Port changes its state to UP.</p>
 <p>When the both interfaces joined the bridge - CPSW switch driver will enable
 marking packets with offload_fwd_mark flag unless “ale_bypass=0”</p>
 <p>All configuration is implemented via switchdev API.</p>
-</section>
-<section id="bridge-setup">
+</div>
+<div class="section" id="bridge-setup">
 <h2>Bridge setup<a class="headerlink" href="#bridge-setup" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>devlink dev param set platform/48484000.switch \
 name switch_mode value 1 cmode runtime
@@ -531,21 +533,21 @@ ip link set dev sw0p2 master br0
 Note. Steps [*] are mandatory.
 </pre></div>
 </div>
-</section>
-<section id="on-off-stp">
+</div>
+<div class="section" id="on-off-stp">
 <h2>On/off STP<a class="headerlink" href="#on-off-stp" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ip link set dev BRDEV type bridge stp_state 1/0
 </pre></div>
 </div>
-</section>
-<section id="vlan-configuration">
+</div>
+<div class="section" id="vlan-configuration">
 <h2>VLAN configuration<a class="headerlink" href="#vlan-configuration" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bridge vlan add dev br0 vid 1 pvid untagged self &lt;---- add cpu port to VLAN 1
 </pre></div>
 </div>
 <p>Note. This step is mandatory for bridge/default_pvid.</p>
-</section>
-<section id="add-extra-vlans">
+</div>
+<div class="section" id="add-extra-vlans">
 <h2>Add extra VLANs<a class="headerlink" href="#add-extra-vlans" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ol class="arabic">
@@ -565,7 +567,7 @@ bridge vlan add dev br0 vid 100 pvid tagged self &lt;---- Add cpu port to VLAN10
 </li>
 </ol>
 </div></blockquote>
-<section id="fdbs">
+<div class="section" id="fdbs">
 <h3>FDBs<a class="headerlink" href="#fdbs" title="Permalink to this headline">¶</a></h3>
 <p>FDBs are automatically added on the appropriate switch port upon detection</p>
 <p>Manually adding FDBs:</p>
@@ -573,8 +575,8 @@ bridge vlan add dev br0 vid 100 pvid tagged self &lt;---- Add cpu port to VLAN10
 bridge fdb add aa:bb:cc:dd:ee:fe dev sw0p2 master &lt;---- Add on all VLANs
 </pre></div>
 </div>
-</section>
-<section id="mdbs">
+</div>
+<div class="section" id="mdbs">
 <h3>MDBs<a class="headerlink" href="#mdbs" title="Permalink to this headline">¶</a></h3>
 <p>MDBs are automatically added on the appropriate switch port upon detection</p>
 <p>Manually adding MDBs:</p>
@@ -582,15 +584,15 @@ bridge fdb add aa:bb:cc:dd:ee:fe dev sw0p2 master &lt;---- Add on all VLANs
 bridge mdb add dev br0 port sw0p1 grp 239.1.1.1 permanent &lt;---- Add on all VLANs
 </pre></div>
 </div>
-</section>
-</section>
-<section id="multicast-flooding">
+</div>
+</div>
+<div class="section" id="multicast-flooding">
 <h2>Multicast flooding<a class="headerlink" href="#multicast-flooding" title="Permalink to this headline">¶</a></h2>
 <p>CPU port mcast_flooding is always on</p>
 <p>Turning flooding on/off on swithch ports:
 bridge link set dev sw0p1 mcast_flood on/off</p>
-</section>
-<section id="access-and-trunk-port">
+</div>
+<div class="section" id="access-and-trunk-port">
 <h2>Access and Trunk port<a class="headerlink" href="#access-and-trunk-port" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bridge vlan add dev sw0p1 vid 100 pvid untagged master
 bridge vlan add dev sw0p2 vid 100 master
@@ -602,8 +604,8 @@ ip link add link br0 name br0.100 type vlan id 100
 </div>
 <p>Note. Setting PVID on Bridge device itself working only for
 default VLAN (default_pvid).</p>
-</section>
-<section id="nfs">
+</div>
+<div class="section" id="nfs">
 <h2>NFS<a class="headerlink" href="#nfs" title="Permalink to this headline">¶</a></h2>
 <p>The only way for NFS to work is by chrooting to a minimal environment when
 switch configuration that will affect connectivity is needed.
@@ -650,8 +652,8 @@ chroot /tmp/root/ busybox sh /bin/setup.sh
 run ./run_nfs.sh
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

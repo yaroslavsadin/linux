@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Kernel driver pc87360 &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -454,7 +456,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="kernel-driver-pc87360">
+  <div class="section" id="kernel-driver-pc87360">
 <h1>Kernel driver pc87360<a class="headerlink" href="#kernel-driver-pc87360" title="Permalink to this headline">¶</a></h1>
 <p>Supported chips:</p>
 <blockquote>
@@ -469,7 +471,7 @@
 <p>Authors: Jean Delvare &lt;<a class="reference external" href="mailto:jdelvare&#37;&#52;&#48;suse&#46;de">jdelvare<span>&#64;</span>suse<span>&#46;</span>de</a>&gt;</p>
 <p>Thanks to Sandeep Mehta, Tonko de Rooy and Daniel Ceregatti for testing.</p>
 <p>Thanks to Rudolf Marek for helping me investigate conversion issues.</p>
-<section id="module-parameters">
+<div class="section" id="module-parameters">
 <h2>Module Parameters<a class="headerlink" href="#module-parameters" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><dl class="simple">
@@ -490,8 +492,8 @@ chips.</p>
 <p>Also note that for the PC87366, initialization levels 2 and 3 don’t enable
 all temperature channels, because some of them share pins with each other,
 so they can’t be used at the same time.</p>
-</section>
-<section id="description">
+</div>
+<div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>The National Semiconductor PC87360 Super I/O chip contains monitoring and
 PWM control circuitry for two fans. The PC87363 chip is similar, and the
@@ -578,8 +580,8 @@ but also monitoring eleven voltage inputs and two (PC87365) or up to four
 </div></blockquote>
 <p>The driver assumes that no more than one chip is present, and one of the
 standard Super I/O addresses is used (0x2E/0x2F or 0x4E/0x4F)</p>
-</section>
-<section id="fan-monitoring">
+</div>
+<div class="section" id="fan-monitoring">
 <h2>Fan Monitoring<a class="headerlink" href="#fan-monitoring" title="Permalink to this headline">¶</a></h2>
 <p>Fan rotation speeds are reported in RPM (revolutions per minute). An alarm
 is triggered if the rotation speed has dropped below a programmable limit.
@@ -643,8 +645,8 @@ RPM as the lowest acceptable accuracy.</p>
 divider is selected. This is not only true for the measured speeds, but
 also for the programmable low limits, so don’t be surprised if you try to
 set, say, fan1_min to 2900 and it finally reads 2909.</p>
-</section>
-<section id="fan-control">
+</div>
+<div class="section" id="fan-control">
 <h2>Fan Control<a class="headerlink" href="#fan-control" title="Permalink to this headline">¶</a></h2>
 <p>PWM (pulse width modulation) values range from 0 to 255, with 0 meaning
 that the fan is stopped, and 255 meaning that the fan goes at full speed.</p>
@@ -654,8 +656,8 @@ hardware if temperature increases too much. When changing PWM values, go
 step by step and keep an eye on temperatures.</p>
 <p>One user reported problems with PWM. Changing PWM values would break fan
 speed readings. No explanation nor fix could be found.</p>
-</section>
-<section id="temperature-monitoring">
+</div>
+<div class="section" id="temperature-monitoring">
 <h2>Temperature Monitoring<a class="headerlink" href="#temperature-monitoring" title="Permalink to this headline">¶</a></h2>
 <p>Temperatures are reported in degrees Celsius. Each temperature measured has
 associated low, high and overtemperature limits, each of which triggers an
@@ -675,8 +677,8 @@ the documents from National Semiconductor suggest that motherboard
 manufacturers should choose one type and stick to it. So you will more
 likely have either channels 1 to 3 (thermal diodes) or 3 to 6 (internal
 thermal diode, and thermistors).</p>
-</section>
-<section id="voltage-monitoring">
+</div>
+<div class="section" id="voltage-monitoring">
 <h2>Voltage Monitoring<a class="headerlink" href="#voltage-monitoring" title="Permalink to this headline">¶</a></h2>
 <p>Voltages are reported relatively to a reference voltage, either internal or
 external. Some of them (in7:Vsb, in8:Vdd and in10:AVdd) are divided by two
@@ -696,8 +698,8 @@ The driver will default to VRM 9.0, but this can be changed from user-space.
 The chipsets can handle two sets of VID inputs (on dual-CPU systems), but
 the driver will only export one for now. This may change later if there is
 a need.</p>
-</section>
-<section id="general-remarks">
+</div>
+<div class="section" id="general-remarks">
 <h2>General Remarks<a class="headerlink" href="#general-remarks" title="Permalink to this headline">¶</a></h2>
 <p>If an alarm triggers, it will remain triggered until the hardware register
 is read at least once. This means that the cause for the alarm may already
@@ -712,14 +714,14 @@ repeatedly sampling the battery voltage reduces its lifetime. National
 Semiconductor smartly designed their chipset so that in9 is sampled only
 once every 1024 sampling cycles (that is every 34 minutes at the default
 sampling rate), so the effect is attenuated, but still present.</p>
-</section>
-<section id="limitations">
+</div>
+<div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <p>The datasheets suggests that some values (fan mins, fan dividers)
 shouldn’t be changed once the monitoring has started, but we ignore that
 recommendation. We’ll reconsider if it actually causes trouble.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

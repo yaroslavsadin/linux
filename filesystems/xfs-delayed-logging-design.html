@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>XFS Delayed Logging Design &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -311,9 +313,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="xfs-delayed-logging-design">
+  <div class="section" id="xfs-delayed-logging-design">
 <h1>XFS Delayed Logging Design<a class="headerlink" href="#xfs-delayed-logging-design" title="Permalink to this headline">¶</a></h1>
-<section id="introduction-to-re-logging-in-xfs">
+<div class="section" id="introduction-to-re-logging-in-xfs">
 <h2>Introduction to Re-logging in XFS<a class="headerlink" href="#introduction-to-re-logging-in-xfs" title="Permalink to this headline">¶</a></h2>
 <p>XFS logging is a combination of logical and physical logging. Some objects,
 such as inodes and dquots, are logged in logical format where the details
@@ -386,8 +388,8 @@ the current batch completes. It is now common for a single current CPU core to
 be to able to issue enough transactions to keep the log buffers full and under
 IO permanently. Hence the XFS journalling subsystem can be considered to be IO
 bound.</p>
-</section>
-<section id="delayed-logging-concepts">
+</div>
+<div class="section" id="delayed-logging-concepts">
 <h2>Delayed Logging: Concepts<a class="headerlink" href="#delayed-logging-concepts" title="Permalink to this headline">¶</a></h2>
 <p>The key thing to note about the asynchronous logging combined with the
 relogging technique XFS uses is that we can be relogging changed objects
@@ -450,10 +452,10 @@ problems with the new code.</p></li>
 <li><p>No performance regressions for synchronous transaction workloads.</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="delayed-logging-design">
+</div>
+<div class="section" id="delayed-logging-design">
 <h2>Delayed Logging: Design<a class="headerlink" href="#delayed-logging-design" title="Permalink to this headline">¶</a></h2>
-<section id="storing-changes">
+<div class="section" id="storing-changes">
 <h3>Storing Changes<a class="headerlink" href="#storing-changes" title="Permalink to this headline">¶</a></h3>
 <p>The problem with accumulating changes at a logical level (i.e. just using the
 existing log item dirty region tracking) is that when it comes to writing the
@@ -529,8 +531,8 @@ self-describing object that can be passed to the log buffer write code to be
 handled in exactly the same manner as the existing log vectors are handled.
 Hence we avoid needing a new on-disk format to handle items that have been
 relogged in memory.</p>
-</section>
-<section id="tracking-changes">
+</div>
+<div class="section" id="tracking-changes">
 <h3>Tracking Changes<a class="headerlink" href="#tracking-changes" title="Permalink to this headline">¶</a></h3>
 <p>Now that we can record transactional changes in memory in a form that allows
 them to be used without limitations, we need to be able to track and accumulate
@@ -561,8 +563,8 @@ and done to make it easy for debugging - the last items in the list are the
 ones that are most recently modified. Ordering of the CIL is not necessary for
 transactional integrity (as discussed in the next section) so the ordering is
 done for convenience/sanity of the developers.</p>
-</section>
-<section id="delayed-logging-checkpoints">
+</div>
+<div class="section" id="delayed-logging-checkpoints">
 <h3>Delayed Logging: Checkpoints<a class="headerlink" href="#delayed-logging-checkpoints" title="Permalink to this headline">¶</a></h3>
 <p>When we have a log synchronisation event, commonly known as a “log force”,
 all the items in the CIL must be written into the log via the log buffers.
@@ -686,8 +688,8 @@ vs two dirty cachelines except for the fact I’ve seen upwards of 80,000 log
 vectors in one checkpoint transaction. I’d guess this is a “measure and
 compare” situation that can be done after a working and reviewed implementation
 is in the dev tree….</p>
-</section>
-<section id="delayed-logging-checkpoint-sequencing">
+</div>
+<div class="section" id="delayed-logging-checkpoint-sequencing">
 <h3>Delayed Logging: Checkpoint Sequencing<a class="headerlink" href="#delayed-logging-checkpoint-sequencing" title="Permalink to this headline">¶</a></h3>
 <p>One of the key aspects of the XFS transaction subsystem is that it tags
 committed transactions with the log sequence number of the transaction commit.
@@ -742,8 +744,8 @@ the log force code enables the current mechanism for issuing synchronous
 transactions to remain untouched (i.e. commit an asynchronous transaction, then
 force the log at the LSN of that transaction) and so the higher level code
 behaves the same regardless of whether delayed logging is being used or not.</p>
-</section>
-<section id="delayed-logging-checkpoint-log-space-accounting">
+</div>
+<div class="section" id="delayed-logging-checkpoint-log-space-accounting">
 <h3>Delayed Logging: Checkpoint Log Space Accounting<a class="headerlink" href="#delayed-logging-checkpoint-log-space-accounting" title="Permalink to this headline">¶</a></h3>
 <p>The big issue for a checkpoint transaction is the log space reservation for the
 transaction. We don’t know how big a checkpoint transaction is going to be
@@ -822,8 +824,8 @@ allow the idle log to be covered (effectively marked clean) in exactly the same
 manner that is done for the existing logging method. A discussion point is
 whether this log force needs to be done more frequently than the current rate
 which is once every 30s.</p>
-</section>
-<section id="delayed-logging-log-item-pinning">
+</div>
+<div class="section" id="delayed-logging-log-item-pinning">
 <h3>Delayed Logging: Log Item Pinning<a class="headerlink" href="#delayed-logging-log-item-pinning" title="Permalink to this headline">¶</a></h3>
 <p>Currently log items are pinned during transaction commit while the items are
 still locked. This happens just after the items are formatted, though it could
@@ -859,8 +861,8 @@ current CIL or not. If we don’t pin the CIL first before we check and pin the
 object, we have a race with CIL being flushed between the check and the pin
 (or not pinning, as the case may be). Hence we must hold the CIL flush/commit
 lock to guarantee that we pin the items correctly.</p>
-</section>
-<section id="delayed-logging-concurrent-scalability">
+</div>
+<div class="section" id="delayed-logging-concurrent-scalability">
 <h3>Delayed Logging: Concurrent Scalability<a class="headerlink" href="#delayed-logging-concurrent-scalability" title="Permalink to this headline">¶</a></h3>
 <p>A fundamental requirement for the CIL is that accesses through transaction
 commits must scale to many concurrent commits. The current transaction commit
@@ -931,8 +933,8 @@ much contention on the CIL lock, or too many context switches as a result of
 the broadcast wakeups these operations can be put under a new spinlock and
 given separate wait lists to reduce lock contention and the number of processes
 woken by the wrong event.</p>
-</section>
-<section id="lifecycle-changes">
+</div>
+<div class="section" id="lifecycle-changes">
 <h3>Lifecycle Changes<a class="headerlink" href="#lifecycle-changes" title="Permalink to this headline">¶</a></h3>
 <p>The existing log item life cycle is as follows:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>1. Transaction allocate
@@ -1039,9 +1041,9 @@ mount option. Fundamentally, there is no reason why the log manager would not
 be able to swap methods automatically and transparently depending on load
 characteristics, but this should not be necessary if delayed logging works as
 designed.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

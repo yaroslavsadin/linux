@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The Linux SYM-2 driver documentation file &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -326,14 +328,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-linux-sym-2-driver-documentation-file">
+  <div class="section" id="the-linux-sym-2-driver-documentation-file">
 <h1>The Linux SYM-2 driver documentation file<a class="headerlink" href="#the-linux-sym-2-driver-documentation-file" title="Permalink to this headline">¶</a></h1>
 <p>Written by Gerard Roudier &lt;<a class="reference external" href="mailto:groudier&#37;&#52;&#48;free&#46;fr">groudier<span>&#64;</span>free<span>&#46;</span>fr</a>&gt;</p>
 <p>21 Rue Carnot</p>
 <p>95170 DEUIL LA BARRE - FRANCE</p>
 <p>Updated by Matthew Wilcox &lt;<a class="reference external" href="mailto:matthew&#37;&#52;&#48;wil&#46;cx">matthew<span>&#64;</span>wil<span>&#46;</span>cx</a>&gt;</p>
 <p>2004-10-09</p>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This driver supports the whole SYM53C8XX family of PCI-SCSI controllers.
 It also support the subset of LSI53C10XX PCI-SCSI controllers that are based
@@ -412,8 +414,8 @@ distributions:</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="supported-chips-and-scsi-features">
+</div>
+<div class="section" id="supported-chips-and-scsi-features">
 <h2>2. Supported chips and SCSI features<a class="headerlink" href="#supported-chips-and-scsi-features" title="Permalink to this headline">¶</a></h2>
 <p>The following features are supported for all chips:</p>
 <blockquote>
@@ -612,10 +614,10 @@ mismatch</p></td>
 <li><p>Shared interrupt</p></li>
 <li><p>Boot setup commands</p></li>
 </ul>
-</section>
-<section id="advantages-of-this-driver-for-newer-chips">
+</div>
+<div class="section" id="advantages-of-this-driver-for-newer-chips">
 <h2>3. Advantages of this driver for newer chips.<a class="headerlink" href="#advantages-of-this-driver-for-newer-chips" title="Permalink to this headline">¶</a></h2>
-<section id="optimized-scsi-scripts">
+<div class="section" id="optimized-scsi-scripts">
 <h3>3.1 Optimized SCSI SCRIPTS<a class="headerlink" href="#optimized-scsi-scripts" title="Permalink to this headline">¶</a></h3>
 <p>All chips except the 810, 815 and 825, support new SCSI SCRIPTS instructions
 named LOAD and STORE that allow to move up to 1 DWORD from/to an IO register
@@ -627,8 +629,8 @@ of MOVE MEMORY instructions.</p>
 <p>Due to the lack of LOAD/STORE SCRIPTS instructions by earlier chips, this
 driver also incorporates a different SCRIPTS set based on MEMORY MOVE, in
 order to provide support for the entire SYM53C8XX chips family.</p>
-</section>
-<section id="new-features-appeared-with-the-sym53c896">
+</div>
+<div class="section" id="new-features-appeared-with-the-sym53c896">
 <h3>3.2 New features appeared with the SYM53C896<a class="headerlink" href="#new-features-appeared-with-the-sym53c896" title="Permalink to this headline">¶</a></h3>
 <p>Newer chips (see above) allows handling of the phase mismatch context from
 SCRIPTS (avoids the phase mismatch interrupt that stops the SCSI processor
@@ -638,17 +640,17 @@ while the 895A supports 32 bit PCI transactions and 64 bit addressing.
 The SCRIPTS processor of these chips is not true 64 bit, but uses segment
 registers for bit 32-63. Another interesting feature is that LOAD/STORE
 instructions that address the on-chip RAM (8k) remain internal to the chip.</p>
-</section>
-</section>
-<section id="memory-mapped-i-o-versus-normal-i-o">
+</div>
+</div>
+<div class="section" id="memory-mapped-i-o-versus-normal-i-o">
 <h2>4. Memory mapped I/O versus normal I/O<a class="headerlink" href="#memory-mapped-i-o-versus-normal-i-o" title="Permalink to this headline">¶</a></h2>
 <p>Memory mapped I/O has less latency than normal I/O and is the recommended
 way for doing IO with PCI devices. Memory mapped I/O seems to work fine on
 most hardware configurations, but some poorly designed chipsets may break
 this feature. A configuration option is provided for normal I/O to be
 used but the driver defaults to MMIO.</p>
-</section>
-<section id="tagged-command-queueing">
+</div>
+<div class="section" id="tagged-command-queueing">
 <h2>5. Tagged command queueing<a class="headerlink" href="#tagged-command-queueing" title="Permalink to this headline">¶</a></h2>
 <p>Queuing more than 1 command at a time to a device allows it to perform
 optimizations based on actual head positions and its mechanical
@@ -723,23 +725,23 @@ setting verbose level to zero, as follow:</p>
 corresponding to your controller after boot-up.</p>
 </dd>
 </dl>
-</section>
-<section id="parity-checking">
+</div>
+<div class="section" id="parity-checking">
 <h2>6. Parity checking<a class="headerlink" href="#parity-checking" title="Permalink to this headline">¶</a></h2>
 <p>The driver supports SCSI parity checking and PCI bus master parity
 checking.  These features must be enabled in order to ensure safe
 data transfers.  Some flawed devices or mother boards may have problems
 with parity.  The options to defeat parity checking have been removed
 from the driver.</p>
-</section>
-<section id="profiling-information">
+</div>
+<div class="section" id="profiling-information">
 <h2>7. Profiling information<a class="headerlink" href="#profiling-information" title="Permalink to this headline">¶</a></h2>
 <p>This driver does not provide profiling information as did its predecessors.
 This feature was not this useful and added complexity to the code.
 As the driver code got more complex, I have decided to remove everything
 that didn’t seem actually useful.</p>
-</section>
-<section id="control-commands">
+</div>
+<div class="section" id="control-commands">
 <h2>8. Control commands<a class="headerlink" href="#control-commands" title="Permalink to this headline">¶</a></h2>
 <p>Control commands can be sent to the driver with write operations to
 the proc SCSI file system. The generic command syntax is the
@@ -751,7 +753,7 @@ following:</p>
 <p>Using “all” for “&lt;target&gt;” parameter with the commands below will
 apply to all targets of the SCSI chain (except the controller).</p>
 <p>Available commands:</p>
-<section id="set-minimum-synchronous-period-factor">
+<div class="section" id="set-minimum-synchronous-period-factor">
 <h3>8.1 Set minimum synchronous period factor<a class="headerlink" href="#set-minimum-synchronous-period-factor" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>setsync &lt;target&gt; &lt;period factor&gt;</p>
@@ -775,8 +777,8 @@ cases below.</p>
 </ul>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="set-wide-size">
+</div>
+<div class="section" id="set-wide-size">
 <h3>8.2 Set wide size<a class="headerlink" href="#set-wide-size" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>setwide &lt;target&gt; &lt;size&gt;</p>
@@ -789,8 +791,8 @@ cases below.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="set-maximum-number-of-concurrent-tagged-commands">
+</div>
+<div class="section" id="set-maximum-number-of-concurrent-tagged-commands">
 <h3>8.3 Set maximum number of concurrent tagged commands<a class="headerlink" href="#set-maximum-number-of-concurrent-tagged-commands" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>settags &lt;target&gt; &lt;tags&gt;</p>
@@ -804,8 +806,8 @@ must not be greater than configured (default: 16)</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="set-debug-mode">
+</div>
+<div class="section" id="set-debug-mode">
 <h3>8.4 Set debug mode<a class="headerlink" href="#set-debug-mode" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>setdebug &lt;list of debug flags&gt;</p>
@@ -849,8 +851,8 @@ must not be greater than configured (default: 16)</p>
 </div></blockquote>
 <p>Use “setdebug” with no argument to reset debug flags.</p>
 </div></blockquote>
-</section>
-<section id="set-flag-no-disc">
+</div>
+<div class="section" id="set-flag-no-disc">
 <h3>8.5 Set flag (no_disc)<a class="headerlink" href="#set-flag-no-disc" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>setflag &lt;target&gt; &lt;flag&gt;</p>
@@ -871,16 +873,16 @@ must not be greater than configured (default: 16)</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="set-verbose-level">
+</div>
+<div class="section" id="set-verbose-level">
 <h3>8.6 Set verbose level<a class="headerlink" href="#set-verbose-level" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>setverbose #level</p>
 <p>The driver default verbose level is 1. This command allows to change
 th driver verbose level after boot-up.</p>
 </div></blockquote>
-</section>
-<section id="reset-all-logical-units-of-a-target">
+</div>
+<div class="section" id="reset-all-logical-units-of-a-target">
 <h3>8.7 Reset all logical units of a target<a class="headerlink" href="#reset-all-logical-units-of-a-target" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>resetdev &lt;target&gt;</p>
@@ -891,8 +893,8 @@ th driver verbose level after boot-up.</p>
 </dl>
 <p>The driver will try to send a BUS DEVICE RESET message to the target.</p>
 </div></blockquote>
-</section>
-<section id="abort-all-tasks-of-all-logical-units-of-a-target">
+</div>
+<div class="section" id="abort-all-tasks-of-all-logical-units-of-a-target">
 <h3>8.8 Abort all tasks of all logical units of a target<a class="headerlink" href="#abort-all-tasks-of-all-logical-units-of-a-target" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>cleardev &lt;target&gt;</p>
@@ -904,9 +906,9 @@ th driver verbose level after boot-up.</p>
 <p>The driver will try to send a ABORT message to all the logical units
 of the target.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="configuration-parameters">
+</div>
+</div>
+<div class="section" id="configuration-parameters">
 <h2>9. Configuration parameters<a class="headerlink" href="#configuration-parameters" title="Permalink to this headline">¶</a></h2>
 <p>Under kernel configuration tools (make menuconfig, for example), it is
 possible to change some default driver configuration parameters.
@@ -931,10 +933,10 @@ will use at boot time for synchronous data transfer negotiations.
 0 means “asynchronous data transfers”.</p>
 </dd>
 </dl>
-</section>
-<section id="boot-setup-commands">
+</div>
+<div class="section" id="boot-setup-commands">
 <h2>10. Boot setup commands<a class="headerlink" href="#boot-setup-commands" title="Permalink to this headline">¶</a></h2>
-<section id="syntax">
+<div class="section" id="syntax">
 <h3>10.1 Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
 <p>Setup commands can be passed to the driver either at boot time or as
 parameters to modprobe, as described in <a class="reference internal" href="../admin-guide/kernel-parameters.html"><span class="doc">The kernel’s command-line parameters</span></a></p>
@@ -952,10 +954,10 @@ options as above:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>modprobe sym53c8xx cmd_per_lun=4 sync=10 debug=0x200
 </pre></div>
 </div>
-</section>
-<section id="available-arguments">
+</div>
+<div class="section" id="available-arguments">
 <h3>10.2 Available arguments<a class="headerlink" href="#available-arguments" title="Permalink to this headline">¶</a></h3>
-<section id="default-number-of-tagged-commands">
+<div class="section" id="default-number-of-tagged-commands">
 <h4>10.2.1  Default number of tagged commands<a class="headerlink" href="#default-number-of-tagged-commands" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><blockquote>
@@ -966,8 +968,8 @@ options as above:</p>
 </div></blockquote>
 <p>#tags will be truncated to the max queued commands configuration parameter.</p>
 </div></blockquote>
-</section>
-<section id="burst-max">
+</div>
+<div class="section" id="burst-max">
 <h4>10.2.2 Burst max<a class="headerlink" href="#burst-max" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><blockquote>
@@ -994,8 +996,8 @@ transfers max.</p>
 </div></blockquote>
 <p>By default the driver uses the maximum value supported by the chip.</p>
 </div></blockquote>
-</section>
-<section id="led-support">
+</div>
+<div class="section" id="led-support">
 <h4>10.2.3 LED support<a class="headerlink" href="#led-support" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><blockquote>
@@ -1017,8 +1019,8 @@ transfers max.</p>
 <p>Do not enable LED support if your scsi board does not use SDMS BIOS.
 (See ‘Configuration parameters’)</p>
 </div></blockquote>
-</section>
-<section id="differential-mode">
+</div>
+<div class="section" id="differential-mode">
 <h4>10.2.4 Differential mode<a class="headerlink" href="#differential-mode" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><table class="docutils align-default">
@@ -1042,8 +1044,8 @@ transfers max.</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="irq-mode">
+</div>
+<div class="section" id="irq-mode">
 <h4>10.2.5 IRQ mode<a class="headerlink" href="#irq-mode" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><table class="docutils align-default">
@@ -1064,8 +1066,8 @@ transfers max.</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="check-scsi-bus">
+</div>
+<div class="section" id="check-scsi-bus">
 <h4>10.2.6 Check SCSI BUS<a class="headerlink" href="#check-scsi-bus" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><blockquote>
@@ -1092,8 +1094,8 @@ transfers max.</p>
 </table>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="suggest-a-default-scsi-id-for-hosts">
+</div>
+<div class="section" id="suggest-a-default-scsi-id-for-hosts">
 <h4>10.2.7 Suggest a default SCSI id for hosts<a class="headerlink" href="#suggest-a-default-scsi-id-for-hosts" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><blockquote>
@@ -1118,8 +1120,8 @@ different from 255 has been supplied, it will use it. Otherwise, it will
 try to deduce the value previously set in the hardware and use value
 7 if the hardware value is zero.</p>
 </div></blockquote>
-</section>
-<section id="verbosity-level">
+</div>
+<div class="section" id="verbosity-level">
 <h4>10.2.8  Verbosity level<a class="headerlink" href="#verbosity-level" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><table class="docutils align-default">
@@ -1140,8 +1142,8 @@ try to deduce the value previously set in the hardware and use value
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="debug-mode">
+</div>
+<div class="section" id="debug-mode">
 <h4>10.2.9 Debug mode<a class="headerlink" href="#debug-mode" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><blockquote>
@@ -1213,8 +1215,8 @@ following power-of-2 values:</p>
 <p>You can play safely with DEBUG_NEGO. However, some of these flags may
 generate bunches of syslog messages.</p>
 </div></blockquote>
-</section>
-<section id="settle-delay">
+</div>
+<div class="section" id="settle-delay">
 <h4>10.2.10 Settle delay<a class="headerlink" href="#settle-delay" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><blockquote>
@@ -1234,8 +1236,8 @@ generate bunches of syslog messages.</p>
 to any device on the bus.  The default is 3 seconds and safe mode will
 default it to 10.</p>
 </div></blockquote>
-</section>
-<section id="serial-nvram">
+</div>
+<div class="section" id="serial-nvram">
 <h4>10.2.11 Serial NVRAM<a class="headerlink" href="#serial-nvram" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><div class="admonition note">
@@ -1282,8 +1284,8 @@ default it to 10.</p>
 </tbody>
 </table>
 </div></blockquote>
-</section>
-<section id="exclude-a-host-from-being-attached">
+</div>
+<div class="section" id="exclude-a-host-from-being-attached">
 <h4>10.2.12 Exclude a host from being attached<a class="headerlink" href="#exclude-a-host-from-being-attached" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><blockquote>
@@ -1293,9 +1295,9 @@ default it to 10.</p>
 For example ‘excl=0xb400,0xc000’ indicate to the
 driver not to attach hosts at address 0xb400 and 0xc000.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="converting-from-old-style-options">
+</div>
+</div>
+<div class="section" id="converting-from-old-style-options">
 <h3>10.3 Converting from old style options<a class="headerlink" href="#converting-from-old-style-options" title="Permalink to this headline">¶</a></h3>
 <p>Previously, the sym2 driver accepted arguments of the form:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sym53c8xx=tags:4,sync:10,debug:0x200
@@ -1312,8 +1314,8 @@ be specified as:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sym53c8xx.cmd_per_lun=4 sym53c8xx.sync=10 sym53c8xx.debug=0x200
 </pre></div>
 </div>
-</section>
-<section id="scsi-bus-checking-boot-option">
+</div>
+<div class="section" id="scsi-bus-checking-boot-option">
 <h3>10.4 SCSI BUS checking boot option<a class="headerlink" href="#scsi-bus-checking-boot-option" title="Permalink to this headline">¶</a></h3>
 <p>When this option is set to a non-zero value, the driver checks SCSI lines
 logic state, 100 micro-seconds after having asserted the SCSI RESET line.
@@ -1328,11 +1330,11 @@ Unfortunately, the following common SCSI BUS problems are not detected:</p>
 </ul>
 <p>On the other hand, either bad cabling, broken devices, not conformant
 devices, … may cause a SCSI signal to be wrong when te driver reads it.</p>
-</section>
-</section>
-<section id="scsi-problem-troubleshooting">
+</div>
+</div>
+<div class="section" id="scsi-problem-troubleshooting">
 <h2>15. SCSI problem troubleshooting<a class="headerlink" href="#scsi-problem-troubleshooting" title="Permalink to this headline">¶</a></h2>
-<section id="problem-tracking">
+<div class="section" id="problem-tracking">
 <h3>15.1 Problem tracking<a class="headerlink" href="#problem-tracking" title="Permalink to this headline">¶</a></h3>
 <p>Most SCSI problems are due to a non conformant SCSI bus or too buggy
 devices.  If unfortunately you have SCSI problems, you can check the
@@ -1363,8 +1365,8 @@ your SCSI bus but often causes problems with buggy devices.
 Synchronous data transfers increases throughput of fast devices like
 hard disks.  Good SCSI hard disks with a large cache gain advantage of
 tagged commands queuing.</p>
-</section>
-<section id="understanding-hardware-error-reports">
+</div>
+<div class="section" id="understanding-hardware-error-reports">
 <h3>15.2 Understanding hardware error reports<a class="headerlink" href="#understanding-hardware-error-reports" title="Permalink to this headline">¶</a></h3>
 <p>When the driver detects an unexpected error condition, it may display a
 message of the following pattern:</p>
@@ -1469,11 +1471,11 @@ synchronous data transfers.</p>
 SCSI standards, chip cores functionnals and internal driver data structures.
 You are not required to decode and understand them, unless you want to help
 maintain the driver code.</p>
-</section>
-</section>
-<section id="serial-nvram-added-by-richard-waltham-dormouse-farsrobt-demon-co-uk">
+</div>
+</div>
+<div class="section" id="serial-nvram-added-by-richard-waltham-dormouse-farsrobt-demon-co-uk">
 <h2>17. Serial NVRAM (added by Richard Waltham: <a class="reference external" href="mailto:dormouse&#37;&#52;&#48;farsrobt&#46;demon&#46;co&#46;uk">dormouse<span>&#64;</span>farsrobt<span>&#46;</span>demon<span>&#46;</span>co<span>&#46;</span>uk</a>)<a class="headerlink" href="#serial-nvram-added-by-richard-waltham-dormouse-farsrobt-demon-co-uk" title="Permalink to this headline">¶</a></h2>
-<section id="features">
+<div class="section" id="features">
 <h3>17.1 Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
 <p>Enabling serial NVRAM support enables detection of the serial NVRAM included
 on Symbios and some Symbios compatible host adaptors, and Tekram boards. The
@@ -1579,8 +1581,8 @@ enabled</p></li>
 <p>In order to speed up the system boot, for each device configured without
 the “scan at boot time” option, the driver forces an error on the
 first TEST UNIT READY command received for this device.</p>
-</section>
-<section id="symbios-nvram-layout">
+</div>
+<div class="section" id="symbios-nvram-layout">
 <h3>17.2 Symbios NVRAM layout<a class="headerlink" href="#symbios-nvram-layout" title="Permalink to this headline">¶</a></h3>
 <p>typical data at NVRAM address 0x100 (53c810a NVRAM):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>00 00
@@ -1790,8 +1792,8 @@ default set up for 53c875 NVRAM</p>
 </pre></div>
 </div>
 <p>default set up is identical for 53c810a and 53c875 NVRAM</p>
-</section>
-<section id="tekram-nvram-layout">
+</div>
+<div class="section" id="tekram-nvram-layout">
 <h3>17.3 Tekram NVRAM layout<a class="headerlink" href="#tekram-nvram-layout" title="Permalink to this headline">¶</a></h3>
 <p>nvram 64x16 (1024 bit)</p>
 <p>Drive settings:</p>
@@ -1902,9 +1904,9 @@ default set up for 53c875 NVRAM</p>
 0x0000 0x0000 0x0000 0x0000 0x0000 0x0000 0x0000 0xfbbc
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

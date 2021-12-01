@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The Linux IPMI Driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -357,7 +359,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-linux-ipmi-driver">
+  <div class="section" id="the-linux-ipmi-driver">
 <h1>The Linux IPMI Driver<a class="headerlink" href="#the-linux-ipmi-driver" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -378,7 +380,7 @@ management software that can use the IPMI system.</p>
 are not familiar with IPMI itself, see the web site at
 <a class="reference external" href="https://www.intel.com/design/servers/ipmi/index.htm">https://www.intel.com/design/servers/ipmi/index.htm</a>.  IPMI is a big
 subject and I can’t cover it all here!</p>
-<section id="configuration">
+<div class="section" id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <p>The Linux IPMI driver is modular, which means you have to pick several
 things to have it work right depending on your hardware.  Most of
@@ -432,8 +434,8 @@ events, enable the ‘Generate OEM events containing the panic string’
 option.  You can also enable these dynamically by setting the module
 parameter named “panic_op” in the ipmi_msghandler module to “event”
 or “string”.  Setting that parameter to “none” disables this function.</p>
-</section>
-<section id="basic-design">
+</div>
+<div class="section" id="basic-design">
 <h2>Basic Design<a class="headerlink" href="#basic-design" title="Permalink to this headline">¶</a></h2>
 <p>The Linux IPMI driver is designed to be very modular and flexible, you
 only need to take the pieces you need and you can use it in many
@@ -470,8 +472,8 @@ IPMI include files are:</p>
 <p>linux/ipmi_smi.h - Contains the interface for system management interfaces
 (things that interface to IPMI controllers) to use.</p>
 <p>linux/ipmi_msgdefs.h - General definitions for base IPMI messaging.</p>
-</section>
-<section id="addressing">
+</div>
+<div class="section" id="addressing">
 <h2>Addressing<a class="headerlink" href="#addressing" title="Permalink to this headline">¶</a></h2>
 <p>The IPMI addressing works much like IP addresses, you have an overlay
 to handle the different address types.  The overlay is:</p>
@@ -527,8 +529,8 @@ IPMB using the IPMI_IPMB_DIRECT_ADDR_TYPE with the following format:</p>
 <p>The channel is always zero.  You can also receive commands from other
 MCs that you have registered to handle and respond to them, so you can
 use this to implement a management controller on a bus..</p>
-</section>
-<section id="messages">
+</div>
+<div class="section" id="messages">
 <h2>Messages<a class="headerlink" href="#messages" title="Permalink to this headline">¶</a></h2>
 <p>Messages are defined as:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ipmi_msg
@@ -578,14 +580,14 @@ as:</p>
 </div>
 <p>You should look at the receive type and handle the message
 appropriately.</p>
-</section>
-<section id="the-upper-layer-interface-message-handler">
+</div>
+<div class="section" id="the-upper-layer-interface-message-handler">
 <h2>The Upper Layer Interface (Message Handler)<a class="headerlink" href="#the-upper-layer-interface-message-handler" title="Permalink to this headline">¶</a></h2>
 <p>The upper layer of the interface provides the users with a consistent
 view of the IPMI interfaces.  It allows multiple SMI interfaces to be
 addressed (because some boards actually have multiple BMCs on them)
 and the user should not have to care what type of SMI is below them.</p>
-<section id="watching-for-interfaces">
+<div class="section" id="watching-for-interfaces">
 <h3>Watching For Interfaces<a class="headerlink" href="#watching-for-interfaces" title="Permalink to this headline">¶</a></h3>
 <p>When your code comes up, the IPMI driver may or may not have detected
 if IPMI devices exist.  So you might have to defer your setup until
@@ -593,8 +595,8 @@ the device is detected, or you might be able to do it immediately.
 To handle this, and to allow for discovery, you register an SMI
 watcher with ipmi_smi_watcher_register() to iterate over interfaces
 and tell you when they come and go.</p>
-</section>
-<section id="creating-the-user">
+</div>
+<div class="section" id="creating-the-user">
 <h3>Creating the User<a class="headerlink" href="#creating-the-user" title="Permalink to this headline">¶</a></h3>
 <p>To use the message handler, you must first create a user using
 ipmi_create_user.  The interface number specifies which SMI you want
@@ -606,8 +608,8 @@ all calls.</p>
 <p>Once you are done, call ipmi_destroy_user() to get rid of the user.</p>
 <p>From userland, opening the device automatically creates a user, and
 closing the device automatically destroys the user.</p>
-</section>
-<section id="messaging">
+</div>
+<div class="section" id="messaging">
 <h3>Messaging<a class="headerlink" href="#messaging" title="Permalink to this headline">¶</a></h3>
 <p>To send a message from kernel-land, the ipmi_request_settime() call does
 pretty much all message handling.  Most of the parameter are
@@ -648,8 +650,8 @@ pieces of code that need to work even if the system is out of buffers
 (the watchdog timer uses this, for instance).  You supply your own
 buffer and own free routines.  This is not recommended for normal use,
 though, since it is tricky to manage your own buffers.</p>
-</section>
-<section id="events-and-incoming-commands">
+</div>
+<div class="section" id="events-and-incoming-commands">
 <h3>Events and Incoming Commands<a class="headerlink" href="#events-and-incoming-commands" title="Permalink to this headline">¶</a></h3>
 <p>The driver takes care of polling for IPMI events and receiving
 commands (commands are messages that are not responses, they are
@@ -673,9 +675,9 @@ channel bitmasks do not overlap.</p>
 netfn, use the address from the received message, and use the same
 msgid that you got in the receive message.</p>
 <p>From userland, equivalent IOCTLs are provided to do these functions.</p>
-</section>
-</section>
-<section id="the-lower-layer-smi-interface">
+</div>
+</div>
+<div class="section" id="the-lower-layer-smi-interface">
 <h2>The Lower Layer (SMI) Interface<a class="headerlink" href="#the-lower-layer-smi-interface" title="Permalink to this headline">¶</a></h2>
 <p>As mentioned before, multiple SMI interfaces may be registered to the
 message handler, each of these is assigned an interface number when
@@ -684,8 +686,8 @@ in the order they register, although if an SMI unregisters and then
 another one registers, all bets are off.</p>
 <p>The ipmi_smi.h defines the interface for management interfaces, see
 that for more details.</p>
-</section>
-<section id="the-si-driver">
+</div>
+<div class="section" id="the-si-driver">
 <h2>The SI Driver<a class="headerlink" href="#the-si-driver" title="Permalink to this headline">¶</a></h2>
 <p>The SI driver allows KCS, BT, and SMIC interfaces to be configured
 in the system.  It discovers interfaces through a host of different
@@ -803,8 +805,8 @@ can also use this on the kernel command line for a more compact format
 for specifying an interface.  Note that when removing an interface,
 only the first three parameters (si type, address type, and address)
 are used for the comparison.  Any options are ignored for removing.</p>
-</section>
-<section id="the-smbus-driver-ssif">
+</div>
+<div class="section" id="the-smbus-driver-ssif">
 <h2>The SMBus Driver (SSIF)<a class="headerlink" href="#the-smbus-driver-ssif" title="Permalink to this headline">¶</a></h2>
 <p>The SMBus driver allows up to 4 SMBus devices to be configured in the
 system.  By default, the driver will only register with something it
@@ -862,8 +864,8 @@ patches and driver modifications.  You can get those at the openipmi
 web page.</p>
 <p>The driver supports a hot add and remove of interfaces through the I2C
 sysfs interface.</p>
-</section>
-<section id="the-ipmi-ipmb-driver">
+</div>
+<div class="section" id="the-ipmi-ipmb-driver">
 <h2>The IPMI IPMB Driver<a class="headerlink" href="#the-ipmi-ipmb-driver" title="Permalink to this headline">¶</a></h2>
 <p>This driver is for supporting a system that sits on an IPMB bus; it
 allows the interface to look like a normal IPMI interface.  Sending
@@ -896,11 +898,11 @@ host drivers, not something on the IPMB bus.</p>
 depends on how the system is wired.  You can fetch the channels with
 “ipmitool channel info &lt;n&gt;” where &lt;n&gt; is the channel, with the
 channels being 0-7 and try the IPMB channels.</p>
-</section>
-<section id="other-pieces">
+</div>
+<div class="section" id="other-pieces">
 <h2>Other Pieces<a class="headerlink" href="#other-pieces" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="get-the-detailed-info-related-with-the-ipmi-device">
+</div>
+<div class="section" id="get-the-detailed-info-related-with-the-ipmi-device">
 <h2>Get the detailed info related with the IPMI device<a class="headerlink" href="#get-the-detailed-info-related-with-the-ipmi-device" title="Permalink to this headline">¶</a></h2>
 <p>Some users need more detailed information about a device, like where
 the address came from or the raw base device for the IPMI interface.
@@ -923,8 +925,8 @@ returned.  Others may be added as necessary.</p>
 <p>Note that the dev pointer is included in the above structure, and
 assuming ipmi_smi_get_info returns success, you must call put_device
 on the dev pointer.</p>
-</section>
-<section id="watchdog">
+</div>
+<div class="section" id="watchdog">
 <h2>Watchdog<a class="headerlink" href="#watchdog" title="Permalink to this headline">¶</a></h2>
 <p>A watchdog timer is provided that implements the Linux-standard
 watchdog timer interface.  It has three module parameters that can be
@@ -988,8 +990,8 @@ immediately.</p>
 device to close it, or the timer will not stop.  This is a new semantic
 for the driver, but makes it consistent with the rest of the watchdog
 drivers in Linux.</p>
-</section>
-<section id="panic-timeouts">
+</div>
+<div class="section" id="panic-timeouts">
 <h2>Panic Timeouts<a class="headerlink" href="#panic-timeouts" title="Permalink to this headline">¶</a></h2>
 <p>The OpenIPMI driver supports the ability to put semi-custom and custom
 events in the system event log if a panic occurs.  if you enable the
@@ -1030,8 +1032,8 @@ an event generator, the event receiver from the local management
 controller will be queried and the events sent to the SEL on that
 device.  Otherwise, the events go nowhere since there is nowhere to
 send them.</p>
-</section>
-<section id="poweroff">
+</div>
+<div class="section" id="poweroff">
 <h2>Poweroff<a class="headerlink" href="#poweroff" title="Permalink to this headline">¶</a></h2>
 <p>If the poweroff capability is selected, the IPMI driver will install
 a shutdown function into the standard poweroff function pointer.  This
@@ -1050,8 +1052,8 @@ code should use.  The default is -1, which means to pick the first one
 registered.</p>
 <p>Note that if you have ACPI enabled, the system will prefer using ACPI to
 power off.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

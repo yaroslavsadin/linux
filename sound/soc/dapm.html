@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Dynamic Audio Power Management for Portable Devices &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -268,9 +270,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="dynamic-audio-power-management-for-portable-devices">
+  <div class="section" id="dynamic-audio-power-management-for-portable-devices">
 <h1>Dynamic Audio Power Management for Portable Devices<a class="headerlink" href="#dynamic-audio-power-management-for-portable-devices" title="Permalink to this headline">¶</a></h1>
-<section id="description">
+<div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>Dynamic Audio Power Management (DAPM) is designed to allow portable
 Linux devices to use the minimum amount of power within the audio
@@ -309,8 +311,8 @@ routing map of the whole machine. This map is specific to each machine and
 consists of the interconnections between every audio component (including
 internal codec components). All audio components that effect power are called
 widgets hereafter.</p>
-</section>
-<section id="dapm-widgets">
+</div>
+<div class="section" id="dapm-widgets">
 <h2>DAPM Widgets<a class="headerlink" href="#dapm-widgets" title="Permalink to this headline">¶</a></h2>
 <p>Audio DAPM widgets fall into a number of types:-</p>
 <dl class="simple">
@@ -384,7 +386,7 @@ There are convenience macros defined in soc-dapm.h that can be used to quickly
 build a list of widgets of the codecs and machines DAPM widgets.</p>
 <p>Most widgets have a name, register, shift and invert. Some widgets have extra
 parameters for stream name and kcontrols.</p>
-<section id="stream-domain-widgets">
+<div class="section" id="stream-domain-widgets">
 <h3>Stream Domain Widgets<a class="headerlink" href="#stream-domain-widgets" title="Permalink to this headline">¶</a></h3>
 <p>Stream Widgets relate to the stream power domain and only consist of ADCs
 (analog to digital converters), DACs (digital to analog converters),
@@ -406,8 +408,8 @@ SND_SOC_DAPM_ADC(&quot;HiFi ADC&quot;, &quot;HiFi Capture&quot;, REG, 2, 1),
 SND_SOC_DAPM_AIF_OUT(&quot;AIF1TX&quot;, &quot;AIF1 Capture&quot;, 0, SND_SOC_NOPM, 0, 0),
 </pre></div>
 </div>
-</section>
-<section id="path-domain-widgets">
+</div>
+<div class="section" id="path-domain-widgets">
 <h3>Path Domain Widgets<a class="headerlink" href="#path-domain-widgets" title="Permalink to this headline">¶</a></h3>
 <p>Path domain widgets have a ability to control or affect the audio signal or
 audio paths within the audio subsystem. They have the following form:-</p>
@@ -430,8 +432,8 @@ SND_SOC_DAPM_MIXER(&quot;Output Mixer&quot;, WM8731_PWR, 4, 1, wm8731_output_mix
 <p>If you don’t want the mixer elements prefixed with the name of the mixer widget,
 you can use SND_SOC_DAPM_MIXER_NAMED_CTL instead. the parameters are the same
 as for SND_SOC_DAPM_MIXER.</p>
-</section>
-<section id="machine-domain-widgets">
+</div>
+<div class="section" id="machine-domain-widgets">
 <h3>Machine domain Widgets<a class="headerlink" href="#machine-domain-widgets" title="Permalink to this headline">¶</a></h3>
 <p>Machine widgets are different from codec widgets in that they don’t have a
 codec register bit associated with them. A machine widget is assigned to each
@@ -454,14 +456,14 @@ when the Mic is inserted:-:</p>
 SND_SOC_DAPM_MIC(&quot;Mic Jack&quot;, spitz_mic_bias),
 </pre></div>
 </div>
-</section>
-<section id="codec-bias-domain">
+</div>
+<div class="section" id="codec-bias-domain">
 <h3>Codec (BIAS) Domain<a class="headerlink" href="#codec-bias-domain" title="Permalink to this headline">¶</a></h3>
 <p>The codec bias power domain has no widgets and is handled by the codecs DAPM
 event handler. This handler is called when the codec powerstate is changed wrt
 to any stream event or by kernel PM events.</p>
-</section>
-<section id="virtual-widgets">
+</div>
+<div class="section" id="virtual-widgets">
 <h3>Virtual Widgets<a class="headerlink" href="#virtual-widgets" title="Permalink to this headline">¶</a></h3>
 <p>Sometimes widgets exist in the codec or machine audio map that don’t have any
 corresponding soft power control. In this case it is necessary to create
@@ -472,9 +474,9 @@ a virtual widget - a widget with no control bits e.g.</p>
 <p>This can be used to merge to signal paths together in software.</p>
 <p>After all the widgets have been defined, they can then be added to the DAPM
 subsystem individually with a call to <a class="reference internal" href="../kernel-api/alsa-driver-api.html#c.snd_soc_dapm_new_control" title="snd_soc_dapm_new_control"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_soc_dapm_new_control()</span></code></a>.</p>
-</section>
-</section>
-<section id="codec-dsp-widget-interconnections">
+</div>
+</div>
+<div class="section" id="codec-dsp-widget-interconnections">
 <h2>Codec/DSP Widget Interconnections<a class="headerlink" href="#codec-dsp-widget-interconnections" title="Permalink to this headline">¶</a></h2>
 <p>Widgets are connected to each other within the codec, platform and machine by
 audio paths (called interconnections). Each interconnection must be defined in
@@ -514,7 +516,7 @@ pass NULL for the path name.</p>
 interconnections have been registered with the core. This causes the core to
 scan the codec and machine so that the internal DAPM state matches the
 physical state of the machine.</p>
-<section id="machine-widget-interconnections">
+<div class="section" id="machine-widget-interconnections">
 <h3>Machine Widget Interconnections<a class="headerlink" href="#machine-widget-interconnections" title="Permalink to this headline">¶</a></h3>
 <p>Machine widget interconnections are created in the same way as codec ones and
 directly connect the codec pins to machine level widgets.</p>
@@ -526,9 +528,9 @@ directly connect the codec pins to machine level widgets.</p>
 </div>
 <p>This allows the DAPM to power on and off pins that are connected (and in use)
 and pins that are NC respectively.</p>
-</section>
-</section>
-<section id="endpoint-widgets">
+</div>
+</div>
+<div class="section" id="endpoint-widgets">
 <h2>Endpoint Widgets<a class="headerlink" href="#endpoint-widgets" title="Permalink to this headline">¶</a></h2>
 <p>An endpoint is a start or end point (widget) of an audio signal within the
 machine and includes the codec. e.g.</p>
@@ -542,8 +544,8 @@ machine and includes the codec. e.g.</p>
 <p>Endpoints are added to the DAPM graph so that their usage can be determined in
 order to save power. e.g. NC codecs pins will be switched OFF, unconnected
 jacks can also be switched OFF.</p>
-</section>
-<section id="dapm-widget-events">
+</div>
+<div class="section" id="dapm-widget-events">
 <h2>DAPM Widget Events<a class="headerlink" href="#dapm-widget-events" title="Permalink to this headline">¶</a></h2>
 <p>Some widgets can register their interest with the DAPM core in PM events.
 e.g. A Speaker with an amplifier registers a widget so the amplifier can be
@@ -561,7 +563,7 @@ static const struct snd_soc_dapm_widget wm8731_dapm_widgets =
 </pre></div>
 </div>
 <p>Please see soc-dapm.h for all other widgets that support events.</p>
-<section id="event-types">
+<div class="section" id="event-types">
 <h3>Event types<a class="headerlink" href="#event-types" title="Permalink to this headline">¶</a></h3>
 <p>The following event types are supported by event widgets.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/* dapm event types */
@@ -573,9 +575,9 @@ static const struct snd_soc_dapm_widget wm8731_dapm_widgets =
 #define SND_SOC_DAPM_POST_REG 0x20    /* after audio path setup */
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

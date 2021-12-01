@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>IBM Virtual Management Channel Kernel Driver (IBMVMC) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -275,7 +277,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ibm-virtual-management-channel-kernel-driver-ibmvmc">
+  <div class="section" id="ibm-virtual-management-channel-kernel-driver-ibmvmc">
 <h1>IBM Virtual Management Channel Kernel Driver (IBMVMC)<a class="headerlink" href="#ibm-virtual-management-channel-kernel-driver-ibmvmc" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Authors</dt>
@@ -285,7 +287,7 @@ Steven Royer &lt;<a class="reference external" href="mailto:seroyer&#37;&#52;&#4
 Bryant G. Ly &lt;<a class="reference external" href="mailto:bryantly&#37;&#52;&#48;linux&#46;vnet&#46;ibm&#46;com">bryantly<span>&#64;</span>linux<span>&#46;</span>vnet<span>&#46;</span>ibm<span>&#46;</span>com</a>&gt;,</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Note: Knowledge of virtualization technology is required to understand
 this document.</p>
@@ -301,7 +303,7 @@ on an appliance server named the Hardware Management Console (HMC),
 packaged as an external tower or rack-mounted personal computer. In a
 Power Systems environment, a single HMC can manage multiple POWER
 processor-based systems.</p>
-<section id="management-application">
+<div class="section" id="management-application">
 <h3>Management Application<a class="headerlink" href="#management-application" title="Permalink to this headline">¶</a></h3>
 <p>In the management partition, a management application exists which enables
 a system administrator to configure the system’s partitioning
@@ -327,8 +329,8 @@ functions:</p>
 <li><p>Management of virtual Storage</p></li>
 <li><p>Basic system management</p></li>
 </ul>
-</section>
-<section id="virtual-management-channel-vmc">
+</div>
+<div class="section" id="virtual-management-channel-vmc">
 <h3>Virtual Management Channel (VMC)<a class="headerlink" href="#virtual-management-channel-vmc" title="Permalink to this headline">¶</a></h3>
 <p>A logical device, called the Virtual Management Channel (VMC), is defined
 for communicating between the management application and the hypervisor. It
@@ -351,8 +353,8 @@ the hypervisor. As most HMC messages far exceed the size of a CRQ buffer,
 a virtual DMA (RMDA) of the HMC message data is done prior to each HMC
 Interface CRQ message. Only the management partition drives RDMA
 operations; hypervisors never directly cause the movement of message data.</p>
-</section>
-<section id="terminology">
+</div>
+<div class="section" id="terminology">
 <h3>Terminology<a class="headerlink" href="#terminology" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>RDMA</dt><dd><p>Remote Direct Memory Access is DMA transfer from the server to its
@@ -365,16 +367,16 @@ between partner partitions. Transport events which are signaled
 from the hypervisor to partition are also reported in this queue.</p>
 </dd>
 </dl>
-</section>
-</section>
-<section id="example-management-partition-vmc-driver-interface">
+</div>
+</div>
+<div class="section" id="example-management-partition-vmc-driver-interface">
 <h2>Example Management Partition VMC Driver Interface<a class="headerlink" href="#example-management-partition-vmc-driver-interface" title="Permalink to this headline">¶</a></h2>
 <p>This section provides an example for the management application
 implementation where a device driver is used to interface to the VMC
 device. This driver consists of a new device, for example /dev/ibmvmc,
 which provides interfaces to open, close, read, write, and perform
 ioctl’s against the VMC device.</p>
-<section id="vmc-interface-initialization">
+<div class="section" id="vmc-interface-initialization">
 <h3>VMC Interface Initialization<a class="headerlink" href="#vmc-interface-initialization" title="Permalink to this headline">¶</a></h3>
 <p>The device driver is responsible for initializing the VMC when the driver
 is loaded. It first creates and initializes the CRQ. Next, an exchange of
@@ -400,8 +402,8 @@ EBUSY to open() calls. EIO is returned for all open() failures.</p>
 ----------------------------------------&gt; -
 </pre></div>
 </div>
-</section>
-<section id="vmc-interface-open">
+</div>
+<div class="section" id="vmc-interface-open">
 <h3>VMC Interface Open<a class="headerlink" href="#vmc-interface-open" title="Permalink to this headline">¶</a></h3>
 <p>After the basic VMC channel has been initialized, an HMC session level
 connection can be established. The application layer performs an open() to
@@ -430,8 +432,8 @@ following illustrates this VMC flow:</p>
 &lt;----------------------------------------
 </pre></div>
 </div>
-</section>
-<section id="vmc-interface-runtime">
+</div>
+<div class="section" id="vmc-interface-runtime">
 <h3>VMC Interface Runtime<a class="headerlink" href="#vmc-interface-runtime" title="Permalink to this headline">¶</a></h3>
 <p>During normal runtime, the management application and the hypervisor
 exchange HMC messages via the Signal VMC message and RDMA operations. When
@@ -459,8 +461,8 @@ the VMC device to become ready with data to read.</p>
 &lt;----------------------------------------
 </pre></div>
 </div>
-</section>
-<section id="vmc-interface-close">
+</div>
+<div class="section" id="vmc-interface-close">
 <h3>VMC Interface Close<a class="headerlink" href="#vmc-interface-close" title="Permalink to this headline">¶</a></h3>
 <p>HMC session level connections are closed by the management partition when
 the application layer performs a close() against the device. This action
@@ -474,15 +476,15 @@ storage allocated for buffers for this HMC connection.</p>
 &lt;----------------------------------------
 </pre></div>
 </div>
-</section>
-</section>
-<section id="additional-information">
+</div>
+</div>
+<div class="section" id="additional-information">
 <h2>Additional Information<a class="headerlink" href="#additional-information" title="Permalink to this headline">¶</a></h2>
 <p>For more information on the documentation for CRQ Messages, VMC Messages,
 HMC interface Buffers, and signal messages please refer to the Linux on
 Power Architecture Platform Reference. Section F.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

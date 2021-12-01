@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Journal (jbd2) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -234,7 +236,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="journal-jbd2">
+  <div class="section" id="journal-jbd2">
 <h1>Journal (jbd2)<a class="headerlink" href="#journal-jbd2" title="Permalink to this headline">¶</a></h1>
 <p>Introduced in ext3, the ext4 filesystem employs a journal to protect the
 filesystem against metadata inconsistencies in the case of a system crash. Up
@@ -279,7 +281,7 @@ opposite of ext4.</p>
 <p>NOTE: Both ext4 and ocfs2 use jbd2.</p>
 <p>The maximum size of a journal embedded in an ext4 filesystem is 2^32
 blocks. jbd2 itself does not seem to care.</p>
-<section id="layout">
+<div class="section" id="layout">
 <h2>Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h2>
 <p>Generally speaking, the journal has this format:</p>
 <table class="colwidths-given docutils align-default">
@@ -306,8 +308,8 @@ revocations] commmit_block</p></th>
 or a block revocation list. A finished transaction always ends with a
 commit. If there is no commit record (or the checksums don’t match), the
 transaction will be discarded during replay.</p>
-</section>
-<section id="external-journal">
+</div>
+<div class="section" id="external-journal">
 <h2>External Journal<a class="headerlink" href="#external-journal" title="Permalink to this headline">¶</a></h2>
 <p>Optionally, an ext4 filesystem can be created with an external journal
 device (as opposed to an internal journal, which uses a reserved inode).
@@ -342,8 +344,8 @@ revocations] commmit_block</p></th>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="block-header">
+</div>
+<div class="section" id="block-header">
 <h2>Block Header<a class="headerlink" href="#block-header" title="Permalink to this headline">¶</a></h2>
 <p>Every block in the journal starts with a common 12-byte header
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">journal_header_s</span></code>:</p>
@@ -412,8 +414,8 @@ journal to skip writing blocks that were subsequently rewritten.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="super-block">
+</div>
+<div class="section" id="super-block">
 <h2>Super Block<a class="headerlink" href="#super-block" title="Permalink to this headline">¶</a></h2>
 <p>The super block for the journal is much simpler as compared to ext4’s.
 The key data kept within are size of the journal, and where to find the
@@ -645,8 +647,8 @@ most likely choices.</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="descriptor-block">
+</div>
+<div class="section" id="descriptor-block">
 <h2>Descriptor Block<a class="headerlink" href="#descriptor-block" title="Permalink to this headline">¶</a></h2>
 <p>The descriptor block contains an array of journal block tags that
 describe the final locations of the data blocks that follow in the
@@ -859,16 +861,16 @@ to zero.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="data-block">
+</div>
+<div class="section" id="data-block">
 <h2>Data Block<a class="headerlink" href="#data-block" title="Permalink to this headline">¶</a></h2>
 <p>In general, the data blocks being written to disk through the journal
 are written verbatim into the journal file after the descriptor block.
 However, if the first four bytes of the block match the jbd2 magic
 number then those four bytes are replaced with zeroes and the “escaped”
 flag is set in the descriptor block tag.</p>
-</section>
-<section id="revocation-block">
+</div>
+<div class="section" id="revocation-block">
 <h2>Revocation Block<a class="headerlink" href="#revocation-block" title="Permalink to this headline">¶</a></h2>
 <p>A revocation block is used to prevent replay of a block in an earlier
 transaction. This is used to mark blocks that were journalled at one
@@ -944,8 +946,8 @@ block is a <code class="docutils literal notranslate"><span class="pre">struct</
 </tr>
 </tbody>
 </table>
-</section>
-<section id="commit-block">
+</div>
+<div class="section" id="commit-block">
 <h2>Commit Block<a class="headerlink" href="#commit-block" title="Permalink to this headline">¶</a></h2>
 <p>The commit block is a sentry that indicates that a transaction has been
 completely written to the journal. Once this commit block reaches the
@@ -1011,8 +1013,8 @@ crc32 of all the blocks already written to the transaction.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="fast-commits">
+</div>
+<div class="section" id="fast-commits">
 <h2>Fast commits<a class="headerlink" href="#fast-commits" title="Permalink to this headline">¶</a></h2>
 <p>Fast commit area is organized as a log of tag length values. Each TLV has
 a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ext4_fc_tl</span></code> in the beginning which stores the tag and the length
@@ -1079,8 +1081,8 @@ represents the end of</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="fast-commit-replay-idempotence">
+</div>
+<div class="section" id="fast-commit-replay-idempotence">
 <h2>Fast Commit Replay Idempotence<a class="headerlink" href="#fast-commit-replay-idempotence" title="Permalink to this headline">¶</a></h2>
 <p>Fast commits tags are idempotent in nature provided the recovery code follows
 certain rules. The guiding principle that the commit path follows while
@@ -1126,8 +1128,8 @@ point, the refcount for inode 11 is not reliable, but that gets fixed by the
 replay of last inode 11 tag. Thus, by converting a non-idempotent procedure
 into a series of idempotent outcomes, fast commits ensured idempotence during
 the replay.</p>
-</section>
-<section id="journal-checkpoint">
+</div>
+<div class="section" id="journal-checkpoint">
 <h2>Journal Checkpoint<a class="headerlink" href="#journal-checkpoint" title="Permalink to this headline">¶</a></h2>
 <p>Checkpointing the journal ensures all transactions and their associated buffers
 are submitted to the disk. In-progress transactions are waited upon and included
@@ -1147,8 +1149,8 @@ discarded or zero-filled, respectively, after the journal checkpoint is
 complete. EXT4_IOC_CHECKPOINT_FLAG_DISCARD and EXT4_IOC_CHECKPOINT_FLAG_ZEROOUT
 cannot both be set. The ioctl may be useful when snapshotting a system or for
 complying with content deletion SLOs.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

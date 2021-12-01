@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>What is RCU? – “Read, Copy, Update” &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -277,7 +279,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="what-is-rcu-read-copy-update">
+  <div class="section" id="what-is-rcu-read-copy-update">
 <span id="whatisrcu-doc"></span><h1>What is RCU?  –  “Read, Copy, Update”<a class="headerlink" href="#what-is-rcu-read-copy-update" title="Permalink to this headline">¶</a></h1>
 <p>Please note that the “What is RCU?” LWN series is an excellent place
 to start learning about RCU:</p>
@@ -326,7 +328,7 @@ preferred method of learning.  If you need to know everything about
 everything, feel free to read the whole thing – but if you are really
 that type of person, you have perused the source code and will therefore
 never need this document anyway.  ;-)</p>
-<section id="rcu-overview">
+<div class="section" id="rcu-overview">
 <span id="whatisrcu"></span><h2>1.  RCU OVERVIEW<a class="headerlink" href="#rcu-overview" title="Permalink to this headline">¶</a></h2>
 <p>The basic idea behind RCU is to split updates into “removal” and
 “reclamation” phases.  The removal phase removes references to data items
@@ -385,8 +387,8 @@ and reclaimers, namely, in step (b) above.</p>
 <p>So how the heck can a reclaimer tell when a reader is done, given
 that readers are not doing any sort of synchronization operations???
 Read on to learn about how RCU’s API makes this easy.</p>
-</section>
-<section id="what-is-rcu-s-core-api">
+</div>
+<div class="section" id="what-is-rcu-s-core-api">
 <span id="id1"></span><h2>2.  WHAT IS RCU’S CORE API?<a class="headerlink" href="#what-is-rcu-s-core-api" title="Permalink to this headline">¶</a></h2>
 <p>The core RCU API is quite small:</p>
 <ol class="loweralpha simple">
@@ -402,7 +404,7 @@ express <a class="reference internal" href="../core-api/kernel-api.html#c.synchr
 <p>The five core RCU APIs are described below, the other 18 will be enumerated
 later.  See the kernel docbook documentation for more info, or look directly
 at the function header comments.</p>
-<section id="rcu-read-lock">
+<div class="section" id="rcu-read-lock">
 <h3>rcu_read_lock()<a class="headerlink" href="#rcu-read-lock" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>void rcu_read_lock(void);</p>
@@ -416,8 +418,8 @@ remain unreclaimed for the full duration of that critical section.
 Reference counts may be used in conjunction with RCU to maintain
 longer-term references to data structures.</p>
 </div></blockquote>
-</section>
-<section id="rcu-read-unlock">
+</div>
+<div class="section" id="rcu-read-unlock">
 <h3>rcu_read_unlock()<a class="headerlink" href="#rcu-read-unlock" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>void rcu_read_unlock(void);</p>
@@ -425,8 +427,8 @@ longer-term references to data structures.</p>
 exiting an RCU read-side critical section.  Note that RCU
 read-side critical sections may be nested and/or overlapping.</p>
 </div></blockquote>
-</section>
-<section id="synchronize-rcu">
+</div>
+<div class="section" id="synchronize-rcu">
 <h3>synchronize_rcu()<a class="headerlink" href="#synchronize-rcu" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>void synchronize_rcu(void);</p>
@@ -475,8 +477,8 @@ of denial-of-service attacks.  Code using <a class="reference internal" href="..
 update rate in order to gain this same sort of resilience.  See
 <a class="reference internal" href="checklist.html"><span class="doc">Review Checklist for RCU Patches</span></a> for some approaches to limiting the update rate.</p>
 </div></blockquote>
-</section>
-<section id="rcu-assign-pointer">
+</div>
+<div class="section" id="rcu-assign-pointer">
 <h3>rcu_assign_pointer()<a class="headerlink" href="#rcu-assign-pointer" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>void rcu_assign_pointer(p, typeof(p) v);</p>
@@ -494,8 +496,8 @@ given structure becomes accessible to other CPUs.  That said,
 <a class="reference internal" href="../core-api/kernel-api.html#c.rcu_assign_pointer" title="rcu_assign_pointer"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_assign_pointer()</span></code></a> is most frequently used indirectly, via
 the _rcu list-manipulation primitives such as <a class="reference internal" href="../core-api/kernel-api.html#c.list_add_rcu" title="list_add_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">list_add_rcu()</span></code></a>.</p>
 </div></blockquote>
-</section>
-<section id="rcu-dereference">
+</div>
+<div class="section" id="rcu-dereference">
 <h3>rcu_dereference()<a class="headerlink" href="#rcu-dereference" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>typeof(p) rcu_dereference(p);</p>
@@ -632,9 +634,9 @@ to remote denial-of-service attacks.</p></li>
 </ol>
 <p>Again, most uses will be of (a).  The (b) and (c) cases are important
 for specialized uses, but are relatively uncommon.</p>
-</section>
-</section>
-<section id="what-are-some-example-uses-of-core-rcu-api">
+</div>
+</div>
+<div class="section" id="what-are-some-example-uses-of-core-rcu-api">
 <span id="id6"></span><h2>3.  WHAT ARE SOME EXAMPLE USES OF CORE RCU API?<a class="headerlink" href="#what-are-some-example-uses-of-core-rcu-api" title="Permalink to this headline">¶</a></h2>
 <p>This section shows a simple use of the core RCU API to protect a
 global pointer to a dynamically allocated structure.  More-typical
@@ -718,8 +720,8 @@ data item.</p></li>
 </ul>
 <p>See <a class="reference internal" href="checklist.html"><span class="doc">Review Checklist for RCU Patches</span></a> for additional rules to follow when using RCU.
 And again, more-typical uses of RCU may be found in <a class="reference internal" href="listRCU.html#list-rcu-doc"><span class="std std-ref"><a class="reference internal" href="listRCU.html"><span class="doc">Using RCU to Protect Read-Mostly Linked Lists</span></a></span></a>, <a class="reference internal" href="arrayRCU.html#array-rcu-doc"><span class="std std-ref"><a class="reference internal" href="arrayRCU.html"><span class="doc">Using RCU to Protect Read-Mostly Arrays</span></a></span></a>, and <a class="reference internal" href="NMI-RCU.html#nmi-rcu-doc"><span class="std std-ref"><a class="reference internal" href="NMI-RCU.html"><span class="doc">Using RCU to Protect Dynamic NMI Handlers</span></a></span></a>.</p>
-</section>
-<section id="what-if-my-updating-thread-cannot-block">
+</div>
+<div class="section" id="what-if-my-updating-thread-cannot-block">
 <span id="id7"></span><h2>4.  WHAT IF MY UPDATING THREAD CANNOT BLOCK?<a class="headerlink" href="#what-if-my-updating-thread-cannot-block" title="Permalink to this headline">¶</a></h2>
 <p>In the example above, foo_update_a() blocks until a grace period elapses.
 This is quite simple, but in some cases one cannot afford to wait so
@@ -806,8 +808,8 @@ to avoid having to write your own callback:</p>
 </pre></div>
 </div>
 <p>Again, see <a class="reference internal" href="checklist.html"><span class="doc">Review Checklist for RCU Patches</span></a> for additional rules governing the use of RCU.</p>
-</section>
-<section id="what-are-some-simple-implementations-of-rcu">
+</div>
+<div class="section" id="what-are-some-simple-implementations-of-rcu">
 <span id="id8"></span><h2>5.  WHAT ARE SOME SIMPLE IMPLEMENTATIONS OF RCU?<a class="headerlink" href="#what-are-some-simple-implementations-of-rcu" title="Permalink to this headline">¶</a></h2>
 <p>One of the nice things about RCU is that it has extremely simple “toy”
 implementations that are a good first step towards understanding the
@@ -824,7 +826,7 @@ production-quality implementation, and see:</p>
 <p>for papers describing the Linux kernel RCU implementation.  The OLS’01
 and OLS’02 papers are a good introduction, and the dissertation provides
 more details on the current implementation as of early 2004.</p>
-<section id="a-toy-implementation-1-locking">
+<div class="section" id="a-toy-implementation-1-locking">
 <h3>5A.  “TOY” IMPLEMENTATION #1: LOCKING<a class="headerlink" href="#a-toy-implementation-1-locking" title="Permalink to this headline">¶</a></h3>
 <p>This section presents a “toy” RCU implementation that is based on
 familiar locking primitives.  Its overhead makes it a non-starter for
@@ -896,8 +898,8 @@ kernel?  How could this deadlock be avoided?</p>
 </dd>
 </dl>
 <p><a class="reference internal" href="#id11"><span class="std std-ref">Answers to Quick Quiz</span></a></p>
-</section>
-<section id="b-toy-example-2-classic-rcu">
+</div>
+<div class="section" id="b-toy-example-2-classic-rcu">
 <h3>5B.  “TOY” EXAMPLE #2: CLASSIC RCU<a class="headerlink" href="#b-toy-example-2-classic-rcu" title="Permalink to this headline">¶</a></h3>
 <p>This section presents a “toy” RCU implementation that is based on
 “classic RCU”.  It is also short on performance (but only for updates) and
@@ -951,9 +953,9 @@ CONFIG_PREEMPT_RT, where normal spinlocks can block???</p>
 </dd>
 </dl>
 <p><a class="reference internal" href="#id11"><span class="std std-ref">Answers to Quick Quiz</span></a></p>
-</section>
-</section>
-<section id="analogy-with-reader-writer-locking">
+</div>
+</div>
+<div class="section" id="analogy-with-reader-writer-locking">
 <span id="id9"></span><h2>6.  ANALOGY WITH READER-WRITER LOCKING<a class="headerlink" href="#analogy-with-reader-writer-locking" title="Permalink to this headline">¶</a></h2>
 <p>Although RCU can be used in many different ways, a very common use of
 RCU is analogous to reader-writer locking.  The following unified
@@ -1071,8 +1073,8 @@ a single atomic update, converting to RCU will require special care.</p>
 delete() can now block.  If this is a problem, there is a callback-based
 mechanism that never blocks, namely <a class="reference internal" href="../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a> or <a class="reference internal" href="../core-api/kernel-api.html#c.kfree_rcu" title="kfree_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree_rcu()</span></code></a>, that can
 be used in place of <a class="reference internal" href="../core-api/kernel-api.html#c.synchronize_rcu" title="synchronize_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">synchronize_rcu()</span></code></a>.</p>
-</section>
-<section id="full-list-of-rcu-apis">
+</div>
+<div class="section" id="full-list-of-rcu-apis">
 <span id="id10"></span><h2>7.  FULL LIST OF RCU APIs<a class="headerlink" href="#full-list-of-rcu-apis" title="Permalink to this headline">¶</a></h2>
 <p>The RCU APIs are documented in docbook-format header comments in the
 Linux-kernel source code, but it helps to have a full list of the
@@ -1224,8 +1226,8 @@ only choice that will work for you.</p></li>
 </ol>
 <p>Of course, this all assumes that you have determined that RCU is in fact
 the right tool for your job.</p>
-</section>
-<section id="answers-to-quick-quizzes">
+</div>
+<div class="section" id="answers-to-quick-quizzes">
 <span id="id11"></span><h2>8.  ANSWERS TO QUICK QUIZZES<a class="headerlink" href="#answers-to-quick-quizzes" title="Permalink to this headline">¶</a></h2>
 <dl>
 <dt>Quick Quiz #1:</dt><dd><p>Why is this argument naive?  How could a deadlock
@@ -1323,8 +1325,8 @@ the human being went to???</p>
 <p>My thanks to the people who helped make this human-readable, including
 Jon Walpole, Josh Triplett, Serge Hallyn, Suzanne Wood, and Alan Stern.</p>
 <p>For more information, see <a class="reference external" href="http://www.rdrop.com/users/paulmck/RCU">http://www.rdrop.com/users/paulmck/RCU</a>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

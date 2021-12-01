@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The seq_file Interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -272,7 +274,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-seq-file-interface">
+  <div class="section" id="the-seq-file-interface">
 <h1>The seq_file Interface<a class="headerlink" href="#the-seq-file-interface" title="Permalink to this headline">¶</a></h1>
 <blockquote>
 <div><p>Copyright 2003 Jonathan Corbet &lt;<a class="reference external" href="mailto:corbet&#37;&#52;&#48;lwn&#46;net">corbet<span>&#64;</span>lwn<span>&#46;</span>net</a>&gt;</p>
@@ -324,7 +326,7 @@ result. Yes, it is a thoroughly useless module, but the point is to show
 how the mechanism works without getting lost in other details.  (Those
 wanting to see the full source for this module can find it at
 <a class="reference external" href="https://lwn.net/Articles/22359/">https://lwn.net/Articles/22359/</a>).</p>
-<section id="deprecated-create-proc-entry">
+<div class="section" id="deprecated-create-proc-entry">
 <h2>Deprecated create_proc_entry<a class="headerlink" href="#deprecated-create-proc-entry" title="Permalink to this headline">¶</a></h2>
 <p>Note that the above article uses create_proc_entry which was removed in
 kernel 3.10. Current versions require the following update:</p>
@@ -334,8 +336,8 @@ kernel 3.10. Current versions require the following update:</p>
 +   entry = proc_create(&quot;sequence&quot;, 0, NULL, &amp;ct_file_ops);
 </pre></div>
 </div>
-</section>
-<section id="the-iterator-interface">
+</div>
+<div class="section" id="the-iterator-interface">
 <h2>The iterator interface<a class="headerlink" href="#the-iterator-interface" title="Permalink to this headline">¶</a></h2>
 <p>Modules implementing a virtual file with seq_file must implement an
 iterator object that allows stepping through the data of interest
@@ -474,8 +476,8 @@ passed to a subsequent next() or <a class="reference internal" href="../networki
 such as locks that were taken to be reliably released.  There is <em>no</em>
 guarantee that the iterator will be passed to show(), though in practice
 it often will be.</p>
-</section>
-<section id="formatted-output">
+</div>
+<div class="section" id="formatted-output">
 <h2>Formatted output<a class="headerlink" href="#formatted-output" title="Permalink to this headline">¶</a></h2>
 <p>The seq_file code manages positioning within the output created by the
 iterator and getting it into the user’s buffer. But, for that to work, that
@@ -512,8 +514,8 @@ path cannot be reached from root, seq_path_root() returns SEQ_SKIP.</p>
 <p>A true return from seq_has_overflowed means that the seq_file buffer will
 be discarded and the seq_show function will attempt to allocate a larger
 buffer and retry printing.</p>
-</section>
-<section id="making-it-all-work">
+</div>
+<div class="section" id="making-it-all-work">
 <h2>Making it all work<a class="headerlink" href="#making-it-all-work" title="Permalink to this headline">¶</a></h2>
 <p>So far, we have a nice set of functions which can produce output within the
 seq_file system, but we have not yet turned them into a file that a user
@@ -596,8 +598,8 @@ module_init(ct_init);
 </pre></div>
 </div>
 <p>And that is pretty much it.</p>
-</section>
-<section id="seq-list">
+</div>
+<div class="section" id="seq-list">
 <h2>seq_list<a class="headerlink" href="#seq-list" title="Permalink to this headline">¶</a></h2>
 <p>If your file will be iterating through a linked list, you may find these
 routines useful:</p>
@@ -612,8 +614,8 @@ struct list_head *seq_list_next(void *v, struct list_head *head,
 <p>These helpers will interpret pos as a position within the list and iterate
 accordingly.  Your <a class="reference internal" href="../networking/ieee802154.html#c.start" title="start"><code class="xref c c-func docutils literal notranslate"><span class="pre">start()</span></code></a> and next() functions need only invoke the
 <code class="docutils literal notranslate"><span class="pre">seq_list_*</span></code> helpers with a pointer to the appropriate list_head structure.</p>
-</section>
-<section id="the-extra-simple-version">
+</div>
+<div class="section" id="the-extra-simple-version">
 <h2>The extra-simple version<a class="headerlink" href="#the-extra-simple-version" title="Permalink to this headline">¶</a></h2>
 <p>For extremely simple virtual files, there is an even easier interface.  A
 module can define only the show() function, which should create all the
@@ -629,8 +631,8 @@ value given to single_open() can be found in the private field of the
 seq_file structure. When using single_open(), the programmer should use
 single_release() instead of <a class="reference internal" href="api-summary.html#c.seq_release" title="seq_release"><code class="xref c c-func docutils literal notranslate"><span class="pre">seq_release()</span></code></a> in the file_operations structure
 to avoid a memory leak.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>The Linux Watchdog driver API &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -259,14 +261,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="the-linux-watchdog-driver-api">
+  <div class="section" id="the-linux-watchdog-driver-api">
 <h1>The Linux Watchdog driver API<a class="headerlink" href="#the-linux-watchdog-driver-api" title="Permalink to this headline">¶</a></h1>
 <p>Last reviewed: 10/05/2007</p>
 <p>Copyright 2002 Christer Weingel &lt;<a class="reference external" href="mailto:wingel&#37;&#52;&#48;nano-system&#46;com">wingel<span>&#64;</span>nano-system<span>&#46;</span>com</a>&gt;</p>
 <p>Some parts of this document are copied verbatim from the sbc60xxwdt
 driver which is (c) Copyright 2000 Jakob Oestergaard &lt;<a class="reference external" href="mailto:jakob&#37;&#52;&#48;ostenfeld&#46;dk">jakob<span>&#64;</span>ostenfeld<span>&#46;</span>dk</a>&gt;</p>
 <p>This document describes the state of the Linux 2.4.18 kernel.</p>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>A Watchdog Timer (WDT) is a hardware circuit that can reset the
 computer system in case of a software fault.  You probably knew that
@@ -283,8 +285,8 @@ system (causing a reboot) after the timeout occurs.</p>
 drivers implement different, and sometimes incompatible, parts of it.
 This file is an attempt to document the existing usage and allow
 future driver writers to use it as a reference.</p>
-</section>
-<section id="the-simplest-api">
+</div>
+<div class="section" id="the-simplest-api">
 <h2>The simplest API<a class="headerlink" href="#the-simplest-api" title="Permalink to this headline">¶</a></h2>
 <p>All drivers support the basic mode of operation, where the watchdog
 activates as soon as /dev/watchdog is opened and will reboot unless
@@ -305,8 +307,8 @@ started.  So, if the watchdog daemon crashes, the system will reboot
 after the timeout has passed. Watchdog devices also usually support
 the nowayout module parameter so that this option can be controlled at
 runtime.</p>
-</section>
-<section id="magic-close-feature">
+</div>
+<div class="section" id="magic-close-feature">
 <h2>Magic Close feature<a class="headerlink" href="#magic-close-feature" title="Permalink to this headline">¶</a></h2>
 <p>If a driver supports “Magic Close”, the driver will not disable the
 watchdog unless a specific magic character ‘V’ has been sent to
@@ -315,8 +317,8 @@ closes the file without sending this special character, the driver
 will assume that the daemon (and userspace in general) died, and will
 stop pinging the watchdog without disabling it first.  This will then
 cause a reboot if the watchdog is not re-opened in sufficient time.</p>
-</section>
-<section id="the-ioctl-api">
+</div>
+<div class="section" id="the-ioctl-api">
 <h2>The ioctl API<a class="headerlink" href="#the-ioctl-api" title="Permalink to this headline">¶</a></h2>
 <p>All conforming drivers also support an ioctl API.</p>
 <p>Pinging the watchdog using an ioctl:</p>
@@ -331,8 +333,8 @@ replaced with:</p>
 </pre></div>
 </div>
 <p>the argument to the ioctl is ignored.</p>
-</section>
-<section id="setting-and-getting-the-timeout">
+</div>
+<div class="section" id="setting-and-getting-the-timeout">
 <h2>Setting and getting the timeout<a class="headerlink" href="#setting-and-getting-the-timeout" title="Permalink to this headline">¶</a></h2>
 <p>For some drivers it is possible to modify the watchdog timeout on the
 fly with the SETTIMEOUT ioctl, those drivers have the WDIOF_SETTIMEOUT
@@ -353,8 +355,8 @@ current timeout using the GETTIMEOUT ioctl:</p>
 printf(&quot;The timeout was is %d seconds\n&quot;, timeout);
 </pre></div>
 </div>
-</section>
-<section id="pretimeouts">
+</div>
+<div class="section" id="pretimeouts">
 <h2>Pretimeouts<a class="headerlink" href="#pretimeouts" title="Permalink to this headline">¶</a></h2>
 <p>Some watchdog timers can be set to have a trigger go off before the
 actual time they will reset the system.  This can be done with an NMI,
@@ -376,8 +378,8 @@ printf(&quot;The pretimeout was is %d seconds\n&quot;, timeout);
 </pre></div>
 </div>
 <p>Not all watchdog drivers will support a pretimeout.</p>
-</section>
-<section id="get-the-number-of-seconds-before-reboot">
+</div>
+<div class="section" id="get-the-number-of-seconds-before-reboot">
 <h2>Get the number of seconds before reboot<a class="headerlink" href="#get-the-number-of-seconds-before-reboot" title="Permalink to this headline">¶</a></h2>
 <p>Some watchdog drivers have the ability to report the remaining time
 before the system will reboot. The WDIOC_GETTIMELEFT is the ioctl
@@ -386,8 +388,8 @@ that returns the number of seconds before reboot:</p>
 printf(&quot;The timeout was is %d seconds\n&quot;, timeleft);
 </pre></div>
 </div>
-</section>
-<section id="environmental-monitoring">
+</div>
+<div class="section" id="environmental-monitoring">
 <h2>Environmental monitoring<a class="headerlink" href="#environmental-monitoring" title="Permalink to this headline">¶</a></h2>
 <p>All watchdog drivers are required return more information about the system,
 some do temperature, fan and power level monitoring, some can tell you
@@ -610,8 +612,8 @@ ioctl(fd, WDIOC_SETOPTIONS, &amp;options);
 </table>
 </div></blockquote>
 <p>[FIXME – better explanations]</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

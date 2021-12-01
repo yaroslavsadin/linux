@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>并发管理的工作队列 (cmwq) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -290,7 +292,7 @@
 <dd class="field-even"><p>司延腾 Yanteng Si &lt;<a class="reference external" href="mailto:siyanteng&#37;&#52;&#48;loongson&#46;cn">siyanteng<span>&#64;</span>loongson<span>&#46;</span>cn</a>&gt;</p>
 </dd>
 </dl>
-<section id="cmwq">
+<div class="section" id="cmwq">
 <span id="cn-workqueue-rst"></span><h1>并发管理的工作队列 (cmwq)<a class="headerlink" href="#cmwq" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">日期</dt>
@@ -303,7 +305,7 @@
 <dd class="field-odd"><p>Florian Mickler &lt;<a class="reference external" href="mailto:florian&#37;&#52;&#48;mickler&#46;org">florian<span>&#64;</span>mickler<span>&#46;</span>org</a>&gt;</p>
 </dd>
 </dl>
-<section id="id1">
+<div class="section" id="id1">
 <h2>简介<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>在很多情况下，需要一个异步进程的执行环境，工作队列（wq）API是这种情况下
 最常用的机制。</p>
@@ -313,8 +315,8 @@
 <p>当工作队列上有工作项时，工作者会一个接一个地执行与工作项相关的函数。当
 工作队列中没有任何工作项时，工作者就会变得空闲。当一个新的工作项被排入
 队列时，工作者又开始执行。</p>
-</section>
-<section id="id2">
+</div>
+<div class="section" id="id2">
 <h2>为什么要cmwq?<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>在最初的wq实现中，多线程（MT）wq在每个CPU上有一个工作者线程，而单线程
 （ST）wq在全系统有一个工作者线程。一个MT wq需要保持与CPU数量相同的工
@@ -336,8 +338,8 @@
 <li><p>需提供灵活的并发水平。</p></li>
 <li><p>自动调节工作者池和并发水平，使API用户不需要担心这些细节。</p></li>
 </ul>
-</section>
-<section id="id3">
+</div>
+<div class="section" id="id3">
 <h2>设计<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>为了简化函数的异步执行，引入了一个新的抽象概念，即工作项。</p>
 <p>一个工作项是一个简单的结构，它持有一个指向将被异步执行的函数的指针。
@@ -384,8 +386,8 @@ workqueue将自动创建与属性相匹配的后备工作者池。调节并发�
 的工作项都需要在wq上排队，wq上保留了一个救援工作者，以便在内存有压
 力的情况下下执行。否则，工作者池就有可能出现死锁，等待执行上下文释
 放出来。</p>
-</section>
-<section id="api">
+</div>
+<div class="section" id="api">
 <h2>应用程序编程接口 (API)<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">alloc_workqueue()</span></code> 分配了一个wq。原来的 <code class="docutils literal notranslate"><span class="pre">create_*workqueue()</span></code>
 函数已被废弃，并计划删除。 <code class="docutils literal notranslate"><span class="pre">alloc_workqueue()</span></code> 需要三个
@@ -394,7 +396,7 @@ workqueue将自动创建与属性相匹配的后备工作者池。调节并发�
 <p>一个wq不再管理执行资源，而是作为前进进度保证、刷新(flush)和
 工作项属性的域。 <code class="docutils literal notranslate"><span class="pre">&#64;flags</span></code> 和 <code class="docutils literal notranslate"><span class="pre">&#64;max_active</span></code> 控制着工作
 项如何被分配执行资源、安排和执行。</p>
-<section id="flags">
+<div class="section" id="flags">
 <h3><code class="docutils literal notranslate"><span class="pre">flags</span></code><a class="headerlink" href="#flags" title="Permalink to this headline">¶</a></h3>
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">WQ_UNBOUND</span></code></dt><dd><p>排队到非绑定wq的工作项由特殊的工作者池提供服务，这些工作者不
@@ -432,8 +434,8 @@ CPU密集型工作项的执行。</p>
 <p>请注意，标志 <code class="docutils literal notranslate"><span class="pre">WQ_NON_REENTRANT</span></code> 不再存在，因为现在所有的工作
 队列都是不可逆的——任何工作项都保证在任何时间内最多被整个系统的一
 个工作者执行。</p>
-</section>
-<section id="max-active">
+</div>
+<div class="section" id="max-active">
 <h3><code class="docutils literal notranslate"><span class="pre">max_active</span></code><a class="headerlink" href="#max-active" title="Permalink to this headline">¶</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">&#64;max_active</span></code> 决定了每个CPU可以分配给wq的工作项的最大执行上
 下文数量。例如，如果 <code class="docutils literal notranslate"><span class="pre">&#64;max_active为16</span></code> ，每个CPU最多可以同
@@ -451,9 +453,9 @@ CPU密集型工作项的执行。</p>
 同的排序属性。</p>
 <p>在目前的实现中，上述配置只保证了特定NUMA节点内的ST行为。相反，
 <code class="docutils literal notranslate"><span class="pre">alloc_ordered_queue()</span></code> 应该被用来实现全系统的ST行为。</p>
-</section>
-</section>
-<section id="id4">
+</div>
+</div>
+<div class="section" id="id4">
 <h2>执行场景示例<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>下面的示例执行场景试图说明cmwq在不同配置下的行为。</p>
 <blockquote>
@@ -517,8 +519,8 @@ CPU密集型工作项的执行。</p>
 25             w2 wakes up and finishes
 </pre></div>
 </div>
-</section>
-<section id="id5">
+</div>
+<div class="section" id="id5">
 <h2>指南<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>如果一个wq可能处理在内存回收期间使用的工作项目，请不
@@ -536,8 +538,8 @@ CPU密集型工作项的执行。</p>
 <li><p>除非工作项预计会消耗大量的CPU周期，否则使用绑定的wq通常是有
 益的，因为wq操作和工作项执行中的定位水平提高了。</p></li>
 </ul>
-</section>
-<section id="id6">
+</div>
+<div class="section" id="id6">
 <h2>调试<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <p>因为工作函数是由通用的工作者线程执行的，所以需要一些手段来揭示一些行为不端的工作队列用户。</p>
 <p>工作者线程在进程列表中显示为:</p>
@@ -566,14 +568,14 @@ $ cat /sys/kernel/debug/tracing/trace_pipe &gt; out.txt
 </pre></div>
 </div>
 <p>工作项函数在堆栈追踪中应该是微不足道的。</p>
-</section>
-<section id="id7">
+</div>
+<div class="section" id="id7">
 <h2>内核内联文档参考<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <p>该API在以下内核代码中:</p>
 <p>include/linux/workqueue.h</p>
 <p>kernel/workqueue.c</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

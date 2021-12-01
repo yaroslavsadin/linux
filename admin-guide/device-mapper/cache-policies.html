@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Guidance for writing policies &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -359,7 +361,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="guidance-for-writing-policies">
+  <div class="section" id="guidance-for-writing-policies">
 <h1>Guidance for writing policies<a class="headerlink" href="#guidance-for-writing-policies" title="Permalink to this headline">¶</a></h1>
 <p>Try to keep transactionality out of it.  The core is careful to
 avoid asking about anything that is migrating.  This is a pain, but
@@ -376,9 +378,9 @@ issues periodic ticks to the policy.  It’s suggested that the policy
 doesn’t update states (eg, hit counts) for a block more than once
 for each tick.  The core ticks by watching bios complete, and so
 trying to see when the io scheduler has let the ios run.</p>
-<section id="overview-of-supplied-cache-replacement-policies">
+<div class="section" id="overview-of-supplied-cache-replacement-policies">
 <h2>Overview of supplied cache replacement policies<a class="headerlink" href="#overview-of-supplied-cache-replacement-policies" title="Permalink to this headline">¶</a></h2>
-<section id="multiqueue-mq">
+<div class="section" id="multiqueue-mq">
 <h3>multiqueue (mq)<a class="headerlink" href="#multiqueue-mq" title="Permalink to this headline">¶</a></h3>
 <p>This policy is now an alias for smq (see below).</p>
 <p>The following tunables are accepted, but have no effect:</p>
@@ -389,8 +391,8 @@ trying to see when the io scheduler has let the ios run.</p>
 &#39;discard_promote_adjustment &lt;value&gt;&#39;
 </pre></div>
 </div>
-</section>
-<section id="stochastic-multiqueue-smq">
+</div>
+<div class="section" id="stochastic-multiqueue-smq">
 <h3>Stochastic multiqueue (smq)<a class="headerlink" href="#stochastic-multiqueue-smq" title="Permalink to this headline">¶</a></h3>
 <p>This policy is the default.</p>
 <p>The stochastic multi-queue (smq) policy addresses some of the problems
@@ -403,7 +405,7 @@ DM table that is using the cache target.  Doing so will cause all of the
 mq policy’s hints to be dropped.  Also, performance of the cache may
 degrade slightly until smq recalculates the origin device’s hotspots
 that should be cached.</p>
-<section id="memory-usage">
+<div class="section" id="memory-usage">
 <h4>Memory usage<a class="headerlink" href="#memory-usage" title="Permalink to this headline">¶</a></h4>
 <p>The mq policy used a lot of memory; 88 bytes per cache block on a 64
 bit machine.</p>
@@ -414,8 +416,8 @@ the entries (each hotspot block covers a larger area than a single
 cache block).</p>
 <p>All this means smq uses ~25bytes per cache block.  Still a lot of
 memory, but a substantial improvement nontheless.</p>
-</section>
-<section id="level-balancing">
+</div>
+<div class="section" id="level-balancing">
 <h4>Level balancing<a class="headerlink" href="#level-balancing" title="Permalink to this headline">¶</a></h4>
 <p>mq placed entries in different levels of the multiqueue structures
 based on their hit count (~ln(hit count)).  This meant the bottom
@@ -437,18 +439,18 @@ away.  In addition it tracks performance of the hotspot queue, which
 is used to decide which blocks to promote.  If the hotspot queue is
 performing badly then it starts moving entries more quickly between
 levels.  This lets it adapt to new IO patterns very quickly.</p>
-</section>
-<section id="performance">
+</div>
+<div class="section" id="performance">
 <h4>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h4>
 <p>Testing smq shows substantially better performance than mq.</p>
-</section>
-</section>
-<section id="cleaner">
+</div>
+</div>
+<div class="section" id="cleaner">
 <h3>cleaner<a class="headerlink" href="#cleaner" title="Permalink to this headline">¶</a></h3>
 <p>The cleaner writes back all dirty blocks in a cache to decommission it.</p>
-</section>
-</section>
-<section id="examples">
+</div>
+</div>
+<div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>The syntax for a table is:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cache &lt;metadata dev&gt; &lt;cache dev&gt; &lt;origin dev&gt; &lt;block size&gt;
@@ -468,8 +470,8 @@ creates a 128GB large mapped device named &#39;blah&#39; with the
 sequential threshold set to 1024 and the random_threshold set to 8.
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

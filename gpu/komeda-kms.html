@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>drm/komeda Arm display driver &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -282,12 +284,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="drm-komeda-arm-display-driver">
+  <div class="section" id="drm-komeda-arm-display-driver">
 <h1>drm/komeda Arm display driver<a class="headerlink" href="#drm-komeda-arm-display-driver" title="Permalink to this headline">¶</a></h1>
 <p>The drm/komeda driver supports the Arm display processor D71 and later products,
 this document gives a brief overview of driver design: how it works and why
 design it like that.</p>
-<section id="overview-of-d71-like-display-ips">
+<div class="section" id="overview-of-d71-like-display-ips">
 <h2>Overview of D71 like display IPs<a class="headerlink" href="#overview-of-d71-like-display-ips" title="Permalink to this headline">¶</a></h2>
 <p>From D71, Arm display IP begins to adopt a flexible and modularized
 architecture. A display pipeline is made up of multiple individual and
@@ -295,14 +297,14 @@ functional pipeline stages called components, and every component has some
 specific capabilities that can give the flowed pipeline pixel data a
 particular processing.</p>
 <p>Typical D71 components:</p>
-<section id="layer">
+<div class="section" id="layer">
 <h3>Layer<a class="headerlink" href="#layer" title="Permalink to this headline">¶</a></h3>
 <p>Layer is the first pipeline stage, which prepares the pixel data for the next
 stage. It fetches the pixel from memory, decodes it if it’s AFBC, rotates the
 source image, unpacks or converts YUV pixels to the device internal RGB pixels,
 then adjusts the color_space of pixels if needed.</p>
-</section>
-<section id="scaler">
+</div>
+<div class="section" id="scaler">
 <h3>Scaler<a class="headerlink" href="#scaler" title="Permalink to this headline">¶</a></h3>
 <p>As its name suggests, scaler takes responsibility for scaling, and D71 also
 supports image enhancements by scaler.
@@ -310,31 +312,31 @@ The usage of scaler is very flexible and can be connected to layer output
 for layer scaling, or connected to compositor and scale the whole display
 frame and then feed the output data into wb_layer which will then write it
 into memory.</p>
-</section>
-<section id="compositor-compiz">
+</div>
+<div class="section" id="compositor-compiz">
 <h3>Compositor (compiz)<a class="headerlink" href="#compositor-compiz" title="Permalink to this headline">¶</a></h3>
 <p>Compositor blends multiple layers or pixel data flows into one single display
 frame. its output frame can be fed into post image processor for showing it on
 the monitor or fed into wb_layer and written to memory at the same time.
 user can also insert a scaler between compositor and wb_layer to down scale
 the display frame first and then write to memory.</p>
-</section>
-<section id="writeback-layer-wb-layer">
+</div>
+<div class="section" id="writeback-layer-wb-layer">
 <h3>Writeback Layer (wb_layer)<a class="headerlink" href="#writeback-layer-wb-layer" title="Permalink to this headline">¶</a></h3>
 <p>Writeback layer does the opposite things of Layer, which connects to compiz
 and writes the composition result to memory.</p>
-</section>
-<section id="post-image-processor-improc">
+</div>
+<div class="section" id="post-image-processor-improc">
 <h3>Post image processor (improc)<a class="headerlink" href="#post-image-processor-improc" title="Permalink to this headline">¶</a></h3>
 <p>Post image processor adjusts frame data like gamma and color space to fit the
 requirements of the monitor.</p>
-</section>
-<section id="timing-controller-timing-ctrlr">
+</div>
+<div class="section" id="timing-controller-timing-ctrlr">
 <h3>Timing controller (timing_ctrlr)<a class="headerlink" href="#timing-controller-timing-ctrlr" title="Permalink to this headline">¶</a></h3>
 <p>Final stage of display pipeline, Timing controller is not for the pixel
 handling, but only for controlling the display timing.</p>
-</section>
-<section id="merger">
+</div>
+<div class="section" id="merger">
 <h3>Merger<a class="headerlink" href="#merger" title="Permalink to this headline">¶</a></h3>
 <p>D71 scaler mostly only has the half horizontal input/output capabilities
 compared with Layer, like if Layer supports 4K input size, the scaler only can
@@ -343,14 +345,14 @@ introduces Layer Split, which splits the whole image to two half parts and feeds
 them to two Layers A and B, and does the scaling independently. After scaling
 the result need to be fed to merger to merge two part images together, and then
 output merged result to compiz.</p>
-</section>
-<section id="splitter">
+</div>
+<div class="section" id="splitter">
 <h3>Splitter<a class="headerlink" href="#splitter" title="Permalink to this headline">¶</a></h3>
 <p>Similar to Layer Split, but Splitter is used for writeback, which splits the
 compiz result to two parts and then feed them to two scalers.</p>
-</section>
-</section>
-<section id="possible-d71-pipeline-usage">
+</div>
+</div>
+<div class="section" id="possible-d71-pipeline-usage">
 <h2>Possible D71 Pipeline usage<a class="headerlink" href="#possible-d71-pipeline-usage" title="Permalink to this headline">¶</a></h2>
 <p>Benefitting from the modularized architecture, D71 pipelines can be easily
 adjusted to fit different usages. And D71 has two pipelines, which support two
@@ -366,67 +368,53 @@ pipeline_A.timing_ctrlr. The pipeline_B works just like a “slave” of
 pipeline_A(master)</p>
 </li>
 </ul>
-<section id="single-pipeline-data-flow">
+<div class="section" id="single-pipeline-data-flow">
 <h3>Single pipeline data flow<a class="headerlink" href="#single-pipeline-data-flow" title="Permalink to this headline">¶</a></h3>
-<figure class="align-default" id="id1">
-<img alt="Single pipeline digraph" src="../_images/DOT-66002ea43d67b166bf5079b6119bec5b363127ba.svg" /><figcaption>
-<p><span class="caption-text">Single pipeline data flow</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-</section>
-<section id="dual-pipeline-with-slave-enabled">
+<div class="figure align-default" id="id1">
+<img alt="Single pipeline digraph" src="../_images/DOT-66002ea43d67b166bf5079b6119bec5b363127ba.svg" /><p class="caption"><span class="caption-text">Single pipeline data flow</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="dual-pipeline-with-slave-enabled">
 <h3>Dual pipeline with Slave enabled<a class="headerlink" href="#dual-pipeline-with-slave-enabled" title="Permalink to this headline">¶</a></h3>
-<figure class="align-default" id="id2">
-<img alt="Slave pipeline digraph" src="../_images/DOT-d59a989ca63363954b8d9c9e03d8cff5effff7e7.svg" /><figcaption>
-<p><span class="caption-text">Slave pipeline enabled data flow</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-</section>
-<section id="sub-pipelines-for-input-and-output">
+<div class="figure align-default" id="id2">
+<img alt="Slave pipeline digraph" src="../_images/DOT-d59a989ca63363954b8d9c9e03d8cff5effff7e7.svg" /><p class="caption"><span class="caption-text">Slave pipeline enabled data flow</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="sub-pipelines-for-input-and-output">
 <h3>Sub-pipelines for input and output<a class="headerlink" href="#sub-pipelines-for-input-and-output" title="Permalink to this headline">¶</a></h3>
 <p>A complete display pipeline can be easily divided into three sub-pipelines
 according to the in/out usage.</p>
-<section id="layer-input-pipeline">
+<div class="section" id="layer-input-pipeline">
 <h4>Layer(input) pipeline<a class="headerlink" href="#layer-input-pipeline" title="Permalink to this headline">¶</a></h4>
-<figure class="align-default" id="id3">
-<img alt="Layer data digraph" src="../_images/DOT-18a2db30442be8a3a7d319b58bde80b777ddc6d3.svg" /><figcaption>
-<p><span class="caption-text">Layer (input) data flow</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-<figure class="align-default" id="id4">
-<img alt="Layer Split digraph" src="../_images/DOT-fe8cb898f5142ca0241f8f00c5a38ba8acccf617.svg" /><figcaption>
-<p><span class="caption-text">Layer Split pipeline</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-</section>
-<section id="writeback-output-pipeline">
+<div class="figure align-default" id="id3">
+<img alt="Layer data digraph" src="../_images/DOT-18a2db30442be8a3a7d319b58bde80b777ddc6d3.svg" /><p class="caption"><span class="caption-text">Layer (input) data flow</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="id4">
+<img alt="Layer Split digraph" src="../_images/DOT-fe8cb898f5142ca0241f8f00c5a38ba8acccf617.svg" /><p class="caption"><span class="caption-text">Layer Split pipeline</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="writeback-output-pipeline">
 <h4>Writeback(output) pipeline<a class="headerlink" href="#writeback-output-pipeline" title="Permalink to this headline">¶</a></h4>
-<figure class="align-default" id="id5">
-<img alt="writeback digraph" src="../_images/DOT-1c48a6e05371ecefe4b6c024d2bea979a24bc08a.svg" /><figcaption>
-<p><span class="caption-text">Writeback(output) data flow</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-<figure class="align-default" id="id6">
-<img alt="split writeback digraph" src="../_images/DOT-f14473fbd2d906d47164f55a2529d4ac78b1bc74.svg" /><figcaption>
-<p><span class="caption-text">Writeback(output) Split data flow</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-</section>
-<section id="display-output-pipeline">
+<div class="figure align-default" id="id5">
+<img alt="writeback digraph" src="../_images/DOT-1c48a6e05371ecefe4b6c024d2bea979a24bc08a.svg" /><p class="caption"><span class="caption-text">Writeback(output) data flow</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<div class="figure align-default" id="id6">
+<img alt="split writeback digraph" src="../_images/DOT-f14473fbd2d906d47164f55a2529d4ac78b1bc74.svg" /><p class="caption"><span class="caption-text">Writeback(output) Split data flow</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="display-output-pipeline">
 <h4>Display output pipeline<a class="headerlink" href="#display-output-pipeline" title="Permalink to this headline">¶</a></h4>
-<figure class="align-default" id="id7">
-<img alt="display digraph" src="../_images/DOT-d0edc63bffe8e7dca5c56d8d28a47b97ffa80d27.svg" /><figcaption>
-<p><span class="caption-text">display output data flow</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+<div class="figure align-default" id="id7">
+<img alt="display digraph" src="../_images/DOT-d0edc63bffe8e7dca5c56d8d28a47b97ffa80d27.svg" /><p class="caption"><span class="caption-text">display output data flow</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
 <p>In the following section we’ll see these three sub-pipelines will be handled
 by KMS-plane/wb_conn/crtc respectively.</p>
-</section>
-</section>
-</section>
-<section id="komeda-resource-abstraction">
+</div>
+</div>
+</div>
+<div class="section" id="komeda-resource-abstraction">
 <h2>Komeda Resource abstraction<a class="headerlink" href="#komeda-resource-abstraction" title="Permalink to this headline">¶</a></h2>
-<section id="struct-komeda-pipeline-component">
+<div class="section" id="struct-komeda-pipeline-component">
 <h3>struct komeda_pipeline/component<a class="headerlink" href="#struct-komeda-pipeline-component" title="Permalink to this headline">¶</a></h3>
 <p>To fully utilize and easily access/configure the HW, the driver side also uses
 a similar architecture: Pipeline/Component to describe the HW features and
@@ -439,8 +427,8 @@ capabilities, and a specific component includes two parts:</p>
 data flow control and all specific components are a subclass of this base
 structure.</p>
 <dl class="c struct">
-<dt id="c.komeda_component">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_component</span></code><a class="headerlink" href="#c.komeda_component" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_component">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_component</span></span></span><a class="headerlink" href="#c.komeda_component" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -499,8 +487,8 @@ pipeline.</p>
 component into the display pipeline.
 all specified components are subclass of this structure.</p>
 <dl class="c struct">
-<dt id="c.komeda_component_output">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_component_output</span></code><a class="headerlink" href="#c.komeda_component_output" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_component_output">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_component_output</span></span></span><a class="headerlink" href="#c.komeda_component_output" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -522,8 +510,8 @@ all specified components are subclass of this structure.</p>
 comes from, only know the component is not enough, we still need to know
 its output port</p>
 <dl class="c struct">
-<dt id="c.komeda_component_state">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_component_state</span></code><a class="headerlink" href="#c.komeda_component_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_component_state">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_component_state</span></span></span><a class="headerlink" href="#c.komeda_component_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -591,8 +579,8 @@ level for dirty update.</p>
 the superclass of all specific component_state like <strong>komeda_layer_state</strong>,
 <strong>komeda_scaler_state</strong></p>
 <dl class="c struct">
-<dt id="c.komeda_pipeline">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_pipeline</span></code><a class="headerlink" href="#c.komeda_pipeline" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_pipeline">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_pipeline</span></span></span><a class="headerlink" href="#c.komeda_pipeline" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -675,8 +663,8 @@ phase 2: for disabling the standalong_disabled_comps.</p>
 <p><strong>Description</strong></p>
 <p>Represent a complete display pipeline and hold all functional components.</p>
 <dl class="c struct">
-<dt id="c.komeda_pipeline_state">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_pipeline_state</span></code><a class="headerlink" href="#c.komeda_pipeline_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_pipeline_state">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_pipeline_state</span></span></span><a class="headerlink" href="#c.komeda_pipeline_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -702,9 +690,9 @@ phase 2: for disabling the standalong_disabled_comps.</p>
 <p><strong>NOTE</strong></p>
 <p>Unlike the pipeline, pipeline_state doesn’t gather any component_state
 into it. It because all component will be managed by drm_atomic_state.</p>
-</section>
-</section>
-<section id="resource-discovery-and-initialization">
+</div>
+</div>
+<div class="section" id="resource-discovery-and-initialization">
 <h2>Resource discovery and initialization<a class="headerlink" href="#resource-discovery-and-initialization" title="Permalink to this headline">¶</a></h2>
 <p>Pipeline and component are used to describe how to handle the pixel data. We
 still need a &#64;<a class="reference internal" href="#c.komeda_dev" title="komeda_dev"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">komeda_dev</span></code></a> to describe the whole view of the device, and
@@ -724,8 +712,8 @@ achieve this, split the komeda device into two layers: CORE and CHIP.</p>
 <li><p>struct komeda_component_funcs</p></li>
 </ul>
 <dl class="c struct">
-<dt id="c.komeda_dev_funcs">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_dev_funcs</span></code><a class="headerlink" href="#c.komeda_dev_funcs" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_dev_funcs">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_dev_funcs</span></span></span><a class="headerlink" href="#c.komeda_dev_funcs" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -776,8 +764,8 @@ before the <code class="xref c c-type docutils literal notranslate"><span class=
 <p><strong>Description</strong></p>
 <p>Supplied by chip level and returned by the chip entry function xxx_identify,</p>
 <dl class="c struct">
-<dt id="c.komeda_dev">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_dev</span></code><a class="headerlink" href="#c.komeda_dev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_dev">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_dev</span></span></span><a class="headerlink" href="#c.komeda_dev" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -845,12 +833,12 @@ level categories, the high byte contains extra debug options.</p>
 <p>Pipeline and component are used to describe how to handle the pixel data.
 komeda_device is for describing the whole view of the device, and the
 control-abilites of device.</p>
-</section>
-<section id="format-handling">
+</div>
+<div class="section" id="format-handling">
 <h2>Format handling<a class="headerlink" href="#format-handling" title="Permalink to this headline">¶</a></h2>
 <dl class="c struct">
-<dt id="c.komeda_format_caps">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_format_caps</span></code><a class="headerlink" href="#c.komeda_format_caps" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_format_caps">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_format_caps</span></span></span><a class="headerlink" href="#c.komeda_format_caps" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -887,8 +875,8 @@ limitations for a specific format, and format_caps will be linked into
 <p>one fourcc may has two different format_caps items for fourcc and
 fourcc+modifier</p>
 <dl class="c struct">
-<dt id="c.komeda_format_caps_table">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_format_caps_table</span></code><a class="headerlink" href="#c.komeda_format_caps_table" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_format_caps_table">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_format_caps_table</span></span></span><a class="headerlink" href="#c.komeda_format_caps_table" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>format_caps mananger</p>
 </dd></dl>
 
@@ -912,8 +900,8 @@ the ability to do the further HW specific check.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.komeda_fb">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_fb</span></code><a class="headerlink" href="#c.komeda_fb" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_fb">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_fb</span></span></span><a class="headerlink" href="#c.komeda_fb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Entending drm_framebuffer with komeda attribute</p>
 </dd></dl>
 
@@ -946,8 +934,8 @@ the ability to do the further HW specific check.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">offset_payload</span></code></dt><dd><p>start of afbc body buffer</p>
 </dd>
 </dl>
-</section>
-<section id="attach-komeda-dev-to-drm-kms">
+</div>
+<div class="section" id="attach-komeda-dev-to-drm-kms">
 <h2>Attach komeda_dev to DRM-KMS<a class="headerlink" href="#attach-komeda-dev-to-drm-kms" title="Permalink to this headline">¶</a></h2>
 <p>Komeda abstracts resources by pipeline/component, but DRM-KMS uses
 crtc/plane/connector. One KMS-obj cannot represent only one single component,
@@ -966,7 +954,7 @@ And a KMS-Plane may require multiple komeda resources: layer/scaler/compiz.</p>
 component, and at any one time a pipeline/component only can be used by one
 user. And pipeline/component will be treated as private object of DRM-KMS; the
 state will be managed by drm_atomic_state as well.</p>
-<section id="how-to-map-plane-to-layer-input-pipeline">
+<div class="section" id="how-to-map-plane-to-layer-input-pipeline">
 <h3>How to map plane to Layer(input) pipeline<a class="headerlink" href="#how-to-map-plane-to-layer-input-pipeline" title="Permalink to this headline">¶</a></h3>
 <p>Komeda has multiple Layer input pipelines, see:
 -   <a class="reference internal" href="#single-pipeline-data-flow">Single pipeline data flow</a>
@@ -992,8 +980,8 @@ Layer according to plane_state-&gt;zpos.</p>
 <p>So for komeda, the KMS-plane doesn’t represent a fixed komeda layer pipeline,
 but multiple Layers with same capabilities. Komeda will select one or more
 Layers to fit the requirement of one KMS-plane.</p>
-</section>
-<section id="make-component-pipeline-to-be-drm-private-obj">
+</div>
+<div class="section" id="make-component-pipeline-to-be-drm-private-obj">
 <h3>Make component/pipeline to be drm_private_obj<a class="headerlink" href="#make-component-pipeline-to-be-drm-private-obj" title="Permalink to this headline">¶</a></h3>
 <p>Add <a class="reference internal" href="drm-kms.html#c.drm_private_obj" title="drm_private_obj"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_private_obj</span></code></a> to <a class="reference internal" href="#c.komeda_component" title="komeda_component"><code class="xref c c-type docutils literal notranslate"><span class="pre">komeda_component</span></code></a>, <a class="reference internal" href="#c.komeda_pipeline" title="komeda_pipeline"><code class="xref c c-type docutils literal notranslate"><span class="pre">komeda_pipeline</span></code></a></p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">komeda_component</span> <span class="p">{</span>
@@ -1007,8 +995,8 @@ Layers to fit the requirement of one KMS-plane.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="tracking-component-state-pipeline-state-by-drm-atomic-state">
+</div>
+<div class="section" id="tracking-component-state-pipeline-state-by-drm-atomic-state">
 <h3>Tracking component_state/pipeline_state by drm_atomic_state<a class="headerlink" href="#tracking-component-state-pipeline-state-by-drm-atomic-state" title="Permalink to this headline">¶</a></h3>
 <p>Add <a class="reference internal" href="drm-kms.html#c.drm_private_state" title="drm_private_state"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_private_state</span></code></a> and user to <a class="reference internal" href="#c.komeda_component_state" title="komeda_component_state"><code class="xref c c-type docutils literal notranslate"><span class="pre">komeda_component_state</span></code></a>,
 <a class="reference internal" href="#c.komeda_pipeline_state" title="komeda_pipeline_state"><code class="xref c c-type docutils literal notranslate"><span class="pre">komeda_pipeline_state</span></code></a></p>
@@ -1025,8 +1013,8 @@ Layers to fit the requirement of one KMS-plane.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="komeda-component-validation">
+</div>
+<div class="section" id="komeda-component-validation">
 <h3>komeda component validation<a class="headerlink" href="#komeda-component-validation" title="Permalink to this headline">¶</a></h3>
 <p>Komeda has multiple types of components, but the process of validation are
 similar, usually including the following steps:</p>
@@ -1049,12 +1037,12 @@ similar, usually including the following steps:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="komeda-kms-abstraction">
+</div>
+<div class="section" id="komeda-kms-abstraction">
 <h3>komeda_kms Abstraction<a class="headerlink" href="#komeda-kms-abstraction" title="Permalink to this headline">¶</a></h3>
 <dl class="c struct">
-<dt id="c.komeda_plane">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_plane</span></code><a class="headerlink" href="#c.komeda_plane" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_plane">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_plane</span></span></span><a class="headerlink" href="#c.komeda_plane" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>komeda instance of drm_plane</p>
 </dd></dl>
 
@@ -1076,8 +1064,8 @@ Layers with same capabilities.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.komeda_plane_state">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_plane_state</span></code><a class="headerlink" href="#c.komeda_plane_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_plane_state">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_plane_state</span></span></span><a class="headerlink" href="#c.komeda_plane_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -1101,8 +1089,8 @@ Layers with same capabilities.</p>
 <p>The plane_state can be split into two data flow (left/right) and handled
 by two layers <a class="reference internal" href="#c.komeda_plane" title="komeda_plane"><code class="xref c c-type docutils literal notranslate"><span class="pre">komeda_plane.layer</span></code></a> and <a class="reference internal" href="#c.komeda_plane" title="komeda_plane"><code class="xref c c-type docutils literal notranslate"><span class="pre">komeda_plane.layer</span></code></a>.right</p>
 <dl class="c struct">
-<dt id="c.komeda_wb_connector">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_wb_connector</span></code><a class="headerlink" href="#c.komeda_wb_connector" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_wb_connector">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_wb_connector</span></span></span><a class="headerlink" href="#c.komeda_wb_connector" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -1120,8 +1108,8 @@ by two layers <a class="reference internal" href="#c.komeda_plane" title="komeda
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.komeda_crtc">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_crtc</span></code><a class="headerlink" href="#c.komeda_crtc" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_crtc">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_crtc</span></span></span><a class="headerlink" href="#c.komeda_crtc" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -1153,8 +1141,8 @@ merge into the master.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.komeda_crtc_state">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">komeda_crtc_state</span></code><a class="headerlink" href="#c.komeda_crtc_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_crtc_state">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_crtc_state</span></span></span><a class="headerlink" href="#c.komeda_crtc_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <p><strong>Definition</strong></p>
@@ -1180,12 +1168,12 @@ merge into the master.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">max_slave_zorder</span></code></dt><dd><p>the maximum of slave zorder</p>
 </dd>
 </dl>
-</section>
-<section id="komde-kms-functions">
+</div>
+<div class="section" id="komde-kms-functions">
 <h3>komde_kms Functions<a class="headerlink" href="#komde-kms-functions" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
-<dt id="c.komeda_crtc_atomic_check">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">komeda_crtc_atomic_check</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_crtc" title="drm_crtc"><span class="pre">drm_crtc</span></a> <span class="pre">*</span><em><span class="pre">crtc</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_atomic_state" title="drm_atomic_state"><span class="pre">drm_atomic_state</span></a> <span class="pre">*</span><em><span class="pre">state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.komeda_crtc_atomic_check" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_crtc_atomic_check">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_crtc_atomic_check</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-kms.html#c.drm_crtc" title="drm_crtc"><span class="n"><span class="pre">drm_crtc</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">crtc</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-kms.html#c.drm_atomic_state" title="drm_atomic_state"><span class="n"><span class="pre">drm_atomic_state</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.komeda_crtc_atomic_check" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>build display output data flow</p>
 </dd></dl>
 
@@ -1203,8 +1191,8 @@ the unclaimed pipeline resources.</p>
 <p><strong>Return</strong></p>
 <p>Zero for success or -errno</p>
 <dl class="c function">
-<dt id="c.komeda_plane_atomic_check">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">komeda_plane_atomic_check</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_plane" title="drm_plane"><span class="pre">drm_plane</span></a> <span class="pre">*</span><em><span class="pre">plane</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_atomic_state" title="drm_atomic_state"><span class="pre">drm_atomic_state</span></a> <span class="pre">*</span><em><span class="pre">state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.komeda_plane_atomic_check" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.komeda_plane_atomic_check">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">komeda_plane_atomic_check</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-kms.html#c.drm_plane" title="drm_plane"><span class="n"><span class="pre">drm_plane</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">plane</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="drm-kms.html#c.drm_atomic_state" title="drm_atomic_state"><span class="n"><span class="pre">drm_atomic_state</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.komeda_plane_atomic_check" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>build input data flow</p>
 </dd></dl>
 
@@ -1217,9 +1205,9 @@ the unclaimed pipeline resources.</p>
 </dl>
 <p><strong>Return</strong></p>
 <p>Zero for success or -errno</p>
-</section>
-</section>
-<section id="build-komeda-to-be-a-linux-module-driver">
+</div>
+</div>
+<div class="section" id="build-komeda-to-be-a-linux-module-driver">
 <h2>Build komeda to be a Linux module driver<a class="headerlink" href="#build-komeda-to-be-a-linux-module-driver" title="Permalink to this headline">¶</a></h2>
 <p>Now we have two level devices:</p>
 <ul class="simple">
@@ -1229,8 +1217,8 @@ the unclaimed pipeline resources.</p>
 <p>All komeda operations are supplied or operated by komeda_dev or komeda_kms_dev,
 the module driver is only a simple wrapper to pass the Linux command
 (probe/remove/pm) into komeda_dev or komeda_kms_dev.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

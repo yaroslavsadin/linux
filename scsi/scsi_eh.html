@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>SCSI EH &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -297,14 +299,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="scsi-eh">
+  <div class="section" id="scsi-eh">
 <h1>SCSI EH<a class="headerlink" href="#scsi-eh" title="Permalink to this headline">¶</a></h1>
 <p>This document describes SCSI midlayer error handling infrastructure.
 Please refer to <a class="reference internal" href="scsi_mid_low_api.html"><span class="doc">SCSI mid_level - lower_level driver interface</span></a> for more
 information regarding SCSI midlayer.</p>
-<section id="how-scsi-commands-travel-through-the-midlayer-and-to-eh">
+<div class="section" id="how-scsi-commands-travel-through-the-midlayer-and-to-eh">
 <h2>1. How SCSI commands travel through the midlayer and to EH<a class="headerlink" href="#how-scsi-commands-travel-through-the-midlayer-and-to-eh" title="Permalink to this headline">¶</a></h2>
-<section id="struct-scsi-cmnd">
+<div class="section" id="struct-scsi-cmnd">
 <h3>1.1 struct scsi_cmnd<a class="headerlink" href="#struct-scsi-cmnd" title="Permalink to this headline">¶</a></h3>
 <p>Each SCSI command is represented with struct scsi_cmnd (== scmd).  A
 scmd has two list_head’s to link itself into lists.  The two are
@@ -313,13 +315,13 @@ per-device allocated scmd list and not of much interest to this EH
 discussion.  The latter is used for completion and EH lists and unless
 otherwise stated scmds are always linked using scmd-&gt;eh_entry in this
 discussion.</p>
-</section>
-<section id="how-do-scmd-s-get-completed">
+</div>
+<div class="section" id="how-do-scmd-s-get-completed">
 <h3>1.2 How do scmd’s get completed?<a class="headerlink" href="#how-do-scmd-s-get-completed" title="Permalink to this headline">¶</a></h3>
 <p>Once LLDD gets hold of a scmd, either the LLDD will complete the
 command by calling scsi_done callback passed from midlayer when
 invoking hostt-&gt;queuecommand() or the block layer will time it out.</p>
-<section id="completing-a-scmd-w-scsi-done">
+<div class="section" id="completing-a-scmd-w-scsi-done">
 <h4>1.2.1 Completing a scmd w/ scsi_done<a class="headerlink" href="#completing-a-scmd-w-scsi-done" title="Permalink to this headline">¶</a></h4>
 <p>For all non-EH commands, scsi_done() is the completion callback.  It
 just calls blk_complete_request() to delete the block layer timer and
@@ -355,8 +357,8 @@ of the data in case of an error.</p>
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="completing-a-scmd-w-timeout">
+</div>
+<div class="section" id="completing-a-scmd-w-timeout">
 <h4>1.2.2 Completing a scmd w/ timeout<a class="headerlink" href="#completing-a-scmd-w-timeout" title="Permalink to this headline">¶</a></h4>
 <p>The timeout handler is scsi_times_out().  When a timeout occurs, this
 function</p>
@@ -390,9 +392,9 @@ or when the EH deadline is expired. In these case Step #3 is taken.</p></li>
 command.  See [1-4] for more information.</p></li>
 </ol>
 </div></blockquote>
-</section>
-</section>
-<section id="asynchronous-command-aborts">
+</div>
+</div>
+<div class="section" id="asynchronous-command-aborts">
 <h3>1.3 Asynchronous command aborts<a class="headerlink" href="#asynchronous-command-aborts" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>After a timeout occurs a command abort is scheduled from
@@ -402,8 +404,8 @@ or terminated with DID_TIME_OUT.</p>
 <p>Otherwise scsi_eh_scmd_add() is invoked for the command.
 See [1-4] for more information.</p>
 </div></blockquote>
-</section>
-<section id="how-eh-takes-over">
+</div>
+<div class="section" id="how-eh-takes-over">
 <h3>1.4 How EH takes over<a class="headerlink" href="#how-eh-takes-over" title="Permalink to this headline">¶</a></h3>
 <p>scmds enter EH via scsi_eh_scmd_add(), which does the following.</p>
 <blockquote>
@@ -434,9 +436,9 @@ occur at any time.  Of course, all such completions are ignored as the
 timer has already expired.</p>
 <p>We’ll talk about how SCSI EH takes actions to abort - make LLDD
 forget about - timed out scmds later.</p>
-</section>
-</section>
-<section id="how-scsi-eh-works">
+</div>
+</div>
+<div class="section" id="how-scsi-eh-works">
 <h2>2. How SCSI EH works<a class="headerlink" href="#how-scsi-eh-works" title="Permalink to this headline">¶</a></h2>
 <p>LLDD’s can implement SCSI EH actions in one of the following two
 ways.</p>
@@ -471,9 +473,9 @@ anyway after it reaches blk queue.)</p></li>
 <li><p>Kicks queues in all devices on the host in the asses</p></li>
 </ol>
 </div></blockquote>
-<section id="eh-through-fine-grained-callbacks">
+<div class="section" id="eh-through-fine-grained-callbacks">
 <h3>2.1 EH through fine-grained callbacks<a class="headerlink" href="#eh-through-fine-grained-callbacks" title="Permalink to this headline">¶</a></h3>
-<section id="overview">
+<div class="section" id="overview">
 <h4>2.1.1 Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h4>
 <p>If eh_strategy_handler() is not present, SCSI midlayer takes charge
 of driving error handling.  EH’s goals are two - make LLDD, host and
@@ -521,8 +523,8 @@ scmds.</p>
 <p>scmds are retried iff its sdev is still online (not offlined during
 EH), REQ_FAILFAST is not set and ++scmd-&gt;retries is less than
 scmd-&gt;allowed.</p>
-</section>
-<section id="flow-of-scmds-through-eh">
+</div>
+<div class="section" id="flow-of-scmds-through-eh">
 <h4>2.1.2 Flow of scmds through EH<a class="headerlink" href="#flow-of-scmds-through-eh" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
@@ -593,8 +595,8 @@ scsi_queue_insert()</p></li>
 </li>
 </ol>
 </div></blockquote>
-</section>
-<section id="flow-of-control">
+</div>
+<div class="section" id="flow-of-control">
 <h4>2.1.3 Flow of control<a class="headerlink" href="#flow-of-control" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>EH through fine-grained callbacks start from scsi_unjam_host().</p>
@@ -752,9 +754,9 @@ layer of failure of the scmds.</p>
 </li>
 </ol>
 </div></blockquote>
-</section>
-</section>
-<section id="eh-through-transportt-eh-strategy-handler">
+</div>
+</div>
+<div class="section" id="eh-through-transportt-eh-strategy-handler">
 <h3>2.2 EH through transportt-&gt;eh_strategy_handler()<a class="headerlink" href="#eh-through-transportt-eh-strategy-handler" title="Permalink to this headline">¶</a></h3>
 <p>transportt-&gt;eh_strategy_handler() is invoked in the place of
 scsi_unjam_host() and it is responsible for whole recovery process.
@@ -763,7 +765,7 @@ all failed scmds and either ready for new commands or offline.  Also,
 it should perform SCSI EH maintenance chores to maintain integrity of
 SCSI midlayer.  IOW, of the steps described in [2-1-2], all steps
 except for #1 must be implemented by eh_strategy_handler().</p>
-<section id="pre-transportt-eh-strategy-handler-scsi-midlayer-conditions">
+<div class="section" id="pre-transportt-eh-strategy-handler-scsi-midlayer-conditions">
 <h4>2.2.1 Pre transportt-&gt;eh_strategy_handler() SCSI midlayer conditions<a class="headerlink" href="#pre-transportt-eh-strategy-handler-scsi-midlayer-conditions" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>The following conditions are true on entry to the handler.</p>
@@ -774,8 +776,8 @@ except for #1 must be implemented by eh_strategy_handler().</p>
 <li><p>shost-&gt;host_failed == shost-&gt;host_busy</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="post-transportt-eh-strategy-handler-scsi-midlayer-conditions">
+</div>
+<div class="section" id="post-transportt-eh-strategy-handler-scsi-midlayer-conditions">
 <h4>2.2.2 Post transportt-&gt;eh_strategy_handler() SCSI midlayer conditions<a class="headerlink" href="#post-transportt-eh-strategy-handler-scsi-midlayer-conditions" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><p>The following conditions must be true on exit from the handler.</p>
@@ -790,8 +792,8 @@ each scmd.  Note that the handler is free to use scmd-&gt;retries and
 -&gt;allowed to limit the number of retries.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="things-to-consider">
+</div>
+<div class="section" id="things-to-consider">
 <h4>2.2.3 Things to consider<a class="headerlink" href="#things-to-consider" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ul class="simple">
@@ -809,10 +811,10 @@ offline.</p></li>
 <p>Tejun Heo
 <a class="reference external" href="mailto:htejun&#37;&#52;&#48;gmail&#46;com">htejun<span>&#64;</span>gmail<span>&#46;</span>com</a></p>
 <p>11th September 2005</p>
-</section>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
+</div>
 
 
            </div>

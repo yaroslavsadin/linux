@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Unreliable Guide To Hacking The Linux Kernel &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -297,14 +299,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="unreliable-guide-to-hacking-the-linux-kernel">
+  <div class="section" id="unreliable-guide-to-hacking-the-linux-kernel">
 <span id="kernel-hacking-hack"></span><h1>Unreliable Guide To Hacking The Linux Kernel<a class="headerlink" href="#unreliable-guide-to-hacking-the-linux-kernel" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Rusty Russell</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Welcome, gentle reader, to Rusty’s Remarkably Unreliable Guide to Linux
 Kernel Hacking. This document describes the common routines and general
@@ -317,8 +319,8 @@ this document, being grossly under-qualified, but I always wanted to
 read it, and this was the only way. I hope it will grow into a
 compendium of best practice, common starting points and random
 information.</p>
-</section>
-<section id="the-players">
+</div>
+<div class="section" id="the-players">
 <h2>The Players<a class="headerlink" href="#the-players" title="Permalink to this headline">¶</a></h2>
 <p>At any time each of the CPUs in a system can be:</p>
 <ul class="simple">
@@ -334,7 +336,7 @@ no other softirq will preempt it, but a hardware interrupt can. However,
 any other CPUs in the system execute independently.</p>
 <p>We’ll see a number of ways that the user context can block interrupts,
 to become truly non-preemptable.</p>
-<section id="user-context">
+<div class="section" id="user-context">
 <h3>User Context<a class="headerlink" href="#user-context" title="Permalink to this headline">¶</a></h3>
 <p>User context is when you are coming in from a system call or other trap:
 like userspace, you can be preempted by more important tasks and by
@@ -352,8 +354,8 @@ currently executing) is valid, and <code class="xref c c-func docutils literal n
 <p>Beware that if you have preemption or softirqs disabled (see below),
 <code class="xref c c-func docutils literal notranslate"><span class="pre">in_interrupt()</span></code> will return a false positive.</p>
 </div>
-</section>
-<section id="hardware-interrupts-hard-irqs">
+</div>
+<div class="section" id="hardware-interrupts-hard-irqs">
 <h3>Hardware Interrupts (Hard IRQs)<a class="headerlink" href="#hardware-interrupts-hard-irqs" title="Permalink to this headline">¶</a></h3>
 <p>Timer ticks, network cards and keyboard are examples of real hardware
 which produce interrupts at any time. The kernel runs interrupt
@@ -369,8 +371,8 @@ true.</p>
 <p>Beware that this will return a false positive if interrupts are
 disabled (see below).</p>
 </div>
-</section>
-<section id="software-interrupt-context-softirqs-and-tasklets">
+</div>
+<div class="section" id="software-interrupt-context-softirqs-and-tasklets">
 <h3>Software Interrupt Context: Softirqs and Tasklets<a class="headerlink" href="#software-interrupt-context-softirqs-and-tasklets" title="Permalink to this headline">¶</a></h3>
 <p>Whenever a system call is about to return to userspace, or a hardware
 interrupt handler exits, any ‘software interrupts’ which are marked
@@ -403,9 +405,9 @@ Kuznetsov had at the time.</p>
 <p>Beware that this will return a false positive if a
 <a class="reference internal" href="#local-bh-disable"><span class="std std-ref">botton half lock</span></a> is held.</p>
 </div>
-</section>
-</section>
-<section id="some-basic-rules">
+</div>
+</div>
+<div class="section" id="some-basic-rules">
 <h2>Some Basic Rules<a class="headerlink" href="#some-basic-rules" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>No memory protection</dt><dd><p>If you corrupt memory, whether in user context or interrupt context,
@@ -432,8 +434,8 @@ ease porting. Generally it should be restricted to the
 architecture-dependent part of the kernel tree.</p>
 </dd>
 </dl>
-</section>
-<section id="ioctls-not-writing-a-new-system-call">
+</div>
+<div class="section" id="ioctls-not-writing-a-new-system-call">
 <h2>ioctls: Not writing a new system call<a class="headerlink" href="#ioctls-not-writing-a-new-system-call" title="Permalink to this headline">¶</a></h2>
 <p>A system call generally looks like this:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>asmlinkage long sys_mycall(int arg)
@@ -475,8 +477,8 @@ Idiom:</p>
 </div>
 <p>A short note on interface design: the UNIX system call motto is “Provide
 mechanism not policy”.</p>
-</section>
-<section id="recipes-for-deadlock">
+</div>
+<div class="section" id="recipes-for-deadlock">
 <h2>Recipes for Deadlock<a class="headerlink" href="#recipes-for-deadlock" title="Permalink to this headline">¶</a></h2>
 <p>You cannot call any routines which may sleep, unless:</p>
 <ul class="simple">
@@ -493,10 +495,10 @@ without <code class="docutils literal notranslate"><span class="pre">GFP_ATOMIC<
 and it will warn you if you break these rules. If you <strong>do</strong> break the
 rules, you will eventually lock up your box.</p>
 <p>Really.</p>
-</section>
-<section id="common-routines">
+</div>
+<div class="section" id="common-routines">
 <h2>Common Routines<a class="headerlink" href="#common-routines" title="Permalink to this headline">¶</a></h2>
-<section id="printk">
+<div class="section" id="printk">
 <h3><a class="reference internal" href="../core-api/printk-basics.html#c.printk" title="printk"><code class="xref c c-func docutils literal notranslate"><span class="pre">printk()</span></code></a><a class="headerlink" href="#printk" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/printk.h</span></code></p>
 <p><a class="reference internal" href="../core-api/printk-basics.html#c.printk" title="printk"><code class="xref c c-func docutils literal notranslate"><span class="pre">printk()</span></code></a> feeds kernel messages to the console, dmesg, and
@@ -528,8 +530,8 @@ typoing printf as printk in your user programs :)</p>
 on top of its printf function: “Printf should not be used for
 chit-chat”. You should follow that advice.</p>
 </div>
-</section>
-<section id="copy-to-user-copy-from-user-get-user-put-user">
+</div>
+<div class="section" id="copy-to-user-copy-from-user-get-user-put-user">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">copy_to_user()</span></code> / <code class="xref c c-func docutils literal notranslate"><span class="pre">copy_from_user()</span></code> / <a class="reference internal" href="../core-api/mm-api.html#c.get_user" title="get_user"><code class="xref c c-func docutils literal notranslate"><span class="pre">get_user()</span></code></a> / <a class="reference internal" href="../core-api/mm-api.html#c.put_user" title="put_user"><code class="xref c c-func docutils literal notranslate"><span class="pre">put_user()</span></code></a><a class="headerlink" href="#copy-to-user-copy-from-user-get-user-put-user" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/uaccess.h</span></code> / <code class="docutils literal notranslate"><span class="pre">asm/uaccess.h</span></code></p>
 <p><strong>[SLEEPS]</strong></p>
@@ -551,8 +553,8 @@ every year or so. –RR.]</p>
 <p>The functions may sleep implicitly. This should never be called outside
 user context (it makes no sense), with interrupts disabled, or a
 spinlock held.</p>
-</section>
-<section id="kmalloc-kfree">
+</div>
+<div class="section" id="kmalloc-kfree">
 <h3><a class="reference internal" href="../core-api/mm-api.html#c.kmalloc" title="kmalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">kmalloc()</span></code></a>/<a class="reference internal" href="../core-api/mm-api.html#c.kfree" title="kfree"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree()</span></code></a><a class="headerlink" href="#kmalloc-kfree" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/slab.h</span></code></p>
 <p><strong>[MAY SLEEP: SEE BELOW]</strong></p>
@@ -592,24 +594,24 @@ early in the boot process via the <code class="xref c c-func docutils literal no
 routine.</p>
 <p>Before inventing your own cache of often-used objects consider using a
 slab cache in <code class="docutils literal notranslate"><span class="pre">include/linux/slab.h</span></code></p>
-</section>
-<section id="current">
+</div>
+<div class="section" id="current">
 <h3><code class="xref c c-macro docutils literal notranslate"><span class="pre">current</span></code><a class="headerlink" href="#current" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/asm/current.h</span></code></p>
 <p>This global variable (really a macro) contains a pointer to the current
 task structure, so is only valid in user context. For example, when a
 process makes a system call, this will point to the task structure of
 the calling process. It is <strong>not NULL</strong> in interrupt context.</p>
-</section>
-<section id="mdelay-udelay">
+</div>
+<div class="section" id="mdelay-udelay">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">mdelay()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">udelay()</span></code><a class="headerlink" href="#mdelay-udelay" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/asm/delay.h</span></code> / <code class="docutils literal notranslate"><span class="pre">include/linux/delay.h</span></code></p>
 <p>The <code class="xref c c-func docutils literal notranslate"><span class="pre">udelay()</span></code> and <code class="xref c c-func docutils literal notranslate"><span class="pre">ndelay()</span></code> functions can be
 used for small pauses. Do not use large values with them as you risk
 overflow - the helper function <code class="xref c c-func docutils literal notranslate"><span class="pre">mdelay()</span></code> is useful here, or
 consider <a class="reference internal" href="../driver-api/basics.html#c.msleep" title="msleep"><code class="xref c c-func docutils literal notranslate"><span class="pre">msleep()</span></code></a>.</p>
-</section>
-<section id="cpu-to-be32-be32-to-cpu-cpu-to-le32-le32-to-cpu">
+</div>
+<div class="section" id="cpu-to-be32-be32-to-cpu-cpu-to-le32-le32-to-cpu">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_be32()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">be32_to_cpu()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_le32()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">le32_to_cpu()</span></code><a class="headerlink" href="#cpu-to-be32-be32-to-cpu-cpu-to-le32-le32-to-cpu" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/asm/byteorder.h</span></code></p>
 <p>The <code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_be32()</span></code> family (where the “32” can be replaced
@@ -622,8 +624,8 @@ variation, such as <code class="xref c c-func docutils literal notranslate"><spa
 to the given type, and return the converted value. The other variation
 is the “in-situ” family, such as <code class="xref c c-func docutils literal notranslate"><span class="pre">cpu_to_be32s()</span></code>, which
 convert value referred to by the pointer, and return void.</p>
-</section>
-<section id="local-irq-save-local-irq-restore">
+</div>
+<div class="section" id="local-irq-save-local-irq-restore">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_save()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_restore()</span></code><a class="headerlink" href="#local-irq-save-local-irq-restore" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/irqflags.h</span></code></p>
 <p>These routines disable hard interrupts on the local CPU, and restore
@@ -631,16 +633,16 @@ them. They are reentrant; saving the previous state in their one
 <code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">flags</span></code> argument. If you know that interrupts are
 enabled, you can simply use <code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_disable()</span></code> and
 <code class="xref c c-func docutils literal notranslate"><span class="pre">local_irq_enable()</span></code>.</p>
-</section>
-<section id="local-bh-disable-local-bh-enable">
+</div>
+<div class="section" id="local-bh-disable-local-bh-enable">
 <span id="local-bh-disable"></span><h3><code class="xref c c-func docutils literal notranslate"><span class="pre">local_bh_disable()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">local_bh_enable()</span></code><a class="headerlink" href="#local-bh-disable-local-bh-enable" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/bottom_half.h</span></code></p>
 <p>These routines disable soft interrupts on the local CPU, and restore
 them. They are reentrant; if soft interrupts were disabled before, they
 will still be disabled after this pair of functions has been called.
 They prevent softirqs and tasklets from running on the current CPU.</p>
-</section>
-<section id="smp-processor-id">
+</div>
+<div class="section" id="smp-processor-id">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">smp_processor_id()</span></code><a class="headerlink" href="#smp-processor-id" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/smp.h</span></code></p>
 <p><code class="xref c c-func docutils literal notranslate"><span class="pre">get_cpu()</span></code> disables preemption (so you won’t suddenly get
@@ -651,8 +653,8 @@ are done.</p>
 <p>If you know you cannot be preempted by another task (ie. you are in
 interrupt context, or have preemption disabled) you can use
 smp_processor_id().</p>
-</section>
-<section id="init-exit-initdata">
+</div>
+<div class="section" id="init-exit-initdata">
 <h3><code class="docutils literal notranslate"><span class="pre">__init</span></code>/<code class="docutils literal notranslate"><span class="pre">__exit</span></code>/<code class="docutils literal notranslate"><span class="pre">__initdata</span></code><a class="headerlink" href="#init-exit-initdata" title="Permalink to this headline">¶</a></h3>
 <p>Defined in  <code class="docutils literal notranslate"><span class="pre">include/linux/init.h</span></code></p>
 <p>After boot, the kernel frees up a special section; functions marked with
@@ -664,8 +666,8 @@ compiled as a module. See the header file for use. Note that it makes no
 sense for a function marked with <code class="docutils literal notranslate"><span class="pre">__init</span></code> to be exported to modules
 with <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL()</span></code> or <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_GPL()</span></code>- this
 will break.</p>
-</section>
-<section id="initcall-module-init">
+</div>
+<div class="section" id="initcall-module-init">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">__initcall()</span></code>/<a class="reference internal" href="../driver-api/basics.html#c.module_init" title="module_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_init()</span></code></a><a class="headerlink" href="#initcall-module-init" title="Permalink to this headline">¶</a></h3>
 <p>Defined in  <code class="docutils literal notranslate"><span class="pre">include/linux/init.h</span></code> / <code class="docutils literal notranslate"><span class="pre">include/linux/module.h</span></code></p>
 <p>Many parts of the kernel are well served as a module
@@ -683,8 +685,8 @@ the function is called on boot.</p>
 to fail (unfortunately, this has no effect if the module is compiled
 into the kernel). This function is called in user context with
 interrupts enabled, so it can sleep.</p>
-</section>
-<section id="module-exit">
+</div>
+<div class="section" id="module-exit">
 <h3><a class="reference internal" href="../driver-api/basics.html#c.module_exit" title="module_exit"><code class="xref c c-func docutils literal notranslate"><span class="pre">module_exit()</span></code></a><a class="headerlink" href="#module-exit" title="Permalink to this headline">¶</a></h3>
 <p>Defined in  <code class="docutils literal notranslate"><span class="pre">include/linux/module.h</span></code></p>
 <p>This macro defines the function to be called at module removal time (or
@@ -694,8 +696,8 @@ also sleep, but cannot fail: everything must be cleaned up by the time
 it returns.</p>
 <p>Note that this macro is optional: if it is not present, your module will
 not be removable (except for ‘rmmod -f’).</p>
-</section>
-<section id="try-module-get-module-put">
+</div>
+<div class="section" id="try-module-get-module-put">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">try_module_get()</span></code>/<code class="xref c c-func docutils literal notranslate"><span class="pre">module_put()</span></code><a class="headerlink" href="#try-module-get-module-put" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/module.h</span></code></p>
 <p>These manipulate the module usage count, to protect against removal (a
@@ -708,9 +710,9 @@ Otherwise, you can safely enter the module, and call
 <p>Most registerable structures have an owner field, such as in the
 <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">file_operations</span></code> structure.
 Set this field to the macro <code class="docutils literal notranslate"><span class="pre">THIS_MODULE</span></code>.</p>
-</section>
-</section>
-<section id="wait-queues-include-linux-wait-h">
+</div>
+</div>
+<div class="section" id="wait-queues-include-linux-wait-h">
 <h2>Wait Queues <code class="docutils literal notranslate"><span class="pre">include/linux/wait.h</span></code><a class="headerlink" href="#wait-queues-include-linux-wait-h" title="Permalink to this headline">¶</a></h2>
 <p><strong>[SLEEPS]</strong></p>
 <p>A wait queue is used to wait for someone to wake you up when a certain
@@ -718,14 +720,14 @@ condition is true. They must be used carefully to ensure there is no
 race condition. You declare a <code class="xref c c-type docutils literal notranslate"><span class="pre">wait_queue_head_t</span></code>, and then processes
 which want to wait for that condition declare a <code class="xref c c-type docutils literal notranslate"><span class="pre">wait_queue_entry_t</span></code>
 referring to themselves, and place that in the queue.</p>
-<section id="declaring">
+<div class="section" id="declaring">
 <h3>Declaring<a class="headerlink" href="#declaring" title="Permalink to this headline">¶</a></h3>
 <p>You declare a <code class="docutils literal notranslate"><span class="pre">wait_queue_head_t</span></code> using the
 <code class="xref c c-func docutils literal notranslate"><span class="pre">DECLARE_WAIT_QUEUE_HEAD()</span></code> macro, or using the
 <code class="xref c c-func docutils literal notranslate"><span class="pre">init_waitqueue_head()</span></code> routine in your initialization
 code.</p>
-</section>
-<section id="queuing">
+</div>
+<div class="section" id="queuing">
 <h3>Queuing<a class="headerlink" href="#queuing" title="Permalink to this headline">¶</a></h3>
 <p>Placing yourself in the waitqueue is fairly complex, because you must
 put yourself in the queue before checking the condition. There is a
@@ -734,17 +736,17 @@ macro to do this: <a class="reference internal" href="../driver-api/basics.html#
 the second is an expression which is evaluated; the macro returns 0 when
 this expression is true, or <code class="docutils literal notranslate"><span class="pre">-ERESTARTSYS</span></code> if a signal is received. The
 <a class="reference internal" href="../driver-api/basics.html#c.wait_event" title="wait_event"><code class="xref c c-func docutils literal notranslate"><span class="pre">wait_event()</span></code></a> version ignores signals.</p>
-</section>
-<section id="waking-up-queued-tasks">
+</div>
+<div class="section" id="waking-up-queued-tasks">
 <h3>Waking Up Queued Tasks<a class="headerlink" href="#waking-up-queued-tasks" title="Permalink to this headline">¶</a></h3>
 <p>Call <code class="xref c c-func docutils literal notranslate"><span class="pre">wake_up()</span></code> (<code class="docutils literal notranslate"><span class="pre">include/linux/wait.h</span></code>), which will wake
 up every process in the queue. The exception is if one has
 <code class="docutils literal notranslate"><span class="pre">TASK_EXCLUSIVE</span></code> set, in which case the remainder of the queue will
 not be woken. There are other variants of this basic function available
 in the same header.</p>
-</section>
-</section>
-<section id="atomic-operations">
+</div>
+</div>
+<div class="section" id="atomic-operations">
 <h2>Atomic Operations<a class="headerlink" href="#atomic-operations" title="Permalink to this headline">¶</a></h2>
 <p>Certain operations are guaranteed atomic on all platforms. The first
 class of operations work on <code class="xref c c-type docutils literal notranslate"><span class="pre">atomic_t</span></code> (<code class="docutils literal notranslate"><span class="pre">include/asm/atomic.h</span></code>);
@@ -771,21 +773,21 @@ atomically setting flags.</p>
 <p>It is possible to call these operations with bit indices greater than
 <code class="docutils literal notranslate"><span class="pre">BITS_PER_LONG</span></code>. The resulting behavior is strange on big-endian
 platforms though so it is a good idea not to do this.</p>
-</section>
-<section id="symbols">
+</div>
+<div class="section" id="symbols">
 <h2>Symbols<a class="headerlink" href="#symbols" title="Permalink to this headline">¶</a></h2>
 <p>Within the kernel proper, the normal linking rules apply (ie. unless a
 symbol is declared to be file scope with the <code class="docutils literal notranslate"><span class="pre">static</span></code> keyword, it can
 be used anywhere in the kernel). However, for modules, a special
 exported symbol table is kept which limits the entry points to the
 kernel proper. Modules can also export symbols.</p>
-<section id="export-symbol">
+<div class="section" id="export-symbol">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL()</span></code><a class="headerlink" href="#export-symbol" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>This is the classic method of exporting a symbol: dynamically loaded
 modules will be able to use the symbol as normal.</p>
-</section>
-<section id="export-symbol-gpl">
+</div>
+<div class="section" id="export-symbol-gpl">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_GPL()</span></code><a class="headerlink" href="#export-symbol-gpl" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>Similar to <code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL()</span></code> except that the symbols
@@ -795,32 +797,32 @@ compatible license. It implies that the function is considered an
 internal implementation issue, and not really an interface. Some
 maintainers and developers may however require EXPORT_SYMBOL_GPL()
 when adding any new APIs or functionality.</p>
-</section>
-<section id="export-symbol-ns">
+</div>
+<div class="section" id="export-symbol-ns">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_NS()</span></code><a class="headerlink" href="#export-symbol-ns" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>This is the variant of <cite>EXPORT_SYMBOL()</cite> that allows specifying a symbol
 namespace. Symbol Namespaces are documented in
 <a class="reference internal" href="../core-api/symbol-namespaces.html"><span class="doc">Symbol Namespaces</span></a></p>
-</section>
-<section id="export-symbol-ns-gpl">
+</div>
+<div class="section" id="export-symbol-ns-gpl">
 <h3><code class="xref c c-func docutils literal notranslate"><span class="pre">EXPORT_SYMBOL_NS_GPL()</span></code><a class="headerlink" href="#export-symbol-ns-gpl" title="Permalink to this headline">¶</a></h3>
 <p>Defined in <code class="docutils literal notranslate"><span class="pre">include/linux/export.h</span></code></p>
 <p>This is the variant of <cite>EXPORT_SYMBOL_GPL()</cite> that allows specifying a symbol
 namespace. Symbol Namespaces are documented in
 <a class="reference internal" href="../core-api/symbol-namespaces.html"><span class="doc">Symbol Namespaces</span></a></p>
-</section>
-</section>
-<section id="routines-and-conventions">
+</div>
+</div>
+<div class="section" id="routines-and-conventions">
 <h2>Routines and Conventions<a class="headerlink" href="#routines-and-conventions" title="Permalink to this headline">¶</a></h2>
-<section id="double-linked-lists-include-linux-list-h">
+<div class="section" id="double-linked-lists-include-linux-list-h">
 <h3>Double-linked lists <code class="docutils literal notranslate"><span class="pre">include/linux/list.h</span></code><a class="headerlink" href="#double-linked-lists-include-linux-list-h" title="Permalink to this headline">¶</a></h3>
 <p>There used to be three sets of linked-list routines in the kernel
 headers, but this one is the winner. If you don’t have some particular
 pressing need for a single list, it’s a good choice.</p>
 <p>In particular, <a class="reference internal" href="../core-api/kernel-api.html#c.list_for_each_entry" title="list_for_each_entry"><code class="xref c c-func docutils literal notranslate"><span class="pre">list_for_each_entry()</span></code></a> is useful.</p>
-</section>
-<section id="return-conventions">
+</div>
+<div class="section" id="return-conventions">
 <h3>Return Conventions<a class="headerlink" href="#return-conventions" title="Permalink to this headline">¶</a></h3>
 <p>For code called in user context, it’s very common to defy C convention,
 and return 0 for success, and a negative error number (eg. <code class="docutils literal notranslate"><span class="pre">-EFAULT</span></code>) for
@@ -830,8 +832,8 @@ the kernel.</p>
 negative error number into a pointer, and <code class="xref c c-func docutils literal notranslate"><span class="pre">IS_ERR()</span></code> and
 <code class="xref c c-func docutils literal notranslate"><span class="pre">PTR_ERR()</span></code> to get it back out again: avoids a separate
 pointer parameter for the error number. Icky, but in a good way.</p>
-</section>
-<section id="breaking-compilation">
+</div>
+<div class="section" id="breaking-compilation">
 <h3>Breaking Compilation<a class="headerlink" href="#breaking-compilation" title="Permalink to this headline">¶</a></h3>
 <p>Linus and the other developers sometimes change function or structure
 names in development kernels; this is not done just to keep everyone on
@@ -840,8 +842,8 @@ called with interrupts on, or does extra checks, or doesn’t do checks
 which were caught before). Usually this is accompanied by a fairly
 complete note to the linux-kernel mailing list; search the archive.
 Simply doing a global replace on the file usually makes things <strong>worse</strong>.</p>
-</section>
-<section id="initializing-structure-members">
+</div>
+<div class="section" id="initializing-structure-members">
 <h3>Initializing structure members<a class="headerlink" href="#initializing-structure-members" title="Permalink to this headline">¶</a></h3>
 <p>The preferred method of initializing structures is to use designated
 initialisers, as defined by ISO C99, eg:</p>
@@ -855,8 +857,8 @@ initialisers, as defined by ISO C99, eg:</p>
 </div>
 <p>This makes it easy to grep for, and makes it clear which structure
 fields are set. You should do this because it looks cool.</p>
-</section>
-<section id="gnu-extensions">
+</div>
+<div class="section" id="gnu-extensions">
 <h3>GNU Extensions<a class="headerlink" href="#gnu-extensions" title="Permalink to this headline">¶</a></h3>
 <p>GNU Extensions are explicitly allowed in the Linux kernel. Note that
 some of the more complex ones are not very well supported, due to lack
@@ -881,22 +883,22 @@ page, the man page is only a short summary of the stuff in info).</p>
 it is horrible and worse: division and multiplication does not work on
 i386 because the GCC runtime functions for it are missing from the
 kernel environment.</p>
-</section>
-<section id="c">
+</div>
+<div class="section" id="c">
 <h3>C++<a class="headerlink" href="#c" title="Permalink to this headline">¶</a></h3>
 <p>Using C++ in the kernel is usually a bad idea, because the kernel does
 not provide the necessary runtime environment and the include files are
 not tested for it. It is still possible, but not recommended. If you
 really want to do this, forget about exceptions at least.</p>
-</section>
-<section id="if">
+</div>
+<div class="section" id="if">
 <h3>#if<a class="headerlink" href="#if" title="Permalink to this headline">¶</a></h3>
 <p>It is generally considered cleaner to use macros in header files (or at
 the top of .c files) to abstract away functions rather than using `#if’
 pre-processor statements throughout the source code.</p>
-</section>
-</section>
-<section id="putting-your-stuff-in-the-kernel">
+</div>
+</div>
+<div class="section" id="putting-your-stuff-in-the-kernel">
 <h2>Putting Your Stuff in the Kernel<a class="headerlink" href="#putting-your-stuff-in-the-kernel" title="Permalink to this headline">¶</a></h2>
 <p>In order to get your stuff into shape for official inclusion, or even to
 make a neat patch, there’s administrative work to be done:</p>
@@ -932,8 +934,8 @@ a more-than-passing commitment to some part of the code.</p></li>
 <code class="docutils literal notranslate"><span class="pre">Documentation/process/submitting-patches.rst</span></code> and possibly
 <code class="docutils literal notranslate"><span class="pre">Documentation/process/submitting-drivers.rst</span></code>.</p></li>
 </ul>
-</section>
-<section id="kernel-cantrips">
+</div>
+<div class="section" id="kernel-cantrips">
 <h2>Kernel Cantrips<a class="headerlink" href="#kernel-cantrips" title="Permalink to this headline">¶</a></h2>
 <p>Some favorites from browsing the source. Feel free to add to this list.</p>
 <p><code class="docutils literal notranslate"><span class="pre">arch/x86/include/asm/delay.h</span></code>:</p>
@@ -988,8 +990,8 @@ C_LABEL(cputypvar_sun4m):
  */
 </pre></div>
 </div>
-</section>
-<section id="thanks">
+</div>
+<div class="section" id="thanks">
 <h2>Thanks<a class="headerlink" href="#thanks" title="Permalink to this headline">¶</a></h2>
 <p>Thanks to Andi Kleen for the idea, answering my questions, fixing my
 mistakes, filling content, etc. Philipp Rumpf for more spelling and
@@ -998,8 +1000,8 @@ for giving me a great summary of <a class="reference internal" href="../core-api
 Sorensen and Andrea Arcangeli added caveats. Michael Elizabeth Chastain
 for checking and adding to the Configure section. Telsa Gwynne for
 teaching me DocBook.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

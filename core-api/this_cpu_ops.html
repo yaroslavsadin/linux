@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>this_cpu operations &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -271,7 +273,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="this-cpu-operations">
+  <div class="section" id="this-cpu-operations">
 <h1>this_cpu operations<a class="headerlink" href="#this-cpu-operations" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -330,7 +332,7 @@ this_cpu_inc_return(pcp)
 this_cpu_dec_return(pcp)
 </pre></div>
 </div>
-<section id="inner-working-of-this-cpu-operations">
+<div class="section" id="inner-working-of-this-cpu-operations">
 <h2>Inner working of this_cpu operations<a class="headerlink" href="#inner-working-of-this-cpu-operations" title="Permalink to this headline">¶</a></h2>
 <p>On x86 the fs: or the gs: segment registers contain the base of the
 per cpu area. It is then possible to simply use the segment override
@@ -387,8 +389,8 @@ the same code paths.  Since each processor has its own per cpu
 variables no concurrent cache line updates take place. The price that
 has to be paid for this optimization is the need to add up the per cpu
 counters when the value of a counter is needed.</p>
-</section>
-<section id="special-operations">
+</div>
+<div class="section" id="special-operations">
 <h2>Special operations<a class="headerlink" href="#special-operations" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>y = this_cpu_ptr(&amp;x)
 </pre></div>
@@ -404,8 +406,8 @@ preemption has been disabled. The pointer is then used to
 access local per cpu data in a critical section. When preemption
 is re-enabled this pointer is usually no longer useful since it may
 no longer point to per cpu data of the current processor.</p>
-</section>
-<section id="per-cpu-variables-and-offsets">
+</div>
+<div class="section" id="per-cpu-variables-and-offsets">
 <h2>Per cpu variables and offsets<a class="headerlink" href="#per-cpu-variables-and-offsets" title="Permalink to this headline">¶</a></h2>
 <p>Per cpu variables have <em>offsets</em> to the beginning of the per cpu
 area. They do not have addresses although they look like that in the
@@ -426,8 +428,8 @@ cpu variable. Most this_cpu operations take a cpu variable.</p>
 <p>&amp;x and hence p is the <em>offset</em> of a per cpu variable. this_cpu_ptr()
 takes the offset of a per cpu variable which makes this look a bit
 strange.</p>
-</section>
-<section id="operations-on-a-field-of-a-per-cpu-structure">
+</div>
+<div class="section" id="operations-on-a-field-of-a-per-cpu-structure">
 <h2>Operations on a field of a per cpu structure<a class="headerlink" href="#operations-on-a-field-of-a-per-cpu-structure" title="Permalink to this headline">¶</a></h2>
 <p>Let’s say we have a percpu structure:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct s {
@@ -462,8 +464,8 @@ pp-&gt;m--;
 z = pp-&gt;n++;
 </pre></div>
 </div>
-</section>
-<section id="variants-of-this-cpu-ops">
+</div>
+<div class="section" id="variants-of-this-cpu-ops">
 <h2>Variants of this_cpu ops<a class="headerlink" href="#variants-of-this-cpu-ops" title="Permalink to this headline">¶</a></h2>
 <p>this_cpu ops are interrupt safe. Some architectures do not support
 these per cpu local operations. In that case the operation must be
@@ -500,8 +502,8 @@ __this_cpu_dec_return(pcp)
 interrupts on platforms that cannot accomplish atomicity through
 address relocation and a Read-Modify-Write operation in the same
 instruction.</p>
-</section>
-<section id="this-cpu-ptr-pp-n-vs-this-cpu-ptr-pp-n">
+</div>
+<div class="section" id="this-cpu-ptr-pp-n-vs-this-cpu-ptr-pp-n">
 <h2>&amp;this_cpu_ptr(pp)-&gt;n vs this_cpu_ptr(&amp;pp-&gt;n)<a class="headerlink" href="#this-cpu-ptr-pp-n-vs-this-cpu-ptr-pp-n" title="Permalink to this headline">¶</a></h2>
 <p>The first operation takes the offset and forms an address and then
 adds the offset of the n field. This may result in two add
@@ -510,8 +512,8 @@ instructions emitted by the compiler.</p>
 relocation.  IMHO the second form looks cleaner and has an easier time
 with (). The second form also is consistent with the way
 this_cpu_read() and friends are used.</p>
-</section>
-<section id="remote-access-to-per-cpu-data">
+</div>
+<div class="section" id="remote-access-to-per-cpu-data">
 <h2>Remote access to per cpu data<a class="headerlink" href="#remote-access-to-per-cpu-data" title="Permalink to this headline">¶</a></h2>
 <p>Per cpu data structures are designed to be used by one cpu exclusively.
 If you use the variables as intended, this_cpu_ops() are guaranteed to
@@ -567,8 +569,8 @@ mind that a remote write will evict the cache line from the processor
 that most likely will access it. If the processor wakes up and finds a
 missing local cache line of a per cpu area, its performance and hence
 the wake up times will be affected.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

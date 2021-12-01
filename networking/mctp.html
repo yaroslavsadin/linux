@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Management Component Transport Protocol (MCTP) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -367,14 +369,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="management-component-transport-protocol-mctp">
+  <div class="section" id="management-component-transport-protocol-mctp">
 <h1>Management Component Transport Protocol (MCTP)<a class="headerlink" href="#management-component-transport-protocol-mctp" title="Permalink to this headline">¶</a></h1>
 <p>net/mctp/ contains protocol support for MCTP, as defined by DMTF standard
 DSP0236. Physical interface drivers (“bindings” in the specification) are
 provided in drivers/net/mctp/.</p>
 <p>The core code provides a socket-based interface to send and receive MCTP
 messages, through an AF_MCTP, SOCK_DGRAM socket.</p>
-<section id="structure-interfaces-networks">
+<div class="section" id="structure-interfaces-networks">
 <h2>Structure: interfaces &amp; networks<a class="headerlink" href="#structure-interfaces-networks" title="Permalink to this headline">¶</a></h2>
 <p>The kernel models the local MCTP topology through two items: interfaces and
 networks.</p>
@@ -389,10 +391,10 @@ network.</p>
 or more interfaces.</p>
 <p>If multiple networks are present, each may contain endpoint IDs (EIDs) that are
 also present on other networks.</p>
-</section>
-<section id="sockets-api">
+</div>
+<div class="section" id="sockets-api">
 <h2>Sockets API<a class="headerlink" href="#sockets-api" title="Permalink to this headline">¶</a></h2>
-<section id="protocol-definitions">
+<div class="section" id="protocol-definitions">
 <h3>Protocol definitions<a class="headerlink" href="#protocol-definitions" title="Permalink to this headline">¶</a></h3>
 <p>MCTP uses <code class="docutils literal notranslate"><span class="pre">AF_MCTP</span></code> / <code class="docutils literal notranslate"><span class="pre">PF_MCTP</span></code> for the address- and protocol- families.
 Since MCTP is message-based, only <code class="docutils literal notranslate"><span class="pre">SOCK_DGRAM</span></code> sockets are supported.</p>
@@ -420,13 +422,13 @@ specified with a <code class="docutils literal notranslate"><span class="pre">so
 <span class="cp">#define MCTP_ADDR_ANY       0xff</span>
 </pre></div>
 </div>
-</section>
-<section id="syscall-behaviour">
+</div>
+<div class="section" id="syscall-behaviour">
 <h3>Syscall behaviour<a class="headerlink" href="#syscall-behaviour" title="Permalink to this headline">¶</a></h3>
 <p>The following sections describe the MCTP-specific behaviours of the standard
 socket system calls. These behaviours have been chosen to map closely to the
 existing sockets APIs.</p>
-<section id="bind-set-local-socket-address">
+<div class="section" id="bind-set-local-socket-address">
 <h4><code class="docutils literal notranslate"><span class="pre">bind()</span></code> : set local socket address<a class="headerlink" href="#bind-set-local-socket-address" title="Permalink to this headline">¶</a></h4>
 <p>Sockets that receive incoming request packets will bind to a local address,
 using the <code class="docutils literal notranslate"><span class="pre">bind()</span></code> syscall.</p>
@@ -461,8 +463,8 @@ local destination EID.</p>
 lower 7 bits of the type is matched on incoming messages (ie., the
 most-significant IC bit is not part of the match). This results in the socket
 receiving packets with and without a message integrity check footer.</p>
-</section>
-<section id="sendto-sendmsg-send-transmit-an-mctp-message">
+</div>
+<div class="section" id="sendto-sendmsg-send-transmit-an-mctp-message">
 <h4><code class="docutils literal notranslate"><span class="pre">sendto()</span></code>, <code class="docutils literal notranslate"><span class="pre">sendmsg()</span></code>, <code class="docutils literal notranslate"><span class="pre">send()</span></code> : transmit an MCTP message<a class="headerlink" href="#sendto-sendmsg-send-transmit-an-mctp-message" title="Permalink to this headline">¶</a></h4>
 <p>An MCTP message is transmitted using one of the <code class="docutils literal notranslate"><span class="pre">sendto()</span></code>, <code class="docutils literal notranslate"><span class="pre">sendmsg()</span></code> or
 <code class="docutils literal notranslate"><span class="pre">send()</span></code> syscalls. Using <code class="docutils literal notranslate"><span class="pre">sendto()</span></code> as the primary example:</p>
@@ -507,8 +509,8 @@ outgoing message. If any previous allocation has been performed (to for a
 different remote EID), that allocation is lost.</p>
 <p>Sockets will only receive responses to requests they have sent (with TO=1) and
 may only respond (with TO=0) to requests they have received.</p>
-</section>
-<section id="recvfrom-recvmsg-recv-receive-an-mctp-message">
+</div>
+<div class="section" id="recvfrom-recvmsg-recv-receive-an-mctp-message">
 <h4><code class="docutils literal notranslate"><span class="pre">recvfrom()</span></code>, <code class="docutils literal notranslate"><span class="pre">recvmsg()</span></code>, <code class="docutils literal notranslate"><span class="pre">recv()</span></code> : receive an MCTP message<a class="headerlink" href="#recvfrom-recvmsg-recv-receive-an-mctp-message" title="Permalink to this headline">¶</a></h4>
 <p>An MCTP message can be received by an application using one of the
 <code class="docutils literal notranslate"><span class="pre">recvfrom()</span></code>, <code class="docutils literal notranslate"><span class="pre">recvmsg()</span></code>, or <code class="docutils literal notranslate"><span class="pre">recv()</span></code> system calls. Using <code class="docutils literal notranslate"><span class="pre">recvfrom()</span></code>
@@ -540,10 +542,10 @@ remote address to the application. Therefore, these are only useful if the
 remote address is already known, or the message does not require a reply.</p>
 <p>Like the send calls, sockets will only receive responses to requests they have
 sent (TO=1) and may only respond (TO=0) to requests they have received.</p>
-</section>
-</section>
-</section>
-<section id="kernel-internals">
+</div>
+</div>
+</div>
+<div class="section" id="kernel-internals">
 <h2>Kernel internals<a class="headerlink" href="#kernel-internals" title="Permalink to this headline">¶</a></h2>
 <p>There are a few possible packet flows in the MCTP stack:</p>
 <ol class="arabic">
@@ -593,7 +595,7 @@ mctp_pkttype_receive()
 </div>
 </li>
 </ol>
-<section id="key-refcounts">
+<div class="section" id="key-refcounts">
 <h3>Key refcounts<a class="headerlink" href="#key-refcounts" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -608,9 +610,9 @@ reference to the dev (set through <code class="docutils literal notranslate"><sp
 <code class="docutils literal notranslate"><span class="pre">dev-&gt;key_count</span></code>). Multiple keys can reference the device.</p></li>
 </ul>
 </div></blockquote>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

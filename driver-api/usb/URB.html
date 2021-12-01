@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>USB Request Block (URB) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -367,7 +369,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="usb-request-block-urb">
+  <div class="section" id="usb-request-block-urb">
 <span id="usb-urb"></span><h1>USB Request Block (URB)<a class="headerlink" href="#usb-request-block-urb" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Revised</dt>
@@ -391,7 +393,7 @@ This particular documentation file isn’t complete and may not be
 updated to the last version; don’t rely on it except for a quick
 overview.</p>
 </div>
-<section id="basic-concept-or-what-is-an-urb">
+<div class="section" id="basic-concept-or-what-is-an-urb">
 <h2>Basic concept or ‘What is an URB?’<a class="headerlink" href="#basic-concept-or-what-is-an-urb" title="Permalink to this headline">¶</a></h2>
 <p>The basic idea of the new driver is message passing, the message itself is
 called USB Request Block, or URB for short.</p>
@@ -412,8 +414,8 @@ data to an endpoint while your driver handles completion of another.
 This maximizes use of USB bandwidth, and supports seamless streaming
 of data to (or from) devices when using periodic transfer modes.</p></li>
 </ul>
-</section>
-<section id="the-urb-structure">
+</div>
+<div class="section" id="the-urb-structure">
 <h2>The URB structure<a class="headerlink" href="#the-urb-structure" title="Permalink to this headline">¶</a></h2>
 <p>Some of the fields in <a class="reference internal" href="usb.html#c.urb" title="urb"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">urb</span></code></a> are:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct urb
@@ -455,8 +457,8 @@ of data to (or from) devices when using periodic transfer modes.</p></li>
 </div>
 <p>Your driver must create the “pipe” value using values from the appropriate
 endpoint descriptor in an interface that it’s claimed.</p>
-</section>
-<section id="how-to-get-an-urb">
+</div>
+<div class="section" id="how-to-get-an-urb">
 <h2>How to get an URB?<a class="headerlink" href="#how-to-get-an-urb" title="Permalink to this headline">¶</a></h2>
 <p>URBs are allocated by calling <a class="reference internal" href="usb.html#c.usb_alloc_urb" title="usb_alloc_urb"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_alloc_urb()</span></code></a>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct urb *usb_alloc_urb(int isoframes, int mem_flags)
@@ -474,8 +476,8 @@ things) whether the underlying code may block or not.</p>
 <p>You may free an urb that you’ve submitted, but which hasn’t yet been
 returned to you in a completion callback.  It will automatically be
 deallocated when it is no longer in use.</p>
-</section>
-<section id="what-has-to-be-filled-in">
+</div>
+<div class="section" id="what-has-to-be-filled-in">
 <h2>What has to be filled in?<a class="headerlink" href="#what-has-to-be-filled-in" title="Permalink to this headline">¶</a></h2>
 <p>Depending on the type of transaction, there are some inline functions
 defined in <code class="docutils literal notranslate"><span class="pre">linux/usb.h</span></code> to simplify the initialization, such as
@@ -491,8 +493,8 @@ existing drivers to see how they’re used.</p>
 </ul>
 <p>If short packets should NOT be tolerated, set <code class="docutils literal notranslate"><span class="pre">URB_SHORT_NOT_OK</span></code> in
 transfer_flags.</p>
-</section>
-<section id="how-to-submit-an-urb">
+</div>
+<div class="section" id="how-to-submit-an-urb">
 <h2>How to submit an URB?<a class="headerlink" href="#how-to-submit-an-urb" title="Permalink to this headline">¶</a></h2>
 <p>Just call <a class="reference internal" href="usb.html#c.usb_submit_urb" title="usb_submit_urb"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_submit_urb()</span></code></a>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int usb_submit_urb(struct urb *urb, int mem_flags)
@@ -516,8 +518,8 @@ never look at that value except in your completion callback.</p>
 <p>For isochronous endpoints, your completion handlers should (re)submit
 URBs to the same endpoint with the <code class="docutils literal notranslate"><span class="pre">URB_ISO_ASAP</span></code> flag, using
 multi-buffering, to get seamless ISO streaming.</p>
-</section>
-<section id="how-to-cancel-an-already-running-urb">
+</div>
+<div class="section" id="how-to-cancel-an-already-running-urb">
 <h2>How to cancel an already running URB?<a class="headerlink" href="#how-to-cancel-an-already-running-urb" title="Permalink to this headline">¶</a></h2>
 <p>There are two ways to cancel an URB you’ve submitted but which hasn’t
 been returned to your driver yet.  For an asynchronous cancel, call
@@ -559,8 +561,8 @@ count by calling :c:func`usb_get_urb`:</p>
 decrement the reference count by calling <a class="reference internal" href="usb.html#c.usb_free_urb" title="usb_free_urb"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_free_urb()</span></code></a>.  Of course,
 none of this is necessary if there’s no danger of the URB being freed
 by the completion handler.</p>
-</section>
-<section id="what-about-the-completion-handler">
+</div>
+<div class="section" id="what-about-the-completion-handler">
 <h2>What about the completion handler?<a class="headerlink" href="#what-about-the-completion-handler" title="Permalink to this headline">¶</a></h2>
 <p>The handler is of the following type:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>typedef void (*usb_complete_t)(struct urb *)
@@ -582,8 +584,8 @@ have transferred successfully before the completion was called.</p>
 <p>In the current kernel, completion handlers run with local interrupts
 disabled, but in the future this will be changed, so don’t assume that
 local IRQs are always disabled inside completion handlers.</p>
-</section>
-<section id="how-to-do-isochronous-iso-transfers">
+</div>
+<div class="section" id="how-to-do-isochronous-iso-transfers">
 <h2>How to do isochronous (ISO) transfers?<a class="headerlink" href="#how-to-do-isochronous-iso-transfers" title="Permalink to this headline">¶</a></h2>
 <p>Besides the fields present on a bulk transfer, for ISO, you also
 have to set <code class="docutils literal notranslate"><span class="pre">urb-&gt;interval</span></code> to say how often to make transfers; it’s
@@ -611,8 +613,8 @@ completion keeps (re)submitting a later URB, you’ll get smooth ISO streaming
 <p>If you specify your own start frame, make sure it’s several frames in advance
 of the current frame.  You might want this model if you’re synchronizing
 ISO data with some other event stream.</p>
-</section>
-<section id="how-to-start-interrupt-int-transfers">
+</div>
+<div class="section" id="how-to-start-interrupt-int-transfers">
 <h2>How to start interrupt (INT) transfers?<a class="headerlink" href="#how-to-start-interrupt-int-transfers" title="Permalink to this headline">¶</a></h2>
 <p>Interrupt transfers, like isochronous transfers, are periodic, and happen
 in intervals that are powers of two (1, 2, 4 etc) units.  Units are frames
@@ -625,8 +627,8 @@ restarted when they complete.  They end when the completion handler is
 called, just like other URBs.  If you want an interrupt URB to be restarted,
 your completion handler must resubmit it.
 s</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

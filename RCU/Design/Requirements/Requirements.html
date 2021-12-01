@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>A Tour Through RCU’s Requirements &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -277,7 +279,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="a-tour-through-rcu-s-requirements">
+  <div class="section" id="a-tour-through-rcu-s-requirements">
 <h1>A Tour Through RCU’s Requirements<a class="headerlink" href="#a-tour-through-rcu-s-requirements" title="Permalink to this headline">¶</a></h1>
 <p>Copyright IBM Corporation, 2015</p>
 <p>Author: Paul E. McKenney</p>
@@ -286,7 +288,7 @@
 <a class="reference external" href="https://lwn.net/Articles/652156/">part 1</a>,
 <a class="reference external" href="https://lwn.net/Articles/652677/">part 2</a>, and
 <a class="reference external" href="https://lwn.net/Articles/653326/">part 3</a>.</p>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Read-copy update (RCU) is a synchronization mechanism that is often used
 as a replacement for reader-writer locking. RCU is unusual in that
@@ -319,8 +321,8 @@ requirements:</p>
 <p>This is followed by a <a class="reference internal" href="#summary">summary</a>, however, the answers to
 each quick quiz immediately follows the quiz. Select the big white space
 with your mouse to see the answer.</p>
-</section>
-<section id="fundamental-requirements">
+</div>
+<div class="section" id="fundamental-requirements">
 <h2>Fundamental Requirements<a class="headerlink" href="#fundamental-requirements" title="Permalink to this headline">¶</a></h2>
 <p>RCU’s fundamental requirements are the closest thing RCU has to hard
 mathematical requirements. These are:</p>
@@ -331,7 +333,7 @@ mathematical requirements. These are:</p>
 <li><p><a class="reference internal" href="#rcu-primitives-guaranteed-to-execute-unconditionally">RCU Primitives Guaranteed to Execute Unconditionally</a></p></li>
 <li><p><a class="reference internal" href="#guaranteed-read-to-write-upgrade">Guaranteed Read-to-Write Upgrade</a></p></li>
 </ol>
-<section id="grace-period-guarantee">
+<div class="section" id="grace-period-guarantee">
 <h3>Grace-Period Guarantee<a class="headerlink" href="#grace-period-guarantee" title="Permalink to this headline">¶</a></h3>
 <p>RCU’s grace-period guarantee is unusual in being premeditated: Jack
 Slingwine and I had this guarantee firmly in mind when we started work
@@ -524,8 +526,8 @@ optimizations could cause trouble. Therefore, we clearly need some way
 to prevent the compiler and the CPU from reordering in this manner,
 which brings us to the publish-subscribe guarantee discussed in the next
 section.</p>
-</section>
-<section id="publish-subscribe-guarantee">
+</div>
+<div class="section" id="publish-subscribe-guarantee">
 <h3>Publish/Subscribe Guarantee<a class="headerlink" href="#publish-subscribe-guarantee" title="Permalink to this headline">¶</a></h3>
 <p>RCU’s publish-subscribe guarantee allows data to be inserted into a
 linked data structure without disrupting RCU readers. The updater uses
@@ -751,8 +753,8 @@ and C++ standards committees have provided much education on tricks and
 traps from the compiler. In short, compilers were much less tricky in
 the early 1990s, but in 2015, don’t even think about omitting
 <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_dereference" title="rcu_dereference"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_dereference()</span></code></a>!</p>
-</section>
-<section id="memory-barrier-guarantees">
+</div>
+<div class="section" id="memory-barrier-guarantees">
 <h3>Memory-Barrier Guarantees<a class="headerlink" href="#memory-barrier-guarantees" title="Permalink to this headline">¶</a></h3>
 <p>The previous section’s simple linked-data-structure scenario clearly
 demonstrates the need for RCU’s stringent memory-ordering guarantees on
@@ -915,8 +917,8 @@ pre-existing readers. On the contrary, the memory barriers called out in
 this section must operate in such a way as to <em>enforce</em> this fundamental
 requirement. Of course, different implementations enforce this
 requirement in different ways, but enforce it they must.</p>
-</section>
-<section id="rcu-primitives-guaranteed-to-execute-unconditionally">
+</div>
+<div class="section" id="rcu-primitives-guaranteed-to-execute-unconditionally">
 <h3>RCU Primitives Guaranteed to Execute Unconditionally<a class="headerlink" href="#rcu-primitives-guaranteed-to-execute-unconditionally" title="Permalink to this headline">¶</a></h3>
 <p>The common-case RCU primitives are unconditional. They are invoked, they
 do their job, and they return, with no possibility of error, and no need
@@ -931,8 +933,8 @@ with conditional primitives caused me to elevate this accident to a
 guarantee. Therefore, the justification for adding a conditional
 primitive to RCU would need to be based on detailed and compelling use
 cases.</p>
-</section>
-<section id="guaranteed-read-to-write-upgrade">
+</div>
+<div class="section" id="guaranteed-read-to-write-upgrade">
 <h3>Guaranteed Read-to-Write Upgrade<a class="headerlink" href="#guaranteed-read-to-write-upgrade" title="Permalink to this headline">¶</a></h3>
 <p>As far as RCU is concerned, it is always possible to carry out an update
 within an RCU read-side critical section. For example, that RCU
@@ -962,9 +964,9 @@ RCU readers.</p></td>
 <p>This guarantee allows lookup code to be shared between read-side and
 update-side code, and was premeditated, appearing in the earliest
 DYNIX/ptx RCU documentation.</p>
-</section>
-</section>
-<section id="fundamental-non-requirements">
+</div>
+</div>
+<div class="section" id="fundamental-non-requirements">
 <h2>Fundamental Non-Requirements<a class="headerlink" href="#fundamental-non-requirements" title="Permalink to this headline">¶</a></h2>
 <p>RCU provides extremely lightweight readers, and its read-side
 guarantees, though quite useful, are correspondingly lightweight. It is
@@ -980,7 +982,7 @@ these non-guarantees were premeditated.</p>
 <li><p><a class="reference internal" href="#grace-periods-don-t-partition-read-side-critical-sections">Grace Periods Don’t Partition Read-Side Critical Sections</a></p></li>
 <li><p><a class="reference internal" href="#read-side-critical-sections-don-t-partition-grace-periods">Read-Side Critical Sections Don’t Partition Grace Periods</a></p></li>
 </ol>
-<section id="readers-impose-minimal-ordering">
+<div class="section" id="readers-impose-minimal-ordering">
 <h3>Readers Impose Minimal Ordering<a class="headerlink" href="#readers-impose-minimal-ordering" title="Permalink to this headline">¶</a></h3>
 <p>Reader-side markers such as <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_read_lock" title="rcu_read_lock"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_read_lock()</span></code></a> and
 <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_read_unlock" title="rcu_read_unlock"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_read_unlock()</span></code></a> provide absolutely no ordering guarantees except
@@ -1038,8 +1040,8 @@ prevent the compiler from reordering in this particular case.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="readers-do-not-exclude-updaters">
+</div>
+<div class="section" id="readers-do-not-exclude-updaters">
 <h3>Readers Do Not Exclude Updaters<a class="headerlink" href="#readers-do-not-exclude-updaters" title="Permalink to this headline">¶</a></h3>
 <p>Neither <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_read_lock" title="rcu_read_lock"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_read_lock()</span></code></a> nor <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_read_unlock" title="rcu_read_unlock"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_read_unlock()</span></code></a> exclude updates.
 All they do is to prevent grace periods from ending. The following
@@ -1072,8 +1074,8 @@ thread1() function’s update, the WARN_ON() could never fire. But
 the fact is that <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_read_lock" title="rcu_read_lock"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_read_lock()</span></code></a> does not exclude much of anything
 aside from subsequent grace periods, of which thread1() has none, so
 the WARN_ON() can and does fire.</p>
-</section>
-<section id="updaters-only-wait-for-old-readers">
+</div>
+<div class="section" id="updaters-only-wait-for-old-readers">
 <h3>Updaters Only Wait For Old Readers<a class="headerlink" href="#updaters-only-wait-for-old-readers" title="Permalink to this headline">¶</a></h3>
 <p>It might be tempting to assume that after <a class="reference internal" href="../../../core-api/kernel-api.html#c.synchronize_rcu" title="synchronize_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">synchronize_rcu()</span></code></a>
 completes, there are no readers executing. This temptation must be
@@ -1100,8 +1102,8 @@ all readers had completed, a new reader might start immediately after
 </tr>
 </tbody>
 </table>
-</section>
-<section id="grace-periods-don-t-partition-read-side-critical-sections">
+</div>
+<div class="section" id="grace-periods-don-t-partition-read-side-critical-sections">
 <h3>Grace Periods Don’t Partition Read-Side Critical Sections<a class="headerlink" href="#grace-periods-don-t-partition-read-side-critical-sections" title="Permalink to this headline">¶</a></h3>
 <p>It is tempting to assume that if any part of one RCU read-side critical
 section precedes a given grace period, and if any part of another RCU
@@ -1148,8 +1150,8 @@ with each circled <code class="docutils literal notranslate"><span class="pre">Q
 <em>quiescent state</em> for each thread, that is, a state in which RCU knows
 that the thread cannot be in the midst of an RCU read-side critical
 section that started before the current grace period:</p>
-<figure class="align-default">
-<img alt="../../../_images/GPpartitionReaders1.svg" src="../../../_images/GPpartitionReaders1.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/GPpartitionReaders1.svg" src="../../../_images/GPpartitionReaders1.svg" /></div>
 <p>If it is necessary to partition RCU read-side critical sections in this
 manner, it is necessary to use two grace periods, where the first grace
 period is known to end before the second grace period starts:</p>
@@ -1202,8 +1204,8 @@ that <code class="docutils literal notranslate"><span class="pre">(r3</span> <sp
 <p>cannot happen.</p>
 <p>This non-requirement was also non-premeditated, but became apparent when
 studying RCU’s interaction with memory ordering.</p>
-</section>
-<section id="read-side-critical-sections-don-t-partition-grace-periods">
+</div>
+<div class="section" id="read-side-critical-sections-don-t-partition-grace-periods">
 <h3>Read-Side Critical Sections Don’t Partition Grace Periods<a class="headerlink" href="#read-side-critical-sections-don-t-partition-grace-periods" title="Permalink to this headline">¶</a></h3>
 <p>It is also tempting to assume that if an RCU read-side critical section
 happens between a pair of grace periods, then those grace periods cannot
@@ -1257,8 +1259,8 @@ illustrated by the following, with all variables initially zero:</p>
 </div>
 </div></blockquote>
 <p>is entirely possible, as illustrated below:</p>
-<figure class="align-default">
-<img alt="../../../_images/ReadersPartitionGP1.svg" src="../../../_images/ReadersPartitionGP1.svg" /></figure>
+<div class="figure align-default">
+<img alt="../../../_images/ReadersPartitionGP1.svg" src="../../../_images/ReadersPartitionGP1.svg" /></div>
 <p>Again, an RCU read-side critical section can overlap almost all of a
 given grace period, just so long as it does not overlap the entire grace
 period. As a result, an RCU read-side critical section cannot partition
@@ -1283,9 +1285,9 @@ rather than the practical answer.</p></td>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-<section id="parallelism-facts-of-life">
+</div>
+</div>
+<div class="section" id="parallelism-facts-of-life">
 <h2>Parallelism Facts of Life<a class="headerlink" href="#parallelism-facts-of-life" title="Permalink to this headline">¶</a></h2>
 <p>These parallelism facts of life are by no means specific to RCU, but the
 RCU implementation must abide by them. They therefore bear repeating:</p>
@@ -1333,8 +1335,8 @@ attention to the preceding facts of life. The idea that Linux might
 scale to systems with thousands of CPUs would have been met with some
 skepticism in the 1990s, but these requirements would have otherwise
 have been unsurprising, even in the early 1990s.</p>
-</section>
-<section id="quality-of-implementation-requirements">
+</div>
+<div class="section" id="quality-of-implementation-requirements">
 <h2>Quality-of-Implementation Requirements<a class="headerlink" href="#quality-of-implementation-requirements" title="Permalink to this headline">¶</a></h2>
 <p>These sections list quality-of-implementation requirements. Although an
 RCU implementation that ignores these requirements could still be used,
@@ -1349,7 +1351,7 @@ quality-of-implementation requirements are as follows:</p>
 <li><p><a class="reference internal" href="#corner-cases">Corner Cases</a></p></li>
 </ol>
 <p>These classes is covered in the following sections.</p>
-<section id="specialization">
+<div class="section" id="specialization">
 <h3>Specialization<a class="headerlink" href="#specialization" title="Permalink to this headline">¶</a></h3>
 <p>RCU is and always has been intended primarily for read-mostly
 situations, which means that RCU’s read-side primitives are optimized,
@@ -1457,8 +1459,8 @@ mechanisms may be used in concert with RCU when consistency is required.
 RCU’s specialization allows it to do its job extremely well, and its
 ability to interoperate with other synchronization mechanisms allows the
 right mix of synchronization tools to be used for a given job.</p>
-</section>
-<section id="performance-and-scalability">
+</div>
+<div class="section" id="performance-and-scalability">
 <h3>Performance and Scalability<a class="headerlink" href="#performance-and-scalability" title="Permalink to this headline">¶</a></h3>
 <p>Energy efficiency is a critical component of performance today, and
 Linux-kernel RCU implementations must therefore avoid unnecessarily
@@ -1701,8 +1703,8 @@ waits as required. The need for <code class="docutils literal notranslate"><span
 early to tell whether they will stand the test of time.</p>
 <p>RCU thus provides a range of tools to allow updaters to strike the
 required tradeoff between latency, flexibility and CPU overhead.</p>
-</section>
-<section id="forward-progress">
+</div>
+<div class="section" id="forward-progress">
 <h3>Forward Progress<a class="headerlink" href="#forward-progress" title="Permalink to this headline">¶</a></h3>
 <p>In theory, delaying grace-period completion and callback invocation is
 harmless. In practice, not only are memory sizes finite but also
@@ -1775,8 +1777,8 @@ because workloads benefiting from <code class="docutils literal notranslate"><sp
 <a class="reference internal" href="../../../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a> relatively infrequently. If workloads emerge that need
 both <code class="docutils literal notranslate"><span class="pre">rcu_nocbs</span></code> CPUs and high <a class="reference internal" href="../../../core-api/kernel-api.html#c.call_rcu" title="call_rcu"><code class="xref c c-func docutils literal notranslate"><span class="pre">call_rcu()</span></code></a> invocation rates, then
 additional forward-progress work will be required.</p>
-</section>
-<section id="composability">
+</div>
+<div class="section" id="composability">
 <h3>Composability<a class="headerlink" href="#composability" title="Permalink to this headline">¶</a></h3>
 <p>Composability has received much attention in recent years, perhaps in
 part due to the collision of multicore hardware with object-oriented
@@ -1819,8 +1821,8 @@ avoided.</p>
 <p>In short, although RCU read-side critical sections are highly
 composable, care is required in some situations, just as is the case for
 any other composable synchronization mechanism.</p>
-</section>
-<section id="corner-cases">
+</div>
+<div class="section" id="corner-cases">
 <h3>Corner Cases<a class="headerlink" href="#corner-cases" title="Permalink to this headline">¶</a></h3>
 <p>A given RCU workload might have an endless and intense stream of RCU
 read-side critical sections, perhaps even so intense that there was
@@ -1858,9 +1860,9 @@ grace-period processing. This evasive action causes the grace period to
 complete more quickly, but at the cost of restricting RCU’s batching
 optimizations, thus increasing the CPU overhead incurred by that grace
 period.</p>
-</section>
-</section>
-<section id="software-engineering-requirements">
+</div>
+</div>
+<div class="section" id="software-engineering-requirements">
 <h2>Software-Engineering Requirements<a class="headerlink" href="#software-engineering-requirements" title="Permalink to this headline">¶</a></h2>
 <p>Between Murphy’s Law and “To err is human”, it is necessary to guard
 against mishaps and misuse:</p>
@@ -1954,8 +1956,8 @@ pointer. The <a class="reference internal" href="../../../core-api/kernel-api.ht
 <p>This not a hard-and-fast list: RCU’s diagnostic capabilities will
 continue to be guided by the number and type of usage bugs found in
 real-world RCU usage.</p>
-</section>
-<section id="linux-kernel-complications">
+</div>
+<div class="section" id="linux-kernel-complications">
 <h2>Linux Kernel Complications<a class="headerlink" href="#linux-kernel-complications" title="Permalink to this headline">¶</a></h2>
 <p>The Linux kernel provides an interesting environment for all kinds of
 software, including RCU. Some of the relevant points of interest are as
@@ -1978,7 +1980,7 @@ follows:</p>
 <p>This list is probably incomplete, but it does give a feel for the most
 notable Linux-kernel complications. Each of the following sections
 covers one of the above topics.</p>
-<section id="configuration">
+<div class="section" id="configuration">
 <h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
 <p>RCU’s goal is automatic configuration, so that almost nobody needs to
 worry about RCU’s <code class="docutils literal notranslate"><span class="pre">Kconfig</span></code> options. And for almost all users, RCU
@@ -1992,8 +1994,8 @@ requires almost all of them be hidden behind a <code class="docutils literal not
 Torvalds recently had to
 <a class="reference external" href="https://lore.kernel.org/r/CA+55aFy4wcCwaL4okTs8wXhGZ5h-ibecy_Meg9C4MNQrUnwMcg&#64;mail.gmail.com">remind</a>
 me of this requirement.</p>
-</section>
-<section id="firmware-interface">
+</div>
+<div class="section" id="firmware-interface">
 <h3>Firmware Interface<a class="headerlink" href="#firmware-interface" title="Permalink to this headline">¶</a></h3>
 <p>In many cases, kernel obtains information about the system from the
 firmware, and sometimes things are lost in translation. Or the
@@ -2009,8 +2011,8 @@ it can allow itself to believe that the CPU actually exists. The
 resulting “ghost CPUs” (which are never going to come online) cause a
 number of <a class="reference external" href="https://paulmck.livejournal.com/37494.html">interesting
 complications</a>.</p>
-</section>
-<section id="early-boot">
+</div>
+<div class="section" id="early-boot">
 <h3>Early Boot<a class="headerlink" href="#early-boot" title="Permalink to this headline">¶</a></h3>
 <p>The Linux kernel’s boot sequence is an interesting process, and RCU is
 used early, even before rcu_init() is invoked. In fact, a number of
@@ -2085,8 +2087,8 @@ other adjustments will be made, appropriate or otherwise.)</p>
 </table>
 <p>I learned of these boot-time requirements as a result of a series of
 system hangs.</p>
-</section>
-<section id="interrupts-and-nmis">
+</div>
+<div class="section" id="interrupts-and-nmis">
 <h3>Interrupts and NMIs<a class="headerlink" href="#interrupts-and-nmis" title="Permalink to this headline">¶</a></h3>
 <p>The Linux kernel has interrupts, and RCU read-side critical sections are
 legal within interrupt handlers and within interrupt-disabled regions of
@@ -2115,8 +2117,8 @@ from an NMI handler. This astonishing fact of life prompted the current
 code structure, which has <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_irq_enter" title="rcu_irq_enter"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_irq_enter()</span></code></a> invoking
 <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_nmi_enter" title="rcu_nmi_enter"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_nmi_enter()</span></code></a> and <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_irq_exit" title="rcu_irq_exit"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_irq_exit()</span></code></a> invoking <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_nmi_exit" title="rcu_nmi_exit"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_nmi_exit()</span></code></a>.
 And yes, I also learned of this requirement the hard way.</p>
-</section>
-<section id="loadable-modules">
+</div>
+<div class="section" id="loadable-modules">
 <h3>Loadable Modules<a class="headerlink" href="#loadable-modules" title="Permalink to this headline">¶</a></h3>
 <p>The Linux kernel has loadable modules, and these modules can also be
 unloaded. After a given module has been unloaded, any attempt to call
@@ -2181,8 +2183,8 @@ you can always use workqueues to invoke them concurrently.</p>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="hotplug-cpu">
+</div>
+<div class="section" id="hotplug-cpu">
 <h3>Hotplug CPU<a class="headerlink" href="#hotplug-cpu" title="Permalink to this headline">¶</a></h3>
 <p>The Linux kernel supports CPU hotplug, which means that CPUs can come
 and go. It is of course illegal to use any RCU API member from an
@@ -2230,8 +2232,8 @@ for that CPU.</p>
 corresponding CPU’s leaf node lock is held. This avoids race conditions
 between RCU’s hotplug notifier hooks, the grace period initialization
 code, and the FQS loop, all of which refer to or modify this bookkeeping.</p>
-</section>
-<section id="scheduler-and-rcu">
+</div>
+<div class="section" id="scheduler-and-rcu">
 <h3>Scheduler and RCU<a class="headerlink" href="#scheduler-and-rcu" title="Permalink to this headline">¶</a></h3>
 <p>RCU makes use of kthreads, and it is necessary to avoid excessive CPU-time
 accumulation by these kthreads. This requirement was no surprise, but
@@ -2252,8 +2254,8 @@ that lock across the matching <a class="reference internal" href="../../../core-
 nesting.  The fact that interrupt-disabled regions of code act as RCU
 read-side critical sections implicitly avoids earlier issues that used
 to result in destructive recursion via interrupt handler’s use of RCU.</p>
-</section>
-<section id="tracing-and-rcu">
+</div>
+<div class="section" id="tracing-and-rcu">
 <h3>Tracing and RCU<a class="headerlink" href="#tracing-and-rcu" title="Permalink to this headline">¶</a></h3>
 <p>It is possible to use tracing on RCU code, but tracing itself uses RCU.
 For this reason, rcu_dereference_raw_check() is provided for use
@@ -2262,8 +2264,8 @@ ensue. This API is also used by virtualization in some architectures,
 where RCU readers execute in environments in which tracing cannot be
 used. The tracing folks both located the requirement and provided the
 needed fix, so this surprise requirement was relatively painless.</p>
-</section>
-<section id="accesses-to-user-memory-and-rcu">
+</div>
+<div class="section" id="accesses-to-user-memory-and-rcu">
 <h3>Accesses to User Memory and RCU<a class="headerlink" href="#accesses-to-user-memory-and-rcu" title="Permalink to this headline">¶</a></h3>
 <p>The kernel needs to access user-space memory, for example, to access data
 referenced by system-call parameters.  The <a class="reference internal" href="../../../core-api/mm-api.html#c.get_user" title="get_user"><code class="xref c c-func docutils literal notranslate"><span class="pre">get_user()</span></code></a> macro does this job.</p>
@@ -2310,8 +2312,8 @@ those two accesses in order.</p>
 <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_read_unlock" title="rcu_read_unlock"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_read_unlock()</span></code></a> must act as compiler barriers, at least for outermost
 instances of <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_read_lock" title="rcu_read_lock"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_read_lock()</span></code></a> and <a class="reference internal" href="../../../core-api/kernel-api.html#c.rcu_read_unlock" title="rcu_read_unlock"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_read_unlock()</span></code></a> within a nested set
 of RCU read-side critical sections.</p>
-</section>
-<section id="energy-efficiency">
+</div>
+<div class="section" id="energy-efficiency">
 <h3>Energy Efficiency<a class="headerlink" href="#energy-efficiency" title="Permalink to this headline">¶</a></h3>
 <p>Interrupting idle CPUs is considered socially unacceptable, especially
 by people with battery-powered embedded systems. RCU therefore conserves
@@ -2371,8 +2373,8 @@ hardware
 As noted earlier, I learned of many of these requirements via angry
 phone calls: Flaming me on the Linux-kernel mailing list was apparently
 not sufficient to fully vent their ire at RCU’s energy-efficiency bugs!</p>
-</section>
-<section id="scheduling-clock-interrupts-and-rcu">
+</div>
+<div class="section" id="scheduling-clock-interrupts-and-rcu">
 <h3>Scheduling-Clock Interrupts and RCU<a class="headerlink" href="#scheduling-clock-interrupts-and-rcu" title="Permalink to this headline">¶</a></h3>
 <p>The kernel transitions between in-kernel non-idle execution, userspace
 execution, and the idle loop. Depending on kernel configuration, RCU
@@ -2532,8 +2534,8 @@ between in-kernel execution, usermode execution, and idle, and as long
 as the scheduling-clock interrupt is enabled when RCU needs it to be,
 you can rest assured that the bugs you encounter will be in some other
 part of RCU or some other part of the kernel!</p>
-</section>
-<section id="memory-efficiency">
+</div>
+<div class="section" id="memory-efficiency">
 <h3>Memory Efficiency<a class="headerlink" href="#memory-efficiency" title="Permalink to this headline">¶</a></h3>
 <p>Although small-memory non-realtime systems can simply use Tiny RCU, code
 size is only one aspect of memory efficiency. Another aspect is the size
@@ -2579,8 +2581,8 @@ potentially have energy-efficiency benefits, but only if the rate of
 non-lazy callbacks decreases significantly for some important workload.
 In the meantime, reserving the bottom bit keeps this option open in case
 it one day becomes useful.</p>
-</section>
-<section id="performance-scalability-response-time-and-reliability">
+</div>
+<div class="section" id="performance-scalability-response-time-and-reliability">
 <h3>Performance, Scalability, Response Time, and Reliability<a class="headerlink" href="#performance-scalability-response-time-and-reliability" title="Permalink to this headline">¶</a></h3>
 <p>Expanding on the <a class="reference internal" href="#performance-and-scalability">earlier
 discussion</a>, RCU is used heavily by
@@ -2658,9 +2660,9 @@ kernel is already being used in production for safety-critical
 applications. I don’t know about you, but I would feel quite bad if a
 bug in RCU killed someone. Which might explain my recent focus on
 validation and verification.</p>
-</section>
-</section>
-<section id="other-rcu-flavors">
+</div>
+</div>
+<div class="section" id="other-rcu-flavors">
 <h2>Other RCU Flavors<a class="headerlink" href="#other-rcu-flavors" title="Permalink to this headline">¶</a></h2>
 <p>One of the more surprising things about RCU is that there are now no
 fewer than five <em>flavors</em>, or API families. In addition, the primary
@@ -2674,7 +2676,7 @@ section.</p>
 <li><p><a class="reference internal" href="#sleepable-rcu">Sleepable RCU</a></p></li>
 <li><p><a class="reference internal" href="#tasks-rcu">Tasks RCU</a></p></li>
 </ol>
-<section id="bottom-half-flavor-historical">
+<div class="section" id="bottom-half-flavor-historical">
 <h3>Bottom-Half Flavor (Historical)<a class="headerlink" href="#bottom-half-flavor-historical" title="Permalink to this headline">¶</a></h3>
 <p>The RCU-bh flavor of RCU has since been expressed in terms of the other
 RCU flavors as part of a consolidation of the three flavors into a
@@ -2722,8 +2724,8 @@ old RCU-bh update-side APIs are now gone, replaced by <a class="reference intern
 anything that disables bottom halves also marks an RCU-bh read-side
 critical section, including local_bh_disable() and local_bh_enable(),
 local_irq_save() and local_irq_restore(), and so on.</p>
-</section>
-<section id="sched-flavor-historical">
+</div>
+<div class="section" id="sched-flavor-historical">
 <h3>Sched Flavor (Historical)<a class="headerlink" href="#sched-flavor-historical" title="Permalink to this headline">¶</a></h3>
 <p>The RCU-sched flavor of RCU has since been expressed in terms of the
 other RCU flavors as part of a consolidation of the three flavors into a
@@ -2761,8 +2763,8 @@ are now gone, replaced by <a class="reference internal" href="../../../core-api/
 preemption also marks an RCU-sched read-side critical section,
 including preempt_disable() and preempt_enable(), local_irq_save()
 and local_irq_restore(), and so on.</p>
-</section>
-<section id="sleepable-rcu">
+</div>
+<div class="section" id="sleepable-rcu">
 <h3>Sleepable RCU<a class="headerlink" href="#sleepable-rcu" title="Permalink to this headline">¶</a></h3>
 <p>For well over a decade, someone saying “I need to block within an RCU
 read-side critical section” was a reliable indication that this someone
@@ -2882,8 +2884,8 @@ will be started.</p></li>
 certain types of buffer-cache algorithms having multi-stage age-out
 mechanisms.  The idea is that by the time the block has aged completely
 from the cache, an SRCU grace period will be very likely to have elapsed.</p>
-</section>
-<section id="tasks-rcu">
+</div>
+<div class="section" id="tasks-rcu">
 <h3>Tasks RCU<a class="headerlink" href="#tasks-rcu" title="Permalink to this headline">¶</a></h3>
 <p>Some forms of tracing use “trampolines” to handle the binary rewriting
 required to install different types of probes. It would be good to be
@@ -2915,9 +2917,9 @@ cannot be preempted, so these APIs map to <a class="reference internal" href="..
 <code class="docutils literal notranslate"><span class="pre">CONFIG_PREEMPTION=y</span></code> kernels, trampolines can be preempted, and these
 three APIs are therefore implemented by separate functions that check
 for voluntary context switches.</p>
-</section>
-</section>
-<section id="possible-future-changes">
+</div>
+</div>
+<div class="section" id="possible-future-changes">
 <h2>Possible Future Changes<a class="headerlink" href="#possible-future-changes" title="Permalink to this headline">¶</a></h2>
 <p>One of the tricks that RCU uses to attain update-side scalability is to
 increase grace-period latency with increasing numbers of CPUs. If this
@@ -2965,23 +2967,23 @@ probably not in production kernels.</p>
 <p>Additional work may be required to provide reasonable forward-progress
 guarantees under heavy load for grace periods and for callback
 invocation.</p>
-</section>
-<section id="summary">
+</div>
+<div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>This document has presented more than two decade’s worth of RCU
 requirements. Given that the requirements keep changing, this will not
 be the last word on this subject, but at least it serves to get an
 important subset of the requirements set forth.</p>
-</section>
-<section id="acknowledgments">
+</div>
+<div class="section" id="acknowledgments">
 <h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this headline">¶</a></h2>
 <p>I am grateful to Steven Rostedt, Lai Jiangshan, Ingo Molnar, Oleg
 Nesterov, Borislav Petkov, Peter Zijlstra, Boqun Feng, and Andy
 Lutomirski for their help in rendering this article human readable, and
 to Michelle Rankin for her support of this effort. Other contributions
 are acknowledged in the Linux kernel’s git archive.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

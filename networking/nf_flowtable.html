@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Netfilter’s flowtable infrastructure &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -365,13 +367,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="netfilter-s-flowtable-infrastructure">
+  <div class="section" id="netfilter-s-flowtable-infrastructure">
 <h1>Netfilter’s flowtable infrastructure<a class="headerlink" href="#netfilter-s-flowtable-infrastructure" title="Permalink to this headline">¶</a></h1>
 <p>This documentation describes the Netfilter flowtable infrastructure which allows
 you to define a fastpath through the flowtable datapath. This infrastructure
 also provides hardware offload support. The flowtable supports for the layer 3
 IPv4 and IPv6 and the layer 4 TCP and UDP protocols.</p>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Once the first packet of the flow successfully goes through the IP forwarding
 path, from the second packet on, you might decide to offload the flow to the
@@ -432,8 +434,8 @@ transport header is missing, in this case, flowtable lookups are not possible.
 TCP RST and FIN packets are also passed up to the classic IP forwarding path to
 release the flow gracefully. Packets that exceed the MTU are also passed up to
 the classic forwarding path to report packet-too-big ICMP errors to the sender.</p>
-</section>
-<section id="example-configuration">
+</div>
+<div class="section" id="example-configuration">
 <h2>Example configuration<a class="headerlink" href="#example-configuration" title="Permalink to this headline">¶</a></h2>
 <p>Enabling the flowtable bypass is relatively easy, you only need to create a
 flowtable and add one rule to your forward chain:</p>
@@ -466,8 +468,8 @@ connection tracking table.</p>
 tcp      6 src=10.141.10.2 dst=192.168.10.2 sport=52728 dport=5201 src=192.168.10.2 dst=192.168.10.1 sport=5201 dport=52728 [OFFLOAD] mark=0 use=2
 </pre></div>
 </div>
-</section>
-<section id="layer-2-encapsulation">
+</div>
+<div class="section" id="layer-2-encapsulation">
 <h2>Layer 2 encapsulation<a class="headerlink" href="#layer-2-encapsulation" title="Permalink to this headline">¶</a></h2>
 <p>Since Linux kernel 5.13, the flowtable infrastructure discovers the real
 netdevice behind VLAN and PPPoE netdevices. The flowtable software datapath
@@ -476,8 +478,8 @@ VLAN ID / PPPoE session ID which are used for the flowtable lookups. The
 flowtable datapath also deals with layer 2 decapsulation.</p>
 <p>You do not need to add the PPPoE and the VLAN devices to your flowtable,
 instead the real device is sufficient for the flowtable to track your flows.</p>
-</section>
-<section id="bridge-and-ip-forwarding">
+</div>
+<div class="section" id="bridge-and-ip-forwarding">
 <h2>Bridge and IP forwarding<a class="headerlink" href="#bridge-and-ip-forwarding" title="Permalink to this headline">¶</a></h2>
 <p>Since Linux kernel 5.13, you can add bridge ports to the flowtable. The
 flowtable infrastructure discovers the topology behind the bridge device. This
@@ -505,8 +507,8 @@ your bridge port.</p>
 <p>If you would like that your flowtable defines a fastpath between your bridge
 ports and your IP forwarding path, you have to add your bridge ports (as
 represented by the real netdevice) to your flowtable definition.</p>
-</section>
-<section id="counters">
+</div>
+<div class="section" id="counters">
 <h2>Counters<a class="headerlink" href="#counters" title="Permalink to this headline">¶</a></h2>
 <p>The flowtable can synchronize packet and byte counters with the existing
 connection tracking entry by specifying the counter statement in your flowtable
@@ -520,8 +522,8 @@ definition, e.g.</p>
 </pre></div>
 </div>
 <p>Counter support is available since Linux kernel 5.7.</p>
-</section>
-<section id="hardware-offload">
+</div>
+<div class="section" id="hardware-offload">
 <h2>Hardware offload<a class="headerlink" href="#hardware-offload" title="Permalink to this headline">¶</a></h2>
 <p>If your network device provides hardware offload support, you can turn it on by
 means of the ‘offload’ flag in your flowtable definition, e.g.</p>
@@ -543,8 +545,8 @@ which refers to the software flowtable fastpath and [HW_OFFLOAD] which refers
 to the hardware offload datapath being used by the flow.</p>
 <p>The flowtable hardware offload infrastructure also supports for the DSA
 (Distributed Switch Architecture).</p>
-</section>
-<section id="limitations">
+</div>
+<div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <p>The flowtable behaves like a cache. The flowtable entries might get stale if
 either the destination MAC address or the egress netdevice that is used for
@@ -555,8 +557,8 @@ transmission changes.</p>
 forwarding in your setup.</p></li>
 <li><p>Hardware offload is enabled.</p></li>
 </ul>
-</section>
-<section id="more-reading">
+</div>
+<div class="section" id="more-reading">
 <h2>More reading<a class="headerlink" href="#more-reading" title="Permalink to this headline">¶</a></h2>
 <p>This documentation is based on the LWN.net articles <a class="footnote-reference brackets" href="#id5" id="id1">1</a><a class="footnote-reference brackets" href="#id6" id="id2">2</a>. Rafal Milecki
 also made a very complete and comprehensive summary called “A state of network
@@ -576,8 +578,8 @@ mainlined <a class="footnote-reference brackets" href="#id7" id="id3">3</a> and 
 <dd><p><a class="reference external" href="http://lists.infradead.org/pipermail/lede-dev/2018-January/010829.html">http://lists.infradead.org/pipermail/lede-dev/2018-January/010829.html</a></p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

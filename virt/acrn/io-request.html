@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>I/O request handling &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -259,13 +261,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="i-o-request-handling">
+  <div class="section" id="i-o-request-handling">
 <h1>I/O request handling<a class="headerlink" href="#i-o-request-handling" title="Permalink to this headline">¶</a></h1>
 <p>An I/O request of a User VM, which is constructed by the hypervisor, is
 distributed by the ACRN Hypervisor Service Module to an I/O client
 corresponding to the address range of the I/O request. Details of I/O request
 handling are described in the following sections.</p>
-<section id="i-o-request">
+<div class="section" id="i-o-request">
 <h2>1. I/O request<a class="headerlink" href="#i-o-request" title="Permalink to this headline">¶</a></h2>
 <p>For each User VM, there is a shared 4-KByte memory region used for I/O requests
 communication between the hypervisor and Service VM. An I/O request is a
@@ -275,8 +277,8 @@ VM. ACRN userspace in the Service VM first allocates a 4-KByte page and passes
 the GPA (Guest Physical Address) of the buffer to the hypervisor. The buffer is
 used as an array of 16 I/O request slots with each I/O request slot being 256
 bytes. This array is indexed by vCPU ID.</p>
-</section>
-<section id="i-o-clients">
+</div>
+<div class="section" id="i-o-clients">
 <h2>2. I/O clients<a class="headerlink" href="#i-o-clients" title="Permalink to this headline">¶</a></h2>
 <p>An I/O client is responsible for handling User VM I/O requests whose accessed
 GPA falls in a certain range. Multiple I/O clients can be associated with each
@@ -316,8 +318,8 @@ I/O requests and I/O clients.</p>
 +------------------------------------------------------+
 </pre></div>
 </div>
-</section>
-<section id="i-o-request-state-transition">
+</div>
+<div class="section" id="i-o-request-state-transition">
 <h2>3. I/O request state transition<a class="headerlink" href="#i-o-request-state-transition" title="Permalink to this headline">¶</a></h2>
 <p>The state transitions of an ACRN I/O request are as follows.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FREE -&gt; PENDING -&gt; PROCESSING -&gt; COMPLETE -&gt; FREE -&gt; ...
@@ -331,8 +333,8 @@ I/O requests and I/O clients.</p>
 </ul>
 <p>An I/O request in COMPLETE or FREE state is owned by the hypervisor. HSM and
 ACRN userspace are in charge of processing the others.</p>
-</section>
-<section id="processing-flow-of-i-o-requests">
+</div>
+<div class="section" id="processing-flow-of-i-o-requests">
 <h2>4. Processing flow of I/O requests<a class="headerlink" href="#processing-flow-of-i-o-requests" title="Permalink to this headline">¶</a></h2>
 <ol class="loweralpha simple">
 <li><p>The I/O handler of the hypervisor will fill an I/O request with PENDING
@@ -347,8 +349,8 @@ their state to PROCESSING, and notifies the corresponding client to handle.</p><
 <li><p>The HSM updates I/O requests states to COMPLETE and notifies the hypervisor
 of the completion via hypercalls.</p></li>
 </ol>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

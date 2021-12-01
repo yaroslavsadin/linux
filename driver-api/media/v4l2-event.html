@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>2.12. V4L2 events &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -378,7 +380,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="v4l2-events">
+  <div class="section" id="v4l2-events">
 <h1><span class="section-number">2.12. </span>V4L2 events<a class="headerlink" href="#v4l2-events" title="Permalink to this headline">¶</a></h1>
 <p>The V4L2 events provide a generic way to pass events to user space.
 The driver must use <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_fh</span></code></a> to be able to support V4L2 events.</p>
@@ -448,7 +450,7 @@ be fast.</p>
 </div></blockquote>
 <p>The driver’s only responsibility is to fill in the type and the data fields.
 The other fields will be filled in by V4L2.</p>
-<section id="event-subscription">
+<div class="section" id="event-subscription">
 <h2><span class="section-number">2.12.1. </span>Event subscription<a class="headerlink" href="#event-subscription" title="Permalink to this headline">¶</a></h2>
 <p>Subscribing to an event is via:</p>
 <blockquote>
@@ -493,8 +495,8 @@ event twice will only cause this callback to get called once)</p></td>
 </table>
 <p>All 4 callbacks are optional, if you don’t want to specify any callbacks
 the ops argument itself maybe <code class="docutils literal notranslate"><span class="pre">NULL</span></code>.</p>
-</section>
-<section id="unsubscribing-an-event">
+</div>
+<div class="section" id="unsubscribing-an-event">
 <h2><span class="section-number">2.12.2. </span>Unsubscribing an event<a class="headerlink" href="#unsubscribing-an-event" title="Permalink to this headline">¶</a></h2>
 <p>Unsubscribing to an event is via:</p>
 <blockquote>
@@ -507,8 +509,8 @@ A driver may call <a class="reference internal" href="#c.v4l2_event_unsubscribe"
 wants to be involved in unsubscription process.</p>
 <p>The special type <code class="docutils literal notranslate"><span class="pre">V4L2_EVENT_ALL</span></code> may be used to unsubscribe all events. The
 drivers may want to handle this in a special way.</p>
-</section>
-<section id="check-if-there-s-a-pending-event">
+</div>
+<div class="section" id="check-if-there-s-a-pending-event">
 <h2><span class="section-number">2.12.3. </span>Check if there’s a pending event<a class="headerlink" href="#check-if-there-s-a-pending-event" title="Permalink to this headline">¶</a></h2>
 <p>Checking if there’s a pending event is via:</p>
 <blockquote>
@@ -517,8 +519,8 @@ drivers may want to handle this in a special way.</p>
 </div></blockquote>
 <p>This function returns the number of pending events. Useful when implementing
 poll.</p>
-</section>
-<section id="how-events-work">
+</div>
+<div class="section" id="how-events-work">
 <h2><span class="section-number">2.12.4. </span>How events work<a class="headerlink" href="#how-events-work" title="Permalink to this headline">¶</a></h2>
 <p>Events are delivered to user space through the poll system call. The driver
 can use <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_fh</span></code></a>-&gt;wait (a wait_queue_head_t) as the argument for
@@ -535,11 +537,11 @@ available event type is ‘class base + 1’.</p>
 function with <code class="docutils literal notranslate"><span class="pre">V4L2_DEVICE_NOTIFY_EVENT</span></code>. This allows the bridge to map
 the subdev that sends the event to the video node(s) associated with the
 subdev that need to be informed about such an event.</p>
-<section id="v4l2-event-functions-and-data-structures">
+<div class="section" id="v4l2-event-functions-and-data-structures">
 <h3><span class="section-number">2.12.4.1. </span>V4L2 event functions and data structures<a class="headerlink" href="#v4l2-event-functions-and-data-structures" title="Permalink to this headline">¶</a></h3>
 <dl class="c struct">
-<dt id="c.v4l2_kevent">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_kevent</span></code><a class="headerlink" href="#c.v4l2_kevent" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_kevent">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_kevent</span></span></span><a class="headerlink" href="#c.v4l2_kevent" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Internal kernel event struct.</p>
 </dd></dl>
 
@@ -564,8 +566,8 @@ subdev that need to be informed about such an event.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subscribed_event_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subscribed_event_ops</span></code><a class="headerlink" href="#c.v4l2_subscribed_event_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subscribed_event_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subscribed_event_ops</span></span></span><a class="headerlink" href="#c.v4l2_subscribed_event_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Subscribed event operations.</p>
 </dd></dl>
 
@@ -590,8 +592,8 @@ subdev that need to be informed about such an event.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.v4l2_subscribed_event">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">v4l2_subscribed_event</span></code><a class="headerlink" href="#c.v4l2_subscribed_event" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_subscribed_event">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_subscribed_event</span></span></span><a class="headerlink" href="#c.v4l2_subscribed_event" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Internal struct representing a subscribed event.</p>
 </dd></dl>
 
@@ -638,8 +640,8 @@ subdev that need to be informed about such an event.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_event_dequeue">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_event_dequeue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event</span> <span class="pre">*</span><em><span class="pre">event</span></em>, <span class="pre">int</span> <em><span class="pre">nonblocking</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_dequeue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_event_dequeue">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_event_dequeue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">event</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nonblocking</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_dequeue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Dequeue events from video device.</p>
 </dd></dl>
 
@@ -653,8 +655,8 @@ subdev that need to be informed about such an event.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_event_queue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_event_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-dev.html#c.video_device" title="video_device"><span class="pre">video_device</span></a> <span class="pre">*</span><em><span class="pre">vdev</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event</span> <span class="pre">*</span><em><span class="pre">ev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_event_queue">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_event_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-dev.html#c.video_device" title="video_device"><span class="n"><span class="pre">video_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vdev</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_queue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Queue events to video device.</p>
 </dd></dl>
 
@@ -673,8 +675,8 @@ subdev that need to be informed about such an event.</p>
 fields. The other fields will be filled in by V4L2.</p>
 </div>
 <dl class="c function">
-<dt id="c.v4l2_event_queue_fh">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_event_queue_fh</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event</span> <span class="pre">*</span><em><span class="pre">ev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_queue_fh" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_event_queue_fh">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_event_queue_fh</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_queue_fh" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Queue events to video device.</p>
 </dd></dl>
 
@@ -693,8 +695,8 @@ fields. The other fields will be filled in by V4L2.</p>
 fields. The other fields will be filled in by V4L2.</p>
 </div>
 <dl class="c function">
-<dt id="c.v4l2_event_wake_all">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_event_wake_all</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-dev.html#c.video_device" title="video_device"><span class="pre">video_device</span></a> <span class="pre">*</span><em><span class="pre">vdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_wake_all" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_event_wake_all">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_event_wake_all</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-dev.html#c.video_device" title="video_device"><span class="n"><span class="pre">video_device</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">vdev</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_wake_all" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Wake all filehandles.</p>
 </dd></dl>
 
@@ -706,8 +708,8 @@ fields. The other fields will be filled in by V4L2.</p>
 <p><strong>Description</strong></p>
 <p>Used when unregistering a video device.</p>
 <dl class="c function">
-<dt id="c.v4l2_event_pending">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_event_pending</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_pending" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_event_pending">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_event_pending</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_pending" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check if an event is available</p>
 </dd></dl>
 
@@ -719,8 +721,8 @@ fields. The other fields will be filled in by V4L2.</p>
 <p><strong>Description</strong></p>
 <p>Returns the number of pending events.</p>
 <dl class="c function">
-<dt id="c.v4l2_event_subscribe">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_event_subscribe</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event_subscription</span> <span class="pre">*</span><em><span class="pre">sub</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">elems</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.v4l2_subscribed_event_ops" title="v4l2_subscribed_event_ops"><span class="pre">v4l2_subscribed_event_ops</span></a> <span class="pre">*</span><em><span class="pre">ops</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_subscribe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_event_subscribe">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_event_subscribe</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event_subscription</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sub</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">elems</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.v4l2_subscribed_event_ops" title="v4l2_subscribed_event_ops"><span class="n"><span class="pre">v4l2_subscribed_event_ops</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ops</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_subscribe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Subscribes to an event</p>
 </dd></dl>
 
@@ -742,8 +744,8 @@ fields. The other fields will be filled in by V4L2.</p>
 with is currently 1 element.</p>
 </div>
 <dl class="c function">
-<dt id="c.v4l2_event_unsubscribe">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_event_unsubscribe</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event_subscription</span> <span class="pre">*</span><em><span class="pre">sub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_unsubscribe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_event_unsubscribe">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_event_unsubscribe</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event_subscription</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sub</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_unsubscribe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unsubscribes to an event</p>
 </dd></dl>
 
@@ -755,8 +757,8 @@ with is currently 1 element.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_event_unsubscribe_all">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">v4l2_event_unsubscribe_all</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_unsubscribe_all" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_event_unsubscribe_all">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_event_unsubscribe_all</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_unsubscribe_all" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Unsubscribes to all events</p>
 </dd></dl>
 
@@ -766,8 +768,8 @@ with is currently 1 element.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_event_subdev_unsubscribe">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_event_subdev_unsubscribe</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-subdev.html#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event_subscription</span> <span class="pre">*</span><em><span class="pre">sub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_subdev_unsubscribe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_event_subdev_unsubscribe">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_event_subdev_unsubscribe</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-subdev.html#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event_subscription</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sub</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_event_subdev_unsubscribe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Subdev variant of <a class="reference internal" href="#c.v4l2_event_unsubscribe" title="v4l2_event_unsubscribe"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_event_unsubscribe()</span></code></a></p>
 </dd></dl>
 
@@ -787,8 +789,8 @@ with is currently 1 element.</p>
 <code class="docutils literal notranslate"><span class="pre">unsubscribe_event</span></code> field.</p>
 </div>
 <dl class="c function">
-<dt id="c.v4l2_src_change_event_subscribe">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_src_change_event_subscribe</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event_subscription</span> <span class="pre">*</span><em><span class="pre">sub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_src_change_event_subscribe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_src_change_event_subscribe">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_src_change_event_subscribe</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event_subscription</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sub</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_src_change_event_subscribe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>helper function that calls <a class="reference internal" href="#c.v4l2_event_subscribe" title="v4l2_event_subscribe"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_event_subscribe()</span></code></a> if the event is <code class="docutils literal notranslate"><span class="pre">V4L2_EVENT_SOURCE_CHANGE</span></code>.</p>
 </dd></dl>
 
@@ -800,8 +802,8 @@ with is currently 1 element.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.v4l2_src_change_event_subdev_subscribe">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">v4l2_src_change_event_subdev_subscribe</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-subdev.html#c.v4l2_subdev" title="v4l2_subdev"><span class="pre">v4l2_subdev</span></a> <span class="pre">*</span><em><span class="pre">sd</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="pre">v4l2_fh</span></a> <span class="pre">*</span><em><span class="pre">fh</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">v4l2_event_subscription</span> <span class="pre">*</span><em><span class="pre">sub</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_src_change_event_subdev_subscribe" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.v4l2_src_change_event_subdev_subscribe">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">v4l2_src_change_event_subdev_subscribe</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-subdev.html#c.v4l2_subdev" title="v4l2_subdev"><span class="n"><span class="pre">v4l2_subdev</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sd</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="v4l2-fh.html#c.v4l2_fh" title="v4l2_fh"><span class="n"><span class="pre">v4l2_fh</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">fh</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">v4l2_event_subscription</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">sub</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.v4l2_src_change_event_subdev_subscribe" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Variant of <a class="reference internal" href="#c.v4l2_event_subscribe" title="v4l2_event_subscribe"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_event_subscribe()</span></code></a>, meant to subscribe only events of the type <code class="docutils literal notranslate"><span class="pre">V4L2_EVENT_SOURCE_CHANGE</span></code>.</p>
 </dd></dl>
 
@@ -814,9 +816,9 @@ with is currently 1 element.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">v4l2_event_subscription</span> <span class="pre">*sub</span></code></dt><dd><p>pointer to <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">v4l2_event_subscription</span></code></p>
 </dd>
 </dl>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

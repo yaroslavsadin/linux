@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Writing a MUSB Glue Layer &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -366,14 +368,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="writing-a-musb-glue-layer">
+  <div class="section" id="writing-a-musb-glue-layer">
 <h1>Writing a MUSB Glue Layer<a class="headerlink" href="#writing-a-musb-glue-layer" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
 <dd class="field-odd"><p>Apelete Seketeli</p>
 </dd>
 </dl>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The Linux MUSB subsystem is part of the larger Linux USB subsystem. It
 provides support for embedded USB Device Controllers (UDC) that do not
@@ -390,8 +392,8 @@ kernel source tree. This layer can be found at
 <code class="docutils literal notranslate"><span class="pre">drivers/usb/musb/jz4740.c</span></code>. In this documentation I will walk through the
 basics of the <code class="docutils literal notranslate"><span class="pre">jz4740.c</span></code> glue layer, explaining the different pieces and
 what needs to be done in order to write your own device glue layer.</p>
-</section>
-<section id="linux-musb-basics">
+</div>
+<div class="section" id="linux-musb-basics">
 <span id="musb-basics"></span><h2>Linux MUSB Basics<a class="headerlink" href="#linux-musb-basics" title="Permalink to this headline">¶</a></h2>
 <p>To get started on the topic, please read USB On-the-Go Basics (see
 Resources) which provides an introduction of USB OTG operation at the
@@ -673,8 +675,8 @@ passed on to the Linux USB core stack:</p>
 <p>Acting as the counterpart of probe, the remove function unregister the
 MUSB controller hardware (line 5) and disable the clock (line 6),
 allowing it to be gated.</p>
-</section>
-<section id="handling-irqs">
+</div>
+<div class="section" id="handling-irqs">
 <span id="musb-handling-irqs"></span><h2>Handling IRQs<a class="headerlink" href="#handling-irqs" title="Permalink to this headline">¶</a></h2>
 <p>Additionally to the MUSB controller hardware basic setup and
 registration, the glue layer is also responsible for handling the IRQs:</p>
@@ -744,8 +746,8 @@ the instruction on line 14 of the init function:</p>
 in order for the controller hardware to call the handler back when an
 IRQ comes from the controller hardware. The interrupt handler is now
 implemented and registered.</p>
-</section>
-<section id="device-platform-data">
+</div>
+<div class="section" id="device-platform-data">
 <span id="musb-dev-platform-data"></span><h2>Device Platform Data<a class="headerlink" href="#device-platform-data" title="Permalink to this headline">¶</a></h2>
 <p>In order to write an MUSB glue layer, you need to have some data
 describing the hardware capabilities of your controller hardware, which
@@ -879,8 +881,8 @@ if the controller hardware may be used as <code class="docutils literal notransl
 <p>Remember that <code class="docutils literal notranslate"><span class="pre">jz4740_musb_platform_data</span></code> is then used to convey
 platform data information as we have seen in the probe function in
 <a class="reference internal" href="#musb-basics"><span class="std std-ref">Linux MUSB Basics</span></a>.</p>
-</section>
-<section id="device-quirks">
+</div>
+<div class="section" id="device-quirks">
 <span id="musb-dev-quirks"></span><h2>Device Quirks<a class="headerlink" href="#device-quirks" title="Permalink to this headline">¶</a></h2>
 <p>Completing the platform data specific to your device, you may also need
 to write some code in the glue layer to work around some device specific
@@ -984,8 +986,8 @@ are actually implemented in the register.</p>
 controller. Some others were directly addressed in the MUSB core since
 the fixes were generic enough to provide a better handling of the issues
 for others controller hardware eventually.</p>
-</section>
-<section id="conclusion">
+</div>
+<div class="section" id="conclusion">
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
 <p>Writing a Linux MUSB glue layer should be a more accessible task, as
 this documentation tries to show the ins and outs of this exercise.</p>
@@ -994,16 +996,16 @@ layer serves as a good example for the curious mind. Used with the
 current MUSB glue layers, this documentation should provide enough
 guidance to get started; should anything gets out of hand, the linux-usb
 mailing list archive is another helpful resource to browse through.</p>
-</section>
-<section id="acknowledgements">
+</div>
+<div class="section" id="acknowledgements">
 <h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
 <p>Many thanks to Lars-Peter Clausen and Maarten ter Huurne for answering
 my questions while I was writing the JZ4740 glue layer and for helping
 me out getting the code in good shape.</p>
 <p>I would also like to thank the Qi-Hardware community at large for its
 cheerful guidance and support.</p>
-</section>
-<section id="resources">
+</div>
+<div class="section" id="resources">
 <h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
 <p>USB Home Page: <a class="reference external" href="https://www.usb.org">https://www.usb.org</a></p>
 <p>linux-usb Mailing List Archives: <a class="reference external" href="https://marc.info/?l=linux-usb">https://marc.info/?l=linux-usb</a></p>
@@ -1012,8 +1014,8 @@ cheerful guidance and support.</p>
 <p><a class="reference internal" href="writing_usb_driver.html#writing-usb-driver"><span class="std std-ref">Writing USB Device Drivers</span></a></p>
 <p>Texas Instruments USB Configuration Wiki Page:
 <a class="reference external" href="http://processors.wiki.ti.com/index.php/Usbgeneralpage">http://processors.wiki.ti.com/index.php/Usbgeneralpage</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

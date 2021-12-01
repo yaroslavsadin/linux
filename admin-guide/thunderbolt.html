@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>USB4 and Thunderbolt &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -330,7 +332,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="usb4-and-thunderbolt">
+  <div class="section" id="usb4-and-thunderbolt">
 <h1>USB4 and Thunderbolt<a class="headerlink" href="#usb4-and-thunderbolt" title="Permalink to this headline">¶</a></h1>
 <p>USB4 is the public specification based on Thunderbolt 3 protocol with
 some differences at the register level among other things. Connection
@@ -348,7 +350,7 @@ software connection manager in Linux also advertises security level
 documentation below applies to both implementations with the exception that
 the software connection manager only supports <code class="docutils literal notranslate"><span class="pre">user</span></code> security level and
 is expected to be accompanied with an IOMMU based DMA protection.</p>
-<section id="security-levels-and-how-to-use-them">
+<div class="section" id="security-levels-and-how-to-use-them">
 <h2>Security levels and how to use them<a class="headerlink" href="#security-levels-and-how-to-use-them" title="Permalink to this headline">¶</a></h2>
 <p>The interface presented here is not meant for end users. Instead there
 should be a userspace tool that handles all the low-level details, keeps
@@ -414,8 +416,8 @@ device must be authorized by the user before PCIe tunnels are created
 <code class="docutils literal notranslate"><span class="pre">/sys/bus/thunderbolt/devices</span></code>. The device directory carries
 information that can be used to identify the particular device,
 including its name and UUID.</p>
-</section>
-<section id="authorizing-devices-when-security-level-is-user-or-secure">
+</div>
+<div class="section" id="authorizing-devices-when-security-level-is-user-or-secure">
 <h2>Authorizing devices when security level is <code class="docutils literal notranslate"><span class="pre">user</span></code> or <code class="docutils literal notranslate"><span class="pre">secure</span></code><a class="headerlink" href="#authorizing-devices-when-security-level-is-user-or-secure" title="Permalink to this headline">¶</a></h2>
 <p>When a device is plugged in it will appear in sysfs as follows:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/sys/bus/thunderbolt/devices/0-1/authorized   - 0
@@ -471,8 +473,8 @@ returned to the user.</p>
 <p>If the user still wants to connect the device they can either approve
 the device without a key or write a new key and write 1 to the
 <code class="docutils literal notranslate"><span class="pre">authorized</span></code> file to get the new key stored on the device NVM.</p>
-</section>
-<section id="de-authorizing-devices">
+</div>
+<div class="section" id="de-authorizing-devices">
 <h2>De-authorizing devices<a class="headerlink" href="#de-authorizing-devices" title="Permalink to this headline">¶</a></h2>
 <p>It is possible to de-authorize devices by writing <code class="docutils literal notranslate"><span class="pre">0</span></code> to their
 <code class="docutils literal notranslate"><span class="pre">authorized</span></code> attribute. This requires support from the connection
@@ -486,8 +488,8 @@ toplogy in question will not be accessible anymore until the device is
 authorized again. If there is storage such as NVMe or similar involved,
 there is a risk for data loss if the filesystem on that storage is not
 properly shut down. You have been warned!</p>
-</section>
-<section id="dma-protection-utilizing-iommu">
+</div>
+<div class="section" id="dma-protection-utilizing-iommu">
 <h2>DMA protection utilizing IOMMU<a class="headerlink" href="#dma-protection-utilizing-iommu" title="Permalink to this headline">¶</a></h2>
 <p>Recent systems from 2018 and forward with Thunderbolt ports may natively
 support IOMMU. This means that Thunderbolt security is handled by an IOMMU
@@ -506,8 +508,8 @@ following <code class="docutils literal notranslate"><span class="pre">udev</spa
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ACTION==&quot;add&quot;, SUBSYSTEM==&quot;thunderbolt&quot;, ATTRS{iommu_dma_protection}==&quot;1&quot;, ATTR{authorized}==&quot;0&quot;, ATTR{authorized}=&quot;1&quot;
 </pre></div>
 </div>
-</section>
-<section id="upgrading-nvm-on-thunderbolt-device-host-or-retimer">
+</div>
+<div class="section" id="upgrading-nvm-on-thunderbolt-device-host-or-retimer">
 <h2>Upgrading NVM on Thunderbolt device, host or retimer<a class="headerlink" href="#upgrading-nvm-on-thunderbolt-device-host-or-retimer" title="Permalink to this headline">¶</a></h2>
 <p>Since most of the functionality is handled in firmware running on a
 host controller or a device, it is important that the firmware can be
@@ -559,8 +561,8 @@ of the NVM image failed.</p>
 <p>Note names of the NVMem devices <code class="docutils literal notranslate"><span class="pre">nvm_activeN</span></code> and <code class="docutils literal notranslate"><span class="pre">nvm_non_activeN</span></code>
 depend on the order they are registered in the NVMem subsystem. N in
 the name is the identifier added by the NVMem subsystem.</p>
-</section>
-<section id="upgrading-on-board-retimer-nvm-when-there-is-no-cable-connected">
+</div>
+<div class="section" id="upgrading-on-board-retimer-nvm-when-there-is-no-cable-connected">
 <h2>Upgrading on-board retimer NVM when there is no cable connected<a class="headerlink" href="#upgrading-on-board-retimer-nvm-when-there-is-no-cable-connected" title="Permalink to this headline">¶</a></h2>
 <p>If the platform supports, it may be possible to upgrade the retimer NVM
 firmware even when there is nothing connected to the USB4
@@ -589,8 +591,8 @@ functional state again:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># echo 0 &gt; /sys/bus/thunderbolt/devices/0-0/usb4_port1/offline
 </pre></div>
 </div>
-</section>
-<section id="upgrading-nvm-when-host-controller-is-in-safe-mode">
+</div>
+<div class="section" id="upgrading-nvm-when-host-controller-is-in-safe-mode">
 <h2>Upgrading NVM when host controller is in safe mode<a class="headerlink" href="#upgrading-nvm-when-host-controller-is-in-safe-mode" title="Permalink to this headline">¶</a></h2>
 <p>If the existing NVM is not properly authenticated (or is missing) the
 host controller goes into safe mode which means that the only available
@@ -599,8 +601,8 @@ functionality is flashing a new NVM image. When in this mode, reading
 information is missing.</p>
 <p>To recover from this mode, one needs to flash a valid NVM image to the
 host controller in the same way it is done in the previous chapter.</p>
-</section>
-<section id="networking-over-thunderbolt-cable">
+</div>
+<div class="section" id="networking-over-thunderbolt-cable">
 <h2>Networking over Thunderbolt cable<a class="headerlink" href="#networking-over-thunderbolt-cable" title="Permalink to this headline">¶</a></h2>
 <p>Thunderbolt technology allows software communication between two hosts
 connected by a Thunderbolt cable.</p>
@@ -620,8 +622,8 @@ is built-in to the kernel image, there is no need to do anything.</p>
 port which are named like <code class="docutils literal notranslate"><span class="pre">thunderbolt0</span></code> and so on. From this point
 you can either use standard userspace tools like <code class="docutils literal notranslate"><span class="pre">ifconfig</span></code> to
 configure the interface or let your GUI handle it automatically.</p>
-</section>
-<section id="forcing-power">
+</div>
+<div class="section" id="forcing-power">
 <h2>Forcing power<a class="headerlink" href="#forcing-power" title="Permalink to this headline">¶</a></h2>
 <p>Many OEMs include a method that can be used to force the power of a
 Thunderbolt controller to an “On” state even if nothing is connected.
@@ -634,8 +636,8 @@ To disable force power, write 0 to this attribute file.</p>
 </dd>
 </dl>
 <p>Note: it’s currently not possible to query the force power state of a platform.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

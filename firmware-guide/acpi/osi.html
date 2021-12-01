@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>ACPI _OSI and _REV methods &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -274,7 +276,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="acpi-osi-and-rev-methods">
+  <div class="section" id="acpi-osi-and-rev-methods">
 <h1>ACPI _OSI and _REV methods<a class="headerlink" href="#acpi-osi-and-rev-methods" title="Permalink to this headline">¶</a></h1>
 <p>An ACPI BIOS can use the “Operating System Interfaces” method (_OSI)
 to find out what the operating system supports. Eg. If BIOS
@@ -285,7 +287,7 @@ and answer YES or NO to the BIOS.</p>
 that OSPM supports”</p>
 <p>This document explains how and why the BIOS and Linux should use these methods.
 It also explains how and why they are widely misused.</p>
-<section id="how-to-use-osi">
+<div class="section" id="how-to-use-osi">
 <h2>How to use _OSI<a class="headerlink" href="#how-to-use-osi" title="Permalink to this headline">¶</a></h2>
 <p>Linux runs on two groups of machines – those that are tested by the OEM
 to be compatible with Linux, and those that were never tested with Linux,
@@ -324,8 +326,8 @@ cmdline parameter to the boot loader, as needed.</p>
 eventually grows support, a patch should be sent to remove
 the string when that support is added to the kernel.</p>
 <p>That was easy.  Read on, to find out how to do it wrong.</p>
-</section>
-<section id="before-osi-there-was-os">
+</div>
+<div class="section" id="before-osi-there-was-os">
 <h2>Before _OSI, there was _OS<a class="headerlink" href="#before-osi-there-was-os" title="Permalink to this headline">¶</a></h2>
 <p>ACPI 1.0 specified “_OS” as an
 “object that evaluates to a string that identifies the operating system.”</p>
@@ -351,8 +353,8 @@ over what came with the machine.</p>
 <p>Linux answers “Microsoft Windows NT” to please that BIOS idiom.
 That is the <em>only</em> viable strategy, as that is what modern Windows does,
 and so doing otherwise could steer the BIOS down an untested path.</p>
-</section>
-<section id="osi-is-born-and-immediately-misused">
+</div>
+<div class="section" id="osi-is-born-and-immediately-misused">
 <h2>_OSI is born, and immediately misused<a class="headerlink" href="#osi-is-born-and-immediately-misused" title="Permalink to this headline">¶</a></h2>
 <p>With _OSI, the <em>BIOS</em> provides the string describing an interface,
 and asks the OS: “YES/NO, are you compatible with this interface?”</p>
@@ -389,8 +391,8 @@ ACPI BIOS that are tested on Windows machines.  There is a real risk
 of over-stating that compatibility; but the alternative has often been
 catastrophic failure resulting from the BIOS taking paths that
 were never validated under <em>any</em> OS.</p>
-</section>
-<section id="do-not-use-rev">
+</div>
+<div class="section" id="do-not-use-rev">
 <h2>Do not use _REV<a class="headerlink" href="#do-not-use-rev" title="Permalink to this headline">¶</a></h2>
 <p>Since _OSI(“Linux”) went away, some BIOS writers used _REV
 to support Linux and Windows differences in the same BIOS.</p>
@@ -404,27 +406,27 @@ _REV = 4, that support broke.</p>
 <p>In response to this problem, Linux returns _REV = 2 always,
 from mid-2015 onward.  The ACPI specification will also be updated
 to reflect that _REV is deprecated, and always returns 2.</p>
-</section>
-<section id="apple-mac-and-osi-darwin">
+</div>
+<div class="section" id="apple-mac-and-osi-darwin">
 <h2>Apple Mac and _OSI(“Darwin”)<a class="headerlink" href="#apple-mac-and-osi-darwin" title="Permalink to this headline">¶</a></h2>
 <p>On Apple’s Mac platforms, the ACPI BIOS invokes _OSI(“Darwin”)
 to determine if the machine is running Apple OSX.</p>
-<p>Like Linux’s _OSI(”<em>Windows</em>”) strategy, Linux defaults to
+<p>Like Linux’s _OSI(“<em>Windows</em>”) strategy, Linux defaults to
 answering YES to _OSI(“Darwin”) to enable full access
 to the hardware and validated BIOS paths seen by OSX.
 Just like on Windows-tested platforms, this strategy has risks.</p>
 <p>Starting in Linux-3.18, the kernel answered YES to _OSI(“Darwin”)
 for the purpose of enabling Mac Thunderbolt support.  Further,
 if the kernel noticed _OSI(“Darwin”) being invoked, it additionally
-disabled all _OSI(”<em>Windows</em>”) to keep poorly written Mac BIOS
+disabled all _OSI(“<em>Windows</em>”) to keep poorly written Mac BIOS
 from going down untested combinations of paths.</p>
 <p>The Linux-3.18 change in default caused power regressions on Mac
 laptops, and the 3.18 implementation did not allow changing
 the default via cmdline “acpi_osi=!Darwin”.  Linux-4.7 fixed
 the ability to use acpi_osi=!Darwin as a workaround, and
 we hope to see Mac Thunderbolt power management support in Linux-4.11.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

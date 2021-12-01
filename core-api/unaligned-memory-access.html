@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Unaligned Memory Accesses &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -280,7 +282,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="unaligned-memory-accesses">
+  <div class="section" id="unaligned-memory-accesses">
 <h1>Unaligned Memory Accesses<a class="headerlink" href="#unaligned-memory-accesses" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -299,7 +301,7 @@ Vadim Lobanov</p>
 when it comes to memory access. This document presents some details about
 unaligned accesses, why you need to write code that doesn’t cause them,
 and how to write such code!</p>
-<section id="the-definition-of-an-unaligned-access">
+<div class="section" id="the-definition-of-an-unaligned-access">
 <h2>The definition of an unaligned access<a class="headerlink" href="#the-definition-of-an-unaligned-access" title="Permalink to this headline">¶</a></h2>
 <p>Unaligned memory accesses occur when you try to read N bytes of data starting
 from an address that is not evenly divisible by N (i.e. addr % N != 0).
@@ -312,8 +314,8 @@ or write a number of bytes to or from memory (e.g. movb, movw, movl in x86
 assembly). As will become clear, it is relatively easy to spot C statements
 which will compile to multiple-byte memory access instructions, namely when
 dealing with types such as u16, u32 and u64.</p>
-</section>
-<section id="natural-alignment">
+</div>
+<div class="section" id="natural-alignment">
 <h2>Natural alignment<a class="headerlink" href="#natural-alignment" title="Permalink to this headline">¶</a></h2>
 <p>The rule mentioned above forms what we refer to as natural alignment:
 When accessing N bytes of memory, the base memory address must be evenly
@@ -324,8 +326,8 @@ requirements.</p>
 of memory access. However, we must consider ALL supported architectures;
 writing code that satisfies natural alignment requirements is the easiest way
 to achieve full portability.</p>
-</section>
-<section id="why-unaligned-access-is-bad">
+</div>
+<div class="section" id="why-unaligned-access-is-bad">
 <h2>Why unaligned access is bad<a class="headerlink" href="#why-unaligned-access-is-bad" title="Permalink to this headline">¶</a></h2>
 <p>The effects of performing an unaligned memory access vary from architecture
 to architecture. It would be easy to write a whole document on the differences
@@ -348,8 +350,8 @@ resulting in a subtle code bug that is hard to detect!</p></li>
 <p>It should be obvious from the above that if your code causes unaligned
 memory accesses to happen, your code will not work correctly on certain
 platforms and will cause performance problems on others.</p>
-</section>
-<section id="code-that-does-not-cause-unaligned-access">
+</div>
+<div class="section" id="code-that-does-not-cause-unaligned-access">
 <h2>Code that does not cause unaligned access<a class="headerlink" href="#code-that-does-not-cause-unaligned-access" title="Permalink to this headline">¶</a></h2>
 <p>At first, the concepts above may seem a little hard to relate to actual
 coding practice. After all, you don’t have a great deal of control over
@@ -408,8 +410,8 @@ the memory access in a way that does not cause unaligned access. Of course,
 the extra instructions obviously cause a loss in performance compared to the
 non-packed case, so the packed attribute should only be used when avoiding
 structure padding is of importance.</p>
-</section>
-<section id="code-that-causes-unaligned-access">
+</div>
+<div class="section" id="code-that-causes-unaligned-access">
 <h2>Code that causes unaligned access<a class="headerlink" href="#code-that-causes-unaligned-access" title="Permalink to this headline">¶</a></h2>
 <p>With the above in mind, let’s move onto a real life example of a function
 that can cause an unaligned memory access. The following function taken
@@ -461,8 +463,8 @@ problems involve:</p>
 <li><p>Pointer arithmetic followed by access to at least 2 bytes of data</p></li>
 </ol>
 </div></blockquote>
-</section>
-<section id="avoiding-unaligned-accesses">
+</div>
+<div class="section" id="avoiding-unaligned-accesses">
 <h2>Avoiding unaligned accesses<a class="headerlink" href="#avoiding-unaligned-accesses" title="Permalink to this headline">¶</a></h2>
 <p>The easiest way to avoid unaligned access is to use the get_unaligned() and
 put_unaligned() macros provided by the &lt;asm/unaligned.h&gt; header file.</p>
@@ -498,8 +500,8 @@ terms of performance.</p>
 <p>If use of such macros is not convenient, another option is to use <a class="reference internal" href="kernel-api.html#c.memcpy" title="memcpy"><code class="xref c c-func docutils literal notranslate"><span class="pre">memcpy()</span></code></a>,
 where the source or destination (or both) are of type u8* or unsigned char*.
 Due to the byte-wise nature of this operation, unaligned accesses are avoided.</p>
-</section>
-<section id="alignment-vs-networking">
+</div>
+<div class="section" id="alignment-vs-networking">
 <h2>Alignment vs. Networking<a class="headerlink" href="#alignment-vs-networking" title="Permalink to this headline">¶</a></h2>
 <p>On architectures that require aligned loads, networking requires that the IP
 header is aligned on a four-byte boundary to optimise the IP stack. For
@@ -521,8 +523,8 @@ made dependent on CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS like so:</p>
 #endif
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

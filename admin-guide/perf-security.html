@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Perf events and tool security &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -331,9 +333,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="perf-events-and-tool-security">
+  <div class="section" id="perf-events-and-tool-security">
 <span id="perf-security"></span><h1>Perf events and tool security<a class="headerlink" href="#perf-events-and-tool-security" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Usage of Performance Counters for Linux (perf_events) <a class="footnote-reference brackets" href="#id32" id="id1">1</a> , <a class="footnote-reference brackets" href="#id33" id="id2">2</a> , <a class="footnote-reference brackets" href="#id34" id="id3">3</a>
 can impose a considerable risk of leaking sensitive data accessed by
@@ -371,8 +373,8 @@ of execution context registers or data from process memory then access
 to such monitoring modes requires to be ordered and secured properly.
 So, perf_events performance monitoring and observability operations are
 the subject for security access control management <a class="footnote-reference brackets" href="#id36" id="id10">5</a> .</p>
-</section>
-<section id="perf-events-access-control">
+</div>
+<div class="section" id="perf-events-access-control">
 <h2>perf_events access control<a class="headerlink" href="#perf-events-access-control" title="Permalink to this headline">¶</a></h2>
 <p>To perform security checks, the Linux implementation splits processes
 into two categories <a class="footnote-reference brackets" href="#id37" id="id11">6</a> : a) privileged processes (whose effective user
@@ -417,8 +419,8 @@ effectively enable capturing of additional data required for later
 performance analysis of monitored processes or a system. For example,
 CAP_SYSLOG capability permits reading kernel space memory addresses from
 /proc/kallsyms file.</p>
-</section>
-<section id="privileged-perf-users-groups">
+</div>
+<div class="section" id="privileged-perf-users-groups">
 <h2>Privileged Perf users groups<a class="headerlink" href="#privileged-perf-users-groups" title="Permalink to this headline">¶</a></h2>
 <p>Mechanisms of capabilities, privileged capability-dumb files <a class="footnote-reference brackets" href="#id37" id="id17">6</a>,
 file system ACLs <a class="footnote-reference brackets" href="#id41" id="id18">10</a> and sudo <a class="footnote-reference brackets" href="#id46" id="id19">15</a> utility can be used to create
@@ -527,8 +529,8 @@ governed by CAP_PERFMON Linux capability.</p>
 <p>This specific access control management is only available to superuser
 or root running processes with CAP_SETPCAP, CAP_SETFCAP <a class="footnote-reference brackets" href="#id37" id="id23">6</a>
 capabilities.</p>
-</section>
-<section id="unprivileged-users">
+</div>
+<div class="section" id="unprivileged-users">
 <h2>Unprivileged users<a class="headerlink" href="#unprivileged-users" title="Permalink to this headline">¶</a></h2>
 <p>perf_events <em>scope</em> and <em>access</em> control for unprivileged processes
 is governed by perf_event_paranoid <a class="footnote-reference brackets" href="#id33" id="id24">2</a> setting:</p>
@@ -562,10 +564,10 @@ perf_event_mlock_kb locking limit is imposed but ignored for
 unprivileged processes with CAP_IPC_LOCK capability.</p>
 </dd>
 </dl>
-</section>
-<section id="resource-control">
+</div>
+<div class="section" id="resource-control">
 <h2>Resource control<a class="headerlink" href="#resource-control" title="Permalink to this headline">¶</a></h2>
-<section id="open-file-descriptors">
+<div class="section" id="open-file-descriptors">
 <h3>Open file descriptors<a class="headerlink" href="#open-file-descriptors" title="Permalink to this headline">¶</a></h3>
 <p>The perf_events system call API <a class="footnote-reference brackets" href="#id33" id="id27">2</a> allocates file descriptors for
 every configured PMU event. Open file descriptors are a per-process
@@ -578,8 +580,8 @@ modifying content of the limits.conf file <a class="footnote-reference brackets"
 sampling session (perf record) requires an amount of open perf_event
 file descriptors that is not less than the number of monitored events
 multiplied by the number of monitored CPUs.</p>
-</section>
-<section id="memory-allocation">
+</div>
+<div class="section" id="memory-allocation">
 <h3>Memory allocation<a class="headerlink" href="#memory-allocation" title="Permalink to this headline">¶</a></h3>
 <p>The amount of memory available to user processes for capturing
 performance monitoring data is governed by the perf_event_mlock_kb <a class="footnote-reference brackets" href="#id33" id="id30">2</a>
@@ -603,9 +605,9 @@ for processes with the CAP_IPC_LOCK capability. Thus, perf_events/Perf
 privileged users can be provided with memory above the constraints for
 perf_events/Perf performance monitoring purpose by providing the Perf
 executable with CAP_IPC_LOCK capability.</p>
-</section>
-</section>
-<section id="bibliography">
+</div>
+</div>
+<div class="section" id="bibliography">
 <h2>Bibliography<a class="headerlink" href="#bibliography" title="Permalink to this headline">¶</a></h2>
 <dl class="footnote brackets">
 <dt class="label" id="id32"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
@@ -657,8 +659,8 @@ executable with CAP_IPC_LOCK capability.</p>
 <dd><p><a class="reference external" href="https://git.kernel.org/pub/scm/libs/libcap/libcap.git/">https://git.kernel.org/pub/scm/libs/libcap/libcap.git/</a></p>
 </dd>
 </dl>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

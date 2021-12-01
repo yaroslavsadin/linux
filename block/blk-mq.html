@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Multi-Queue Block IO Queueing Mechanism (blk-mq) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -267,15 +269,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="multi-queue-block-io-queueing-mechanism-blk-mq">
+  <div class="section" id="multi-queue-block-io-queueing-mechanism-blk-mq">
 <h1>Multi-Queue Block IO Queueing Mechanism (blk-mq)<a class="headerlink" href="#multi-queue-block-io-queueing-mechanism-blk-mq" title="Permalink to this headline">¶</a></h1>
 <p>The Multi-Queue Block IO Queueing Mechanism is an API to enable fast storage
 devices to achieve a huge number of input/output operations per second (IOPS)
 through queueing and submitting IO requests to block devices simultaneously,
 benefiting from the parallelism offered by modern storage devices.</p>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<section id="background">
+<div class="section" id="background">
 <h3>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h3>
 <p>Magnetic hard disks have been the de facto standard from the beginning of the
 development of the kernel. The Block IO subsystem aimed to achieve the best
@@ -297,8 +299,8 @@ to different CPUs) wanted to perform block IO. Instead of this, the blk-mq API
 spawns multiple queues with individual entry points local to the CPU, removing
 the need for a lock. A deeper explanation on how this works is covered in the
 following section (<a class="reference internal" href="#operation">Operation</a>).</p>
-</section>
-<section id="operation">
+</div>
+<div class="section" id="operation">
 <h3>Operation<a class="headerlink" href="#operation" title="Permalink to this headline">¶</a></h3>
 <p>When the userspace performs IO to a block device (reading or writing a file,
 for instance), blk-mq takes action: it will store and manage IO requests to
@@ -315,7 +317,7 @@ at the hardware queue, a second stage queue where the hardware has direct access
 to process those requests. However, if the hardware does not have enough
 resources to accept more requests, blk-mq will places requests on a temporary
 queue, to be sent in the future, when the hardware is able.</p>
-<section id="software-staging-queues">
+<div class="section" id="software-staging-queues">
 <h4>Software staging queues<a class="headerlink" href="#software-staging-queues" title="Permalink to this headline">¶</a></h4>
 <p>The block IO subsystem adds requests in the software staging queues
 (represented by struct blk_mq_ctx) in case that they weren’t sent
@@ -333,7 +335,7 @@ plugging.</p>
 <p>Along with that, the requests can be reordered to ensure fairness of system
 resources (e.g. to ensure that no application suffers from starvation) and/or to
 improve IO performance, by an IO scheduler.</p>
-<section id="io-schedulers">
+<div class="section" id="io-schedulers">
 <h5>IO Schedulers<a class="headerlink" href="#io-schedulers" title="Permalink to this headline">¶</a></h5>
 <p>There are several schedulers implemented by the block layer, each one following
 a heuristic to improve the IO performance. They are “pluggable” (as in plug
@@ -348,9 +350,9 @@ place requests on whatever software queue the process is running on, without
 any reordering. When the device starts processing requests in the hardware
 queue (a.k.a. run the hardware queue), the software queues mapped to that
 hardware queue will be drained in sequence according to their mapping.</p>
-</section>
-</section>
-<section id="hardware-dispatch-queues">
+</div>
+</div>
+<div class="section" id="hardware-dispatch-queues">
 <h4>Hardware dispatch queues<a class="headerlink" href="#hardware-dispatch-queues" title="Permalink to this headline">¶</a></h4>
 <p>The hardware queue (represented by <a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">blk_mq_hw_ctx</span></code></a>) is a struct
 used by device drivers to map the device submission queues (or device DMA ring
@@ -373,8 +375,8 @@ hardware queues to send requests for.</p>
 the order of completion of requests. This must be handled by
 higher layers, like the filesystem.</p>
 </div>
-</section>
-<section id="tag-based-completion">
+</div>
+<div class="section" id="tag-based-completion">
 <h4>Tag-based completion<a class="headerlink" href="#tag-based-completion" title="Permalink to this headline">¶</a></h4>
 <p>In order to indicate which request has been completed, every request is
 identified by an integer, ranging from 0 to the dispatch queue size. This tag
@@ -383,22 +385,22 @@ the need to create a redundant identifier. When a request is completed in the
 driver, the tag is sent back to the block layer to notify it of the finalization.
 This removes the need to do a linear search to find out which IO has been
 completed.</p>
-</section>
-</section>
-<section id="further-reading">
+</div>
+</div>
+<div class="section" id="further-reading">
 <h3>Further reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="http://kernel.dk/blk-mq.pdf">Linux Block IO: Introducing Multi-queue SSD Access on Multi-core Systems</a></p></li>
 <li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Noop_scheduler">NOOP scheduler</a></p></li>
 <li><p><a class="reference external" href="https://www.kernel.org/doc/html/latest/block/null_blk.html">Null block device driver</a></p></li>
 </ul>
-</section>
-</section>
-<section id="source-code-documentation">
+</div>
+</div>
+<div class="section" id="source-code-documentation">
 <h2>Source code documentation<a class="headerlink" href="#source-code-documentation" title="Permalink to this headline">¶</a></h2>
 <dl class="c struct">
-<dt id="c.blk_mq_hw_ctx">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">blk_mq_hw_ctx</span></code><a class="headerlink" href="#c.blk_mq_hw_ctx" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_hw_ctx">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_hw_ctx</span></span></span><a class="headerlink" href="#c.blk_mq_hw_ctx" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>State for a hardware queue facing the hardware block device</p>
 </dd></dl>
 
@@ -545,8 +547,8 @@ blk_mq_hw_ctx_size().</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.blk_mq_queue_map">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">blk_mq_queue_map</span></code><a class="headerlink" href="#c.blk_mq_queue_map" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_queue_map">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_queue_map</span></span></span><a class="headerlink" href="#c.blk_mq_queue_map" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Map software queues to hardware queues</p>
 </dd></dl>
 
@@ -572,8 +574,8 @@ set of hardware queues.</p>
 </dd>
 </dl>
 <dl class="c enum">
-<dt id="c.hctx_type">
-<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">hctx_type</span></code><a class="headerlink" href="#c.hctx_type" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.hctx_type">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">hctx_type</span></span></span><a class="headerlink" href="#c.hctx_type" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Type of hardware queue</p>
 </dd></dl>
 
@@ -589,8 +591,8 @@ set of hardware queues.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.blk_mq_tag_set">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">blk_mq_tag_set</span></code><a class="headerlink" href="#c.blk_mq_tag_set" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_tag_set">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_tag_set</span></span></span><a class="headerlink" href="#c.blk_mq_tag_set" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>tag set that can be shared between request queues</p>
 </dd></dl>
 
@@ -664,8 +666,8 @@ request_queue.tag_set_list.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.blk_mq_queue_data">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">blk_mq_queue_data</span></code><a class="headerlink" href="#c.blk_mq_queue_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_queue_data">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_queue_data</span></span></span><a class="headerlink" href="#c.blk_mq_queue_data" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Data about a request inserted in a queue</p>
 </dd></dl>
 
@@ -684,8 +686,8 @@ request_queue.tag_set_list.</p>
 </dd>
 </dl>
 <dl class="c struct">
-<dt id="c.blk_mq_ops">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">blk_mq_ops</span></code><a class="headerlink" href="#c.blk_mq_ops" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_ops">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_ops</span></span></span><a class="headerlink" href="#c.blk_mq_ops" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Callback functions that implements block driver behaviour.</p>
 </dd></dl>
 
@@ -766,8 +768,8 @@ information about a request.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.blk_mq_rq_state">
-<em class="property"><span class="pre">enum</span></em> <span class="pre">mq_rq_state</span> <code class="sig-name descname"><span class="pre">blk_mq_rq_state</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_rq_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_rq_state">
+<span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="n"><span class="pre">mq_rq_state</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_rq_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_rq_state" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>read the current MQ_RQ_* state of a request</p>
 </dd></dl>
 
@@ -777,8 +779,8 @@ information about a request.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.blk_mq_rq_from_pdu">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">blk_mq_rq_from_pdu</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">pdu</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_rq_from_pdu" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_rq_from_pdu">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_rq_from_pdu</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">pdu</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_rq_from_pdu" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>cast a PDU to a request</p>
 </dd></dl>
 
@@ -793,8 +795,8 @@ information about a request.</p>
 <p>Driver command data is immediately after the request. So subtract request
 size to get back to the original request.</p>
 <dl class="c function">
-<dt id="c.blk_mq_rq_to_pdu">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">blk_mq_rq_to_pdu</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_rq_to_pdu" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_rq_to_pdu">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_rq_to_pdu</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_rq_to_pdu" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>cast a request to a PDU</p>
 </dd></dl>
 
@@ -809,8 +811,8 @@ size to get back to the original request.</p>
 <p>Driver command data is immediately after the request. So add request to get
 the PDU.</p>
 <dl class="c function">
-<dt id="c.blk_mq_wait_quiesce_done">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_wait_quiesce_done</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_wait_quiesce_done" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_wait_quiesce_done">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_wait_quiesce_done</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_wait_quiesce_done" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>wait until in-progress quiesce is done</p>
 </dd></dl>
 
@@ -823,8 +825,8 @@ the PDU.</p>
 <p>it is driver’s responsibility for making sure that quiesce has
 been started.</p>
 <dl class="c function">
-<dt id="c.blk_mq_quiesce_queue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_quiesce_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_quiesce_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_quiesce_queue">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_quiesce_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_quiesce_queue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>wait until all ongoing dispatches have finished</p>
 </dd></dl>
 
@@ -839,8 +841,8 @@ callback function is invoked. Once this function is returned, we make
 sure no dispatch can happen until the queue is unquiesced via
 blk_mq_unquiesce_queue().</p>
 <dl class="c function">
-<dt id="c.blk_update_request">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">blk_update_request</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">req</span></em>, <span class="pre">blk_status_t</span> <em><span class="pre">error</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">nr_bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_update_request" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_update_request">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_update_request</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">req</span></span>, <span class="n"><span class="pre">blk_status_t</span></span><span class="w"> </span><span class="n"><span class="pre">error</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">nr_bytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_update_request" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Complete multiple bytes without completing the request</p>
 </dd></dl>
 
@@ -872,8 +874,8 @@ except in the consistency check at the end of this function.</p>
 <code class="docutils literal notranslate"><span class="pre">true</span></code>  - this request has more data</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.blk_mq_complete_request">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_complete_request</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_complete_request" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_complete_request">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_complete_request</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_complete_request" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>end I/O on a request</p>
 </dd></dl>
 
@@ -887,8 +889,8 @@ except in the consistency check at the end of this function.</p>
 <div><p>Complete a request by scheduling the -&gt;complete_rq operation.</p>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.blk_mq_start_request">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_start_request</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_start_request" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_start_request">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_start_request</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_start_request" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Start processing a request</p>
 </dd></dl>
 
@@ -902,8 +904,8 @@ except in the consistency check at the end of this function.</p>
 is going to be processed now, so blk layer can do proper initializations
 such as starting the timeout timer.</p>
 <dl class="c function">
-<dt id="c.__blk_mq_run_hw_queue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__blk_mq_run_hw_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="pre">blk_mq_hw_ctx</span></a> <span class="pre">*</span><em><span class="pre">hctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__blk_mq_run_hw_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__blk_mq_run_hw_queue">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__blk_mq_run_hw_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="n"><span class="pre">blk_mq_hw_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__blk_mq_run_hw_queue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Run a hardware queue.</p>
 </dd></dl>
 
@@ -915,8 +917,8 @@ such as starting the timeout timer.</p>
 <p><strong>Description</strong></p>
 <p>Send pending requests to the hardware.</p>
 <dl class="c function">
-<dt id="c.__blk_mq_delay_run_hw_queue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__blk_mq_delay_run_hw_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="pre">blk_mq_hw_ctx</span></a> <span class="pre">*</span><em><span class="pre">hctx</span></em>, <span class="pre">bool</span> <em><span class="pre">async</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">msecs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__blk_mq_delay_run_hw_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.__blk_mq_delay_run_hw_queue">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">__blk_mq_delay_run_hw_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="n"><span class="pre">blk_mq_hw_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hctx</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">async</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">msecs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.__blk_mq_delay_run_hw_queue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Run (or schedule to run) a hardware queue.</p>
 </dd></dl>
 
@@ -933,8 +935,8 @@ such as starting the timeout timer.</p>
 <p>If <strong>!async</strong>, try to run the queue now. Else, run the queue asynchronously and
 with a delay of <strong>msecs</strong>.</p>
 <dl class="c function">
-<dt id="c.blk_mq_delay_run_hw_queue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_delay_run_hw_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="pre">blk_mq_hw_ctx</span></a> <span class="pre">*</span><em><span class="pre">hctx</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">msecs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_delay_run_hw_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_delay_run_hw_queue">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_delay_run_hw_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="n"><span class="pre">blk_mq_hw_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hctx</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">msecs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_delay_run_hw_queue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Run a hardware queue asynchronously.</p>
 </dd></dl>
 
@@ -948,8 +950,8 @@ with a delay of <strong>msecs</strong>.</p>
 <p><strong>Description</strong></p>
 <p>Run a hardware queue asynchronously with a delay of <strong>msecs</strong>.</p>
 <dl class="c function">
-<dt id="c.blk_mq_run_hw_queue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_run_hw_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="pre">blk_mq_hw_ctx</span></a> <span class="pre">*</span><em><span class="pre">hctx</span></em>, <span class="pre">bool</span> <em><span class="pre">async</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_run_hw_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_run_hw_queue">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_run_hw_queue</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="n"><span class="pre">blk_mq_hw_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hctx</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">async</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_run_hw_queue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Start to run a hardware queue.</p>
 </dd></dl>
 
@@ -965,8 +967,8 @@ with a delay of <strong>msecs</strong>.</p>
 pending requests to be sent. If this is true, run the queue to send requests
 to hardware.</p>
 <dl class="c function">
-<dt id="c.blk_mq_run_hw_queues">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_run_hw_queues</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em>, <span class="pre">bool</span> <em><span class="pre">async</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_run_hw_queues" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_run_hw_queues">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_run_hw_queues</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">async</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_run_hw_queues" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Run all hardware queues in a request queue.</p>
 </dd></dl>
 
@@ -978,8 +980,8 @@ to hardware.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.blk_mq_delay_run_hw_queues">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_delay_run_hw_queues</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">msecs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_delay_run_hw_queues" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_delay_run_hw_queues">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_delay_run_hw_queues</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">long</span></span><span class="w"> </span><span class="n"><span class="pre">msecs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_delay_run_hw_queues" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Run all hardware queues asynchronously.</p>
 </dd></dl>
 
@@ -991,8 +993,8 @@ to hardware.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.blk_mq_queue_stopped">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">blk_mq_queue_stopped</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_queue_stopped" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_queue_stopped">
+<span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_queue_stopped</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request_queue</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">q</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_queue_stopped" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>check whether one or more hctxs have been stopped</p>
 </dd></dl>
 
@@ -1005,8 +1007,8 @@ to hardware.</p>
 <p>The caller is responsible for serializing this function against
 blk_mq_{start,stop}_hw_queue().</p>
 <dl class="c function">
-<dt id="c.blk_mq_request_bypass_insert">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_request_bypass_insert</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em>, <span class="pre">bool</span> <em><span class="pre">at_head</span></em>, <span class="pre">bool</span> <em><span class="pre">run_queue</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_request_bypass_insert" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_request_bypass_insert">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_request_bypass_insert</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rq</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">at_head</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n"><span class="pre">run_queue</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_request_bypass_insert" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Insert a request at dispatch list.</p>
 </dd></dl>
 
@@ -1023,8 +1025,8 @@ blk_mq_{start,stop}_hw_queue().</p>
 <p>Should only be used carefully, when the caller knows we want to
 bypass a potential IO scheduler on the target device.</p>
 <dl class="c function">
-<dt id="c.blk_mq_try_issue_directly">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_try_issue_directly</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="pre">blk_mq_hw_ctx</span></a> <span class="pre">*</span><em><span class="pre">hctx</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_try_issue_directly" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_try_issue_directly">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_try_issue_directly</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="n"><span class="pre">blk_mq_hw_ctx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">hctx</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">request</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">rq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_try_issue_directly" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Try to send a request directly to device driver.</p>
 </dd></dl>
 
@@ -1041,8 +1043,8 @@ request directly to device driver. Else, insert at hctx-&gt;dispatch queue, so
 we can try send it another time in the future. Requests inserted at this
 queue have higher priority.</p>
 <dl class="c function">
-<dt id="c.blk_mq_submit_bio">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_submit_bio</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.blk_mq_submit_bio" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_submit_bio" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.blk_mq_submit_bio">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blk_mq_submit_bio</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.blk_mq_submit_bio" title="bio"><span class="n"><span class="pre">bio</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">bio</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_submit_bio" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create and send a request to block device.</p>
 </dd></dl>
 
@@ -1059,8 +1061,8 @@ request may not be queued directly to hardware if:
 * There is an IO scheduler active at this queue</p>
 <p>It will not queue the request if there is an error with the bio, or at the
 request creation.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

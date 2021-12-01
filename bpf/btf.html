@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>BPF Type Format (BTF) &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -262,9 +264,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="bpf-type-format-btf">
+  <div class="section" id="bpf-type-format-btf">
 <h1>BPF Type Format (BTF)<a class="headerlink" href="#bpf-type-format-btf" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>BTF (BPF Type Format) is the metadata format which encodes the debug info
 related to BPF program/map. The name BTF was used initially to describe data
@@ -287,8 +289,8 @@ contract between ELF file and libbpf loader.</p>
 <p>The type and string sections are part of the BTF kernel API, describing the
 debug info (mostly types related) referenced by the bpf program. These two
 sections are discussed in details in <a class="reference internal" href="#btf-type-string"><span class="std std-ref">2. BTF Type and String Encoding</span></a>.</p>
-</section>
-<section id="btf-type-and-string-encoding">
+</div>
+<div class="section" id="btf-type-and-string-encoding">
 <span id="btf-type-string"></span><h2>2. BTF Type and String Encoding<a class="headerlink" href="#btf-type-and-string-encoding" title="Permalink to this headline">¶</a></h2>
 <p>The file <code class="docutils literal notranslate"><span class="pre">include/uapi/linux/btf.h</span></code> provides high-level definition of how
 types/strings are encoded.</p>
@@ -312,12 +314,12 @@ endian systems, and can be used to test whether BTF is generated for big- or
 little-endian target. The <code class="docutils literal notranslate"><span class="pre">btf_header</span></code> is designed to be extensible with
 <code class="docutils literal notranslate"><span class="pre">hdr_len</span></code> equal to <code class="docutils literal notranslate"><span class="pre">sizeof(struct</span> <span class="pre">btf_header)</span></code> when a data blob is
 generated.</p>
-<section id="string-encoding">
+<div class="section" id="string-encoding">
 <h3>2.1 String Encoding<a class="headerlink" href="#string-encoding" title="Permalink to this headline">¶</a></h3>
 <p>The first string in the string section must be a null string. The rest of
 string table is a concatenation of other null-terminated strings.</p>
-</section>
-<section id="type-encoding">
+</div>
+<div class="section" id="type-encoding">
 <h3>2.2 Type Encoding<a class="headerlink" href="#type-encoding" title="Permalink to this headline">¶</a></h3>
 <p>The type id <code class="docutils literal notranslate"><span class="pre">0</span></code> is reserved for <code class="docutils literal notranslate"><span class="pre">void</span></code> type. The type section is parsed
 sequentially and type id is assigned to each recognized type starting from id
@@ -372,7 +374,7 @@ sequentially and type id is assigned to each recognized type starting from id
 <p>For certain kinds, the common data are followed by kind-specific data. The
 <code class="docutils literal notranslate"><span class="pre">name_off</span></code> in <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> specifies the offset in the string table.
 The following sections detail encoding of each kind.</p>
-<section id="btf-kind-int">
+<div class="section" id="btf-kind-int">
 <h4>2.2.1 BTF_KIND_INT<a class="headerlink" href="#btf-kind-int" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -426,8 +428,8 @@ same bits as the above:</p>
 <p>The original intention of <code class="docutils literal notranslate"><span class="pre">BTF_INT_OFFSET()</span></code> is to provide flexibility of
 bitfield encoding. Currently, both llvm and pahole generate
 <code class="docutils literal notranslate"><span class="pre">BTF_INT_OFFSET()</span> <span class="pre">=</span> <span class="pre">0</span></code> for all int types.</p>
-</section>
-<section id="btf-kind-ptr">
+</div>
+<div class="section" id="btf-kind-ptr">
 <h4>2.2.2 BTF_KIND_PTR<a class="headerlink" href="#btf-kind-ptr" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -440,8 +442,8 @@ bitfield encoding. Currently, both llvm and pahole generate
 </dd>
 </dl>
 <p>No additional type data follow <code class="docutils literal notranslate"><span class="pre">btf_type</span></code>.</p>
-</section>
-<section id="btf-kind-array">
+</div>
+<div class="section" id="btf-kind-array">
 <h4>2.2.3 BTF_KIND_ARRAY<a class="headerlink" href="#btf-kind-array" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -489,11 +491,11 @@ equal to <code class="docutils literal notranslate"><span class="pre">30</span><
 where the whole array is dumped out so one-dimensional array is enough. As
 more BTF usage is explored, pahole and llvm can be changed to generate proper
 chained representation for multidimensional arrays.</p>
-</section>
-<section id="btf-kind-struct">
+</div>
+<div class="section" id="btf-kind-struct">
 <h4>2.2.4 BTF_KIND_STRUCT<a class="headerlink" href="#btf-kind-struct" title="Permalink to this headline">¶</a></h4>
-</section>
-<section id="btf-kind-union">
+</div>
+<div class="section" id="btf-kind-union">
 <h4>2.2.5 BTF_KIND_UNION<a class="headerlink" href="#btf-kind-union" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -545,8 +547,8 @@ modes exist:</p>
 <blockquote>
 <div><p><a class="reference external" href="https://github.com/torvalds/linux/commit/9d5f9f701b1891466fb3dbb1806ad97716f95cc3#diff-fa650a64fdd3968396883d2fe8215ff3">https://github.com/torvalds/linux/commit/9d5f9f701b1891466fb3dbb1806ad97716f95cc3#diff-fa650a64fdd3968396883d2fe8215ff3</a></p>
 </div></blockquote>
-</section>
-<section id="btf-kind-enum">
+</div>
+<div class="section" id="btf-kind-enum">
 <h4>2.2.6 BTF_KIND_ENUM<a class="headerlink" href="#btf-kind-enum" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -572,8 +574,8 @@ modes exist:</p>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="btf-kind-fwd">
+</div>
+<div class="section" id="btf-kind-fwd">
 <h4>2.2.7 BTF_KIND_FWD<a class="headerlink" href="#btf-kind-fwd" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -586,8 +588,8 @@ modes exist:</p>
 </dd>
 </dl>
 <p>No additional type data follow <code class="docutils literal notranslate"><span class="pre">btf_type</span></code>.</p>
-</section>
-<section id="btf-kind-typedef">
+</div>
+<div class="section" id="btf-kind-typedef">
 <h4>2.2.8 BTF_KIND_TYPEDEF<a class="headerlink" href="#btf-kind-typedef" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -600,8 +602,8 @@ modes exist:</p>
 </dd>
 </dl>
 <p>No additional type data follow <code class="docutils literal notranslate"><span class="pre">btf_type</span></code>.</p>
-</section>
-<section id="btf-kind-volatile">
+</div>
+<div class="section" id="btf-kind-volatile">
 <h4>2.2.9 BTF_KIND_VOLATILE<a class="headerlink" href="#btf-kind-volatile" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -614,8 +616,8 @@ modes exist:</p>
 </dd>
 </dl>
 <p>No additional type data follow <code class="docutils literal notranslate"><span class="pre">btf_type</span></code>.</p>
-</section>
-<section id="btf-kind-const">
+</div>
+<div class="section" id="btf-kind-const">
 <h4>2.2.10 BTF_KIND_CONST<a class="headerlink" href="#btf-kind-const" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -628,8 +630,8 @@ modes exist:</p>
 </dd>
 </dl>
 <p>No additional type data follow <code class="docutils literal notranslate"><span class="pre">btf_type</span></code>.</p>
-</section>
-<section id="btf-kind-restrict">
+</div>
+<div class="section" id="btf-kind-restrict">
 <h4>2.2.11 BTF_KIND_RESTRICT<a class="headerlink" href="#btf-kind-restrict" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -642,8 +644,8 @@ modes exist:</p>
 </dd>
 </dl>
 <p>No additional type data follow <code class="docutils literal notranslate"><span class="pre">btf_type</span></code>.</p>
-</section>
-<section id="btf-kind-func">
+</div>
+<div class="section" id="btf-kind-func">
 <h4>2.2.12 BTF_KIND_FUNC<a class="headerlink" href="#btf-kind-func" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -661,8 +663,8 @@ signature is defined by <code class="docutils literal notranslate"><span class="
 type. The BTF_KIND_FUNC may in turn be referenced by a func_info in the
 <a class="reference internal" href="#btf-ext-section"><span class="std std-ref">4.2 .BTF.ext section</span></a> (ELF) or in the arguments to <a class="reference internal" href="#bpf-prog-load"><span class="std std-ref">3.3 BPF_PROG_LOAD</span></a>
 (ABI).</p>
-</section>
-<section id="btf-kind-func-proto">
+</div>
+<div class="section" id="btf-kind-func-proto">
 <h4>2.2.13 BTF_KIND_FUNC_PROTO<a class="headerlink" href="#btf-kind-func-proto" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -687,8 +689,8 @@ possible last argument representing the variable argument. The btf_param.type
 refers to parameter type.</p>
 <p>If the function has variable arguments, the last parameter is encoded with
 <code class="docutils literal notranslate"><span class="pre">name_off</span> <span class="pre">=</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p>
-</section>
-<section id="btf-kind-var">
+</div>
+<div class="section" id="btf-kind-var">
 <h4>2.2.14 BTF_KIND_VAR<a class="headerlink" href="#btf-kind-var" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -727,8 +729,8 @@ The following is currently available:</p>
 </div></blockquote>
 <p>The latter is for future extraction of map key/value type id’s from a
 map definition.</p>
-</section>
-<section id="btf-kind-datasec">
+</div>
+<div class="section" id="btf-kind-datasec">
 <h4>2.2.15 BTF_KIND_DATASEC<a class="headerlink" href="#btf-kind-datasec" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -764,8 +766,8 @@ map definition.</p>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="btf-kind-float">
+</div>
+<div class="section" id="btf-kind-float">
 <h4>2.2.16 BTF_KIND_FLOAT<a class="headerlink" href="#btf-kind-float" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -778,8 +780,8 @@ map definition.</p>
 </dd>
 </dl>
 <p>No additional type data follow <code class="docutils literal notranslate"><span class="pre">btf_type</span></code>.</p>
-</section>
-<section id="btf-kind-decl-tag">
+</div>
+<div class="section" id="btf-kind-decl-tag">
 <h4>2.2.17 BTF_KIND_DECL_TAG<a class="headerlink" href="#btf-kind-decl-tag" title="Permalink to this headline">¶</a></h4>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
@@ -806,10 +808,10 @@ applied to the <code class="docutils literal notranslate"><span class="pre">stru
 the attribute is applied to a <code class="docutils literal notranslate"><span class="pre">struct</span></code>/<code class="docutils literal notranslate"><span class="pre">union</span></code> member or
 a <code class="docutils literal notranslate"><span class="pre">func</span></code> argument, and <code class="docutils literal notranslate"><span class="pre">btf_decl_tag.component_idx</span></code> should be a
 valid index (starting from 0) pointing to a member or an argument.</p>
-</section>
-</section>
-</section>
-<section id="btf-kernel-api">
+</div>
+</div>
+</div>
+<div class="section" id="btf-kernel-api">
 <h2>3. BTF Kernel API<a class="headerlink" href="#btf-kernel-api" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
 <dt>The following bpf syscall command involves BTF:</dt><dd><ul class="simple">
@@ -852,13 +854,13 @@ Introspection tool:
     pretty print types, dump func signatures and line info, etc.
 </pre></div>
 </div>
-<section id="bpf-btf-load">
+<div class="section" id="bpf-btf-load">
 <h3>3.1 BPF_BTF_LOAD<a class="headerlink" href="#bpf-btf-load" title="Permalink to this headline">¶</a></h3>
 <p>Load a blob of BTF data into kernel. A blob of data, described in
 <a class="reference internal" href="#btf-type-string"><span class="std std-ref">2. BTF Type and String Encoding</span></a>, can be directly loaded into the kernel. A <code class="docutils literal notranslate"><span class="pre">btf_fd</span></code>
 is returned to a userspace.</p>
-</section>
-<section id="bpf-map-create">
+</div>
+<div class="section" id="bpf-map-create">
 <h3>3.2 BPF_MAP_CREATE<a class="headerlink" href="#bpf-map-create" title="Permalink to this headline">¶</a></h3>
 <p>A map can be created with <code class="docutils literal notranslate"><span class="pre">btf_fd</span></code> and specified key/value type id.:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>__u32   btf_fd;         /* fd pointing to a BTF type data */
@@ -880,8 +882,8 @@ BPF_ANNOTATE_KV_PAIR(btf_map, int, struct ipv_counts);
 value types for the map. During ELF parsing, libbpf is able to extract
 key/value type_id’s and assign them to BPF_MAP_CREATE attributes
 automatically.</p>
-</section>
-<section id="bpf-prog-load">
+</div>
+<div class="section" id="bpf-prog-load">
 <span id="id1"></span><h3>3.3 BPF_PROG_LOAD<a class="headerlink" href="#bpf-prog-load" title="Permalink to this headline">¶</a></h3>
 <p>During prog_load, func_info and line_info can be passed to kernel with proper
 values for the following attributes:</p>
@@ -931,29 +933,29 @@ bpf func boundaries.</p></li>
 #define BPF_LINE_INFO_LINE_COL(line_col)        ((line_col) &amp; 0x3ff)
 </pre></div>
 </div>
-</section>
-<section id="bpf-prog-map-get-next-id">
+</div>
+<div class="section" id="bpf-prog-map-get-next-id">
 <h3>3.4 BPF_{PROG,MAP}_GET_NEXT_ID<a class="headerlink" href="#bpf-prog-map-get-next-id" title="Permalink to this headline">¶</a></h3>
 <p>In kernel, every loaded program, map or btf has a unique id. The id won’t
 change during the lifetime of a program, map, or btf.</p>
 <p>The bpf syscall command BPF_{PROG,MAP}_GET_NEXT_ID returns all id’s, one for
 each command, to user space, for bpf program or maps, respectively, so an
 inspection tool can inspect all programs and maps.</p>
-</section>
-<section id="bpf-prog-map-get-fd-by-id">
+</div>
+<div class="section" id="bpf-prog-map-get-fd-by-id">
 <h3>3.5 BPF_{PROG,MAP}_GET_FD_BY_ID<a class="headerlink" href="#bpf-prog-map-get-fd-by-id" title="Permalink to this headline">¶</a></h3>
 <p>An introspection tool cannot use id to get details about program or maps.
 A file descriptor needs to be obtained first for reference-counting purpose.</p>
-</section>
-<section id="bpf-obj-get-info-by-fd">
+</div>
+<div class="section" id="bpf-obj-get-info-by-fd">
 <h3>3.6 BPF_OBJ_GET_INFO_BY_FD<a class="headerlink" href="#bpf-obj-get-info-by-fd" title="Permalink to this headline">¶</a></h3>
 <p>Once a program/map fd is acquired, an introspection tool can get the detailed
 information from kernel about this fd, some of which are BTF-related. For
 example, <code class="docutils literal notranslate"><span class="pre">bpf_map_info</span></code> returns <code class="docutils literal notranslate"><span class="pre">btf_id</span></code> and key/value type ids.
 <code class="docutils literal notranslate"><span class="pre">bpf_prog_info</span></code> returns <code class="docutils literal notranslate"><span class="pre">btf_id</span></code>, func_info, and line info for translated
 bpf byte codes, and jited_line_info.</p>
-</section>
-<section id="bpf-btf-get-fd-by-id">
+</div>
+<div class="section" id="bpf-btf-get-fd-by-id">
 <h3>3.7 BPF_BTF_GET_FD_BY_ID<a class="headerlink" href="#bpf-btf-get-fd-by-id" title="Permalink to this headline">¶</a></h3>
 <p>With <code class="docutils literal notranslate"><span class="pre">btf_id</span></code> obtained in <code class="docutils literal notranslate"><span class="pre">bpf_map_info</span></code> and <code class="docutils literal notranslate"><span class="pre">bpf_prog_info</span></code>, bpf
 syscall command BPF_BTF_GET_FD_BY_ID can retrieve a btf fd. Then, with
@@ -962,16 +964,16 @@ kernel with BPF_BTF_LOAD, can be retrieved.</p>
 <p>With the btf blob, <code class="docutils literal notranslate"><span class="pre">bpf_map_info</span></code>, and <code class="docutils literal notranslate"><span class="pre">bpf_prog_info</span></code>, an introspection
 tool has full btf knowledge and is able to pretty print map key/values, dump
 func signatures and line info, along with byte/jit codes.</p>
-</section>
-</section>
-<section id="elf-file-format-interface">
+</div>
+</div>
+<div class="section" id="elf-file-format-interface">
 <h2>4. ELF File Format Interface<a class="headerlink" href="#elf-file-format-interface" title="Permalink to this headline">¶</a></h2>
-<section id="btf-section">
+<div class="section" id="btf-section">
 <h3>4.1 .BTF section<a class="headerlink" href="#btf-section" title="Permalink to this headline">¶</a></h3>
 <p>The .BTF section contains type and string data. The format of this section is
 same as the one describe in <a class="reference internal" href="#btf-type-string"><span class="std std-ref">2. BTF Type and String Encoding</span></a>.</p>
-</section>
-<section id="btf-ext-section">
+</div>
+<div class="section" id="btf-ext-section">
 <span id="id2"></span><h3>4.2 .BTF.ext section<a class="headerlink" href="#btf-ext-section" title="Permalink to this headline">¶</a></h3>
 <p>The .BTF.ext section encodes func_info and line_info which needs loader
 manipulation before loading into the kernel.</p>
@@ -1028,8 +1030,8 @@ btf_ext_info_sec for section #2 /* line_info for section #2 */
 kernel API, the <code class="docutils literal notranslate"><span class="pre">insn_off</span></code> is the instruction offset in the unit of <code class="docutils literal notranslate"><span class="pre">struct</span>
 <span class="pre">bpf_insn</span></code>. For ELF API, the <code class="docutils literal notranslate"><span class="pre">insn_off</span></code> is the byte offset from the
 beginning of section (<code class="docutils literal notranslate"><span class="pre">btf_ext_info_sec-&gt;sec_name_off</span></code>).</p>
-</section>
-<section id="btf-ids-section">
+</div>
+<div class="section" id="btf-ids-section">
 <h3>4.2 .BTF_ids section<a class="headerlink" href="#btf-ids-section" title="Permalink to this headline">¶</a></h3>
 <p>The .BTF_ids section encodes BTF ID values that are used within the kernel.</p>
 <p>This section is created during the kernel compilation with the help of
@@ -1083,11 +1085,11 @@ __BTF_ID__type2__name2__4:
 <p>and is used as a filter when resolving the BTF ID value.</p>
 <p>All the BTF ID lists and sets are compiled in the .BTF_ids section and
 resolved during the linking phase of kernel build by <code class="docutils literal notranslate"><span class="pre">resolve_btfids</span></code> tool.</p>
-</section>
-</section>
-<section id="using-btf">
+</div>
+</div>
+<div class="section" id="using-btf">
 <h2>5. Using BTF<a class="headerlink" href="#using-btf" title="Permalink to this headline">¶</a></h2>
-<section id="bpftool-map-pretty-print">
+<div class="section" id="bpftool-map-pretty-print">
 <h3>5.1 bpftool map pretty print<a class="headerlink" href="#bpftool-map-pretty-print" title="Permalink to this headline">¶</a></h3>
 <p>With BTF, the map key/value can be printed based on fields rather than simply
 raw bytes. This is especially valuable for large structure or if your data
@@ -1127,8 +1129,8 @@ BPF_ANNOTATE_KV_PAIR(tmpmap, int, struct tmp_t);
 ]
 </pre></div>
 </div>
-</section>
-<section id="bpftool-prog-dump">
+</div>
+<div class="section" id="bpftool-prog-dump">
 <h3>5.2 bpftool prog dump<a class="headerlink" href="#bpftool-prog-dump" title="Permalink to this headline">¶</a></h3>
 <p>The following is an example showing how func_info and line_info can help prog
 dump with better kernel symbol names, function prototypes and line
@@ -1161,8 +1163,8 @@ bpf_prog_44a040bf25481309_test_long_fname_2:
 [...]
 </pre></div>
 </div>
-</section>
-<section id="verifier-log">
+</div>
+<div class="section" id="verifier-log">
 <h3>5.3 Verifier Log<a class="headerlink" href="#verifier-log" title="Permalink to this headline">¶</a></h3>
 <p>The following is an example of how line_info can help debugging verification
 failure.:</p>
@@ -1187,9 +1189,9 @@ $ bpftool prog load ./test_xdp_noinline.o /sys/fs/bpf/test_xdp_noinline type xdp
     R2 offset is outside of the packet
 </pre></div>
 </div>
-</section>
-</section>
-<section id="btf-generation">
+</div>
+</div>
+<div class="section" id="btf-generation">
 <h2>6. BTF Generation<a class="headerlink" href="#btf-generation" title="Permalink to this headline">¶</a></h2>
 <p>You need latest pahole</p>
 <blockquote>
@@ -1295,12 +1297,12 @@ int test() { return 0; }
         .long   8206                    # Line 8 Col 14
 </pre></div>
 </div>
-</section>
-<section id="testing">
+</div>
+<div class="section" id="testing">
 <h2>7. Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
 <p>Kernel bpf selftest <cite>test_btf.c</cite> provides extensive set of BTF-related tests.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

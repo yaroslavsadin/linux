@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Regulator Consumer Driver Interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -280,11 +282,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="regulator-consumer-driver-interface">
+  <div class="section" id="regulator-consumer-driver-interface">
 <h1>Regulator Consumer Driver Interface<a class="headerlink" href="#regulator-consumer-driver-interface" title="Permalink to this headline">¶</a></h1>
 <p>This text describes the regulator interface for consumer device drivers.
 Please see <a class="reference internal" href="overview.html"><span class="doc">Linux voltage and current regulator framework</span></a> for a description of the terms used in this text.</p>
-<section id="consumer-regulator-access-static-dynamic-drivers">
+<div class="section" id="consumer-regulator-access-static-dynamic-drivers">
 <h2>1. Consumer Regulator Access (static &amp; dynamic drivers)<a class="headerlink" href="#consumer-regulator-access-static-dynamic-drivers" title="Permalink to this headline">¶</a></h2>
 <p>A consumer driver can get access to its supply regulator by calling</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>regulator = regulator_get(dev, &quot;Vcc&quot;);
@@ -306,8 +308,8 @@ analog = regulator_get(dev, &quot;Avdd&quot;);  /* analog */
 </div>
 <p>The regulator access functions <a class="reference internal" href="../../driver-api/regulator.html#c.regulator_get" title="regulator_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">regulator_get()</span></code></a> and <a class="reference internal" href="../../driver-api/regulator.html#c.regulator_put" title="regulator_put"><code class="xref c c-func docutils literal notranslate"><span class="pre">regulator_put()</span></code></a> will
 usually be called in your device drivers probe() and remove() respectively.</p>
-</section>
-<section id="regulator-output-enable-disable-static-dynamic-drivers">
+</div>
+<div class="section" id="regulator-output-enable-disable-static-dynamic-drivers">
 <h2>2. Regulator Output Enable &amp; Disable (static &amp; dynamic drivers)<a class="headerlink" href="#regulator-output-enable-disable-static-dynamic-drivers" title="Permalink to this headline">¶</a></h2>
 <p>A consumer can enable its power supply by calling:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int regulator_enable(regulator);
@@ -342,8 +344,8 @@ regulator will only be disabled when the enabled reference count is zero.</p>
 consumers will be powered off.</p>
 </dd>
 </dl>
-</section>
-<section id="regulator-voltage-control-status-dynamic-drivers">
+</div>
+<div class="section" id="regulator-voltage-control-status-dynamic-drivers">
 <h2>3. Regulator Voltage Control &amp; Status (dynamic drivers)<a class="headerlink" href="#regulator-voltage-control-status-dynamic-drivers" title="Permalink to this headline">¶</a></h2>
 <p>Some consumer drivers need to be able to dynamically change their supply
 voltage to match system operating points. e.g. CPUfreq drivers can scale
@@ -370,8 +372,8 @@ output state. However this can be used in conjunction with is_enabled() to
 determine the regulator physical output voltage.</p>
 </dd>
 </dl>
-</section>
-<section id="regulator-current-limit-control-status-dynamic-drivers">
+</div>
+<div class="section" id="regulator-current-limit-control-status-dynamic-drivers">
 <h2>4. Regulator Current Limit Control &amp; Status (dynamic drivers)<a class="headerlink" href="#regulator-current-limit-control-status-dynamic-drivers" title="Permalink to this headline">¶</a></h2>
 <p>Some consumer drivers need to be able to dynamically change their supply
 current limit to match system operating points. e.g. LCD backlight driver can
@@ -400,14 +402,14 @@ is enabled or disabled and should not be used to determine regulator current
 load.</p>
 </dd>
 </dl>
-</section>
-<section id="regulator-operating-mode-control-status-dynamic-drivers">
+</div>
+<div class="section" id="regulator-operating-mode-control-status-dynamic-drivers">
 <h2>5. Regulator Operating Mode Control &amp; Status (dynamic drivers)<a class="headerlink" href="#regulator-operating-mode-control-status-dynamic-drivers" title="Permalink to this headline">¶</a></h2>
 <p>Some consumers can further save system power by changing the operating mode of
 their supply regulator to be more efficient when the consumers operating state
 changes. e.g. consumer driver is idle and subsequently draws less current</p>
 <p>Regulator operating mode can be changed indirectly or directly.</p>
-<section id="indirect-operating-mode-control">
+<div class="section" id="indirect-operating-mode-control">
 <h3>Indirect operating mode control.<a class="headerlink" href="#indirect-operating-mode-control" title="Permalink to this headline">¶</a></h3>
 <p>Consumer drivers can request a change in their supply regulator operating mode
 by calling:</p>
@@ -423,8 +425,8 @@ situations.</p>
 <p>Most consumers will use indirect operating mode control since they have no
 knowledge of the regulator or whether the regulator is shared with other
 consumers.</p>
-</section>
-<section id="direct-operating-mode-control">
+</div>
+<div class="section" id="direct-operating-mode-control">
 <h3>Direct operating mode control.<a class="headerlink" href="#direct-operating-mode-control" title="Permalink to this headline">¶</a></h3>
 <p>Bespoke or tightly coupled drivers may want to directly control regulator
 operating mode depending on their operating point. This can be achieved by
@@ -435,9 +437,9 @@ unsigned int regulator_get_mode(struct regulator *regulator);
 </div>
 <p>Direct mode will only be used by consumers that <em>know</em> about the regulator and
 are not sharing the regulator with other consumers.</p>
-</section>
-</section>
-<section id="regulator-events">
+</div>
+</div>
+<div class="section" id="regulator-events">
 <h2>6. Regulator Events<a class="headerlink" href="#regulator-events" title="Permalink to this headline">¶</a></h2>
 <p>Regulators can notify consumers of external events. Events could be received by
 consumers under regulator stress or failure conditions.</p>
@@ -453,8 +455,8 @@ consumers under regulator stress or failure conditions.</p>
 </div>
 <p>Regulators use the kernel notifier framework to send event to their interested
 consumers.</p>
-</section>
-<section id="regulator-direct-register-access">
+</div>
+<div class="section" id="regulator-direct-register-access">
 <h2>7. Regulator Direct Register Access<a class="headerlink" href="#regulator-direct-register-access" title="Permalink to this headline">¶</a></h2>
 <p>Some kinds of power management hardware or firmware are designed such that
 they need to do low-level hardware access to regulators, with no involvement
@@ -488,8 +490,8 @@ directly written to the voltage selector register, use:</p>
                                  unsigned selector);
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

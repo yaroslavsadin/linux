@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Transactional Memory support &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -298,13 +300,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="transactional-memory-support">
+  <div class="section" id="transactional-memory-support">
 <h1>Transactional Memory support<a class="headerlink" href="#transactional-memory-support" title="Permalink to this headline">¶</a></h1>
 <p>POWER kernel support for this feature is currently limited to supporting
 its use by user programs.  It is not currently used by the kernel itself.</p>
 <p>This file aims to sum up how it is supported by Linux and what behaviour you
 can expect from your user programs.</p>
-<section id="basic-overview">
+<div class="section" id="basic-overview">
 <h2>Basic overview<a class="headerlink" href="#basic-overview" title="Permalink to this headline">¶</a></h2>
 <p>Hardware Transactional Memory is supported on POWER8 processors, and is a
 feature that enables a different form of atomic memory access.  Several new
@@ -352,8 +354,8 @@ state will roll back to that at the ‘tbegin’, and control will continue from
 abort handler can check the cause of the failure, and retry.</p>
 <p>Checkpointed registers include all GPRs, FPRs, VRs/VSRs, LR, CCR/CR, CTR, FPCSR
 and a few other status/flag regs; see the ISA for details.</p>
-</section>
-<section id="causes-of-transaction-aborts">
+</div>
+<div class="section" id="causes-of-transaction-aborts">
 <h2>Causes of transaction aborts<a class="headerlink" href="#causes-of-transaction-aborts" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Conflicts with cache lines used by other processors</p></li>
@@ -361,8 +363,8 @@ and a few other status/flag regs; see the ISA for details.</p>
 <li><p>Context switches</p></li>
 <li><p>See the ISA for full documentation of everything that will abort transactions.</p></li>
 </ul>
-</section>
-<section id="syscalls">
+</div>
+<div class="section" id="syscalls">
 <h2>Syscalls<a class="headerlink" href="#syscalls" title="Permalink to this headline">¶</a></h2>
 <p>Syscalls made from within an active transaction will not be performed and the
 transaction will be doomed by the kernel with the failure code TM_CAUSE_SYSCALL
@@ -379,8 +381,8 @@ if the calls are made via a library.  Libraries may cache values (which may
 give the appearance of success) or perform operations that cause transaction
 failure before entering the kernel (which may produce different failure codes).
 Examples are glibc’s getpid() and lazy symbol resolution.</p>
-</section>
-<section id="signals">
+</div>
+<div class="section" id="signals">
 <h2>Signals<a class="headerlink" href="#signals" title="Permalink to this headline">¶</a></h2>
 <p>Delivery of signals (both sync and async) during transactions provides a second
 thread state (ucontext/mcontext) to represent the second transactional register
@@ -446,8 +448,8 @@ signal will be rolled back anyway.</p>
 normal/non-checkpointed stack pointer.</p>
 <p>Any transaction initiated inside a sighandler and suspended on return
 from the sighandler to the kernel will get reclaimed and discarded.</p>
-</section>
-<section id="failure-cause-codes-used-by-kernel">
+</div>
+<div class="section" id="failure-cause-codes-used-by-kernel">
 <h2>Failure cause codes used by kernel<a class="headerlink" href="#failure-cause-codes-used-by-kernel" title="Permalink to this headline">¶</a></h2>
 <p>These are defined in &lt;asm/reg.h&gt;, and distinguish different reasons why the
 kernel aborted a transaction:</p>
@@ -488,8 +490,8 @@ kernel aborted a transaction:</p>
 <p>These can be checked by the user program’s abort handler as TEXASR[0:7].  If
 bit 7 is set, it indicates that the error is considered persistent.  For example
 a TM_CAUSE_ALIGNMENT will be persistent while a TM_CAUSE_RESCHED will not.</p>
-</section>
-<section id="gdb">
+</div>
+<div class="section" id="gdb">
 <h2>GDB<a class="headerlink" href="#gdb" title="Permalink to this headline">¶</a></h2>
 <p>GDB and ptrace are not currently TM-aware.  If one stops during a transaction,
 it looks like the transaction has just started (the checkpointed state is
@@ -497,8 +499,8 @@ presented).  The transaction cannot then be continued and will take the failure
 handler route.  Furthermore, the transactional 2nd register state will be
 inaccessible.  GDB can currently be used on programs using TM, but not sensibly
 in parts within transactions.</p>
-</section>
-<section id="power9">
+</div>
+<div class="section" id="power9">
 <h2>POWER9<a class="headerlink" href="#power9" title="Permalink to this headline">¶</a></h2>
 <p>TM on POWER9 has issues with storing the complete register state. This
 is described in this commit:</p>
@@ -535,10 +537,10 @@ POWER9N DD2.2.</p>
 <p>Guest migration from POWER8 to POWER9 will work with POWER9N DD2.2 and
 POWER9C DD1.2. Since earlier POWER9 processors don’t support TM
 emulation, migration from POWER8 to POWER9 is not supported there.</p>
-</section>
-<section id="kernel-implementation">
+</div>
+<div class="section" id="kernel-implementation">
 <h2>Kernel implementation<a class="headerlink" href="#kernel-implementation" title="Permalink to this headline">¶</a></h2>
-<section id="h-rfid-mtmsrd-quirk">
+<div class="section" id="h-rfid-mtmsrd-quirk">
 <h3>h/rfid mtmsrd quirk<a class="headerlink" href="#h-rfid-mtmsrd-quirk" title="Permalink to this headline">¶</a></h3>
 <p>As defined in the ISA, rfid has a quirk which is useful in early
 exception handling. When in a userspace transaction and we enter the
@@ -560,9 +562,9 @@ with these lines:</p>
 </div></blockquote>
 <p>hrfid and mtmsrd have the same quirk.</p>
 <p>The Linux kernel uses this quirk in its early exception handling.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

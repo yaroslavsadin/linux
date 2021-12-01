@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Linux Phonet protocol family &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -365,9 +367,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="linux-phonet-protocol-family">
+  <div class="section" id="linux-phonet-protocol-family">
 <h1>Linux Phonet protocol family<a class="headerlink" href="#linux-phonet-protocol-family" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Phonet is a packet protocol used by Nokia cellular modems for both IPC
 and RPC. With the Linux Phonet socket family, Linux host processes can
@@ -384,8 +386,8 @@ depending on the device, such as:</p>
 <li><p>the SSI bus with some TI OMAP processors.</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="packets-format">
+</div>
+<div class="section" id="packets-format">
 <h2>Packets format<a class="headerlink" href="#packets-format" title="Permalink to this headline">¶</a></h2>
 <p>Phonet packets have a common header as follows:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct phonethdr {
@@ -408,8 +410,8 @@ network layer with 6 bits of address space and 10 bits for transport
 protocol (much like port numbers in IP world).</p>
 <p>The modem always has address number zero. All other device have a their
 own 6-bit address.</p>
-</section>
-<section id="link-layer">
+</div>
+<div class="section" id="link-layer">
 <h2>Link layer<a class="headerlink" href="#link-layer" title="Permalink to this headline">¶</a></h2>
 <p>Phonet links are always point-to-point links. The link layer header
 consists of a single Phonet media type byte. It uniquely identifies the
@@ -426,8 +428,8 @@ requires IFF_TUN mode, _without_ the IFF_NO_PI flag. In this case,
 there is no link-layer header, so there is no Phonet media type byte.</p>
 <p>Note that Phonet interfaces are not allowed to re-order packets, so
 only the (default) Linux FIFO qdisc should be used with them.</p>
-</section>
-<section id="network-layer">
+</div>
+<div class="section" id="network-layer">
 <h2>Network layer<a class="headerlink" href="#network-layer" title="Permalink to this headline">¶</a></h2>
 <p>The Phonet socket address family maps the Phonet packet header:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct sockaddr_pn {
@@ -441,8 +443,8 @@ only the (default) Linux FIFO qdisc should be used with them.</p>
 </div>
 <p>The resource field is only used when sending and receiving;
 It is ignored by bind() and getsockname().</p>
-</section>
-<section id="low-level-datagram-protocol">
+</div>
+<div class="section" id="low-level-datagram-protocol">
 <h2>Low-level datagram protocol<a class="headerlink" href="#low-level-datagram-protocol" title="Permalink to this headline">¶</a></h2>
 <p>Applications can send Phonet messages using the Phonet datagram socket
 protocol from the PF_PHONET family. Each socket is bound to one of the
@@ -465,8 +467,8 @@ len = recvfrom(fd, buf, sizeof(buf), 0,
 <p>This protocol follows the SOCK_DGRAM connection-less semantics.
 However, connect() and getpeername() are not supported, as they did
 not seem useful with Phonet usages (could be added easily).</p>
-</section>
-<section id="resource-subscription">
+</div>
+<div class="section" id="resource-subscription">
 <h2>Resource subscription<a class="headerlink" href="#resource-subscription" title="Permalink to this headline">¶</a></h2>
 <p>A Phonet datagram socket can be subscribed to any number of 8-bits
 Phonet resources, as follow:</p>
@@ -478,8 +480,8 @@ ioctl(fd, SIOCPNADDRESOURCE, &amp;res);
 control request, or when the socket is closed.</p>
 <p>Note that no more than one socket can be subcribed to any given
 resource at a time. If not, ioctl() will return EBUSY.</p>
-</section>
-<section id="phonet-pipe-protocol">
+</div>
+<div class="section" id="phonet-pipe-protocol">
 <h2>Phonet Pipe protocol<a class="headerlink" href="#phonet-pipe-protocol" title="Permalink to this headline">¶</a></h2>
 <p>The Phonet Pipe protocol is a simple sequenced packets protocol
 with end-to-end congestion control. It uses the passive listening
@@ -549,15 +551,15 @@ socket descriptors that are already connected or being connected.</p>
 </dd>
 </dl>
 </div></blockquote>
-</section>
-<section id="authors">
+</div>
+<div class="section" id="authors">
 <h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
 <p>Linux Phonet was initially written by Sakari Ailus.</p>
 <p>Other contributors include Mikä Liljeberg, Andras Domokos,
 Carlos Chinea and Rémi Denis-Courmont.</p>
 <p>Copyright © 2008 Nokia Corporation.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

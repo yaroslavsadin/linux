@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>10. Boot Interrupts &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -262,7 +264,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="boot-interrupts">
+  <div class="section" id="boot-interrupts">
 <h1><span class="section-number">10. </span>Boot Interrupts<a class="headerlink" href="#boot-interrupts" title="Permalink to this headline">¶</a></h1>
 <dl class="field-list simple">
 <dt class="field-odd">Author</dt>
@@ -271,7 +273,7 @@
 </ul>
 </dd>
 </dl>
-<section id="overview">
+<div class="section" id="overview">
 <h2><span class="section-number">10.1. </span>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>On PCI Express, interrupts are represented with either MSI or inbound
 interrupt messages (Assert_INTx/Deassert_INTx). The integrated IO-APIC in a
@@ -285,8 +287,8 @@ protocol describes this in-band legacy wire-interrupt INTx mechanism for
 I/O devices to signal PCI-style level interrupts. The subsequent paragraphs
 describe problems with the Core IO handling of INTx message routing to the
 PCH and mitigation within BIOS and the OS.</p>
-</section>
-<section id="issue">
+</div>
+<div class="section" id="issue">
 <h2><span class="section-number">10.2. </span>Issue<a class="headerlink" href="#issue" title="Permalink to this headline">¶</a></h2>
 <p>When in-band legacy INTx messages are forwarded to the PCH, they in turn
 trigger a new interrupt for which the OS likely lacks a handler. When an
@@ -318,8 +320,8 @@ irq_default_primary_handler threaded usb_hcd_irq
 Disabling IRQ #19
 </pre></div>
 </div>
-</section>
-<section id="conditions">
+</div>
+<div class="section" id="conditions">
 <h2><span class="section-number">10.3. </span>Conditions<a class="headerlink" href="#conditions" title="Permalink to this headline">¶</a></h2>
 <p>The use of threaded interrupts is the most likely condition to trigger
 this problem today. Threaded interrupts may not be reenabled after the IRQ
@@ -328,8 +330,8 @@ needs to keep the interrupt line masked until the threaded handler has run.
 Especially when dealing with high data rate interrupts, the thread needs to
 run to completion; otherwise some handlers will end up in stack overflows
 since the interrupt of the issuing device is still active.</p>
-</section>
-<section id="affected-chipsets">
+</div>
+<div class="section" id="affected-chipsets">
 <h2><span class="section-number">10.4. </span>Affected Chipsets<a class="headerlink" href="#affected-chipsets" title="Permalink to this headline">¶</a></h2>
 <p>The legacy interrupt forwarding mechanism exists today in a number of
 devices including but not limited to chipsets from AMD/ATI, Broadcom, and
@@ -338,8 +340,8 @@ drivers/pci/quirks.c</p>
 <p>Starting with ICX there are no longer any IO-APICs in the Core IO’s
 devices.  IO-APIC is only in the PCH.  Devices connected to the Core IO’s
 PCIe Root Ports will use native MSI/MSI-X mechanisms.</p>
-</section>
-<section id="mitigations">
+</div>
+<div class="section" id="mitigations">
 <h2><span class="section-number">10.5. </span>Mitigations<a class="headerlink" href="#mitigations" title="Permalink to this headline">¶</a></h2>
 <p>The mitigations take the form of PCI quirks. The preference has been to
 first identify and make use of a means to disable the routing to the PCH.
@@ -392,13 +394,13 @@ line due to excessive unhandled counts. <a class="footnote-reference brackets" h
 disable) the redirection of the interrupt handler to the PCH interrupt
 line. The option can be overridden by either pci=ioapicreroute or
 pci=noioapicreroute. <a class="footnote-reference brackets" href="#id6" id="id3">3</a></p>
-</section>
-<section id="more-documentation">
+</div>
+<div class="section" id="more-documentation">
 <h2><span class="section-number">10.6. </span>More Documentation<a class="headerlink" href="#more-documentation" title="Permalink to this headline">¶</a></h2>
 <p>There is an overview of the legacy interrupt handling in several datasheets
 (6300ESB and 6700PXH below). While largely the same, it provides insight
 into the evolution of its handling with chipsets.</p>
-<section id="example-of-disabling-of-the-boot-interrupt">
+<div class="section" id="example-of-disabling-of-the-boot-interrupt">
 <h3><span class="section-number">10.6.1. </span>Example of disabling of the boot interrupt<a class="headerlink" href="#example-of-disabling-of-the-boot-interrupt" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -411,8 +413,8 @@ Datasheet - Volume 2: Registers (Document # 330784-003)
 <a class="reference external" href="https://www.intel.com/content/dam/www/public/us/en/documents/datasheets/xeon-e5-v3-datasheet-vol-2.pdf">https://www.intel.com/content/dam/www/public/us/en/documents/datasheets/xeon-e5-v3-datasheet-vol-2.pdf</a></p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="example-of-handler-rerouting">
+</div>
+<div class="section" id="example-of-handler-rerouting">
 <h3><span class="section-number">10.6.2. </span>Example of handler rerouting<a class="headerlink" href="#example-of-handler-rerouting" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -438,9 +440,9 @@ Datasheet - Volume 2: Registers (Document # 330784-003)
 <dd><p><a class="reference external" href="https://lore.kernel.org/r/487C8EA7.6020205&#64;suse.de/">https://lore.kernel.org/r/487C8EA7.6020205&#64;suse.de/</a></p>
 </dd>
 </dl>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

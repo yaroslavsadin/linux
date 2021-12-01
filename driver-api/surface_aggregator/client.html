@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Writing Client Drivers &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -353,7 +355,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="writing-client-drivers">
+  <div class="section" id="writing-client-drivers">
 <h1>Writing Client Drivers<a class="headerlink" href="#writing-client-drivers" title="Permalink to this headline">¶</a></h1>
 <p>For the API documentation, refer to:</p>
 <div class="toctree-wrapper compound">
@@ -366,7 +368,7 @@
 </li>
 </ul>
 </div>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Client drivers can be set up in two main ways, depending on how the
 corresponding device is made available to the system. We specifically
@@ -374,8 +376,8 @@ differentiate between devices that are presented to the system via one of
 the conventional ways, e.g. as platform devices via ACPI, and devices that
 are non-discoverable and instead need to be explicitly provided by some
 other mechanism, as discussed further below.</p>
-</section>
-<section id="non-ssam-client-drivers">
+</div>
+<div class="section" id="non-ssam-client-drivers">
 <h2>Non-SSAM Client Drivers<a class="headerlink" href="#non-ssam-client-drivers" title="Permalink to this headline">¶</a></h2>
 <p>All communication with the SAM EC is handled via the <a class="reference internal" href="internal-api.html#c.ssam_controller" title="ssam_controller"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ssam_controller</span></code></a>
 representing that EC to the kernel. Drivers targeting a non-SSAM device (and
@@ -411,8 +413,8 @@ Note that none of these functions, however, guarantee that the controller
 will not be shut down or suspended. These functions essentially only operate
 on the reference, i.e. only guarantee a bare minimum of accessibility
 without any guarantees at all on practical operability.</p>
-</section>
-<section id="adding-ssam-devices">
+</div>
+<div class="section" id="adding-ssam-devices">
 <h2>Adding SSAM Devices<a class="headerlink" href="#adding-ssam-devices" title="Permalink to this headline">¶</a></h2>
 <p>If a device does not already exist/is not already provided via conventional
 means, it should be provided as <a class="reference internal" href="client-api.html#c.ssam_device" title="ssam_device"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ssam_device</span></code></a> via the SSAM client device
@@ -435,8 +437,8 @@ unbinds. Client devices registered with the controller as parent are
 automatically removed when the controller shuts down, but this should not be
 relied upon, especially as this does not extend to client devices with a
 different parent.</p>
-</section>
-<section id="ssam-client-drivers">
+</div>
+<div class="section" id="ssam-client-drivers">
 <h2>SSAM Client Drivers<a class="headerlink" href="#ssam-client-drivers" title="Permalink to this headline">¶</a></h2>
 <p>SSAM client device drivers are, in essence, no different than other device
 driver types. They are represented via <a class="reference internal" href="client-api.html#c.ssam_device_driver" title="ssam_device_driver"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ssam_device_driver</span></code></a> and bind to a
@@ -471,8 +473,8 @@ controller device is not suspended while making any requests or
 (un-)registering event notifiers (and thus should generally be avoided). This
 is guaranteed when the controller is accessed from inside the bound client
 driver.</p>
-</section>
-<section id="making-synchronous-requests">
+</div>
+<div class="section" id="making-synchronous-requests">
 <h2>Making Synchronous Requests<a class="headerlink" href="#making-synchronous-requests" title="Permalink to this headline">¶</a></h2>
 <p>Synchronous requests are (currently) the main form of host-initiated
 communication with the EC. There are a couple of ways to define and execute
@@ -609,8 +611,8 @@ in the client device. The full list of such macros for client devices is:</p>
 <li><p><a class="reference internal" href="client-api.html#c.SSAM_DEFINE_SYNC_REQUEST_CL_R" title="SSAM_DEFINE_SYNC_REQUEST_CL_R"><code class="xref c c-func docutils literal notranslate"><span class="pre">SSAM_DEFINE_SYNC_REQUEST_CL_R()</span></code></a></p></li>
 <li><p><a class="reference internal" href="client-api.html#c.SSAM_DEFINE_SYNC_REQUEST_CL_W" title="SSAM_DEFINE_SYNC_REQUEST_CL_W"><code class="xref c c-func docutils literal notranslate"><span class="pre">SSAM_DEFINE_SYNC_REQUEST_CL_W()</span></code></a></p></li>
 </ul>
-</section>
-<section id="handling-events">
+</div>
+<div class="section" id="handling-events">
 <h2>Handling Events<a class="headerlink" href="#handling-events" title="Permalink to this headline">¶</a></h2>
 <p>To receive events from the SAM EC, an event notifier must be registered for
 the desired event via <a class="reference internal" href="client-api.html#c.ssam_notifier_register" title="ssam_notifier_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">ssam_notifier_register()</span></code></a>. The notifier must be
@@ -688,8 +690,8 @@ when the last notifier for it is being unregistered. Note that the event
 flags are therefore only used on the first registered notifier, however, one
 should take care that notifiers for a specific event are always registered
 with the same flag and it is considered a bug to do otherwise.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

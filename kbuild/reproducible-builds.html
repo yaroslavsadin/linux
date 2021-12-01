@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Reproducible builds &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -260,7 +262,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="reproducible-builds">
+  <div class="section" id="reproducible-builds">
 <h1>Reproducible builds<a class="headerlink" href="#reproducible-builds" title="Permalink to this headline">¶</a></h1>
 <p>It is generally desirable that building the same source code with
 the same set of tools is reproducible, i.e. the output is always
@@ -271,7 +273,7 @@ or tool change does not make any difference to the resulting binaries.</p>
 <p>The <a class="reference external" href="https://reproducible-builds.org/">Reproducible Builds project</a> has more information about this
 general topic.  This document covers the various reasons why building
 the kernel may be unreproducible, and how to avoid them.</p>
-<section id="timestamps">
+<div class="section" id="timestamps">
 <h2>Timestamps<a class="headerlink" href="#timestamps" title="Permalink to this headline">¶</a></h2>
 <p>The kernel embeds timestamps in three places:</p>
 <ul class="simple">
@@ -291,15 +293,15 @@ and enables warnings if they are used.  If you incorporate external
 code that does use these, you must override the timestamp they
 correspond to by setting the <a class="reference external" href="https://reproducible-builds.org/docs/source-date-epoch/">SOURCE_DATE_EPOCH</a> environment
 variable.</p>
-</section>
-<section id="user-host">
+</div>
+<div class="section" id="user-host">
 <h2>User, host<a class="headerlink" href="#user-host" title="Permalink to this headline">¶</a></h2>
 <p>The kernel embeds the building user and host names in
 <code class="docutils literal notranslate"><span class="pre">/proc/version</span></code>.  These must be overridden using the
 <a class="reference external" href="kbuild.html#kbuild-build-user-kbuild-build-host">KBUILD_BUILD_USER and KBUILD_BUILD_HOST</a> variables.  If you are
 building from a git commit, you could use its committer address.</p>
-</section>
-<section id="absolute-filenames">
+</div>
+<div class="section" id="absolute-filenames">
 <h2>Absolute filenames<a class="headerlink" href="#absolute-filenames" title="Permalink to this headline">¶</a></h2>
 <p>When the kernel is built out-of-tree, debug information may include
 absolute filenames for the source files.  This must be overridden by
@@ -310,8 +312,8 @@ uses the <code class="docutils literal notranslate"><span class="pre">-fmacro-pr
 supported.</p>
 <p>The Reproducible Builds web site has more information about these
 <a class="reference external" href="https://reproducible-builds.org/docs/build-path/">prefix-map options</a>.</p>
-</section>
-<section id="generated-files-in-source-packages">
+</div>
+<div class="section" id="generated-files-in-source-packages">
 <h2>Generated files in source packages<a class="headerlink" href="#generated-files-in-source-packages" title="Permalink to this headline">¶</a></h2>
 <p>The build processes for some programs under the <code class="docutils literal notranslate"><span class="pre">tools/</span></code>
 subdirectory do not completely support out-of-tree builds.  This may
@@ -319,8 +321,8 @@ cause a later source package build using e.g. <code class="docutils literal notr
 include generated files.  You should ensure the source tree is
 pristine by running <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">mrproper</span></code> or <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clean</span> <span class="pre">-d</span> <span class="pre">-f</span> <span class="pre">-x</span></code> before
 building a source package.</p>
-</section>
-<section id="module-signing">
+</div>
+<div class="section" id="module-signing">
 <h2>Module signing<a class="headerlink" href="#module-signing" title="Permalink to this headline">¶</a></h2>
 <p>If you enable <code class="docutils literal notranslate"><span class="pre">CONFIG_MODULE_SIG_ALL</span></code>, the default behaviour is to
 generate a different temporary key for each build, resulting in the
@@ -340,15 +342,15 @@ sources.</p></li>
 <li><p>Perform a second build that attaches the module signatures.  It
 can either rebuild the modules or use the output of step 2.</p></li>
 </ol>
-</section>
-<section id="structure-randomisation">
+</div>
+<div class="section" id="structure-randomisation">
 <h2>Structure randomisation<a class="headerlink" href="#structure-randomisation" title="Permalink to this headline">¶</a></h2>
 <p>If you enable <code class="docutils literal notranslate"><span class="pre">CONFIG_GCC_PLUGIN_RANDSTRUCT</span></code>, you will need to
 pre-generate the random seed in
 <code class="docutils literal notranslate"><span class="pre">scripts/gcc-plugins/randomize_layout_seed.h</span></code> so the same value
 is used in rebuilds.</p>
-</section>
-<section id="debug-info-conflicts">
+</div>
+<div class="section" id="debug-info-conflicts">
 <h2>Debug info conflicts<a class="headerlink" href="#debug-info-conflicts" title="Permalink to this headline">¶</a></h2>
 <p>This is not a problem of unreproducibility, but of generated files
 being <em>too</em> reproducible.</p>
@@ -359,8 +361,8 @@ packages for the different kernel versions.</p>
 <p>To avoid this, you can make the vDSO different for different
 kernel versions by including an arbitrary string of “salt” in it.
 This is specified by the Kconfig symbol <code class="docutils literal notranslate"><span class="pre">CONFIG_BUILD_SALT</span></code>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

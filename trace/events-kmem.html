@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Subsystem Trace Points: kmem &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -272,7 +274,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="subsystem-trace-points-kmem">
+  <div class="section" id="subsystem-trace-points-kmem">
 <h1>Subsystem Trace Points: kmem<a class="headerlink" href="#subsystem-trace-points-kmem" title="Permalink to this headline">¶</a></h1>
 <p>The kmem tracing system captures events related to object and page allocation
 within the kernel. Broadly speaking there are five major subheadings.</p>
@@ -287,7 +289,7 @@ within the kernel. Broadly speaking there are five major subheadings.</p>
 </div></blockquote>
 <p>This document describes what each of the tracepoints is and why they
 might be useful.</p>
-<section id="slab-allocation-of-small-objects-of-unknown-type">
+<div class="section" id="slab-allocation-of-small-objects-of-unknown-type">
 <h2>1. Slab allocation of small objects of unknown type<a class="headerlink" href="#slab-allocation-of-small-objects-of-unknown-type" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>kmalloc               call_site=%lx ptr=%p bytes_req=%zu bytes_alloc=%zu gfp_flags=%s
 kmalloc_node  call_site=%lx ptr=%p bytes_req=%zu bytes_alloc=%zu gfp_flags=%s node=%d
@@ -299,8 +301,8 @@ justified, particularly if kmalloc slab pages are getting significantly
 internal fragmented as a result of the allocation pattern. By correlating
 kmalloc with kfree, it may be possible to identify memory leaks and where
 the allocation sites were.</p>
-</section>
-<section id="slab-allocation-of-small-objects-of-known-type">
+</div>
+<div class="section" id="slab-allocation-of-small-objects-of-known-type">
 <h2>2. Slab allocation of small objects of known type<a class="headerlink" href="#slab-allocation-of-small-objects-of-known-type" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>kmem_cache_alloc      call_site=%lx ptr=%p bytes_req=%zu bytes_alloc=%zu gfp_flags=%s
 kmem_cache_alloc_node call_site=%lx ptr=%p bytes_req=%zu bytes_alloc=%zu gfp_flags=%s node=%d
@@ -311,8 +313,8 @@ kmem_cache_free               call_site=%lx ptr=%p
 it is likely easier to pin the event down to a specific cache. At the time
 of writing, no information is available on what slab is being allocated from,
 but the call_site can usually be used to extrapolate that information.</p>
-</section>
-<section id="page-allocation">
+</div>
+<div class="section" id="page-allocation">
 <h2>3. Page allocation<a class="headerlink" href="#page-allocation" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mm_page_alloc           page=%p pfn=%lu order=%d migratetype=%d gfp_flags=%s
 mm_page_alloc_zone_locked page=%p pfn=%lu order=%u migratetype=%d cpu=%d percpu_refill=%d
@@ -336,8 +338,8 @@ Broadly speaking, pages are taken off the LRU lock in bulk and
 freed in batch with a page list. Significant amounts of activity here could
 indicate that the system is under memory pressure and can also indicate
 contention on the lruvec-&gt;lru_lock.</p>
-</section>
-<section id="per-cpu-allocator-activity">
+</div>
+<div class="section" id="per-cpu-allocator-activity">
 <h2>4. Per-CPU Allocator Activity<a class="headerlink" href="#per-cpu-allocator-activity" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mm_page_alloc_zone_locked     page=%p pfn=%lu order=%u migratetype=%d cpu=%d percpu_refill=%d
 mm_page_pcpu_drain            page=%p pfn=%lu order=%d cpu=%d migratetype=%d
@@ -361,8 +363,8 @@ lists should be a larger size. Finally, large amounts of refills on one CPU
 and drains on another could be a factor in causing large amounts of cache
 line bounces due to writes between CPUs and worth investigating if pages
 can be allocated and freed on the same CPU through some algorithm change.</p>
-</section>
-<section id="external-fragmentation">
+</div>
+<div class="section" id="external-fragmentation">
 <h2>5. External Fragmentation<a class="headerlink" href="#external-fragmentation" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mm_page_alloc_extfrag         page=%p pfn=%lu alloc_order=%d fallback_order=%d pageblock_order=%d alloc_migratetype=%d fallback_migratetype=%d fragmenting=%d change_ownership=%d
 </pre></div>
@@ -377,8 +379,8 @@ high-order allocations will start failing at some time in the future. One
 means of reducing the occurrence of this event is to increase the size of
 min_free_kbytes in increments of 3*pageblock_size*nr_online_nodes where
 pageblock_size is usually the size of the default hugepage size.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

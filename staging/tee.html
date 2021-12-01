@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>TEE subsystem &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -262,7 +264,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="tee-subsystem">
+  <div class="section" id="tee-subsystem">
 <h1>TEE subsystem<a class="headerlink" href="#tee-subsystem" title="Permalink to this headline">¶</a></h1>
 <p>This document describes the TEE subsystem in Linux.</p>
 <p>A TEE (Trusted Execution Environment) is a trusted OS running in some
@@ -275,7 +277,7 @@ communicate with the TEE.</p>
 <li><p>Managing shared memory between Linux and the TEE</p></li>
 <li><p>Providing a generic API to the TEE</p></li>
 </ul>
-<section id="the-tee-interface">
+<div class="section" id="the-tee-interface">
 <h2>The TEE interface<a class="headerlink" href="#the-tee-interface" title="Permalink to this headline">¶</a></h2>
 <p>include/uapi/linux/tee.h defines the generic interface to a TEE.</p>
 <p>User space (the client) connects to the driver by opening /dev/tee[0-9]* or
@@ -302,8 +304,8 @@ driver. The main job for the driver is to receive requests from the
 clients, forward them to the TEE and send back the results. In the case of
 supplicants the communication goes in the other direction, the TEE sends
 requests to the supplicant which then sends back the result.</p>
-</section>
-<section id="the-tee-kernel-interface">
+</div>
+<div class="section" id="the-tee-kernel-interface">
 <h2>The TEE kernel interface<a class="headerlink" href="#the-tee-kernel-interface" title="Permalink to this headline">¶</a></h2>
 <p>Kernel provides a TEE bus infrastructure where a Trusted Application is
 represented as a device identified via Universally Unique Identifier (UUID) and
@@ -324,7 +326,7 @@ TEE bus for auto-loading of modularized client drivers.</p>
 is left open for TEE drivers to provide corresponding implementation.</p>
 <p>Then TEE client driver can talk to a matched Trusted Application using APIs
 listed in include/linux/tee_drv.h.</p>
-<section id="tee-client-driver-example">
+<div class="section" id="tee-client-driver-example">
 <h3>TEE client driver example<a class="headerlink" href="#tee-client-driver-example" title="Permalink to this headline">¶</a></h3>
 <p>Suppose a TEE client driver needs to communicate with a Trusted Application
 having UUID: <code class="docutils literal notranslate"><span class="pre">ac6a4085-0e82-4c33-bf98-8eb8e118b6c2</span></code>, so driver registration
@@ -361,9 +363,9 @@ module_init(client_init);
 module_exit(client_exit);
 </pre></div>
 </div>
-</section>
-</section>
-<section id="op-tee-driver">
+</div>
+</div>
+<div class="section" id="op-tee-driver">
 <h2>OP-TEE driver<a class="headerlink" href="#op-tee-driver" title="Permalink to this headline">¶</a></h2>
 <p>The OP-TEE driver handles OP-TEE [1] based TEEs. Currently it is only the ARM
 TrustZone based OP-TEE solution that is supported.</p>
@@ -414,15 +416,15 @@ values from OPTEE_SMC_CALL_WITH_ARG. RPC messages which are intended for the
 kernel are handled by the kernel driver. Other RPC messages will be forwarded to
 tee-supplicant without further involvement of the driver, except switching
 shared memory buffer representation.</p>
-<section id="op-tee-device-enumeration">
+<div class="section" id="op-tee-device-enumeration">
 <h3>OP-TEE device enumeration<a class="headerlink" href="#op-tee-device-enumeration" title="Permalink to this headline">¶</a></h3>
 <p>OP-TEE provides a pseudo Trusted Application: drivers/tee/optee/device.c in
 order to support device enumeration. In other words, OP-TEE driver invokes this
 application to retrieve a list of Trusted Applications which can be registered
 as devices on the TEE bus.</p>
-</section>
-</section>
-<section id="amd-tee-driver">
+</div>
+</div>
+<div class="section" id="amd-tee-driver">
 <h2>AMD-TEE driver<a class="headerlink" href="#amd-tee-driver" title="Permalink to this headline">¶</a></h2>
 <p>The AMD-TEE driver handles the communication with AMD’s TEE environment. The
 TEE environment is provided by AMD Secure Processor.</p>
@@ -495,8 +497,8 @@ following driver function callbacks:</p>
 <p>The GlobalPlatform TEE Client API [5] can be used by the user space (client) to
 talk to AMD’s TEE. AMD’s TEE provides a secure environment for loading, opening
 a session, invoking commands and clossing session with TA.</p>
-</section>
-<section id="references">
+</div>
+<div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <p>[1] <a class="reference external" href="https://github.com/OP-TEE/optee_os">https://github.com/OP-TEE/optee_os</a></p>
 <p>[2] <a class="reference external" href="http://infocenter.arm.com/help/topic/com.arm.doc.den0028a/index.html">http://infocenter.arm.com/help/topic/com.arm.doc.den0028a/index.html</a></p>
@@ -508,8 +510,8 @@ a session, invoking commands and clossing session with TA.</p>
 </dl>
 <p>[6] include/linux/psp-tee.h</p>
 <p>[7] drivers/tee/amdtee/amdtee_if.h</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Interface statistics &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -377,9 +379,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="interface-statistics">
+  <div class="section" id="interface-statistics">
 <h1>Interface statistics<a class="headerlink" href="#interface-statistics" title="Permalink to this headline">¶</a></h1>
-<section id="overview">
+<div class="section" id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This document is a guide to Linux network interface statistics.</p>
 <p>There are three main sources of interface statistics in Linux:</p>
@@ -391,7 +393,7 @@
 <li><p>driver-defined statistics available via ethtool.</p></li>
 </ul>
 </div></blockquote>
-<section id="standard-interface-statistics">
+<div class="section" id="standard-interface-statistics">
 <h3>Standard interface statistics<a class="headerlink" href="#standard-interface-statistics" title="Permalink to this headline">¶</a></h3>
 <p>There are multiple interfaces to reach the standard statistics.
 Most commonly used is the <cite>ip</cite> command from <cite>iproute2</cite>:</p>
@@ -413,12 +415,12 @@ Most commonly used is the <cite>ip</cite> command from <cite>iproute2</cite>:</p
 <a class="reference internal" href="#c.rtnl_link_stats64" title="rtnl_link_stats64"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">rtnl_link_stats64</span></code></a>.
 If <cite>-s</cite> is specified once the detailed errors won’t be shown.</p>
 <p><cite>ip</cite> supports JSON formatting via the <cite>-j</cite> option.</p>
-</section>
-<section id="protocol-specific-statistics">
+</div>
+<div class="section" id="protocol-specific-statistics">
 <h3>Protocol-specific statistics<a class="headerlink" href="#protocol-specific-statistics" title="Permalink to this headline">¶</a></h3>
 <p>Protocol-specific statistics are exposed via relevant interfaces,
 the same interfaces as are used to configure them.</p>
-<section id="ethtool">
+<div class="section" id="ethtool">
 <h4>ethtool<a class="headerlink" href="#ethtool" title="Permalink to this headline">¶</a></h4>
 <p>Ethtool exposes common low-level statistics.
 All the standard statistics are expected to be maintained
@@ -466,9 +468,9 @@ rmon-tx-etherStatsPkts65to127Octets: 3
 rmon-tx-etherStatsPkts128to255Octets: 0
 </pre></div>
 </div>
-</section>
-</section>
-<section id="driver-defined-statistics">
+</div>
+</div>
+<div class="section" id="driver-defined-statistics">
 <h3>Driver-defined statistics<a class="headerlink" href="#driver-defined-statistics" title="Permalink to this headline">¶</a></h3>
 <p>Driver-defined ethtool statistics can be dumped using <cite>ethtool -S $ifc</cite>, e.g.:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ ethtool -S ens4u1u1
@@ -477,19 +479,19 @@ NIC statistics:
    tx_multi_collisions: 0
 </pre></div>
 </div>
-</section>
-</section>
-<section id="uapis">
+</div>
+</div>
+<div class="section" id="uapis">
 <h2>uAPIs<a class="headerlink" href="#uapis" title="Permalink to this headline">¶</a></h2>
-<section id="procfs">
+<div class="section" id="procfs">
 <h3>procfs<a class="headerlink" href="#procfs" title="Permalink to this headline">¶</a></h3>
 <p>The historical <cite>/proc/net/dev</cite> text interface gives access to the list
 of interfaces as well as their statistics.</p>
 <p>Note that even though this interface is using
 <a class="reference internal" href="#c.rtnl_link_stats64" title="rtnl_link_stats64"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">rtnl_link_stats64</span></code></a>
 internally it combines some of the fields.</p>
-</section>
-<section id="sysfs">
+</div>
+<div class="section" id="sysfs">
 <h3>sysfs<a class="headerlink" href="#sysfs" title="Permalink to this headline">¶</a></h3>
 <p>Each device directory in sysfs contains a <cite>statistics</cite> directory (e.g.
 <cite>/sys/class/net/lo/statistics/</cite>) with files corresponding to
@@ -501,16 +503,16 @@ reading multiple stats as it internally performs a full dump of
 and reports only the stat corresponding to the accessed file.</p>
 <p>Sysfs files are documented in
 <cite>Documentation/ABI/testing/sysfs-class-net-statistics</cite>.</p>
-</section>
-<section id="netlink">
+</div>
+<div class="section" id="netlink">
 <h3>netlink<a class="headerlink" href="#netlink" title="Permalink to this headline">¶</a></h3>
 <p><cite>rtnetlink</cite> (<cite>NETLINK_ROUTE</cite>) is the preferred method of accessing
 <a class="reference internal" href="#c.rtnl_link_stats64" title="rtnl_link_stats64"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">rtnl_link_stats64</span></code></a> stats.</p>
 <p>Statistics are reported both in the responses to link information
 requests (<cite>RTM_GETLINK</cite>) and statistic requests (<cite>RTM_GETSTATS</cite>,
 when <cite>IFLA_STATS_LINK_64</cite> bit is set in the <cite>.filter_mask</cite> of the request).</p>
-</section>
-<section id="id1">
+</div>
+<div class="section" id="id1">
 <h3>ethtool<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>Ethtool IOCTL interface allows drivers to report implementation
 specific statistics. Historically it has also been used to report
@@ -520,8 +522,8 @@ statistics, or standard-based statistics (e.g. RFC 2863).</p>
 Identifiers via <cite>ETHTOOL_GSTRINGS</cite> with <cite>string_set</cite> set to <cite>ETH_SS_STATS</cite>,
 and values via <cite>ETHTOOL_GSTATS</cite>. User space should use <cite>ETHTOOL_GDRVINFO</cite>
 to retrieve the number of statistics (<cite>.n_stats</cite>).</p>
-</section>
-<section id="ethtool-netlink">
+</div>
+<div class="section" id="ethtool-netlink">
 <h3>ethtool-netlink<a class="headerlink" href="#ethtool-netlink" title="Permalink to this headline">¶</a></h3>
 <p>Ethtool netlink is a replacement for the older IOCTL interface.</p>
 <p>Protocol-related statistics can be requested in get commands by setting
@@ -533,17 +535,17 @@ statistics are supported in the following commands:</p>
 <li><p><cite>ETHTOOL_MSG_FEC_GET</cite></p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="debugfs">
+</div>
+<div class="section" id="debugfs">
 <h3>debugfs<a class="headerlink" href="#debugfs" title="Permalink to this headline">¶</a></h3>
 <p>Some drivers expose extra statistics via <cite>debugfs</cite>.</p>
-</section>
-</section>
-<section id="struct-rtnl-link-stats64">
+</div>
+</div>
+<div class="section" id="struct-rtnl-link-stats64">
 <h2>struct rtnl_link_stats64<a class="headerlink" href="#struct-rtnl-link-stats64" title="Permalink to this headline">¶</a></h2>
 <dl class="c struct">
-<dt id="c.rtnl_link_stats64">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">rtnl_link_stats64</span></code><a class="headerlink" href="#c.rtnl_link_stats64" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.rtnl_link_stats64">
+<span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rtnl_link_stats64</span></span></span><a class="headerlink" href="#c.rtnl_link_stats64" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The main device statistics structure.</p>
 </dd></dl>
 
@@ -756,8 +758,8 @@ but dropped by the networking stack because the device is
 not designated to receive packets (e.g. backup link in a bond).</p>
 </dd>
 </dl>
-</section>
-<section id="notes-for-driver-authors">
+</div>
+<div class="section" id="notes-for-driver-authors">
 <h2>Notes for driver authors<a class="headerlink" href="#notes-for-driver-authors" title="Permalink to this headline">¶</a></h2>
 <p>Drivers should report all statistics which have a matching member in
 <a class="reference internal" href="#c.rtnl_link_stats64" title="rtnl_link_stats64"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">rtnl_link_stats64</span></code></a> exclusively
@@ -777,7 +779,7 @@ to keep the number of statistics constant to avoid race conditions with
 user space trying to read them.</p>
 <p>Statistics must persist across routine operations like bringing the interface
 down and up.</p>
-<section id="kernel-internal-data-structures">
+<div class="section" id="kernel-internal-data-structures">
 <h3>Kernel-internal data structures<a class="headerlink" href="#kernel-internal-data-structures" title="Permalink to this headline">¶</a></h3>
 <p>The following structures are internal to the kernel, their members are
 translated to netlink attributes when dumped. Drivers must not overwrite
@@ -786,9 +788,9 @@ the statistics they don’t report with 0.</p>
 <li><p><a class="reference internal" href="ethtool-netlink.html#c.ethtool_pause_stats" title="ethtool_pause_stats"><code class="xref c c-func docutils literal notranslate"><span class="pre">ethtool_pause_stats()</span></code></a></p></li>
 <li><p><a class="reference internal" href="ethtool-netlink.html#c.ethtool_fec_stats" title="ethtool_fec_stats"><code class="xref c c-func docutils literal notranslate"><span class="pre">ethtool_fec_stats()</span></code></a></p></li>
 </ul>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

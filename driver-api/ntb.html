@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>NTB Drivers &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -350,7 +352,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ntb-drivers">
+  <div class="section" id="ntb-drivers">
 <h1>NTB Drivers<a class="headerlink" href="#ntb-drivers" title="Permalink to this headline">¶</a></h1>
 <p>NTB (Non-Transparent Bridge) is a type of PCI-Express bridge chip that connects
 the separate memory systems of two or more computers to the same PCI-Express
@@ -363,22 +365,22 @@ be utilized for the same purpose. Additionally they are provided with
 special status bits to make sure the information isn’t rewritten by another
 peer. Doorbell registers provide a way for peers to send interrupt events.
 Memory windows allow translated read and write access to the peer memory.</p>
-<section id="ntb-core-driver-ntb">
+<div class="section" id="ntb-core-driver-ntb">
 <h2>NTB Core Driver (ntb)<a class="headerlink" href="#ntb-core-driver-ntb" title="Permalink to this headline">¶</a></h2>
 <p>The NTB core driver defines an api wrapping the common feature set, and allows
 clients interested in NTB features to discover NTB the devices supported by
 hardware drivers.  The term “client” is used here to mean an upper layer
 component making use of the NTB api.  The term “driver,” or “hardware driver,”
 is used here to mean a driver for a specific vendor and model of NTB hardware.</p>
-</section>
-<section id="ntb-client-drivers">
+</div>
+<div class="section" id="ntb-client-drivers">
 <h2>NTB Client Drivers<a class="headerlink" href="#ntb-client-drivers" title="Permalink to this headline">¶</a></h2>
 <p>NTB client drivers should register with the NTB core driver.  After
 registering, the client probe and remove functions will be called appropriately
 as ntb hardware, or hardware drivers, are inserted and removed.  The
 registration uses the Linux Device framework, so it should feel familiar to
 anyone who has written a pci driver.</p>
-<section id="ntb-typical-client-driver-implementation">
+<div class="section" id="ntb-typical-client-driver-implementation">
 <h3>NTB Typical client driver implementation<a class="headerlink" href="#ntb-typical-client-driver-implementation" title="Permalink to this headline">¶</a></h3>
 <p>Primary purpose of NTB is to share some peace of memory between at least two
 systems. So the NTB device features like Scratchpad/Message registers are
@@ -472,8 +474,8 @@ window so to have an access to the shared memory.</p></li>
 </div></blockquote>
 <p>Also it is worth to note, that method ntb_mw_count(pidx) should return the
 same value as ntb_peer_mw_count() on the peer with port index - pidx.</p>
-</section>
-<section id="ntb-transport-client-ntb-transport-and-ntb-netdev-ntb-netdev">
+</div>
+<div class="section" id="ntb-transport-client-ntb-transport-and-ntb-netdev-ntb-netdev">
 <h3>NTB Transport Client (ntb_transport) and NTB Netdev (ntb_netdev)<a class="headerlink" href="#ntb-transport-client-ntb-transport-and-ntb-netdev-ntb-netdev" title="Permalink to this headline">¶</a></h3>
 <p>The primary client for NTB is the Transport client, used in tandem with NTB
 Netdev.  These drivers function together to create a logical link to the peer,
@@ -483,8 +485,8 @@ messages and data.  The NTB Netdev then creates an ethernet device using a
 Transport queue pair.  Network data is copied between socket buffers and the
 Transport queue pair buffer.  The Transport client may be used for other things
 besides Netdev, however no other applications have yet been written.</p>
-</section>
-<section id="ntb-ping-pong-test-client-ntb-pingpong">
+</div>
+<div class="section" id="ntb-ping-pong-test-client-ntb-pingpong">
 <h3>NTB Ping Pong Test Client (ntb_pingpong)<a class="headerlink" href="#ntb-ping-pong-test-client-ntb-pingpong" title="Permalink to this headline">¶</a></h3>
 <p>The Ping Pong test client serves as a demonstration to exercise the doorbell
 and scratchpad registers of NTB hardware, and as an example simple NTB client.
@@ -522,8 +524,8 @@ range.</p>
 </dl>
 </li>
 </ul>
-</section>
-<section id="ntb-tool-test-client-ntb-tool">
+</div>
+<div class="section" id="ntb-tool-test-client-ntb-tool">
 <h3>NTB Tool Test Client (ntb_tool)<a class="headerlink" href="#ntb-tool-test-client-ntb-tool" title="Permalink to this headline">¶</a></h3>
 <p>The Tool test client serves for debugging, primarily, ntb hardware and drivers.
 The Tool provides access through debugfs for reading, setting, and clearing the
@@ -581,8 +583,8 @@ series of pairs of scratchpad number and value
 </dl>
 </li>
 </ul>
-</section>
-<section id="ntb-msi-test-client-ntb-msi-test">
+</div>
+<div class="section" id="ntb-msi-test-client-ntb-msi-test">
 <h3>NTB MSI Test Client (ntb_msi_test)<a class="headerlink" href="#ntb-msi-test-client-ntb-msi-test" title="Permalink to this headline">¶</a></h3>
 <p>The MSI test client serves to test and debug the MSI library which
 allows for passing MSI interrupts across NTB memory windows. The
@@ -626,13 +628,13 @@ should be incremented.</p>
 </dl>
 </li>
 </ul>
-</section>
-</section>
-<section id="ntb-hardware-drivers">
+</div>
+</div>
+<div class="section" id="ntb-hardware-drivers">
 <h2>NTB Hardware Drivers<a class="headerlink" href="#ntb-hardware-drivers" title="Permalink to this headline">¶</a></h2>
 <p>NTB hardware drivers should register devices with the NTB core driver.  After
 registering, clients probe and remove functions will be called.</p>
-<section id="ntb-intel-hardware-driver-ntb-hw-intel">
+<div class="section" id="ntb-intel-hardware-driver-ntb-hw-intel">
 <h3>NTB Intel Hardware Driver (ntb_hw_intel)<a class="headerlink" href="#ntb-intel-hardware-driver-ntb-hw-intel" title="Permalink to this headline">¶</a></h3>
 <p>The Intel hardware driver supports NTB on Xeon and Atom CPUs.</p>
 <p>Module Parameters:</p>
@@ -668,9 +670,9 @@ at BAR2, on the upstream side of the link.</p>
 <li><p>xeon_b2b_dsd_bar4_addr32 - See <em>xeon_b2b_bar2_addr64</em>.</p></li>
 <li><p>xeon_b2b_dsd_bar5_addr32 - See <em>xeon_b2b_bar2_addr64</em>.</p></li>
 </ul>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

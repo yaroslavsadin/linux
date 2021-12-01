@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Real-Time group scheduling &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -267,9 +269,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="real-time-group-scheduling">
+  <div class="section" id="real-time-group-scheduling">
 <h1>Real-Time group scheduling<a class="headerlink" href="#real-time-group-scheduling" title="Permalink to this headline">¶</a></h1>
-<section id="warning">
+<div class="section" id="warning">
 <h2>0. WARNING<a class="headerlink" href="#warning" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Fiddling with these settings can result in an unstable system, the knobs are
@@ -287,10 +289,10 @@ forward progress (NOTE: the migration thread and kstopmachine both
 are real-time processes).</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="overview">
+</div>
+<div class="section" id="overview">
 <h2>1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<section id="the-problem">
+<div class="section" id="the-problem">
 <h3>1.1 The problem<a class="headerlink" href="#the-problem" title="Permalink to this headline">¶</a></h3>
 <p>Realtime scheduling is all about determinism, a group has to be able to rely on
 the amount of bandwidth (eg. CPU time) being constant. In order to schedule
@@ -298,8 +300,8 @@ multiple groups of realtime tasks, each group must be assigned a fixed portion
 of the CPU time available.  Without a minimum guarantee a realtime group can
 obviously fall short. A fuzzy upper limit is of no use since it cannot be
 relied upon. Which leaves us with just the single fixed portion.</p>
-</section>
-<section id="the-solution">
+</div>
+<div class="section" id="the-solution">
 <h3>1.2 The solution<a class="headerlink" href="#the-solution" title="Permalink to this headline">¶</a></h3>
 <p>CPU time is divided by means of specifying how much time can be spent running
 in a given period. We allocate this “run time” for each realtime group which
@@ -322,11 +324,11 @@ realtime tasks have explicitly allocated the CPU time they need to perform
 their tasks, buffer underruns in the graphics or audio can be eliminated.</p>
 <p>NOTE: the above example is not fully implemented yet. We still
 lack an EDF scheduler to make non-uniform periods usable.</p>
-</section>
-</section>
-<section id="the-interface">
+</div>
+</div>
+<div class="section" id="the-interface">
 <h2>2. The Interface<a class="headerlink" href="#the-interface" title="Permalink to this headline">¶</a></h2>
-<section id="system-wide-settings">
+<div class="section" id="system-wide-settings">
 <h3>2.1 System wide settings<a class="headerlink" href="#system-wide-settings" title="Permalink to this headline">¶</a></h3>
 <p>The system wide settings are configured under the /proc virtual file system:</p>
 <dl class="simple">
@@ -345,8 +347,8 @@ operating range from 1us to about 35 minutes.</p></li>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="default-behaviour">
+</div>
+<div class="section" id="default-behaviour">
 <h3>2.2 Default behaviour<a class="headerlink" href="#default-behaviour" title="Permalink to this headline">¶</a></h3>
 <p>The default values for sched_rt_period_us (1000000 or 1s) and
 sched_rt_runtime_us (950000 or 0.95s).  This gives 0.05s to be used by
@@ -362,8 +364,8 @@ bandwidth to the group before it will accept realtime tasks. Therefore you will
 not be able to run realtime tasks as any user other than root until you have
 done that, even if the user has the rights to run processes with realtime
 priority!</p>
-</section>
-<section id="basis-for-grouping-tasks">
+</div>
+<div class="section" id="basis-for-grouping-tasks">
 <h3>2.3 Basis for grouping tasks<a class="headerlink" href="#basis-for-grouping-tasks" title="Permalink to this headline">¶</a></h3>
 <p>Enabling CONFIG_RT_GROUP_SCHED lets you explicitly allocate real
 CPU bandwidth to task groups.</p>
@@ -380,9 +382,9 @@ configuration schedulable:</p>
 <blockquote>
 <div><p>Sum_{i} runtime_{i} &lt;= global_runtime</p>
 </div></blockquote>
-</section>
-</section>
-<section id="future-plans">
+</div>
+</div>
+<div class="section" id="future-plans">
 <h2>3. Future plans<a class="headerlink" href="#future-plans" title="Permalink to this headline">¶</a></h2>
 <p>There is work in progress to make the scheduling period for each group
 (“&lt;cgroup&gt;/cpu.rt_period_us”) configurable as well.</p>
@@ -421,8 +423,8 @@ do deadline inheritance (since priority is inversely proportional to the
 deadline delta (deadline - now)).</p>
 <p>This means the whole PI machinery will have to be reworked - and that is one of
 the most complex pieces of code we have.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

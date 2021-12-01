@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Deadline Task Scheduling &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -283,17 +285,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="deadline-task-scheduling">
+  <div class="section" id="deadline-task-scheduling">
 <h1>Deadline Task Scheduling<a class="headerlink" href="#deadline-task-scheduling" title="Permalink to this headline">¶</a></h1>
-<section id="warning">
+<div class="section" id="warning">
 <h2>0. WARNING<a class="headerlink" href="#warning" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Fiddling with these settings can result in an unpredictable or even unstable
 system behavior. As for -rt (group) scheduling, it is assumed that root users
 know what they’re doing.</p>
 </div></blockquote>
-</section>
-<section id="overview">
+</div>
+<div class="section" id="overview">
 <h2>1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>The SCHED_DEADLINE policy contained inside the sched_dl scheduling class is
@@ -301,10 +303,10 @@ basically an implementation of the Earliest Deadline First (EDF) scheduling
 algorithm, augmented with a mechanism (called Constant Bandwidth Server, CBS)
 that makes it possible to isolate the behavior of tasks between each other.</p>
 </div></blockquote>
-</section>
-<section id="scheduling-algorithm">
+</div>
+<div class="section" id="scheduling-algorithm">
 <h2>2. Scheduling algorithm<a class="headerlink" href="#scheduling-algorithm" title="Permalink to this headline">¶</a></h2>
-<section id="main-algorithm">
+<div class="section" id="main-algorithm">
 <h3>2.1 Main algorithm<a class="headerlink" href="#main-algorithm" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>SCHED_DEADLINE [18] uses three parameters, named “runtime”, “period”, and
@@ -378,8 +380,8 @@ remaining runtime = remaining runtime + runtime
 to get informed about runtime overruns through the delivery of SIGXCPU
 signals.</p>
 </div></blockquote>
-</section>
-<section id="bandwidth-reclaiming">
+</div>
+<div class="section" id="bandwidth-reclaiming">
 <h3>2.2 Bandwidth reclaiming<a class="headerlink" href="#bandwidth-reclaiming" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Bandwidth reclaiming for deadline tasks is based on the GRUB (Greedy
@@ -539,8 +541,8 @@ to 4 and period equal to 8 (i.e., bandwidth equal to 0.5):</p>
 </pre></div>
 </div>
 </div></blockquote>
-</section>
-<section id="energy-aware-scheduling">
+</div>
+<div class="section" id="energy-aware-scheduling">
 <h3>2.3 Energy-aware scheduling<a class="headerlink" href="#energy-aware-scheduling" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>When cpufreq’s schedutil governor is selected, SCHED_DEADLINE implements the
@@ -551,9 +553,9 @@ implemented only for ARM architectures.</p>
 is of the same order of magnitude of the reservation period. In such cases,
 setting a fixed CPU frequency results in a lower amount of deadline misses.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="scheduling-real-time-tasks">
+</div>
+</div>
+<div class="section" id="scheduling-real-time-tasks">
 <h2>3. Scheduling Real-Time Tasks<a class="headerlink" href="#scheduling-real-time-tasks" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><div class="admonition warning">
@@ -570,7 +572,7 @@ scheduling discipline, even if it must be said that it is particularly
 suited for periodic or sporadic real-time tasks that need guarantees on their
 timing behavior, e.g., multimedia, streaming, control applications, etc.</p>
 </div></blockquote>
-<section id="definitions">
+<div class="section" id="definitions">
 <h3>3.1 Definitions<a class="headerlink" href="#definitions" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>A typical real-time task is composed of a repetition of computation phases
@@ -615,8 +617,8 @@ maximum tardiness of each task is smaller or equal than</p>
 is the minimum WCET, and U_max = max{WCET_i/P_i} is the maximum
 utilization[12].</p>
 </div></blockquote>
-</section>
-<section id="schedulability-analysis-for-uniprocessor-systems">
+</div>
+<div class="section" id="schedulability-analysis-for-uniprocessor-systems">
 <h3>3.2 Schedulability Analysis for Uniprocessor Systems<a class="headerlink" href="#schedulability-analysis-for-uniprocessor-systems" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>If M=1 (uniprocessor system), or in case of partitioned scheduling (each
@@ -661,8 +663,8 @@ In any case, this kind of analysis is too complex as well as too
 time-consuming to be performed on-line. Hence, as explained in Section
 4 Linux uses an admission test based on the tasks’ utilizations.</p>
 </div></blockquote>
-</section>
-<section id="schedulability-analysis-for-multiprocessor-systems">
+</div>
+<div class="section" id="schedulability-analysis-for-multiprocessor-systems">
 <h3>3.3 Schedulability Analysis for Multiprocessor Systems<a class="headerlink" href="#schedulability-analysis-for-multiprocessor-systems" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>On multiprocessor systems with global EDF scheduling (non partitioned
@@ -709,8 +711,8 @@ but the theoretical result that is important for SCHED_DEADLINE is that if
 the total utilization is smaller or equal than M then the response times of
 the tasks are limited.</p>
 </div></blockquote>
-</section>
-<section id="relationship-with-sched-deadline-parameters">
+</div>
+<div class="section" id="relationship-with-sched-deadline-parameters">
 <h3>3.4 Relationship with SCHED_DEADLINE Parameters<a class="headerlink" href="#relationship-with-sched-deadline-parameters" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Finally, it is important to understand the relationship between the
@@ -798,9 +800,9 @@ Computing, 2016.</p>
 </dl>
 </div></blockquote>
 </div></blockquote>
-</section>
-</section>
-<section id="bandwidth-management">
+</div>
+</div>
+<div class="section" id="bandwidth-management">
 <h2>4. Bandwidth management<a class="headerlink" href="#bandwidth-management" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>As previously mentioned, in order for -deadline scheduling to be
@@ -836,7 +838,7 @@ respecting their needs in terms of granularity. Therefore, using this simple
 interface we can put a cap on total utilization of -deadline tasks (i.e.,
 Sum (runtime_i / period_i) &lt; global_dl_utilization_cap).</p>
 </div></blockquote>
-<section id="system-wide-settings">
+<div class="section" id="system-wide-settings">
 <h3>4.1 System wide settings<a class="headerlink" href="#system-wide-settings" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The system wide settings are configured under the /proc virtual file system.</p>
@@ -855,8 +857,8 @@ can be created while the sum of their bandwidths stays below:</p>
 be thus free of oversubscribing the system up to any arbitrary level.
 This is done by writing -1 in /proc/sys/kernel/sched_rt_runtime_us.</p>
 </div></blockquote>
-</section>
-<section id="task-interface">
+</div>
+<div class="section" id="task-interface">
 <h3>4.2 Task interface<a class="headerlink" href="#task-interface" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Specifying a periodic/sporadic task that executes for a given amount of
@@ -883,8 +885,8 @@ SCHED_DEADLINE task can be retrieved through /proc/&lt;pid&gt;/sched (entries
 dl.runtime and dl.deadline, both values in ns). A programmatic way to
 retrieve these values from production code is under discussion.</p>
 </div></blockquote>
-</section>
-<section id="default-behavior">
+</div>
+<div class="section" id="default-behavior">
 <h3>4.3 Default behavior<a class="headerlink" href="#default-behavior" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The default value for SCHED_DEADLINE bandwidth is to have rt_runtime equal to
@@ -901,8 +903,8 @@ in a period.</p>
 <p>Finally, notice that in order not to jeopardize the admission control a
 -deadline task cannot fork.</p>
 </div></blockquote>
-</section>
-<section id="behavior-of-sched-yield">
+</div>
+<div class="section" id="behavior-of-sched-yield">
 <h3>4.4 Behavior of sched_yield()<a class="headerlink" href="#behavior-of-sched-yield" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>When a SCHED_DEADLINE task calls sched_yield(), it gives up its
@@ -916,16 +918,16 @@ future with bandwidth reclaiming mechanisms, where sched_yield() will
 make the leftoever runtime available for reclamation by other
 SCHED_DEADLINE tasks.</p>
 </div></blockquote>
-</section>
-</section>
-<section id="tasks-cpu-affinity">
+</div>
+</div>
+<div class="section" id="tasks-cpu-affinity">
 <h2>5. Tasks CPU affinity<a class="headerlink" href="#tasks-cpu-affinity" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>-deadline tasks cannot have an affinity mask smaller that the entire
 root_domain they are created on. However, affinities can be specified
 through the cpuset facility (<a class="reference internal" href="../admin-guide/cgroup-v1/cpusets.html"><span class="doc">CPUSETS</span></a>).</p>
 </div></blockquote>
-<section id="sched-deadline-and-cpusets-howto">
+<div class="section" id="sched-deadline-and-cpusets-howto">
 <h3>5.1 SCHED_DEADLINE and cpusets HOWTO<a class="headerlink" href="#sched-deadline-and-cpusets-howto" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>An example of a simple configuration (pin a -deadline task to CPU0)
@@ -946,9 +948,9 @@ rt-app -t 100000:10000:d:0 -D5 # it is now actually superfluous to specify
 </pre></div>
 </div>
 </div></blockquote>
-</section>
-</section>
-<section id="future-plans">
+</div>
+</div>
+<div class="section" id="future-plans">
 <h2>6. Future plans<a class="headerlink" href="#future-plans" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Still missing:</p>
@@ -970,8 +972,8 @@ throttling patches [<a class="reference external" href="https://lore.kernel.org/
 the preliminary phases of the merge and we really seek feedback that would
 help us decide on the direction it should take.</p>
 </div></blockquote>
-</section>
-<section id="appendix-a-test-suite">
+</div>
+<div class="section" id="appendix-a-test-suite">
 <h2>Appendix A. Test suite<a class="headerlink" href="#appendix-a-test-suite" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>The SCHED_DEADLINE policy can be easily tested using two applications that
@@ -1018,8 +1020,8 @@ application, given that you know its pid:</p>
 </pre></div>
 </div>
 </div></blockquote>
-</section>
-<section id="appendix-b-minimal-main">
+</div>
+<div class="section" id="appendix-b-minimal-main">
 <h2>Appendix B. Minimal main()<a class="headerlink" href="#appendix-b-minimal-main" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>We provide in what follows a simple (ugly) self-contained code snippet
@@ -1145,8 +1147,8 @@ int main (int argc, char **argv)
 </pre></div>
 </div>
 </div></blockquote>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

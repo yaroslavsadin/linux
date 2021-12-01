@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Ramfs, rootfs and initramfs &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -309,12 +311,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ramfs-rootfs-and-initramfs">
+  <div class="section" id="ramfs-rootfs-and-initramfs">
 <h1>Ramfs, rootfs and initramfs<a class="headerlink" href="#ramfs-rootfs-and-initramfs" title="Permalink to this headline">¶</a></h1>
 <p>October 17, 2005</p>
-<section id="rob-landley-rob-landley-net">
+<div class="section" id="rob-landley-rob-landley-net">
 <h2>Rob Landley &lt;<a class="reference external" href="mailto:rob&#37;&#52;&#48;landley&#46;net">rob<span>&#64;</span>landley<span>&#46;</span>net</a>&gt;<a class="headerlink" href="#rob-landley-rob-landley-net" title="Permalink to this headline">¶</a></h2>
-<section id="what-is-ramfs">
+<div class="section" id="what-is-ramfs">
 <h3>What is ramfs?<a class="headerlink" href="#what-is-ramfs" title="Permalink to this headline">¶</a></h3>
 <p>Ramfs is a very simple filesystem that exports Linux’s disk caching
 mechanisms (the page cache and dentry cache) as a dynamically resizable
@@ -336,8 +338,8 @@ work is done by the existing Linux caching infrastructure.  Basically,
 you’re mounting the disk cache as a filesystem.  Because of this, ramfs is not
 an optional component removable via menuconfig, since there would be negligible
 space savings.</p>
-</section>
-<section id="ramfs-and-ramdisk">
+</div>
+<div class="section" id="ramfs-and-ramdisk">
 <h3>ramfs and ramdisk:<a class="headerlink" href="#ramfs-and-ramdisk" title="Permalink to this headline">¶</a></h3>
 <p>The older “ram disk” mechanism created a synthetic block device out of
 an area of RAM and used it as backing store for a filesystem.  This block
@@ -357,8 +359,8 @@ disk is simply unnecessary; ramfs is internally much simpler.</p>
 loopback devices offered a more flexible and convenient way to create
 synthetic block devices, now from files instead of from chunks of memory.
 See losetup (8) for details.</p>
-</section>
-<section id="ramfs-and-tmpfs">
+</div>
+<div class="section" id="ramfs-and-tmpfs">
 <h3>ramfs and tmpfs:<a class="headerlink" href="#ramfs-and-tmpfs" title="Permalink to this headline">¶</a></h3>
 <p>One downside of ramfs is you can keep writing data into it until you fill
 up all memory, and the VM can’t free it because the VM thinks that files
@@ -368,8 +370,8 @@ be allowed write access to a ramfs mount.</p>
 <p>A ramfs derivative called tmpfs was created to add size limits, and the ability
 to write the data to swap space.  Normal users can be allowed write access to
 tmpfs mounts.  See <a class="reference internal" href="tmpfs.html"><span class="doc">Tmpfs</span></a> for more information.</p>
-</section>
-<section id="what-is-rootfs">
+</div>
+<div class="section" id="what-is-rootfs">
 <h3>What is rootfs?<a class="headerlink" href="#what-is-rootfs" title="Permalink to this headline">¶</a></h3>
 <p>Rootfs is a special instance of ramfs (or tmpfs, if that’s enabled), which is
 always present in 2.6 systems.  You can’t unmount rootfs for approximately the
@@ -381,8 +383,8 @@ amount of space an empty instance of ramfs takes up is tiny.</p>
 <p>If CONFIG_TMPFS is enabled, rootfs will use tmpfs instead of ramfs by
 default.  To force ramfs, add “rootfstype=ramfs” to the kernel command
 line.</p>
-</section>
-<section id="what-is-initramfs">
+</div>
+<div class="section" id="what-is-initramfs">
 <h3>What is initramfs?<a class="headerlink" href="#what-is-initramfs" title="Permalink to this headline">¶</a></h3>
 <p>All 2.6 Linux kernels contain a gzipped “cpio” format archive, which is
 extracted into rootfs when the kernel boots up.  After extracting, the kernel
@@ -423,8 +425,8 @@ program (utils/run_init.c) to do all this for you.  Most other packages
 </li>
 </ul>
 </div></blockquote>
-</section>
-<section id="populating-initramfs">
+</div>
+<div class="section" id="populating-initramfs">
 <h3>Populating initramfs:<a class="headerlink" href="#populating-initramfs" title="Permalink to this headline">¶</a></h3>
 <p>The 2.6 kernel build process always creates a gzipped cpio format initramfs
 archive and links it into the resulting kernel binary.  By default, this
@@ -505,8 +507,8 @@ won’t create files in a directory that doesn’t exist, so the directory
 entries must go before the files that go in those directories.
 The above script gets them in the right order.</p>
 </div>
-</section>
-<section id="external-initramfs-images">
+</div>
+<div class="section" id="external-initramfs-images">
 <h3>External initramfs images:<a class="headerlink" href="#external-initramfs-images" title="Permalink to this headline">¶</a></h3>
 <p>If the kernel has initrd support enabled, an external cpio.gz archive can also
 be passed into a 2.6 kernel in place of an initrd.  In this case, the kernel
@@ -520,8 +522,8 @@ the GPL licensed Linux kernel binary).</p>
 files in the external archive will overwrite any conflicting files in
 the built-in initramfs archive.  Some distributors also prefer to customize
 a single kernel image with task-specific initramfs images, without recompiling.</p>
-</section>
-<section id="contents-of-initramfs">
+</div>
+<div class="section" id="contents-of-initramfs">
 <h3>Contents of initramfs:<a class="headerlink" href="#contents-of-initramfs" title="Permalink to this headline">¶</a></h3>
 <p>An initramfs archive is a complete self-contained root filesystem for Linux.
 If you don’t already understand what shared libraries, devices, and paths
@@ -564,8 +566,8 @@ qemu -kernel /boot/vmlinuz -initrd test.cpio.gz /dev/zero
 <p>When debugging a normal root filesystem, it’s nice to be able to boot with
 “init=/bin/sh”.  The initramfs equivalent is “rdinit=/bin/sh”, and it’s
 just as useful.</p>
-</section>
-<section id="why-cpio-rather-than-tar">
+</div>
+<div class="section" id="why-cpio-rather-than-tar">
 <h3>Why cpio rather than tar?<a class="headerlink" href="#why-cpio-rather-than-tar" title="Permalink to this headline">¶</a></h3>
 <p>This decision was made back in December, 2001.  The discussion started here:</p>
 <blockquote>
@@ -620,8 +622,8 @@ supported on the kernel side”):</p>
 <p>and, most importantly, designed and implemented the initramfs code.</p>
 </li>
 </ol>
-</section>
-<section id="future-directions">
+</div>
+<div class="section" id="future-directions">
 <h3>Future directions:<a class="headerlink" href="#future-directions" title="Permalink to this headline">¶</a></h3>
 <p>Today (2.6.16), initramfs is always compiled in, but not always used.  The
 kernel falls back to legacy boot code that is reached only if initramfs does
@@ -643,9 +645,9 @@ packages to drop into a kernel build.</p>
 The kernel’s current early boot code (partition detection, etc) will probably
 be migrated into a default initramfs, automatically created and used by the
 kernel build.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

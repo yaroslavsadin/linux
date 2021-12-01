@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>4.5.3. Memory-to-memory Stateless Video Decoder Interface &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -289,7 +291,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="memory-to-memory-stateless-video-decoder-interface">
+  <div class="section" id="memory-to-memory-stateless-video-decoder-interface">
 <span id="stateless-decoder"></span><h1><span class="section-number">4.5.3. </span>Memory-to-memory Stateless Video Decoder Interface<a class="headerlink" href="#memory-to-memory-stateless-video-decoder-interface" title="Permalink to this headline">¶</a></h1>
 <p>A stateless decoder is a decoder that works without retaining any kind of state
 between processed frames. This means that each frame is decoded independently
@@ -313,7 +315,7 @@ frame may be the result of several decode requests (for instance, H.264 streams
 with multiple slices per frame). Decoders that support such formats must also
 expose the <code class="docutils literal notranslate"><span class="pre">V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF</span></code> capability on their
 <code class="docutils literal notranslate"><span class="pre">OUTPUT</span></code> queue.</p>
-<section id="querying-capabilities">
+<div class="section" id="querying-capabilities">
 <h2><span class="section-number">4.5.3.1. </span>Querying capabilities<a class="headerlink" href="#querying-capabilities" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><p>To enumerate the set of coded formats supported by the decoder, the client
@@ -346,8 +348,8 @@ resolutions for a given format, passing desired pixel format in
 applicable, may be queried using their respective controls via
 <code class="xref c c-func docutils literal notranslate"><span class="pre">VIDIOC_QUERYCTRL()</span></code>.</p></li>
 </ol>
-</section>
-<section id="initialization">
+</div>
+<div class="section" id="initialization">
 <h2><span class="section-number">4.5.3.2. </span>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
 <li><p>Set the coded format on the <code class="docutils literal notranslate"><span class="pre">OUTPUT</span></code> queue via <code class="xref c c-func docutils literal notranslate"><span class="pre">VIDIOC_S_FMT()</span></code>.</p>
@@ -518,8 +520,8 @@ returns to get the number of buffers allocated.</p></li>
 </dl>
 </li>
 </ol>
-</section>
-<section id="decoding">
+</div>
+<div class="section" id="decoding">
 <h2><span class="section-number">4.5.3.3. </span>Decoding<a class="headerlink" href="#decoding" title="Permalink to this headline">¶</a></h2>
 <p>For each frame, the client is responsible for submitting at least one request to
 which the following is attached:</p>
@@ -625,8 +627,8 @@ carrying the <code class="docutils literal notranslate"><span class="pre">V4L2_B
 error, then all following decoded frames that refer to it also have the
 <code class="docutils literal notranslate"><span class="pre">V4L2_BUF_FLAG_ERROR</span></code> flag set, although the decoder will still try to
 produce (likely corrupted) frames.</p>
-</section>
-<section id="buffer-management-while-decoding">
+</div>
+<div class="section" id="buffer-management-while-decoding">
 <h2><span class="section-number">4.5.3.4. </span>Buffer management while decoding<a class="headerlink" href="#buffer-management-while-decoding" title="Permalink to this headline">¶</a></h2>
 <p>Contrary to stateful decoders, a stateless decoder does not perform any kind of
 buffer management: it only guarantees that dequeued <code class="docutils literal notranslate"><span class="pre">CAPTURE</span></code> buffers can be
@@ -656,8 +658,8 @@ referencing frames have been queued.</p></li>
 all the resources associated with reference frames. This means that the client
 can e.g. close the DMABUF file descriptors of reference frame buffers if it
 won’t need them afterwards.</p>
-</section>
-<section id="seeking">
+</div>
+<div class="section" id="seeking">
 <h2><span class="section-number">4.5.3.5. </span>Seeking<a class="headerlink" href="#seeking" title="Permalink to this headline">¶</a></h2>
 <p>In order to seek, the client just needs to submit requests using input buffers
 corresponding to the new stream position. It must however be aware that
@@ -667,14 +669,14 @@ for H.264) may have changed and the client is responsible for making sure that a
 valid state is sent to the decoder.</p>
 <p>The client is then free to ignore any returned <code class="docutils literal notranslate"><span class="pre">CAPTURE</span></code> buffer that comes
 from the pre-seek position.</p>
-</section>
-<section id="pausing">
+</div>
+<div class="section" id="pausing">
 <h2><span class="section-number">4.5.3.6. </span>Pausing<a class="headerlink" href="#pausing" title="Permalink to this headline">¶</a></h2>
 <p>In order to pause, the client can just cease queuing buffers onto the <code class="docutils literal notranslate"><span class="pre">OUTPUT</span></code>
 queue. Without source bytestream data, there is no data to process and the codec
 will remain idle.</p>
-</section>
-<section id="dynamic-resolution-change">
+</div>
+<div class="section" id="dynamic-resolution-change">
 <h2><span class="section-number">4.5.3.7. </span>Dynamic resolution change<a class="headerlink" href="#dynamic-resolution-change" title="Permalink to this headline">¶</a></h2>
 <p>If the client detects a resolution change in the stream, it will need to perform
 the initialization sequence again with the new resolution:</p>
@@ -695,8 +697,8 @@ queues.</p></li>
 Note that due to resolution constraints, a different format may need to be
 picked on the <code class="docutils literal notranslate"><span class="pre">CAPTURE</span></code> queue.</p></li>
 </ol>
-</section>
-<section id="drain">
+</div>
+<div class="section" id="drain">
 <h2><span class="section-number">4.5.3.8. </span>Drain<a class="headerlink" href="#drain" title="Permalink to this headline">¶</a></h2>
 <p>If the last submitted request resulted in a <code class="docutils literal notranslate"><span class="pre">CAPTURE</span></code> buffer being
 held by the use of the <code class="docutils literal notranslate"><span class="pre">V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF</span></code> flag, then the
@@ -705,8 +707,8 @@ last frame is not available on the <code class="docutils literal notranslate"><s
 dequeue the held <code class="docutils literal notranslate"><span class="pre">CAPTURE</span></code> buffer.</p>
 <p>After that, in order to drain the stream on a stateless decoder, the client
 just needs to wait until all the submitted requests are completed.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

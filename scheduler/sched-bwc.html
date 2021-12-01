@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>CFS Bandwidth Control &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -261,7 +263,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="cfs-bandwidth-control">
+  <div class="section" id="cfs-bandwidth-control">
 <h1>CFS Bandwidth Control<a class="headerlink" href="#cfs-bandwidth-control" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -281,7 +283,7 @@ period when the quota is replenished.</p>
 cfs_quota units at each period boundary. As threads consume this bandwidth it
 is transferred to cpu-local “silos” on a demand basis. The amount transferred
 within each of these updates is tunable and described as the “slice”.</p>
-<section id="burst-feature">
+<div class="section" id="burst-feature">
 <h2>Burst feature<a class="headerlink" href="#burst-feature" title="Permalink to this headline">¶</a></h2>
 <p>This feature borrows time now against our future underrun, at the cost of
 increased interference against the other system users. All nicely bounded.</p>
@@ -317,8 +319,8 @@ missing the deadline and the average WCET. Test results showed that when
 there many cgroups or CPU is under utilized, the interference is
 limited. More details are shown in:
 <a class="reference external" href="https://lore.kernel.org/lkml/5371BD36-55AE-4F71-B9D7-B86DC32E3D2B&#64;linux.alibaba.com/">https://lore.kernel.org/lkml/5371BD36-55AE-4F71-B9D7-B86DC32E3D2B&#64;linux.alibaba.com/</a></p>
-</section>
-<section id="management">
+</div>
+<div class="section" id="management">
 <h2>Management<a class="headerlink" href="#management" title="Permalink to this headline">¶</a></h2>
 <p>Quota, period and burst are managed within the cpu subsystem via cgroupfs.</p>
 <div class="admonition note">
@@ -358,8 +360,8 @@ cpu.cfs_quota_us into cpu.cfs_burst_us will enact the cap on unused bandwidth
 accumulation.</p>
 <p>Any updates to a group’s bandwidth specification will result in it becoming
 unthrottled if it is in a constrained state.</p>
-</section>
-<section id="system-wide-settings">
+</div>
+<div class="section" id="system-wide-settings">
 <h2>System wide settings<a class="headerlink" href="#system-wide-settings" title="Permalink to this headline">¶</a></h2>
 <p>For efficiency run-time is transferred between the global pool and CPU local
 “silos” in a batch fashion. This greatly reduces global accounting pressure
@@ -371,8 +373,8 @@ is described as the “slice”.</p>
 </div>
 <p>Larger slice values will reduce transfer overheads, while smaller values allow
 for more fine-grained consumption.</p>
-</section>
-<section id="statistics">
+</div>
+<div class="section" id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>A group’s bandwidth statistics are exported via 5 fields in cpu.stat.</p>
 <p>cpu.stat:</p>
@@ -386,8 +388,8 @@ of the group have been throttled.</p></li>
 above quota in respective periods</p></li>
 </ul>
 <p>This interface is read-only.</p>
-</section>
-<section id="hierarchical-considerations">
+</div>
+<div class="section" id="hierarchical-considerations">
 <h2>Hierarchical considerations<a class="headerlink" href="#hierarchical-considerations" title="Permalink to this headline">¶</a></h2>
 <p>The interface enforces that an individual entity’s bandwidth is always
 attainable, that is: max(c_i) &lt;= C. However, over-subscription in the
@@ -406,8 +408,8 @@ within a hierarchy:</p>
 </div></blockquote>
 <p>In case b) above, even though the child may have runtime remaining it will not
 be allowed to until the parent’s runtime is refreshed.</p>
-</section>
-<section id="cfs-bandwidth-quota-caveats">
+</div>
+<div class="section" id="cfs-bandwidth-quota-caveats">
 <h2>CFS Bandwidth Quota Caveats<a class="headerlink" href="#cfs-bandwidth-quota-caveats" title="Permalink to this headline">¶</a></h2>
 <p>Once a slice is assigned to a cpu it does not expire.  However all but 1ms of
 the slice may be returned to the global pool if all threads on that cpu become
@@ -447,8 +449,8 @@ instances it will be up to the CFS algorithm (see <a class="reference internal" 
 decide which application is chosen to run, as they will both be runnable and
 have remaining quota. This runtime discrepancy will be made up in the following
 periods when the interactive application idles.</p>
-</section>
-<section id="examples">
+</div>
+<div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
 <li><p>Limit a group to 1 CPU worth of runtime:</p>
@@ -491,8 +493,8 @@ And 10ms burst will be equivalent to 20% of 1 CPU.</p>
 <p>Larger buffer setting (no larger than quota) allows greater burst capacity.</p>
 </li>
 </ol>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>ioctl based interfaces &mdash; The Linux Kernel  documentation</title>
@@ -14,6 +13,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
 
   
@@ -31,6 +32,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
@@ -349,7 +351,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="ioctl-based-interfaces">
+  <div class="section" id="ioctl-based-interfaces">
 <h1>ioctl based interfaces<a class="headerlink" href="#ioctl-based-interfaces" title="Permalink to this headline">¶</a></h1>
 <p>ioctl() is the most common way for applications to interface
 with device drivers. It is flexible and easily extended by adding new
@@ -358,7 +360,7 @@ well as sockets and other special file descriptors.</p>
 <p>However, it is also very easy to get ioctl command definitions wrong,
 and hard to fix them later without breaking existing applications,
 so this documentation tries to help developers get it right.</p>
-<section id="command-number-definitions">
+<div class="section" id="command-number-definitions">
 <h2>Command number definitions<a class="headerlink" href="#command-number-definitions" title="Permalink to this headline">¶</a></h2>
 <p>The command number, or request number, is the second argument passed to
 the ioctl system call. While this can be any 32-bit number that uniquely
@@ -390,8 +392,8 @@ will lead to encoding sizeof(sizeof(data_type)), i.e. sizeof(size_t).
 _IO does not have a data_type parameter.</p>
 </dd>
 </dl>
-</section>
-<section id="interface-versions">
+</div>
+<div class="section" id="interface-versions">
 <h2>Interface versions<a class="headerlink" href="#interface-versions" title="Permalink to this headline">¶</a></h2>
 <p>Some subsystems use version numbers in data structures to overload
 commands with different interpretations of the argument.</p>
@@ -400,8 +402,8 @@ to break existing applications.</p>
 <p>A better approach is to add a new ioctl command with a new number. The
 old command still needs to be implemented in the kernel for compatibility,
 but this can be a wrapper around the new implementation.</p>
-</section>
-<section id="return-code">
+</div>
+<div class="section" id="return-code">
 <h2>Return code<a class="headerlink" href="#return-code" title="Permalink to this headline">¶</a></h2>
 <p>ioctl commands can return negative error codes as documented in errno(3);
 these get turned into errno values in user space. On success, the return
@@ -416,8 +418,8 @@ handler returns either -ENOTTY or -ENOIOCTLCMD, which also results in
 commands. As all subsystems are now responsible for handling compat
 mode themselves, this is no longer needed, but it may be important to
 consider when backporting bug fixes to older kernels.</p>
-</section>
-<section id="timestamps">
+</div>
+<div class="section" id="timestamps">
 <h2>Timestamps<a class="headerlink" href="#timestamps" title="Permalink to this headline">¶</a></h2>
 <p>Traditionally, timestamps and timeout values are passed as <code class="docutils literal notranslate"><span class="pre">struct</span>
 <span class="pre">timespec</span></code> or <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">timeval</span></code>, but these are problematic because of
@@ -439,8 +441,8 @@ CLOCK_REALTIME, this makes the timestamps immune from jumping backwards
 or forwards due to leap second adjustments and clock_settime() calls.</p>
 <p><a class="reference internal" href="../core-api/timekeeping.html#c.ktime_get_real_ns" title="ktime_get_real_ns"><code class="xref c c-func docutils literal notranslate"><span class="pre">ktime_get_real_ns()</span></code></a> can be used for CLOCK_REALTIME timestamps that
 need to be persistent across a reboot or between multiple machines.</p>
-</section>
-<section id="bit-compat-mode">
+</div>
+<div class="section" id="bit-compat-mode">
 <h2>32-bit compat mode<a class="headerlink" href="#bit-compat-mode" title="Permalink to this headline">¶</a></h2>
 <p>In order to support 32-bit user space running on a 64-bit machine, each
 subsystem or driver that implements an ioctl callback handler must also
@@ -448,7 +450,7 @@ implement the corresponding compat_ioctl handler.</p>
 <p>As long as all the rules for data structures are followed, this is as
 easy as setting the .compat_ioctl pointer to a helper function such as
 compat_ptr_ioctl() or blkdev_compat_ptr_ioctl().</p>
-<section id="compat-ptr">
+<div class="section" id="compat-ptr">
 <h3>compat_ptr()<a class="headerlink" href="#compat-ptr" title="Permalink to this headline">¶</a></h3>
 <p>On the s390 architecture, 31-bit user space has ambiguous representations
 for data pointers, with the upper bit being ignored. When running such
@@ -464,8 +466,8 @@ for arguments with the upper bit set.</p>
 <p>The compat_ptr_ioctl() helper can be used in place of a custom
 compat_ioctl file operation for drivers that only take arguments that
 are pointers to compatible data structures.</p>
-</section>
-<section id="structure-layout">
+</div>
+<div class="section" id="structure-layout">
 <h3>Structure layout<a class="headerlink" href="#structure-layout" title="Permalink to this headline">¶</a></h3>
 <p>Compatible data structures have the same layout on all architectures,
 avoiding all problematic members:</p>
@@ -510,9 +512,9 @@ to avoid them completely in ioctl interfaces.</p></li>
 the architecture, so the __u8 and __s8 types should be used for 8-bit
 integer values, though char arrays are clearer for fixed-length strings.</p></li>
 </ul>
-</section>
-</section>
-<section id="information-leaks">
+</div>
+</div>
+<div class="section" id="information-leaks">
 <h2>Information leaks<a class="headerlink" href="#information-leaks" title="Permalink to this headline">¶</a></h2>
 <p>Uninitialized data must not be copied back to user space, as this can
 cause an information leak, which can be used to defeat kernel address
@@ -523,8 +525,8 @@ in an existing structure, kernel drivers must be careful to fully
 initialize an instance of the structure before copying it to user
 space.  This is usually done by calling <a class="reference internal" href="../core-api/kernel-api.html#c.memset" title="memset"><code class="xref c c-func docutils literal notranslate"><span class="pre">memset()</span></code></a> before assigning to
 individual members.</p>
-</section>
-<section id="subsystem-abstractions">
+</div>
+<div class="section" id="subsystem-abstractions">
 <h2>Subsystem abstractions<a class="headerlink" href="#subsystem-abstractions" title="Permalink to this headline">¶</a></h2>
 <p>While some device drivers implement their own ioctl function, most
 subsystems implement the same command for multiple drivers.  Ideally the
@@ -542,8 +544,8 @@ in one place, reducing the potential for implementation bugs.</p></li>
 that can spot problems in the interface when the ioctl is shared
 between multiple drivers than when it is only used in a single driver.</p></li>
 </ul>
-</section>
-<section id="alternatives-to-ioctl">
+</div>
+<div class="section" id="alternatives-to-ioctl">
 <h2>Alternatives to ioctl<a class="headerlink" href="#alternatives-to-ioctl" title="Permalink to this headline">¶</a></h2>
 <p>There are many cases in which ioctl is not the best solution for a
 problem. Alternatives include:</p>
@@ -561,8 +563,8 @@ that is not tied to a file descriptor.</p></li>
 <li><p>A custom file system can provide extra flexibility with a simple
 user interface but adds a lot of complexity to the implementation.</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
