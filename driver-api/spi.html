@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -1496,46 +1496,6 @@ any embedded pointers (platform_data, etc), they’re copied as-is.</p>
 <p><strong>Return</strong></p>
 <p>zero on success, else a negative error code.</p>
 <dl class="c function">
-<dt id="c.spi_alloc_device">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_device" title="spi_device"><span class="pre">spi_device</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">spi_alloc_device</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_controller" title="spi_controller"><span class="pre">spi_controller</span></a> <span class="pre">*</span><em><span class="pre">ctlr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_alloc_device" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Allocate a new SPI device</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spi_controller</span> <span class="pre">*ctlr</span></code></dt><dd><p>Controller to which device is connected</p>
-</dd>
-</dl>
-<p><strong>Context</strong></p>
-<p>can sleep</p>
-<p><strong>Description</strong></p>
-<p>Allows a driver to allocate and initialize a spi_device without
-registering it immediately.  This allows a driver to directly
-fill the spi_device with device parameters before calling
-<a class="reference internal" href="#c.spi_add_device" title="spi_add_device"><code class="xref c c-func docutils literal notranslate"><span class="pre">spi_add_device()</span></code></a> on it.</p>
-<p>Caller is responsible to call <a class="reference internal" href="#c.spi_add_device" title="spi_add_device"><code class="xref c c-func docutils literal notranslate"><span class="pre">spi_add_device()</span></code></a> on the returned
-spi_device structure to add it to the SPI controller.  If the caller
-needs to discard the spi_device without adding it, then it should
-call spi_dev_put() on it.</p>
-<p><strong>Return</strong></p>
-<p>a pointer to the new device, or NULL.</p>
-<dl class="c function">
-<dt id="c.spi_add_device">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">spi_add_device</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_device" title="spi_device"><span class="pre">spi_device</span></a> <span class="pre">*</span><em><span class="pre">spi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_add_device" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Add spi_device allocated with spi_alloc_device</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spi_device</span> <span class="pre">*spi</span></code></dt><dd><p>spi_device to register</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Companion function to spi_alloc_device.  Devices allocated with
-spi_alloc_device can be added onto the spi bus with this function.</p>
-<p><strong>Return</strong></p>
-<p>0 on success; negative errno on failure</p>
-<dl class="c function">
 <dt id="c.spi_new_device">
 <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_device" title="spi_device"><span class="pre">spi_device</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">spi_new_device</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_controller" title="spi_controller"><span class="pre">spi_controller</span></a> <span class="pre">*</span><em><span class="pre">ctlr</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_board_info" title="spi_board_info"><span class="pre">spi_board_info</span></a> <span class="pre">*</span><em><span class="pre">chip</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_new_device" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>instantiate one new SPI device</p>
@@ -1812,114 +1772,6 @@ only ones directly touching chip registers.</p>
 <p>This must be called from context that can sleep.</p>
 <p>Note that this function also drops a reference to the controller.</p>
 <dl class="c function">
-<dt id="c.spi_busnum_to_master">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_controller" title="spi_controller"><span class="pre">spi_controller</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">spi_busnum_to_master</span></code><span class="sig-paren">(</span><span class="pre">u16</span> <em><span class="pre">bus_num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_busnum_to_master" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>look up master associated with bus_num</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">u16</span> <span class="pre">bus_num</span></code></dt><dd><p>the master’s bus number</p>
-</dd>
-</dl>
-<p><strong>Context</strong></p>
-<p>can sleep</p>
-<p><strong>Description</strong></p>
-<p>This call may be used with devices that are registered after
-arch init time.  It returns a refcounted pointer to the relevant
-spi_controller (which the caller must release), or NULL if there is
-no such master registered.</p>
-<p><strong>Return</strong></p>
-<p>the SPI master structure on success, else NULL.</p>
-<dl class="c function">
-<dt id="c.spi_res_alloc">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">spi_res_alloc</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_device" title="spi_device"><span class="pre">spi_device</span></a> <span class="pre">*</span><em><span class="pre">spi</span></em>, <span class="pre">spi_res_release_t</span> <em><span class="pre">release</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em>, <a class="reference internal" href="../core-api/mm-api.html#c.gfp_t" title="gfp_t"><span class="pre">gfp_t</span></a> <em><span class="pre">gfp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_res_alloc" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>allocate a spi resource that is life-cycle managed during the processing of a spi_message while using spi_transfer_one</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spi_device</span> <span class="pre">*spi</span></code></dt><dd><p>the spi device for which we allocate memory</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">spi_res_release_t</span> <span class="pre">release</span></code></dt><dd><p>the release code to execute for this resource</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">size</span></code></dt><dd><p>size to alloc and return</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">gfp_t</span> <span class="pre">gfp</span></code></dt><dd><p>GFP allocation flags</p>
-</dd>
-</dl>
-<p><strong>Return</strong></p>
-<p>the pointer to the allocated data</p>
-<p><strong>Description</strong></p>
-<p>This may get enhanced in the future to allocate from a memory pool
-of the <strong>spi_device</strong> or <strong>spi_controller</strong> to avoid repeated allocations.</p>
-<dl class="c function">
-<dt id="c.spi_res_free">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">spi_res_free</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_res_free" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>free an spi resource</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*res</span></code></dt><dd><p>pointer to the custom data of a resource</p>
-</dd>
-</dl>
-<dl class="c function">
-<dt id="c.spi_res_add">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">spi_res_add</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_message" title="spi_message"><span class="pre">spi_message</span></a> <span class="pre">*</span><em><span class="pre">message</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_res_add" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>add a spi_res to the spi_message</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spi_message</span> <span class="pre">*message</span></code></dt><dd><p>the spi message</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*res</span></code></dt><dd><p>the spi_resource</p>
-</dd>
-</dl>
-<dl class="c function">
-<dt id="c.spi_res_release">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">spi_res_release</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_controller" title="spi_controller"><span class="pre">spi_controller</span></a> <span class="pre">*</span><em><span class="pre">ctlr</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_message" title="spi_message"><span class="pre">spi_message</span></a> <span class="pre">*</span><em><span class="pre">message</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_res_release" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>release all spi resources for this message</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spi_controller</span> <span class="pre">*ctlr</span></code></dt><dd><p>the <strong>spi_controller</strong></p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spi_message</span> <span class="pre">*message</span></code></dt><dd><p>the <strong>spi_message</strong></p>
-</dd>
-</dl>
-<dl class="c function">
-<dt id="c.spi_replace_transfers">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_replaced_transfers" title="spi_replaced_transfers"><span class="pre">spi_replaced_transfers</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">spi_replace_transfers</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_message" title="spi_message"><span class="pre">spi_message</span></a> <span class="pre">*</span><em><span class="pre">msg</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_transfer" title="spi_transfer"><span class="pre">spi_transfer</span></a> <span class="pre">*</span><em><span class="pre">xfer_first</span></em>, <span class="pre">size_t</span> <em><span class="pre">remove</span></em>, <span class="pre">size_t</span> <em><span class="pre">insert</span></em>, <span class="pre">spi_replaced_release_t</span> <em><span class="pre">release</span></em>, <span class="pre">size_t</span> <em><span class="pre">extradatasize</span></em>, <a class="reference internal" href="../core-api/mm-api.html#c.gfp_t" title="gfp_t"><span class="pre">gfp_t</span></a> <em><span class="pre">gfp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_replace_transfers" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>replace transfers with several transfers and register change with spi_message.resources</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spi_message</span> <span class="pre">*msg</span></code></dt><dd><p>the spi_message we work upon</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spi_transfer</span> <span class="pre">*xfer_first</span></code></dt><dd><p>the first spi_transfer we want to replace</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">remove</span></code></dt><dd><p>number of transfers to remove</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">insert</span></code></dt><dd><p>the number of transfers we want to insert instead</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">spi_replaced_release_t</span> <span class="pre">release</span></code></dt><dd><p>extra release code necessary in some circumstances</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">extradatasize</span></code></dt><dd><p>extra data to allocate (with alignment guarantees
-of struct <strong>spi_transfer</strong>)</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">gfp_t</span> <span class="pre">gfp</span></code></dt><dd><p>gfp flags</p>
-</dd>
-</dl>
-<p><strong>Return</strong></p>
-<dl class="simple">
-<dt>pointer to <strong>spi_replaced_transfers</strong>,</dt><dd><p>PTR_ERR(…) in case of errors.</p>
-</dd>
-</dl>
-<dl class="c function">
 <dt id="c.spi_split_transfers_maxsize">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">spi_split_transfers_maxsize</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_controller" title="spi_controller"><span class="pre">spi_controller</span></a> <span class="pre">*</span><em><span class="pre">ctlr</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_message" title="spi_message"><span class="pre">spi_message</span></a> <span class="pre">*</span><em><span class="pre">msg</span></em>, <span class="pre">size_t</span> <em><span class="pre">maxsize</span></em>, <a class="reference internal" href="../core-api/mm-api.html#c.gfp_t" title="gfp_t"><span class="pre">gfp_t</span></a> <em><span class="pre">gfp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_split_transfers_maxsize" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>split spi transfers into multiple transfers when an individual transfer exceeds a certain size</p>
@@ -1969,43 +1821,6 @@ LSB-first wire encoding, or active-high chipselects.</p>
 <dt id="c.spi_async">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">spi_async</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_device" title="spi_device"><span class="pre">spi_device</span></a> <span class="pre">*</span><em><span class="pre">spi</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_message" title="spi_message"><span class="pre">spi_message</span></a> <span class="pre">*</span><em><span class="pre">message</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_async" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>asynchronous SPI transfer</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spi_device</span> <span class="pre">*spi</span></code></dt><dd><p>device with which data will be exchanged</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">spi_message</span> <span class="pre">*message</span></code></dt><dd><p>describes the data transfers, including completion callback</p>
-</dd>
-</dl>
-<p><strong>Context</strong></p>
-<p>any (irqs may be blocked, etc)</p>
-<p><strong>Description</strong></p>
-<p>This call may be used in_irq and other contexts which can’t sleep,
-as well as from task contexts which can sleep.</p>
-<p>The completion callback is invoked in a context which can’t sleep.
-Before that invocation, the value of message-&gt;status is undefined.
-When the callback is issued, message-&gt;status holds either zero (to
-indicate complete success) or a negative error code.  After that
-callback returns, the driver which issued the transfer request may
-deallocate the associated memory; it’s no longer in use by any SPI
-core or controller driver code.</p>
-<p>Note that although all messages to a spi_device are handled in
-FIFO order, messages may go to different devices in other orders.
-Some device might be higher priority, or have various “hard” access
-time requirements, for example.</p>
-<p>On detection of any fault during the transfer, processing of
-the entire message is aborted, and the device is deselected.
-Until returning from the associated message completion callback,
-no other spi_message queued to that device will be processed.
-(This rule applies equally to all the synchronous transfer calls,
-which are wrappers around this core asynchronous primitive.)</p>
-<p><strong>Return</strong></p>
-<p>zero on success, else a negative error code.</p>
-<dl class="c function">
-<dt id="c.spi_async_locked">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">spi_async_locked</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_device" title="spi_device"><span class="pre">spi_device</span></a> <span class="pre">*</span><em><span class="pre">spi</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.spi_message" title="spi_message"><span class="pre">spi_message</span></a> <span class="pre">*</span><em><span class="pre">message</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.spi_async_locked" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>version of spi_async with exclusive bus usage</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>

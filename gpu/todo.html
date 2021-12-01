@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -176,7 +176,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#garbage-collect-fbdev-scrolling-acceleration">Garbage collect fbdev scrolling acceleration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#idr-init-base">idr_init_base()</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#struct-drm-gem-object-funcs">struct drm_gem_object_funcs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#use-drm-modeset-lock-all-helpers-instead-of-boilerplate">Use DRM_MODESET_LOCK_ALL_* helpers instead of boilerplate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#rename-cma-helpers-to-dma-helpers">Rename CMA helpers to DMA helpers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#connector-register-unregister-fixes">connector register/unregister fixes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#remove-load-unload-callbacks-from-all-non-driver-legacy-drivers">Remove load/unload callbacks from all non-DRIVER_LEGACY drivers</a></li>
@@ -556,13 +555,16 @@ should work) to avoid clobbering struct page.</p></li>
 </section>
 <section id="garbage-collect-fbdev-scrolling-acceleration">
 <h2>Garbage collect fbdev scrolling acceleration<a class="headerlink" href="#garbage-collect-fbdev-scrolling-acceleration" title="Permalink to this headline">¶</a></h2>
-<p>Scroll acceleration is disabled in fbcon by hard-wiring p-&gt;scrollmode =
-SCROLL_REDRAW. There’s a ton of code this will allow us to remove:</p>
+<p>Scroll acceleration has been disabled in fbcon. Now it works as the old
+SCROLL_REDRAW mode. A ton of code was removed in fbcon.c and the hook bmove was
+removed from fbcon_ops.
+Remaining tasks:</p>
 <ul class="simple">
-<li><p>lots of code in fbcon.c</p></li>
-<li><p>a bunch of the hooks in fbcon_ops, maybe the remaining hooks could be called
+<li><p>a bunch of the hooks in fbcon_ops could be removed or simplified by calling
 directly instead of the function table (with a switch on p-&gt;rotate)</p></li>
 <li><p>fb_copyarea is unused after this, and can be deleted from all drivers</p></li>
+<li><p>after that, fb_copyarea can be deleted from fb_ops in include/linux/fb.h as
+well as cfb_copyarea</p></li>
 </ul>
 <p>Note that not all acceleration code can be deleted, since clearing and cursor
 support is still accelerated, which might be good candidates for further
@@ -585,18 +587,6 @@ efficient.</p>
 DRM driver struct. This is now the preferred way. Callbacks in drivers have been
 converted, except for <a class="reference internal" href="drm-internals.html#c.drm_driver" title="drm_driver"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_driver</span></code></a>.gem_prime_mmap.</p>
 <p>Level: Intermediate</p>
-</section>
-<section id="use-drm-modeset-lock-all-helpers-instead-of-boilerplate">
-<h2>Use DRM_MODESET_LOCK_ALL_* helpers instead of boilerplate<a class="headerlink" href="#use-drm-modeset-lock-all-helpers-instead-of-boilerplate" title="Permalink to this headline">¶</a></h2>
-<p>For cases where drivers are attempting to grab the modeset locks with a local
-acquire context. Replace the boilerplate code surrounding
-<a class="reference internal" href="drm-kms.html#c.drm_modeset_lock_all_ctx" title="drm_modeset_lock_all_ctx"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_modeset_lock_all_ctx()</span></code></a> with <a class="reference internal" href="drm-kms.html#c.DRM_MODESET_LOCK_ALL_BEGIN" title="DRM_MODESET_LOCK_ALL_BEGIN"><code class="xref c c-func docutils literal notranslate"><span class="pre">DRM_MODESET_LOCK_ALL_BEGIN()</span></code></a> and
-<a class="reference internal" href="drm-kms.html#c.DRM_MODESET_LOCK_ALL_END" title="DRM_MODESET_LOCK_ALL_END"><code class="xref c c-func docutils literal notranslate"><span class="pre">DRM_MODESET_LOCK_ALL_END()</span></code></a> instead.</p>
-<p>This should also be done for all places where <a class="reference internal" href="drm-kms.html#c.drm_modeset_lock_all" title="drm_modeset_lock_all"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_modeset_lock_all()</span></code></a> is still
-used.</p>
-<p>As a reference, take a look at the conversions already completed in drm core.</p>
-<p>Contact: Sean Paul, respective driver maintainers</p>
-<p>Level: Starter</p>
 </section>
 <section id="rename-cma-helpers-to-dma-helpers">
 <h2>Rename CMA helpers to DMA helpers<a class="headerlink" href="#rename-cma-helpers-to-dma-helpers" title="Permalink to this headline">¶</a></h2>
@@ -765,9 +755,9 @@ various convenience wrappers provided, e.g. <a class="reference internal" href="
 <h2>Remove automatic page mapping from dma-buf importing<a class="headerlink" href="#remove-automatic-page-mapping-from-dma-buf-importing" title="Permalink to this headline">¶</a></h2>
 <p>When importing dma-bufs, the dma-buf and PRIME frameworks automatically map
 imported pages into the importer’s DMA area. <a class="reference internal" href="drm-mm.html#c.drm_gem_prime_fd_to_handle" title="drm_gem_prime_fd_to_handle"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_prime_fd_to_handle()</span></code></a> and
-<a class="reference internal" href="drm-mm.html#c.drm_gem_prime_handle_to_fd" title="drm_gem_prime_handle_to_fd"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_prime_handle_to_fd()</span></code></a> require that importers call <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_buf_attach" title="dma_buf_attach"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_buf_attach()</span></code></a>
+<a class="reference internal" href="drm-mm.html#c.drm_gem_prime_handle_to_fd" title="drm_gem_prime_handle_to_fd"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_prime_handle_to_fd()</span></code></a> require that importers call dma_buf_attach()
 even if they never do actual device DMA, but only CPU access through
-<a class="reference internal" href="../driver-api/dma-buf.html#c.dma_buf_vmap" title="dma_buf_vmap"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_buf_vmap()</span></code></a>. This is a problem for USB devices, which do not support DMA
+dma_buf_vmap(). This is a problem for USB devices, which do not support DMA
 operations.</p>
 <p>To fix the issue, automatic page mappings should be removed from the
 buffer-sharing code. Fixing this is a bit more involved, since the import/export

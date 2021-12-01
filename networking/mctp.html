@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -200,6 +200,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#syscall-behaviour">Syscall behaviour</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#kernel-internals">Kernel internals</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#key-refcounts">Key refcounts</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mpls-sysctl.html">MPLS Sysfs variables</a></li>
@@ -222,18 +226,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ppp_generic.html">PPP Generic Driver and Channel Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="proc_net_tcp.html">The proc/net/tcp and proc/net/tcp6 variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="radiotap-headers.html">How to use radiotap headers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#rds-architecture">RDS Architecture</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#socket-interface">Socket Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#rdma-for-rds">RDMA for RDS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#congestion-notifications">Congestion Notifications</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#rds-protocol">RDS Protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#rds-transport-layer">RDS Transport Layer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#rds-kernel-structures">RDS Kernel Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#connection-management">Connection management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#the-send-path">The send path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#the-recv-path">The recv path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#multipath-rds-mprds">Multipath RDS (mprds)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rds.html">RDS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="regulatory.html">Linux wireless regulatory documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rxrpc.html">RxRPC Network Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rxrpc.html#socket-options">SOCKET OPTIONS</a></li>
@@ -548,6 +541,73 @@ remote address is already known, or the message does not require a reply.</p>
 <p>Like the send calls, sockets will only receive responses to requests they have
 sent (TO=1) and may only respond (TO=0) to requests they have received.</p>
 </section>
+</section>
+</section>
+<section id="kernel-internals">
+<h2>Kernel internals<a class="headerlink" href="#kernel-internals" title="Permalink to this headline">¶</a></h2>
+<p>There are a few possible packet flows in the MCTP stack:</p>
+<ol class="arabic">
+<li><p>local TX to remote endpoint, message &lt;= MTU:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sendmsg()
+ -&gt; mctp_local_output()
+    : route lookup
+    -&gt; rt-&gt;output() (== mctp_route_output)
+       -&gt; dev_queue_xmit()
+</pre></div>
+</div>
+</li>
+<li><p>local TX to remote endpoint, message &gt; MTU:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>sendmsg()
+-&gt; mctp_local_output()
+    -&gt; mctp_do_fragment_route()
+       : creates packet-sized skbs. For each new skb:
+       -&gt; rt-&gt;output() (== mctp_route_output)
+          -&gt; dev_queue_xmit()
+</pre></div>
+</div>
+</li>
+<li><p>remote TX to local endpoint, single-packet message:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mctp_pkttype_receive()
+: route lookup
+-&gt; rt-&gt;output() (== mctp_route_input)
+   : sk_key lookup
+   -&gt; sock_queue_rcv_skb()
+</pre></div>
+</div>
+</li>
+<li><p>remote TX to local endpoint, multiple-packet message:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mctp_pkttype_receive()
+: route lookup
+-&gt; rt-&gt;output() (== mctp_route_input)
+   : sk_key lookup
+   : stores skb in struct sk_key-&gt;reasm_head
+
+mctp_pkttype_receive()
+: route lookup
+-&gt; rt-&gt;output() (== mctp_route_input)
+   : sk_key lookup
+   : finds existing reassembly in sk_key-&gt;reasm_head
+   : appends new fragment
+   -&gt; sock_queue_rcv_skb()
+</pre></div>
+</div>
+</li>
+</ol>
+<section id="key-refcounts">
+<h3>Key refcounts<a class="headerlink" href="#key-refcounts" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>keys are refed by:</p>
+<ul>
+<li><p>a skb: during route output, stored in <code class="docutils literal notranslate"><span class="pre">skb-&gt;cb</span></code>.</p></li>
+<li><p>netns and sock lists.</p></li>
+</ul>
+</li>
+<li><p>keys can be associated with a device, in which case they hold a
+reference to the dev (set through <code class="docutils literal notranslate"><span class="pre">key-&gt;dev</span></code>, counted through
+<code class="docutils literal notranslate"><span class="pre">dev-&gt;key_count</span></code>). Multiple keys can reference the device.</p></li>
+</ul>
+</div></blockquote>
 </section>
 </section>
 </section>

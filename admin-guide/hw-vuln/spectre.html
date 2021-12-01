@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -155,6 +155,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../edid.html">EDID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../efi-stub.html">The EFI Boot Stub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ext4.html">ext4 General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../filesystem-monitoring.html">File system Monitoring with fanotify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nfs/index.html">NFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpio/index.html">gpio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../highuid.html">Notes on the change from 16-bit UIDs to 32-bit UIDs</a></li>
@@ -860,9 +861,8 @@ sibling thread when the user program is running, and use IBPB to
 flush the branch target buffer when switching to/from the program.</p>
 <p>Restricting indirect branch speculation on a user program will
 also prevent the program from launching a variant 2 attack
-on x86.  All sand-boxed SECCOMP programs have indirect branch
-speculation restricted by default.  Administrators can change
-that behavior via the kernel command line and sysfs control files.
+on x86.  Administrators can change that behavior via the kernel
+command line and sysfs control files.
 See <a class="reference internal" href="#spectre-mitigation-control-command-line"><span class="std std-ref">Mitigation control on the kernel command line</span></a>.</p>
 <p>Programs that disable their indirect branch speculation will have
 more overhead and run slower.</p>
@@ -952,49 +952,6 @@ the user space protections.</p>
 </dl>
 <p>Not specifying this option is equivalent to
 spectre_v2=auto.</p>
-</div></blockquote>
-</div></blockquote>
-<p>For user space mitigation:</p>
-<blockquote>
-<div><p>spectre_v2_user=</p>
-<blockquote>
-<div><p>[X86] Control mitigation of Spectre variant 2
-(indirect branch speculation) vulnerability between
-user space tasks</p>
-<dl class="simple">
-<dt>on</dt><dd><p>Unconditionally enable mitigations. Is
-enforced by spectre_v2=on</p>
-</dd>
-<dt>off</dt><dd><p>Unconditionally disable mitigations. Is
-enforced by spectre_v2=off</p>
-</dd>
-<dt>prctl</dt><dd><p>Indirect branch speculation is enabled,
-but mitigation can be enabled via prctl
-per thread. The mitigation control state
-is inherited on fork.</p>
-</dd>
-<dt>prctl,ibpb</dt><dd><p>Like “prctl” above, but only STIBP is
-controlled per thread. IBPB is issued
-always when switching between different user
-space processes.</p>
-</dd>
-<dt>seccomp</dt><dd><p>Same as “prctl” above, but all seccomp
-threads will enable the mitigation unless
-they explicitly opt out.</p>
-</dd>
-<dt>seccomp,ibpb</dt><dd><p>Like “seccomp” above, but only STIBP is
-controlled per thread. IBPB is issued
-always when switching between different
-user space processes.</p>
-</dd>
-<dt>auto</dt><dd><p>Kernel selects the mitigation depending on
-the available CPU features and vulnerability.</p>
-</dd>
-</dl>
-<p>Default mitigation:
-If CONFIG_SECCOMP=y then “seccomp”, otherwise “prctl”</p>
-<p>Not specifying this option is equivalent to
-spectre_v2_user=auto.</p>
 <p>In general the kernel by default selects
 reasonable mitigations for the current CPU. To
 disable Spectre variant 2 mitigations, boot with
@@ -1002,6 +959,7 @@ spectre_v2=off. Spectre variant 1 mitigations
 cannot be disabled.</p>
 </div></blockquote>
 </div></blockquote>
+<p>For spectre_v2_user see <a class="reference internal" href="../kernel-parameters.html"><span class="doc">The kernel’s command-line parameters</span></a>.</p>
 </section>
 <section id="mitigation-selection-guide">
 <h2>Mitigation selection guide<a class="headerlink" href="#mitigation-selection-guide" title="Permalink to this headline">¶</a></h2>
@@ -1029,9 +987,8 @@ disabling indirect branch speculation when the program is running
 off by disabling their indirect branch speculation when they are run
 (See <a class="reference internal" href="../../userspace-api/spec_ctrl.html#set-spec-ctrl"><span class="std std-ref"><a class="reference internal" href="../../userspace-api/spec_ctrl.html"><span class="doc">Speculation Control</span></a></span></a>).
 This prevents untrusted programs from polluting the branch target
-buffer.  All programs running in SECCOMP sandboxes have indirect
-branch speculation restricted by default. This behavior can be
-changed via the kernel command line and sysfs control files. See
+buffer.  This behavior can be changed via the kernel command line
+and sysfs control files. See
 <a class="reference internal" href="#spectre-mitigation-control-command-line"><span class="std std-ref">Mitigation control on the kernel command line</span></a>.</p>
 </div></blockquote>
 </section>

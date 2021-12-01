@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -600,6 +600,31 @@ Developers should check carefully whether the generic chip fits their
 needs before implementing the same functionality slightly differently
 themselves.</p>
 <dl class="c function">
+<dt id="c.irq_gc_noop">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_noop</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_noop" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>NOOP function</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">irq_data</span> <span class="pre">*d</span></code></dt><dd><p>irq_data</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.irq_gc_mask_disable_reg">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_mask_disable_reg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_mask_disable_reg" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Mask chip via disable register</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">irq_data</span> <span class="pre">*d</span></code></dt><dd><p>irq_data</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Chip has separate enable/disable registers instead of a single mask
+register.</p>
+<dl class="c function">
 <dt id="c.irq_gc_mask_set_bit">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_mask_set_bit</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_mask_set_bit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Mask chip via setting bit in mask register</p>
@@ -627,6 +652,20 @@ and protected by gc-&gt;lock</p>
 <p><strong>Description</strong></p>
 <p>Chip has a single mask register. Values of this register are cached
 and protected by gc-&gt;lock</p>
+<dl class="c function">
+<dt id="c.irq_gc_unmask_enable_reg">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_unmask_enable_reg</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_unmask_enable_reg" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unmask chip via enable register</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">irq_data</span> <span class="pre">*d</span></code></dt><dd><p>irq_data</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Chip has separate enable/disable registers instead of a single mask
+register.</p>
 <dl class="c function">
 <dt id="c.irq_gc_ack_set_bit">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_gc_ack_set_bit</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.irq_data" title="irq_data"><span class="pre">irq_data</span></a> <span class="pre">*</span><em><span class="pre">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_gc_ack_set_bit" title="Permalink to this definition">¶</a><br /></dt>
@@ -891,8 +930,10 @@ methods, to allow shared chip implementations</p>
   int (*irq_set_wake)(struct irq_data *data, unsigned int on);
   void (*irq_bus_lock)(struct irq_data *data);
   void (*irq_bus_sync_unlock)(struct irq_data *data);
+#ifdef CONFIG_DEPRECATED_IRQ_CPU_ONOFFLINE;
   void (*irq_cpu_online)(struct irq_data *data);
   void (*irq_cpu_offline)(struct irq_data *data);
+#endif;
   void (*irq_suspend)(struct irq_data *data);
   void (*irq_resume)(struct irq_data *data);
   void (*irq_pm_shutdown)(struct irq_data *data);
@@ -1981,7 +2022,7 @@ interrupt controller has per-cpu registers.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">val</span></code></dt><dd><p>Value corresponding to <strong>which</strong></p>
 <p>This call sets the internal irqchip state of an interrupt,
 depending on the value of <strong>which</strong>.</p>
-<p>This function should be called with preemption disabled if the
+<p>This function should be called with migration disabled if the
 interrupt controller has per-cpu registers.</p>
 </dd>
 </dl>
@@ -2426,10 +2467,16 @@ functions.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">irq</span></code></dt><dd><p>The irq number to handle</p>
 </dd>
 </dl>
+<p><strong>Return</strong></p>
+<p>0 on success, or -EINVAL if conversion has failed</p>
+<blockquote>
+<div><p>This function must be called from an IRQ context with irq regs
+initialized.</p>
+</div></blockquote>
 <dl class="c function">
 <dt id="c.generic_handle_domain_irq">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">generic_handle_domain_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_domain</span> <span class="pre">*</span><em><span class="pre">domain</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">hwirq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_domain_irq" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Invoke the handler for a HW irq belonging to a domain, usually for a non-root interrupt controller</p>
+<dd><p>Invoke the handler for a HW irq belonging to a domain.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
@@ -2441,10 +2488,14 @@ functions.</p>
 </dl>
 <p><strong>Return</strong></p>
 <p>0 on success, or -EINVAL if conversion has failed</p>
+<blockquote>
+<div><p>This function must be called from an IRQ context with irq regs
+initialized.</p>
+</div></blockquote>
 <dl class="c function">
-<dt id="c.handle_domain_irq">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">handle_domain_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_domain</span> <span class="pre">*</span><em><span class="pre">domain</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">hwirq</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">pt_regs</span> <span class="pre">*</span><em><span class="pre">regs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_domain_irq" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Invoke the handler for a HW irq belonging to a domain, usually for a root interrupt controller</p>
+<dt id="c.generic_handle_domain_nmi">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">generic_handle_domain_nmi</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_domain</span> <span class="pre">*</span><em><span class="pre">domain</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">hwirq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_domain_nmi" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Invoke the handler for a HW nmi belonging to a domain.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
@@ -2453,29 +2504,13 @@ functions.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">hwirq</span></code></dt><dd><p>The HW irq number to convert to a logical one</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pt_regs</span> <span class="pre">*regs</span></code></dt><dd><p>Register file coming from the low-level handling code</p>
-</dd>
 </dl>
 <p><strong>Return</strong></p>
 <p>0 on success, or -EINVAL if conversion has failed</p>
-<dl class="c function">
-<dt id="c.handle_domain_nmi">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">handle_domain_nmi</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">irq_domain</span> <span class="pre">*</span><em><span class="pre">domain</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">hwirq</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">pt_regs</span> <span class="pre">*</span><em><span class="pre">regs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_domain_nmi" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Invoke the handler for a HW irq belonging to a domain</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">irq_domain</span> <span class="pre">*domain</span></code></dt><dd><p>The domain where to perform the lookup</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">hwirq</span></code></dt><dd><p>The HW irq number to convert to a logical one</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pt_regs</span> <span class="pre">*regs</span></code></dt><dd><p>Register file coming from the low-level handling code</p>
-<p>This function must be called from an NMI context.</p>
-</dd>
-</dl>
-<p><strong>Return</strong></p>
-<p>0 on success, or -EINVAL if conversion has failed</p>
+<blockquote>
+<div><p>This function must be called from an NMI context with irq regs
+initialized.</p>
+</div></blockquote>
 <dl class="c function">
 <dt id="c.irq_free_descs">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">irq_free_descs</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">from</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">cnt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_free_descs" title="Permalink to this definition">¶</a><br /></dt>
@@ -2573,6 +2608,17 @@ delayed_free_desc()/irq_kobj_release().</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>Handles spurious and unhandled IRQ’s. It also prints a debugmessage.</p>
+<dl class="c function">
+<dt id="c.generic_handle_arch_irq">
+<span class="pre">void</span> <span class="pre">noinstr</span> <code class="sig-name descname"><span class="pre">generic_handle_arch_irq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pt_regs</span> <span class="pre">*</span><em><span class="pre">regs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.generic_handle_arch_irq" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>root irq handler for architectures which do no entry accounting themselves</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pt_regs</span> <span class="pre">*regs</span></code></dt><dd><p>Register file coming from the low-level handling code</p>
+</dd>
+</dl>
 <dl class="c function">
 <dt id="c.irq_set_msi_desc_off">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">irq_set_msi_desc_off</span></code><span class="sig-paren">(</span><span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq_base</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">irq_offset</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">msi_desc</span> <span class="pre">*</span><em><span class="pre">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.irq_set_msi_desc_off" title="Permalink to this definition">¶</a><br /></dt>

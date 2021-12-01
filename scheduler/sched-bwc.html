@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -155,6 +155,7 @@
 <li class="toctree-l2"><a class="reference internal" href="completion.html">Completions - “wait for completion” barrier APIs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sched-arch.html">CPU Scheduler implementation hints for architecture specific code</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">CFS Bandwidth Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#burst-feature">Burst feature</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#management">Management</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#system-wide-settings">System wide settings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#statistics">Statistics</a></li>
@@ -280,9 +281,46 @@ period when the quota is replenished.</p>
 cfs_quota units at each period boundary. As threads consume this bandwidth it
 is transferred to cpu-local “silos” on a demand basis. The amount transferred
 within each of these updates is tunable and described as the “slice”.</p>
+<section id="burst-feature">
+<h2>Burst feature<a class="headerlink" href="#burst-feature" title="Permalink to this headline">¶</a></h2>
+<p>This feature borrows time now against our future underrun, at the cost of
+increased interference against the other system users. All nicely bounded.</p>
+<p>Traditional (UP-EDF) bandwidth control is something like:</p>
+<blockquote>
+<div><p>(U = Sum u_i) &lt;= 1</p>
+</div></blockquote>
+<p>This guaranteeds both that every deadline is met and that the system is
+stable. After all, if U were &gt; 1, then for every second of walltime,
+we’d have to run more than a second of program time, and obviously miss
+our deadline, but the next deadline will be further out still, there is
+never time to catch up, unbounded fail.</p>
+<p>The burst feature observes that a workload doesn’t always executes the full
+quota; this enables one to describe u_i as a statistical distribution.</p>
+<p>For example, have u_i = {x,e}_i, where x is the p(95) and x+e p(100)
+(the traditional WCET). This effectively allows u to be smaller,
+increasing the efficiency (we can pack more tasks in the system), but at
+the cost of missing deadlines when all the odds line up. However, it
+does maintain stability, since every overrun must be paired with an
+underrun as long as our x is above the average.</p>
+<p>That is, suppose we have 2 tasks, both specify a p(95) value, then we
+have a p(95)*p(95) = 90.25% chance both tasks are within their quota and
+everything is good. At the same time we have a p(5)p(5) = 0.25% chance
+both tasks will exceed their quota at the same time (guaranteed deadline
+fail). Somewhere in between there’s a threshold where one exceeds and
+the other doesn’t underrun enough to compensate; this depends on the
+specific CDFs.</p>
+<p>At the same time, we can say that the worst case deadline miss, will be
+Sum e_i; that is, there is a bounded tardiness (under the assumption
+that x+e is indeed WCET).</p>
+<p>The interferenece when using burst is valued by the possibilities for
+missing the deadline and the average WCET. Test results showed that when
+there many cgroups or CPU is under utilized, the interference is
+limited. More details are shown in:
+<a class="reference external" href="https://lore.kernel.org/lkml/5371BD36-55AE-4F71-B9D7-B86DC32E3D2B&#64;linux.alibaba.com/">https://lore.kernel.org/lkml/5371BD36-55AE-4F71-B9D7-B86DC32E3D2B&#64;linux.alibaba.com/</a></p>
+</section>
 <section id="management">
 <h2>Management<a class="headerlink" href="#management" title="Permalink to this headline">¶</a></h2>
-<p>Quota and period are managed within the cpu subsystem via cgroupfs.</p>
+<p>Quota, period and burst are managed within the cpu subsystem via cgroupfs.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The cgroupfs files described in this section are only applicable
@@ -290,27 +328,34 @@ to cgroup v1. For cgroup v2, see
 <a class="reference internal" href="../admin-guide/cgroup-v2.html#cgroup-v2-cpu"><span class="std std-ref"><a class="reference internal" href="../admin-guide/cgroup-v2.html"><span class="doc">Control Group v2</span></a></span></a>.</p>
 </div>
 <ul class="simple">
-<li><p>cpu.cfs_quota_us: the total available run-time within a period (in
-microseconds)</p></li>
+<li><p>cpu.cfs_quota_us: the total available run-time within a period (in</p></li>
+<li><p>cpu.cfs_quota_us: run-time replenished within a period (in microseconds)</p></li>
 <li><p>cpu.cfs_period_us: the length of a period (in microseconds)</p></li>
 <li><p>cpu.stat: exports throttling statistics [explained further below]</p></li>
+<li><p>cpu.cfs_burst_us: the maximum accumulated run-time (in microseconds)</p></li>
 </ul>
 <p>The default values are:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cpu.cfs_period_us=100ms
-cpu.cfs_quota=-1
+cpu.cfs_quota_us=-1
+cpu.cfs_burst_us=0
 </pre></div>
 </div>
 <p>A value of -1 for cpu.cfs_quota_us indicates that the group does not have any
 bandwidth restriction in place, such a group is described as an unconstrained
 bandwidth group. This represents the traditional work-conserving behavior for
 CFS.</p>
-<p>Writing any (valid) positive value(s) will enact the specified bandwidth limit.
-The minimum quota allowed for the quota or period is 1ms. There is also an
-upper bound on the period length of 1s. Additional restrictions exist when
-bandwidth limits are used in a hierarchical fashion, these are explained in
-more detail below.</p>
+<p>Writing any (valid) positive value(s) no smaller than cpu.cfs_burst_us will
+enact the specified bandwidth limit. The minimum quota allowed for the quota or
+period is 1ms. There is also an upper bound on the period length of 1s.
+Additional restrictions exist when bandwidth limits are used in a hierarchical
+fashion, these are explained in more detail below.</p>
 <p>Writing any negative value to cpu.cfs_quota_us will remove the bandwidth limit
 and return the group to an unconstrained state once more.</p>
+<p>A value of 0 for cpu.cfs_burst_us indicates that the group can not accumulate
+any unused bandwidth. It makes the traditional bandwidth control behavior for
+CFS unchanged. Writing any (valid) positive value(s) no larger than
+cpu.cfs_quota_us into cpu.cfs_burst_us will enact the cap on unused bandwidth
+accumulation.</p>
 <p>Any updates to a group’s bandwidth specification will result in it becoming
 unthrottled if it is in a constrained state.</p>
 </section>
@@ -329,13 +374,16 @@ for more fine-grained consumption.</p>
 </section>
 <section id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
-<p>A group’s bandwidth statistics are exported via 3 fields in cpu.stat.</p>
+<p>A group’s bandwidth statistics are exported via 5 fields in cpu.stat.</p>
 <p>cpu.stat:</p>
 <ul class="simple">
 <li><p>nr_periods: Number of enforcement intervals that have elapsed.</p></li>
 <li><p>nr_throttled: Number of times the group has been throttled/limited.</p></li>
 <li><p>throttled_time: The total time duration (in nanoseconds) for which entities
 of the group have been throttled.</p></li>
+<li><p>nr_bursts: Number of periods burst occurs.</p></li>
+<li><p>burst_time: Cumulative wall-time (in nanoseconds) that any CPUs has used
+above quota in respective periods</p></li>
 </ul>
 <p>This interface is read-only.</p>
 </section>
@@ -430,6 +478,17 @@ The larger period here allows for increased burst capacity.
 </div>
 <p>By using a small period here we are ensuring a consistent latency
 response at the expense of burst capacity.</p>
+</li>
+<li><p>Limit a group to 40% of 1 CPU, and allow accumulate up to 20% of 1 CPU
+additionally, in case accumulation has been done.</p>
+<p>With 50ms period, 20ms quota will be equivalent to 40% of 1 CPU.
+And 10ms burst will be equivalent to 20% of 1 CPU.</p>
+<blockquote>
+<div><p># echo 20000 &gt; cpu.cfs_quota_us /* quota = 20ms <em>/
+# echo 50000 &gt; cpu.cfs_period_us /</em> period = 50ms <em>/
+# echo 10000 &gt; cpu.cfs_burst_us /</em> burst = 10ms <a href="#id1"><span class="problematic" id="id2">*</span></a>/</p>
+</div></blockquote>
+<p>Larger buffer setting (no larger than quota) allows greater burst capacity.</p>
 </li>
 </ol>
 </section>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -132,6 +132,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../edid.html">EDID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../efi-stub.html">The EFI Boot Stub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ext4.html">ext4 General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../filesystem-monitoring.html">File system Monitoring with fanotify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nfs/index.html">NFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpio/index.html">gpio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../highuid.html">Notes on the change from 16-bit UIDs to 32-bit UIDs</a></li>
@@ -476,8 +477,63 @@ Device topology
 </pre></div>
 </div>
 </section>
+<section id="i-mx6ull-evk-with-ov5640">
+<h2><span class="section-number">6.8.8. </span>i.MX6ULL-EVK with OV5640<a class="headerlink" href="#i-mx6ull-evk-with-ov5640" title="Permalink to this headline">¶</a></h2>
+<p>On this platform a parallel OV5640 sensor is connected to the CSI port.
+The following example configures a video capture pipeline with an output
+of 640x480 and UYVY8_2X8 format:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Setup links
+media-ctl -l &quot;&#39;ov5640 1-003c&#39;:0 -&gt; &#39;csi&#39;:0[1]&quot;
+media-ctl -l &quot;&#39;csi&#39;:1 -&gt; &#39;csi capture&#39;:0[1]&quot;
+
+# Configure pads for pipeline
+media-ctl -v -V &quot;&#39;ov5640 1-003c&#39;:0 [fmt:UYVY8_2X8/640x480 field:none]&quot;
+</pre></div>
+</div>
+<p>After this streaming can start:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gst-launch-1.0 -v v4l2src device=/dev/video1 ! video/x-raw,format=UYVY,width=640,height=480 ! v4l2convert ! fbdevsink
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># media-ctl -p
+Media controller API version 5.14.0
+
+Media device information
+------------------------
+driver          imx7-csi
+model           imx-media
+serial
+bus info
+hw revision     0x0
+driver version  5.14.0
+
+Device topology
+- entity 1: csi (2 pads, 2 links)
+            type V4L2 subdev subtype Unknown flags 0
+            device node name /dev/v4l-subdev0
+        pad0: Sink
+                [fmt:UYVY8_2X8/640x480 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range]
+                &lt;- &quot;ov5640 1-003c&quot;:0 [ENABLED,IMMUTABLE]
+        pad1: Source
+                [fmt:UYVY8_2X8/640x480 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range]
+                -&gt; &quot;csi capture&quot;:0 [ENABLED,IMMUTABLE]
+
+- entity 4: csi capture (1 pad, 1 link)
+            type Node subtype V4L flags 0
+            device node name /dev/video1
+        pad0: Sink
+                &lt;- &quot;csi&quot;:1 [ENABLED,IMMUTABLE]
+
+- entity 10: ov5640 1-003c (1 pad, 1 link)
+             type V4L2 subdev subtype Sensor flags 0
+             device node name /dev/v4l-subdev1
+        pad0: Source
+                [fmt:UYVY8_2X8/640x480@1/30 field:none colorspace:srgb xfer:srgb ycbcr:601 quantization:full-range]
+                -&gt; &quot;csi&quot;:0 [ENABLED,IMMUTABLE]
+</pre></div>
+</div>
+</section>
 <section id="references">
-<h2><span class="section-number">6.8.8. </span>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">6.8.9. </span>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <dl class="footnote brackets">
 <dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p><a class="reference external" href="https://www.nxp.com/docs/en/reference-manual/IMX7SRM.pdf">https://www.nxp.com/docs/en/reference-manual/IMX7SRM.pdf</a></p>

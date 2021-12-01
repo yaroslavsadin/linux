@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -167,6 +167,7 @@
 <li class="toctree-l2"><a class="reference internal" href="index.html#program-types">Program types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#map-types">Map types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#testing-and-debugging-bpf">Testing and debugging BPF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#licensing">Licensing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#other">Other</a></li>
 </ul>
 </li>
@@ -337,6 +338,7 @@ sequentially and type id is assigned to each recognized type starting from id
 #define BTF_KIND_VAR            14      /* Variable     */
 #define BTF_KIND_DATASEC        15      /* Section      */
 #define BTF_KIND_FLOAT          16      /* Floating point       */
+#define BTF_KIND_DECL_TAG       17      /* Decl Tag     */
 </pre></div>
 </div>
 <p>Note that the type section encodes debug info, not just pure types.
@@ -357,7 +359,7 @@ sequentially and type id is assigned to each recognized type starting from id
      * &quot;size&quot; tells the size of the type it is describing.
      *
      * &quot;type&quot; is used by PTR, TYPEDEF, VOLATILE, CONST, RESTRICT,
-     * FUNC and FUNC_PROTO.
+     * FUNC, FUNC_PROTO and DECL_TAG.
      * &quot;type&quot; is a type_id referring to another type.
      */
     union {
@@ -776,6 +778,34 @@ map definition.</p>
 </dd>
 </dl>
 <p>No additional type data follow <code class="docutils literal notranslate"><span class="pre">btf_type</span></code>.</p>
+</section>
+<section id="btf-kind-decl-tag">
+<h4>2.2.17 BTF_KIND_DECL_TAG<a class="headerlink" href="#btf-kind-decl-tag" title="Permalink to this headline">¶</a></h4>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_type</span></code> encoding requirement:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name_off</span></code>: offset to a non-empty string</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">info.kind_flag</span></code>: 0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">info.kind</span></code>: BTF_KIND_DECL_TAG</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">info.vlen</span></code>: 0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: <code class="docutils literal notranslate"><span class="pre">struct</span></code>, <code class="docutils literal notranslate"><span class="pre">union</span></code>, <code class="docutils literal notranslate"><span class="pre">func</span></code>, <code class="docutils literal notranslate"><span class="pre">var</span></code> or <code class="docutils literal notranslate"><span class="pre">typedef</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">btf_type</span></code> is followed by <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">btf_decl_tag</span></code>.:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct btf_decl_tag {
+    __u32   component_idx;
+};
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">name_off</span></code> encodes btf_decl_tag attribute string.
+The <code class="docutils literal notranslate"><span class="pre">type</span></code> should be <code class="docutils literal notranslate"><span class="pre">struct</span></code>, <code class="docutils literal notranslate"><span class="pre">union</span></code>, <code class="docutils literal notranslate"><span class="pre">func</span></code>, <code class="docutils literal notranslate"><span class="pre">var</span></code> or <code class="docutils literal notranslate"><span class="pre">typedef</span></code>.
+For <code class="docutils literal notranslate"><span class="pre">var</span></code> or <code class="docutils literal notranslate"><span class="pre">typedef</span></code> type, <code class="docutils literal notranslate"><span class="pre">btf_decl_tag.component_idx</span></code> must be <code class="docutils literal notranslate"><span class="pre">-1</span></code>.
+For the other three types, if the btf_decl_tag attribute is
+applied to the <code class="docutils literal notranslate"><span class="pre">struct</span></code>, <code class="docutils literal notranslate"><span class="pre">union</span></code> or <code class="docutils literal notranslate"><span class="pre">func</span></code> itself,
+<code class="docutils literal notranslate"><span class="pre">btf_decl_tag.component_idx</span></code> must be <code class="docutils literal notranslate"><span class="pre">-1</span></code>. Otherwise,
+the attribute is applied to a <code class="docutils literal notranslate"><span class="pre">struct</span></code>/<code class="docutils literal notranslate"><span class="pre">union</span></code> member or
+a <code class="docutils literal notranslate"><span class="pre">func</span></code> argument, and <code class="docutils literal notranslate"><span class="pre">btf_decl_tag.component_idx</span></code> should be a
+valid index (starting from 0) pointing to a member or an argument.</p>
 </section>
 </section>
 </section>

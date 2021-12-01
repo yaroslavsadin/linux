@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -782,9 +782,9 @@ The operators have to be set in reg parameter.</p>
 <p><strong>Return</strong></p>
 <p>Zero if successful, or non-zero on failure.</p>
 <dl class="c function">
-<dt id="c.snd_dma_alloc_pages">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">snd_dma_alloc_pages</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">type</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.snd_dma_alloc_pages" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">device</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">snd_dma_buffer</span> <span class="pre">*</span><em><span class="pre">dmab</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.snd_dma_alloc_pages" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>allocate the buffer area according to the given type</p>
+<dt id="c.snd_dma_alloc_dir_pages">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">snd_dma_alloc_dir_pages</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">type</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.snd_dma_alloc_dir_pages" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">device</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">dma_data_direction</span> <em><span class="pre">dir</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">snd_dma_buffer</span> <span class="pre">*</span><em><span class="pre">dmab</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.snd_dma_alloc_dir_pages" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>allocate the buffer area according to the given type and direction</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
@@ -792,6 +792,8 @@ The operators have to be set in reg parameter.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">type</span></code></dt><dd><p>the DMA buffer type</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span> <span class="pre">*device</span></code></dt><dd><p>the device pointer</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">dma_data_direction</span> <span class="pre">dir</span></code></dt><dd><p>DMA direction</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">size</span></code></dt><dd><p>the buffer size to allocate</p>
 </dd>
@@ -841,10 +843,10 @@ otherwise a negative value on error.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Releases the allocated buffer via <a class="reference internal" href="#c.snd_dma_alloc_pages" title="snd_dma_alloc_pages"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_dma_alloc_pages()</span></code></a>.</p>
+<p>Releases the allocated buffer via snd_dma_alloc_pages().</p>
 <dl class="c function">
-<dt id="c.snd_devm_alloc_pages">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">snd_dma_buffer</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">snd_devm_alloc_pages</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../driver-api/infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">int</span> <em><span class="pre">type</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.snd_devm_alloc_pages" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.snd_devm_alloc_dir_pages">
+<em class="property"><span class="pre">struct</span></em> <span class="pre">snd_dma_buffer</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">snd_devm_alloc_dir_pages</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../driver-api/infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">int</span> <em><span class="pre">type</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">dma_data_direction</span> <em><span class="pre">dir</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.snd_devm_alloc_dir_pages" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate the buffer and manage with devres</p>
 </dd></dl>
 
@@ -854,13 +856,15 @@ otherwise a negative value on error.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">type</span></code></dt><dd><p>the DMA buffer type</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">dma_data_direction</span> <span class="pre">dir</span></code></dt><dd><p>DMA direction</p>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">size</span></code></dt><dd><p>the buffer size to allocate</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
 <p>Allocate buffer pages depending on the given type and manage using devres.
 The pages will be released automatically at the device removal.</p>
-<p>Unlike <a class="reference internal" href="#c.snd_dma_alloc_pages" title="snd_dma_alloc_pages"><code class="xref c c-func docutils literal notranslate"><span class="pre">snd_dma_alloc_pages()</span></code></a>, this function requires the real device pointer,
+<p>Unlike snd_dma_alloc_pages(), this function requires the real device pointer,
 hence it can’t work with SNDRV_DMA_TYPE_CONTINUOUS or
 SNDRV_DMA_TYPE_VMALLOC type.</p>
 <p>The function returns the snd_dma_buffer object at success, or NULL if failed.</p>
@@ -875,6 +879,19 @@ SNDRV_DMA_TYPE_VMALLOC type.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_dma_buffer</span> <span class="pre">*dmab</span></code></dt><dd><p>buffer allocation information</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">vm_area_struct</span> <span class="pre">*area</span></code></dt><dd><p>VM area information</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.snd_dma_buffer_sync">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">snd_dma_buffer_sync</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">snd_dma_buffer</span> <span class="pre">*</span><em><span class="pre">dmab</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">snd_dma_sync_mode</span> <em><span class="pre">mode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.snd_dma_buffer_sync" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>sync DMA buffer between CPU and device</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">snd_dma_buffer</span> <span class="pre">*dmab</span></code></dt><dd><p>buffer allocation information</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">snd_dma_sync_mode</span> <span class="pre">mode</span></code></dt><dd><p>sync mode</p>
 </dd>
 </dl>
 <dl class="c function">

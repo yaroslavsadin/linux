@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -1269,6 +1269,40 @@ Intel-specific) for the specified plane.</p>
 <p><strong>Description</strong></p>
 <p>Destroys the plane state (both common and Intel-specific) for the
 specified plane.</p>
+<dl class="c function">
+<dt id="c.intel_prepare_plane_fb">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">intel_prepare_plane_fb</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_plane" title="drm_plane"><span class="pre">drm_plane</span></a> <span class="pre">*</span><em><span class="pre">_plane</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_plane_state" title="drm_plane_state"><span class="pre">drm_plane_state</span></a> <span class="pre">*</span><em><span class="pre">_new_plane_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_prepare_plane_fb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prepare fb for usage on plane</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_plane</span> <span class="pre">*_plane</span></code></dt><dd><p>drm plane to prepare for</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_plane_state</span> <span class="pre">*_new_plane_state</span></code></dt><dd><p>the plane state being prepared</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Prepares a framebuffer for usage on a display plane.  Generally this
+involves pinning the underlying object and updating the frontbuffer tracking
+bits.  Some older platforms need special physical address handling for
+cursor planes.</p>
+<p>Returns 0 on success, negative error code on failure.</p>
+<dl class="c function">
+<dt id="c.intel_cleanup_plane_fb">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_cleanup_plane_fb</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_plane" title="drm_plane"><span class="pre">drm_plane</span></a> <span class="pre">*</span><em><span class="pre">plane</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_plane_state" title="drm_plane_state"><span class="pre">drm_plane_state</span></a> <span class="pre">*</span><em><span class="pre">_old_plane_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_cleanup_plane_fb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Cleans up an fb after plane use</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_plane</span> <span class="pre">*plane</span></code></dt><dd><p>drm plane to clean up for</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_plane_state</span> <span class="pre">*_old_plane_state</span></code></dt><dd><p>the state from the previous modeset</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Cleans up a framebuffer that has just been removed from a plane.</p>
 </section>
 <section id="asynchronous-page-flip">
 <h3>Asynchronous Page Flip<a class="headerlink" href="#asynchronous-page-flip" title="Permalink to this headline">¶</a></h3>
@@ -1757,23 +1791,6 @@ Front buffer modifications do not trigger DC3CO activation on purpose as it
 would bring a lot of complexity and most of the moderns systems will only
 use page flips.</p>
 <dl class="c function">
-<dt id="c.intel_psr_enable">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_psr_enable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.intel_psr_enable" title="intel_dp"><span class="pre">intel_dp</span></a> <span class="pre">*</span><em><span class="pre">intel_dp</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc_state</span> <span class="pre">*</span><em><span class="pre">crtc_state</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_connector_state" title="drm_connector_state"><span class="pre">drm_connector_state</span></a> <span class="pre">*</span><em><span class="pre">conn_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_psr_enable" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Enable PSR</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">intel_dp</span> <span class="pre">*intel_dp</span></code></dt><dd><p>Intel DP</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">struct</span> <span class="pre">intel_crtc_state</span> <span class="pre">*crtc_state</span></code></dt><dd><p>new CRTC state</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">struct</span> <span class="pre">drm_connector_state</span> <span class="pre">*conn_state</span></code></dt><dd><p>new CONNECTOR state</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>This function can only be called after the pipe is fully trained and enabled.</p>
-<dl class="c function">
 <dt id="c.intel_psr_disable">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_psr_disable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.intel_psr_disable" title="intel_dp"><span class="pre">intel_dp</span></a> <span class="pre">*</span><em><span class="pre">intel_dp</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc_state</span> <span class="pre">*</span><em><span class="pre">old_crtc_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_psr_disable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Disable PSR</p>
@@ -1814,25 +1831,6 @@ use page flips.</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>This function need to be called after pausing psr.</p>
-<dl class="c function">
-<dt id="c.intel_psr_update">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_psr_update</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.intel_psr_update" title="intel_dp"><span class="pre">intel_dp</span></a> <span class="pre">*</span><em><span class="pre">intel_dp</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc_state</span> <span class="pre">*</span><em><span class="pre">crtc_state</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_connector_state" title="drm_connector_state"><span class="pre">drm_connector_state</span></a> <span class="pre">*</span><em><span class="pre">conn_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_psr_update" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Update PSR state</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">intel_dp</span> <span class="pre">*intel_dp</span></code></dt><dd><p>Intel DP</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">struct</span> <span class="pre">intel_crtc_state</span> <span class="pre">*crtc_state</span></code></dt><dd><p>new CRTC state</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">struct</span> <span class="pre">drm_connector_state</span> <span class="pre">*conn_state</span></code></dt><dd><p>new CONNECTOR state</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>This functions will update PSR states, disabling, enabling or switching PSR
-version when executing fastsets. For full modeset, <a class="reference internal" href="#c.intel_psr_disable" title="intel_psr_disable"><code class="xref c c-func docutils literal notranslate"><span class="pre">intel_psr_disable()</span></code></a> and
-<a class="reference internal" href="#c.intel_psr_enable" title="intel_psr_enable"><code class="xref c c-func docutils literal notranslate"><span class="pre">intel_psr_enable()</span></code></a> should be called instead.</p>
 <dl class="c function">
 <dt id="c.psr_wait_for_idle">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">psr_wait_for_idle</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.psr_wait_for_idle" title="intel_dp"><span class="pre">intel_dp</span></a> <span class="pre">*</span><em><span class="pre">intel_dp</span></em>, <span class="pre">u32</span> <span class="pre">*</span><em><span class="pre">out_value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.psr_wait_for_idle" title="Permalink to this definition">¶</a><br /></dt>
@@ -2012,6 +2010,24 @@ intel_fbc_disable in the middle, as long as it is deactivated.</p>
 <p><strong>Description</strong></p>
 <p>This function disables FBC if it’s associated with the provided CRTC.</p>
 <dl class="c function">
+<dt id="c.intel_fbc_update">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_fbc_update</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">intel_atomic_state</span> <span class="pre">*</span><em><span class="pre">state</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc</span> <span class="pre">*</span><em><span class="pre">crtc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_fbc_update" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>enable/disable FBC on the CRTC</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">intel_atomic_state</span> <span class="pre">*state</span></code></dt><dd><p>atomic state</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">intel_crtc</span> <span class="pre">*crtc</span></code></dt><dd><p>the CRTC</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This function checks if the given CRTC was chosen for FBC, then enables it if
+possible. Notice that it doesn’t activate FBC. It is valid to call
+intel_fbc_update multiple times for the same pipe without an
+intel_fbc_disable in the middle.</p>
+<dl class="c function">
 <dt id="c.intel_fbc_global_disable">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_fbc_global_disable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">drm_i915_private</span> <span class="pre">*</span><em><span class="pre">dev_priv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_fbc_global_disable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>globally disable FBC</p>
@@ -2080,35 +2096,14 @@ there is a disturbance on the screen triggered by user activity or a periodic
 system activity, DRRS is disabled (RR is changed to high RR).  When there is
 no movement on screen, after a timeout of 1 second, a switch to low RR is
 made.</p>
-<p>For integration with frontbuffer tracking code, <a class="reference internal" href="#c.intel_edp_drrs_invalidate" title="intel_edp_drrs_invalidate"><code class="xref c c-func docutils literal notranslate"><span class="pre">intel_edp_drrs_invalidate()</span></code></a>
-and <a class="reference internal" href="#c.intel_edp_drrs_flush" title="intel_edp_drrs_flush"><code class="xref c c-func docutils literal notranslate"><span class="pre">intel_edp_drrs_flush()</span></code></a> are called.</p>
+<p>For integration with frontbuffer tracking code, <a class="reference internal" href="#c.intel_drrs_invalidate" title="intel_drrs_invalidate"><code class="xref c c-func docutils literal notranslate"><span class="pre">intel_drrs_invalidate()</span></code></a>
+and <a class="reference internal" href="#c.intel_drrs_flush" title="intel_drrs_flush"><code class="xref c c-func docutils literal notranslate"><span class="pre">intel_drrs_flush()</span></code></a> are called.</p>
 <p>DRRS can be further extended to support other internal panels and also
 the scenario of video playback wherein RR is set based on the rate
 requested by userspace.</p>
 <dl class="c function">
-<dt id="c.intel_dp_set_drrs_state">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_dp_set_drrs_state</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">drm_i915_private</span> <span class="pre">*</span><em><span class="pre">dev_priv</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc_state</span> <span class="pre">*</span><em><span class="pre">crtc_state</span></em>, <span class="pre">int</span> <em><span class="pre">refresh_rate</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_dp_set_drrs_state" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>program registers for RR switch to take effect</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_i915_private</span> <span class="pre">*dev_priv</span></code></dt><dd><p>i915 device</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">struct</span> <span class="pre">intel_crtc_state</span> <span class="pre">*crtc_state</span></code></dt><dd><p>a pointer to the active intel_crtc_state</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">refresh_rate</span></code></dt><dd><p>RR to be programmed</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>This function gets called when refresh rate (RR) has to be changed from
-one frequency to another. Switches can be between high and low RR
-supported by the panel or to any other RR based on media playback (in
-this case, RR value needs to be passed from user space).</p>
-<p>The caller of this function needs to take a lock on dev_priv-&gt;drrs.</p>
-<dl class="c function">
-<dt id="c.intel_edp_drrs_enable">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_edp_drrs_enable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.intel_edp_drrs_enable" title="intel_dp"><span class="pre">intel_dp</span></a> <span class="pre">*</span><em><span class="pre">intel_dp</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc_state</span> <span class="pre">*</span><em><span class="pre">crtc_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_edp_drrs_enable" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.intel_drrs_enable">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_drrs_enable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.intel_drrs_enable" title="intel_dp"><span class="pre">intel_dp</span></a> <span class="pre">*</span><em><span class="pre">intel_dp</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc_state</span> <span class="pre">*</span><em><span class="pre">crtc_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_drrs_enable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>init drrs struct if supported</p>
 </dd></dl>
 
@@ -2122,8 +2117,8 @@ this case, RR value needs to be passed from user space).</p>
 <p><strong>Description</strong></p>
 <p>Initializes frontbuffer_bits and drrs.dp</p>
 <dl class="c function">
-<dt id="c.intel_edp_drrs_disable">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_edp_drrs_disable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.intel_edp_drrs_disable" title="intel_dp"><span class="pre">intel_dp</span></a> <span class="pre">*</span><em><span class="pre">intel_dp</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc_state</span> <span class="pre">*</span><em><span class="pre">old_crtc_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_edp_drrs_disable" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.intel_drrs_disable">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_drrs_disable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.intel_drrs_disable" title="intel_dp"><span class="pre">intel_dp</span></a> <span class="pre">*</span><em><span class="pre">intel_dp</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc_state</span> <span class="pre">*</span><em><span class="pre">old_crtc_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_drrs_disable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Disable DRRS</p>
 </dd></dl>
 
@@ -2135,8 +2130,8 @@ this case, RR value needs to be passed from user space).</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.intel_edp_drrs_invalidate">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_edp_drrs_invalidate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">drm_i915_private</span> <span class="pre">*</span><em><span class="pre">dev_priv</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">frontbuffer_bits</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_edp_drrs_invalidate" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.intel_drrs_invalidate">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_drrs_invalidate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">drm_i915_private</span> <span class="pre">*</span><em><span class="pre">dev_priv</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">frontbuffer_bits</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_drrs_invalidate" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Disable Idleness DRRS</p>
 </dd></dl>
 
@@ -2152,8 +2147,8 @@ this case, RR value needs to be passed from user space).</p>
 Hence DRRS needs to be Upclocked, i.e. (LOW_RR -&gt; HIGH_RR).</p>
 <p>Dirty frontbuffers relevant to DRRS are tracked in busy_frontbuffer_bits.</p>
 <dl class="c function">
-<dt id="c.intel_edp_drrs_flush">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_edp_drrs_flush</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">drm_i915_private</span> <span class="pre">*</span><em><span class="pre">dev_priv</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">frontbuffer_bits</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_edp_drrs_flush" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.intel_drrs_flush">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_drrs_flush</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">drm_i915_private</span> <span class="pre">*</span><em><span class="pre">dev_priv</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">frontbuffer_bits</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_drrs_flush" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Restart Idleness DRRS</p>
 </dd></dl>
 
@@ -2171,8 +2166,8 @@ completed or flip on a crtc is completed. So DRRS should be upclocked
 if no other planes are dirty.</p>
 <p>Dirty frontbuffers relevant to DRRS are tracked in busy_frontbuffer_bits.</p>
 <dl class="c function">
-<dt id="c.intel_dp_drrs_init">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_display_mode" title="drm_display_mode"><span class="pre">drm_display_mode</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">intel_dp_drrs_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">intel_connector</span> <span class="pre">*</span><em><span class="pre">connector</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_display_mode" title="drm_display_mode"><span class="pre">drm_display_mode</span></a> <span class="pre">*</span><em><span class="pre">fixed_mode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_dp_drrs_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.intel_drrs_init">
+<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_display_mode" title="drm_display_mode"><span class="pre">drm_display_mode</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">intel_drrs_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">intel_connector</span> <span class="pre">*</span><em><span class="pre">connector</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-kms.html#c.drm_display_mode" title="drm_display_mode"><span class="pre">drm_display_mode</span></a> <span class="pre">*</span><em><span class="pre">fixed_mode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_drrs_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Init basic DRRS work and mutex.</p>
 </dd></dl>
 
@@ -2836,20 +2831,6 @@ commit phase.</p>
 <p><strong>Return</strong></p>
 <p>The id of <strong>pll</strong></p>
 <dl class="c function">
-<dt id="c.intel_prepare_shared_dpll">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_prepare_shared_dpll</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc_state</span> <span class="pre">*</span><em><span class="pre">crtc_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_prepare_shared_dpll" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>call a dpll’s prepare hook</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">struct</span> <span class="pre">intel_crtc_state</span> <span class="pre">*crtc_state</span></code></dt><dd><p>CRTC, and its state, which has a shared dpll</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>This calls the PLL’s prepare hook if it has one and if the PLL is not
-already enabled. The prepare hook is platform specific.</p>
-<dl class="c function">
 <dt id="c.intel_enable_shared_dpll">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">intel_enable_shared_dpll</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">intel_crtc_state</span> <span class="pre">*</span><em><span class="pre">crtc_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_enable_shared_dpll" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>enable a CRTC’s shared DPLL</p>
@@ -3144,7 +3125,6 @@ a struct <code class="xref c c-type docutils literal notranslate"><span class="p
 
 <p><strong>Definition</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct intel_shared_dpll_funcs {
-  void (*prepare)(struct drm_i915_private *dev_priv, struct intel_shared_dpll *pll);
   void (*enable)(struct drm_i915_private *dev_priv, struct intel_shared_dpll *pll);
   void (*disable)(struct drm_i915_private *dev_priv, struct intel_shared_dpll *pll);
   bool (*get_hw_state)(struct drm_i915_private *dev_priv,struct intel_shared_dpll *pll, struct intel_dpll_hw_state *hw_state);
@@ -3154,10 +3134,6 @@ a struct <code class="xref c c-type docutils literal notranslate"><span class="p
 </div>
 <p><strong>Members</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">prepare</span></code></dt><dd><p>Optional hook to perform operations prior to enabling the PLL.
-Called from <a class="reference internal" href="#c.intel_prepare_shared_dpll" title="intel_prepare_shared_dpll"><code class="xref c c-func docutils literal notranslate"><span class="pre">intel_prepare_shared_dpll()</span></code></a> function unless the PLL
-is already enabled.</p>
-</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">enable</span></code></dt><dd><p>Hook for enabling the pll, called from <a class="reference internal" href="#c.intel_enable_shared_dpll" title="intel_enable_shared_dpll"><code class="xref c c-func docutils literal notranslate"><span class="pre">intel_enable_shared_dpll()</span></code></a>
 if the pll is not already enabled.</p>
 </dd>
@@ -3784,6 +3760,8 @@ for passing to userspace clients to determine what operations are permitted.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">I915_GEM_ENGINE_TYPE_BALANCED</span></code></dt><dd><p>A load-balanced engine set</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">I915_GEM_ENGINE_TYPE_PARALLEL</span></code></dt><dd><p>A parallel engine set</p>
+</dd>
 </dl>
 <dl class="c struct">
 <dt id="c.i915_gem_proto_engine">
@@ -3796,6 +3774,7 @@ for passing to userspace clients to determine what operations are permitted.</p>
   enum i915_gem_engine_type type;
   struct intel_engine_cs *engine;
   unsigned int num_siblings;
+  unsigned int width;
   struct intel_engine_cs **siblings;
   struct intel_sseu sseu;
 };
@@ -3807,16 +3786,18 @@ for passing to userspace clients to determine what operations are permitted.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">engine</span></code></dt><dd><p>Engine, for physical</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">num_siblings</span></code></dt><dd><p>Number of balanced siblings</p>
+<dt><code class="docutils literal notranslate"><span class="pre">num_siblings</span></code></dt><dd><p>Number of balanced or parallel siblings</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">siblings</span></code></dt><dd><p>Balanced siblings</p>
+<dt><code class="docutils literal notranslate"><span class="pre">width</span></code></dt><dd><p>Width of each sibling</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">siblings</span></code></dt><dd><p>Balanced siblings or num_siblings * width for parallel</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">sseu</span></code></dt><dd><p>Client-set SSEU parameters</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
 <p>This struct describes an engine that a context may contain.  Engines
-have three types:</p>
+have four types:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>I915_GEM_ENGINE_TYPE_INVALID: Invalid engines can be created but they
@@ -3828,6 +3809,9 @@ engines and then set them up later as virtual engines.</p></li>
 i915_gem_proto_engine::engine.</p></li>
 <li><p>I915_GEM_ENGINE_TYPE_BALANCED: A load-balanced engine set, described
 i915_gem_proto_engine::num_siblings and i915_gem_proto_engine::siblings.</p></li>
+<li><p>I915_GEM_ENGINE_TYPE_PARALLEL: A parallel submission engine set, described
+i915_gem_proto_engine::width, i915_gem_proto_engine::num_siblings, and
+i915_gem_proto_engine::siblings.</p></li>
 </ul>
 </div></blockquote>
 <dl class="c struct">
@@ -3845,6 +3829,8 @@ i915_gem_proto_engine::num_siblings and i915_gem_proto_engine::siblings.</p></li
   struct i915_gem_proto_engine *user_engines;
   struct intel_sseu legacy_rcs_sseu;
   bool single_timeline;
+  bool uses_protected_content;
+  intel_wakeref_t pxp_wakeref;
 };
 </pre></div>
 </div>
@@ -3863,6 +3849,10 @@ i915_gem_proto_engine::num_siblings and i915_gem_proto_engine::siblings.</p></li
 <dt><code class="docutils literal notranslate"><span class="pre">legacy_rcs_sseu</span></code></dt><dd><p>Client-set SSEU parameters for the legacy RCS</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">single_timeline</span></code></dt><dd><p>See See <a class="reference internal" href="#c.i915_gem_context" title="i915_gem_context"><code class="xref c c-type docutils literal notranslate"><span class="pre">i915_gem_context.syncobj</span></code></a></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">uses_protected_content</span></code></dt><dd><p>See <a class="reference internal" href="#c.i915_gem_context" title="i915_gem_context"><code class="xref c c-type docutils literal notranslate"><span class="pre">i915_gem_context.uses_protected_content</span></code></a></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pxp_wakeref</span></code></dt><dd><p>See <a class="reference internal" href="#c.i915_gem_context" title="i915_gem_context"><code class="xref c c-type docutils literal notranslate"><span class="pre">i915_gem_context.pxp_wakeref</span></code></a></p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
@@ -3931,10 +3921,11 @@ CONTEXT_CREATE_SET_PARAM during GEM_CONTEXT_CREATE.</p>
   struct i915_gem_engines __rcu *engines;
   struct mutex engines_mutex;
   struct drm_syncobj *syncobj;
-  struct i915_address_space __rcu *vm;
+  struct i915_address_space *vm;
   struct pid *pid;
   struct list_head link;
   struct kref ref;
+  struct work_struct release_work;
   struct rcu_head rcu;
   unsigned long user_flags;
 #define UCONTEXT_NO_ERROR_CAPTURE       1;
@@ -3944,6 +3935,8 @@ CONTEXT_CREATE_SET_PARAM during GEM_CONTEXT_CREATE.</p>
   unsigned long flags;
 #define CONTEXT_CLOSED                  0;
 #define CONTEXT_USER_ENGINES            1;
+  bool uses_protected_content;
+  intel_wakeref_t pxp_wakeref;
   struct mutex mutex;
   struct i915_sched_attr sched;
   atomic_t guilty_count;
@@ -4002,11 +3995,31 @@ and on each request submitted to the hardware using the request
 finished all pending writes). See i915_gem_context_get() and
 i915_gem_context_put() for access.</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">release_work</span></code></dt><dd><p>Work item for deferred cleanup, since i915_gem_context_put() tends to
+be called from hardirq context.</p>
+<p>FIXME: The only real reason for this is <a class="reference internal" href="#c.i915_gem_engines" title="i915_gem_engines"><code class="xref c c-type docutils literal notranslate"><span class="pre">i915_gem_engines.fence</span></code></a>, all
+other callers are from process context and need at most some mild
+shuffling to pull the i915_gem_context_put() call out of a spinlock.</p>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">rcu</span></code></dt><dd><p>rcu_head for deferred freeing.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">user_flags</span></code></dt><dd><p>small set of booleans controlled by the user</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">flags</span></code></dt><dd><p>small set of booleans</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">uses_protected_content</span></code></dt><dd><p>context uses PXP-encrypted objects.</p>
+<p>This flag can only be set at ctx creation time and it’s immutable for
+the lifetime of the context. See I915_CONTEXT_PARAM_PROTECTED_CONTENT
+in uapi/drm/i915_drm.h for more info on setting restrictions and
+expected behaviour of marked contexts.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pxp_wakeref</span></code></dt><dd><p>wakeref to keep the device awake when PXP is in use</p>
+<p>PXP sessions are invalidated when the device is suspended, which in
+turns invalidates all contexts and objects using it. To keep the
+flow simple, we keep the device awake when contexts using PXP objects
+are in use. It is expected that the userspace application only uses
+PXP when the display is on, so taking a wakeref here shouldn’t worsen
+our power metrics.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">mutex</span></code></dt><dd><p>guards everything that isn’t engines or handles_vma</p>
 </dd>
@@ -4777,6 +4790,94 @@ W, Ys and Yf tiling GEM only allows object tiling to be set to X or Y tiled.
 Anything else can be handled in userspace entirely without the kernel’s
 invovlement.</p>
 </section>
+<section id="protected-objects">
+<h3>Protected Objects<a class="headerlink" href="#protected-objects" title="Permalink to this headline">¶</a></h3>
+<p>PXP (Protected Xe Path) is a feature available in Gen12 and newer platforms.
+It allows execution and flip to display of protected (i.e. encrypted)
+objects. The SW support is enabled via the CONFIG_DRM_I915_PXP kconfig.</p>
+<p>Objects can opt-in to PXP encryption at creation time via the
+I915_GEM_CREATE_EXT_PROTECTED_CONTENT create_ext flag. For objects to be
+correctly protected they must be used in conjunction with a context created
+with the I915_CONTEXT_PARAM_PROTECTED_CONTENT flag. See the documentation
+of those two uapi flags for details and restrictions.</p>
+<p>Protected objects are tied to a pxp session; currently we only support one
+session, which i915 manages and whose index is available in the uapi
+(I915_PROTECTED_CONTENT_DEFAULT_SESSION) for use in instructions targeting
+protected objects.
+The session is invalidated by the HW when certain events occur (e.g.
+suspend/resume). When this happens, all the objects that were used with the
+session are marked as invalid and all contexts marked as using protected
+content are banned. Any further attempt at using them in an execbuf call is
+rejected, while flips are converted to black frames.</p>
+<p>Some of the PXP setup operations are performed by the Management Engine,
+which is handled by the mei driver; communication between i915 and mei is
+performed via the mei_pxp component module.</p>
+<dl class="c struct">
+<dt id="c.intel_pxp">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">intel_pxp</span></code><a class="headerlink" href="#c.intel_pxp" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>pxp state</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct intel_pxp {
+  struct i915_pxp_component *pxp_component;
+  bool pxp_component_added;
+  struct intel_context *ce;
+  struct mutex arb_mutex;
+  bool arb_is_valid;
+  u32 key_instance;
+  struct mutex tee_mutex;
+  bool hw_state_invalidated;
+  bool irq_enabled;
+  struct completion termination;
+  struct work_struct session_work;
+  u32 session_events;
+#define PXP_TERMINATION_REQUEST  BIT(0);
+#define PXP_TERMINATION_COMPLETE BIT(1);
+#define PXP_INVAL_REQUIRED       BIT(2);
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">pxp_component</span></code></dt><dd><p>i915_pxp_component struct of the bound mei_pxp
+module. Only set and cleared inside component bind/unbind functions,
+which are protected by <code class="xref c c-type docutils literal notranslate"><span class="pre">tee_mutex</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pxp_component_added</span></code></dt><dd><p>track if the pxp component has been added.
+Set and cleared in tee init and fini functions respectively.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ce</span></code></dt><dd><p>kernel-owned context used for PXP operations</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">arb_mutex</span></code></dt><dd><p>protects arb session start</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">arb_is_valid</span></code></dt><dd><p>tracks arb session status.
+After a teardown, the arb session can still be in play on the HW
+even if the keys are gone, so we can’t rely on the HW state of the
+session to know if it’s valid and need to track the status in SW.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">key_instance</span></code></dt><dd><p>tracks which key instance we’re on, so we can use it
+to determine if an object was created using the current key or a
+previous one.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">tee_mutex</span></code></dt><dd><p>protects the tee channel binding and messaging.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">hw_state_invalidated</span></code></dt><dd><p>if the HW perceives an attack on the integrity
+of the encryption it will invalidate the keys and expect SW to
+re-initialize the session. We keep track of this state to make sure
+we only re-start the arb session when required.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">irq_enabled</span></code></dt><dd><p>tracks the status of the kcr irqs</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">termination</span></code></dt><dd><p>tracks the status of a pending termination. Only
+re-initialized under gt-&gt;irq_lock and completed in <code class="xref c c-type docutils literal notranslate"><span class="pre">session_work</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">session_work</span></code></dt><dd><p>worker that manages session events.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">session_events</span></code></dt><dd><p>pending session events, protected with gt-&gt;irq_lock.</p>
+</dd>
+</dl>
+</section>
 </section>
 <section id="microcontrollers">
 <h2>Microcontrollers<a class="headerlink" href="#microcontrollers" title="Permalink to this headline">¶</a></h2>
@@ -4835,6 +4936,158 @@ supported on all gen9+ platforms.</p>
 if at least one of the operations is selected. However, not loading the GuC
 might result in the loss of some features that do require the GuC (currently
 just the HuC, but more are expected to land in the future).</p>
+<dl class="c struct">
+<dt id="c.intel_guc">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">intel_guc</span></code><a class="headerlink" href="#c.intel_guc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Top level structure of GuC.</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct intel_guc {
+  struct intel_uc_fw fw;
+  struct intel_guc_log log;
+  struct intel_guc_ct ct;
+  struct intel_guc_slpc slpc;
+  struct i915_sched_engine *sched_engine;
+  struct i915_request *stalled_request;
+  enum {
+    STALL_NONE,
+    STALL_REGISTER_CONTEXT,
+    STALL_MOVE_LRC_TAIL,
+    STALL_ADD_REQUEST,
+  } submission_stall_reason;
+  spinlock_t irq_lock;
+  unsigned int msg_enabled_mask;
+  atomic_t outstanding_submission_g2h;
+  struct {
+    void (*reset)(struct intel_guc *guc);
+    void (*enable)(struct intel_guc *guc);
+    void (*disable)(struct intel_guc *guc);
+  } interrupts;
+  struct {
+    spinlock_t lock;
+    struct ida guc_ids;
+    unsigned long *guc_ids_bitmap;
+    struct list_head guc_id_list;
+    struct list_head destroyed_contexts;
+    struct work_struct destroyed_worker;
+  } submission_state;
+  bool submission_supported;
+  bool submission_selected;
+  bool rc_supported;
+  bool rc_selected;
+  struct i915_vma *ads_vma;
+  struct __guc_ads_blob *ads_blob;
+  u32 ads_regset_size;
+  u32 ads_golden_ctxt_size;
+  struct i915_vma *lrc_desc_pool;
+  void *lrc_desc_pool_vaddr;
+  struct xarray context_lookup;
+  u32 params[GUC_CTL_MAX_DWORDS];
+  struct {
+    u32 base;
+    unsigned int count;
+    enum forcewake_domains fw_domains;
+  } send_regs;
+  i915_reg_t notify_reg;
+  u32 mmio_msg;
+  struct mutex send_mutex;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">fw</span></code></dt><dd><p>the GuC firmware</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">log</span></code></dt><dd><p>sub-structure containing GuC log related data and objects</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ct</span></code></dt><dd><p>the command transport communication channel</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">slpc</span></code></dt><dd><p>sub-structure containing SLPC related data and objects</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">sched_engine</span></code></dt><dd><p>Global engine used to submit requests to GuC</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">stalled_request</span></code></dt><dd><p>if GuC can’t process a request for any reason, we
+save it until GuC restarts processing. No other request can be
+submitted until the stalled request is processed.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">submission_stall_reason</span></code></dt><dd><p>reason why submission is stalled</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">irq_lock</span></code></dt><dd><p>protects GuC irq state</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">msg_enabled_mask</span></code></dt><dd><p>mask of events that are processed when receiving
+an INTEL_GUC_ACTION_DEFAULT G2H message.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">outstanding_submission_g2h</span></code></dt><dd><p>number of outstanding GuC to Host
+responses related to GuC submission, used to determine if the GT is
+idle</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">interrupts</span></code></dt><dd><p>pointers to GuC interrupt-managing functions.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">submission_state</span></code></dt><dd><p>sub-structure for submission state protected by
+single lock</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">submission_supported</span></code></dt><dd><p>tracks whether we support GuC submission on
+the current platform</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">submission_selected</span></code></dt><dd><p>tracks whether the user enabled GuC submission</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rc_supported</span></code></dt><dd><p>tracks whether we support GuC rc on the current platform</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rc_selected</span></code></dt><dd><p>tracks whether the user enabled GuC rc</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ads_vma</span></code></dt><dd><p>object allocated to hold the GuC ADS</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ads_blob</span></code></dt><dd><p>contents of the GuC ADS</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ads_regset_size</span></code></dt><dd><p>size of the save/restore regsets in the ADS</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ads_golden_ctxt_size</span></code></dt><dd><p>size of the golden contexts in the ADS</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lrc_desc_pool</span></code></dt><dd><p>object allocated to hold the GuC LRC descriptor pool</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lrc_desc_pool_vaddr</span></code></dt><dd><p>contents of the GuC LRC descriptor pool</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">context_lookup</span></code></dt><dd><p>used to resolve intel_context from guc_id, if a
+context is present in this structure it is registered with the GuC</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">params</span></code></dt><dd><p>Control params for fw initialization</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">send_regs</span></code></dt><dd><p>GuC’s FW specific registers used for sending MMIO H2G</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">notify_reg</span></code></dt><dd><p>register used to send interrupts to the GuC FW</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mmio_msg</span></code></dt><dd><p>notification bitmask that the GuC writes in one of its
+registers when the CT channel is disabled, to be processed when the
+channel is back up.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">send_mutex</span></code></dt><dd><p>used to serialize the intel_guc_send actions</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>It handles firmware loading and manages client pool. intel_guc owns an
+i915_sched_engine for submission.</p>
+<dl class="c function">
+<dt id="c.intel_guc_ggtt_offset">
+<span class="pre">u32</span> <code class="sig-name descname"><span class="pre">intel_guc_ggtt_offset</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.intel_guc" title="intel_guc"><span class="pre">intel_guc</span></a> <span class="pre">*</span><em><span class="pre">guc</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">i915_vma</span> <span class="pre">*</span><em><span class="pre">vma</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_guc_ggtt_offset" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get and validate the GGTT offset of <strong>vma</strong></p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">intel_guc</span> <span class="pre">*guc</span></code></dt><dd><p>intel_guc structure.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">i915_vma</span> <span class="pre">*vma</span></code></dt><dd><p>i915 graphics virtual memory area.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>GuC does not allow any gfx GGTT address that falls into range
+[0, ggtt.pin_bias), which is reserved for Boot ROM, SRAM and WOPCM.
+Currently, in order to exclude [0, ggtt.pin_bias) address space from
+GGTT, all gfx objects used by GuC are allocated with <a class="reference internal" href="#c.intel_guc_allocate_vma" title="intel_guc_allocate_vma"><code class="xref c c-func docutils literal notranslate"><span class="pre">intel_guc_allocate_vma()</span></code></a>
+and pinned with PIN_OFFSET_BIAS along with the value of ggtt.pin_bias.</p>
+<p><strong>Return</strong></p>
+<p>GGTT offset of the <strong>vma</strong>.</p>
 <section id="guc-firmware-layout">
 <h4>GuC Firmware Layout<a class="headerlink" href="#guc-firmware-layout" title="Permalink to this headline">¶</a></h4>
 <p>The GuC/HuC firmware layout looks like this:</p>
@@ -4896,7 +5149,7 @@ while upper part of GuC Address Space [ggtt_pin_bias, GUC_GGTT_TOP) is mapped
 to DRAM. The value of the GuC ggtt_pin_bias is the GuC WOPCM size.</p>
 <dl class="c function">
 <dt id="c.intel_guc_allocate_vma">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">i915_vma</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">intel_guc_allocate_vma</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">intel_guc</span> <span class="pre">*</span><em><span class="pre">guc</span></em>, <span class="pre">u32</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_guc_allocate_vma" title="Permalink to this definition">¶</a><br /></dt>
+<em class="property"><span class="pre">struct</span></em> <span class="pre">i915_vma</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">intel_guc_allocate_vma</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.intel_guc" title="intel_guc"><span class="pre">intel_guc</span></a> <span class="pre">*</span><em><span class="pre">guc</span></em>, <span class="pre">u32</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_guc_allocate_vma" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Allocate a GGTT VMA for GuC usage</p>
 </dd></dl>
 
@@ -4920,7 +5173,7 @@ range is reserved inside GuC.</p>
 <h4>GuC-specific firmware loader<a class="headerlink" href="#guc-specific-firmware-loader" title="Permalink to this headline">¶</a></h4>
 <dl class="c function">
 <dt id="c.intel_guc_fw_upload">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">intel_guc_fw_upload</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">intel_guc</span> <span class="pre">*</span><em><span class="pre">guc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_guc_fw_upload" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">intel_guc_fw_upload</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.intel_guc" title="intel_guc"><span class="pre">intel_guc</span></a> <span class="pre">*</span><em><span class="pre">guc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.intel_guc_fw_upload" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>load GuC uCode to device</p>
 </dd></dl>
 
@@ -4939,19 +5192,6 @@ check that fetch succeeded, and then transfer the image to the h/w.</p>
 </section>
 <section id="guc-based-command-submission">
 <h4>GuC-based command submission<a class="headerlink" href="#guc-based-command-submission" title="Permalink to this headline">¶</a></h4>
-<p>IMPORTANT NOTE: GuC submission is currently not supported in i915. The GuC
-firmware is moving to an updated submission interface and we plan to
-turn submission back on when that lands. The below documentation (and related
-code) matches the old submission model and will be updated as part of the
-upgrade to the new flow.</p>
-<p>GuC stage descriptor:
-During initialization, the driver allocates a static pool of 1024 such
-descriptors, and shares them with the GuC. Currently, we only use one
-descriptor. This stage descriptor lets the GuC know about the workqueue and
-process descriptor. Theoretically, it also lets the GuC know about our HW
-contexts (context ID, etc…), but we actually employ a kind of submission
-where the GuC uses the LRCA sent via the work item instead. This is called
-a “proxy” submission.</p>
 <p>The Scratch registers:
 There are 16 MMIO-based registers start from 0xC180. The kernel driver writes
 a value to the action register (SOFT_SCRATCH_0) along with any data. It then
@@ -4959,13 +5199,73 @@ triggers an interrupt on the GuC via another register write (0xC4C8).
 Firmware writes a success/fail code back to the action register after
 processes the request. The kernel driver polls waiting for this update and
 then proceeds.</p>
-<p>Work Items:
-There are several types of work items that the host may place into a
-workqueue, each with its own requirements and limitations. Currently only
-WQ_TYPE_INORDER is needed to support legacy submission via GuC, which
-represents in-order queue. The kernel driver packs ring tail pointer and an
-ELSP context descriptor dword into Work Item.
-See guc_add_request()</p>
+<p>Command Transport buffers (CTBs):
+Covered in detail in other sections but CTBs (Host to GuC - H2G, GuC to Host
+- G2H) are a message interface between the i915 and GuC.</p>
+<p>Context registration:
+Before a context can be submitted it must be registered with the GuC via a
+H2G. A unique guc_id is associated with each context. The context is either
+registered at request creation time (normal operation) or at submission time
+(abnormal operation, e.g. after a reset).</p>
+<p>Context submission:
+The i915 updates the LRC tail value in memory. The i915 must enable the
+scheduling of the context within the GuC for the GuC to actually consider it.
+Therefore, the first time a disabled context is submitted we use a schedule
+enable H2G, while follow up submissions are done via the context submit H2G,
+which informs the GuC that a previously enabled context has new work
+available.</p>
+<p>Context unpin:
+To unpin a context a H2G is used to disable scheduling. When the
+corresponding G2H returns indicating the scheduling disable operation has
+completed it is safe to unpin the context. While a disable is in flight it
+isn’t safe to resubmit the context so a fence is used to stall all future
+requests of that context until the G2H is returned.</p>
+<p>Context deregistration:
+Before a context can be destroyed or if we steal its guc_id we must
+deregister the context with the GuC via H2G. If stealing the guc_id it isn’t
+safe to submit anything to this guc_id until the deregister completes so a
+fence is used to stall all requests associated with this guc_id until the
+corresponding G2H returns indicating the guc_id has been deregistered.</p>
+<p>submission_state.guc_ids:
+Unique number associated with private GuC context data passed in during
+context registration / submission / deregistration. 64k available. Simple ida
+is used for allocation.</p>
+<p>Stealing guc_ids:
+If no guc_ids are available they can be stolen from another context at
+request creation time if that context is unpinned. If a guc_id can’t be found
+we punt this problem to the user as we believe this is near impossible to hit
+during normal use cases.</p>
+<p>Locking:
+In the GuC submission code we have 3 basic spin locks which protect
+everything. Details about each below.</p>
+<p>sched_engine-&gt;lock
+This is the submission lock for all contexts that share an i915 schedule
+engine (sched_engine), thus only one of the contexts which share a
+sched_engine can be submitting at a time. Currently only one sched_engine is
+used for all of GuC submission but that could change in the future.</p>
+<p>guc-&gt;submission_state.lock
+Global lock for GuC submission state. Protects guc_ids and destroyed contexts
+list.</p>
+<p>ce-&gt;guc_state.lock
+Protects everything under ce-&gt;guc_state. Ensures that a context is in the
+correct state before issuing a H2G. e.g. We don’t issue a schedule disable
+on a disabled context (bad idea), we don’t issue a schedule enable when a
+schedule disable is in flight, etc… Also protects list of inflight requests
+on the context and the priority management state. Lock is individual to each
+context.</p>
+<p>Lock ordering rules:
+sched_engine-&gt;lock -&gt; ce-&gt;guc_state.lock
+guc-&gt;submission_state.lock -&gt; ce-&gt;guc_state.lock</p>
+<p>Reset races:
+When a full GT reset is triggered it is assumed that some G2H responses to
+H2Gs can be lost as the GuC is also reset. Losing these G2H can prove to be
+fatal as we do certain operations upon receiving a G2H (e.g. destroy
+contexts, release guc_ids, etc…). When this occurs we can scrub the
+context state and cleanup appropriately, however this is quite racey.
+To avoid races, the reset code must disable submission before scrubbing for
+the missing G2H, while the submission code must check for submission being
+disabled and skip sending H2Gs and updating context states when it is. Both
+sides must also make sure to hold the relevant locks.</p>
 </section>
 <section id="guc-abi">
 <h4>GuC ABI<a class="headerlink" href="#guc-abi" title="Permalink to this headline">¶</a></h4>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -214,6 +214,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="features.html">28. Feature status on x86 architecture</a></li>
 <li class="toctree-l3"><a class="reference internal" href="elf_auxvec.html">29. x86-specific ELF Auxiliary Vectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xstate.html">30. Using XSTATE features in user space applications</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../xtensa/index.html">Xtensa Architecture</a></li>
@@ -674,6 +675,38 @@ user wants to deploy SGX applications both on the host and in guests
 on the same machine, the user should reserve enough EPC (by taking out
 total virtual EPC size of all SGX VMs from the physical EPC size) for
 host SGX applications so they can run with acceptable performance.</p>
+<p>Architectural behavior is to restore all EPC pages to an uninitialized
+state also after a guest reboot.  Because this state can be reached only
+through the privileged <code class="docutils literal notranslate"><span class="pre">ENCLS[EREMOVE]</span></code> instruction, <code class="docutils literal notranslate"><span class="pre">/dev/sgx_vepc</span></code>
+provides the <code class="docutils literal notranslate"><span class="pre">SGX_IOC_VEPC_REMOVE_ALL</span></code> ioctl to execute the instruction
+on all pages in the virtual EPC.</p>
+<p><code class="docutils literal notranslate"><span class="pre">EREMOVE</span></code> can fail for three reasons.  Userspace must pay attention
+to expected failures and handle them as follows:</p>
+<ol class="arabic simple">
+<li><p>Page removal will always fail when any thread is running in the
+enclave to which the page belongs.  In this case the ioctl will
+return <code class="docutils literal notranslate"><span class="pre">EBUSY</span></code> independent of whether it has successfully removed
+some pages; userspace can avoid these failures by preventing execution
+of any vcpu which maps the virtual EPC.</p></li>
+<li><p>Page removal will cause a general protection fault if two calls to
+<code class="docutils literal notranslate"><span class="pre">EREMOVE</span></code> happen concurrently for pages that refer to the same
+“SECS” metadata pages.  This can happen if there are concurrent
+invocations to <code class="docutils literal notranslate"><span class="pre">SGX_IOC_VEPC_REMOVE_ALL</span></code>, or if a <code class="docutils literal notranslate"><span class="pre">/dev/sgx_vepc</span></code>
+file descriptor in the guest is closed at the same time as
+<code class="docutils literal notranslate"><span class="pre">SGX_IOC_VEPC_REMOVE_ALL</span></code>; it will also be reported as <code class="docutils literal notranslate"><span class="pre">EBUSY</span></code>.
+This can be avoided in userspace by serializing calls to the ioctl()
+and to close(), but in general it should not be a problem.</p></li>
+<li><p>Finally, page removal will fail for SECS metadata pages which still
+have child pages.  Child pages can be removed by executing
+<code class="docutils literal notranslate"><span class="pre">SGX_IOC_VEPC_REMOVE_ALL</span></code> on all <code class="docutils literal notranslate"><span class="pre">/dev/sgx_vepc</span></code> file descriptors
+mapped into the guest.  This means that the ioctl() must be called
+twice: an initial set of calls to remove child pages and a subsequent
+set of calls to remove SECS pages.  The second set of calls is only
+required for those mappings that returned a nonzero value from the
+first call.  It indicates a bug in the kernel or the userspace client
+if any of the second round of <code class="docutils literal notranslate"><span class="pre">SGX_IOC_VEPC_REMOVE_ALL</span></code> calls has
+a return code other than 0.</p></li>
+</ol>
 </section>
 </section>
 

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -529,6 +529,86 @@ base address must be 64 byte aligned and exist within a valid guest memory
 region. See <a class="reference internal" href="../arm/pvtime.html"><span class="doc">Paravirtualized time support for arm64</span></a> for more information
 including the layout of the stolen time structure.</p>
 </section>
+</section>
+<section id="group-kvm-vcpu-tsc-ctrl">
+<h2>4. GROUP: KVM_VCPU_TSC_CTRL<a class="headerlink" href="#group-kvm-vcpu-tsc-ctrl" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Architectures</dt>
+<dd class="field-odd"><p>x86</p>
+</dd>
+</dl>
+<p>4.1 ATTRIBUTE: KVM_VCPU_TSC_OFFSET</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p>64-bit unsigned TSC offset</p>
+</dd>
+</dl>
+<p>Returns:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 84%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>-EFAULT</p></td>
+<td><p>Error reading/writing the provided
+parameter address.</p></td>
+</tr>
+<tr class="row-even"><td><p>-ENXIO</p></td>
+<td><p>Attribute not supported</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Specifies the guest’s TSC offset relative to the host’s TSC. The guest’s
+TSC is then derived by the following equation:</p>
+<blockquote>
+<div><p>guest_tsc = host_tsc + KVM_VCPU_TSC_OFFSET</p>
+</div></blockquote>
+<p>This attribute is useful to adjust the guest’s TSC on live migration,
+so that the TSC counts the time during which the VM was paused. The
+following describes a possible algorithm to use for this purpose.</p>
+<p>From the source VMM process:</p>
+<ol class="arabic simple">
+<li><p>Invoke the KVM_GET_CLOCK ioctl to record the host TSC (tsc_src),
+kvmclock nanoseconds (guest_src), and host CLOCK_REALTIME nanoseconds
+(host_src).</p></li>
+<li><p>Read the KVM_VCPU_TSC_OFFSET attribute for every vCPU to record the
+guest TSC offset (ofs_src[i]).</p></li>
+<li><p>Invoke the KVM_GET_TSC_KHZ ioctl to record the frequency of the
+guest’s TSC (freq).</p></li>
+</ol>
+<p>From the destination VMM process:</p>
+<ol class="arabic" start="4">
+<li><p>Invoke the KVM_SET_CLOCK ioctl, providing the source nanoseconds from
+kvmclock (guest_src) and CLOCK_REALTIME (host_src) in their respective
+fields.  Ensure that the KVM_CLOCK_REALTIME flag is set in the provided
+structure.</p>
+<p>KVM will advance the VM’s kvmclock to account for elapsed time since
+recording the clock values.  Note that this will cause problems in
+the guest (e.g., timeouts) unless CLOCK_REALTIME is synchronized
+between the source and destination, and a reasonably short time passes
+between the source pausing the VMs and the destination executing
+steps 4-7.</p>
+</li>
+<li><p>Invoke the KVM_GET_CLOCK ioctl to record the host TSC (tsc_dest) and
+kvmclock nanoseconds (guest_dest).</p></li>
+<li><p>Adjust the guest TSC offsets for every vCPU to account for (1) time
+elapsed since recording state and (2) difference in TSCs between the
+source and destination machine:</p>
+<dl class="simple">
+<dt>ofs_dst[i] = ofs_src[i] -</dt><dd><p>(guest_src - guest_dest) * freq +
+(tsc_src - tsc_dest)</p>
+</dd>
+</dl>
+<p>(“ofs[i] + tsc - guest * freq” is the guest TSC value corresponding to
+a time of 0 in kvmclock.  The above formula ensures that it is the
+same on the destination as it was on the source).</p>
+</li>
+<li><p>Write the KVM_VCPU_TSC_OFFSET attribute for every vCPU with the
+respective value derived in the previous step.</p></li>
+</ol>
 </section>
 </section>
 

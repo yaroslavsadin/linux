@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -145,7 +145,11 @@
 <li class="toctree-l2"><a class="reference internal" href="drm-internals.html">DRM Internals</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">DRM Memory Management</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#the-translation-table-manager-ttm">The Translation Table Manager (TTM)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ttm-initialization">TTM initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ttm-device-object-reference">TTM device object reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ttm-resource-placement-reference">TTM resource placement reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ttm-resource-object-reference">TTM resource object reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ttm-tt-object-reference">TTM TT object reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ttm-page-pool-reference">TTM page pool reference</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#the-graphics-execution-manager-gem">The Graphics Execution Manager (GEM)</a><ul>
@@ -324,48 +328,819 @@ TTM, but has no video RAM management capabilities and is thus limited to
 UMA devices.</p>
 <section id="the-translation-table-manager-ttm">
 <h2>The Translation Table Manager (TTM)<a class="headerlink" href="#the-translation-table-manager-ttm" title="Permalink to this headline">¶</a></h2>
-<p>TTM design background and information belongs here.</p>
-<section id="ttm-initialization">
-<h3>TTM initialization<a class="headerlink" href="#ttm-initialization" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div><p><strong>Warning</strong>
-This section is outdated.</p>
-</div></blockquote>
-<p>Drivers wishing to support TTM must pass a filled <code class="xref c c-type docutils literal notranslate"><span class="pre">ttm_bo_driver</span></code> structure to ttm_device_init, together with an
-initialized global reference to the memory manager.  The ttm_bo_driver
-structure contains several fields with function pointers for
-initializing the TTM, allocating and freeing memory, waiting for command
-completion and fence synchronization, and memory migration.</p>
-<p>The <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_global_reference</span></code> is made
-up of several fields:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">drm_global_reference</span> <span class="p">{</span>
-        <span class="k">enum</span> <span class="n">ttm_global_types</span> <span class="n">global_type</span><span class="p">;</span>
-        <span class="kt">size_t</span> <span class="n">size</span><span class="p">;</span>
-        <span class="kt">void</span> <span class="o">*</span><span class="n">object</span><span class="p">;</span>
-        <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">init</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">drm_global_reference</span> <span class="o">*</span><span class="p">);</span>
-        <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">release</span><span class="p">)</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">drm_global_reference</span> <span class="o">*</span><span class="p">);</span>
-<span class="p">};</span>
+<p>TTM is a memory manager for accelerator devices with dedicated memory.</p>
+<p>The basic idea is that resources are grouped together in buffer objects of
+certain size and TTM handles lifetime, movement and CPU mappings of those
+objects.</p>
+<p>TODO: Add more design background and information here.</p>
+<dl class="c enum">
+<dt id="c.ttm_caching">
+<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">ttm_caching</span></code><a class="headerlink" href="#c.ttm_caching" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>CPU caching and BUS snooping behavior.</p>
+</dd></dl>
+
+<p><strong>Constants</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ttm_uncached</span></code></dt><dd><p>Most defensive option for device mappings,
+don’t even allow write combining.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ttm_write_combined</span></code></dt><dd><p>Don’t cache read accesses, but allow at least
+writes to be combined.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ttm_cached</span></code></dt><dd><p>Fully cached like normal system memory, requires that
+devices snoop the CPU cache on accesses.</p>
+</dd>
+</dl>
+<section id="ttm-device-object-reference">
+<h3>TTM device object reference<a class="headerlink" href="#ttm-device-object-reference" title="Permalink to this headline">¶</a></h3>
+<dl class="c struct">
+<dt id="c.ttm_global">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_global</span></code><a class="headerlink" href="#c.ttm_global" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Buffer object driver global data.</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_global {
+  struct page *dummy_read_page;
+  struct list_head device_list;
+  atomic_t bo_count;
+};
 </pre></div>
 </div>
-<p>There should be one global reference structure for your memory manager
-as a whole, and there will be others for each object created by the
-memory manager at runtime. Your global TTM should have a type of
-TTM_GLOBAL_TTM_MEM. The size field for the global object should be
-sizeof(struct ttm_mem_global), and the init and release hooks should
-point at your driver-specific init and release routines, which probably
-eventually call ttm_mem_global_init and ttm_mem_global_release,
-respectively.</p>
-<p>Once your global TTM accounting structure is set up and initialized by
-calling ttm_global_item_ref() on it, you need to create a buffer
-object TTM to provide a pool for buffer object allocation by clients and
-the kernel itself. The type of this object should be
-TTM_GLOBAL_TTM_BO, and its size should be sizeof(struct
-ttm_bo_global). Again, driver-specific init and release functions may
-be provided, likely eventually calling ttm_bo_global_ref_init() and
-ttm_bo_global_ref_release(), respectively. Also, like the previous
-object, ttm_global_item_ref() is used to create an initial reference
-count for the TTM, which will call your initialization function.</p>
-<p>See the radeon_ttm.c file for an example of usage.</p>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dummy_read_page</span></code></dt><dd><p>Pointer to a dummy page used for mapping requests
+of unpopulated pages. Constant after init.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">device_list</span></code></dt><dd><p>List of buffer object devices. Protected by
+ttm_global_mutex.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bo_count</span></code></dt><dd><p>Number of buffer objects allocated by devices.</p>
+</dd>
+</dl>
+<dl class="c struct">
+<dt id="c.ttm_device">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_device</span></code><a class="headerlink" href="#c.ttm_device" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Buffer object driver device-specific data.</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_device {
+  struct list_head device_list;
+  struct ttm_device_funcs *funcs;
+  struct ttm_resource_manager sysman;
+  struct ttm_resource_manager *man_drv[TTM_NUM_MEM_TYPES];
+  struct drm_vma_offset_manager *vma_manager;
+  struct ttm_pool pool;
+  spinlock_t lru_lock;
+  struct list_head ddestroy;
+  struct list_head pinned;
+  struct address_space *dev_mapping;
+  struct delayed_work wq;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">device_list</span></code></dt><dd><p>Our entry in the global device list.
+Constant after bo device init</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">funcs</span></code></dt><dd><p>Function table for the device.
+Constant after bo device init</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">sysman</span></code></dt><dd><p>Resource manager for the system domain.
+Access via ttm_manager_type.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">man_drv</span></code></dt><dd><p>An array of resource_managers, one per resource type.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">vma_manager</span></code></dt><dd><p>Address space manager for finding BOs to mmap.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pool</span></code></dt><dd><p>page pool for the device.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lru_lock</span></code></dt><dd><p>Protection for the per manager LRU and ddestroy lists.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ddestroy</span></code></dt><dd><p>Destroyed but not yet cleaned up buffer objects.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pinned</span></code></dt><dd><p>Buffer objects which are pinned and so not on any LRU list.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dev_mapping</span></code></dt><dd><p>A pointer to the <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">address_space</span></code></a> for invalidating
+CPU mappings on buffer move. Protected by load/unload sync.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">wq</span></code></dt><dd><p>Work queue structure for the delayed delete workqueue.</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.ttm_device_init">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ttm_device_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_device" title="ttm_device"><span class="pre">ttm_device</span></a> <span class="pre">*</span><em><span class="pre">bdev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_device_funcs</span> <span class="pre">*</span><em><span class="pre">funcs</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">drm_vma_offset_manager</span> <span class="pre">*</span><em><span class="pre">vma_manager</span></em>, <span class="pre">bool</span> <em><span class="pre">use_dma_alloc</span></em>, <span class="pre">bool</span> <em><span class="pre">use_dma32</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_device_init" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_device</span> <span class="pre">*bdev</span></code></dt><dd><p>A pointer to a <a class="reference internal" href="#c.ttm_device" title="ttm_device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_device</span></code></a> to initialize.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_device_funcs</span> <span class="pre">*funcs</span></code></dt><dd><p>Function table for the device.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span> <span class="pre">*dev</span></code></dt><dd><p>The core kernel device pointer for DMA mappings and allocations.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">address_space</span> <span class="pre">*mapping</span></code></dt><dd><p>The address space to use for this bo.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_vma_offset_manager</span> <span class="pre">*vma_manager</span></code></dt><dd><p>A pointer to a vma manager.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">use_dma_alloc</span></code></dt><dd><p>If coherent DMA allocation API should be used.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">use_dma32</span></code></dt><dd><p>If we should use GFP_DMA32 for device memory allocations.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Initializes a <a class="reference internal" href="#c.ttm_device" title="ttm_device"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_device</span></code></a>:</p>
+<p><strong>Return</strong></p>
+<p>!0: Failure.</p>
+</section>
+<section id="ttm-resource-placement-reference">
+<h3>TTM resource placement reference<a class="headerlink" href="#ttm-resource-placement-reference" title="Permalink to this headline">¶</a></h3>
+<dl class="c struct">
+<dt id="c.ttm_place">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_place</span></code><a class="headerlink" href="#c.ttm_place" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_place {
+  unsigned fpfn;
+  unsigned lpfn;
+  uint32_t mem_type;
+  uint32_t flags;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">fpfn</span></code></dt><dd><p>first valid page frame number to put the object</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lpfn</span></code></dt><dd><p>last valid page frame number to put the object</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mem_type</span></code></dt><dd><p>One of TTM_PL_* where the resource should be allocated from.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">flags</span></code></dt><dd><p>memory domain and caching flags for the object</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Structure indicating a possible place to put an object.</p>
+<dl class="c struct">
+<dt id="c.ttm_placement">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_placement</span></code><a class="headerlink" href="#c.ttm_placement" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_placement {
+  unsigned num_placement;
+  const struct ttm_place  *placement;
+  unsigned num_busy_placement;
+  const struct ttm_place  *busy_placement;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">num_placement</span></code></dt><dd><p>number of preferred placements</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">placement</span></code></dt><dd><p>preferred placements</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">num_busy_placement</span></code></dt><dd><p>number of preferred placements when need to evict buffer</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">busy_placement</span></code></dt><dd><p>preferred placements when need to evict buffer</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Structure indicating the placement you request for an object.</p>
+</section>
+<section id="ttm-resource-object-reference">
+<h3>TTM resource object reference<a class="headerlink" href="#ttm-resource-object-reference" title="Permalink to this headline">¶</a></h3>
+<dl class="c struct">
+<dt id="c.ttm_resource_manager">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_resource_manager</span></code><a class="headerlink" href="#c.ttm_resource_manager" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_resource_manager {
+  bool use_type;
+  bool use_tt;
+  uint64_t size;
+  const struct ttm_resource_manager_func *func;
+  spinlock_t move_lock;
+  struct list_head lru[TTM_MAX_BO_PRIORITY];
+  struct dma_fence *move;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">use_type</span></code></dt><dd><p>The memory type is enabled.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">use_tt</span></code></dt><dd><p>If a TT object should be used for the backing store.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">size</span></code></dt><dd><p>Size of the managed region.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">func</span></code></dt><dd><p>structure pointer implementing the range manager. See above</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">move_lock</span></code></dt><dd><p>lock for move fence
+static information. bdev::driver::io_mem_free is never used.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lru</span></code></dt><dd><p>The lru list for this memory type.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">move</span></code></dt><dd><p>The fence of the last pipelined move operation.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This structure is used to identify and manage memory types for a device.</p>
+<dl class="c struct">
+<dt id="c.ttm_bus_placement">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_bus_placement</span></code><a class="headerlink" href="#c.ttm_bus_placement" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_bus_placement {
+  void *addr;
+  phys_addr_t offset;
+  bool is_iomem;
+  enum ttm_caching        caching;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">addr</span></code></dt><dd><p>mapped virtual address</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">offset</span></code></dt><dd><p>physical addr</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">is_iomem</span></code></dt><dd><p>is this io memory ?</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">caching</span></code></dt><dd><p>See <a class="reference internal" href="#c.ttm_caching" title="ttm_caching"><code class="xref c c-enum docutils literal notranslate"><span class="pre">enum</span> <span class="pre">ttm_caching</span></code></a></p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Structure indicating the bus placement of an object.</p>
+<dl class="c struct">
+<dt id="c.ttm_resource">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_resource</span></code><a class="headerlink" href="#c.ttm_resource" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_resource {
+  unsigned long start;
+  unsigned long num_pages;
+  uint32_t mem_type;
+  uint32_t placement;
+  struct ttm_bus_placement bus;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">start</span></code></dt><dd><p>Start of the allocation.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">num_pages</span></code></dt><dd><p>Actual size of resource in pages.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mem_type</span></code></dt><dd><p>Resource type of the allocation.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">placement</span></code></dt><dd><p>Placement flags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bus</span></code></dt><dd><p>Placement on io bus accessible to the CPU</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Structure indicating the placement and space resources used by a
+buffer object.</p>
+<dl class="c struct">
+<dt id="c.ttm_kmap_iter_iomap">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_kmap_iter_iomap</span></code><a class="headerlink" href="#c.ttm_kmap_iter_iomap" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Specialization for a struct io_mapping + struct sg_table backed <a class="reference internal" href="#c.ttm_resource" title="ttm_resource"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_resource</span></code></a>.</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_kmap_iter_iomap {
+  struct ttm_kmap_iter base;
+  struct io_mapping *iomap;
+  struct sg_table *st;
+  resource_size_t start;
+  struct {
+    struct scatterlist *sg;
+    pgoff_t i;
+    pgoff_t end;
+    pgoff_t offs;
+  } cache;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">base</span></code></dt><dd><p>Embedded struct ttm_kmap_iter providing the usage interface.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">iomap</span></code></dt><dd><p>struct io_mapping representing the underlying linear io_memory.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">st</span></code></dt><dd><p>sg_table into <strong>iomap</strong>, representing the memory of the <a class="reference internal" href="#c.ttm_resource" title="ttm_resource"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_resource</span></code></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">start</span></code></dt><dd><p>Offset that needs to be subtracted from <strong>st</strong> to make
+sg_dma_address(st-&gt;sgl) - <strong>start</strong> == 0 for <strong>iomap</strong> start.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cache</span></code></dt><dd><p>Scatterlist traversal cache for fast lookups.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cache.sg</span></code></dt><dd><p>Pointer to the currently cached scatterlist segment.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cache.i</span></code></dt><dd><p>First index of <strong>sg</strong>. PAGE_SIZE granularity.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cache.end</span></code></dt><dd><p>Last index + 1 of <strong>sg</strong>. PAGE_SIZE granularity.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cache.offs</span></code></dt><dd><p>First offset into <strong>iomap</strong> of <strong>sg</strong>. PAGE_SIZE granularity.</p>
+</dd>
+</dl>
+<dl class="c struct">
+<dt id="c.ttm_kmap_iter_linear_io">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_kmap_iter_linear_io</span></code><a class="headerlink" href="#c.ttm_kmap_iter_linear_io" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Iterator specialization for linear io</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_kmap_iter_linear_io {
+  struct ttm_kmap_iter base;
+  struct dma_buf_map dmap;
+  bool needs_unmap;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">base</span></code></dt><dd><p>The base iterator</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dmap</span></code></dt><dd><p>Points to the starting address of the region</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">needs_unmap</span></code></dt><dd><p>Whether we need to unmap on fini</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.ttm_resource_manager_set_used">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ttm_resource_manager_set_used</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_resource_manager" title="ttm_resource_manager"><span class="pre">ttm_resource_manager</span></a> <span class="pre">*</span><em><span class="pre">man</span></em>, <span class="pre">bool</span> <em><span class="pre">used</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_resource_manager_set_used" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_resource_manager</span> <span class="pre">*man</span></code></dt><dd><p>A memory manager object.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">used</span></code></dt><dd><p>usage state to set.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Set the manager in use flag. If disabled the manager is no longer
+used for object placement.</p>
+<dl class="c function">
+<dt id="c.ttm_resource_manager_used">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">ttm_resource_manager_used</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_resource_manager" title="ttm_resource_manager"><span class="pre">ttm_resource_manager</span></a> <span class="pre">*</span><em><span class="pre">man</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_resource_manager_used" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_resource_manager</span> <span class="pre">*man</span></code></dt><dd><p>Manager to get used state for</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Get the in use flag for a manager.</p>
+<p><strong>Return</strong></p>
+<p>true is used, false if not.</p>
+<dl class="c function">
+<dt id="c.ttm_resource_manager_cleanup">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ttm_resource_manager_cleanup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_resource_manager" title="ttm_resource_manager"><span class="pre">ttm_resource_manager</span></a> <span class="pre">*</span><em><span class="pre">man</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_resource_manager_cleanup" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_resource_manager</span> <span class="pre">*man</span></code></dt><dd><p>A memory manager object.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Cleanup the move fences from the memory manager object.</p>
+<dl class="c function">
+<dt id="c.ttm_resource_compat">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">ttm_resource_compat</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_resource" title="ttm_resource"><span class="pre">ttm_resource</span></a> <span class="pre">*</span><em><span class="pre">res</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_placement" title="ttm_placement"><span class="pre">ttm_placement</span></a> <span class="pre">*</span><em><span class="pre">placement</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_resource_compat" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>check if resource is compatible with placement</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_resource</span> <span class="pre">*res</span></code></dt><dd><p>the resource to check</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_placement</span> <span class="pre">*placement</span></code></dt><dd><p>the placement to check against</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Returns true if the placement is compatible.</p>
+<dl class="c function">
+<dt id="c.ttm_resource_manager_init">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ttm_resource_manager_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_resource_manager" title="ttm_resource_manager"><span class="pre">ttm_resource_manager</span></a> <span class="pre">*</span><em><span class="pre">man</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">p_size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_resource_manager_init" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_resource_manager</span> <span class="pre">*man</span></code></dt><dd><p>memory manager object to init</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">long</span> <span class="pre">p_size</span></code></dt><dd><p>size managed area in pages.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Initialise core parts of a manager object.</p>
+<dl class="c function">
+<dt id="c.ttm_resource_manager_debug">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ttm_resource_manager_debug</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_resource_manager" title="ttm_resource_manager"><span class="pre">ttm_resource_manager</span></a> <span class="pre">*</span><em><span class="pre">man</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_printer" title="drm_printer"><span class="pre">drm_printer</span></a> <span class="pre">*</span><em><span class="pre">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_resource_manager_debug" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_resource_manager</span> <span class="pre">*man</span></code></dt><dd><p>manager type to dump.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_printer</span> <span class="pre">*p</span></code></dt><dd><p>printer to use for debug.</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.ttm_kmap_iter_iomap_init">
+<em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_kmap_iter</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ttm_kmap_iter_iomap_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_kmap_iter_iomap" title="ttm_kmap_iter_iomap"><span class="pre">ttm_kmap_iter_iomap</span></a> <span class="pre">*</span><em><span class="pre">iter_io</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">io_mapping</span> <span class="pre">*</span><em><span class="pre">iomap</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">sg_table</span> <span class="pre">*</span><em><span class="pre">st</span></em>, <span class="pre">resource_size_t</span> <em><span class="pre">start</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_kmap_iter_iomap_init" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initialize a <a class="reference internal" href="#c.ttm_kmap_iter_iomap" title="ttm_kmap_iter_iomap"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_kmap_iter_iomap</span></code></a></p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_kmap_iter_iomap</span> <span class="pre">*iter_io</span></code></dt><dd><p>The <a class="reference internal" href="#c.ttm_kmap_iter_iomap" title="ttm_kmap_iter_iomap"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_kmap_iter_iomap</span></code></a> to initialize.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">io_mapping</span> <span class="pre">*iomap</span></code></dt><dd><p>The struct io_mapping representing the underlying linear io_memory.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sg_table</span> <span class="pre">*st</span></code></dt><dd><p>sg_table into <strong>iomap</strong>, representing the memory of the <a class="reference internal" href="#c.ttm_resource" title="ttm_resource"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span>
+<span class="pre">ttm_resource</span></code></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">resource_size_t</span> <span class="pre">start</span></code></dt><dd><p>Offset that needs to be subtracted from <strong>st</strong> to make
+sg_dma_address(st-&gt;sgl) - <strong>start</strong> == 0 for <strong>iomap</strong> start.</p>
+</dd>
+</dl>
+<p><strong>Return</strong></p>
+<p>Pointer to the embedded struct ttm_kmap_iter.</p>
+</section>
+<section id="ttm-tt-object-reference">
+<h3>TTM TT object reference<a class="headerlink" href="#ttm-tt-object-reference" title="Permalink to this headline">¶</a></h3>
+<dl class="c struct">
+<dt id="c.ttm_tt">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_tt</span></code><a class="headerlink" href="#c.ttm_tt" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>This is a structure holding the pages, caching- and aperture binding status for a buffer object that isn’t backed by fixed (VRAM / AGP) memory.</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_tt {
+  struct page **pages;
+#define TTM_TT_FLAG_SWAPPED             (1 &lt;&lt; 0);
+#define TTM_TT_FLAG_ZERO_ALLOC          (1 &lt;&lt; 1);
+#define TTM_TT_FLAG_EXTERNAL            (1 &lt;&lt; 2);
+#define TTM_TT_FLAG_EXTERNAL_MAPPABLE   (1 &lt;&lt; 3);
+#define TTM_TT_FLAG_PRIV_POPULATED  (1 &lt;&lt; 31);
+  uint32_t page_flags;
+  uint32_t num_pages;
+  struct sg_table *sg;
+  dma_addr_t *dma_address;
+  struct file *swap_storage;
+  enum ttm_caching caching;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">pages</span></code></dt><dd><p>Array of pages backing the data.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">page_flags</span></code></dt><dd><p>The page flags.</p>
+<p>Supported values:</p>
+<p>TTM_TT_FLAG_SWAPPED: Set by TTM when the pages have been unpopulated
+and swapped out by TTM.  Calling <a class="reference internal" href="#c.ttm_tt_populate" title="ttm_tt_populate"><code class="xref c c-func docutils literal notranslate"><span class="pre">ttm_tt_populate()</span></code></a> will then swap the
+pages back in, and unset the flag. Drivers should in general never
+need to touch this.</p>
+<p>TTM_TT_FLAG_ZERO_ALLOC: Set if the pages will be zeroed on
+allocation.</p>
+<p>TTM_TT_FLAG_EXTERNAL: Set if the underlying pages were allocated
+externally, like with dma-buf or userptr. This effectively disables
+TTM swapping out such pages.  Also important is to prevent TTM from
+ever directly mapping these pages.</p>
+<p>Note that enum ttm_bo_type.ttm_bo_type_sg objects will always enable
+this flag.</p>
+<p>TTM_TT_FLAG_EXTERNAL_MAPPABLE: Same behaviour as
+TTM_TT_FLAG_EXTERNAL, but with the reduced restriction that it is
+still valid to use TTM to map the pages directly. This is useful when
+implementing a ttm_tt backend which still allocates driver owned
+pages underneath(say with shmem).</p>
+<p>Note that since this also implies TTM_TT_FLAG_EXTERNAL, the usage
+here should always be:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>page_flags = TTM_TT_FLAG_EXTERNAL |</dt><dd><p>TTM_TT_FLAG_EXTERNAL_MAPPABLE;</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>TTM_TT_FLAG_PRIV_POPULATED: TTM internal only. DO NOT USE. This is
+set by TTM after <a class="reference internal" href="#c.ttm_tt_populate" title="ttm_tt_populate"><code class="xref c c-func docutils literal notranslate"><span class="pre">ttm_tt_populate()</span></code></a> has successfully returned, and is
+then unset when TTM calls <a class="reference internal" href="#c.ttm_tt_unpopulate" title="ttm_tt_unpopulate"><code class="xref c c-func docutils literal notranslate"><span class="pre">ttm_tt_unpopulate()</span></code></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">num_pages</span></code></dt><dd><p>Number of pages in the page array.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">sg</span></code></dt><dd><p>for SG objects via dma-buf.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dma_address</span></code></dt><dd><p>The DMA (bus) addresses of the pages.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">swap_storage</span></code></dt><dd><p>Pointer to shmem struct file for swap storage.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">caching</span></code></dt><dd><p>The current caching state of the pages, see <a class="reference internal" href="#c.ttm_caching" title="ttm_caching"><code class="xref c c-enum docutils literal notranslate"><span class="pre">enum</span>
+<span class="pre">ttm_caching</span></code></a>.</p>
+</dd>
+</dl>
+<dl class="c struct">
+<dt id="c.ttm_kmap_iter_tt">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_kmap_iter_tt</span></code><a class="headerlink" href="#c.ttm_kmap_iter_tt" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Specialization of a mappig iterator for a tt.</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_kmap_iter_tt {
+  struct ttm_kmap_iter base;
+  struct ttm_tt *tt;
+  pgprot_t prot;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">base</span></code></dt><dd><p>Embedded struct ttm_kmap_iter providing the usage interface</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">tt</span></code></dt><dd><p>Cached <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span></code></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">prot</span></code></dt><dd><p>Cached page protection for mapping.</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.ttm_tt_create">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ttm_tt_create</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_buffer_object</span> <span class="pre">*</span><em><span class="pre">bo</span></em>, <span class="pre">bool</span> <em><span class="pre">zero_alloc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_tt_create" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_buffer_object</span> <span class="pre">*bo</span></code></dt><dd><p>pointer to a struct ttm_buffer_object</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">zero_alloc</span></code></dt><dd><p>true if allocated pages needs to be zeroed</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Make sure we have a TTM structure allocated for the given BO.
+No pages are actually allocated.</p>
+<dl class="c function">
+<dt id="c.ttm_tt_init">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ttm_tt_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><em><span class="pre">ttm</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_buffer_object</span> <span class="pre">*</span><em><span class="pre">bo</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">page_flags</span></em>, <em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.ttm_caching" title="ttm_caching"><span class="pre">ttm_caching</span></a> <em><span class="pre">caching</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_tt_init" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span> <span class="pre">*ttm</span></code></dt><dd><p>The <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span></code></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_buffer_object</span> <span class="pre">*bo</span></code></dt><dd><p>The buffer object we create the ttm for.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">uint32_t</span> <span class="pre">page_flags</span></code></dt><dd><p>Page flags as identified by TTM_TT_FLAG_XX flags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">ttm_caching</span> <span class="pre">caching</span></code></dt><dd><p>the desired caching state of the pages</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Create a <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span></code></a> to back data with system memory pages.
+No pages are actually allocated.</p>
+<p><strong>Return</strong></p>
+<p>NULL: Out of memory.</p>
+<dl class="c function">
+<dt id="c.ttm_tt_fini">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ttm_tt_fini</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><em><span class="pre">ttm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_tt_fini" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span> <span class="pre">*ttm</span></code></dt><dd><p>the ttm_tt structure.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Free memory of ttm_tt structure</p>
+<dl class="c function">
+<dt id="c.ttm_tt_destroy">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ttm_tt_destroy</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_device" title="ttm_device"><span class="pre">ttm_device</span></a> <span class="pre">*</span><em><span class="pre">bdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><em><span class="pre">ttm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_tt_destroy" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_device</span> <span class="pre">*bdev</span></code></dt><dd><p>the ttm_device this object belongs to</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span> <span class="pre">*ttm</span></code></dt><dd><p>The <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span></code></a>.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Unbind, unpopulate and destroy common <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span></code></a>.</p>
+<dl class="c function">
+<dt id="c.ttm_tt_swapin">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ttm_tt_swapin</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><em><span class="pre">ttm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_tt_swapin" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span> <span class="pre">*ttm</span></code></dt><dd><p>The <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span></code></a>.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Swap in a previously swap out ttm_tt.</p>
+<dl class="c function">
+<dt id="c.ttm_tt_populate">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ttm_tt_populate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_device" title="ttm_device"><span class="pre">ttm_device</span></a> <span class="pre">*</span><em><span class="pre">bdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><em><span class="pre">ttm</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_operation_ctx</span> <span class="pre">*</span><em><span class="pre">ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_tt_populate" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>allocate pages for a ttm</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_device</span> <span class="pre">*bdev</span></code></dt><dd><p>the ttm_device this object belongs to</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span> <span class="pre">*ttm</span></code></dt><dd><p>Pointer to the ttm_tt structure</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_operation_ctx</span> <span class="pre">*ctx</span></code></dt><dd><p>operation context for populating the tt object.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Calls the driver method to allocate pages for a ttm</p>
+<dl class="c function">
+<dt id="c.ttm_tt_unpopulate">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ttm_tt_unpopulate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_device" title="ttm_device"><span class="pre">ttm_device</span></a> <span class="pre">*</span><em><span class="pre">bdev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><em><span class="pre">ttm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_tt_unpopulate" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>free pages from a ttm</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_device</span> <span class="pre">*bdev</span></code></dt><dd><p>the ttm_device this object belongs to</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span> <span class="pre">*ttm</span></code></dt><dd><p>Pointer to the ttm_tt structure</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Calls the driver method to free all pages from a ttm</p>
+<dl class="c function">
+<dt id="c.ttm_tt_mark_for_clear">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ttm_tt_mark_for_clear</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><em><span class="pre">ttm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_tt_mark_for_clear" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Mark pages for clearing on populate.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span> <span class="pre">*ttm</span></code></dt><dd><p>Pointer to the ttm_tt structure</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Marks pages for clearing so that the next time the page vector is
+populated, the pages will be cleared.</p>
+<dl class="c function">
+<dt id="c.ttm_agp_tt_create">
+<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ttm_agp_tt_create</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_buffer_object</span> <span class="pre">*</span><em><span class="pre">bo</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">agp_bridge_data</span> <span class="pre">*</span><em><span class="pre">bridge</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">page_flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_agp_tt_create" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_buffer_object</span> <span class="pre">*bo</span></code></dt><dd><p>Buffer object we allocate the ttm for.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">agp_bridge_data</span> <span class="pre">*bridge</span></code></dt><dd><p>The agp bridge this device is sitting on.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">uint32_t</span> <span class="pre">page_flags</span></code></dt><dd><p>Page flags as identified by TTM_TT_FLAG_XX flags.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Create a TTM backend that uses the indicated AGP bridge as an aperture
+for TT memory. This function uses the linux agpgart interface to
+bind and unbind memory backing a ttm_tt.</p>
+<dl class="c function">
+<dt id="c.ttm_kmap_iter_tt_init">
+<em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_kmap_iter</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ttm_kmap_iter_tt_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_kmap_iter_tt" title="ttm_kmap_iter_tt"><span class="pre">ttm_kmap_iter_tt</span></a> <span class="pre">*</span><em><span class="pre">iter_tt</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><em><span class="pre">tt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_kmap_iter_tt_init" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initialize a <a class="reference internal" href="#c.ttm_kmap_iter_tt" title="ttm_kmap_iter_tt"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_kmap_iter_tt</span></code></a></p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_kmap_iter_tt</span> <span class="pre">*iter_tt</span></code></dt><dd><p>The <a class="reference internal" href="#c.ttm_kmap_iter_tt" title="ttm_kmap_iter_tt"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_kmap_iter_tt</span></code></a> to initialize.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span> <span class="pre">*tt</span></code></dt><dd><p>Struct ttm_tt holding page pointers of the <a class="reference internal" href="#c.ttm_resource" title="ttm_resource"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_resource</span></code></a>.</p>
+</dd>
+</dl>
+<p><strong>Return</strong></p>
+<p>Pointer to the embedded struct ttm_kmap_iter.</p>
+</section>
+<section id="ttm-page-pool-reference">
+<h3>TTM page pool reference<a class="headerlink" href="#ttm-page-pool-reference" title="Permalink to this headline">¶</a></h3>
+<dl class="c struct">
+<dt id="c.ttm_pool_type">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_pool_type</span></code><a class="headerlink" href="#c.ttm_pool_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pool for a certain memory type</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_pool_type {
+  struct ttm_pool *pool;
+  unsigned int order;
+  enum ttm_caching caching;
+  struct list_head shrinker_list;
+  spinlock_t lock;
+  struct list_head pages;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">pool</span></code></dt><dd><p>the pool we belong to, might be NULL for the global ones</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">order</span></code></dt><dd><p>the allocation order our pages have</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">caching</span></code></dt><dd><p>the caching type our pages have</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">shrinker_list</span></code></dt><dd><p>our place on the global shrinker list</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lock</span></code></dt><dd><p>protection of the page list</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pages</span></code></dt><dd><p>the list of pages in the pool</p>
+</dd>
+</dl>
+<dl class="c struct">
+<dt id="c.ttm_pool">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ttm_pool</span></code><a class="headerlink" href="#c.ttm_pool" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Pool for all caching and orders</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct ttm_pool {
+  struct device *dev;
+  bool use_dma_alloc;
+  bool use_dma32;
+  struct {
+    struct ttm_pool_type orders[MAX_ORDER];
+  } caching[TTM_NUM_CACHING_TYPES];
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dev</span></code></dt><dd><p>the device we allocate pages for</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">use_dma_alloc</span></code></dt><dd><p>if coherent DMA allocations should be used</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">use_dma32</span></code></dt><dd><p>if GFP_DMA32 should be used</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">caching</span></code></dt><dd><p>pools for each caching/order</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.ttm_pool_alloc">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ttm_pool_alloc</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_pool" title="ttm_pool"><span class="pre">ttm_pool</span></a> <span class="pre">*</span><em><span class="pre">pool</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><em><span class="pre">tt</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_operation_ctx</span> <span class="pre">*</span><em><span class="pre">ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_pool_alloc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Fill a ttm_tt object</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_pool</span> <span class="pre">*pool</span></code></dt><dd><p>ttm_pool to use</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span> <span class="pre">*tt</span></code></dt><dd><p>ttm_tt object to fill</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_operation_ctx</span> <span class="pre">*ctx</span></code></dt><dd><p>operation context</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Fill the ttm_tt object with pages and also make sure to DMA map them when
+necessary.</p>
+<p><strong>Return</strong></p>
+<p>0 on successe, negative error code otherwise.</p>
+<dl class="c function">
+<dt id="c.ttm_pool_free">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">ttm_pool_free</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_pool" title="ttm_pool"><span class="pre">ttm_pool</span></a> <span class="pre">*</span><em><span class="pre">pool</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_tt" title="ttm_tt"><span class="pre">ttm_tt</span></a> <span class="pre">*</span><em><span class="pre">tt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_pool_free" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Free the backing pages from a ttm_tt object</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_pool</span> <span class="pre">*pool</span></code></dt><dd><p>Pool to give pages back to.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_tt</span> <span class="pre">*tt</span></code></dt><dd><p>ttm_tt object to unpopulate</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Give the packing pages back to a pool or free them</p>
+<dl class="c function">
+<dt id="c.ttm_pool_debugfs">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ttm_pool_debugfs</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_pool" title="ttm_pool"><span class="pre">ttm_pool</span></a> <span class="pre">*</span><em><span class="pre">pool</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">seq_file</span> <span class="pre">*</span><em><span class="pre">m</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ttm_pool_debugfs" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Debugfs dump function for a pool</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_pool</span> <span class="pre">*pool</span></code></dt><dd><p>the pool to dump the information for</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">seq_file</span> <span class="pre">*m</span></code></dt><dd><p>seq_file to dump to</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Make a debugfs dump with the per pool and global information.</p>
 </section>
 </section>
 <section id="the-graphics-execution-manager-gem">
@@ -1612,7 +2387,7 @@ helpers should set this as their <a class="reference internal" href="#c.drm_gem_
 </dl>
 <p><strong>Description</strong></p>
 <p>This function imports a scatter/gather table using
-<a class="reference internal" href="#c.drm_gem_cma_prime_import_sg_table" title="drm_gem_cma_prime_import_sg_table"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_cma_prime_import_sg_table()</span></code></a> and uses <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_buf_vmap" title="dma_buf_vmap"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_buf_vmap()</span></code></a> to get the kernel
+<a class="reference internal" href="#c.drm_gem_cma_prime_import_sg_table" title="drm_gem_cma_prime_import_sg_table"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_cma_prime_import_sg_table()</span></code></a> and uses dma_buf_vmap() to get the kernel
 virtual address. This ensures that a CMA GEM object always has its virtual
 address set. This address is released when the object is freed.</p>
 <p>This function can be used as the <a class="reference internal" href="drm-internals.html#c.drm_driver" title="drm_driver"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_driver.gem_prime_import_sg_table</span></code></a>
@@ -2080,8 +2855,8 @@ available for public read access. Use the field
 <a class="reference internal" href="#c.drm_vram_mm" title="drm_vram_mm"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_vram_mm</span></code></a>.bdev to access the TTM BO device.</p>
 <dl class="c function">
 <dt id="c.drm_vram_mm_of_bdev">
-<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_vram_mm" title="drm_vram_mm"><span class="pre">drm_vram_mm</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">drm_vram_mm_of_bdev</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_device</span> <span class="pre">*</span><em><span class="pre">bdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_vram_mm_of_bdev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Returns the container of type <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_device</span></code> for field bdev.</p>
+<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_vram_mm" title="drm_vram_mm"><span class="pre">drm_vram_mm</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">drm_vram_mm_of_bdev</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ttm_device" title="ttm_device"><span class="pre">ttm_device</span></a> <span class="pre">*</span><em><span class="pre">bdev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_vram_mm_of_bdev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the container of type <a class="reference internal" href="#c.ttm_device" title="ttm_device"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ttm_device</span></code></a> for field bdev.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
@@ -3002,12 +3777,12 @@ option for sharing lots of buffers for rendering.</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_device</span> <span class="pre">*dev</span></code></dt><dd><p>parent device for the exported dmabuf</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_buf_export_info</span> <span class="pre">*exp_info</span></code></dt><dd><p>the export information used by <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_buf_export" title="dma_buf_export"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_buf_export()</span></code></a></p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_buf_export_info</span> <span class="pre">*exp_info</span></code></dt><dd><p>the export information used by dma_buf_export()</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>This wraps <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_buf_export" title="dma_buf_export"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_buf_export()</span></code></a> for use by generic GEM drivers that are using
-<a class="reference internal" href="#c.drm_gem_dmabuf_release" title="drm_gem_dmabuf_release"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_dmabuf_release()</span></code></a>. In addition to calling <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_buf_export" title="dma_buf_export"><code class="xref c c-func docutils literal notranslate"><span class="pre">dma_buf_export()</span></code></a>, we take
+<p>This wraps dma_buf_export() for use by generic GEM drivers that are using
+<a class="reference internal" href="#c.drm_gem_dmabuf_release" title="drm_gem_dmabuf_release"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_dmabuf_release()</span></code></a>. In addition to calling dma_buf_export(), we take
 a reference to the <a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_device</span></code></a> and the exported <a class="reference internal" href="#c.drm_gem_object" title="drm_gem_object"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_gem_object</span></code></a> (stored in
 <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_buf_export_info" title="dma_buf_export_info"><code class="xref c c-type docutils literal notranslate"><span class="pre">dma_buf_export_info.priv</span></code></a>) which is released by <a class="reference internal" href="#c.drm_gem_dmabuf_release" title="drm_gem_dmabuf_release"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_dmabuf_release()</span></code></a>.</p>
 <p>Returns the new dmabuf.</p>
@@ -4576,47 +5351,62 @@ the hardware.</p></li>
 </pre></div>
 </div>
 <p><strong>Members</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">list</span></code></dt><dd><p>used to append this struct to the list of entities in the
-runqueue.</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">list</span></code></dt><dd><p>Used to append this struct to the list of entities in the runqueue
+<strong>rq</strong> under <a class="reference internal" href="#c.drm_sched_rq" title="drm_sched_rq"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched_rq.entities</span></code></a>.</p>
+<p>Protected by <a class="reference internal" href="#c.drm_sched_rq" title="drm_sched_rq"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched_rq.lock</span></code></a> of <strong>rq</strong>.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">rq</span></code></dt><dd><p>runqueue on which this entity is currently scheduled.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">rq</span></code></dt><dd><p>Runqueue on which this entity is currently scheduled.</p>
+<p>FIXME: Locking is very unclear for this. Writers are protected by
+<strong>rq_lock</strong>, but readers are generally lockless and seem to just race
+with not even a READ_ONCE.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">sched_list</span></code></dt><dd><p>A list of schedulers (drm_gpu_schedulers).
-Jobs from this entity can be scheduled on any scheduler
-on this list.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">sched_list</span></code></dt><dd><p>A list of schedulers (<a class="reference internal" href="#c.drm_gpu_scheduler" title="drm_gpu_scheduler"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_gpu_scheduler</span></code></a>).  Jobs from this entity can
+be scheduled on any scheduler on this list.</p>
+<p>This can be modified by calling <a class="reference internal" href="#c.drm_sched_entity_modify_sched" title="drm_sched_entity_modify_sched"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_modify_sched()</span></code></a>.
+Locking is entirely up to the driver, see the above function for more
+details.</p>
+<p>This will be set to NULL if <code class="xref c c-type docutils literal notranslate"><span class="pre">num_sched_list</span></code> equals 1 and <strong>rq</strong> has been
+set already.</p>
+<p>FIXME: This means priority changes through
+<a class="reference internal" href="#c.drm_sched_entity_set_priority" title="drm_sched_entity_set_priority"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_set_priority()</span></code></a> will be lost henceforth in this case.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">num_sched_list</span></code></dt><dd><p>number of drm_gpu_schedulers in the sched_list.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">num_sched_list</span></code></dt><dd><p>Number of drm_gpu_schedulers in the <strong>sched_list</strong>.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">priority</span></code></dt><dd><p>priority of the entity</p>
+<dt><code class="docutils literal notranslate"><span class="pre">priority</span></code></dt><dd><p>Priority of the entity. This can be modified by calling
+<a class="reference internal" href="#c.drm_sched_entity_set_priority" title="drm_sched_entity_set_priority"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_set_priority()</span></code></a>. Protected by <code class="xref c c-type docutils literal notranslate"><span class="pre">rq_lock</span></code>.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">rq_lock</span></code></dt><dd><p>lock to modify the runqueue to which this entity belongs.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">rq_lock</span></code></dt><dd><p>Lock to modify the runqueue to which this entity belongs.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">job_queue</span></code></dt><dd><p>the list of jobs of this entity.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">fence_seq</span></code></dt><dd><p>a linearly increasing seqno incremented with each
-new <a class="reference internal" href="#c.drm_sched_fence" title="drm_sched_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched_fence</span></code></a> which is part of the entity.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">fence_seq</span></code></dt><dd><p>A linearly increasing seqno incremented with each new
+<a class="reference internal" href="#c.drm_sched_fence" title="drm_sched_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched_fence</span></code></a> which is part of the entity.</p>
+<p>FIXME: Callers of <a class="reference internal" href="#c.drm_sched_job_arm" title="drm_sched_job_arm"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_arm()</span></code></a> need to ensure correct locking,
+this doesn’t need to be atomic.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">fence_context</span></code></dt><dd><p>a unique context for all the fences which belong
-to this entity.
-The <a class="reference internal" href="#c.drm_sched_fence" title="drm_sched_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched_fence.scheduled</span></code></a> uses the
-fence_context but <a class="reference internal" href="#c.drm_sched_fence" title="drm_sched_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched_fence.finished</span></code></a> uses
-fence_context + 1.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">fence_context</span></code></dt><dd><p>A unique context for all the fences which belong to this entity.  The
+<a class="reference internal" href="#c.drm_sched_fence" title="drm_sched_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched_fence.scheduled</span></code></a> uses the fence_context but
+<a class="reference internal" href="#c.drm_sched_fence" title="drm_sched_fence"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched_fence.finished</span></code></a> uses fence_context + 1.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">dependency</span></code></dt><dd><p>the dependency fence of the job which is on the top
-of the job queue.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">dependency</span></code></dt><dd><p>The dependency fence of the job which is on the top of the job queue.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">cb</span></code></dt><dd><p>callback for the dependency fence above.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">cb</span></code></dt><dd><p>Callback for the dependency fence above.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">guilty</span></code></dt><dd><p>points to ctx’s guilty.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">guilty</span></code></dt><dd><p>Points to entities’ guilty.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">last_scheduled</span></code></dt><dd><p>points to the finished fence of the last scheduled job.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">last_scheduled</span></code></dt><dd><p>Points to the finished fence of the last scheduled job. Only written
+by the scheduler thread, can be accessed locklessly from
+<a class="reference internal" href="#c.drm_sched_job_arm" title="drm_sched_job_arm"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_arm()</span></code></a> iff the queue is empty.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">last_user</span></code></dt><dd><p>last group leader pushing a job into the entity.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">stopped</span></code></dt><dd><p>Marks the enity as removed from rq and destined for termination.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">stopped</span></code></dt><dd><p>Marks the enity as removed from rq and destined for
+termination. This is set by calling <a class="reference internal" href="#c.drm_sched_entity_flush" title="drm_sched_entity_flush"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_flush()</span></code></a> and by
+<a class="reference internal" href="#c.drm_sched_fini" title="drm_sched_fini"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_fini()</span></code></a>.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">entity_idle</span></code></dt><dd><p>Signals when enityt is not in use</p>
+<dt><code class="docutils literal notranslate"><span class="pre">entity_idle</span></code></dt><dd><p>Signals when entity is not in use, used to sequence entity cleanup in
+<a class="reference internal" href="#c.drm_sched_entity_fini" title="drm_sched_entity_fini"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_fini()</span></code></a>.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
@@ -4713,6 +5503,8 @@ belongs to.</p>
   enum drm_sched_priority         s_priority;
   struct drm_sched_entity         *entity;
   struct dma_fence_cb             cb;
+  struct xarray                   dependencies;
+  unsigned long                   last_dependency;
 };
 </pre></div>
 </div>
@@ -4740,10 +5532,16 @@ be scheduled further.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">cb</span></code></dt><dd><p>the callback for the parent fence in s_fence.</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dependencies</span></code></dt><dd><p>Contains the dependencies as <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_fence" title="dma_fence"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_fence</span></code></a> for this job, see
+<a class="reference internal" href="#c.drm_sched_job_add_dependency" title="drm_sched_job_add_dependency"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_add_dependency()</span></code></a> and
+<a class="reference internal" href="#c.drm_sched_job_add_implicit_dependencies" title="drm_sched_job_add_implicit_dependencies"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_add_implicit_dependencies()</span></code></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">last_dependency</span></code></dt><dd><p>tracks <strong>dependencies</strong> as they signal</p>
+</dd>
 </dl>
 <p><strong>Description</strong></p>
 <p>A job is created by the driver using <a class="reference internal" href="#c.drm_sched_job_init" title="drm_sched_job_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_init()</span></code></a>, and
-should call drm_sched_entity_push_job() once it wants the scheduler
+should call <a class="reference internal" href="#c.drm_sched_entity_push_job" title="drm_sched_entity_push_job"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_push_job()</span></code></a> once it wants the scheduler
 to schedule the job.</p>
 <dl class="c struct">
 <dt id="c.drm_sched_backend_ops">
@@ -4761,9 +5559,12 @@ to schedule the job.</p>
 </div>
 <p><strong>Members</strong></p>
 <dl>
-<dt><code class="docutils literal notranslate"><span class="pre">dependency</span></code></dt><dd><p>Called when the scheduler is considering scheduling
-this job next, to get another <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_fence" title="dma_fence"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_fence</span></code></a> for this job to
-block on.  Once it returns NULL, run_job() may be called.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">dependency</span></code></dt><dd><p>Called when the scheduler is considering scheduling this job next, to
+get another <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_fence" title="dma_fence"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_fence</span></code></a> for this job to block on.  Once it
+returns NULL, run_job() may be called.</p>
+<p>If a driver exclusively uses <a class="reference internal" href="#c.drm_sched_job_add_dependency" title="drm_sched_job_add_dependency"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_add_dependency()</span></code></a> and
+<a class="reference internal" href="#c.drm_sched_job_add_implicit_dependencies" title="drm_sched_job_add_implicit_dependencies"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_add_implicit_dependencies()</span></code></a> this can be ommitted and
+left as NULL.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">run_job</span></code></dt><dd><p>Called to execute the job once all of the dependencies
 have been resolved.  This may be called multiple times, if
@@ -5022,9 +5823,72 @@ pending list any more.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Refer to drm_sched_entity_push_job() documentation
+<p>Refer to <a class="reference internal" href="#c.drm_sched_entity_push_job" title="drm_sched_entity_push_job"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_push_job()</span></code></a> documentation
 for locking considerations.</p>
+<p>Drivers must make sure <a class="reference internal" href="#c.drm_sched_job_cleanup" title="drm_sched_job_cleanup"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_cleanup()</span></code></a> if this function returns
+successfully, even when <strong>job</strong> is aborted before <a class="reference internal" href="#c.drm_sched_job_arm" title="drm_sched_job_arm"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_arm()</span></code></a> is called.</p>
+<p>WARNING: amdgpu abuses <code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched.ready</span></code> to signal when the hardware
+has died, which can mean that there’s no valid runqueue for a <strong>entity</strong>.
+This function returns -ENOENT in this case (which probably should be -EIO as
+a more meanigful return value).</p>
 <p>Returns 0 for success, negative error code otherwise.</p>
+<dl class="c function">
+<dt id="c.drm_sched_job_arm">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_sched_job_arm</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_job" title="drm_sched_job"><span class="pre">drm_sched_job</span></a> <span class="pre">*</span><em><span class="pre">job</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_job_arm" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>arm a scheduler job for execution</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_job</span> <span class="pre">*job</span></code></dt><dd><p>scheduler job to arm</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This arms a scheduler job for execution. Specifically it initializes the
+<a class="reference internal" href="#c.drm_sched_job" title="drm_sched_job"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched_job.s_fence</span></code></a> of <strong>job</strong>, so that it can be attached to <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_resv" title="dma_resv"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_resv</span></code></a>
+or other places that need to track the completion of this job.</p>
+<p>Refer to <a class="reference internal" href="#c.drm_sched_entity_push_job" title="drm_sched_entity_push_job"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_push_job()</span></code></a> documentation for locking
+considerations.</p>
+<p>This can only be called if <a class="reference internal" href="#c.drm_sched_job_init" title="drm_sched_job_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_init()</span></code></a> succeeded.</p>
+<dl class="c function">
+<dt id="c.drm_sched_job_add_dependency">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_sched_job_add_dependency</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_job" title="drm_sched_job"><span class="pre">drm_sched_job</span></a> <span class="pre">*</span><em><span class="pre">job</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><em><span class="pre">fence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_job_add_dependency" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>adds the fence as a job dependency</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_job</span> <span class="pre">*job</span></code></dt><dd><p>scheduler job to add the dependencies to</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dma_fence</span> <span class="pre">*fence</span></code></dt><dd><p>the dma_fence to add to the list of dependencies.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Note that <strong>fence</strong> is consumed in both the success and error cases.</p>
+<p><strong>Return</strong></p>
+<p>0 on success, or an error on failing to expand the array.</p>
+<dl class="c function">
+<dt id="c.drm_sched_job_add_implicit_dependencies">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_sched_job_add_implicit_dependencies</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_job" title="drm_sched_job"><span class="pre">drm_sched_job</span></a> <span class="pre">*</span><em><span class="pre">job</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_gem_object" title="drm_gem_object"><span class="pre">drm_gem_object</span></a> <span class="pre">*</span><em><span class="pre">obj</span></em>, <span class="pre">bool</span> <em><span class="pre">write</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_job_add_implicit_dependencies" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>adds implicit dependencies as job dependencies</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_job</span> <span class="pre">*job</span></code></dt><dd><p>scheduler job to add the dependencies to</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_gem_object</span> <span class="pre">*obj</span></code></dt><dd><p>the gem object to add new dependencies from.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">write</span></code></dt><dd><p>whether the job might write the object (so we need to depend on
+shared fences in the reservation object).</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This should be called after <a class="reference internal" href="#c.drm_gem_lock_reservations" title="drm_gem_lock_reservations"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_gem_lock_reservations()</span></code></a> on your array of
+GEM objects used in the job but before updating the reservations with your
+own fences.</p>
+<p><strong>Return</strong></p>
+<p>0 on success, or an error on failing to expand the array.</p>
 <dl class="c function">
 <dt id="c.drm_sched_job_cleanup">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_sched_job_cleanup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_job" title="drm_sched_job"><span class="pre">drm_sched_job</span></a> <span class="pre">*</span><em><span class="pre">job</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_job_cleanup" title="Permalink to this definition">¶</a><br /></dt>
@@ -5036,6 +5900,13 @@ for locking considerations.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_job</span> <span class="pre">*job</span></code></dt><dd><p>scheduler job to clean up</p>
 </dd>
 </dl>
+<p><strong>Description</strong></p>
+<p>Cleans up the resources allocated with <a class="reference internal" href="#c.drm_sched_job_init" title="drm_sched_job_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_init()</span></code></a>.</p>
+<p>Drivers should call this from their error unwind code if <strong>job</strong> is aborted
+before <a class="reference internal" href="#c.drm_sched_job_arm" title="drm_sched_job_arm"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_arm()</span></code></a> is called.</p>
+<p>After that point of no return <strong>job</strong> is committed to be executed by the
+scheduler, and this function should be called from the
+<a class="reference internal" href="#c.drm_sched_backend_ops" title="drm_sched_backend_ops"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_sched_backend_ops.free_job</span></code></a> callback.</p>
 <dl class="c function">
 <dt id="c.drm_sched_pick_best">
 <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_gpu_scheduler" title="drm_gpu_scheduler"><span class="pre">drm_gpu_scheduler</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">drm_sched_pick_best</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_gpu_scheduler" title="drm_gpu_scheduler"><span class="pre">drm_gpu_scheduler</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">sched_list</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">num_sched_list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_pick_best" title="Permalink to this definition">¶</a><br /></dt>
@@ -5106,6 +5977,137 @@ used</p>
 <dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">type</span></code></dt><dd><p>type for increase/reset karma</p>
 </dd>
 </dl>
+<dl class="c function">
+<dt id="c.drm_sched_entity_init">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_sched_entity_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_entity" title="drm_sched_entity"><span class="pre">drm_sched_entity</span></a> <span class="pre">*</span><em><span class="pre">entity</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">drm_sched_priority</span> <em><span class="pre">priority</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_gpu_scheduler" title="drm_gpu_scheduler"><span class="pre">drm_gpu_scheduler</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">sched_list</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">num_sched_list</span></em>, <span class="pre">atomic_t</span> <span class="pre">*</span><em><span class="pre">guilty</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_entity_init" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Init a context entity used by scheduler when submit to HW ring.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_entity</span> <span class="pre">*entity</span></code></dt><dd><p>scheduler entity to init</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">drm_sched_priority</span> <span class="pre">priority</span></code></dt><dd><p>priority of the entity</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_gpu_scheduler</span> <span class="pre">**sched_list</span></code></dt><dd><p>the list of drm scheds on which jobs from this
+entity can be submitted</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">num_sched_list</span></code></dt><dd><p>number of drm sched in sched_list</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">atomic_t</span> <span class="pre">*guilty</span></code></dt><dd><p>atomic_t set to 1 when a job on this queue
+is found to be guilty causing a timeout</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Note that the <code class="xref c c-type docutils literal notranslate"><span class="pre">sched_list</span></code> must have at least one element to schedule the entity.</p>
+<p>For changing <strong>priority</strong> later on at runtime see
+<a class="reference internal" href="#c.drm_sched_entity_set_priority" title="drm_sched_entity_set_priority"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_set_priority()</span></code></a>. For changing the set of schedulers
+<strong>sched_list</strong> at runtime see <a class="reference internal" href="#c.drm_sched_entity_modify_sched" title="drm_sched_entity_modify_sched"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_modify_sched()</span></code></a>.</p>
+<p>An entity is cleaned up by callind <a class="reference internal" href="#c.drm_sched_entity_fini" title="drm_sched_entity_fini"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_fini()</span></code></a>. See also
+<a class="reference internal" href="#c.drm_sched_entity_destroy" title="drm_sched_entity_destroy"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_destroy()</span></code></a>.</p>
+<p>Returns 0 on success or a negative error code on failure.</p>
+<dl class="c function">
+<dt id="c.drm_sched_entity_modify_sched">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_sched_entity_modify_sched</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_entity" title="drm_sched_entity"><span class="pre">drm_sched_entity</span></a> <span class="pre">*</span><em><span class="pre">entity</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_gpu_scheduler" title="drm_gpu_scheduler"><span class="pre">drm_gpu_scheduler</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">sched_list</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">num_sched_list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_entity_modify_sched" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Modify sched of an entity</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_entity</span> <span class="pre">*entity</span></code></dt><dd><p>scheduler entity to init</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_gpu_scheduler</span> <span class="pre">**sched_list</span></code></dt><dd><p>the list of new drm scheds which will replace
+existing entity-&gt;sched_list</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">num_sched_list</span></code></dt><dd><p>number of drm sched in sched_list</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Note that this must be called under the same common lock for <strong>entity</strong> as
+<a class="reference internal" href="#c.drm_sched_job_arm" title="drm_sched_job_arm"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_arm()</span></code></a> and <a class="reference internal" href="#c.drm_sched_entity_push_job" title="drm_sched_entity_push_job"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_push_job()</span></code></a>, or the driver needs to
+guarantee through some other means that this is never called while new jobs
+can be pushed to <strong>entity</strong>.</p>
+<dl class="c function">
+<dt id="c.drm_sched_entity_flush">
+<span class="pre">long</span> <code class="sig-name descname"><span class="pre">drm_sched_entity_flush</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_entity" title="drm_sched_entity"><span class="pre">drm_sched_entity</span></a> <span class="pre">*</span><em><span class="pre">entity</span></em>, <span class="pre">long</span> <em><span class="pre">timeout</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_entity_flush" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Flush a context entity</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_entity</span> <span class="pre">*entity</span></code></dt><dd><p>scheduler entity</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">long</span> <span class="pre">timeout</span></code></dt><dd><p>time to wait in for Q to become empty in jiffies.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Splitting <a class="reference internal" href="#c.drm_sched_entity_fini" title="drm_sched_entity_fini"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_fini()</span></code></a> into two functions, The first one does the
+waiting, removes the entity from the runqueue and returns an error when the
+process was killed.</p>
+<p>Returns the remaining time in jiffies left from the input timeout</p>
+<dl class="c function">
+<dt id="c.drm_sched_entity_fini">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_sched_entity_fini</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_entity" title="drm_sched_entity"><span class="pre">drm_sched_entity</span></a> <span class="pre">*</span><em><span class="pre">entity</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_entity_fini" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy a context entity</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_entity</span> <span class="pre">*entity</span></code></dt><dd><p>scheduler entity</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Cleanups up <strong>entity</strong> which has been initialized by <a class="reference internal" href="#c.drm_sched_entity_init" title="drm_sched_entity_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_init()</span></code></a>.</p>
+<p>If there are potentially job still in flight or getting newly queued
+<a class="reference internal" href="#c.drm_sched_entity_flush" title="drm_sched_entity_flush"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_flush()</span></code></a> must be called first. This function then goes over
+the entity and signals all jobs with an error code if the process was killed.</p>
+<dl class="c function">
+<dt id="c.drm_sched_entity_destroy">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_sched_entity_destroy</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_entity" title="drm_sched_entity"><span class="pre">drm_sched_entity</span></a> <span class="pre">*</span><em><span class="pre">entity</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_entity_destroy" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy a context entity</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_entity</span> <span class="pre">*entity</span></code></dt><dd><p>scheduler entity</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Calls <a class="reference internal" href="#c.drm_sched_entity_flush" title="drm_sched_entity_flush"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_flush()</span></code></a> and <a class="reference internal" href="#c.drm_sched_entity_fini" title="drm_sched_entity_fini"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_entity_fini()</span></code></a> as a
+convenience wrapper.</p>
+<dl class="c function">
+<dt id="c.drm_sched_entity_set_priority">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_sched_entity_set_priority</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_entity" title="drm_sched_entity"><span class="pre">drm_sched_entity</span></a> <span class="pre">*</span><em><span class="pre">entity</span></em>, <em class="property"><span class="pre">enum</span></em> <span class="pre">drm_sched_priority</span> <em><span class="pre">priority</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_entity_set_priority" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Sets priority of the entity</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_entity</span> <span class="pre">*entity</span></code></dt><dd><p>scheduler entity</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">drm_sched_priority</span> <span class="pre">priority</span></code></dt><dd><p>scheduler priority</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Update the priority of runqueus used for the entity.</p>
+<dl class="c function">
+<dt id="c.drm_sched_entity_push_job">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_sched_entity_push_job</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_sched_job" title="drm_sched_job"><span class="pre">drm_sched_job</span></a> <span class="pre">*</span><em><span class="pre">sched_job</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_sched_entity_push_job" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Submit a job to the entity’s job queue</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_job</span> <span class="pre">*sched_job</span></code></dt><dd><p>job to submit</p>
+</dd>
+</dl>
+<p><strong>Note</strong></p>
+<p>To guarantee that the order of insertion to queue matches the job’s
+fence sequence number this function should be called with <a class="reference internal" href="#c.drm_sched_job_arm" title="drm_sched_job_arm"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_arm()</span></code></a>
+under common lock for the <a class="reference internal" href="#c.drm_sched_entity" title="drm_sched_entity"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_sched_entity</span></code></a> that was set up for
+<strong>sched_job</strong> in <a class="reference internal" href="#c.drm_sched_job_init" title="drm_sched_job_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_sched_job_init()</span></code></a>.</p>
+<p><strong>Description</strong></p>
+<p>Returns 0 for success, negative error code otherwise.</p>
 </section>
 </section>
 </section>

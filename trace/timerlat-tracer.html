@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -274,7 +274,7 @@
   <section id="timerlat-tracer">
 <h1>Timerlat tracer<a class="headerlink" href="#timerlat-tracer" title="Permalink to this headline">¶</a></h1>
 <p>The timerlat tracer aims to help the preemptive kernel developers to
-find souces of wakeup latencies of real-time threads. Like cyclictest,
+find sources of wakeup latencies of real-time threads. Like cyclictest,
 the tracer sets a periodic timer that wakes up a thread. The thread then
 computes a <em>wakeup latency</em> value as the difference between the <em>current
 time</em> and the <em>absolute time</em> that the timer was set to expire. The main
@@ -316,14 +316,14 @@ observed at the <em>hardirq</em> context before the activation of the thread.
 The second is the <em>timer latency</em> observed by the thread. The ACTIVATION
 ID field serves to relate the <em>irq</em> execution to its respective <em>thread</em>
 execution.</p>
-<p>The <em>irq</em>/<em>thread</em> splitting is important to clarify at which context
+<p>The <em>irq</em>/<em>thread</em> splitting is important to clarify in which context
 the unexpected high value is coming from. The <em>irq</em> context can be
-delayed by hardware related actions, such as SMIs, NMIs, IRQs
-or by a thread masking interrupts. Once the timer happens, the delay
+delayed by hardware-related actions, such as SMIs, NMIs, IRQs,
+or by thread masking interrupts. Once the timer happens, the delay
 can also be influenced by blocking caused by threads. For example, by
-postponing the scheduler execution via preempt_disable(), by the
-scheduler execution, or by masking interrupts. Threads can
-also be delayed by the interference from other threads and IRQs.</p>
+postponing the scheduler execution via preempt_disable(), scheduler
+execution, or masking interrupts. Threads can also be delayed by the
+interference from other threads and IRQs.</p>
 </section>
 <section id="tracer-options">
 <h2>Tracer options<a class="headerlink" href="#tracer-options" title="Permalink to this headline">¶</a></h2>
@@ -334,14 +334,14 @@ directory. The timerlat configs are:</p>
 <div><ul class="simple">
 <li><p>cpus: CPUs at which a timerlat thread will execute.</p></li>
 <li><p>timerlat_period_us: the period of the timerlat thread.</p></li>
-<li><p>osnoise/stop_tracing_us: stop the system tracing if a
+<li><p>stop_tracing_us: stop the system tracing if a
 timer latency at the <em>irq</em> context higher than the configured
 value happens. Writing 0 disables this option.</p></li>
 <li><p>stop_tracing_total_us: stop the system tracing if a
-timer latency at the <em>thread</em> context higher than the configured
+timer latency at the <em>thread</em> context is higher than the configured
 value happens. Writing 0 disables this option.</p></li>
-<li><p>print_stack: save the stack of the IRQ ocurrence, and print
-it afte the <em>thread context</em> event”.</p></li>
+<li><p>print_stack: save the stack of the IRQ occurrence, and print
+it after the <em>thread context</em> event”.</p></li>
 </ul>
 </div></blockquote>
 </section>
@@ -362,7 +362,7 @@ timerlat/5-1035    [005] .......   548.771104: #402268 context thread timer_late
 </pre></div>
 </div>
 <p>In this case, the root cause of the timer latency does not point to a
-single cause, but to multiple ones. Firstly, the timer IRQ was delayed
+single cause but to multiple ones. Firstly, the timer IRQ was delayed
 for 13 us, which may point to a long IRQ disabled section (see IRQ
 stacktrace section). Then the timer interrupt that wakes up the timerlat
 thread took 7597 ns, and the qxl:21 device IRQ took 7139 ns. Finally,

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -523,6 +523,28 @@ a time.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">void</span> <span class="pre">*data</span></code></dt><dd><p>Full scan.</p>
 </dd>
 </dl>
+<dl class="c function">
+<dt id="c.iio_push_to_buffers_with_ts_unaligned">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">iio_push_to_buffers_with_ts_unaligned</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="core.html#c.iio_dev" title="iio_dev"><span class="pre">iio_dev</span></a> <span class="pre">*</span><em><span class="pre">indio_dev</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">size_t</span> <em><span class="pre">data_sz</span></em>, <span class="pre">int64_t</span> <em><span class="pre">timestamp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.iio_push_to_buffers_with_ts_unaligned" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>push to registered buffer, no alignment or space requirements.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">iio_dev</span> <span class="pre">*indio_dev</span></code></dt><dd><p>iio_dev structure for device.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">void</span> <span class="pre">*data</span></code></dt><dd><p>channel data excluding the timestamp.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">data_sz</span></code></dt><dd><p>size of data.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">int64_t</span> <span class="pre">timestamp</span></code></dt><dd><p>timestamp for the sample data.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This special variant of <a class="reference internal" href="#c.iio_push_to_buffers_with_timestamp" title="iio_push_to_buffers_with_timestamp"><code class="xref c c-func docutils literal notranslate"><span class="pre">iio_push_to_buffers_with_timestamp()</span></code></a> does
+not require space for the timestamp, or 8 byte alignment of data.
+It does however require an allocation on first call and additional
+copies on all calls, so should be avoided if possible.</p>
 <dl class="c function">
 <dt id="c.iio_buffer_get">
 <em class="property"><span class="pre">struct</span></em> <span class="pre">iio_buffer</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">iio_buffer_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">iio_buffer</span> <span class="pre">*</span><em><span class="pre">buffer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.iio_buffer_get" title="Permalink to this definition">¶</a><br /></dt>

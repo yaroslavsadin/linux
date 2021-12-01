@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -432,7 +432,7 @@ E.g. 0x1 = 256Mbyte, 0x2 = 512Mbyte, 0x4 = 1 Gbyte, 0x8 = 2GByte. The default is
 <p>It is used to enable mid command buffer preemption. (0 = disabled (default), 1 = enabled)</p>
 <p id="discovery-int"><strong>discovery (int)</strong></p>
 <p>Allow driver to discover hardware IP information from IP Discovery table at the top of VRAM.
-(-1 = auto (default), 0 = disabled, 1 = enabled)</p>
+(-1 = auto (default), 0 = disabled, 1 = enabled, 2 = use ip_discovery table from file)</p>
 <p id="mes-int"><strong>mes (int)</strong></p>
 <p>Enable Micro Engine Scheduler. This is a new hw scheduling engine for gfx, sdma, and compute.
 (0 = disabled (default), 1 = enabled)</p>
@@ -759,24 +759,6 @@ reserved.</p>
 <p><strong>Return</strong></p>
 <p>0 for success or a negative error code on failure.</p>
 <dl class="c function">
-<dt id="c.amdgpu_bo_validate">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">amdgpu_bo_validate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">amdgpu_bo</span> <span class="pre">*</span><em><span class="pre">bo</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.amdgpu_bo_validate" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>validate an <code class="xref c c-type docutils literal notranslate"><span class="pre">amdgpu_bo</span></code> buffer object</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">amdgpu_bo</span> <span class="pre">*bo</span></code></dt><dd><p>pointer to the buffer object</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Sets placement according to domain; and changes placement and caching
-policy of the buffer object according to the placement.
-This is used for validating shadow bos.  It calls ttm_bo_validate() to
-make sure the buffer is resident where it needs to be.</p>
-<p><strong>Return</strong></p>
-<p>0 for success or a negative error code on failure.</p>
-<dl class="c function">
 <dt id="c.amdgpu_bo_add_to_shadow_list">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">amdgpu_bo_add_to_shadow_list</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">amdgpu_bo_vm</span> <span class="pre">*</span><em><span class="pre">vmbo</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.amdgpu_bo_add_to_shadow_list" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>add a BO to the shadow list</p>
@@ -947,22 +929,6 @@ Changes placement and pin size accordingly.</p>
 <p><strong>Return</strong></p>
 <p>0 for success or a negative error code on failure.</p>
 <dl class="c function">
-<dt id="c.amdgpu_bo_evict_vram">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">amdgpu_bo_evict_vram</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">amdgpu_device</span> <span class="pre">*</span><em><span class="pre">adev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.amdgpu_bo_evict_vram" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>evict VRAM buffers</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">amdgpu_device</span> <span class="pre">*adev</span></code></dt><dd><p>amdgpu device object</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Evicts all VRAM buffers on the lru list of the memory type.
-Mainly used for evicting vram at suspend time.</p>
-<p><strong>Return</strong></p>
-<p>0 for success or a negative error code on failure.</p>
-<dl class="c function">
 <dt id="c.amdgpu_bo_init">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">amdgpu_bo_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">amdgpu_device</span> <span class="pre">*</span><em><span class="pre">adev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.amdgpu_bo_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>initialize memory manager</p>
@@ -1073,7 +1039,7 @@ Used via GEM ioctl.</p>
 <p>0 for success or a negative error code on failure.</p>
 <dl class="c function">
 <dt id="c.amdgpu_bo_move_notify">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">amdgpu_bo_move_notify</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_buffer_object</span> <span class="pre">*</span><em><span class="pre">bo</span></em>, <span class="pre">bool</span> <em><span class="pre">evict</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_resource</span> <span class="pre">*</span><em><span class="pre">new_mem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.amdgpu_bo_move_notify" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">amdgpu_bo_move_notify</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_buffer_object</span> <span class="pre">*</span><em><span class="pre">bo</span></em>, <span class="pre">bool</span> <em><span class="pre">evict</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-mm.html#c.ttm_resource" title="ttm_resource"><span class="pre">ttm_resource</span></a> <span class="pre">*</span><em><span class="pre">new_mem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.amdgpu_bo_move_notify" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>notification about a memory move</p>
 </dd></dl>
 
@@ -2249,7 +2215,7 @@ to.</p>
 <p>0 for success, -EINVAL for failure.</p>
 <dl class="c function">
 <dt id="c.amdgpu_vm_bo_update_mapping">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">amdgpu_vm_bo_update_mapping</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">amdgpu_device</span> <span class="pre">*</span><em><span class="pre">adev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">amdgpu_device</span> <span class="pre">*</span><em><span class="pre">bo_adev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">amdgpu_vm</span> <span class="pre">*</span><em><span class="pre">vm</span></em>, <span class="pre">bool</span> <em><span class="pre">immediate</span></em>, <span class="pre">bool</span> <em><span class="pre">unlocked</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">resv</span></em>, <span class="pre">uint64_t</span> <em><span class="pre">start</span></em>, <span class="pre">uint64_t</span> <em><span class="pre">last</span></em>, <span class="pre">uint64_t</span> <em><span class="pre">flags</span></em>, <span class="pre">uint64_t</span> <em><span class="pre">offset</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ttm_resource</span> <span class="pre">*</span><em><span class="pre">res</span></em>, <span class="pre">dma_addr_t</span> <span class="pre">*</span><em><span class="pre">pages_addr</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">fence</span></em>, <span class="pre">bool</span> <span class="pre">*</span><em><span class="pre">table_freed</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.amdgpu_vm_bo_update_mapping" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">amdgpu_vm_bo_update_mapping</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">amdgpu_device</span> <span class="pre">*</span><em><span class="pre">adev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">amdgpu_device</span> <span class="pre">*</span><em><span class="pre">bo_adev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">amdgpu_vm</span> <span class="pre">*</span><em><span class="pre">vm</span></em>, <span class="pre">bool</span> <em><span class="pre">immediate</span></em>, <span class="pre">bool</span> <em><span class="pre">unlocked</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_resv" title="dma_resv"><span class="pre">dma_resv</span></a> <span class="pre">*</span><em><span class="pre">resv</span></em>, <span class="pre">uint64_t</span> <em><span class="pre">start</span></em>, <span class="pre">uint64_t</span> <em><span class="pre">last</span></em>, <span class="pre">uint64_t</span> <em><span class="pre">flags</span></em>, <span class="pre">uint64_t</span> <em><span class="pre">offset</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-mm.html#c.ttm_resource" title="ttm_resource"><span class="pre">ttm_resource</span></a> <span class="pre">*</span><em><span class="pre">res</span></em>, <span class="pre">dma_addr_t</span> <span class="pre">*</span><em><span class="pre">pages_addr</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/dma-buf.html#c.dma_fence" title="dma_fence"><span class="pre">dma_fence</span></a> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">fence</span></em>, <span class="pre">bool</span> <span class="pre">*</span><em><span class="pre">table_freed</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.amdgpu_vm_bo_update_mapping" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>update a mapping in the vm page table</p>
 </dd></dl>
 

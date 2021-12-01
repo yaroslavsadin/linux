@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -2014,6 +2014,164 @@ dst for a ‘0’ terminator if and only if ret &lt; osz.</p>
 <p><strong>Description</strong></p>
 <p>Passing a non-NULL <strong>array</strong> and <strong>n</strong> == 0 as well as NULL <strong>array</strong> are valid
 use-cases. If <strong>array</strong> is NULL, the function does nothing.</p>
+<dl class="c function">
+<dt id="c.strscpy_pad">
+<span class="pre">ssize_t</span> <code class="sig-name descname"><span class="pre">strscpy_pad</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">dest</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">src</span></em>, <span class="pre">size_t</span> <em><span class="pre">count</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.strscpy_pad" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy a C-string into a sized buffer</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*dest</span></code></dt><dd><p>Where to copy the string to</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*src</span></code></dt><dd><p>Where to copy the string from</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">count</span></code></dt><dd><p>Size of destination buffer</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Copy the string, or as much of it as fits, into the dest buffer.  The
+behavior is undefined if the string buffers overlap.  The destination
+buffer is always <code class="docutils literal notranslate"><span class="pre">NUL</span></code> terminated, unless it’s zero-sized.</p>
+<p>If the source string is shorter than the destination buffer, zeros
+the tail of the destination buffer.</p>
+<p>For full explanation of why you may want to consider using the
+‘strscpy’ functions please see the function docstring for <a class="reference internal" href="#c.strscpy" title="strscpy"><code class="xref c c-func docutils literal notranslate"><span class="pre">strscpy()</span></code></a>.</p>
+<p><strong>Return</strong></p>
+<ul class="simple">
+<li><p>The number of characters copied (not including the trailing <code class="docutils literal notranslate"><span class="pre">NUL</span></code>)</p></li>
+<li><p>-E2BIG if count is 0 or <strong>src</strong> was truncated.</p></li>
+</ul>
+<dl class="c function">
+<dt id="c.skip_spaces">
+<span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">skip_spaces</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.skip_spaces" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Removes leading whitespace from <strong>str</strong>.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*str</span></code></dt><dd><p>The string to be stripped.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Returns a pointer to the first non-whitespace character in <strong>str</strong>.</p>
+<dl class="c function">
+<dt id="c.strim">
+<span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">strim</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.strim" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Removes leading and trailing whitespace from <strong>s</strong>.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*s</span></code></dt><dd><p>The string to be stripped.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Note that the first trailing whitespace is replaced with a <code class="docutils literal notranslate"><span class="pre">NUL-terminator</span></code>
+in the given string <strong>s</strong>. Returns a pointer to the first non-whitespace
+character in <strong>s</strong>.</p>
+<dl class="c function">
+<dt id="c.sysfs_streq">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">sysfs_streq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s1</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.sysfs_streq" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>return true if strings are equal, modulo trailing newline</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*s1</span></code></dt><dd><p>one string</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*s2</span></code></dt><dd><p>another string</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This routine returns true iff two strings are equal, treating both
+NUL and newline-then-NUL as equivalent string terminations.  It’s
+geared for use with sysfs input strings, which generally terminate
+with newlines but are compared against values without newlines.</p>
+<dl class="c function">
+<dt id="c.match_string">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">match_string</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em class="property"><span class="pre">const</span></em> <span class="pre">*</span><em><span class="pre">array</span></em>, <span class="pre">size_t</span> <em><span class="pre">n</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">string</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.match_string" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>matches given string in an array</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*</span> <span class="pre">const</span> <span class="pre">*array</span></code></dt><dd><p>array of strings</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">n</span></code></dt><dd><p>number of strings in the array or -1 for NULL terminated arrays</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*string</span></code></dt><dd><p>string to match with</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This routine will look for a string in an array of strings up to the
+n-th element in the array or until the first NULL element.</p>
+<p>Historically the value of -1 for <strong>n</strong>, was used to search in arrays that
+are NULL terminated. However, the function does not make a distinction
+when finishing the search: either <strong>n</strong> elements have been compared OR
+the first NULL element was found.</p>
+<p><strong>Return</strong></p>
+<p>index of a <strong>string</strong> in the <strong>array</strong> if matches, or <code class="docutils literal notranslate"><span class="pre">-EINVAL</span></code> otherwise.</p>
+<dl class="c function">
+<dt id="c.__sysfs_match_string">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">__sysfs_match_string</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em class="property"><span class="pre">const</span></em> <span class="pre">*</span><em><span class="pre">array</span></em>, <span class="pre">size_t</span> <em><span class="pre">n</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__sysfs_match_string" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>matches given string in an array</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*</span> <span class="pre">const</span> <span class="pre">*array</span></code></dt><dd><p>array of strings</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">n</span></code></dt><dd><p>number of strings in the array or -1 for NULL terminated arrays</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*str</span></code></dt><dd><p>string to match with</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Returns index of <strong>str</strong> in the <strong>array</strong> or -EINVAL, just like <a class="reference internal" href="#c.match_string" title="match_string"><code class="xref c c-func docutils literal notranslate"><span class="pre">match_string()</span></code></a>.
+Uses sysfs_streq instead of strcmp for matching.</p>
+<p>This routine will look for a string in an array of strings up to the
+n-th element in the array or until the first NULL element.</p>
+<p>Historically the value of -1 for <strong>n</strong>, was used to search in arrays that
+are NULL terminated. However, the function does not make a distinction
+when finishing the search: either <strong>n</strong> elements have been compared OR
+the first NULL element was found.</p>
+<dl class="c function">
+<dt id="c.strreplace">
+<span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">strreplace</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s</span></em>, <span class="pre">char</span> <em><span class="pre">old</span></em>, <span class="pre">char</span> <em><span class="pre">new</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.strreplace" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Replace all occurrences of character in string.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*s</span></code></dt><dd><p>The string to operate on.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">old</span></code></dt><dd><p>The character being replaced.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">new</span></code></dt><dd><p>The character <strong>old</strong> is replaced with.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Returns pointer to the nul byte at the end of <strong>s</strong>.</p>
+<dl class="c function">
+<dt id="c.memcpy_and_pad">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">memcpy_and_pad</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dest</span></em>, <span class="pre">size_t</span> <em><span class="pre">dest_len</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">src</span></em>, <span class="pre">size_t</span> <em><span class="pre">count</span></em>, <span class="pre">int</span> <em><span class="pre">pad</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memcpy_and_pad" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Copy one buffer to another with padding</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*dest</span></code></dt><dd><p>Where to copy to</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">dest_len</span></code></dt><dd><p>The destination buffer size</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">void</span> <span class="pre">*src</span></code></dt><dd><p>Where to copy from</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">count</span></code></dt><dd><p>The number of bytes to copy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">pad</span></code></dt><dd><p>Character to use for padding if space is left in destination.</p>
+</dd>
+</dl>
 </section>
 <section id="string-manipulation">
 <h3>String Manipulation<a class="headerlink" href="#string-manipulation" title="Permalink to this headline">¶</a></h3>
@@ -2112,34 +2270,6 @@ from underneath it, unlike the current <a class="reference internal" href="#c.st
 <p>Preferred to <a class="reference internal" href="#c.strncpy" title="strncpy"><code class="xref c c-func docutils literal notranslate"><span class="pre">strncpy()</span></code></a> since it always returns a valid string, and
 doesn’t unnecessarily force the tail of the destination buffer to be
 zeroed.  If zeroing is desired please use <a class="reference internal" href="#c.strscpy_pad" title="strscpy_pad"><code class="xref c c-func docutils literal notranslate"><span class="pre">strscpy_pad()</span></code></a>.</p>
-<p><strong>Return</strong></p>
-<ul class="simple">
-<li><p>The number of characters copied (not including the trailing <code class="docutils literal notranslate"><span class="pre">NUL</span></code>)</p></li>
-<li><p>-E2BIG if count is 0 or <strong>src</strong> was truncated.</p></li>
-</ul>
-<dl class="c function">
-<dt id="c.strscpy_pad">
-<span class="pre">ssize_t</span> <code class="sig-name descname"><span class="pre">strscpy_pad</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">dest</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">src</span></em>, <span class="pre">size_t</span> <em><span class="pre">count</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.strscpy_pad" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Copy a C-string into a sized buffer</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*dest</span></code></dt><dd><p>Where to copy the string to</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*src</span></code></dt><dd><p>Where to copy the string from</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">count</span></code></dt><dd><p>Size of destination buffer</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Copy the string, or as much of it as fits, into the dest buffer.  The
-behavior is undefined if the string buffers overlap.  The destination
-buffer is always <code class="docutils literal notranslate"><span class="pre">NUL</span></code> terminated, unless it’s zero-sized.</p>
-<p>If the source string is shorter than the destination buffer, zeros
-the tail of the destination buffer.</p>
-<p>For full explanation of why you may want to consider using the
-‘strscpy’ functions please see the function docstring for <a class="reference internal" href="#c.strscpy" title="strscpy"><code class="xref c c-func docutils literal notranslate"><span class="pre">strscpy()</span></code></a>.</p>
 <p><strong>Return</strong></p>
 <ul class="simple">
 <li><p>The number of characters copied (not including the trailing <code class="docutils literal notranslate"><span class="pre">NUL</span></code>)</p></li>
@@ -2305,34 +2435,6 @@ return a pointer to the null byte at the end of s.</p>
 <p>Note that the <code class="docutils literal notranslate"><span class="pre">NUL-terminator</span></code> is considered part of the string, and can
 be searched for.</p>
 <dl class="c function">
-<dt id="c.skip_spaces">
-<span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">skip_spaces</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.skip_spaces" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Removes leading whitespace from <strong>str</strong>.</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*str</span></code></dt><dd><p>The string to be stripped.</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Returns a pointer to the first non-whitespace character in <strong>str</strong>.</p>
-<dl class="c function">
-<dt id="c.strim">
-<span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">strim</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.strim" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Removes leading and trailing whitespace from <strong>s</strong>.</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*s</span></code></dt><dd><p>The string to be stripped.</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Note that the first trailing whitespace is replaced with a <code class="docutils literal notranslate"><span class="pre">NUL-terminator</span></code>
-in the given string <strong>s</strong>. Returns a pointer to the first non-whitespace
-character in <strong>s</strong>.</p>
-<dl class="c function">
 <dt id="c.strlen">
 <span class="pre">size_t</span> <code class="sig-name descname"><span class="pre">strlen</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.strlen" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Find the length of a string</p>
@@ -2413,72 +2515,6 @@ character in <strong>s</strong>.</p>
 <p>It returns empty tokens, too, behaving exactly like the libc function
 of that name. In fact, it was stolen from glibc2 and de-fancy-fied.
 Same semantics, slimmer shape. ;)</p>
-<dl class="c function">
-<dt id="c.sysfs_streq">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">sysfs_streq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s1</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.sysfs_streq" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>return true if strings are equal, modulo trailing newline</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*s1</span></code></dt><dd><p>one string</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*s2</span></code></dt><dd><p>another string</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>This routine returns true iff two strings are equal, treating both
-NUL and newline-then-NUL as equivalent string terminations.  It’s
-geared for use with sysfs input strings, which generally terminate
-with newlines but are compared against values without newlines.</p>
-<dl class="c function">
-<dt id="c.match_string">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">match_string</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em class="property"><span class="pre">const</span></em> <span class="pre">*</span><em><span class="pre">array</span></em>, <span class="pre">size_t</span> <em><span class="pre">n</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">string</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.match_string" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>matches given string in an array</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*</span> <span class="pre">const</span> <span class="pre">*array</span></code></dt><dd><p>array of strings</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">n</span></code></dt><dd><p>number of strings in the array or -1 for NULL terminated arrays</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*string</span></code></dt><dd><p>string to match with</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>This routine will look for a string in an array of strings up to the
-n-th element in the array or until the first NULL element.</p>
-<p>Historically the value of -1 for <strong>n</strong>, was used to search in arrays that
-are NULL terminated. However, the function does not make a distinction
-when finishing the search: either <strong>n</strong> elements have been compared OR
-the first NULL element was found.</p>
-<p><strong>Return</strong></p>
-<p>index of a <strong>string</strong> in the <strong>array</strong> if matches, or <code class="docutils literal notranslate"><span class="pre">-EINVAL</span></code> otherwise.</p>
-<dl class="c function">
-<dt id="c.__sysfs_match_string">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">__sysfs_match_string</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em class="property"><span class="pre">const</span></em> <span class="pre">*</span><em><span class="pre">array</span></em>, <span class="pre">size_t</span> <em><span class="pre">n</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__sysfs_match_string" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>matches given string in an array</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*</span> <span class="pre">const</span> <span class="pre">*array</span></code></dt><dd><p>array of strings</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">n</span></code></dt><dd><p>number of strings in the array or -1 for NULL terminated arrays</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*str</span></code></dt><dd><p>string to match with</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Returns index of <strong>str</strong> in the <strong>array</strong> or -EINVAL, just like <a class="reference internal" href="#c.match_string" title="match_string"><code class="xref c c-func docutils literal notranslate"><span class="pre">match_string()</span></code></a>.
-Uses sysfs_streq instead of strcmp for matching.</p>
-<p>This routine will look for a string in an array of strings up to the
-n-th element in the array or until the first NULL element.</p>
-<p>Historically the value of -1 for <strong>n</strong>, was used to search in arrays that
-are NULL terminated. However, the function does not make a distinction
-when finishing the search: either <strong>n</strong> elements have been compared OR
-the first NULL element was found.</p>
 <dl class="c function">
 <dt id="c.memset">
 <span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">memset</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">s</span></em>, <span class="pre">int</span> <em><span class="pre">c</span></em>, <span class="pre">size_t</span> <em><span class="pre">count</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memset" title="Permalink to this definition">¶</a><br /></dt>
@@ -2705,23 +2741,6 @@ if <strong>c</strong> is not found</p>
 <p><strong>Description</strong></p>
 <p>returns the address of the first character other than <strong>c</strong>, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code>
 if the whole buffer contains just <strong>c</strong>.</p>
-<dl class="c function">
-<dt id="c.strreplace">
-<span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">strreplace</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s</span></em>, <span class="pre">char</span> <em><span class="pre">old</span></em>, <span class="pre">char</span> <em><span class="pre">new</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.strreplace" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Replace all occurrences of character in string.</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*s</span></code></dt><dd><p>The string to operate on.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">old</span></code></dt><dd><p>The character being replaced.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">new</span></code></dt><dd><p>The character <strong>old</strong> is replaced with.</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Returns pointer to the nul byte at the end of <strong>s</strong>.</p>
 <dl class="c macro">
 <dt id="c.sysfs_match_string">
 <code class="sig-name descname"><span class="pre">sysfs_match_string</span></code><a class="headerlink" href="#c.sysfs_match_string" title="Permalink to this definition">¶</a><br /></dt>
@@ -2785,25 +2804,47 @@ it just invokes the one of <a class="reference internal" href="#c.memset" title=
 <dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*path</span></code></dt><dd><p>path to extract the filename from.</p>
 </dd>
 </dl>
-<dl class="c function">
-<dt id="c.memcpy_and_pad">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">memcpy_and_pad</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dest</span></em>, <span class="pre">size_t</span> <em><span class="pre">dest_len</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">src</span></em>, <span class="pre">size_t</span> <em><span class="pre">count</span></em>, <span class="pre">int</span> <em><span class="pre">pad</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memcpy_and_pad" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Copy one buffer to another with padding</p>
-</dd></dl>
+<dl class="c macro">
+<dt id="c.memset_after">
+<code class="sig-name descname"><span class="pre">memset_after</span></code><a class="headerlink" href="#c.memset_after" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
 
+<p><code class="docutils literal notranslate"><span class="pre">memset_after</span> <span class="pre">(obj,</span> <span class="pre">v,</span> <span class="pre">member)</span></code></p>
+<blockquote>
+<div><p>Set a value after a struct member to the end of a struct</p>
+</div></blockquote>
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*dest</span></code></dt><dd><p>Where to copy to</p>
+<dt><code class="docutils literal notranslate"><span class="pre">obj</span></code></dt><dd><p>Address of target struct instance</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">dest_len</span></code></dt><dd><p>The destination buffer size</p>
+<dt><code class="docutils literal notranslate"><span class="pre">v</span></code></dt><dd><p>Byte value to repeatedly write</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">void</span> <span class="pre">*src</span></code></dt><dd><p>Where to copy from</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">count</span></code></dt><dd><p>The number of bytes to copy</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">pad</span></code></dt><dd><p>Character to use for padding if space is left in destination.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">member</span></code></dt><dd><p>after which struct member to start writing bytes</p>
 </dd>
 </dl>
+<p><strong>Description</strong></p>
+<p>This is good for clearing padding following the given member.</p>
+<dl class="c macro">
+<dt id="c.memset_startat">
+<code class="sig-name descname"><span class="pre">memset_startat</span></code><a class="headerlink" href="#c.memset_startat" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><code class="docutils literal notranslate"><span class="pre">memset_startat</span> <span class="pre">(obj,</span> <span class="pre">v,</span> <span class="pre">member)</span></code></p>
+<blockquote>
+<div><p>Set a value starting at a member to the end of a struct</p>
+</div></blockquote>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">obj</span></code></dt><dd><p>Address of target struct instance</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">v</span></code></dt><dd><p>Byte value to repeatedly write</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">member</span></code></dt><dd><p>struct member to start writing at</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Note that if there is padding between the prior member and the target
+member, <a class="reference internal" href="#c.memset_after" title="memset_after"><code class="xref c c-func docutils literal notranslate"><span class="pre">memset_after()</span></code></a> should be used to clear the prior padding.</p>
 <dl class="c function">
 <dt id="c.str_has_prefix">
 <span class="pre">size_t</span> <code class="sig-name descname"><span class="pre">str_has_prefix</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">str</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">prefix</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.str_has_prefix" title="Permalink to this definition">¶</a><br /></dt>
@@ -7688,6 +7729,35 @@ irq context.  May be called in any context.</p>
 audit_log_vformat, and audit_log_end.  It may be called
 in any context.</p>
 <dl class="c function">
+<dt id="c.audit_filter_uring">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">audit_filter_uring</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><em><span class="pre">tsk</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">audit_context</span> <span class="pre">*</span><em><span class="pre">ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.audit_filter_uring" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>apply filters to an io_uring operation</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">task_struct</span> <span class="pre">*tsk</span></code></dt><dd><p>associated task</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">audit_context</span> <span class="pre">*ctx</span></code></dt><dd><p>audit context</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.audit_reset_context">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">audit_reset_context</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">audit_context</span> <span class="pre">*</span><em><span class="pre">ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.audit_reset_context" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>reset a audit_context structure</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">audit_context</span> <span class="pre">*ctx</span></code></dt><dd><p>the audit_context to reset</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>All fields in the audit_context will be reset to an initial state, all
+references held by fields will be dropped, and private memory will be
+released.  When this function returns the audit_context will be suitable
+for reuse, so long as the passed context is not NULL or a dummy context.</p>
+<dl class="c function">
 <dt id="c.audit_alloc">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">audit_alloc</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><em><span class="pre">tsk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.audit_alloc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>allocate an audit context block for a task</p>
@@ -7704,6 +7774,31 @@ if necessary.  Doing so turns on system call auditing for the
 specified task.  This is called from copy_process, so no lock is
 needed.</p>
 <dl class="c function">
+<dt id="c.audit_alloc_kernel">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">audit_alloc_kernel</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><em><span class="pre">tsk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.audit_alloc_kernel" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>allocate an audit_context for a kernel task</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">task_struct</span> <span class="pre">*tsk</span></code></dt><dd><p>the kernel task</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Similar to the <a class="reference internal" href="#c.audit_alloc" title="audit_alloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">audit_alloc()</span></code></a> function, but intended for kernel private
+threads.  Returns zero on success, negative values on failure.</p>
+<dl class="c function">
+<dt id="c.audit_log_uring">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">audit_log_uring</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">audit_context</span> <span class="pre">*</span><em><span class="pre">ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.audit_log_uring" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>generate a AUDIT_URINGOP record</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">audit_context</span> <span class="pre">*ctx</span></code></dt><dd><p>the audit context</p>
+</dd>
+</dl>
+<dl class="c function">
 <dt id="c.__audit_free">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">__audit_free</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><em><span class="pre">tsk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__audit_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free a per-task audit context</p>
@@ -7715,7 +7810,59 @@ needed.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Called from copy_process and do_exit</p>
+<p>Called from copy_process, do_exit, and the io_uring code</p>
+<dl class="c function">
+<dt id="c.audit_return_fixup">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">audit_return_fixup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">audit_context</span> <span class="pre">*</span><em><span class="pre">ctx</span></em>, <span class="pre">int</span> <em><span class="pre">success</span></em>, <span class="pre">long</span> <em><span class="pre">code</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.audit_return_fixup" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>fixup the return codes in the audit_context</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">audit_context</span> <span class="pre">*ctx</span></code></dt><dd><p>the audit_context</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">success</span></code></dt><dd><p>true/false value to indicate if the operation succeeded or not</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">long</span> <span class="pre">code</span></code></dt><dd><p>operation return code</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>We need to fixup the return code in the audit logs if the actual return
+codes are later going to be fixed by the arch specific signal handlers.</p>
+<dl class="c function">
+<dt id="c.__audit_uring_entry">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__audit_uring_entry</span></code><span class="sig-paren">(</span><span class="pre">u8</span> <em><span class="pre">op</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__audit_uring_entry" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>prepare the kernel task’s audit context for io_uring</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">u8</span> <span class="pre">op</span></code></dt><dd><p>the io_uring opcode</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This is similar to audit_syscall_entry() but is intended for use by io_uring
+operations.  This function should only ever be called from
+audit_uring_entry() as we rely on the audit context checking present in that
+function.</p>
+<dl class="c function">
+<dt id="c.__audit_uring_exit">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__audit_uring_exit</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">success</span></em>, <span class="pre">long</span> <em><span class="pre">code</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__audit_uring_exit" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>wrap up the kernel task’s audit context after io_uring</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">success</span></code></dt><dd><p>true/false value to indicate if the operation succeeded or not</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">long</span> <span class="pre">code</span></code></dt><dd><p>operation return code</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This is similar to audit_syscall_exit() but is intended for use by io_uring
+operations.  This function should only ever be called from
+audit_uring_exit() as we rely on the audit context checking present in that
+function.</p>
 <dl class="c function">
 <dt id="c.__audit_syscall_entry">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">__audit_syscall_entry</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">major</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">a1</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">a2</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">a3</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">a4</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__audit_syscall_entry" title="Permalink to this definition">¶</a><br /></dt>
@@ -8282,23 +8429,8 @@ put it.  All future requests will be failed immediately with -ENODEV.</p>
 <p><strong>Context</strong></p>
 <p>Any context.</p>
 <dl class="c function">
-<dt id="c.blk_get_request">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">blk_get_request</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">op</span></em>, <span class="pre">blk_mq_req_flags_t</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_get_request" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>allocate a request</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">request_queue</span> <span class="pre">*q</span></code></dt><dd><p>request queue to allocate a request for</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">op</span></code></dt><dd><p>operation (REQ_OP_*) and REQ_* flags, e.g. REQ_SYNC.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">blk_mq_req_flags_t</span> <span class="pre">flags</span></code></dt><dd><p>BLK_MQ_REQ_* flags, e.g. BLK_MQ_REQ_NOWAIT.</p>
-</dd>
-</dl>
-<dl class="c function">
 <dt id="c.submit_bio_noacct">
-<span class="pre">blk_qc_t</span> <code class="sig-name descname"><span class="pre">submit_bio_noacct</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.submit_bio_noacct" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.submit_bio_noacct" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">submit_bio_noacct</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.submit_bio_noacct" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.submit_bio_noacct" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>re-submit a bio to the block device layer for I/O</p>
 </dd></dl>
 
@@ -8314,7 +8446,7 @@ systems and other upper level users of the block layer should use
 <a class="reference internal" href="#c.submit_bio" title="submit_bio"><code class="xref c c-func docutils literal notranslate"><span class="pre">submit_bio()</span></code></a> instead.</p>
 <dl class="c function">
 <dt id="c.submit_bio">
-<span class="pre">blk_qc_t</span> <code class="sig-name descname"><span class="pre">submit_bio</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.submit_bio" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.submit_bio" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">submit_bio</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.submit_bio" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.submit_bio" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>submit a bio to the block device layer for I/O</p>
 </dd></dl>
 
@@ -8331,6 +8463,27 @@ bio will be send to the device described by the bi_bdev field.</p>
 completion, is delivered asynchronously through the -&gt;bi_end_io() callback
 in <strong>bio</strong>.  The bio must NOT be touched by thecaller until -&gt;bi_end_io() has
 been called.</p>
+<dl class="c function">
+<dt id="c.bio_poll">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">bio_poll</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.bio_poll" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">io_comp_batch</span> <span class="pre">*</span><em><span class="pre">iob</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.bio_poll" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>poll for BIO completions</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">bio</span> <span class="pre">*bio</span></code></dt><dd><p>bio to poll for</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">io_comp_batch</span> <span class="pre">*iob</span></code></dt><dd><p><em>undescribed</em></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">flags</span></code></dt><dd><p>BLK_POLL_* flags that control the behavior</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Poll for completions on queue associated with the bio. Returns number of
+completed entries found.</p>
+<p><strong>Note</strong></p>
+<p>the caller must either be the context that submitted <strong>bio</strong>, or
+be in a RCU critical section to prevent freeing of <strong>bio</strong>.</p>
 <dl class="c function">
 <dt id="c.blk_insert_cloned_request">
 <span class="pre">blk_status_t</span> <code class="sig-name descname"><span class="pre">blk_insert_cloned_request</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_insert_cloned_request" title="Permalink to this definition">¶</a><br /></dt>
@@ -8379,39 +8532,6 @@ crossing into area which need to be retried further.</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>Returns the start time that should be passed back to bio_end_io_acct().</p>
-<dl class="c function">
-<dt id="c.blk_update_request">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">blk_update_request</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">req</span></em>, <span class="pre">blk_status_t</span> <em><span class="pre">error</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">nr_bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_update_request" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Complete multiple bytes without completing the request</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">request</span> <span class="pre">*req</span></code></dt><dd><p>the request being processed</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">blk_status_t</span> <span class="pre">error</span></code></dt><dd><p>block status code</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">nr_bytes</span></code></dt><dd><p>number of bytes to complete for <strong>req</strong></p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<blockquote>
-<div><p>Ends I/O on a number of bytes attached to <strong>req</strong>, but doesn’t complete
-the request structure even if <strong>req</strong> doesn’t have leftover.
-If <strong>req</strong> has leftover, sets it up for the next range of segments.</p>
-<p>Passing the result of blk_rq_bytes() as <strong>nr_bytes</strong> guarantees
-<code class="docutils literal notranslate"><span class="pre">false</span></code> return from this function.</p>
-</div></blockquote>
-<p><strong>Note</strong></p>
-<blockquote>
-<div><p>The RQF_SPECIAL_PAYLOAD flag is ignored on purpose in this function
-except in the consistency check at the end of this function.</p>
-</div></blockquote>
-<p><strong>Return</strong></p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">false</span></code> - this request doesn’t have any more data
-<code class="docutils literal notranslate"><span class="pre">true</span></code>  - this request has more data</p>
-</div></blockquote>
 <dl class="c function">
 <dt id="c.rq_flush_dcache_pages">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">rq_flush_dcache_pages</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.rq_flush_dcache_pages" title="Permalink to this definition">¶</a><br /></dt>
@@ -9562,7 +9682,7 @@ a block device.</p>
 </dl>
 <dl class="c function">
 <dt id="c.blk_add_trace_rq">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_add_trace_rq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em>, <span class="pre">int</span> <em><span class="pre">error</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">nr_bytes</span></em>, <span class="pre">u32</span> <em><span class="pre">what</span></em>, <span class="pre">u64</span> <em><span class="pre">cgid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_add_trace_rq" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_add_trace_rq</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em>, <span class="pre">blk_status_t</span> <em><span class="pre">error</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">nr_bytes</span></em>, <span class="pre">u32</span> <em><span class="pre">what</span></em>, <span class="pre">u64</span> <em><span class="pre">cgid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_add_trace_rq" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Add a trace for a request oriented action</p>
 </dd></dl>
 
@@ -9570,7 +9690,7 @@ a block device.</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">request</span> <span class="pre">*rq</span></code></dt><dd><p>the source request</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">error</span></code></dt><dd><p>return status to log</p>
+<dt><code class="docutils literal notranslate"><span class="pre">blk_status_t</span> <span class="pre">error</span></code></dt><dd><p>return status to log</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">nr_bytes</span></code></dt><dd><p>number of completed bytes</p>
 </dd>
@@ -9678,7 +9798,10 @@ will also be freed prior to the disk.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*name</span></code></dt><dd><p>the name of the new block device as a zero terminated string</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">(*probe)(dev_t</span> <span class="pre">devt)</span></code></dt><dd><p>allback that is called on access to any minor number of <strong>major</strong></p>
+<dt><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">(*probe)(dev_t</span> <span class="pre">devt)</span></code></dt><dd><p>pre-devtmpfs / pre-udev callback used to create disks when their
+pre-created device node is accessed. When a probe call uses
+add_disk() and it fails the driver must cleanup resources. This
+interface may soon be removed.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
@@ -9735,6 +9858,23 @@ with <a class="reference internal" href="#c.put_disk" title="put_disk"><code cla
 __device_add_disk() was used.</p>
 <p>Drivers exist which depend on the release of the gendisk to be synchronous,
 it should not be deferred.</p>
+<p><strong>Context</strong></p>
+<p>can sleep</p>
+<dl class="c function">
+<dt id="c.invalidate_disk">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">invalidate_disk</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">gendisk</span> <span class="pre">*</span><em><span class="pre">disk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.invalidate_disk" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>invalidate the disk</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">gendisk</span> <span class="pre">*disk</span></code></dt><dd><p>the struct gendisk to invalidate</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>A helper to invalidates the disk. It will clean the disk’s associated
+buffer/page caches and reset its internal states so that the disk
+can be reused by the drivers.</p>
 <p><strong>Context</strong></p>
 <p>can sleep</p>
 <dl class="c function">
@@ -9924,9 +10064,10 @@ nest for the same <strong>holder</strong>.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Get a reference to the blockdevice at <strong>pathname</strong> in the current
-namespace if possible and return it.  Return ERR_PTR(error)
-otherwise.</p>
+<p>Lookup the block device’s dev_t at <strong>pathname</strong> in the current
+namespace if possible and return it by <strong>dev</strong>.</p>
+<p><strong>Return</strong></p>
+<p>0 if succeeded, errno otherwise.</p>
 </section>
 <section id="char-devices">
 <h2>Char devices<a class="headerlink" href="#char-devices" title="Permalink to this headline">¶</a></h2>

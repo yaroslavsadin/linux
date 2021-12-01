@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -349,7 +349,7 @@ just a matter of using the kobj member.  Code that works with kobjects will
 often have the opposite problem, however: given a struct kobject pointer,
 what is the pointer to the containing structure?  You must avoid tricks
 (such as assuming that the kobject is at the beginning of the structure)
-and, instead, use the <a class="reference internal" href="../driver-api/basics.html#c.container_of" title="container_of"><code class="xref c c-func docutils literal notranslate"><span class="pre">container_of()</span></code></a> macro, found in <code class="docutils literal notranslate"><span class="pre">&lt;linux/kernel.h&gt;</span></code>:</p>
+and, instead, use the container_of() macro, found in <code class="docutils literal notranslate"><span class="pre">&lt;linux/kernel.h&gt;</span></code>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>container_of(ptr, type, member)
 </pre></div>
 </div>
@@ -361,7 +361,7 @@ and, instead, use the <a class="reference internal" href="../driver-api/basics.h
 <li><p><code class="docutils literal notranslate"><span class="pre">member</span></code> is the name of the structure field to which <code class="docutils literal notranslate"><span class="pre">pointer</span></code> points.</p></li>
 </ul>
 </div></blockquote>
-<p>The return value from <a class="reference internal" href="../driver-api/basics.html#c.container_of" title="container_of"><code class="xref c c-func docutils literal notranslate"><span class="pre">container_of()</span></code></a> is a pointer to the corresponding
+<p>The return value from container_of() is a pointer to the corresponding
 container type. So, for example, a pointer <code class="docutils literal notranslate"><span class="pre">kp</span></code> to a struct kobject
 embedded <strong>within</strong> a struct uio_map could be converted to a pointer to the
 <strong>containing</strong> uio_map structure with:</p>
@@ -535,7 +535,7 @@ flawed. Note that the kernel will warn you if you forget to provide a
 release() method.  Do not try to get rid of this warning by providing an
 “empty” release function.</p>
 <p>If all your cleanup function needs to do is call <a class="reference internal" href="mm-api.html#c.kfree" title="kfree"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree()</span></code></a>, then you must
-create a wrapper function which uses <a class="reference internal" href="../driver-api/basics.html#c.container_of" title="container_of"><code class="xref c c-func docutils literal notranslate"><span class="pre">container_of()</span></code></a> to upcast to the correct
+create a wrapper function which uses container_of() to upcast to the correct
 type (as shown in the example above) and then calls <a class="reference internal" href="mm-api.html#c.kfree" title="kfree"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree()</span></code></a> on the overall
 structure.</p>
 <p>Note, the name of the kobject is available in the release function, but it

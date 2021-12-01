@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -171,6 +171,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#zone-append-max-bytes-ro">zone_append_max_bytes (RO)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#zoned-ro">zoned (RO)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#zone-write-granularity-ro">zone_write_granularity (RO)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#independent-access-ranges-ro">independent_access_ranges (RO)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="request.html">struct request documentation</a></li>
@@ -304,7 +305,7 @@
 <h1>Queue sysfs files<a class="headerlink" href="#queue-sysfs-files" title="Permalink to this headline">¶</a></h1>
 <p>This text file will detail the queue files that are located in the sysfs tree
 for each block device. Note that stacked devices typically do not export
-any settings, since their queue merely functions are a remapping target.
+any settings, since their queue merely functions as a remapping target.
 These files are the ones found in the /sys/block/xxx/queue/ directory.</p>
 <p>Files denoted with a RO postfix are readonly and the RW postfix means
 read-write.</p>
@@ -338,10 +339,11 @@ the discard functionality.</p>
 <h2>discard_max_hw_bytes (RO)<a class="headerlink" href="#discard-max-hw-bytes-ro" title="Permalink to this headline">¶</a></h2>
 <p>Devices that support discard functionality may have internal limits on
 the number of bytes that can be trimmed or unmapped in a single operation.
-The discard_max_bytes parameter is set by the device driver to the maximum
-number of bytes that can be discarded in a single operation. Discard
-requests issued to the device must not exceed this limit. A discard_max_bytes
-value of 0 means that the device does not support discard functionality.</p>
+The <cite>discard_max_hw_bytes</cite> parameter is set by the device driver to the
+maximum number of bytes that can be discarded in a single operation.
+Discard requests issued to the device must not exceed this limit.
+A <cite>discard_max_hw_bytes</cite> value of 0 means that the device does not support
+discard functionality.</p>
 </section>
 <section id="discard-max-bytes-rw">
 <h2>discard_max_bytes (RW)<a class="headerlink" href="#discard-max-bytes-rw" title="Permalink to this headline">¶</a></h2>
@@ -579,6 +581,35 @@ and zoned will report “none”.</p>
 sequential zones of zoned block devices (devices with a zoned attributed
 that reports “host-managed” or “host-aware”). This value is always 0 for
 regular block devices.</p>
+</section>
+<section id="independent-access-ranges-ro">
+<h2>independent_access_ranges (RO)<a class="headerlink" href="#independent-access-ranges-ro" title="Permalink to this headline">¶</a></h2>
+<p>The presence of this sub-directory of the /sys/block/xxx/queue/ directory
+indicates that the device is capable of executing requests targeting
+different sector ranges in parallel. For instance, single LUN multi-actuator
+hard-disks will have an independent_access_ranges directory if the device
+correctly advertizes the sector ranges of its actuators.</p>
+<p>The independent_access_ranges directory contains one directory per access
+range, with each range described using the sector (RO) attribute file to
+indicate the first sector of the range and the nr_sectors (RO) attribute file
+to indicate the total number of sectors in the range starting from the first
+sector of the range.  For example, a dual-actuator hard-disk will have the
+following independent_access_ranges entries.:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ tree /sys/block/&lt;device&gt;/queue/independent_access_ranges/
+/sys/block/&lt;device&gt;/queue/independent_access_ranges/
+|-- 0
+|   |-- nr_sectors
+|   `-- sector
+`-- 1
+    |-- nr_sectors
+    `-- sector
+</pre></div>
+</div>
+<p>The sector and nr_sectors attributes use 512B sector unit, regardless of
+the actual block size of the device. Independent access ranges do not
+overlap and include all sectors within the device capacity. The access
+ranges are numbered in increasing order of the range start sector,
+that is, the sector attribute of range 0 always has the value 0.</p>
 <p>Jens Axboe &lt;<a class="reference external" href="mailto:jens&#46;axboe&#37;&#52;&#48;oracle&#46;com">jens<span>&#46;</span>axboe<span>&#64;</span>oracle<span>&#46;</span>com</a>&gt;, February 2009</p>
 </section>
 </section>

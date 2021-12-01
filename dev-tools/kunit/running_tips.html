@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -294,11 +294,16 @@ the kernel root, hence the use of a subshell and <code class="docutils literal n
 </section>
 <section id="running-a-subset-of-tests">
 <h3>Running a subset of tests<a class="headerlink" href="#running-a-subset-of-tests" title="Permalink to this headline">¶</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">kunit.py</span> <span class="pre">run</span></code> accepts an optional glob argument to filter tests. Currently
-this only matches against suite names, but this may change in the future.</p>
+<p><code class="docutils literal notranslate"><span class="pre">kunit.py</span> <span class="pre">run</span></code> accepts an optional glob argument to filter tests. The format
+is <code class="docutils literal notranslate"><span class="pre">&quot;&lt;suite_glob&gt;[.test_glob]&quot;</span></code>.</p>
 <p>Say that we wanted to run the sysctl tests, we could do so via:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">echo</span> -e <span class="s1">&#39;CONFIG_KUNIT=y\nCONFIG_KUNIT_ALL_TESTS=y&#39;</span> &gt; .kunit/.kunitconfig
 $ ./tools/testing/kunit/kunit.py run <span class="s1">&#39;sysctl*&#39;</span>
+</pre></div>
+</div>
+<p>We can filter down to just the “write” tests via:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">echo</span> -e <span class="s1">&#39;CONFIG_KUNIT=y\nCONFIG_KUNIT_ALL_TESTS=y&#39;</span> &gt; .kunit/.kunitconfig
+$ ./tools/testing/kunit/kunit.py run <span class="s1">&#39;sysctl*.*write*&#39;</span>
 </pre></div>
 </div>
 <p>We’re paying the cost of building more tests than we need this way, but it’s

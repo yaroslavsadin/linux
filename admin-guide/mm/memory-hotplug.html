@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -132,6 +132,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../edid.html">EDID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../efi-stub.html">The EFI Boot Stub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ext4.html">ext4 General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../filesystem-monitoring.html">File system Monitoring with fanotify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nfs/index.html">NFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpio/index.html">gpio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../highuid.html">Notes on the change from 16-bit UIDs to 32-bit UIDs</a></li>
@@ -171,8 +172,10 @@
 <li class="toctree-l3"><a class="reference internal" href="numaperf.html#see-also">See Also</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pagemap.html">Examining Process Page Tables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="soft-dirty.html">Soft-Dirty PTEs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="swap_numa.html">Automatically bind swap device to numa node</a></li>
 <li class="toctree-l3"><a class="reference internal" href="transhuge.html">Transparent Hugepage Support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="userfaultfd.html">Userfaultfd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zswap.html">zswap</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../module-signing.html">Kernel module signing facility</a></li>
@@ -521,9 +524,8 @@ task in user space.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>% echo 1 &gt; /sys/devices/system/memory/memoryXXX/online
 </pre></div>
 </div>
-<p>The kernel will select the target zone automatically, usually defaulting to
-<code class="docutils literal notranslate"><span class="pre">ZONE_NORMAL</span></code> unless <code class="docutils literal notranslate"><span class="pre">movablecore=1</span></code> has been specified on the kernel
-command line or if the memory block would intersect the ZONE_MOVABLE already.</p>
+<p>The kernel will select the target zone automatically, depending on the
+configured <code class="docutils literal notranslate"><span class="pre">online_policy</span></code>.</p>
 <p>One can explicitly request to associate an offline memory block with
 ZONE_MOVABLE by:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>% echo online_movable &gt; /sys/devices/system/memory/memoryXXX/state
@@ -551,6 +553,8 @@ explicitly onlined from user space.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>% echo online &gt; /sys/devices/system/memory/auto_online_blocks
 </pre></div>
 </div>
+<p>Similarly to manual onlining, with <code class="docutils literal notranslate"><span class="pre">online</span></code> the kernel will select the
+target zone automatically, depending on the configured <code class="docutils literal notranslate"><span class="pre">online_policy</span></code>.</p>
 <p>Modifying the auto-online behavior will only affect all subsequently added
 memory blocks only.</p>
 <div class="admonition note">
@@ -769,13 +773,17 @@ command line parameters are relevant:</p>
 <td><p>configure auto-onlining by essentially setting
 <code class="docutils literal notranslate"><span class="pre">/sys/devices/system/memory/auto_online_blocks</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">movablecore</span></code></p></td>
-<td><p>configure automatic zone selection of the kernel. When
-set, the kernel will default to ZONE_MOVABLE, unless
-other zones can be kept contiguous.</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">movable_node</span></code></p></td>
+<td><p>configure automatic zone selection in the kernel when
+using the <code class="docutils literal notranslate"><span class="pre">contig-zones</span></code> online policy. When
+set, the kernel will default to ZONE_MOVABLE when
+onlining a memory block, unless other zones can be kept
+contiguous.</p></td>
 </tr>
 </tbody>
 </table>
+<p>See <a class="reference internal" href="../kernel-parameters.html"><span class="doc">The kernel’s command-line parameters</span></a> for a more generic
+description of these command line parameters.</p>
 </section>
 <section id="module-parameters">
 <h3><a class="toc-backref" href="#id17">Module Parameters</a><a class="headerlink" href="#module-parameters" title="Permalink to this headline">¶</a></h3>
@@ -787,28 +795,125 @@ them with <code class="docutils literal notranslate"><span class="pre">memory_ho
 </pre></div>
 </div>
 <p>and they can be observed (and some even modified at runtime) via:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/sys/modules/memory_hotplug/parameters/
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/sys/module/memory_hotplug/parameters/
 </pre></div>
 </div>
 <p>The following module parameters are currently defined:</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 30%" />
-<col style="width: 70%" />
+<col style="width: 41%" />
+<col style="width: 59%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">memmap_on_memory</span></code></p></td>
-<td><p>read-write: Allocate memory for the memmap from the
-added memory block itself. Even if enabled, actual
-support depends on various other system properties and
-should only be regarded as a hint whether the behavior
-would be desired.</p>
-<p>While allocating the memmap from the memory block
-itself makes memory hotplug less likely to fail and
-keeps the memmap on the same NUMA node in any case, it
-can fragment physical memory in a way that huge pages
-in bigger granularity cannot be formed on hotplugged
+<td><p>read-write: Allocate memory for the memmap from
+the added memory block itself. Even if enabled,
+actual support depends on various other system
+properties and should only be regarded as a
+hint whether the behavior would be desired.</p>
+<p>While allocating the memmap from the memory
+block itself makes memory hotplug less likely
+to fail and keeps the memmap on the same NUMA
+node in any case, it can fragment physical
+memory in a way that huge pages in bigger
+granularity cannot be formed on hotplugged
 memory.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">online_policy</span></code></p></td>
+<td><p>read-write: Set the basic policy used for
+automatic zone selection when onlining memory
+blocks without specifying a target zone.
+<code class="docutils literal notranslate"><span class="pre">contig-zones</span></code> has been the kernel default
+before this parameter was added. After an
+online policy was configured and memory was
+online, the policy should not be changed
+anymore.</p>
+<p>When set to <code class="docutils literal notranslate"><span class="pre">contig-zones</span></code>, the kernel will
+try keeping zones contiguous. If a memory block
+intersects multiple zones or no zone, the
+behavior depends on the <code class="docutils literal notranslate"><span class="pre">movable_node</span></code> kernel
+command line parameter: default to ZONE_MOVABLE
+if set, default to the applicable kernel zone
+(usually ZONE_NORMAL) if not set.</p>
+<p>When set to <code class="docutils literal notranslate"><span class="pre">auto-movable</span></code>, the kernel will
+try onlining memory blocks to ZONE_MOVABLE if
+possible according to the configuration and
+memory device details. With this policy, one
+can avoid zone imbalances when eventually
+hotplugging a lot of memory later and still
+wanting to be able to hotunplug as much as
+possible reliably, very desirable in
+virtualized environments. This policy ignores
+the <code class="docutils literal notranslate"><span class="pre">movable_node</span></code> kernel command line
+parameter and isn’t really applicable in
+environments that require it (e.g., bare metal
+with hotunpluggable nodes) where hotplugged
+memory might be exposed via the
+firmware-provided memory map early during boot
+to the system instead of getting detected,
+added and onlined  later during boot (such as
+done by virtio-mem or by some hypervisors
+implementing emulated DIMMs). As one example, a
+hotplugged DIMM will be onlined either
+completely to ZONE_MOVABLE or completely to
+ZONE_NORMAL, not a mixture.
+As another example, as many memory blocks
+belonging to a virtio-mem device will be
+onlined to ZONE_MOVABLE as possible,
+special-casing units of memory blocks that can
+only get hotunplugged together. <em>This policy
+does not protect from setups that are
+problematic with ZONE_MOVABLE and does not
+change the zone of memory blocks dynamically
+after they were onlined.</em></p>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">auto_movable_ratio</span></code></p></td>
+<td><p>read-write: Set the maximum MOVABLE:KERNEL
+memory ratio in % for the <code class="docutils literal notranslate"><span class="pre">auto-movable</span></code>
+online policy. Whether the ratio applies only
+for the system across all NUMA nodes or also
+per NUMA nodes depends on the
+<code class="docutils literal notranslate"><span class="pre">auto_movable_numa_aware</span></code> configuration.</p>
+<p>All accounting is based on present memory pages
+in the zones combined with accounting per
+memory device. Memory dedicated to the CMA
+allocator is accounted as MOVABLE, although
+residing on one of the kernel zones. The
+possible ratio depends on the actual workload.
+The kernel default is “301” %, for example,
+allowing for hotplugging 24 GiB to a 8 GiB VM
+and automatically onlining all hotplugged
+memory to ZONE_MOVABLE in many setups. The
+additional 1% deals with some pages being not
+present, for example, because of some firmware
+allocations.</p>
+<p>Note that ZONE_NORMAL memory provided by one
+memory device does not allow for more
+ZONE_MOVABLE memory for a different memory
+device. As one example, onlining memory of a
+hotplugged DIMM to ZONE_NORMAL will not allow
+for another hotplugged DIMM to get onlined to
+ZONE_MOVABLE automatically. In contrast, memory
+hotplugged by a virtio-mem device that got
+onlined to ZONE_NORMAL will allow for more
+ZONE_MOVABLE memory within <em>the same</em>
+virtio-mem device.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">auto_movable_numa_aware</span></code></p></td>
+<td><p>read-write: Configure whether the
+<code class="docutils literal notranslate"><span class="pre">auto_movable_ratio</span></code> in the <code class="docutils literal notranslate"><span class="pre">auto-movable</span></code>
+online policy also applies per NUMA
+node in addition to the whole system across all
+NUMA nodes. The kernel default is “Y”.</p>
+<p>Disabling NUMA awareness can be helpful when
+dealing with NUMA nodes that should be
+completely hotunpluggable, onlining the memory
+completely to ZONE_MOVABLE automatically if
+possible.</p>
+<p>Parameter availability depends on CONFIG_NUMA.</p>
 </td>
 </tr>
 </tbody>

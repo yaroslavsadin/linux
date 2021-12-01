@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -147,6 +147,7 @@
 <li class="toctree-l2"><a class="reference internal" href="edid.html">EDID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="efi-stub.html">The EFI Boot Stub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext4.html">ext4 General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filesystem-monitoring.html">File system Monitoring with fanotify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nfs/index.html">NFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpio/index.html">gpio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="highuid.html">Notes on the change from 16-bit UIDs to 32-bit UIDs</a></li>
@@ -599,7 +600,7 @@ read-only. All data and keys must be copied if you need to modify it.</p>
 <h2>Functions and structures<a class="headerlink" href="#functions-and-structures" title="Permalink to this headline">¶</a></h2>
 <dl class="c function">
 <dt id="c.xbc_calc_checksum">
-<span class="pre">u32</span> <code class="sig-name descname"><span class="pre">xbc_calc_checksum</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">u32</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_calc_checksum" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">xbc_calc_checksum</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_calc_checksum" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Calculate checksum of bootconfig</p>
 </dd></dl>
 
@@ -607,7 +608,7 @@ read-only. All data and keys must be copied if you need to modify it.</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*data</span></code></dt><dd><p>Bootconfig data.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">u32</span> <span class="pre">size</span></code></dt><dd><p>The size of the bootconfig data.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">uint32_t</span> <span class="pre">size</span></code></dt><dd><p>The size of the bootconfig data.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
@@ -861,6 +862,23 @@ are stored in <strong>knode</strong> and <strong>value</strong> respectively.</p
 length of the key stored in <strong>buf</strong>. Or returns -EINVAL if <strong>node</strong> is NULL,
 and -ERANGE if the key depth is deeper than max depth.</p>
 <dl class="c function">
+<dt id="c.xbc_get_info">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">xbc_get_info</span></code><span class="sig-paren">(</span><span class="pre">int</span> <span class="pre">*</span><em><span class="pre">node_size</span></em>, <span class="pre">size_t</span> <span class="pre">*</span><em><span class="pre">data_size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_get_info" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the information of loaded boot config</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">*node_size</span></code></dt><dd><p>A pointer to store the number of nodes.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">*data_size</span></code></dt><dd><p>A pointer to store the size of bootconfig data.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Get the number of used nodes in <strong>node_size</strong> if it is not NULL,
+and the size of bootconfig data in <strong>data_size</strong> if it is not NULL.
+Return 0 if the boot config is initialized, or return -ENODEV.</p>
+<dl class="c function">
 <dt id="c.xbc_root_node">
 <em class="property"><span class="pre">struct</span></em> <span class="pre">xbc_node</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">xbc_root_node</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_root_node" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the root node of extended boot config</p>
@@ -1049,8 +1067,8 @@ is found, or NULL if no next leaf node is found.
 Note that this returns 0-length string if the key has no value, or
 the value of the first entry if the value is an array.</p>
 <dl class="c function">
-<dt id="c.xbc_destroy_all">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">xbc_destroy_all</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_destroy_all" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.xbc_exit">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">xbc_exit</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_exit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Clean up all parsed bootconfig</p>
 </dd></dl>
 
@@ -1065,13 +1083,15 @@ If you need to reuse <a class="reference internal" href="#c.xbc_init" title="xbc
 use this.</p>
 <dl class="c function">
 <dt id="c.xbc_init">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">xbc_init</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">buf</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">emsg</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">epos</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_init" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">xbc_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">emsg</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">epos</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Parse given XBC file and build XBC internal tree</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">char</span> <span class="pre">*buf</span></code></dt><dd><p>boot config text</p>
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*data</span></code></dt><dd><p>The boot config text original data</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">size</span></code></dt><dd><p>The size of <strong>data</strong></p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">**emsg</span></code></dt><dd><p>A pointer of const char * to store the error message</p>
 </dd>
@@ -1079,26 +1099,13 @@ use this.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>This parses the boot config text in <strong>buf</strong>. <strong>buf</strong> must be a
-null terminated string and smaller than XBC_DATA_MAX.
+<p>This parses the boot config text in <strong>data</strong>. <strong>size</strong> must be smaller
+than XBC_DATA_MAX.
 Return the number of stored nodes (&gt;0) if succeeded, or -errno
 if there is any error.
 In error cases, <strong>emsg</strong> will be updated with an error message and
 <strong>epos</strong> will be updated with the error position which is the byte offset
 of <strong>buf</strong>. If the error is not a parser error, <strong>epos</strong> will be -1.</p>
-<dl class="c function">
-<dt id="c.xbc_debug_dump">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">xbc_debug_dump</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.xbc_debug_dump" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Dump current XBC node list</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">void</span></code></dt><dd><p>no arguments</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Dump the current XBC node list on printk buffer for debug.</p>
 </section>
 </section>
 

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -1255,6 +1255,20 @@ for <strong>cmd</strong>.</p>
 <li><p>BLK_STS_IOERR    - if the failure is fatal</p></li>
 </ul>
 <dl class="c function">
+<dt id="c.scsi_device_from_queue">
+<em class="property"><span class="pre">struct</span></em> <span class="pre">scsi_device</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">scsi_device_from_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.scsi_device_from_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>return sdev associated with a request_queue</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">request_queue</span> <span class="pre">*q</span></code></dt><dd><p>The request queue to return the sdev from</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Return the sdev associated with a request queue or NULL if the
+request_queue does not reference a SCSI device.</p>
+<dl class="c function">
 <dt id="c.scsi_block_requests">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">scsi_block_requests</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">Scsi_Host</span> <span class="pre">*</span><em><span class="pre">shost</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.scsi_block_requests" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Utility function used by low-level drivers to prevent further commands from being queued to the device.</p>
@@ -1328,7 +1342,7 @@ status on error</p>
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">scsi_device</span> <span class="pre">*sdev</span></code></dt><dd><p>SCSI device to be queried</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">dbd</span></code></dt><dd><p>set if mode sense will allow block descriptors to be returned</p>
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">dbd</span></code></dt><dd><p>set to prevent mode sense from returning block descriptors</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">modepage</span></code></dt><dd><p>mode page being requested</p>
 </dd>
@@ -1837,6 +1851,17 @@ allocate and setup a scsi_device for it. If target is SCSI-3 or up,
 issue a REPORT LUN, and scan all of the LUNs returned by the REPORT LUN;
 else, sequentially scan LUNs up until some maximum is reached, or a LUN
 is seen that cannot have a device attached to it.</p>
+<dl class="c function">
+<dt id="c.scsi_enable_async_suspend">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">scsi_enable_async_suspend</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="infrastructure.html#c.device" title="device"><span class="pre">device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.scsi_enable_async_suspend" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Enable async suspend and resume</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">device</span> <span class="pre">*dev</span></code></dt><dd><p><em>undescribed</em></p>
+</dd>
+</dl>
 <dl class="c function">
 <dt id="c.scsi_complete_async_scans">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">scsi_complete_async_scans</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.scsi_complete_async_scans" title="Permalink to this definition">¶</a><br /></dt>

@@ -608,15 +608,12 @@ videodev2.h
     \#define \ :ref:`V4L2_PIX_FMT_NV61 <v4l2-pix-fmt-nv61>`    v4l2\_fourcc('N', 'V', '6', '1') \/\* 16  Y\/CrCb 4\:2\:2  \*\/
     \#define \ :ref:`V4L2_PIX_FMT_NV24 <v4l2-pix-fmt-nv24>`    v4l2\_fourcc('N', 'V', '2', '4') \/\* 24  Y\/CbCr 4\:4\:4  \*\/
     \#define \ :ref:`V4L2_PIX_FMT_NV42 <v4l2-pix-fmt-nv42>`    v4l2\_fourcc('N', 'V', '4', '2') \/\* 24  Y\/CrCb 4\:4\:4  \*\/
-    \#define \ :ref:`V4L2_PIX_FMT_HM12 <v4l2-pix-fmt-hm12>`    v4l2\_fourcc('H', 'M', '1', '2') \/\*  8  YUV 4\:2\:0 16x16 macroblocks \*\/
 
     \/\* two non contiguous planes - one Y, one Cr + Cb interleaved  \*\/
     \#define \ :ref:`V4L2_PIX_FMT_NV12M <v4l2-pix-fmt-nv12m>`   v4l2\_fourcc('N', 'M', '1', '2') \/\* 12  Y\/CbCr 4\:2\:0  \*\/
     \#define \ :ref:`V4L2_PIX_FMT_NV21M <v4l2-pix-fmt-nv21m>`   v4l2\_fourcc('N', 'M', '2', '1') \/\* 21  Y\/CrCb 4\:2\:0  \*\/
     \#define \ :ref:`V4L2_PIX_FMT_NV16M <v4l2-pix-fmt-nv16m>`   v4l2\_fourcc('N', 'M', '1', '6') \/\* 16  Y\/CbCr 4\:2\:2  \*\/
     \#define \ :ref:`V4L2_PIX_FMT_NV61M <v4l2-pix-fmt-nv61m>`   v4l2\_fourcc('N', 'M', '6', '1') \/\* 16  Y\/CrCb 4\:2\:2  \*\/
-    \#define \ :ref:`V4L2_PIX_FMT_NV12MT <v4l2-pix-fmt-nv12mt>`  v4l2\_fourcc('T', 'M', '1', '2') \/\* 12  Y\/CbCr 4\:2\:0 64x32 macroblocks \*\/
-    \#define \ :ref:`V4L2_PIX_FMT_NV12MT_16X16 <v4l2-pix-fmt-nv12mt-16x16>` v4l2\_fourcc('V', 'M', '1', '2') \/\* 12  Y\/CbCr 4\:2\:0 16x16 macroblocks \*\/
 
     \/\* three planes - Y Cb, Cr \*\/
     \#define \ :ref:`V4L2_PIX_FMT_YUV410 <v4l2-pix-fmt-yuv410>`  v4l2\_fourcc('Y', 'U', 'V', '9') \/\*  9  YUV 4\:1\:0     \*\/
@@ -633,6 +630,15 @@ videodev2.h
     \#define \ :ref:`V4L2_PIX_FMT_YVU422M <v4l2-pix-fmt-yvu422m>` v4l2\_fourcc('Y', 'M', '6', '1') \/\* 16  YVU422 planar \*\/
     \#define \ :ref:`V4L2_PIX_FMT_YUV444M <v4l2-pix-fmt-yuv444m>` v4l2\_fourcc('Y', 'M', '2', '4') \/\* 24  YUV444 planar \*\/
     \#define \ :ref:`V4L2_PIX_FMT_YVU444M <v4l2-pix-fmt-yvu444m>` v4l2\_fourcc('Y', 'M', '4', '2') \/\* 24  YVU444 planar \*\/
+
+    \/\* Tiled YUV formats \*\/
+    \#define \ :ref:`V4L2_PIX_FMT_NV12_4L4 <v4l2-pix-fmt-nv12-4l4>` v4l2\_fourcc('V', 'T', '1', '2')   \/\* 12  Y\/CbCr 4\:2\:0  4x4 tiles \*\/
+    \#define \ :ref:`V4L2_PIX_FMT_NV12_16L16 <v4l2-pix-fmt-nv12-16l16>` v4l2\_fourcc('H', 'M', '1', '2') \/\* 12  Y\/CbCr 4\:2\:0 16x16 tiles \*\/
+    \#define \ :ref:`V4L2_PIX_FMT_NV12_32L32 <v4l2-pix-fmt-nv12-32l32>` v4l2\_fourcc('S', 'T', '1', '2') \/\* 12  Y\/CbCr 4\:2\:0 32x32 tiles \*\/
+
+    \/\* Tiled YUV formats, non contiguous planes \*\/
+    \#define \ :ref:`V4L2_PIX_FMT_NV12MT <v4l2-pix-fmt-nv12mt>`  v4l2\_fourcc('T', 'M', '1', '2') \/\* 12  Y\/CbCr 4\:2\:0 64x32 tiles \*\/
+    \#define \ :ref:`V4L2_PIX_FMT_NV12MT_16X16 <v4l2-pix-fmt-nv12mt-16x16>` v4l2\_fourcc('V', 'M', '1', '2') \/\* 12  Y\/CbCr 4\:2\:0 16x16 tiles \*\/
 
     \/\* Bayer formats - see http\:\/\/www.siliconimaging.com\/RGB\%20Bayer.htm \*\/
     \#define \ :ref:`V4L2_PIX_FMT_SBGGR8 <v4l2-pix-fmt-sbggr8>`  v4l2\_fourcc('B', 'A', '8', '1') \/\*  8  BGBG.. GRGR.. \*\/
@@ -740,8 +746,8 @@ videodev2.h
     \#define \ :ref:`V4L2_PIX_FMT_Y12I <v4l2-pix-fmt-y12i>`     v4l2\_fourcc('Y', '1', '2', 'I') \/\* Greyscale 12-bit L\/R interleaved \*\/
     \#define \ :ref:`V4L2_PIX_FMT_Z16 <v4l2-pix-fmt-z16>`      v4l2\_fourcc('Z', '1', '6', ' ') \/\* Depth data 16-bit \*\/
     \#define \ :ref:`V4L2_PIX_FMT_MT21C <v4l2-pix-fmt-mt21c>`    v4l2\_fourcc('M', 'T', '2', '1') \/\* Mediatek compressed block mode  \*\/
+    \#define \ :ref:`V4L2_PIX_FMT_MM21 <v4l2-pix-fmt-mm21>`     v4l2\_fourcc('M', 'M', '2', '1') \/\* Mediatek 8-bit block mode, two non-contiguous planes \*\/
     \#define \ :ref:`V4L2_PIX_FMT_INZI <v4l2-pix-fmt-inzi>`     v4l2\_fourcc('I', 'N', 'Z', 'I') \/\* Intel Planar Greyscale 10-bit and Depth 16-bit \*\/
-    \#define \ :ref:`V4L2_PIX_FMT_SUNXI_TILED_NV12 <v4l2-pix-fmt-sunxi-tiled-nv12>` v4l2\_fourcc('S', 'T', '1', '2') \/\* Sunxi Tiled NV12 Format \*\/
     \#define \ :ref:`V4L2_PIX_FMT_CNF4 <v4l2-pix-fmt-cnf4>`     v4l2\_fourcc('C', 'N', 'F', '4') \/\* Intel 4-bit packed depth confidence information \*\/
     \#define \ :ref:`V4L2_PIX_FMT_HI240 <v4l2-pix-fmt-hi240>`    v4l2\_fourcc('H', 'I', '2', '4') \/\* BTTV 8-bit dithered RGB \*\/
 
@@ -960,8 +966,11 @@ videodev2.h
             \_\_u32                   type;           \/\* enum :c:type:`v4l2_buf_type` \*\/
             \_\_u32                   memory;         \/\* enum :c:type:`v4l2_memory` \*\/
             \_\_u32                   capabilities;
-            \_\_u32                   reserved[1];
+            \_\_u8                    flags;
+            \_\_u8                    reserved[3];
     \};
+
+    \#define \ :ref:`V4L2_MEMORY_FLAG_NON_COHERENT <v4l2-memory-flag-non-coherent>`                   (1 \<\< 0)
 
     \/\* capabilities for struct v4l2_requestbuffers and v4l2\_create\_buffers \*\/
     \#define \ :ref:`V4L2_BUF_CAP_SUPPORTS_MMAP <v4l2-buf-cap-supports-mmap>`                      (1 \<\< 0)
@@ -2500,6 +2509,9 @@ videodev2.h
      \* @memory\:     enum :c:type:`v4l2_memory`\ ; buffer memory type
      \* @format\:     frame format, for which buffers are requested
      \* @capabilities\: capabilities of this buffer type.
+     \* @flags\:      additional buffer management attributes (ignored unless the
+     \*              queue has \ :ref:`V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS <v4l2-buf-cap-supports-mmap-cache-hints>` capability
+     \*              and configured for MMAP streaming I\/O).
      \* @reserved\:   future extensions
      \*\/
     struct v4l2_create_buffers \{
@@ -2508,7 +2520,8 @@ videodev2.h
             \_\_u32                   memory;
             struct v4l2_format      format;
             \_\_u32                   capabilities;
-            \_\_u32                   reserved[7];
+            \_\_u32                   flags;
+            \_\_u32                   reserved[6];
     \};
 
     \/\*
@@ -2615,5 +2628,11 @@ videodev2.h
        drivers\/media\/v4l2-core\/v4l2-compat-ioctl32.c as well! \*\/
 
     \#define BASE\_VIDIOC\_PRIVATE     192             \/\* 192-255 are private \*\/
+
+    \/\* Deprecated definitions kept for backwards compatibility \*\/
+    \#ifndef \_\_KERNEL\_\_
+    \#define :c:type:`V4L2_PIX_FMT_HM12 <v4l2_pix_format>` \ :ref:`V4L2_PIX_FMT_NV12_16L16 <v4l2-pix-fmt-nv12-16l16>`
+    \#define :c:type:`V4L2_PIX_FMT_SUNXI_TILED_NV12 <v4l2_pix_format>` \ :ref:`V4L2_PIX_FMT_NV12_32L32 <v4l2-pix-fmt-nv12-32l32>`
+    \#endif
 
     \#endif \/\* \_UAPI\_\_LINUX\_VIDEODEV2\_H \*\/

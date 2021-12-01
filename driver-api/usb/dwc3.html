@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -1073,19 +1073,20 @@ operations, both of which can be traced. Format is:</p>
   struct dwc3             *dwc;
   u32 saved_state;
   unsigned int            flags;
-#define DWC3_EP_ENABLED         BIT(0);
-#define DWC3_EP_STALL           BIT(1);
-#define DWC3_EP_WEDGE           BIT(2);
-#define DWC3_EP_TRANSFER_STARTED BIT(3);
-#define DWC3_EP_END_TRANSFER_PENDING BIT(4);
-#define DWC3_EP_PENDING_REQUEST BIT(5);
-#define DWC3_EP_DELAY_START     BIT(6);
+#define DWC3_EP_ENABLED                 BIT(0);
+#define DWC3_EP_STALL                   BIT(1);
+#define DWC3_EP_WEDGE                   BIT(2);
+#define DWC3_EP_TRANSFER_STARTED        BIT(3);
+#define DWC3_EP_END_TRANSFER_PENDING    BIT(4);
+#define DWC3_EP_PENDING_REQUEST         BIT(5);
+#define DWC3_EP_DELAY_START             BIT(6);
 #define DWC3_EP_WAIT_TRANSFER_COMPLETE  BIT(7);
 #define DWC3_EP_IGNORE_NEXT_NOSTREAM    BIT(8);
 #define DWC3_EP_FORCE_RESTART_STREAM    BIT(9);
 #define DWC3_EP_FIRST_STREAM_PRIMED     BIT(10);
 #define DWC3_EP_PENDING_CLEAR_STALL     BIT(11);
-#define DWC3_EP0_DIR_IN         BIT(31);
+#define DWC3_EP_TXFIFO_RESIZED          BIT(12);
+#define DWC3_EP0_DIR_IN                 BIT(31);
   u8 trb_enqueue;
   u8 trb_dequeue;
   u8 number;
@@ -1340,6 +1341,7 @@ or unaligned OUT)</p>
   enum usb_dr_mode        role_switch_default_mode;
   struct power_supply     *usb_psy;
   u32 fladj;
+  u32 ref_clk_per;
   u32 irq_gadget;
   u32 otg_irq;
   u32 current_otg_role;
@@ -1420,6 +1422,7 @@ or unaligned OUT)</p>
   u8 tx_fifo_resize_max_num;
   const char              *hsphy_interface;
   unsigned connected:1;
+  unsigned softconnect:1;
   unsigned delayed_status:1;
   unsigned ep0_bounced:1;
   unsigned ep0_expect_in:1;
@@ -1556,6 +1559,8 @@ usb role is USB_ROLE_NONE.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">fladj</span></code></dt><dd><p>frame length adjustment</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ref_clk_per</span></code></dt><dd><p>reference clock period configuration</p>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">irq_gadget</span></code></dt><dd><p>peripheral controller’s IRQ number</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">otg_irq</span></code></dt><dd><p>IRQ number for OTG IRQs</p>
@@ -1630,6 +1635,8 @@ rate and lane count.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">hsphy_interface</span></code></dt><dd><p>“utmi” or “ulpi”</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">connected</span></code></dt><dd><p>true when we’re connected to a host, false otherwise</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">softconnect</span></code></dt><dd><p>true when gadget connect is called, false when disconnect runs</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">delayed_status</span></code></dt><dd><p>true when gadget driver asks for delayed status</p>
 </dd>
@@ -2404,6 +2411,17 @@ least one max packet.</p>
 <p><strong>Parameters</strong></p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dwc3</span> <span class="pre">*dwc</span></code></dt><dd><p>pointer to our context structure</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.dwc3_ref_clk_period">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">dwc3_ref_clk_period</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.dwc3" title="dwc3"><span class="pre">dwc3</span></a> <span class="pre">*</span><em><span class="pre">dwc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.dwc3_ref_clk_period" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Reference clock period configuration Default reference clock period depends on hardware configuration. For systems with reference clock that differs from the default, this will set clock period in DWC3_GUCTL register.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">dwc3</span> <span class="pre">*dwc</span></code></dt><dd><p>Pointer to our controller context structure</p>
 </dd>
 </dl>
 <dl class="c function">

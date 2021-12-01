@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -1239,22 +1239,9 @@ subdir- := compressed
 </div></blockquote>
 <p>The above assignment instructs kbuild to descend down in the
 directory compressed/ when “make clean” is executed.</p>
-<p>To support the clean infrastructure in the Makefiles that build the
-final bootimage there is an optional target named archclean:</p>
-<blockquote>
-<div><p>Example:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#arch/x86/Makefile
-archclean:
-        $(Q)$(MAKE) $(clean)=arch/x86/boot
-</pre></div>
-</div>
-</div></blockquote>
-<p>When “make clean” is executed, make will descend down in arch/x86/boot,
-and clean as usual. The Makefile located in arch/x86/boot/ may use
-the subdir- trick to descend further down.</p>
 <p>Note 1: arch/$(SRCARCH)/Makefile cannot use “subdir-”, because that file is
-included in the top level makefile, and the kbuild infrastructure
-is not operational at that point.</p>
+included in the top level makefile. Instead, arch/$(SRCARCH)/Kbuild can use
+“subdir-“.</p>
 <p>Note 2: All directories listed in core-y, libs-y, drivers-y and net-y will
 be visited during “make clean”.</p>
 </section>

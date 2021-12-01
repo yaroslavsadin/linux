@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -261,7 +261,7 @@
   <section id="writing-devicetree-bindings-in-json-schema">
 <h1>Writing Devicetree Bindings in json-schema<a class="headerlink" href="#writing-devicetree-bindings-in-json-schema" title="Permalink to this headline">¶</a></h1>
 <p>Devicetree bindings are written using json-schema vocabulary. Schema files are
-written in a JSON compatible subset of YAML. YAML is used instead of JSON as it
+written in a JSON-compatible subset of YAML. YAML is used instead of JSON as it
 is considered more human readable and has some advantages such as allowing
 comments (Prefixed with ‘#’).</p>
 <p>Also see <a class="reference internal" href="#example-schema"><span class="std std-ref">Annotated Example Schema</span></a>.</p>
@@ -275,14 +275,14 @@ top-level json-schema properties used are:</p>
 URI typically containing the binding’s filename and path. For DT schema, it must
 begin with “<a class="reference external" href="http://devicetree.org/schemas/">http://devicetree.org/schemas/</a>”. The URL is used in constructing
 references to other files specified in schema “$ref” properties. A $ref value
-with a leading ‘/’ will have the hostname prepended. A $ref value a relative
-path or filename only will be prepended with the hostname and path components
-of the current schema file’s ‘$id’ value. A URL is used even for local files,
-but there may not actually be files present at those locations.</p>
+with a leading ‘/’ will have the hostname prepended. A $ref value with only a
+relative path or filename will be prepended with the hostname and path
+components of the current schema file’s ‘$id’ value. A URL is used even for
+local files, but there may not actually be files present at those locations.</p>
 </dd>
 <dt>$schema</dt><dd><p>Indicates the meta-schema the schema file adheres to.</p>
 </dd>
-<dt>title</dt><dd><p>A one line description on the contents of the binding schema.</p>
+<dt>title</dt><dd><p>A one-line description on the contents of the binding schema.</p>
 </dd>
 <dt>maintainers</dt><dd><p>A DT specific property. Contains a list of email address(es)
 for maintainers of this binding.</p>
@@ -293,8 +293,8 @@ or device does, standards the device conforms to, and links to datasheets for
 more information.</p>
 </dd>
 <dt>select</dt><dd><p>Optional. A json-schema used to match nodes for applying the
-schema. By default without ‘select’, nodes are matched against their possible
-compatible string values or node name. Most bindings should not need select.</p>
+schema. By default, without ‘select’, nodes are matched against their possible
+compatible-string values or node name. Most bindings should not need select.</p>
 </dd>
 <dt>allOf</dt><dd><p>Optional. A list of other schemas to include. This is used to
 include other schemas the binding conforms to. This may be schemas for a
@@ -302,7 +302,8 @@ particular class of devices such as I2C or SPI controllers.</p>
 </dd>
 <dt>properties</dt><dd><p>A set of sub-schema defining all the DT properties for the
 binding. The exact schema syntax depends on whether properties are known,
-common properties (e.g. ‘interrupts’) or are binding/vendor specific properties.</p>
+common properties (e.g. ‘interrupts’) or are binding/vendor-specific
+properties.</p>
 </dd>
 </dl>
 <p>A property can also define a child DT node with child properties defined
@@ -324,19 +325,19 @@ binding. Note: YAML doesn’t allow leading tabs, so spaces must be used instead
 <h2>Property Schema<a class="headerlink" href="#property-schema" title="Permalink to this headline">¶</a></h2>
 <p>The ‘properties’ section of the schema contains all the DT properties for a
 binding. Each property contains a set of constraints using json-schema
-vocabulary for that property. The properties schemas are what is used for
+vocabulary for that property. The properties schemas are what are used for
 validation of DT files.</p>
-<p>For common properties, only additional constraints not covered by the common
+<p>For common properties, only additional constraints not covered by the common,
 binding schema need to be defined such as how many values are valid or what
 possible values are valid.</p>
-<p>Vendor specific properties will typically need more detailed schema. With the
+<p>Vendor-specific properties will typically need more detailed schema. With the
 exception of boolean properties, they should have a reference to a type in
 schemas/types.yaml. A “description” property is always required.</p>
-<p>The Devicetree schemas don’t exactly match the YAML encoded DT data produced by
+<p>The Devicetree schemas don’t exactly match the YAML-encoded DT data produced by
 dtc. They are simplified to make them more compact and avoid a bunch of
 boilerplate. The tools process the schema files to produce the final schema for
 validation. There are currently 2 transformations the tools perform.</p>
-<p>The default for arrays in json-schema is they are variable sized and allow more
+<p>The default for arrays in json-schema is they are variable-sized and allow more
 entries than explicitly defined. This can be restricted by defining ‘minItems’,
 ‘maxItems’, and ‘additionalItems’. However, for DeviceTree Schemas, a fixed
 size is desired in most cases, so these properties are added based on the
@@ -526,7 +527,7 @@ properties:
     # valid for this binding.
 
   clock-frequency:
-    # The type is set in the core schema. Per device schema only need to set
+    # The type is set in the core schema. Per-device schema only need to set
     # constraints on the possible values.
     minimum: 100
     maximum: 400000
@@ -540,24 +541,24 @@ properties:
   # *-supply is always a single phandle, so nothing more to define.
   foo-supply: true
 
-  # Vendor specific properties
+  # Vendor-specific properties
   #
-  # Vendor specific properties have slightly different schema requirements than
+  # Vendor-specific properties have slightly different schema requirements than
   # common properties. They must have at least a type definition and
   # &#39;description&#39;.
   vendor,int-property:
-    description: Vendor specific properties must have a description
+    description: Vendor-specific properties must have a description
     $ref: /schemas/types.yaml#/definitions/uint32
     enum: [2, 4, 6, 8, 10]
 
   vendor,bool-property:
-    description: Vendor specific properties must have a description. Boolean
+    description: Vendor-specific properties must have a description. Boolean
       properties are one case where the json-schema &#39;type&#39; keyword can be used
       directly.
     type: boolean
 
   vendor,string-array-property:
-    description: Vendor specific properties should reference a type in the
+    description: Vendor-specific properties should reference a type in the
       core schema.
     $ref: /schemas/types.yaml#/definitions/string-array
     items:
@@ -565,7 +566,7 @@ properties:
       - enum: [baz, boo]
 
   vendor,property-in-standard-units-microvolt:
-    description: Vendor specific properties having a standard unit suffix
+    description: Vendor-specific properties having a standard unit suffix
       don&#39;t need a type.
     enum: [ 100, 200, 300 ]
 

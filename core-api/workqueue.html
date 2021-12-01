@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -124,6 +124,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#example-execution-scenarios">Example Execution Scenarios</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#guidelines">Guidelines</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#debugging">Debugging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#non-reentrance-conditions">Non-reentrance Conditions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#kernel-inline-documentations-reference">Kernel Inline Documentations Reference</a></li>
 </ul>
 </li>
@@ -452,9 +453,6 @@ intensive work items.</p>
 <p>This flag is meaningless for unbound wq.</p>
 </dd>
 </dl>
-<p>Note that the flag <code class="docutils literal notranslate"><span class="pre">WQ_NON_REENTRANT</span></code> no longer exists as all
-workqueues are now non-reentrant - any work item is guaranteed to be
-executed by at most one worker system-wide at any given time.</p>
 </section>
 <section id="max-active">
 <h3><code class="docutils literal notranslate"><span class="pre">max_active</span></code><a class="headerlink" href="#max-active" title="Permalink to this headline">¶</a></h3>
@@ -614,6 +612,23 @@ the stack trace of the offending worker thread.</p>
 </div>
 <p>The work item’s function should be trivially visible in the stack
 trace.</p>
+</section>
+<section id="non-reentrance-conditions">
+<h2>Non-reentrance Conditions<a class="headerlink" href="#non-reentrance-conditions" title="Permalink to this headline">¶</a></h2>
+<p>Workqueue guarantees that a work item cannot be re-entrant if the following
+conditions hold after a work item gets queued:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The work function hasn’t been changed.</p></li>
+<li><p>No one queues the work item to another workqueue.</p></li>
+<li><p>The work item hasn’t been reinitiated.</p></li>
+</ol>
+</div></blockquote>
+<p>In other words, if the above conditions hold, the work item is guaranteed to be
+executed by at most one worker system-wide at any given time.</p>
+<p>Note that requeuing the work item (to the same queue) in the self function
+doesn’t break these conditions, so it’s safe to do. Otherwise, caution is
+required when breaking the conditions inside a work function.</p>
 </section>
 <section id="kernel-inline-documentations-reference">
 <h2>Kernel Inline Documentations Reference<a class="headerlink" href="#kernel-inline-documentations-reference" title="Permalink to this headline">¶</a></h2>
@@ -2251,8 +2266,30 @@ name of the workqueue being serviced and worker description set with
 task_struct itself is accessible.  While safe, this function isn’t
 synchronized and may print out mixups or garbages of limited length.</p>
 <dl class="c function">
-<dt id="c.show_workqueue_state">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">show_workqueue_state</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.show_workqueue_state" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.show_one_workqueue">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">show_one_workqueue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">workqueue_struct</span> <span class="pre">*</span><em><span class="pre">wq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.show_one_workqueue" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>dump state of specified workqueue</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">workqueue_struct</span> <span class="pre">*wq</span></code></dt><dd><p>workqueue whose state will be printed</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.show_one_worker_pool">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">show_one_worker_pool</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">worker_pool</span> <span class="pre">*</span><em><span class="pre">pool</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.show_one_worker_pool" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>dump state of specified worker pool</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">worker_pool</span> <span class="pre">*pool</span></code></dt><dd><p>worker pool whose state will be printed</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.show_all_workqueues">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">show_all_workqueues</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.show_all_workqueues" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>dump workqueue state</p>
 </dd></dl>
 

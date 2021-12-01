@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -141,6 +141,7 @@
 <li class="toctree-l2"><a class="reference internal" href="edid.html">EDID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="efi-stub.html">The EFI Boot Stub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext4.html">ext4 General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filesystem-monitoring.html">File system Monitoring with fanotify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nfs/index.html">NFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpio/index.html">gpio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="highuid.html">Notes on the change from 16-bit UIDs to 32-bit UIDs</a></li>
@@ -566,8 +567,7 @@ To clear all flags at once, use <code class="docutils literal notranslate"><span
 <h2>Debug messages during Boot Process<a class="headerlink" href="#debug-messages-during-boot-process" title="Permalink to this headline">¶</a></h2>
 <p>To activate debug messages for core code and built-in modules during
 the boot process, even before userspace and debugfs exists, use
-<code class="docutils literal notranslate"><span class="pre">dyndbg=&quot;QUERY&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">module.dyndbg=&quot;QUERY&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">ddebug_query=&quot;QUERY&quot;</span></code>
-(<code class="docutils literal notranslate"><span class="pre">ddebug_query</span></code> is obsoleted by <code class="docutils literal notranslate"><span class="pre">dyndbg</span></code>, and deprecated).  QUERY follows
+<code class="docutils literal notranslate"><span class="pre">dyndbg=&quot;QUERY&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">module.dyndbg=&quot;QUERY&quot;</span></code>.  QUERY follows
 the syntax described above, but must not exceed 1023 characters.  Your
 bootloader may impose lower limits.</p>
 <p>These <code class="docutils literal notranslate"><span class="pre">dyndbg</span></code> params are processed just after the ddebug tables are
@@ -584,8 +584,7 @@ PCI (or other devices) initialization also is a hot candidate for using
 this boot parameter for debugging purposes.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">foo</span></code> module is not built-in, <code class="docutils literal notranslate"><span class="pre">foo.dyndbg</span></code> will still be processed at
 boot time, without effect, but will be reprocessed when module is
-loaded later. <code class="docutils literal notranslate"><span class="pre">ddebug_query=</span></code> and bare <code class="docutils literal notranslate"><span class="pre">dyndbg=</span></code> are only processed at
-boot.</p>
+loaded later. Bare <code class="docutils literal notranslate"><span class="pre">dyndbg=</span></code> is only processed at boot.</p>
 </section>
 <section id="debug-messages-at-module-initialization-time">
 <h2>Debug Messages at Module Initialization Time<a class="headerlink" href="#debug-messages-at-module-initialization-time" title="Permalink to this headline">¶</a></h2>
@@ -670,9 +669,12 @@ nullarbor:~ # echo -n &#39;+mf&#39; &gt; &lt;debugfs&gt;/dynamic_debug/control
 // boot-args example, with newlines and comments for readability
 Kernel command line: ...
   // see whats going on in dyndbg=value processing
-  dynamic_debug.verbose=1
-  // enable pr_debugs in 2 builtins, #cmt is stripped
-  dyndbg=&quot;module params +p #cmt ; module sys +p&quot;
+  dynamic_debug.verbose=3
+  // enable pr_debugs in the btrfs module (can be builtin or loadable)
+  btrfs.dyndbg=&quot;+p&quot;
+  // enable pr_debugs in all files under init/
+  // and the function parse_one, #cmt is stripped
+  dyndbg=&quot;file init/* +p #cmt ; func parse_one +p&quot;
   // enable pr_debugs in 2 functions in a module loaded later
   pc87360.dyndbg=&quot;func pc87360_init_device +p; func pc87360_find +p&quot;
 </pre></div>

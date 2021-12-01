@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -2530,11 +2530,9 @@ The <strong>cmd</strong> can be one of:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">LOCK_SH</span></code> – a shared lock.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">LOCK_EX</span></code> – an exclusive lock.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">LOCK_UN</span></code> – remove an existing lock.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LOCK_MAND</span></code> – a ‘mandatory’ flock.
-This exists to emulate Windows Share Modes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LOCK_MAND</span></code> – a ‘mandatory’ flock. (DEPRECATED)</p></li>
 </ul>
-<p><code class="docutils literal notranslate"><span class="pre">LOCK_MAND</span></code> can be combined with <code class="docutils literal notranslate"><span class="pre">LOCK_READ</span></code> or <code class="docutils literal notranslate"><span class="pre">LOCK_WRITE</span></code> to allow other
-processes read and write access respectively.</p>
+<p><code class="docutils literal notranslate"><span class="pre">LOCK_MAND</span></code> support has been removed from the kernel.</p>
 </dd>
 </dl>
 <dl class="c function">
@@ -3455,31 +3453,6 @@ to an empty bio.</p>
 <p><strong>Return</strong></p>
 <p>number of bytes added to the bio, or 0 in case of a failure.</p>
 <dl class="c function">
-<dt id="c.__bio_try_merge_page">
-<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">__bio_try_merge_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.__bio_try_merge_page" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.__bio_try_merge_page" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">len</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">off</span></em>, <span class="pre">bool</span> <span class="pre">*</span><em><span class="pre">same_page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__bio_try_merge_page" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>try appending data to an existing bvec.</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">bio</span> <span class="pre">*bio</span></code></dt><dd><p>destination bio</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>start page to add</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">len</span></code></dt><dd><p>length of the data to add</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">off</span></code></dt><dd><p>offset of the data relative to <strong>page</strong></p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">*same_page</span></code></dt><dd><p>return if the segment has been merged inside the same page</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Try to add the data at <strong>page</strong> + <strong>off</strong> to the last bvec of <strong>bio</strong>.  This is a
-useful optimisation for file systems with a block size smaller than the
-page size.</p>
-<p>Warn if (<strong>len</strong>, <strong>off</strong>) crosses pages in case that <strong>same_page</strong> is true.</p>
-<p>Return <code class="docutils literal notranslate"><span class="pre">true</span></code> on success or <code class="docutils literal notranslate"><span class="pre">false</span></code> on failure.</p>
-<dl class="c function">
 <dt id="c.__bio_add_page">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">__bio_add_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.__bio_add_page" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.__bio_add_page" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">len</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">off</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__bio_add_page" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>add page(s) to a bio in a new segment</p>
@@ -3564,24 +3537,6 @@ responsible for setting BIO_WORKINGSET if necessary.</p>
 <p>WARNING: Unlike to how <a class="reference internal" href="../core-api/kernel-api.html#c.submit_bio" title="submit_bio"><code class="xref c c-func docutils literal notranslate"><span class="pre">submit_bio()</span></code></a> is usually used, this function does not
 result in bio reference to be consumed. The caller must drop the reference
 on his own.</p>
-<dl class="c function">
-<dt id="c.bio_advance">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">bio_advance</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.bio_advance" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em>, <span class="pre">unsigned</span> <em><span class="pre">bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.bio_advance" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>increment/complete a bio by some number of bytes</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">bio</span> <span class="pre">*bio</span></code></dt><dd><p>bio to advance</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">bytes</span></code></dt><dd><p>number of bytes to complete</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>This updates bi_sector, bi_size and bi_idx; if the number of bytes to
-complete doesn’t align with a bvec boundary, then bv_len and bv_offset will
-be updated on the last bvec as well.</p>
-<p><strong>bio</strong> will then represent the remaining, uncompleted portion of the io.</p>
 <dl class="c function">
 <dt id="c.bio_copy_data">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">bio_copy_data</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">bio</span> <span class="pre">*</span><em><span class="pre">dst</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">bio</span> <span class="pre">*</span><em><span class="pre">src</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.bio_copy_data" title="Permalink to this definition">¶</a><br /></dt>
@@ -3811,24 +3766,6 @@ as -&gt;f_op-&gt;release() if you don’t have private data to destroy.</p>
 <p>Puts data into buffer, replacing each occurrence of character from
 given class (defined by <strong>flags</strong> and <strong>esc</strong>) with printable escaped sequence.</p>
 <p>Use seq_has_overflowed() to check for errors.</p>
-<dl class="c function">
-<dt id="c.seq_escape">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">seq_escape</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">seq_file</span> <span class="pre">*</span><em><span class="pre">m</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">esc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.seq_escape" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>print string into buffer, escaping some characters</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">seq_file</span> <span class="pre">*m</span></code></dt><dd><p>target buffer</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*s</span></code></dt><dd><p>string</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">char</span> <span class="pre">*esc</span></code></dt><dd><p>set of characters that need escaping</p>
-<p>Puts string into buffer, replacing each occurrence of character from
-<strong>esc</strong> with usual octal escape.
-Use seq_has_overflowed() to check for errors.</p>
-</dd>
-</dl>
 <dl class="c function">
 <dt id="c.mangle_path">
 <span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">mangle_path</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">s</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">p</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">esc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.mangle_path" title="Permalink to this definition">¶</a><br /></dt>

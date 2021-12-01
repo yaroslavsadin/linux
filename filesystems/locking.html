@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -921,15 +921,15 @@ name.</p>
 and return zero, writepage <em>must</em> run set_page_writeback() against the page,
 followed by unlocking it.  Once set_page_writeback() has been run against the
 page, write I/O can be submitted and the write I/O completion handler must run
-<a class="reference internal" href="../core-api/mm-api.html#c.end_page_writeback" title="end_page_writeback"><code class="xref c c-func docutils literal notranslate"><span class="pre">end_page_writeback()</span></code></a> once the I/O is complete.  If no I/O is submitted, the
-filesystem must run <a class="reference internal" href="../core-api/mm-api.html#c.end_page_writeback" title="end_page_writeback"><code class="xref c c-func docutils literal notranslate"><span class="pre">end_page_writeback()</span></code></a> against the page before returning from
+end_page_writeback() once the I/O is complete.  If no I/O is submitted, the
+filesystem must run end_page_writeback() against the page before returning from
 writepage.</p>
 <p>That is: after 2.5.12, pages which are under writeout are <em>not</em> locked.  Note,
 if the filesystem needs the page to be locked during writeout, that is ok, too,
 the page is allowed to be unlocked at any point in time between the calls to
-set_page_writeback() and <a class="reference internal" href="../core-api/mm-api.html#c.end_page_writeback" title="end_page_writeback"><code class="xref c c-func docutils literal notranslate"><span class="pre">end_page_writeback()</span></code></a>.</p>
+set_page_writeback() and end_page_writeback().</p>
 <p>Note, failure to run either redirty_page_for_writepage() or the combination of
-set_page_writeback()/<a class="reference internal" href="../core-api/mm-api.html#c.end_page_writeback" title="end_page_writeback"><code class="xref c c-func docutils literal notranslate"><span class="pre">end_page_writeback()</span></code></a> on a page submitted to writepage
+set_page_writeback()/end_page_writeback() on a page submitted to writepage
 will leave the page itself marked clean but it will be tagged as dirty in the
 radix tree.  This incoherency can lead to all sorts of hard-to-debug problems
 in the filesystem like having dirty inodes at umount and losing written data.</p>

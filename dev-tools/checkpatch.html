@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -868,6 +868,34 @@ To use a different maximum line length, the –max-line-length=n option
 may be added while invoking checkpatch.</p>
 <p>See: <a class="reference external" href="https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings">https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings</a></p>
 </dd>
+<dt><strong>SPLIT_STRING</strong></dt><dd><p>Quoted strings that appear as messages in userspace and can be
+grepped, should not be split across multiple lines.</p>
+<p>See: <a class="reference external" href="https://lore.kernel.org/lkml/20120203052727.GA15035&#64;leaf/">https://lore.kernel.org/lkml/20120203052727.GA15035&#64;leaf/</a></p>
+</dd>
+<dt><strong>MULTILINE_DEREFERENCE</strong></dt><dd><p>A single dereferencing identifier spanned on multiple lines like:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct_identifier-&gt;member[index].
+member = &lt;foo&gt;;
+</pre></div>
+</div>
+<p>is generally hard to follow. It can easily lead to typos and so makes
+the code vulnerable to bugs.</p>
+<p>If fixing the multiple line dereferencing leads to an 80 column
+violation, then either rewrite the code in a more simple way or if the
+starting part of the dereferencing identifier is the same and used at
+multiple places then store it in a temporary variable, and use that
+temporary variable only at all the places. For example, if there are
+two dereferencing identifiers:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>member1-&gt;member2-&gt;member3.foo1;
+member1-&gt;member2-&gt;member3.foo2;
+</pre></div>
+</div>
+<p>then store the member1-&gt;member2-&gt;member3 part in a temporary variable.
+It not only helps to avoid the 80 column violation but also reduces
+the program size by removing the unnecessary dereferences.</p>
+<p>But if none of the above methods work then ignore the 80 column
+violation because it is much easier to read a dereferencing identifier
+on a single line.</p>
+</dd>
 <dt><strong>TRAILING_STATEMENTS</strong></dt><dd><p>Trailing statements (for example after any conditional) should be
 on the next line.
 Statements, such as:</p>
@@ -986,6 +1014,34 @@ starting with <cite>if</cite> to avoid logic defects:</p>
 <dt><strong>PREFER_FALLTHROUGH</strong></dt><dd><p>Use the <cite>fallthrough;</cite> pseudo keyword instead of
 <cite>/* fallthrough */</cite> like comments.</p>
 </dd>
+<dt><strong>TRAILING_SEMICOLON</strong></dt><dd><p>Macro definition should not end with a semicolon. The macro
+invocation style should be consistent with function calls.
+This can prevent any unexpected code paths:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#define MAC do_something;
+</pre></div>
+</div>
+<p>If this macro is used within a if else statement, like:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>if (some_condition)
+        MAC;
+
+else
+        do_something;
+</pre></div>
+</div>
+<p>Then there would be a compilation error, because when the macro is
+expanded there are two trailing semicolons, so the else branch gets
+orphaned.</p>
+<p>See: <a class="reference external" href="https://lore.kernel.org/lkml/1399671106.2912.21.camel&#64;joe-AO725/">https://lore.kernel.org/lkml/1399671106.2912.21.camel&#64;joe-AO725/</a></p>
+</dd>
+<dt><strong>SINGLE_STATEMENT_DO_WHILE_MACRO</strong></dt><dd><p>For the multi-statement macros, it is necessary to use the do-while
+loop to avoid unpredictable code paths. The do-while loop helps to
+group the multiple statements into a single one so that a
+function-like macro can be used as a function only.</p>
+<p>But for the single statement macros, it is unnecessary to use the
+do-while loop. Although the code is syntactically correct but using
+the do-while loop is redundant. So remove the do-while loop for single
+statement macros.</p>
+</dd>
 <dt><strong>WEAK_DECLARATION</strong></dt><dd><p>Using weak declarations like __attribute__((weak)) or __weak
 can have unintended link defects.  Avoid using them.</p>
 </dd>
@@ -1057,6 +1113,10 @@ sections) automatically does it for you.</p>
 Your compiler (or rather your loader) automatically does
 it for you.</p>
 </dd>
+<dt><strong>MULTIPLE_ASSIGNMENTS</strong></dt><dd><p>Multiple assignments on a single line makes the code unnecessarily
+complicated. So on a single line assign value to a single variable
+only, this makes the code more readable and helps avoid typos.</p>
+</dd>
 <dt><strong>RETURN_PARENTHESES</strong></dt><dd><p>return is not a function and as such doesn’t need parentheses:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>return (bar);
 </pre></div>
@@ -1090,6 +1150,15 @@ situation from which little good can be expected to emerge.</p>
 </dd>
 <dt><strong>NON_OCTAL_PERMISSIONS</strong></dt><dd><p>Permission bits should use 4 digit octal permissions (like 0700 or 0444).
 Avoid using any other base like decimal.</p>
+</dd>
+<dt><strong>SYMBOLIC_PERMS</strong></dt><dd><p>Permission bits in the octal form are more readable and easier to
+understand than their symbolic counterparts because many command-line
+tools use this notation. Experienced kernel developers have been using
+these traditional Unix permission bits for decades and so they find it
+easier to understand the octal notation than the symbolic macros.
+For example, it is harder to read S_IWUSR|S_IRUGO than 0644, which
+obscures the developer’s intent rather than clarifying it.</p>
+<p>See: <a class="reference external" href="https://lore.kernel.org/lkml/CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ&#64;mail.gmail.com/">https://lore.kernel.org/lkml/CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ&#64;mail.gmail.com/</a></p>
 </dd>
 </dl>
 </div></blockquote>

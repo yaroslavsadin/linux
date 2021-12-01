@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -1011,6 +1011,8 @@ combinations it supports concurrently.</p>
   u8 max_data_retry_count;
   const struct cfg80211_sar_capa *sar_capa;
   struct rfkill *rfkill;
+  u8 mbssid_max_interfaces;
+  u8 ema_max_profile_periodicity;
   char priv[] ;
 };
 </pre></div>
@@ -1278,6 +1280,14 @@ configuration through the <code class="docutils literal notranslate"><span class
 <dt><code class="docutils literal notranslate"><span class="pre">sar_capa</span></code></dt><dd><p>SAR control capabilities</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">rfkill</span></code></dt><dd><p>a pointer to the rfkill structure</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mbssid_max_interfaces</span></code></dt><dd><p>maximum number of interfaces supported by the driver
+in a multiple BSSID set. This field must be set to a non-zero value
+by the driver to advertise MBSSID support.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ema_max_profile_periodicity</span></code></dt><dd><p>maximum profile periodicity supported by
+the driver. Setting this field to a non-zero value indicates that the
+driver supports enhanced multi-BSSID advertisements (EMA AP).</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">priv</span></code></dt><dd><p>driver private data (sized according to <a class="reference internal" href="#c.wiphy_new" title="wiphy_new"><code class="xref c c-func docutils literal notranslate"><span class="pre">wiphy_new()</span></code></a> parameter)</p>
 </dd>
@@ -1909,6 +1919,7 @@ such a scenario.</p>
   const u8 *probe_resp;
   const u8 *lci;
   const u8 *civicloc;
+  struct cfg80211_mbssid_elems *mbssid_ies;
   s8 ftm_responder;
   size_t head_len, tail_len;
   size_t beacon_ies_len;
@@ -1943,6 +1954,8 @@ Response frames or <code class="docutils literal notranslate"><span class="pre">
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">civicloc</span></code></dt><dd><p>Measurement Report element content, starting with Measurement
 Token (measurement type 11)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mbssid_ies</span></code></dt><dd><p>multiple BSSID elements</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">ftm_responder</span></code></dt><dd><p>enable FTM responder functionality; -1 for no change
 (which also implies no change in LCI/civic location data)</p>
@@ -1999,6 +2012,7 @@ Token (measurement type 11)</p>
   struct cfg80211_he_bss_color he_bss_color;
   struct cfg80211_fils_discovery fils_discovery;
   struct cfg80211_unsol_bcast_probe_resp unsol_bcast_probe_resp;
+  struct cfg80211_mbssid_config mbssid_config;
 };
 </pre></div>
 </div>
@@ -2068,6 +2082,8 @@ networks.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">fils_discovery</span></code></dt><dd><p>FILS discovery transmission parameters</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">unsol_bcast_probe_resp</span></code></dt><dd><p>Unsolicited broadcast probe response parameters</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mbssid_config</span></code></dt><dd><p>AP settings for multiple bssid</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
@@ -3204,6 +3220,7 @@ caching.</p>
   int (*reset_tid_config)(struct wiphy *wiphy, struct net_device *dev, const u8 *peer, u8 tids);
   int (*set_sar_specs)(struct wiphy *wiphy, struct cfg80211_sar_specs *sar);
   int (*color_change)(struct wiphy *wiphy,struct net_device *dev, struct cfg80211_color_change_settings *params);
+  int (*set_fils_aad)(struct wiphy *wiphy, struct net_device *dev, struct cfg80211_fils_aad *fils_aad);
 };
 </pre></div>
 </div>
@@ -3607,6 +3624,10 @@ given TIDs. This callback may sleep.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">set_sar_specs</span></code></dt><dd><p>Update the SAR (TX power) settings.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">color_change</span></code></dt><dd><p>Initiate a color change.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">set_fils_aad</span></code></dt><dd><p>Set FILS AAD data to the AP driver so that the driver can use
+those to decrypt (Re)Association Request and encrypt (Re)Association
+Response frame.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>

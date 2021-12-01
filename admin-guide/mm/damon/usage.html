@@ -40,7 +40,7 @@
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="HugeTLB Pages" href="../hugetlbpage.html" />
+    <link rel="next" title="DAMON-based Reclamation" href="reclaim.html" />
     <link rel="prev" title="Getting Started" href="start.html" /> 
 </head>
 
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -132,6 +132,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../edid.html">EDID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../efi-stub.html">The EFI Boot Stub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../ext4.html">ext4 General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../filesystem-monitoring.html">File system Monitoring with fanotify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../nfs/index.html">NFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../gpio/index.html">gpio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../highuid.html">Notes on the change from 16-bit UIDs to 32-bit UIDs</a></li>
@@ -154,6 +155,7 @@
 <li class="toctree-l3 current"><a class="reference internal" href="index.html">Monitoring Data Accesses</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="start.html">Getting Started</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Detailed Usages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reclaim.html">DAMON-based Reclamation</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../hugetlbpage.html">HugeTLB Pages</a></li>
@@ -168,8 +170,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../numaperf.html#see-also">See Also</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../pagemap.html">Examining Process Page Tables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../soft-dirty.html">Soft-Dirty PTEs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../swap_numa.html">Automatically bind swap device to numa node</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../transhuge.html">Transparent Hugepage Support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../userfaultfd.html">Userfaultfd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../zswap.html">zswap</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../module-signing.html">Kernel module signing facility</a></li>
@@ -353,15 +357,16 @@
 This is for privileged people such as system administrators who want a
 just-working human-friendly interface.  Using this, users can use the DAMON’s
 major features in a human-friendly way.  It may not be highly tuned for
-special cases, though.  It supports only virtual address spaces monitoring.</p></li>
+special cases, though.  It supports both virtual and physical address spaces
+monitoring.</p></li>
 <li><p><em>debugfs interface.</em>
 This is for privileged user space programmers who want more optimized use of
 DAMON.  Using this, users can use DAMON’s major features by reading
 from and writing to special debugfs files.  Therefore, you can write and use
 your personalized DAMON debugfs wrapper programs that reads/writes the
 debugfs files instead of you.  The DAMON user space tool is also a reference
-implementation of such programs.  It supports only virtual address spaces
-monitoring.</p></li>
+implementation of such programs.  It supports both virtual and physical
+address spaces monitoring.</p></li>
 <li><p><em>Kernel Space Programming Interface.</em>
 This is for kernel space programmers.  Using this, users can utilize every
 feature of DAMON most flexibly and efficiently by writing kernel space
@@ -375,8 +380,9 @@ refer to <a class="reference internal" href="../../../vm/damon/api.html"><span c
 the reason, this document describes only the debugfs interface</p>
 <section id="debugfs-interface">
 <h2>debugfs Interface<a class="headerlink" href="#debugfs-interface" title="Permalink to this headline">¶</a></h2>
-<p>DAMON exports three files, <code class="docutils literal notranslate"><span class="pre">attrs</span></code>, <code class="docutils literal notranslate"><span class="pre">target_ids</span></code>, and <code class="docutils literal notranslate"><span class="pre">monitor_on</span></code> under
-its debugfs directory, <code class="docutils literal notranslate"><span class="pre">&lt;debugfs&gt;/damon/</span></code>.</p>
+<p>DAMON exports five files, <code class="docutils literal notranslate"><span class="pre">attrs</span></code>, <code class="docutils literal notranslate"><span class="pre">target_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">init_regions</span></code>,
+<code class="docutils literal notranslate"><span class="pre">schemes</span></code> and <code class="docutils literal notranslate"><span class="pre">monitor_on</span></code> under its debugfs directory,
+<code class="docutils literal notranslate"><span class="pre">&lt;debugfs&gt;/damon/</span></code>.</p>
 <section id="attributes">
 <h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
 <p>Users can get and set the <code class="docutils literal notranslate"><span class="pre">sampling</span> <span class="pre">interval</span></code>, <code class="docutils literal notranslate"><span class="pre">aggregation</span> <span class="pre">interval</span></code>,
@@ -408,7 +414,99 @@ check it again:</p>
 42 4242
 </pre></div>
 </div>
+<p>Users can also monitor the physical memory address space of the system by
+writing a special keyword, “<code class="docutils literal notranslate"><span class="pre">paddr\n</span></code>” to the file.  Because physical address
+space monitoring doesn’t support multiple targets, reading the file will show a
+fake value, <code class="docutils literal notranslate"><span class="pre">42</span></code>, as below:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># cd &lt;debugfs&gt;/damon
+# echo paddr &gt; target_ids
+# cat target_ids
+42
+</pre></div>
+</div>
 <p>Note that setting the target ids doesn’t start the monitoring.</p>
+</section>
+<section id="initial-monitoring-target-regions">
+<h3>Initial Monitoring Target Regions<a class="headerlink" href="#initial-monitoring-target-regions" title="Permalink to this headline">¶</a></h3>
+<p>In case of the virtual address space monitoring, DAMON automatically sets and
+updates the monitoring target regions so that entire memory mappings of target
+processes can be covered.  However, users can want to limit the monitoring
+region to specific address ranges, such as the heap, the stack, or specific
+file-mapped area.  Or, some users can know the initial access pattern of their
+workloads and therefore want to set optimal initial regions for the ‘adaptive
+regions adjustment’.</p>
+<p>In contrast, DAMON do not automatically sets and updates the monitoring target
+regions in case of physical memory monitoring.  Therefore, users should set the
+monitoring target regions by themselves.</p>
+<p>In such cases, users can explicitly set the initial monitoring target regions
+as they want, by writing proper values to the <code class="docutils literal notranslate"><span class="pre">init_regions</span></code> file.  Each line
+of the input should represent one region in below form.:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;target id&gt; &lt;start address&gt; &lt;end address&gt;
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">target</span> <span class="pre">id</span></code> should already in <code class="docutils literal notranslate"><span class="pre">target_ids</span></code> file, and the regions should
+be passed in address order.  For example, below commands will set a couple of
+address ranges, <code class="docutils literal notranslate"><span class="pre">1-100</span></code> and <code class="docutils literal notranslate"><span class="pre">100-200</span></code> as the initial monitoring target
+region of process 42, and another couple of address ranges, <code class="docutils literal notranslate"><span class="pre">20-40</span></code> and
+<code class="docutils literal notranslate"><span class="pre">50-100</span></code> as that of process 4242.:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># cd &lt;debugfs&gt;/damon
+# echo &quot;42   1       100
+        42   100     200
+        4242 20      40
+        4242 50      100&quot; &gt; init_regions
+</pre></div>
+</div>
+<p>Note that this sets the initial monitoring target regions only.  In case of
+virtual memory monitoring, DAMON will automatically updates the boundary of the
+regions after one <code class="docutils literal notranslate"><span class="pre">regions</span> <span class="pre">update</span> <span class="pre">interval</span></code>.  Therefore, users should set the
+<code class="docutils literal notranslate"><span class="pre">regions</span> <span class="pre">update</span> <span class="pre">interval</span></code> large enough in this case, if they don’t want the
+update.</p>
+</section>
+<section id="schemes">
+<h3>Schemes<a class="headerlink" href="#schemes" title="Permalink to this headline">¶</a></h3>
+<p>For usual DAMON-based data access aware memory management optimizations, users
+would simply want the system to apply a memory management action to a memory
+region of a specific size having a specific access frequency for a specific
+time.  DAMON receives such formalized operation schemes from the user and
+applies those to the target processes.  It also counts the total number and
+size of regions that each scheme is applied.  This statistics can be used for
+online analysis or tuning of the schemes.</p>
+<p>Users can get and set the schemes by reading from and writing to <code class="docutils literal notranslate"><span class="pre">schemes</span></code>
+debugfs file.  Reading the file also shows the statistics of each scheme.  To
+the file, each of the schemes should be represented in each line in below form:</p>
+<blockquote>
+<div><p>min-size max-size min-acc max-acc min-age max-age action</p>
+</div></blockquote>
+<p>Note that the ranges are closed interval.  Bytes for the size of regions
+(<code class="docutils literal notranslate"><span class="pre">min-size</span></code> and <code class="docutils literal notranslate"><span class="pre">max-size</span></code>), number of monitored accesses per aggregate
+interval for access frequency (<code class="docutils literal notranslate"><span class="pre">min-acc</span></code> and <code class="docutils literal notranslate"><span class="pre">max-acc</span></code>), number of
+aggregate intervals for the age of regions (<code class="docutils literal notranslate"><span class="pre">min-age</span></code> and <code class="docutils literal notranslate"><span class="pre">max-age</span></code>), and a
+predefined integer for memory management actions should be used.  The supported
+numbers and their meanings are as below.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>0: Call <code class="docutils literal notranslate"><span class="pre">madvise()</span></code> for the region with <code class="docutils literal notranslate"><span class="pre">MADV_WILLNEED</span></code></p></li>
+<li><p>1: Call <code class="docutils literal notranslate"><span class="pre">madvise()</span></code> for the region with <code class="docutils literal notranslate"><span class="pre">MADV_COLD</span></code></p></li>
+<li><p>2: Call <code class="docutils literal notranslate"><span class="pre">madvise()</span></code> for the region with <code class="docutils literal notranslate"><span class="pre">MADV_PAGEOUT</span></code></p></li>
+<li><p>3: Call <code class="docutils literal notranslate"><span class="pre">madvise()</span></code> for the region with <code class="docutils literal notranslate"><span class="pre">MADV_HUGEPAGE</span></code></p></li>
+<li><p>4: Call <code class="docutils literal notranslate"><span class="pre">madvise()</span></code> for the region with <code class="docutils literal notranslate"><span class="pre">MADV_NOHUGEPAGE</span></code></p></li>
+<li><p>5: Do nothing but count the statistics</p></li>
+</ul>
+</div></blockquote>
+<p>You can disable schemes by simply writing an empty string to the file.  For
+example, below commands applies a scheme saying “If a memory region of size in
+[4KiB, 8KiB] is showing accesses per aggregate interval in [0, 5] for aggregate
+interval in [10, 20], page out the region”, check the entered scheme again, and
+finally remove the scheme.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># cd &lt;debugfs&gt;/damon
+# echo &quot;4096 8192    0 5    10 20    2&quot; &gt; schemes
+# cat schemes
+4096 8192 0 5 10 20 2 0 0
+# echo &gt; schemes
+</pre></div>
+</div>
+<p>The last two integers in the 4th line of above example is the total number and
+the total size of the regions that the scheme is applied.</p>
 </section>
 <section id="turning-on-off">
 <h3>Turning On/Off<a class="headerlink" href="#turning-on-off" title="Permalink to this headline">¶</a></h3>
@@ -454,7 +552,7 @@ like <code class="docutils literal notranslate"><span class="pre">perf</span></c
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../hugetlbpage.html" class="btn btn-neutral float-right" title="HugeTLB Pages" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="reclaim.html" class="btn btn-neutral float-right" title="DAMON-based Reclamation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="start.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

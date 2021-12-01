@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -195,6 +195,7 @@
 <li class="toctree-l2"><a class="reference internal" href="edid.html">EDID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="efi-stub.html">The EFI Boot Stub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext4.html">ext4 General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filesystem-monitoring.html">File system Monitoring with fanotify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nfs/index.html">NFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpio/index.html">gpio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="highuid.html">Notes on the change from 16-bit UIDs to 32-bit UIDs</a></li>
@@ -1188,6 +1189,8 @@ This file exists whether the controller is enabled or not.</p>
 <li><p>nr_periods</p></li>
 <li><p>nr_throttled</p></li>
 <li><p>throttled_usec</p></li>
+<li><p>nr_bursts</p></li>
+<li><p>burst_usec</p></li>
 </ul>
 </dd>
 <dt>cpu.weight</dt><dd><p>A read-write single value file which exists on non-root
@@ -1212,6 +1215,10 @@ The default is “max 100000”.</p>
 <p>which indicates that the group may consume upto $MAX in each
 $PERIOD duration.  “max” for $MAX indicates no limit.  If only
 one number is written, $MAX is updated.</p>
+</dd>
+<dt>cpu.max.burst</dt><dd><p>A read-write single value file which exists on non-root
+cgroups.  The default is “0”.</p>
+<p>The burst in the range [0, $MAX].</p>
 </dd>
 <dt>cpu.pressure</dt><dd><p>A read-write nested-keyed file.</p>
 <p>Shows pressure stall information for CPU. See
@@ -2434,6 +2441,18 @@ res_b 4
 </div>
 <p>Limits can be set higher than the capacity value in the misc.capacity
 file.</p>
+</dd>
+<dt>misc.events</dt><dd><p>A read-only flat-keyed file which exists on non-root cgroups. The
+following entries are defined. Unless specified otherwise, a value
+change in this file generates a file modified event. All fields in
+this file are hierarchical.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>max</dt><dd><p>The number of times the cgroup’s resource usage was
+about to go over the max boundary.</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd>
 </dl>
 </div></blockquote>

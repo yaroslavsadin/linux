@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -1785,6 +1785,25 @@ forbidden to release the locks after releasing the acquire context.</p>
 <p>This function must not be used in interrupt context. Unlocking
 of a unlocked mutex is not allowed.</p>
 <dl class="c function">
+<dt id="c.ww_mutex_trylock">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">ww_mutex_trylock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ww_mutex</span> <span class="pre">*</span><em><span class="pre">ww</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">ww_acquire_ctx</span> <span class="pre">*</span><em><span class="pre">ww_ctx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ww_mutex_trylock" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>tries to acquire the w/w mutex with optional acquire context</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ww_mutex</span> <span class="pre">*ww</span></code></dt><dd><p>mutex to lock</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">ww_acquire_ctx</span> <span class="pre">*ww_ctx</span></code></dt><dd><p>optional w/w acquire context</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Trylocks a mutex with the optional acquire context; no deadlock detection is
+possible. Returns 1 if the mutex has been acquired successfully, 0 otherwise.</p>
+<p>Unlike ww_mutex_lock, no deadlock handling is performed. However, if a <strong>ctx</strong> is
+specified, -EALREADY handling may happen in calls to ww_mutex_trylock.</p>
+<p>A mutex acquired with this function must be released with ww_mutex_unlock.</p>
+<dl class="c function">
 <dt id="c.mutex_lock_interruptible">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">mutex_lock_interruptible</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">mutex</span> <span class="pre">*</span><em><span class="pre">lock</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.mutex_lock_interruptible" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Acquire the mutex, interruptible by signals.</p>
@@ -1879,64 +1898,9 @@ about this when converting semaphore users to mutexes.</p>
 </section>
 <section id="futex-api-reference">
 <h2>Futex API reference<a class="headerlink" href="#futex-api-reference" title="Permalink to this headline">¶</a></h2>
-<dl class="c struct">
-<dt id="c.futex_q">
-<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">futex_q</span></code><a class="headerlink" href="#c.futex_q" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>The hashed futex queue entry, one per waiting task</p>
-</dd></dl>
-
-<p><strong>Definition</strong></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct futex_q {
-  struct plist_node list;
-  struct task_struct *task;
-  spinlock_t *lock_ptr;
-  union futex_key key;
-  struct futex_pi_state *pi_state;
-  struct rt_mutex_waiter *rt_waiter;
-  union futex_key *requeue_pi_key;
-  u32 bitset;
-  atomic_t requeue_state;
-#ifdef CONFIG_PREEMPT_RT;
-  struct rcuwait requeue_wait;
-#endif;
-};
-</pre></div>
-</div>
-<p><strong>Members</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">list</span></code></dt><dd><p>priority-sorted list of tasks waiting on this futex</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">task</span></code></dt><dd><p>the task waiting on the futex</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">lock_ptr</span></code></dt><dd><p>the hash bucket lock</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">key</span></code></dt><dd><p>the key the futex is hashed on</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">pi_state</span></code></dt><dd><p>optional priority inheritance state</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">rt_waiter</span></code></dt><dd><p>rt_waiter storage for use with requeue_pi</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">requeue_pi_key</span></code></dt><dd><p>the requeue_pi target futex key</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">bitset</span></code></dt><dd><p>bitset for the optional bitmasked wakeup</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">requeue_state</span></code></dt><dd><p>State field for futex_requeue_pi()</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">requeue_wait</span></code></dt><dd><p>RCU wait for futex_requeue_pi() (RT only)</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>We use this hashed waitqueue, instead of a normal wait_queue_entry_t, so
-we can wake only the relevant ones (hashed queues may be shared).</p>
-<p>A futex_q has a woken state, just like tasks have TASK_RUNNING.
-It is considered woken when plist_node_empty(<code class="xref c c-type docutils literal notranslate"><span class="pre">q-&gt;list</span></code>) || q-&gt;lock_ptr == 0.
-The order of wakeup is always to make the first condition true, then
-the second.</p>
-<p>PI futexes are typically woken before they are removed from the hash list via
-the rt_mutex code. See unqueue_me_pi().</p>
 <dl class="c function">
-<dt id="c.hash_futex">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">hash_futex</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hash_futex" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.futex_hash">
+<em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">futex_hash</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_hash" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return the hash bucket in the global hash</p>
 </dd></dl>
 
@@ -1948,21 +1912,6 @@ the rt_mutex code. See unqueue_me_pi().</p>
 <p><strong>Description</strong></p>
 <p>We hash on the keys returned from get_futex_key (see below) and return the
 corresponding hash bucket in the global hash.</p>
-<dl class="c function">
-<dt id="c.match_futex">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">match_futex</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key1</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.match_futex" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Check whether two futex keys are equal</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">union</span> <span class="pre">futex_key</span> <span class="pre">*key1</span></code></dt><dd><p>Pointer to key1</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">union</span> <span class="pre">futex_key</span> <span class="pre">*key2</span></code></dt><dd><p>Pointer to key2</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Return 1 if two futex_keys are equal, 0 otherwise.</p>
 <dl class="c function">
 <dt id="c.futex_setup_timer">
 <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">futex_setup_timer</span></code><span class="sig-paren">(</span><span class="pre">ktime_t</span> <span class="pre">*</span><em><span class="pre">time</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">timeout</span></em>, <span class="pre">int</span> <em><span class="pre">flags</span></em>, <span class="pre">u64</span> <em><span class="pre">range_ns</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_setup_timer" title="Permalink to this definition">¶</a><br /></dt>
@@ -2068,6 +2017,174 @@ calling get_user_pages() right away.</p>
 <p><strong>Description</strong></p>
 <p>Caller must hold a refcount on <strong>exiting</strong>.</p>
 <dl class="c function">
+<dt id="c.__futex_unqueue">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__futex_unqueue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__futex_unqueue" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Remove the futex_q from its futex_hash_bucket</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>The futex_q to unqueue</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>The q-&gt;lock_ptr must not be NULL and must be held by the caller.</p>
+<dl class="c function">
+<dt id="c.futex_unqueue">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_unqueue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_unqueue" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Remove the futex_q from its futex_hash_bucket</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>The futex_q to unqueue</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>The q-&gt;lock_ptr must not be held by the caller. A call to <a class="reference internal" href="#c.futex_unqueue" title="futex_unqueue"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_unqueue()</span></code></a> must
+be paired with exactly one earlier call to <a class="reference internal" href="#c.futex_queue" title="futex_queue"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_queue()</span></code></a>.</p>
+<p><strong>Return</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>1 - if the futex_q was still queued (and we removed unqueued it);</p></li>
+<li><p>0 - if the futex_q was already removed by the waking thread</p></li>
+</ul>
+</div></blockquote>
+<dl class="c function">
+<dt id="c.futex_exit_recursive">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">futex_exit_recursive</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><em><span class="pre">tsk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_exit_recursive" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set the tasks futex state to FUTEX_STATE_DEAD</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">task_struct</span> <span class="pre">*tsk</span></code></dt><dd><p>task to set the state on</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Set the futex exit state of the task lockless. The futex waiter code
+observes that state when a task is exiting and loops until the task has
+actually finished the futex cleanup. The worst case for this is that the
+waiter runs through the wait loop until the state becomes visible.</p>
+<p>This is called from the recursive fault handling path in do_exit().</p>
+<p>This is best effort. Either the futex exit code has run already or
+not. If the OWNER_DIED bit has been set on the futex then the waiter can
+take it over. If not, the problem is pushed back to user space. If the
+futex exit code did not run yet, then an already queued waiter might
+block forever, but there is nothing which can be done about that.</p>
+<dl class="c struct">
+<dt id="c.futex_q">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">futex_q</span></code><a class="headerlink" href="#c.futex_q" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The hashed futex queue entry, one per waiting task</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct futex_q {
+  struct plist_node list;
+  struct task_struct *task;
+  spinlock_t *lock_ptr;
+  union futex_key key;
+  struct futex_pi_state *pi_state;
+  struct rt_mutex_waiter *rt_waiter;
+  union futex_key *requeue_pi_key;
+  u32 bitset;
+  atomic_t requeue_state;
+#ifdef CONFIG_PREEMPT_RT;
+  struct rcuwait requeue_wait;
+#endif;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">list</span></code></dt><dd><p>priority-sorted list of tasks waiting on this futex</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">task</span></code></dt><dd><p>the task waiting on the futex</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lock_ptr</span></code></dt><dd><p>the hash bucket lock</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">key</span></code></dt><dd><p>the key the futex is hashed on</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pi_state</span></code></dt><dd><p>optional priority inheritance state</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">rt_waiter</span></code></dt><dd><p>rt_waiter storage for use with requeue_pi</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">requeue_pi_key</span></code></dt><dd><p>the requeue_pi target futex key</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bitset</span></code></dt><dd><p>bitset for the optional bitmasked wakeup</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">requeue_state</span></code></dt><dd><p>State field for futex_requeue_pi()</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">requeue_wait</span></code></dt><dd><p>RCU wait for futex_requeue_pi() (RT only)</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>We use this hashed waitqueue, instead of a normal wait_queue_entry_t, so
+we can wake only the relevant ones (hashed queues may be shared).</p>
+<p>A futex_q has a woken state, just like tasks have TASK_RUNNING.
+It is considered woken when plist_node_empty(<code class="xref c c-type docutils literal notranslate"><span class="pre">q-&gt;list</span></code>) || q-&gt;lock_ptr == 0.
+The order of wakeup is always to make the first condition true, then
+the second.</p>
+<p>PI futexes are typically woken before they are removed from the hash list via
+the rt_mutex code. See futex_unqueue_pi().</p>
+<dl class="c function">
+<dt id="c.futex_match">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_match</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key1</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_match" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check whether two futex keys are equal</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">union</span> <span class="pre">futex_key</span> <span class="pre">*key1</span></code></dt><dd><p>Pointer to key1</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">union</span> <span class="pre">futex_key</span> <span class="pre">*key2</span></code></dt><dd><p>Pointer to key2</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Return 1 if two futex_keys are equal, 0 otherwise.</p>
+<dl class="c function">
+<dt id="c.futex_queue">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">futex_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Enqueue the futex_q on the futex_hash_bucket</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>The futex_q to enqueue</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_hash_bucket</span> <span class="pre">*hb</span></code></dt><dd><p>The destination hash bucket</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>The hb-&gt;lock must be held by the caller, and is released here. A call to
+<a class="reference internal" href="#c.futex_queue" title="futex_queue"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_queue()</span></code></a> is typically paired with exactly one call to <a class="reference internal" href="#c.futex_unqueue" title="futex_unqueue"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_unqueue()</span></code></a>.  The
+exceptions involve the PI related operations, which may use futex_unqueue_pi()
+or nothing if the unqueue is done as part of the wake process and the unqueue
+state is implicit in the state of woken task (see <a class="reference internal" href="#c.futex_wait_requeue_pi" title="futex_wait_requeue_pi"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_wait_requeue_pi()</span></code></a> for
+an example).</p>
+<dl class="c struct">
+<dt id="c.futex_vector">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">futex_vector</span></code><a class="headerlink" href="#c.futex_vector" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Auxiliary struct for futex_waitv()</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct futex_vector {
+  struct futex_waitv w;
+  struct futex_q q;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">w</span></code></dt><dd><p>Userspace provided data</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">q</span></code></dt><dd><p>Kernel side data</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Struct used to build an array with all data need for futex_waitv()</p>
+<dl class="c function">
 <dt id="c.futex_lock_pi_atomic">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_lock_pi_atomic</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_pi_state</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">ps</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><em><span class="pre">task</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">exiting</span></em>, <span class="pre">int</span> <em><span class="pre">set_waiters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_lock_pi_atomic" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Atomic work required to acquire a pi aware futex</p>
@@ -2107,18 +2224,32 @@ which is in the middle of exiting</p>
 a refcount on the exiting task on return and the caller needs to drop it
 after waiting for the exit to complete.</p>
 <dl class="c function">
-<dt id="c.__unqueue_futex">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__unqueue_futex</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__unqueue_futex" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Remove the futex_q from its futex_hash_bucket</p>
+<dt id="c.fixup_pi_owner">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">fixup_pi_owner</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <span class="pre">int</span> <em><span class="pre">locked</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fixup_pi_owner" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Post lock pi_state and corner case management</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>The futex_q to unqueue</p>
+<dt><code class="docutils literal notranslate"><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*uaddr</span></code></dt><dd><p>user address of the futex</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>futex_q (contains pi_state and access to the rt_mutex)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">locked</span></code></dt><dd><p>if the attempt to take the rt_mutex succeeded (1) or not (0)</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>The q-&gt;lock_ptr must not be NULL and must be held by the caller.</p>
+<p>After attempting to lock an rt_mutex, this function is called to cleanup
+the pi_state owner as well as handle race conditions that may allow us to
+acquire the lock. Must be called with the hb lock held.</p>
+<p><strong>Return</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>1 - success, lock taken;</p></li>
+<li><p>0 - success, lock not taken;</p></li>
+<li><p>&lt;0 - on error (-EFAULT)</p></li>
+</ul>
+</div></blockquote>
 <dl class="c function">
 <dt id="c.requeue_futex">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">requeue_futex</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb1</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb2</span></em>, <em class="property"><span class="pre">union</span></em> <span class="pre">futex_key</span> <span class="pre">*</span><em><span class="pre">key2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.requeue_futex" title="Permalink to this definition">¶</a><br /></dt>
@@ -2245,119 +2376,6 @@ uaddr2 atomically on behalf of the top waiter.</p>
 </ul>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.queue_me">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">queue_me</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.queue_me" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Enqueue the futex_q on the futex_hash_bucket</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>The futex_q to enqueue</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_hash_bucket</span> <span class="pre">*hb</span></code></dt><dd><p>The destination hash bucket</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>The hb-&gt;lock must be held by the caller, and is released here. A call to
-<a class="reference internal" href="#c.queue_me" title="queue_me"><code class="xref c c-func docutils literal notranslate"><span class="pre">queue_me()</span></code></a> is typically paired with exactly one call to <a class="reference internal" href="#c.unqueue_me" title="unqueue_me"><code class="xref c c-func docutils literal notranslate"><span class="pre">unqueue_me()</span></code></a>.  The
-exceptions involve the PI related operations, which may use unqueue_me_pi()
-or nothing if the unqueue is done as part of the wake process and the unqueue
-state is implicit in the state of woken task (see <a class="reference internal" href="#c.futex_wait_requeue_pi" title="futex_wait_requeue_pi"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_wait_requeue_pi()</span></code></a> for
-an example).</p>
-<dl class="c function">
-<dt id="c.unqueue_me">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">unqueue_me</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.unqueue_me" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Remove the futex_q from its futex_hash_bucket</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>The futex_q to unqueue</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>The q-&gt;lock_ptr must not be held by the caller. A call to <a class="reference internal" href="#c.unqueue_me" title="unqueue_me"><code class="xref c c-func docutils literal notranslate"><span class="pre">unqueue_me()</span></code></a> must
-be paired with exactly one earlier call to <a class="reference internal" href="#c.queue_me" title="queue_me"><code class="xref c c-func docutils literal notranslate"><span class="pre">queue_me()</span></code></a>.</p>
-<p><strong>Return</strong></p>
-<blockquote>
-<div><ul class="simple">
-<li><p>1 - if the futex_q was still queued (and we removed unqueued it);</p></li>
-<li><p>0 - if the futex_q was already removed by the waking thread</p></li>
-</ul>
-</div></blockquote>
-<dl class="c function">
-<dt id="c.fixup_owner">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">fixup_owner</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <span class="pre">int</span> <em><span class="pre">locked</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fixup_owner" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Post lock pi_state and corner case management</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*uaddr</span></code></dt><dd><p>user address of the futex</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>futex_q (contains pi_state and access to the rt_mutex)</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">locked</span></code></dt><dd><p>if the attempt to take the rt_mutex succeeded (1) or not (0)</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>After attempting to lock an rt_mutex, this function is called to cleanup
-the pi_state owner as well as handle race conditions that may allow us to
-acquire the lock. Must be called with the hb lock held.</p>
-<p><strong>Return</strong></p>
-<blockquote>
-<div><ul class="simple">
-<li><p>1 - success, lock taken;</p></li>
-<li><p>0 - success, lock not taken;</p></li>
-<li><p>&lt;0 - on error (-EFAULT)</p></li>
-</ul>
-</div></blockquote>
-<dl class="c function">
-<dt id="c.futex_wait_queue_me">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">futex_wait_queue_me</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">timeout</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_queue_me" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p><a class="reference internal" href="#c.queue_me" title="queue_me"><code class="xref c c-func docutils literal notranslate"><span class="pre">queue_me()</span></code></a> and wait for wakeup, timeout, or signal</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_hash_bucket</span> <span class="pre">*hb</span></code></dt><dd><p>the futex hash bucket, must be locked by the caller</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>the futex_q to queue up on</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">hrtimer_sleeper</span> <span class="pre">*timeout</span></code></dt><dd><p>the prepared hrtimer_sleeper, or null for no timeout</p>
-</dd>
-</dl>
-<dl class="c function">
-<dt id="c.futex_wait_setup">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_wait_setup</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em>, <span class="pre">u32</span> <em><span class="pre">val</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">hb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_setup" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Prepare to wait on a futex</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*uaddr</span></code></dt><dd><p>the futex userspace address</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">u32</span> <span class="pre">val</span></code></dt><dd><p>the expected value</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">flags</span></code></dt><dd><p>futex flags (FLAGS_SHARED, etc.)</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>the associated futex_q</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_hash_bucket</span> <span class="pre">**hb</span></code></dt><dd><p>storage for hash_bucket pointer to be returned to caller</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Setup the futex_q and locate the hash_bucket.  Get the futex value and
-compare it with the expected value.  Handle atomic faults internally.
-Return with the hb lock held on success, and unlocked on failure.</p>
-<p><strong>Return</strong></p>
-<blockquote>
-<div><ul class="simple">
-<li><p>0 - uaddr contains val and hb has been locked;</p></li>
-<li><p>&lt;1 - -EFAULT or -EWOULDBLOCK (uaddr does not contain val) and hb is unlocked</p></li>
-</ul>
-</div></blockquote>
-<dl class="c function">
 <dt id="c.handle_early_requeue_pi_wakeup">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">handle_early_requeue_pi_wakeup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">timeout</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.handle_early_requeue_pi_wakeup" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Handle early wakeup on the initial futex</p>
@@ -2407,7 +2425,7 @@ on uaddr2 and complete the acquisition of the rt_mutex prior to returning to
 userspace.  This ensures the rt_mutex maintains an owner when it has waiters;
 without one, the pi logic would not know which task to boost/deboost, if
 there was a need to.</p>
-<p>We call schedule in <a class="reference internal" href="#c.futex_wait_queue_me" title="futex_wait_queue_me"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_wait_queue_me()</span></code></a> when we enqueue and return there
+<p>We call schedule in <a class="reference internal" href="#c.futex_wait_queue" title="futex_wait_queue"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_wait_queue()</span></code></a> when we enqueue and return there
 via the following–
 1) wakeup on uaddr2 after an atomic lock acquisition by <a class="reference internal" href="#c.futex_requeue" title="futex_requeue"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_requeue()</span></code></a>
 2) wakeup on uaddr2 after a requeue
@@ -2429,55 +2447,151 @@ via the following–
 </ul>
 </div></blockquote>
 <dl class="c function">
-<dt id="c.sys_set_robust_list">
-<span class="pre">long</span> <code class="sig-name descname"><span class="pre">sys_set_robust_list</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">robust_list_head</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">head</span></em>, <span class="pre">size_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.sys_set_robust_list" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Set the robust-futex list head of a task</p>
+<dt id="c.futex_wait_queue">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">futex_wait_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><em><span class="pre">hb</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">timeout</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#c.futex_queue" title="futex_queue"><code class="xref c c-func docutils literal notranslate"><span class="pre">futex_queue()</span></code></a> and wait for wakeup, timeout, or signal</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">robust_list_head</span> <span class="pre">__user</span> <span class="pre">*</span> <span class="pre">head</span></code></dt><dd><p>pointer to the list-head</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_hash_bucket</span> <span class="pre">*hb</span></code></dt><dd><p>the futex hash bucket, must be locked by the caller</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">len</span></code></dt><dd><p>length of the list-head, as userspace expects</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>the futex_q to queue up on</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">hrtimer_sleeper</span> <span class="pre">*timeout</span></code></dt><dd><p>the prepared hrtimer_sleeper, or null for no timeout</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.sys_get_robust_list">
-<span class="pre">long</span> <code class="sig-name descname"><span class="pre">sys_get_robust_list</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">pid</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">robust_list_head</span> <span class="pre">__user</span> <span class="pre">*</span><span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">head_ptr</span></em>, <span class="pre">size_t</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">len_ptr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.sys_get_robust_list" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Get the robust-futex list head of a task</p>
+<dt id="c.unqueue_multiple">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">unqueue_multiple</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="pre">futex_vector</span></a> <span class="pre">*</span><em><span class="pre">v</span></em>, <span class="pre">int</span> <em><span class="pre">count</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.unqueue_multiple" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Remove various futexes from their hash bucket</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">pid</span></code></dt><dd><p>pid of the process [zero for current task]</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_vector</span> <span class="pre">*v</span></code></dt><dd><p>The list of futexes to unqueue</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">robust_list_head</span> <span class="pre">__user</span> <span class="pre">*</span> <span class="pre">__user</span> <span class="pre">*</span> <span class="pre">head_ptr</span></code></dt><dd><p>pointer to a list-head pointer, the kernel fills it in</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">size_t</span> <span class="pre">__user</span> <span class="pre">*</span> <span class="pre">len_ptr</span></code></dt><dd><p>pointer to a length field, the kernel fills in the header size</p>
-</dd>
-</dl>
-<dl class="c function">
-<dt id="c.futex_exit_recursive">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">futex_exit_recursive</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">task_struct</span> <span class="pre">*</span><em><span class="pre">tsk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_exit_recursive" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Set the tasks futex state to FUTEX_STATE_DEAD</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">task_struct</span> <span class="pre">*tsk</span></code></dt><dd><p>task to set the state on</p>
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">count</span></code></dt><dd><p>Number of futexes in the list</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Set the futex exit state of the task lockless. The futex waiter code
-observes that state when a task is exiting and loops until the task has
-actually finished the futex cleanup. The worst case for this is that the
-waiter runs through the wait loop until the state becomes visible.</p>
-<p>This is called from the recursive fault handling path in do_exit().</p>
-<p>This is best effort. Either the futex exit code has run already or
-not. If the OWNER_DIED bit has been set on the futex then the waiter can
-take it over. If not, the problem is pushed back to user space. If the
-futex exit code did not run yet, then an already queued waiter might
-block forever, but there is nothing which can be done about that.</p>
+<p>Helper to unqueue a list of futexes. This can’t fail.</p>
+<p><strong>Return</strong></p>
+<blockquote>
+<div><ul>
+<li><p>&gt;=0 - Index of the last futex that was awoken;</p></li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-1</span></kbd></dt>
+<dd><ul class="simple">
+<li><p>No futex was awoken</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<dl class="c function">
+<dt id="c.futex_wait_multiple_setup">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_wait_multiple_setup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="pre">futex_vector</span></a> <span class="pre">*</span><em><span class="pre">vs</span></em>, <span class="pre">int</span> <em><span class="pre">count</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">woken</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_multiple_setup" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prepare to wait and enqueue multiple futexes</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_vector</span> <span class="pre">*vs</span></code></dt><dd><p>The futex list to wait on</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">count</span></code></dt><dd><p>The size of the list</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">*woken</span></code></dt><dd><p>Index of the last woken futex, if any. Used to notify the
+caller that it can return this index to userspace (return parameter)</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Prepare multiple futexes in a single step and enqueue them. This may fail if
+the futex list is invalid or if any futex was already awoken. On success the
+task is ready to interruptible sleep.</p>
+<p><strong>Return</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>1 - One of the futexes was woken by another thread</p></li>
+<li><p>0 - Success</p></li>
+<li><p>&lt;0 - -EFAULT, -EWOULDBLOCK or -EINVAL</p></li>
+</ul>
+</div></blockquote>
+<dl class="c function">
+<dt id="c.futex_sleep_multiple">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">futex_sleep_multiple</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="pre">futex_vector</span></a> <span class="pre">*</span><em><span class="pre">vs</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">count</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">to</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_sleep_multiple" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check sleeping conditions and sleep</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_vector</span> <span class="pre">*vs</span></code></dt><dd><p>List of futexes to wait for</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">count</span></code></dt><dd><p>Length of vs</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">hrtimer_sleeper</span> <span class="pre">*to</span></code></dt><dd><p>Timeout</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Sleep if and only if the timeout hasn’t expired and no futex on the list has
+been woken up.</p>
+<dl class="c function">
+<dt id="c.futex_wait_multiple">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_wait_multiple</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_vector" title="futex_vector"><span class="pre">futex_vector</span></a> <span class="pre">*</span><em><span class="pre">vs</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">count</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../driver-api/basics.html#c.hrtimer_sleeper" title="hrtimer_sleeper"><span class="pre">hrtimer_sleeper</span></a> <span class="pre">*</span><em><span class="pre">to</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_multiple" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prepare to wait on and enqueue several futexes</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_vector</span> <span class="pre">*vs</span></code></dt><dd><p>The list of futexes to wait on</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">count</span></code></dt><dd><p>The number of objects</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">hrtimer_sleeper</span> <span class="pre">*to</span></code></dt><dd><p>Timeout before giving up and returning to userspace</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Entry point for the FUTEX_WAIT_MULTIPLE futex operation, this function
+sleeps on a group of futexes and returns on the first futex that is
+wake, or after the timeout has elapsed.</p>
+<p><strong>Return</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>&gt;=0 - Hint to the futex that was awoken</p></li>
+<li><p>&lt;0  - On error</p></li>
+</ul>
+</div></blockquote>
+<dl class="c function">
+<dt id="c.futex_wait_setup">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">futex_wait_setup</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*</span><em><span class="pre">uaddr</span></em>, <span class="pre">u32</span> <em><span class="pre">val</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.futex_q" title="futex_q"><span class="pre">futex_q</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">futex_hash_bucket</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">hb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.futex_wait_setup" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Prepare to wait on a futex</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">u32</span> <span class="pre">__user</span> <span class="pre">*uaddr</span></code></dt><dd><p>the futex userspace address</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">u32</span> <span class="pre">val</span></code></dt><dd><p>the expected value</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">flags</span></code></dt><dd><p>futex flags (FLAGS_SHARED, etc.)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_q</span> <span class="pre">*q</span></code></dt><dd><p>the associated futex_q</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">futex_hash_bucket</span> <span class="pre">**hb</span></code></dt><dd><p>storage for hash_bucket pointer to be returned to caller</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Setup the futex_q and locate the hash_bucket.  Get the futex value and
+compare it with the expected value.  Handle atomic faults internally.
+Return with the hb lock held on success, and unlocked on failure.</p>
+<p><strong>Return</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>0 - uaddr contains val and hb has been locked;</p></li>
+<li><p>&lt;1 - -EFAULT or -EWOULDBLOCK (uaddr does not contain val) and hb is unlocked</p></li>
+</ul>
+</div></blockquote>
 </section>
 <section id="further-reading">
 <h2>Further reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h2>

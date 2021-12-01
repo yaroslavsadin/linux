@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -286,9 +286,9 @@ security_sctp_sk_clone()
 described in the <a class="reference internal" href="#sctp-selinux-support">SCTP SELinux Support</a> chapter.</p>
 <section id="security-sctp-assoc-request">
 <h4>security_sctp_assoc_request()<a class="headerlink" href="#security-sctp-assoc-request" title="Permalink to this headline">¶</a></h4>
-<p>Passes the <code class="docutils literal notranslate"><span class="pre">&#64;ep</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;chunk-&gt;skb</span></code> of the association INIT packet to the
+<p>Passes the <code class="docutils literal notranslate"><span class="pre">&#64;asoc</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;chunk-&gt;skb</span></code> of the association INIT packet to the
 security module. Returns 0 on success, error on failure.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@ep - pointer to sctp endpoint structure.
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@asoc - pointer to sctp association structure.
 @skb - pointer to skbuff of association packet.
 </pre></div>
 </div>
@@ -372,9 +372,9 @@ SCTP_SET_PEER_PRIMARY_ADDR -&gt;   SCTP_PARAM_SET_PRIMARY
 <p>Called whenever a new socket is created by <strong>accept</strong>(2)
 (i.e. a TCP style socket) or when a socket is ‘peeled off’ e.g userspace
 calls <strong>sctp_peeloff</strong>(3).</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@ep - pointer to current sctp endpoint structure.
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@asoc - pointer to current sctp association structure.
 @sk - pointer to current sock structure.
-@sk - pointer to new sock structure.
+@newsk - pointer to new sock structure.
 </pre></div>
 </div>
 </section>
@@ -405,9 +405,9 @@ SCTP peer endpoint &quot;Z&quot;.
         INIT ---------------------------------------------&gt;
                                                   sctp_sf_do_5_1B_init()
                                                 Respond to an INIT chunk.
-                                            SCTP peer endpoint &quot;A&quot; is
-                                            asking for an association. Call
-                                            security_sctp_assoc_request()
+                                            SCTP peer endpoint &quot;A&quot; is asking
+                                            for a temporary association.
+                                            Call security_sctp_assoc_request()
                                             to set the peer label if first
                                             association.
                                             If not first association, check
@@ -417,9 +417,12 @@ SCTP peer endpoint &quot;Z&quot;.
          |                                       discard the packet.
          |
    COOKIE ECHO ------------------------------------------&gt;
-                                                         |
-                                                         |
-                                                         |
+                                                 sctp_sf_do_5_1D_ce()
+                                            Respond to an COOKIE ECHO chunk.
+                                            Confirm the cookie and create a
+                                            permanent association.
+                                            Call security_sctp_assoc_request() to
+                                            do the same as for INIT chunk Response.
          &lt;------------------------------------------- COOKIE ACK
          |                                               |
    sctp_sf_do_5_1E_ca                                    |
@@ -453,19 +456,19 @@ security_inet_conn_established()
 </div>
 <section id="id2">
 <h4>security_sctp_assoc_request()<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
-<p>Passes the <code class="docutils literal notranslate"><span class="pre">&#64;ep</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;chunk-&gt;skb</span></code> of the association INIT packet to the
+<p>Passes the <code class="docutils literal notranslate"><span class="pre">&#64;asoc</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;chunk-&gt;skb</span></code> of the association INIT packet to the
 security module. Returns 0 on success, error on failure.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@ep - pointer to sctp endpoint structure.
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@asoc - pointer to sctp association structure.
 @skb - pointer to skbuff of association packet.
 </pre></div>
 </div>
 <dl>
-<dt>The security module performs the following operations:</dt><dd><p>IF this is the first association on <code class="docutils literal notranslate"><span class="pre">&#64;ep-&gt;base.sk</span></code>, then set the peer
+<dt>The security module performs the following operations:</dt><dd><p>IF this is the first association on <code class="docutils literal notranslate"><span class="pre">&#64;asoc-&gt;base.sk</span></code>, then set the peer
 sid to that in <code class="docutils literal notranslate"><span class="pre">&#64;skb</span></code>. This will ensure there is only one peer sid
-assigned to <code class="docutils literal notranslate"><span class="pre">&#64;ep-&gt;base.sk</span></code> that may support multiple associations.</p>
-<p>ELSE validate the <code class="docutils literal notranslate"><span class="pre">&#64;ep-&gt;base.sk</span> <span class="pre">peer_sid</span></code> against the <code class="docutils literal notranslate"><span class="pre">&#64;skb</span> <span class="pre">peer</span> <span class="pre">sid</span></code>
+assigned to <code class="docutils literal notranslate"><span class="pre">&#64;asoc-&gt;base.sk</span></code> that may support multiple associations.</p>
+<p>ELSE validate the <code class="docutils literal notranslate"><span class="pre">&#64;asoc-&gt;base.sk</span> <span class="pre">peer_sid</span></code> against the <code class="docutils literal notranslate"><span class="pre">&#64;skb</span> <span class="pre">peer</span> <span class="pre">sid</span></code>
 to determine whether the association should be allowed or denied.</p>
-<p>Set the sctp <code class="docutils literal notranslate"><span class="pre">&#64;ep</span> <span class="pre">sid</span></code> to socket’s sid (from <code class="docutils literal notranslate"><span class="pre">ep-&gt;base.sk</span></code>) with
+<p>Set the sctp <code class="docutils literal notranslate"><span class="pre">&#64;asoc</span> <span class="pre">sid</span></code> to socket’s sid (from <code class="docutils literal notranslate"><span class="pre">asoc-&gt;base.sk</span></code>) with
 MLS portion taken from <code class="docutils literal notranslate"><span class="pre">&#64;skb</span> <span class="pre">peer</span> <span class="pre">sid</span></code>. This will be used by SCTP
 TCP style sockets and peeled off connections as they cause a new socket
 to be generated.</p>
@@ -507,11 +510,11 @@ Reconfiguration is enabled.</p>
 <p>Called whenever a new socket is created by <strong>accept</strong>(2) (i.e. a TCP style
 socket) or when a socket is ‘peeled off’ e.g userspace calls
 <strong>sctp_peeloff</strong>(3). <code class="docutils literal notranslate"><span class="pre">security_sctp_sk_clone()</span></code> will set the new
-sockets sid and peer sid to that contained in the <code class="docutils literal notranslate"><span class="pre">&#64;ep</span> <span class="pre">sid</span></code> and
-<code class="docutils literal notranslate"><span class="pre">&#64;ep</span> <span class="pre">peer</span> <span class="pre">sid</span></code> respectively.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@ep - pointer to current sctp endpoint structure.
+sockets sid and peer sid to that contained in the <code class="docutils literal notranslate"><span class="pre">&#64;asoc</span> <span class="pre">sid</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&#64;asoc</span> <span class="pre">peer</span> <span class="pre">sid</span></code> respectively.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@asoc - pointer to current sctp association structure.
 @sk - pointer to current sock structure.
-@sk - pointer to new sock structure.
+@newsk - pointer to new sock structure.
 </pre></div>
 </div>
 </section>

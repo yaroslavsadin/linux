@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -134,6 +134,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../sysfs-platform_profile.html">Platform Profile Selection (e.g. /sys/firmware/acpi/platform_profile)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../vduse.html">VDUSE - “vDPA Device in Userspace”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../futex2.html">futex2</a></li>
 </ul>
 </li>
 </ul>
@@ -283,9 +284,7 @@
 <section id="non-compressed-file-format">
 <h2><span class="section-number">2.1. </span>Non-compressed file format<a class="headerlink" href="#non-compressed-file-format" title="Permalink to this headline">¶</a></h2>
 <p>The cx23416 can produce (and the cx23415 can also read) raw YUV output. The
-format of a YUV frame is specific to this chip and is called HM12. ‘HM’ stands
-for ‘Hauppauge Macroblock’, which is a misnomer as ‘Conexant Macroblock’ would
-be more accurate.</p>
+format of a YUV frame is 16x16 linear tiled NV12 (V4L2_PIX_FMT_NV12_16L16).</p>
 <p>The format is YUV 4:2:0 which uses 1 Y byte per pixel and 1 U and V byte per
 four pixels.</p>
 <p>The data is encoded as two macroblock planes, the first containing the Y
@@ -303,8 +302,8 @@ contain 8 UV value pairs (16 bytes in total). The second 16 bytes are the
 second line of 8 UV pairs of the top-left block, etc. After transmitting
 this block the first line of the block on the right to the first block is
 transmitted, etc.</p>
-<p>The code below is given as an example on how to convert HM12 to separate
-Y, U and V planes. This code assumes frames of 720x576 (PAL) pixels.</p>
+<p>The code below is given as an example on how to convert V4L2_PIX_FMT_NV12_16L16
+to separate Y, U and V planes. This code assumes frames of 720x576 (PAL) pixels.</p>
 <p>The width of a frame is always 720 pixels, regardless of the actual specified
 width.</p>
 <p>If the height is not a multiple of 32 lines, then the captured video is

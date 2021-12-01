@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -2042,6 +2042,19 @@ yet another variable, ‘wakeup_lat’.  The hist trigger below in turn
 makes use of the wakeup_lat variable to compute a combined latency
 using the same key and variable from yet another event:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># echo &#39;hist:key=pid:wakeupswitch_lat=$wakeup_lat+$switchtime_lat ...&#39; &gt;&gt; event3/trigger
+</pre></div>
+</div>
+<p>Expressions support the use of addition, subtraction, multiplication and
+division operators (+-*/).</p>
+<p>Note if division by zero cannot be detected at parse time (i.e. the
+divisor is not a constant), the result will be -1.</p>
+<p>Numeric constants can also be used directly in an expression:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># echo &#39;hist:keys=next_pid:timestamp_secs=common_timestamp/1000000 ...&#39; &gt;&gt; event/trigger
+</pre></div>
+</div>
+<p>or assigned to a variable and referenced in a subsequent expression:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># echo &#39;hist:keys=next_pid:us_per_sec=1000000 ...&#39; &gt;&gt; event/trigger
+# echo &#39;hist:keys=next_pid:timestamp_secs=common_timestamp/$us_per_sec ...&#39; &gt;&gt; event/trigger
 </pre></div>
 </div>
 </section>

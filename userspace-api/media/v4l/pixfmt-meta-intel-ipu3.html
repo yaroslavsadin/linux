@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -140,6 +140,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../sysfs-platform_profile.html">Platform Profile Selection (e.g. /sys/firmware/acpi/platform_profile)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../vduse.html">VDUSE - “vDPA Device in Userspace”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../futex2.html">futex2</a></li>
 </ul>
 </li>
 </ul>
@@ -653,7 +654,9 @@ to be applied to expose the impact of these gain operations.</p>
 <p><strong>Members</strong></p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">grid_cfg</span></code></dt><dd><p>config for auto exposure statistics grid. See struct
-<a class="reference internal" href="#c.ipu3_uapi_ae_grid_config" title="ipu3_uapi_ae_grid_config"><code class="xref c c-type docutils literal notranslate"><span class="pre">ipu3_uapi_ae_grid_config</span></code></a></p>
+<a class="reference internal" href="#c.ipu3_uapi_ae_grid_config" title="ipu3_uapi_ae_grid_config"><code class="xref c c-type docutils literal notranslate"><span class="pre">ipu3_uapi_ae_grid_config</span></code></a>, as Imgu did not support output
+auto exposure statistics, so user can ignore this configuration
+and use the RGB table in auto-whitebalance statistics instead.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">weights</span></code></dt><dd><p><code class="xref c c-type docutils literal notranslate"><span class="pre">IPU3_UAPI_AE_WEIGHTS</span></code> is based on 32x24 blocks in the grid.
 Each grid cell has a corresponding value in weights LUT called
@@ -1061,7 +1064,10 @@ stripe is processed as a single frame by the ISP pipe.</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">awb_raw_buffer</span></code></dt><dd><p>auto white balance meta data <a class="reference internal" href="#c.ipu3_uapi_awb_raw_buffer" title="ipu3_uapi_awb_raw_buffer"><code class="xref c c-type docutils literal notranslate"><span class="pre">ipu3_uapi_awb_raw_buffer</span></code></a></p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">ae_raw_buffer</span></code></dt><dd><p>auto exposure raw data <a class="reference internal" href="#c.ipu3_uapi_ae_raw_buffer_aligned" title="ipu3_uapi_ae_raw_buffer_aligned"><code class="xref c c-type docutils literal notranslate"><span class="pre">ipu3_uapi_ae_raw_buffer_aligned</span></code></a></p>
+<dt><code class="docutils literal notranslate"><span class="pre">ae_raw_buffer</span></code></dt><dd><p>auto exposure raw data <a class="reference internal" href="#c.ipu3_uapi_ae_raw_buffer_aligned" title="ipu3_uapi_ae_raw_buffer_aligned"><code class="xref c c-type docutils literal notranslate"><span class="pre">ipu3_uapi_ae_raw_buffer_aligned</span></code></a>
+current Imgu does not output the auto exposure statistics
+to ae_raw_buffer, the user such as 3A algorithm can use the
+RGB table in <a class="reference internal" href="#c.ipu3_uapi_awb_raw_buffer" title="ipu3_uapi_awb_raw_buffer"><code class="xref c c-type docutils literal notranslate"><span class="pre">ipu3_uapi_awb_raw_buffer</span></code></a> to do auto-exposure.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">af_raw_buffer</span></code></dt><dd><p><a class="reference internal" href="#c.ipu3_uapi_af_raw_buffer" title="ipu3_uapi_af_raw_buffer"><code class="xref c c-type docutils literal notranslate"><span class="pre">ipu3_uapi_af_raw_buffer</span></code></a> for auto focus meta data</p>
 </dd>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -355,225 +355,94 @@ privileged users.</p>
 hardware implementation.</p>
 <p>All entries (except name) are optional, and should only be created in a
 given driver if the chip has the feature.</p>
+<p>See Documentation/ABI/testing/sysfs-class-hwmon for a complete description
+of the attributes.</p>
 <section id="global-attributes">
 <h3>Global attributes<a class="headerlink" href="#global-attributes" title="Permalink to this headline">¶</a></h3>
-<dl>
-<dt><cite>name</cite></dt><dd><p>The chip name.
-This should be a short, lowercase string, not containing
-whitespace, dashes, or the wildcard character ‘*’.
-This attribute represents the chip name. It is the only
-mandatory attribute.
-I2C devices get this attribute created automatically.</p>
-<p>RO</p>
+<dl class="simple">
+<dt><cite>name</cite></dt><dd><p>The chip name.</p>
 </dd>
-<dt><cite>update_interval</cite></dt><dd><p>The interval at which the chip will update readings.
-Unit: millisecond</p>
-<p>RW</p>
-<p>Some devices have a variable update rate or interval.
-This attribute can be used to change it to the desired value.</p>
+<dt><cite>update_interval</cite></dt><dd><p>The interval at which the chip will update readings.</p>
 </dd>
 </dl>
 </section>
 <section id="voltages">
 <h3>Voltages<a class="headerlink" href="#voltages" title="Permalink to this headline">¶</a></h3>
-<dl>
+<dl class="simple">
 <dt><cite>in[0-*]_min</cite></dt><dd><p>Voltage min value.</p>
-<p>Unit: millivolt</p>
-<p>RW</p>
 </dd>
 <dt><cite>in[0-*]_lcrit</cite></dt><dd><p>Voltage critical min value.</p>
-<p>Unit: millivolt</p>
-<p>RW</p>
-<p>If voltage drops to or below this limit, the system may
-take drastic action such as power down or reset. At the very
-least, it should report a fault.</p>
 </dd>
 <dt><cite>in[0-*]_max</cite></dt><dd><p>Voltage max value.</p>
-<p>Unit: millivolt</p>
-<p>RW</p>
 </dd>
 <dt><cite>in[0-*]_crit</cite></dt><dd><p>Voltage critical max value.</p>
-<p>Unit: millivolt</p>
-<p>RW</p>
-<p>If voltage reaches or exceeds this limit, the system may
-take drastic action such as power down or reset. At the very
-least, it should report a fault.</p>
 </dd>
 <dt><cite>in[0-*]_input</cite></dt><dd><p>Voltage input value.</p>
-<p>Unit: millivolt</p>
-<p>RO</p>
-<p>Voltage measured on the chip pin.</p>
-<p>Actual voltage depends on the scaling resistors on the
-motherboard, as recommended in the chip datasheet.</p>
-<p>This varies by chip and by motherboard.
-Because of this variation, values are generally NOT scaled
-by the chip driver, and must be done by the application.
-However, some drivers (notably lm87 and via686a)
-do scale, because of internal resistors built into a chip.
-These drivers will output the actual voltage. Rule of
-thumb: drivers should report the voltage values at the
-“pins” of the chip.</p>
 </dd>
 <dt><cite>in[0-*]_average</cite></dt><dd><p>Average voltage</p>
-<p>Unit: millivolt</p>
-<p>RO</p>
 </dd>
 <dt><cite>in[0-*]_lowest</cite></dt><dd><p>Historical minimum voltage</p>
-<p>Unit: millivolt</p>
-<p>RO</p>
 </dd>
 <dt><cite>in[0-*]_highest</cite></dt><dd><p>Historical maximum voltage</p>
-<p>Unit: millivolt</p>
-<p>RO</p>
 </dd>
 <dt><cite>in[0-*]_reset_history</cite></dt><dd><p>Reset inX_lowest and inX_highest</p>
-<p>WO</p>
 </dd>
 <dt><cite>in_reset_history</cite></dt><dd><p>Reset inX_lowest and inX_highest for all sensors</p>
-<p>WO</p>
 </dd>
 <dt><cite>in[0-*]_label</cite></dt><dd><p>Suggested voltage channel label.</p>
-<p>Text string</p>
-<p>Should only be created if the driver has hints about what
-this voltage channel is being used for, and user-space
-doesn’t. In all other cases, the label is provided by
-user-space.</p>
-<p>RO</p>
 </dd>
 <dt><cite>in[0-*]_enable</cite></dt><dd><p>Enable or disable the sensors.</p>
-<p>When disabled the sensor read will return -ENODATA.</p>
-<ul class="simple">
-<li><p>1: Enable</p></li>
-<li><p>0: Disable</p></li>
-</ul>
-<p>RW</p>
 </dd>
 <dt><cite>cpu[0-*]_vid</cite></dt><dd><p>CPU core reference voltage.</p>
-<p>Unit: millivolt</p>
-<p>RO</p>
-<p>Not always correct.</p>
 </dd>
 <dt><cite>vrm</cite></dt><dd><p>Voltage Regulator Module version number.</p>
-<p>RW (but changing it should no more be necessary)</p>
-<p>Originally the VRM standard version multiplied by 10, but now
-an arbitrary number, as not all standards have a version
-number.</p>
-<p>Affects the way the driver calculates the CPU core reference
-voltage from the vid pins.</p>
 </dd>
 <dt><cite>in[0-*]_rated_min</cite></dt><dd><p>Minimum rated voltage.</p>
-<p>Unit: millivolt</p>
-<p>RO</p>
 </dd>
 <dt><cite>in[0-*]_rated_max</cite></dt><dd><p>Maximum rated voltage.</p>
-<p>Unit: millivolt</p>
-<p>RO</p>
 </dd>
 </dl>
 <p>Also see the Alarms section for status flags associated with voltages.</p>
 </section>
 <section id="fans">
 <h3>Fans<a class="headerlink" href="#fans" title="Permalink to this headline">¶</a></h3>
-<dl>
+<dl class="simple">
 <dt><cite>fan[1-*]_min</cite></dt><dd><p>Fan minimum value</p>
-<p>Unit: revolution/min (RPM)</p>
-<p>RW</p>
 </dd>
 <dt><cite>fan[1-*]_max</cite></dt><dd><p>Fan maximum value</p>
-<p>Unit: revolution/min (RPM)</p>
-<p>Only rarely supported by the hardware.
-RW</p>
 </dd>
 <dt><cite>fan[1-*]_input</cite></dt><dd><p>Fan input value.</p>
-<p>Unit: revolution/min (RPM)</p>
-<p>RO</p>
 </dd>
 <dt><cite>fan[1-*]_div</cite></dt><dd><p>Fan divisor.</p>
-<p>Integer value in powers of two (1, 2, 4, 8, 16, 32, 64, 128).</p>
-<p>RW</p>
-<p>Some chips only support values 1, 2, 4 and 8.
-Note that this is actually an internal clock divisor, which
-affects the measurable speed range, not the read value.</p>
 </dd>
 <dt><cite>fan[1-*]_pulses</cite></dt><dd><p>Number of tachometer pulses per fan revolution.</p>
-<p>Integer value, typically between 1 and 4.</p>
-<p>RW</p>
-<p>This value is a characteristic of the fan connected to the
-device’s input, so it has to be set in accordance with the fan
-model.</p>
-<p>Should only be created if the chip has a register to configure
-the number of pulses. In the absence of such a register (and
-thus attribute) the value assumed by all devices is 2 pulses
-per fan revolution.</p>
 </dd>
 <dt><cite>fan[1-*]_target</cite></dt><dd><p>Desired fan speed</p>
-<p>Unit: revolution/min (RPM)</p>
-<p>RW</p>
-<p>Only makes sense if the chip supports closed-loop fan speed
-control based on the measured fan speed.</p>
 </dd>
 <dt><cite>fan[1-*]_label</cite></dt><dd><p>Suggested fan channel label.</p>
-<p>Text string</p>
-<p>Should only be created if the driver has hints about what
-this fan channel is being used for, and user-space doesn’t.
-In all other cases, the label is provided by user-space.</p>
-<p>RO</p>
 </dd>
 <dt><cite>fan[1-*]_enable</cite></dt><dd><p>Enable or disable the sensors.</p>
-<p>When disabled the sensor read will return -ENODATA.</p>
-<ul class="simple">
-<li><p>1: Enable</p></li>
-<li><p>0: Disable</p></li>
-</ul>
-<p>RW</p>
 </dd>
 </dl>
 <p>Also see the Alarms section for status flags associated with fans.</p>
 </section>
 <section id="pwm">
 <h3>PWM<a class="headerlink" href="#pwm" title="Permalink to this headline">¶</a></h3>
-<dl>
+<dl class="simple">
 <dt><cite>pwm[1-*]</cite></dt><dd><p>Pulse width modulation fan control.</p>
-<p>Integer value in the range 0 to 255</p>
-<p>RW</p>
-<p>255 is max or 100%.</p>
 </dd>
 <dt><cite>pwm[1-*]_enable</cite></dt><dd><p>Fan speed control method:</p>
-<ul class="simple">
-<li><p>0: no fan speed control (i.e. fan at full speed)</p></li>
-<li><p>1: manual fan speed control enabled (using <cite>pwm[1-*]</cite>)</p></li>
-<li><p>2+: automatic fan speed control enabled</p></li>
-</ul>
-<p>Check individual chip documentation files for automatic mode
-details.</p>
-<p>RW</p>
 </dd>
-<dt><cite>pwm[1-*]_mode</cite></dt><dd><ul class="simple">
-<li><p>0: DC mode (direct current)</p></li>
-<li><p>1: PWM mode (pulse-width modulation)</p></li>
-</ul>
-<p>RW</p>
+<dt><cite>pwm[1-*]_mode</cite></dt><dd><p>direct current or pulse-width modulation.</p>
 </dd>
 <dt><cite>pwm[1-*]_freq</cite></dt><dd><p>Base PWM frequency in Hz.</p>
-<p>Only possibly available when pwmN_mode is PWM, but not always
-present even then.</p>
-<p>RW</p>
 </dd>
 <dt><cite>pwm[1-*]_auto_channels_temp</cite></dt><dd><p>Select which temperature channels affect this PWM output in
 auto mode.</p>
-<p>Bitfield, 1 is temp1, 2 is temp2, 4 is temp3 etc…
-Which values are possible depend on the chip used.</p>
-<p>RW</p>
 </dd>
 <dt><cite>pwm[1-*]_auto_point[1-*]_pwm</cite> / <cite>pwm[1-*]_auto_point[1-*]_temp</cite> / <cite>pwm[1-*]_auto_point[1-*]_temp_hyst</cite></dt><dd><p>Define the PWM vs temperature curve.</p>
-<p>Number of trip points is chip-dependent. Use this for chips
-which associate trip points to PWM output channels.</p>
-<p>RW</p>
 </dd>
 <dt><cite>temp[1-*]_auto_point[1-*]_pwm</cite> / <cite>temp[1-*]_auto_point[1-*]_temp</cite> / <cite>temp[1-*]_auto_point[1-*]_temp_hyst</cite></dt><dd><p>Define the PWM vs temperature curve.</p>
-<p>Number of trip points is chip-dependent. Use this for chips
-which associate trip points to temperature channels.</p>
-<p>RW</p>
 </dd>
 </dl>
 <p>There is a third case where trip points are associated to both PWM output
@@ -587,122 +456,52 @@ value (fastest fan speed) wins.</p>
 </section>
 <section id="temperatures">
 <h3>Temperatures<a class="headerlink" href="#temperatures" title="Permalink to this headline">¶</a></h3>
-<dl>
+<dl class="simple">
 <dt><cite>temp[1-*]_type</cite></dt><dd><p>Sensor type selection.</p>
-<p>Integers 1 to 6</p>
-<p>RW</p>
-<ul class="simple">
-<li><p>1: CPU embedded diode</p></li>
-<li><p>2: 3904 transistor</p></li>
-<li><p>3: thermal diode</p></li>
-<li><p>4: thermistor</p></li>
-<li><p>5: AMD AMDSI</p></li>
-<li><p>6: Intel PECI</p></li>
-</ul>
-<p>Not all types are supported by all chips</p>
 </dd>
 <dt><cite>temp[1-*]_max</cite></dt><dd><p>Temperature max value.</p>
-<p>Unit: millidegree Celsius (or millivolt, see below)</p>
-<p>RW</p>
 </dd>
 <dt><cite>temp[1-*]_min</cite></dt><dd><p>Temperature min value.</p>
-<p>Unit: millidegree Celsius</p>
-<p>RW</p>
 </dd>
 <dt><cite>temp[1-*]_max_hyst</cite></dt><dd><p>Temperature hysteresis value for max limit.</p>
-<p>Unit: millidegree Celsius</p>
-<p>Must be reported as an absolute temperature, NOT a delta
-from the max value.</p>
-<p>RW</p>
 </dd>
-<dt><cite>temp[1-*]_min_hyst</cite></dt><dd><p>Temperature hysteresis value for min limit.
-Unit: millidegree Celsius</p>
-<p>Must be reported as an absolute temperature, NOT a delta
-from the min value.</p>
-<p>RW</p>
+<dt><cite>temp[1-*]_min_hyst</cite></dt><dd><p>Temperature hysteresis value for min limit.</p>
 </dd>
 <dt><cite>temp[1-*]_input</cite></dt><dd><p>Temperature input value.</p>
-<blockquote>
-<div><p>Unit: millidegree Celsius</p>
-<p>RO</p>
-</div></blockquote>
 </dd>
 <dt><cite>temp[1-*]_crit</cite></dt><dd><p>Temperature critical max value, typically greater than
 corresponding temp_max values.</p>
-<p>Unit: millidegree Celsius</p>
-<p>RW</p>
 </dd>
 <dt><cite>temp[1-*]_crit_hyst</cite></dt><dd><p>Temperature hysteresis value for critical limit.</p>
-<p>Unit: millidegree Celsius</p>
-<p>Must be reported as an absolute temperature, NOT a delta
-from the critical value.</p>
-<p>RW</p>
 </dd>
 <dt><cite>temp[1-*]_emergency</cite></dt><dd><p>Temperature emergency max value, for chips supporting more than
-two upper temperature limits. Must be equal or greater than
-corresponding temp_crit values.</p>
-<p>Unit: millidegree Celsius</p>
-<p>RW</p>
+two upper temperature limits.</p>
 </dd>
 <dt><cite>temp[1-*]_emergency_hyst</cite></dt><dd><p>Temperature hysteresis value for emergency limit.</p>
-<p>Unit: millidegree Celsius</p>
-<p>Must be reported as an absolute temperature, NOT a delta
-from the emergency value.</p>
-<p>RW</p>
 </dd>
 <dt><cite>temp[1-*]_lcrit</cite></dt><dd><p>Temperature critical min value, typically lower than
 corresponding temp_min values.</p>
-<p>Unit: millidegree Celsius</p>
-<p>RW</p>
 </dd>
 <dt><cite>temp[1-*]_lcrit_hyst</cite></dt><dd><p>Temperature hysteresis value for critical min limit.</p>
-<p>Unit: millidegree Celsius</p>
-<p>Must be reported as an absolute temperature, NOT a delta
-from the critical min value.</p>
-<p>RW</p>
 </dd>
 <dt><cite>temp[1-*]_offset</cite></dt><dd><p>Temperature offset which is added to the temperature reading
 by the chip.</p>
-<p>Unit: millidegree Celsius</p>
-<p>Read/Write value.</p>
 </dd>
 <dt><cite>temp[1-*]_label</cite></dt><dd><p>Suggested temperature channel label.</p>
-<p>Text string</p>
-<p>Should only be created if the driver has hints about what
-this temperature channel is being used for, and user-space
-doesn’t. In all other cases, the label is provided by
-user-space.</p>
-<p>RO</p>
 </dd>
 <dt><cite>temp[1-*]_lowest</cite></dt><dd><p>Historical minimum temperature</p>
-<p>Unit: millidegree Celsius</p>
-<p>RO</p>
 </dd>
 <dt><cite>temp[1-*]_highest</cite></dt><dd><p>Historical maximum temperature</p>
-<p>Unit: millidegree Celsius</p>
-<p>RO</p>
 </dd>
 <dt><cite>temp[1-*]_reset_history</cite></dt><dd><p>Reset temp_lowest and temp_highest</p>
-<p>WO</p>
 </dd>
 <dt><cite>temp_reset_history</cite></dt><dd><p>Reset temp_lowest and temp_highest for all sensors</p>
-<p>WO</p>
 </dd>
 <dt><cite>temp[1-*]_enable</cite></dt><dd><p>Enable or disable the sensors.</p>
-<p>When disabled the sensor read will return -ENODATA.</p>
-<ul class="simple">
-<li><p>1: Enable</p></li>
-<li><p>0: Disable</p></li>
-</ul>
-<p>RW</p>
 </dd>
 <dt><cite>temp[1-*]_rated_min</cite></dt><dd><p>Minimum rated temperature.</p>
-<p>Unit: millidegree Celsius</p>
-<p>RO</p>
 </dd>
 <dt><cite>temp[1-*]_rated_max</cite></dt><dd><p>Maximum rated temperature.</p>
-<p>Unit: millidegree Celsius</p>
-<p>RO</p>
 </dd>
 </dl>
 <p>Some chips measure temperature using external thermistors and an ADC, and
@@ -718,59 +517,32 @@ channels by the driver.</p>
 <section id="currents">
 <h3>Currents<a class="headerlink" href="#currents" title="Permalink to this headline">¶</a></h3>
 <dl>
-<dt><cite>curr[1-*]_max</cite></dt><dd><p>Current max value</p>
-<p>Unit: milliampere</p>
-<p>RW</p>
+<dt><cite>curr[1-*]_max</cite></dt><dd><p>Current max value.</p>
 </dd>
 <dt><cite>curr[1-*]_min</cite></dt><dd><p>Current min value.</p>
-<p>Unit: milliampere</p>
-<p>RW</p>
 </dd>
 <dt><cite>curr[1-*]_lcrit</cite></dt><dd><p>Current critical low value</p>
-<p>Unit: milliampere</p>
-<p>RW</p>
 </dd>
 <dt><cite>curr[1-*]_crit</cite></dt><dd><p>Current critical high value.</p>
-<p>Unit: milliampere</p>
-<p>RW</p>
 </dd>
-<dt><cite>curr[1-*]_input</cite></dt><dd><p>Current input value</p>
-<p>Unit: milliampere</p>
-<p>RO</p>
+<dt><cite>curr[1-*]_input</cite></dt><dd><p>Current input value.</p>
 </dd>
-<dt><cite>curr[1-*]_average</cite></dt><dd><p>Average current use</p>
-<p>Unit: milliampere</p>
-<p>RO</p>
+<dt><cite>curr[1-*]_average</cite></dt><dd><p>Average current use.</p>
 </dd>
-<dt><cite>curr[1-*]_lowest</cite></dt><dd><p>Historical minimum current</p>
-<p>Unit: milliampere</p>
-<p>RO</p>
+<dt><cite>curr[1-*]_lowest</cite></dt><dd><p>Historical minimum current.</p>
 </dd>
-<dt><cite>curr[1-*]_highest</cite></dt><dd><p>Historical maximum current
-Unit: milliampere
-RO</p>
+<dt><cite>curr[1-*]_highest</cite></dt><dd><p>Historical maximum current.</p>
 </dd>
 <dt><cite>curr[1-*]_reset_history</cite></dt><dd><p>Reset currX_lowest and currX_highest</p>
 <p>WO</p>
 </dd>
-<dt><cite>curr_reset_history</cite></dt><dd><p>Reset currX_lowest and currX_highest for all sensors</p>
-<p>WO</p>
+<dt><cite>curr_reset_history</cite></dt><dd><p>Reset currX_lowest and currX_highest for all sensors.</p>
 </dd>
 <dt><cite>curr[1-*]_enable</cite></dt><dd><p>Enable or disable the sensors.</p>
-<p>When disabled the sensor read will return -ENODATA.</p>
-<ul class="simple">
-<li><p>1: Enable</p></li>
-<li><p>0: Disable</p></li>
-</ul>
-<p>RW</p>
 </dd>
 <dt><cite>curr[1-*]_rated_min</cite></dt><dd><p>Minimum rated current.</p>
-<p>Unit: milliampere</p>
-<p>RO</p>
 </dd>
 <dt><cite>curr[1-*]_rated_max</cite></dt><dd><p>Maximum rated current.</p>
-<p>Unit: milliampere</p>
-<p>RO</p>
 </dd>
 </dl>
 <p>Also see the Alarms section for status flags associated with currents.</p>
@@ -778,89 +550,45 @@ RO</p>
 <section id="power">
 <h3>Power<a class="headerlink" href="#power" title="Permalink to this headline">¶</a></h3>
 <dl>
-<dt><cite>power[1-*]_average</cite></dt><dd><p>Average power use</p>
-<p>Unit: microWatt</p>
-<p>RO</p>
+<dt><cite>power[1-*]_average</cite></dt><dd><p>Average power use.</p>
 </dd>
-<dt><cite>power[1-*]_average_interval</cite></dt><dd><p>Power use averaging interval.  A poll
-notification is sent to this file if the
-hardware changes the averaging interval.</p>
-<p>Unit: milliseconds</p>
-<p>RW</p>
+<dt><cite>power[1-*]_average_interval</cite></dt><dd><p>Power use averaging interval.</p>
 </dd>
-<dt><cite>power[1-*]_average_interval_max</cite></dt><dd><p>Maximum power use averaging interval</p>
-<p>Unit: milliseconds</p>
-<p>RO</p>
+<dt><cite>power[1-*]_average_interval_max</cite></dt><dd><p>Maximum power use averaging interval.</p>
 </dd>
-<dt><cite>power[1-*]_average_interval_min</cite></dt><dd><p>Minimum power use averaging interval</p>
-<p>Unit: milliseconds</p>
-<p>RO</p>
+<dt><cite>power[1-*]_average_interval_min</cite></dt><dd><p>Minimum power use averaging interval.</p>
 </dd>
 <dt><cite>power[1-*]_average_highest</cite></dt><dd><p>Historical average maximum power use</p>
-<p>Unit: microWatt</p>
-<p>RO</p>
 </dd>
 <dt><cite>power[1-*]_average_lowest</cite></dt><dd><p>Historical average minimum power use</p>
-<p>Unit: microWatt</p>
-<p>RO</p>
 </dd>
-<dt><cite>power[1-*]_average_max</cite></dt><dd><p>A poll notification is sent to
-<cite>power[1-*]_average</cite> when power use
-rises above this value.</p>
-<p>Unit: microWatt</p>
-<p>RW</p>
+<dt><cite>power[1-*]_average_max</cite></dt><dd><p>A poll notification is sent to <cite>power[1-*]_average</cite> when
+power use rises above this value.</p>
 </dd>
-<dt><cite>power[1-*]_average_min</cite></dt><dd><p>A poll notification is sent to
-<cite>power[1-*]_average</cite> when power use
-sinks below this value.</p>
-<p>Unit: microWatt</p>
-<p>RW</p>
+<dt><cite>power[1-*]_average_min</cite></dt><dd><p>A poll notification is sent to <cite>power[1-*]_average</cite> when
+power use sinks below this value.</p>
 </dd>
-<dt><cite>power[1-*]_input</cite></dt><dd><p>Instantaneous power use</p>
-<p>Unit: microWatt</p>
-<p>RO</p>
+<dt><cite>power[1-*]_input</cite></dt><dd><p>Instantaneous power use.</p>
 </dd>
 <dt><cite>power[1-*]_input_highest</cite></dt><dd><p>Historical maximum power use</p>
-<p>Unit: microWatt</p>
-<p>RO</p>
 </dd>
-<dt><cite>power[1-*]_input_lowest</cite></dt><dd><p>Historical minimum power use</p>
-<p>Unit: microWatt</p>
-<p>RO</p>
+<dt><cite>power[1-*]_input_lowest</cite></dt><dd><p>Historical minimum power use.</p>
 </dd>
-<dt><cite>power[1-*]_reset_history</cite></dt><dd><p>Reset input_highest, input_lowest,
-average_highest and average_lowest.</p>
-<p>WO</p>
+<dt><cite>power[1-*]_reset_history</cite></dt><dd><p>Reset input_highest, input_lowest, average_highest and
+average_lowest.</p>
 </dd>
 <dt><cite>power[1-*]_accuracy</cite></dt><dd><p>Accuracy of the power meter.</p>
-<p>Unit: Percent</p>
-<p>RO</p>
 </dd>
 <dt><cite>power[1-*]_cap</cite></dt><dd><p>If power use rises above this limit, the
-system should take action to reduce power use.
-A poll notification is sent to this file if the
-cap is changed by the hardware.  The <cite>*_cap</cite>
-files only appear if the cap is known to be
-enforced by hardware.</p>
-<p>Unit: microWatt</p>
-<p>RW</p>
+system should take action to reduce power use.</p>
 </dd>
-<dt><cite>power[1-*]_cap_hyst</cite></dt><dd><p>Margin of hysteresis built around capping and
-notification.</p>
-<p>Unit: microWatt</p>
-<p>RW</p>
+<dt><cite>power[1-*]_cap_hyst</cite></dt><dd><p>Margin of hysteresis built around capping and notification.</p>
 </dd>
 <dt><cite>power[1-*]_cap_max</cite></dt><dd><p>Maximum cap that can be set.</p>
-<p>Unit: microWatt</p>
-<p>RO</p>
 </dd>
 <dt><cite>power[1-*]_cap_min</cite></dt><dd><p>Minimum cap that can be set.</p>
-<p>Unit: microWatt</p>
-<p>RO</p>
 </dd>
 <dt><cite>power[1-*]_max</cite></dt><dd><p>Maximum power.</p>
-<p>Unit: microWatt</p>
-<p>RW</p>
 </dd>
 <dt><cite>power[1-*]_crit</cite></dt><dd><p>Critical maximum power.</p>
 <p>If power rises to or above this limit, the
@@ -910,27 +638,14 @@ a forced powerdown of some devices.</p>
 </section>
 <section id="humidity">
 <h3>Humidity<a class="headerlink" href="#humidity" title="Permalink to this headline">¶</a></h3>
-<dl>
-<dt><cite>humidity[1-*]_input</cite></dt><dd><p>Humidity</p>
-<p>Unit: milli-percent (per cent mille, pcm)</p>
-<p>RO</p>
+<dl class="simple">
+<dt><cite>humidity[1-*]_input</cite></dt><dd><p>Humidity.</p>
 </dd>
-<dt><cite>humidity[1-*]_enable</cite></dt><dd><p>Enable or disable the sensors</p>
-<p>When disabled the sensor read will return
--ENODATA.</p>
-<ul class="simple">
-<li><p>1: Enable</p></li>
-<li><p>0: Disable</p></li>
-</ul>
-<p>RW</p>
+<dt><cite>humidity[1-*]_enable</cite></dt><dd><p>Enable or disable the sensors.</p>
 </dd>
 <dt><cite>humidity[1-*]_rated_min</cite></dt><dd><p>Minimum rated humidity.</p>
-<p>Unit: milli-percent (per cent mille, pcm)</p>
-<p>RO</p>
 </dd>
 <dt><cite>humidity[1-*]_rated_max</cite></dt><dd><p>Maximum rated humidity.</p>
-<p>Unit: milli-percent (per cent mille, pcm)</p>
-<p>RO</p>
 </dd>
 </dl>
 </section>
@@ -1005,30 +720,15 @@ implementation.</p>
 to notify open diodes, unconnected fans etc. where the hardware
 supports it. When this boolean has value 1, the measurement for that
 channel should not be trusted.</p>
-<dl>
-<dt><cite>fan[1-*]_fault</cite> / <cite>temp[1-*]_fault</cite></dt><dd><p>Input fault condition</p>
-<ul class="simple">
-<li><p>0: no fault occurred</p></li>
-<li><p>1: fault condition</p></li>
-</ul>
-<p>RO</p>
+<dl class="simple">
+<dt><cite>fan[1-*]_fault</cite> / <cite>temp[1-*]_fault</cite></dt><dd><p>Input fault condition.</p>
 </dd>
 </dl>
 <p>Some chips also offer the possibility to get beeped when an alarm occurs:</p>
-<dl>
-<dt><cite>beep_enable</cite></dt><dd><p>Master beep enable</p>
-<ul class="simple">
-<li><p>0: no beeps</p></li>
-<li><p>1: beeps</p></li>
-</ul>
-<p>RW</p>
+<dl class="simple">
+<dt><cite>beep_enable</cite></dt><dd><p>Master beep enable.</p>
 </dd>
-<dt><cite>in[0-*]_beep</cite>, <cite>curr[1-*]_beep</cite>, <cite>fan[1-*]_beep</cite>, <cite>temp[1-*]_beep</cite>,</dt><dd><p>Channel beep</p>
-<ul class="simple">
-<li><p>0: disable</p></li>
-<li><p>1: enable</p></li>
-</ul>
-<p>RW</p>
+<dt><cite>in[0-*]_beep</cite>, <cite>curr[1-*]_beep</cite>, <cite>fan[1-*]_beep</cite>, <cite>temp[1-*]_beep</cite>,</dt><dd><p>Channel beep.</p>
 </dd>
 </dl>
 <p>In theory, a chip could provide per-limit beep masking, but no such chip
@@ -1036,47 +736,19 @@ was seen so far.</p>
 <p>Old drivers provided a different, non-standard interface to alarms and
 beeps. These interface files are deprecated, but will be kept around
 for compatibility reasons:</p>
-<dl>
+<dl class="simple">
 <dt><cite>alarms</cite></dt><dd><p>Alarm bitmask.</p>
-<p>RO</p>
-<p>Integer representation of one to four bytes.</p>
-<p>A ‘1’ bit means an alarm.</p>
-<p>Chips should be programmed for ‘comparator’ mode so that
-the alarm will ‘come back’ after you read the register
-if it is still valid.</p>
-<p>Generally a direct representation of a chip’s internal
-alarm registers; there is no standard for the position
-of individual bits. For this reason, the use of this
-interface file for new drivers is discouraged. Use
-<cite>individual *_alarm</cite> and <cite>*_fault</cite> files instead.
-Bits are defined in kernel/include/sensors.h.</p>
 </dd>
-<dt><cite>beep_mask</cite></dt><dd><p>Bitmask for beep.
-Same format as ‘alarms’ with the same bit locations,
-use discouraged for the same reason. Use individual
-<cite>*_beep</cite> files instead.
-RW</p>
+<dt><cite>beep_mask</cite></dt><dd><p>Bitmask for beep.</p>
 </dd>
 </dl>
 </section>
 <section id="intrusion-detection">
 <h3>Intrusion detection<a class="headerlink" href="#intrusion-detection" title="Permalink to this headline">¶</a></h3>
-<dl>
-<dt><cite>intrusion[0-*]_alarm</cite></dt><dd><p>Chassis intrusion detection</p>
-<ul class="simple">
-<li><p>0: OK</p></li>
-<li><p>1: intrusion detected</p></li>
-</ul>
-<p>RW</p>
-<p>Contrary to regular alarm flags which clear themselves
-automatically when read, this one sticks until cleared by
-the user. This is done by writing 0 to the file. Writing
-other values is unsupported.</p>
+<dl class="simple">
+<dt><cite>intrusion[0-*]_alarm</cite></dt><dd><p>Chassis intrusion detection.</p>
 </dd>
-<dt><cite>intrusion[0-*]_beep</cite></dt><dd><p>Chassis intrusion beep</p>
-<p>0: disable
-1: enable</p>
-<p>RW</p>
+<dt><cite>intrusion[0-*]_beep</cite></dt><dd><p>Chassis intrusion beep.</p>
 </dd>
 </dl>
 </section>

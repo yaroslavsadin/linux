@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -1187,14 +1187,45 @@ migrations (scheduler-driven DVFS).</p>
 <p><strong>Return</strong></p>
 <p>the (estimated) utilization for the specified CPU</p>
 <dl class="c function">
+<dt id="c.asym_smt_can_pull_tasks">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">asym_smt_can_pull_tasks</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">dst_cpu</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">sd_lb_stats</span> <span class="pre">*</span><em><span class="pre">sds</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">sg_lb_stats</span> <span class="pre">*</span><em><span class="pre">sgs</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">sched_group</span> <span class="pre">*</span><em><span class="pre">sg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.asym_smt_can_pull_tasks" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check whether the load balancing CPU can pull tasks</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">dst_cpu</span></code></dt><dd><p>Destination CPU of the load balancing</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sd_lb_stats</span> <span class="pre">*sds</span></code></dt><dd><p>Load-balancing data with statistics of the local group</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sg_lb_stats</span> <span class="pre">*sgs</span></code></dt><dd><p>Load-balancing statistics of the candidate busiest group</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sched_group</span> <span class="pre">*sg</span></code></dt><dd><p>The candidate busiest group</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Check the state of the SMT siblings of both <strong>sds</strong>::local and <strong>sg</strong> and decide
+if <strong>dst_cpu</strong> can pull tasks.</p>
+<p>If <strong>dst_cpu</strong> does not have SMT siblings, it can pull tasks if two or more of
+the SMT siblings of <strong>sg</strong> are busy. If only one CPU in <strong>sg</strong> is busy, pull tasks
+only if <strong>dst_cpu</strong> has higher priority.</p>
+<p>If both <strong>dst_cpu</strong> and <strong>sg</strong> have SMT siblings, and <strong>sg</strong> has exactly one more
+busy CPU than <strong>sds</strong>::local, let <strong>dst_cpu</strong> pull tasks if it has higher priority.
+Bigger imbalances in the number of busy CPUs will be dealt with in
+<a class="reference internal" href="#c.update_sd_pick_busiest" title="update_sd_pick_busiest"><code class="xref c c-func docutils literal notranslate"><span class="pre">update_sd_pick_busiest()</span></code></a>.</p>
+<p>If <strong>sg</strong> does not have SMT siblings, only pull tasks if all of the SMT siblings
+of <strong>dst_cpu</strong> are idle and <strong>sg</strong> has lower priority.</p>
+<dl class="c function">
 <dt id="c.update_sg_lb_stats">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">update_sg_lb_stats</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">lb_env</span> <span class="pre">*</span><em><span class="pre">env</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">sched_group</span> <span class="pre">*</span><em><span class="pre">group</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">sg_lb_stats</span> <span class="pre">*</span><em><span class="pre">sgs</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">sg_status</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.update_sg_lb_stats" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">update_sg_lb_stats</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">lb_env</span> <span class="pre">*</span><em><span class="pre">env</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">sd_lb_stats</span> <span class="pre">*</span><em><span class="pre">sds</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">sched_group</span> <span class="pre">*</span><em><span class="pre">group</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">sg_lb_stats</span> <span class="pre">*</span><em><span class="pre">sgs</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">sg_status</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.update_sg_lb_stats" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Update sched_group’s statistics for load balancing.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">lb_env</span> <span class="pre">*env</span></code></dt><dd><p>The load balancing environment.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sd_lb_stats</span> <span class="pre">*sds</span></code></dt><dd><p><em>undescribed</em></p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sched_group</span> <span class="pre">*group</span></code></dt><dd><p>sched_group whose statistics are to be updated.</p>
 </dd>
@@ -3772,7 +3803,7 @@ is affine to all CPUs.</p>
 <p>If thread is going to be bound on a particular cpu, give its node
 in <strong>node</strong>, to get NUMA affinity for kthread stack, or else give NUMA_NO_NODE.
 When woken, the thread will run <strong>threadfn()</strong> with <strong>data</strong> as its
-argument. <strong>threadfn()</strong> can either call do_exit() directly if it is a
+argument. <strong>threadfn()</strong> can either return directly if it is a
 standalone thread for which no one will call <a class="reference internal" href="#c.kthread_stop" title="kthread_stop"><code class="xref c c-func docutils literal notranslate"><span class="pre">kthread_stop()</span></code></a>, or
 return when ‘<a class="reference internal" href="#c.kthread_should_stop" title="kthread_should_stop"><code class="xref c c-func docutils literal notranslate"><span class="pre">kthread_should_stop()</span></code></a>’ is true (which means
 <a class="reference internal" href="#c.kthread_stop" title="kthread_stop"><code class="xref c c-func docutils literal notranslate"><span class="pre">kthread_stop()</span></code></a> has been called).  The return value should be zero
@@ -5129,44 +5160,6 @@ allocated when <a class="reference internal" href="#c.trace_puts" title="trace_p
 <dt>0 if nothing was written, positive # if string was.</dt><dd><p>(1 when __trace_bputs is used, strlen(str) when __trace_puts is used)</p>
 </dd>
 </dl>
-<dl class="c macro">
-<dt id="c.container_of">
-<code class="sig-name descname"><span class="pre">container_of</span></code><a class="headerlink" href="#c.container_of" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
-
-<p><code class="docutils literal notranslate"><span class="pre">container_of</span> <span class="pre">(ptr,</span> <span class="pre">type,</span> <span class="pre">member)</span></code></p>
-<blockquote>
-<div><p>cast a member of a structure out to the containing structure</p>
-</div></blockquote>
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">ptr</span></code></dt><dd><p>the pointer to the member.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">type</span></code></dt><dd><p>the type of the container struct this is embedded in.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">member</span></code></dt><dd><p>the name of the member within the struct.</p>
-</dd>
-</dl>
-<dl class="c macro">
-<dt id="c.container_of_safe">
-<code class="sig-name descname"><span class="pre">container_of_safe</span></code><a class="headerlink" href="#c.container_of_safe" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
-
-<p><code class="docutils literal notranslate"><span class="pre">container_of_safe</span> <span class="pre">(ptr,</span> <span class="pre">type,</span> <span class="pre">member)</span></code></p>
-<blockquote>
-<div><p>cast a member of a structure out to the containing structure</p>
-</div></blockquote>
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">ptr</span></code></dt><dd><p>the pointer to the member.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">type</span></code></dt><dd><p>the type of the container struct this is embedded in.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">member</span></code></dt><dd><p>the name of the member within the struct.</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>If IS_ERR_OR_NULL(ptr), ptr is returned unchanged.</p>
 <dl class="c function">
 <dt id="c.console_lock">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">console_lock</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.console_lock" title="Permalink to this definition">¶</a><br /></dt>

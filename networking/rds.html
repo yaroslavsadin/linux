@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Overview &mdash; The Linux Kernel  documentation</title>
+  <title>RDS &mdash; The Linux Kernel  documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -214,18 +214,21 @@
 <li class="toctree-l2"><a class="reference internal" href="ppp_generic.html">PPP Generic Driver and Channel Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="proc_net_tcp.html">The proc/net/tcp and proc/net/tcp6 variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="radiotap-headers.html">How to use radiotap headers</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#rds-architecture">RDS Architecture</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#socket-interface">Socket Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#rdma-for-rds">RDMA for RDS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#congestion-notifications">Congestion Notifications</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#rds-protocol">RDS Protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#rds-transport-layer">RDS Transport Layer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#rds-kernel-structures">RDS Kernel Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#connection-management">Connection management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#the-send-path">The send path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#the-recv-path">The recv path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#multipath-rds-mprds">Multipath RDS (mprds)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">RDS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rds-architecture">RDS Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#socket-interface">Socket Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rdma-for-rds">RDMA for RDS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#congestion-notifications">Congestion Notifications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rds-protocol">RDS Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rds-transport-layer">RDS Transport Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rds-kernel-structures">RDS Kernel Structures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connection-management">Connection management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-send-path">The send path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-recv-path">The recv path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multipath-rds-mprds">Multipath RDS (mprds)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="regulatory.html">Linux wireless regulatory documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rxrpc.html">RxRPC Network Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rxrpc.html#socket-options">SOCKET OPTIONS</a></li>
@@ -347,7 +350,7 @@
         
           <li><a href="index.html">Linux Networking Documentation</a> &raquo;</li>
         
-      <li>Overview</li>
+      <li>RDS</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -366,18 +369,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <p>==
-RDS
-===</p>
+  <section id="rds">
+<h1>RDS<a class="headerlink" href="#rds" title="Permalink to this headline">¶</a></h1>
 <section id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This readme tries to provide some background on the hows and whys of RDS,
 and will hopefully help you find your way around the code.</p>
 <p>In addition, please see this email about RDS origins:
 <a class="reference external" href="http://oss.oracle.com/pipermail/rds-devel/2007-November/000228.html">http://oss.oracle.com/pipermail/rds-devel/2007-November/000228.html</a></p>
 </section>
 <section id="rds-architecture">
-<h1>RDS Architecture<a class="headerlink" href="#rds-architecture" title="Permalink to this headline">¶</a></h1>
+<h2>RDS Architecture<a class="headerlink" href="#rds-architecture" title="Permalink to this headline">¶</a></h2>
 <p>RDS provides reliable, ordered datagram delivery by using a single
 reliable connection between any two nodes in the cluster. This allows
 applications to use a single socket to talk to any other process in the
@@ -422,7 +424,7 @@ doesn’t move to a different transport.</p>
 </div></blockquote>
 </section>
 <section id="socket-interface">
-<h1>Socket Interface<a class="headerlink" href="#socket-interface" title="Permalink to this headline">¶</a></h1>
+<h2>Socket Interface<a class="headerlink" href="#socket-interface" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl>
 <dt>AF_RDS, PF_RDS, SOL_RDS</dt><dd><p>AF_RDS and PF_RDS are the domain type to be used with socket(2)
@@ -513,19 +515,19 @@ always return EINVAL.</p>
 </div></blockquote>
 </section>
 <section id="rdma-for-rds">
-<h1>RDMA for RDS<a class="headerlink" href="#rdma-for-rds" title="Permalink to this headline">¶</a></h1>
+<h2>RDMA for RDS<a class="headerlink" href="#rdma-for-rds" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>see rds-rdma(7) manpage (available in rds-tools)</p>
 </div></blockquote>
 </section>
 <section id="congestion-notifications">
-<h1>Congestion Notifications<a class="headerlink" href="#congestion-notifications" title="Permalink to this headline">¶</a></h1>
+<h2>Congestion Notifications<a class="headerlink" href="#congestion-notifications" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>see rds(7) manpage</p>
 </div></blockquote>
 </section>
 <section id="rds-protocol">
-<h1>RDS Protocol<a class="headerlink" href="#rds-protocol" title="Permalink to this headline">¶</a></h1>
+<h2>RDS Protocol<a class="headerlink" href="#rds-protocol" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Message header</p>
 <blockquote>
@@ -626,7 +628,7 @@ is congested or not.</p>
 </div></blockquote>
 </section>
 <section id="rds-transport-layer">
-<h1>RDS Transport Layer<a class="headerlink" href="#rds-transport-layer" title="Permalink to this headline">¶</a></h1>
+<h2>RDS Transport Layer<a class="headerlink" href="#rds-transport-layer" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>As mentioned above, RDS is not IB-specific. Its code is divided
 into a general RDS layer and a transport layer.</p>
@@ -638,7 +640,7 @@ CM event handlers, and other Infiniband details.</p>
 </div></blockquote>
 </section>
 <section id="rds-kernel-structures">
-<h1>RDS Kernel Structures<a class="headerlink" href="#rds-kernel-structures" title="Permalink to this headline">¶</a></h1>
+<h2>RDS Kernel Structures<a class="headerlink" href="#rds-kernel-structures" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="simple">
 <dt>struct rds_message</dt><dd><p>aka possibly “rds_outgoing”, the generic RDS layer copies data to
@@ -665,7 +667,7 @@ code to handle the actual copy-to-user.</p>
 </div></blockquote>
 </section>
 <section id="connection-management">
-<h1>Connection management<a class="headerlink" href="#connection-management" title="Permalink to this headline">¶</a></h1>
+<h2>Connection management<a class="headerlink" href="#connection-management" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Connections may be in UP, DOWN, CONNECTING, DISCONNECTING, and
 ERROR states.</p>
@@ -679,7 +681,7 @@ re-established.</p>
 </div></blockquote>
 </section>
 <section id="the-send-path">
-<h1>The send path<a class="headerlink" href="#the-send-path" title="Permalink to this headline">¶</a></h1>
+<h2>The send path<a class="headerlink" href="#the-send-path" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="simple">
 <dt>rds_sendmsg()</dt><dd><ul class="simple">
@@ -714,7 +716,7 @@ re-established.</p>
 </div></blockquote>
 </section>
 <section id="the-recv-path">
-<h1>The recv path<a class="headerlink" href="#the-recv-path" title="Permalink to this headline">¶</a></h1>
+<h2>The recv path<a class="headerlink" href="#the-recv-path" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="simple">
 <dt>rds_ib_recv_cq_comp_handler()</dt><dd><ul class="simple">
@@ -758,7 +760,7 @@ re-established.</p>
 </div></blockquote>
 </section>
 <section id="multipath-rds-mprds">
-<h1>Multipath RDS (mprds)<a class="headerlink" href="#multipath-rds-mprds" title="Permalink to this headline">¶</a></h1>
+<h2>Multipath RDS (mprds)<a class="headerlink" href="#multipath-rds-mprds" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><p>Mprds is multipathed-RDS, primarily intended for RDS-over-TCP
 (though the concept can be extended to other transports). The classical
@@ -808,6 +810,7 @@ when the rcvr is mprds-capable.</p>
 ignored.  In this case the pong will not have any exthdrs, so the sender
 of the probe-ping can default to single-path mprds.</p>
 </div></blockquote>
+</section>
 </section>
 
 

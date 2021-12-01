@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -140,6 +140,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../sysfs-platform_profile.html">Platform Profile Selection (e.g. /sys/firmware/acpi/platform_profile)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../vduse.html">VDUSE - “vDPA Device in Userspace”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../futex2.html">futex2</a></li>
 </ul>
 </li>
 </ul>
@@ -383,7 +384,7 @@ relationship between the luma and chroma line padding and stride.</p>
 <td><p>4:2:0</p></td>
 <td><p>Cb, Cr</p></td>
 <td><p>No</p></td>
-<td><p>64x32 macroblocks</p>
+<td><p>64x32 tiles</p>
 <p>Horizontal Z order</p>
 </td>
 </tr>
@@ -393,7 +394,7 @@ relationship between the luma and chroma line padding and stride.</p>
 <td><p>4:2:2</p></td>
 <td><p>Cb, Cr</p></td>
 <td><p>No</p></td>
-<td><p>16x16 macroblocks</p></td>
+<td><p>16x16 tiles</p></td>
 </tr>
 <tr class="row-even"><td><p>V4L2_PIX_FMT_NV16</p></td>
 <td><p>‘NV16’</p></td>
@@ -565,23 +566,37 @@ of the luma plane.</p>
 </tbody>
 </table>
 </section>
-<section id="nv12mt-and-mv12mt-16x16">
-<span id="v4l2-pix-fmt-nv12mt-16x16"></span><span id="v4l2-pix-fmt-nv12mt"></span><h3><span class="section-number">2.7.1.2.1.2. </span>NV12MT and MV12MT_16X16<a class="headerlink" href="#nv12mt-and-mv12mt-16x16" title="Permalink to this headline">¶</a></h3>
+<section id="tiled-nv12">
+<span id="v4l2-pix-fmt-nv12-32l32"></span><span id="v4l2-pix-fmt-nv12-16l16"></span><span id="v4l2-pix-fmt-nv12-4l4"></span><span id="v4l2-pix-fmt-nv12mt-16x16"></span><span id="v4l2-pix-fmt-nv12mt"></span><h3><span class="section-number">2.7.1.2.1.2. </span>Tiled NV12<a class="headerlink" href="#tiled-nv12" title="Permalink to this headline">¶</a></h3>
 <p>Semi-planar YUV 4:2:0 formats, using macroblock tiling. The chroma plane is
 subsampled by 2 in each direction. Chroma lines contain half the number of
 pixels and the same number of bytes as luma lines, and the chroma plane
-contains half the number of lines of the luma plane.</p>
-<p><code class="docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_NV12MT_16X16</span></code> stores pixel in 2D 16x16 macroblocks, and stores
-macroblocks linearly in memory. The line stride and image height must be
+contains half the number of lines of the luma plane. Each tile follows the
+previous one linearly in memory (from left to right, top to bottom).</p>
+<p><code class="docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_NV12MT_16X16</span></code> is similar to <code class="docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_NV12M</span></code> but stores
+pixels in 2D 16x16 tiles, and stores tiles linearly in memory.
+The line stride and image height must be aligned to a multiple of 16.
+The layouts of the luma and chroma planes are identical.</p>
+<p><code class="docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_NV12MT</span></code> is similar to <code class="docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_NV12M</span></code> but stores
+pixels in 2D 64x32 tiles, and stores 2x2 groups of tiles in
+Z-order in memory, alternating Z and mirrored Z shapes horizontally.
+The line stride must be a multiple of 128 pixels to ensure an
+integer number of Z shapes. The image height must be a multiple of 32 pixels.
+If the vertical resolution is an odd number of tiles, the last row of
+tiles is stored in linear order. The layouts of the luma and chroma
+planes are identical.</p>
+<p><code class="docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_NV12_4L4</span></code> stores pixel in 4x4 tiles, and stores
+tiles linearly in memory. The line stride and image height must be
+aligned to a multiple of 4. The layouts of the luma and chroma planes are
+identical.</p>
+<p><code class="docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_NV12_16L16</span></code> stores pixel in 16x16 tiles, and stores
+tiles linearly in memory. The line stride and image height must be
 aligned to a multiple of 16. The layouts of the luma and chroma planes are
 identical.</p>
-<p><code class="docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_NV12MT</span></code> stores pixels in 2D 64x32 macroblocks, and stores 2x2
-groups of macroblocks in Z-order in memory, alternating Z and mirrored Z shapes
-horizontally.  The line stride must be a multiple of 128 pixels to ensure an
-integer number of Z shapes. The image height must be a multiple of 32 pixels.
-If the vertical resolution is an odd number of macroblocks, the last row of
-macroblocks is stored in linear order. The layouts of the luma and chroma
-planes are identical.</p>
+<p><code class="docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_NV12_32L32</span></code> stores pixel in 32x32 tiles, and stores
+tiles linearly in memory. The line stride and image height must be
+aligned to a multiple of 32. The layouts of the luma and chroma planes are
+identical.</p>
 <figure class="align-center" id="id14">
 <img alt="nv12mt.svg" src="../../../_images/nv12mt.svg" /><figcaption>
 <p><span class="caption-text">V4L2_PIX_FMT_NV12MT macroblock Z shape memory layout</span><a class="headerlink" href="#id14" title="Permalink to this image">¶</a></p>
@@ -589,7 +604,7 @@ planes are identical.</p>
 </figure>
 <figure class="align-center" id="id15">
 <img alt="nv12mt_example.svg" src="../../../_images/nv12mt_example.svg" /><figcaption>
-<p><span class="caption-text">Example V4L2_PIX_FMT_NV12MT memory layout of macroblocks</span><a class="headerlink" href="#id15" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Example V4L2_PIX_FMT_NV12MT memory layout of tiles</span><a class="headerlink" href="#id15" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>

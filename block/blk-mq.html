@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -431,17 +431,12 @@ completed.</p>
   struct blk_mq_tags      *sched_tags;
   unsigned long           queued;
   unsigned long           run;
-#define BLK_MQ_MAX_DISPATCH_ORDER       7;
-  unsigned long           dispatched[BLK_MQ_MAX_DISPATCH_ORDER];
   unsigned int            numa_node;
   unsigned int            queue_num;
   atomic_t nr_active;
   struct hlist_node       cpuhp_online;
   struct hlist_node       cpuhp_dead;
   struct kobject          kobj;
-  unsigned long           poll_considered;
-  unsigned long           poll_invoked;
-  unsigned long           poll_success;
 #ifdef CONFIG_BLK_DEBUG_FS;
   struct dentry           *debugfs_dir;
   struct dentry           *sched_debugfs_dir;
@@ -523,8 +518,6 @@ that request is allocated. Else, this member is not used.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">run</span></code></dt><dd><p>Number of dispatched requests.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">dispatched</span></code></dt><dd><p>Number of dispatch requests by queue.</p>
-</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">numa_node</span></code></dt><dd><p>NUMA node the storage adapter has been connected to.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">queue_num</span></code></dt><dd><p>Index of this hardware queue.</p>
@@ -537,12 +530,6 @@ shared across request queues.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">cpuhp_dead</span></code></dt><dd><p>List to store request if some CPU die.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">kobj</span></code></dt><dd><p>Kernel object for sysfs.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">poll_considered</span></code></dt><dd><p>Count times <a class="reference internal" href="#c.blk_poll" title="blk_poll"><code class="xref c c-func docutils literal notranslate"><span class="pre">blk_poll()</span></code></a> was called.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">poll_invoked</span></code></dt><dd><p>Count how many requests <a class="reference internal" href="#c.blk_poll" title="blk_poll"><code class="xref c c-func docutils literal notranslate"><span class="pre">blk_poll()</span></code></a> polled.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">poll_success</span></code></dt><dd><p>Count how many polled requests were completed.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">debugfs_dir</span></code></dt><dd><p>debugfs directory for this hardware queue. Named
 as cpu&lt;cpu_number&gt;.</p>
@@ -620,10 +607,8 @@ set of hardware queues.</p>
   unsigned int            timeout;
   unsigned int            flags;
   void *driver_data;
-  atomic_t active_queues_shared_sbitmap;
-  struct sbitmap_queue    __bitmap_tags;
-  struct sbitmap_queue    __breserved_tags;
   struct blk_mq_tags      **tags;
+  struct blk_mq_tags      *shared_tags;
   struct mutex            tag_list_lock;
   struct list_head        tag_list;
 };
@@ -662,23 +647,16 @@ driver owns these additional bytes.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">driver_data</span></code></dt><dd><p>Pointer to data owned by the block driver that created this
 tag set.</p>
 </dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">active_queues_shared_sbitmap</span></code></p>
-<blockquote>
-<div><p>number of active request queues per tag set.</p>
-</div></blockquote>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">__bitmap_tags</span></code></dt><dd><p>A shared tags sbitmap, used over all hctx’s</p>
-</dd>
-</dl>
-<p><code class="docutils literal notranslate"><span class="pre">__breserved_tags</span></code></p>
-<blockquote>
-<div><p>A shared reserved tags sbitmap, used over all hctx’s</p>
-</div></blockquote>
-<dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">tags</span></code></dt><dd><p>Tag sets. One tag set per hardware queue. Has <strong>nr_hw_queues</strong>
 elements.</p>
 </dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">shared_tags</span></code></p>
+<blockquote>
+<div><p>Shared set of tags. Has <strong>nr_hw_queues</strong> elements. If set,
+shared by all <strong>tags</strong>.</p>
+</div></blockquote>
+<dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">tag_list_lock</span></code></dt><dd><p>Serializes tag_list accesses.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">tag_list</span></code></dt><dd><p>List of the request queues that use this tag set. See also
@@ -720,13 +698,12 @@ request_queue.tag_set_list.</p>
   void (*set_rq_budget_token)(struct request *, int);
   int (*get_rq_budget_token)(struct request *);
   enum blk_eh_timer_return (*timeout)(struct request *, bool);
-  int (*poll)(struct blk_mq_hw_ctx *);
+  int (*poll)(struct blk_mq_hw_ctx *, struct io_comp_batch *);
   void (*complete)(struct request *);
   int (*init_hctx)(struct blk_mq_hw_ctx *, void *, unsigned int);
   void (*exit_hctx)(struct blk_mq_hw_ctx *, unsigned int);
   int (*init_request)(struct blk_mq_tag_set *set, struct request *, unsigned int, unsigned int);
   void (*exit_request)(struct blk_mq_tag_set *set, struct request *, unsigned int);
-  void (*initialize_rq_fn)(struct request *rq);
   void (*cleanup_rq)(struct request *);
   bool (*busy)(struct request_queue *);
   int (*map_queues)(struct blk_mq_tag_set *set);
@@ -775,8 +752,6 @@ to allow the driver to set up driver specific data.</p>
 flush request.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">exit_request</span></code></dt><dd><p>Ditto for exit/teardown.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">initialize_rq_fn</span></code></dt><dd><p>Called from inside <a class="reference internal" href="../core-api/kernel-api.html#c.blk_get_request" title="blk_get_request"><code class="xref c c-func docutils literal notranslate"><span class="pre">blk_get_request()</span></code></a>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">cleanup_rq</span></code></dt><dd><p>Called before freeing one request which isn’t completed
 yet, and usually for freeing the driver private data.</p>
@@ -834,6 +809,20 @@ size to get back to the original request.</p>
 <p>Driver command data is immediately after the request. So add request to get
 the PDU.</p>
 <dl class="c function">
+<dt id="c.blk_mq_wait_quiesce_done">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_wait_quiesce_done</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_wait_quiesce_done" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>wait until in-progress quiesce is done</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">request_queue</span> <span class="pre">*q</span></code></dt><dd><p>request queue.</p>
+</dd>
+</dl>
+<p><strong>Note</strong></p>
+<p>it is driver’s responsibility for making sure that quiesce has
+been started.</p>
+<dl class="c function">
 <dt id="c.blk_mq_quiesce_queue">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_quiesce_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_quiesce_queue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>wait until all ongoing dispatches have finished</p>
@@ -849,6 +838,39 @@ the PDU.</p>
 callback function is invoked. Once this function is returned, we make
 sure no dispatch can happen until the queue is unquiesced via
 blk_mq_unquiesce_queue().</p>
+<dl class="c function">
+<dt id="c.blk_update_request">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">blk_update_request</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">req</span></em>, <span class="pre">blk_status_t</span> <em><span class="pre">error</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">nr_bytes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_update_request" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Complete multiple bytes without completing the request</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">request</span> <span class="pre">*req</span></code></dt><dd><p>the request being processed</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">blk_status_t</span> <span class="pre">error</span></code></dt><dd><p>block status code</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">nr_bytes</span></code></dt><dd><p>number of bytes to complete for <strong>req</strong></p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<blockquote>
+<div><p>Ends I/O on a number of bytes attached to <strong>req</strong>, but doesn’t complete
+the request structure even if <strong>req</strong> doesn’t have leftover.
+If <strong>req</strong> has leftover, sets it up for the next range of segments.</p>
+<p>Passing the result of blk_rq_bytes() as <strong>nr_bytes</strong> guarantees
+<code class="docutils literal notranslate"><span class="pre">false</span></code> return from this function.</p>
+</div></blockquote>
+<p><strong>Note</strong></p>
+<blockquote>
+<div><p>The RQF_SPECIAL_PAYLOAD flag is ignored on purpose in this function
+except in the consistency check at the end of this function.</p>
+</div></blockquote>
+<p><strong>Return</strong></p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">false</span></code> - this request doesn’t have any more data
+<code class="docutils literal notranslate"><span class="pre">true</span></code>  - this request has more data</p>
+</div></blockquote>
 <dl class="c function">
 <dt id="c.blk_mq_complete_request">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_complete_request</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_complete_request" title="Permalink to this definition">¶</a><br /></dt>
@@ -1002,7 +1024,7 @@ blk_mq_{start,stop}_hw_queue().</p>
 bypass a potential IO scheduler on the target device.</p>
 <dl class="c function">
 <dt id="c.blk_mq_try_issue_directly">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_try_issue_directly</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="pre">blk_mq_hw_ctx</span></a> <span class="pre">*</span><em><span class="pre">hctx</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em>, <span class="pre">blk_qc_t</span> <span class="pre">*</span><em><span class="pre">cookie</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_try_issue_directly" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_try_issue_directly</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.blk_mq_hw_ctx" title="blk_mq_hw_ctx"><span class="pre">blk_mq_hw_ctx</span></a> <span class="pre">*</span><em><span class="pre">hctx</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">request</span> <span class="pre">*</span><em><span class="pre">rq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_try_issue_directly" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Try to send a request directly to device driver.</p>
 </dd></dl>
 
@@ -1012,8 +1034,6 @@ bypass a potential IO scheduler on the target device.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">request</span> <span class="pre">*rq</span></code></dt><dd><p>Pointer to request to be sent.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">blk_qc_t</span> <span class="pre">*cookie</span></code></dt><dd><p>Request queue cookie.</p>
-</dd>
 </dl>
 <p><strong>Description</strong></p>
 <p>If the device has enough resources to accept a new request now, send the
@@ -1022,7 +1042,7 @@ we can try send it another time in the future. Requests inserted at this
 queue have higher priority.</p>
 <dl class="c function">
 <dt id="c.blk_mq_submit_bio">
-<span class="pre">blk_qc_t</span> <code class="sig-name descname"><span class="pre">blk_mq_submit_bio</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.blk_mq_submit_bio" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_submit_bio" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">blk_mq_submit_bio</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.blk_mq_submit_bio" title="bio"><span class="pre">bio</span></a> <span class="pre">*</span><em><span class="pre">bio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_mq_submit_bio" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create and send a request to block device.</p>
 </dd></dl>
 
@@ -1039,30 +1059,6 @@ request may not be queued directly to hardware if:
 * There is an IO scheduler active at this queue</p>
 <p>It will not queue the request if there is an error with the bio, or at the
 request creation.</p>
-<p><strong>Return</strong></p>
-<p>Request queue cookie.</p>
-<dl class="c function">
-<dt id="c.blk_poll">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">blk_poll</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">request_queue</span> <span class="pre">*</span><em><span class="pre">q</span></em>, <span class="pre">blk_qc_t</span> <em><span class="pre">cookie</span></em>, <span class="pre">bool</span> <em><span class="pre">spin</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.blk_poll" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>poll for IO completions</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">request_queue</span> <span class="pre">*q</span></code></dt><dd><p>the queue</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">blk_qc_t</span> <span class="pre">cookie</span></code></dt><dd><p>cookie passed back at IO submission time</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">bool</span> <span class="pre">spin</span></code></dt><dd><p>whether to spin for completions</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<blockquote>
-<div><p>Poll for completions on the passed in queue. Returns number of
-completed entries found. If <strong>spin</strong> is true, then blk_poll will continue
-looping until at least one completion is found, unless the task is
-otherwise marked running (or we need to reschedule).</p>
-</div></blockquote>
 </section>
 </section>
 

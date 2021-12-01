@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -426,11 +426,15 @@
   struct lock_class_key *lock_key;
   struct lock_class_key *request_key;
   irq_flow_handler_t parent_handler;
-  void *parent_handler_data;
+  union {
+    void *parent_handler_data;
+    void **parent_handler_data_array;
+  };
   unsigned int num_parents;
   unsigned int *parents;
   unsigned int *map;
   bool threaded;
+  bool per_parent_data;
   int (*init_hw)(struct gpio_chip *gc);
   void (*init_valid_mask)(struct gpio_chip *gc,unsigned long *valid_mask, unsigned int ngpios);
   unsigned long *valid_mask;
@@ -501,8 +505,14 @@ initialization, provided by GPIO driver.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">parent_handler</span></code></dt><dd><p>The interrupt handler for the GPIO chip’s parent interrupts, may be
 NULL if the parent interrupts are nested rather than cascaded.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">parent_handler_data</span></code></dt><dd><p>Data associated, and passed to, the handler for the parent
-interrupt.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">{unnamed_union}</span></code></dt><dd><p>anonymous</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">parent_handler_data</span></code></dt><dd><p><strong>parent_handler_data_array</strong>:</p>
+<p>Data associated, and passed to, the handler for the parent
+interrupt. Can either be a single pointer if <strong>per_parent_data</strong>
+is false, or an array of <strong>num_parents</strong> pointers otherwise.  If
+<strong>per_parent_data</strong> is true, <strong>parent_handler_data_array</strong> cannot be
+NULL.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">num_parents</span></code></dt><dd><p>The number of interrupt parents of a GPIO chip.</p>
 </dd>
@@ -512,6 +522,9 @@ driver, so the core will only reference this list, not modify it.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">map</span></code></dt><dd><p>A list of interrupt parents for each line of a GPIO chip.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">threaded</span></code></dt><dd><p>True if set the interrupt handling uses nested threads.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">per_parent_data</span></code></dt><dd><p>True if parent_handler_data_array describes a <strong>num_parents</strong>
+sized array to be used as parent data.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">init_hw</span></code></dt><dd><p>optional routine to initialize hardware before
 an IRQ chip will be added. This is quite useful when

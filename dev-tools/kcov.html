@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -304,6 +304,7 @@ program using kcov:</p>
 <span class="cp">#include</span> <span class="cpf">&lt;sys/mman.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;linux/types.h&gt;</span><span class="cp"></span>
 
 <span class="cp">#define KCOV_INIT_TRACE                     _IOR(&#39;c&#39;, 1, unsigned long)</span>
 <span class="cp">#define KCOV_ENABLE                 _IO(&#39;c&#39;, 100)</span>
@@ -427,6 +428,8 @@ only need to enable coverage (disable happens automatically on thread end).</p>
     <span class="cm">/* Read number of comparisons collected. */</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">__atomic_load_n</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cover</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">__ATOMIC_RELAXED</span><span class="p">);</span>
     <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kt">uint64_t</span> <span class="n">ip</span><span class="p">;</span>
+
             <span class="n">type</span> <span class="o">=</span> <span class="n">cover</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">KCOV_WORDS_PER_CMP</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
             <span class="cm">/* arg1 and arg2 - operands of the comparison. */</span>
             <span class="n">arg1</span> <span class="o">=</span> <span class="n">cover</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">KCOV_WORDS_PER_CMP</span> <span class="o">+</span> <span class="mi">2</span><span class="p">];</span>
@@ -493,7 +496,9 @@ handle, kcov will collect coverage for each code section that is annotated
 to use the common handle obtained as kcov_handle from the current
 task_struct. However non common handles allow to collect coverage
 selectively from different subsystems.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">kcov_remote_arg</span> <span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Same includes and defines as above. */</span>
+
+<span class="k">struct</span> <span class="nc">kcov_remote_arg</span> <span class="p">{</span>
     <span class="n">__u32</span>           <span class="n">trace_mode</span><span class="p">;</span>
     <span class="n">__u32</span>           <span class="n">area_size</span><span class="p">;</span>
     <span class="n">__u32</span>           <span class="n">num_handles</span><span class="p">;</span>

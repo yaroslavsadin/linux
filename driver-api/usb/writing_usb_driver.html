@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -416,9 +416,12 @@ structure. The skeleton driver declares a <a class="reference internal" href="us
         .name        = &quot;skeleton&quot;,
         .probe       = skel_probe,
         .disconnect  = skel_disconnect,
-        .fops        = &amp;skel_fops,
-        .minor       = USB_SKEL_MINOR_BASE,
+        .suspend     = skel_suspend,
+        .resume      = skel_resume,
+        .pre_reset   = skel_pre_reset,
+        .post_reset  = skel_post_reset,
         .id_table    = skel_table,
+        .supports_autosuspend = 1,
 };
 </pre></div>
 </div>
@@ -438,7 +441,7 @@ number and a set of <code class="xref c c-type docutils literal notranslate"><sp
 this user-space interaction. The skeleton driver needs this kind of
 interface, so it provides a minor starting number and a pointer to its
 <code class="xref c c-type docutils literal notranslate"><span class="pre">file_operations</span></code> functions.</p>
-<p>The USB driver is then registered with a call to <code class="xref c c-func docutils literal notranslate"><span class="pre">usb_register()</span></code>,
+<p>The USB driver is then registered with a call to usb_register(),
 usually in the driver’s init function, as shown here:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static int __init usb_skel_init(void)
 {
@@ -458,7 +461,7 @@ module_init(usb_skel_init);
 </pre></div>
 </div>
 <p>When the driver is unloaded from the system, it needs to deregister
-itself with the USB subsystem. This is done with the <a class="reference internal" href="usb.html#c.usb_deregister" title="usb_deregister"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_deregister()</span></code></a>
+itself with the USB subsystem. This is done with <a class="reference internal" href="usb.html#c.usb_deregister" title="usb_deregister"><code class="xref c c-func docutils literal notranslate"><span class="pre">usb_deregister()</span></code></a>
 function:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static void __exit usb_skel_exit(void)
 {
@@ -576,7 +579,7 @@ retval = usb_bulk_msg (skel-&gt;dev,
                        skel-&gt;bulk_in_endpointAddr),
                        skel-&gt;bulk_in_buffer,
                        skel-&gt;bulk_in_size,
-                       &amp;count, HZ*10);
+                       &amp;count, 5000);
 /* if the read was successful, copy the data to user space */
 if (!retval) {
         if (copy_to_user (buffer, skel-&gt;bulk_in_buffer, count))

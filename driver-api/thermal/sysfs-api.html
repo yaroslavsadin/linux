@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -783,6 +783,8 @@ the generic thermal driver also creates a hwmon sysfs I/F for each _type_
 of thermal zone device. E.g. the generic thermal driver registers one hwmon
 class device and build the associated hwmon sysfs I/F for all the registered
 ACPI thermal zones.</p>
+<p>Please read Documentation/ABI/testing/sysfs-class-thermal for thermal
+zone and cooling device attribute details.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/sys/class/hwmon/hwmon[0-*]:
   |---name:                   The type of the thermal zone devices
   |---temp[1-*]_input:        The current temperature of thermal zone [1-*]
@@ -790,185 +792,6 @@ ACPI thermal zones.</p>
 </pre></div>
 </div>
 <p>Please read <a class="reference internal" href="../../hwmon/sysfs-interface.html"><span class="doc">Naming and data format standards for sysfs files</span></a> for additional information.</p>
-<section id="thermal-zone-attributes">
-<h3>Thermal zone attributes<a class="headerlink" href="#thermal-zone-attributes" title="Permalink to this headline">¶</a></h3>
-<dl>
-<dt>type</dt><dd><p>Strings which represent the thermal zone type.
-This is given by thermal zone driver as part of registration.
-E.g: “acpitz” indicates it’s an ACPI thermal device.
-In order to keep it consistent with hwmon sys attribute; this should
-be a short, lowercase string, not containing spaces nor dashes.
-RO, Required</p>
-</dd>
-<dt>temp</dt><dd><p>Current temperature as reported by thermal zone (sensor).
-Unit: millidegree Celsius
-RO, Required</p>
-</dd>
-<dt>mode</dt><dd><p>One of the predefined values in [enabled, disabled].
-This file gives information about the algorithm that is currently
-managing the thermal zone. It can be either default kernel based
-algorithm or user space application.</p>
-<dl class="simple">
-<dt>enabled</dt><dd><p>enable Kernel Thermal management.</p>
-</dd>
-<dt>disabled</dt><dd><p>Preventing kernel thermal zone driver actions upon
-trip points so that user application can take full
-charge of the thermal management.</p>
-</dd>
-</dl>
-<p>RW, Optional</p>
-</dd>
-<dt>policy</dt><dd><p>One of the various thermal governors used for a particular zone.</p>
-<p>RW, Required</p>
-</dd>
-<dt>available_policies</dt><dd><p>Available thermal governors which can be used for a particular zone.</p>
-<p>RO, Required</p>
-</dd>
-<dt><cite>trip_point_[0-*]_temp</cite></dt><dd><p>The temperature above which trip point will be fired.</p>
-<p>Unit: millidegree Celsius</p>
-<p>RO, Optional</p>
-</dd>
-<dt><cite>trip_point_[0-*]_type</cite></dt><dd><p>Strings which indicate the type of the trip point.</p>
-<p>E.g. it can be one of critical, hot, passive, <cite>active[0-*]</cite> for ACPI
-thermal zone.</p>
-<p>RO, Optional</p>
-</dd>
-<dt><cite>trip_point_[0-*]_hyst</cite></dt><dd><p>The hysteresis value for a trip point, represented as an integer
-Unit: Celsius
-RW, Optional</p>
-</dd>
-<dt><cite>cdev[0-*]</cite></dt><dd><p>Sysfs link to the thermal cooling device node where the sys I/F
-for cooling device throttling control represents.</p>
-<p>RO, Optional</p>
-</dd>
-<dt><cite>cdev[0-*]_trip_point</cite></dt><dd><p>The trip point in this thermal zone which <cite>cdev[0-*]</cite> is associated
-with; -1 means the cooling device is not associated with any trip
-point.</p>
-<p>RO, Optional</p>
-</dd>
-<dt><cite>cdev[0-*]_weight</cite></dt><dd><p>The influence of <cite>cdev[0-*]</cite> in this thermal zone. This value
-is relative to the rest of cooling devices in the thermal
-zone. For example, if a cooling device has a weight double
-than that of other, it’s twice as effective in cooling the
-thermal zone.</p>
-<p>RW, Optional</p>
-</dd>
-<dt>emul_temp</dt><dd><p>Interface to set the emulated temperature method in thermal zone
-(sensor). After setting this temperature, the thermal zone may pass
-this temperature to platform emulation function if registered or
-cache it locally. This is useful in debugging different temperature
-threshold and its associated cooling action. This is write only node
-and writing 0 on this node should disable emulation.
-Unit: millidegree Celsius</p>
-<p>WO, Optional</p>
-<blockquote>
-<div><dl class="simple">
-<dt>WARNING:</dt><dd><p>Be careful while enabling this option on production systems,
-because userland can easily disable the thermal policy by simply
-flooding this sysfs node with low temperature values.</p>
-</dd>
-</dl>
-</div></blockquote>
-</dd>
-<dt>sustainable_power</dt><dd><p>An estimate of the sustained power that can be dissipated by
-the thermal zone. Used by the power allocator governor. For
-more information see <a class="reference internal" href="power_allocator.html"><span class="doc">Power allocator governor tunables</span></a></p>
-<p>Unit: milliwatts</p>
-<p>RW, Optional</p>
-</dd>
-<dt>k_po</dt><dd><p>The proportional term of the power allocator governor’s PID
-controller during temperature overshoot. Temperature overshoot
-is when the current temperature is above the “desired
-temperature” trip point. For more information see
-<a class="reference internal" href="power_allocator.html"><span class="doc">Power allocator governor tunables</span></a></p>
-<p>RW, Optional</p>
-</dd>
-<dt>k_pu</dt><dd><p>The proportional term of the power allocator governor’s PID
-controller during temperature undershoot. Temperature undershoot
-is when the current temperature is below the “desired
-temperature” trip point. For more information see
-<a class="reference internal" href="power_allocator.html"><span class="doc">Power allocator governor tunables</span></a></p>
-<p>RW, Optional</p>
-</dd>
-<dt>k_i</dt><dd><p>The integral term of the power allocator governor’s PID
-controller. This term allows the PID controller to compensate
-for long term drift. For more information see
-<a class="reference internal" href="power_allocator.html"><span class="doc">Power allocator governor tunables</span></a></p>
-<p>RW, Optional</p>
-</dd>
-<dt>k_d</dt><dd><p>The derivative term of the power allocator governor’s PID
-controller. For more information see
-<a class="reference internal" href="power_allocator.html"><span class="doc">Power allocator governor tunables</span></a></p>
-<p>RW, Optional</p>
-</dd>
-<dt>integral_cutoff</dt><dd><p>Temperature offset from the desired temperature trip point
-above which the integral term of the power allocator
-governor’s PID controller starts accumulating errors. For
-example, if integral_cutoff is 0, then the integral term only
-accumulates error when temperature is above the desired
-temperature trip point. For more information see
-<a class="reference internal" href="power_allocator.html"><span class="doc">Power allocator governor tunables</span></a></p>
-<p>Unit: millidegree Celsius</p>
-<p>RW, Optional</p>
-</dd>
-<dt>slope</dt><dd><p>The slope constant used in a linear extrapolation model
-to determine a hotspot temperature based off the sensor’s
-raw readings. It is up to the device driver to determine
-the usage of these values.</p>
-<p>RW, Optional</p>
-</dd>
-<dt>offset</dt><dd><p>The offset constant used in a linear extrapolation model
-to determine a hotspot temperature based off the sensor’s
-raw readings. It is up to the device driver to determine
-the usage of these values.</p>
-<p>RW, Optional</p>
-</dd>
-</dl>
-</section>
-<section id="cooling-device-attributes">
-<h3>Cooling device attributes<a class="headerlink" href="#cooling-device-attributes" title="Permalink to this headline">¶</a></h3>
-<dl>
-<dt>type</dt><dd><p>String which represents the type of device, e.g:</p>
-<ul class="simple">
-<li><p>for generic ACPI: should be “Fan”, “Processor” or “LCD”</p></li>
-<li><p>for memory controller device on intel_menlow platform:
-should be “Memory controller”.</p></li>
-</ul>
-<p>RO, Required</p>
-</dd>
-<dt>max_state</dt><dd><p>The maximum permissible cooling state of this cooling device.</p>
-<p>RO, Required</p>
-</dd>
-<dt>cur_state</dt><dd><p>The current cooling state of this cooling device.
-The value can any integer numbers between 0 and max_state:</p>
-<ul class="simple">
-<li><p>cur_state == 0 means no cooling</p></li>
-<li><p>cur_state == max_state means the maximum cooling.</p></li>
-</ul>
-<p>RW, Required</p>
-</dd>
-<dt>stats/reset</dt><dd><p>Writing any value resets the cooling device’s statistics.
-WO, Required</p>
-</dd>
-<dt>stats/time_in_state_ms:</dt><dd><p>The amount of time spent by the cooling device in various cooling
-states. The output will have “&lt;state&gt; &lt;time&gt;” pair in each line, which
-will mean this cooling device spent &lt;time&gt; msec of time at &lt;state&gt;.
-Output will have one line for each of the supported states.
-RO, Required</p>
-</dd>
-<dt>stats/total_trans:</dt><dd><p>A single positive value showing the total number of times the state of a
-cooling device is changed.</p>
-<p>RO, Required</p>
-</dd>
-<dt>stats/trans_table:</dt><dd><p>This gives fine grained information about all the cooling state
-transitions. The cat output here is a two dimensional matrix, where an
-entry &lt;i,j&gt; (row i, column j) represents the number of transitions from
-State_i to State_j. If the transition table is bigger than PAGE_SIZE,
-reading this will return an -EFBIG error.
-RO, Required</p>
-</dd>
-</dl>
-</section>
 </section>
 <section id="a-simple-implementation">
 <h2>3. A simple implementation<a class="headerlink" href="#a-simple-implementation" title="Permalink to this headline">¶</a></h2>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -140,6 +140,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../sysfs-platform_profile.html">Platform Profile Selection (e.g. /sys/firmware/acpi/platform_profile)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../vduse.html">VDUSE - “vDPA Device in Userspace”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../futex2.html">futex2</a></li>
 </ul>
 </li>
 </ul>
@@ -891,15 +892,12 @@ struct v4l2_pix_format {
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv61"><span class="std std-ref">V4L2_PIX_FMT_NV61</span></a>    v4l2_fourcc('N', 'V', '6', '1') /* 16  Y/CrCb 4:2:2  */
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv24"><span class="std std-ref">V4L2_PIX_FMT_NV24</span></a>    v4l2_fourcc('N', 'V', '2', '4') /* 24  Y/CbCr 4:4:4  */
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv42"><span class="std std-ref">V4L2_PIX_FMT_NV42</span></a>    v4l2_fourcc('N', 'V', '4', '2') /* 24  Y/CrCb 4:4:4  */
-#define <a class="reference internal" href="pixfmt-reserved.html#v4l2-pix-fmt-hm12"><span class="std std-ref">V4L2_PIX_FMT_HM12</span></a>    v4l2_fourcc('H', 'M', '1', '2') /*  8  YUV 4:2:0 16x16 macroblocks */
 
 /* two non contiguous planes - one Y, one Cr + Cb interleaved  */
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv12m"><span class="std std-ref">V4L2_PIX_FMT_NV12M</span></a>   v4l2_fourcc('N', 'M', '1', '2') /* 12  Y/CbCr 4:2:0  */
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv21m"><span class="std std-ref">V4L2_PIX_FMT_NV21M</span></a>   v4l2_fourcc('N', 'M', '2', '1') /* 21  Y/CrCb 4:2:0  */
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv16m"><span class="std std-ref">V4L2_PIX_FMT_NV16M</span></a>   v4l2_fourcc('N', 'M', '1', '6') /* 16  Y/CbCr 4:2:2  */
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv61m"><span class="std std-ref">V4L2_PIX_FMT_NV61M</span></a>   v4l2_fourcc('N', 'M', '6', '1') /* 16  Y/CrCb 4:2:2  */
-#define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv12mt"><span class="std std-ref">V4L2_PIX_FMT_NV12MT</span></a>  v4l2_fourcc('T', 'M', '1', '2') /* 12  Y/CbCr 4:2:0 64x32 macroblocks */
-#define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv12mt-16x16"><span class="std std-ref">V4L2_PIX_FMT_NV12MT_16X16</span></a> v4l2_fourcc('V', 'M', '1', '2') /* 12  Y/CbCr 4:2:0 16x16 macroblocks */
 
 /* three planes - Y Cb, Cr */
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-yuv410"><span class="std std-ref">V4L2_PIX_FMT_YUV410</span></a>  v4l2_fourcc('Y', 'U', 'V', '9') /*  9  YUV 4:1:0     */
@@ -916,6 +914,15 @@ struct v4l2_pix_format {
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-yvu422m"><span class="std std-ref">V4L2_PIX_FMT_YVU422M</span></a> v4l2_fourcc('Y', 'M', '6', '1') /* 16  YVU422 planar */
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-yuv444m"><span class="std std-ref">V4L2_PIX_FMT_YUV444M</span></a> v4l2_fourcc('Y', 'M', '2', '4') /* 24  YUV444 planar */
 #define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-yvu444m"><span class="std std-ref">V4L2_PIX_FMT_YVU444M</span></a> v4l2_fourcc('Y', 'M', '4', '2') /* 24  YVU444 planar */
+
+/* Tiled YUV formats */
+#define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv12-4l4"><span class="std std-ref">V4L2_PIX_FMT_NV12_4L4</span></a> v4l2_fourcc('V', 'T', '1', '2')   /* 12  Y/CbCr 4:2:0  4x4 tiles */
+#define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv12-16l16"><span class="std std-ref">V4L2_PIX_FMT_NV12_16L16</span></a> v4l2_fourcc('H', 'M', '1', '2') /* 12  Y/CbCr 4:2:0 16x16 tiles */
+#define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv12-32l32"><span class="std std-ref">V4L2_PIX_FMT_NV12_32L32</span></a> v4l2_fourcc('S', 'T', '1', '2') /* 12  Y/CbCr 4:2:0 32x32 tiles */
+
+/* Tiled YUV formats, non contiguous planes */
+#define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv12mt"><span class="std std-ref">V4L2_PIX_FMT_NV12MT</span></a>  v4l2_fourcc('T', 'M', '1', '2') /* 12  Y/CbCr 4:2:0 64x32 tiles */
+#define <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv12mt-16x16"><span class="std std-ref">V4L2_PIX_FMT_NV12MT_16X16</span></a> v4l2_fourcc('V', 'M', '1', '2') /* 12  Y/CbCr 4:2:0 16x16 tiles */
 
 /* Bayer formats - see http://www.siliconimaging.com/RGB%20Bayer.htm */
 #define <a class="reference internal" href="pixfmt-srggb8.html#v4l2-pix-fmt-sbggr8"><span class="std std-ref">V4L2_PIX_FMT_SBGGR8</span></a>  v4l2_fourcc('B', 'A', '8', '1') /*  8  BGBG.. GRGR.. */
@@ -1023,8 +1030,8 @@ struct v4l2_pix_format {
 #define <a class="reference internal" href="pixfmt-y12i.html#v4l2-pix-fmt-y12i"><span class="std std-ref">V4L2_PIX_FMT_Y12I</span></a>     v4l2_fourcc('Y', '1', '2', 'I') /* Greyscale 12-bit L/R interleaved */
 #define <a class="reference internal" href="pixfmt-z16.html#v4l2-pix-fmt-z16"><span class="std std-ref">V4L2_PIX_FMT_Z16</span></a>      v4l2_fourcc('Z', '1', '6', ' ') /* Depth data 16-bit */
 #define <a class="reference internal" href="pixfmt-reserved.html#v4l2-pix-fmt-mt21c"><span class="std std-ref">V4L2_PIX_FMT_MT21C</span></a>    v4l2_fourcc('M', 'T', '2', '1') /* Mediatek compressed block mode  */
+#define <a class="reference internal" href="pixfmt-reserved.html#v4l2-pix-fmt-mm21"><span class="std std-ref">V4L2_PIX_FMT_MM21</span></a>     v4l2_fourcc('M', 'M', '2', '1') /* Mediatek 8-bit block mode, two non-contiguous planes */
 #define <a class="reference internal" href="pixfmt-inzi.html#v4l2-pix-fmt-inzi"><span class="std std-ref">V4L2_PIX_FMT_INZI</span></a>     v4l2_fourcc('I', 'N', 'Z', 'I') /* Intel Planar Greyscale 10-bit and Depth 16-bit */
-#define <a class="reference internal" href="pixfmt-reserved.html#v4l2-pix-fmt-sunxi-tiled-nv12"><span class="std std-ref">V4L2_PIX_FMT_SUNXI_TILED_NV12</span></a> v4l2_fourcc('S', 'T', '1', '2') /* Sunxi Tiled NV12 Format */
 #define <a class="reference internal" href="pixfmt-cnf4.html#v4l2-pix-fmt-cnf4"><span class="std std-ref">V4L2_PIX_FMT_CNF4</span></a>     v4l2_fourcc('C', 'N', 'F', '4') /* Intel 4-bit packed depth confidence information */
 #define <a class="reference internal" href="pixfmt-reserved.html#v4l2-pix-fmt-hi240"><span class="std std-ref">V4L2_PIX_FMT_HI240</span></a>    v4l2_fourcc('H', 'I', '2', '4') /* BTTV 8-bit dithered RGB */
 
@@ -1243,8 +1250,11 @@ struct v4l2_requestbuffers {
         __u32                   type;           /* enum <code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_buf_type</span></code> */
         __u32                   memory;         /* enum <code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_memory</span></code> */
         __u32                   capabilities;
-        __u32                   reserved[1];
+        __u8                    flags;
+        __u8                    reserved[3];
 };
+
+#define <a class="reference internal" href="buffer.html#v4l2-memory-flag-non-coherent"><span class="std std-ref">V4L2_MEMORY_FLAG_NON_COHERENT</span></a>                   (1 &lt;&lt; 0)
 
 /* capabilities for struct v4l2_requestbuffers and v4l2_create_buffers */
 #define <a class="reference internal" href="vidioc-reqbufs.html#v4l2-buf-cap-supports-mmap"><span class="std std-ref">V4L2_BUF_CAP_SUPPORTS_MMAP</span></a>                      (1 &lt;&lt; 0)
@@ -2783,6 +2793,9 @@ struct v4l2_dbg_chip_info {
  * &#64;memory:     enum <code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_memory</span></code>; buffer memory type
  * &#64;format:     frame format, for which buffers are requested
  * &#64;capabilities: capabilities of this buffer type.
+ * &#64;flags:      additional buffer management attributes (ignored unless the
+ *              queue has <a class="reference internal" href="vidioc-reqbufs.html#v4l2-buf-cap-supports-mmap-cache-hints"><span class="std std-ref">V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS</span></a> capability
+ *              and configured for MMAP streaming I/O).
  * &#64;reserved:   future extensions
  */
 struct v4l2_create_buffers {
@@ -2791,7 +2804,8 @@ struct v4l2_create_buffers {
         __u32                   memory;
         struct v4l2_format      format;
         __u32                   capabilities;
-        __u32                   reserved[7];
+        __u32                   flags;
+        __u32                   reserved[6];
 };
 
 /*
@@ -2898,6 +2912,12 @@ struct v4l2_create_buffers {
    drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
 
 #define BASE_VIDIOC_PRIVATE     192             /* 192-255 are private */
+
+/* Deprecated definitions kept for backwards compatibility */
+#ifndef __KERNEL__
+#define <a class="reference internal" href="pixfmt-v4l2.html#c.v4l2_pix_format" title="v4l2_pix_format"><code class="xref c c-type docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_HM12</span></code></a> <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv12-16l16"><span class="std std-ref">V4L2_PIX_FMT_NV12_16L16</span></a>
+#define <a class="reference internal" href="pixfmt-v4l2.html#c.v4l2_pix_format" title="v4l2_pix_format"><code class="xref c c-type docutils literal notranslate"><span class="pre">V4L2_PIX_FMT_SUNXI_TILED_NV12</span></code></a> <a class="reference internal" href="pixfmt-yuv-planar.html#v4l2-pix-fmt-nv12-32l32"><span class="std std-ref">V4L2_PIX_FMT_NV12_32L32</span></a>
+#endif
 
 #endif /* _UAPI__LINUX_VIDEODEV2_H */</pre>
 </section>

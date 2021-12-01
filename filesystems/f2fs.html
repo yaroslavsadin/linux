@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -610,56 +610,77 @@ is shown below, it supports single or combined type.</p>
 <tr class="row-odd"><td><p>FAULT_SLAB_ALLOC</p></td>
 <td><p>0x000008000</p></td>
 </tr>
+<tr class="row-even"><td><p>FAULT_DQUOT_INIT</p></td>
+<td><p>0x000010000</p></td>
+</tr>
 </tbody>
 </table>
 </td>
 </tr>
-<tr class="row-even"><td><p>mode=%s</p></td>
+<tr class="row-odd"><td><p>mode=%s</p></td>
 <td><p>Control block allocation mode which supports “adaptive”
 and “lfs”. In “lfs” mode, there should be no random
-writes towards main area.</p></td>
+writes towards main area.
+“fragment:segment” and “fragment:block” are newly added here.
+These are developer options for experiments to simulate filesystem
+fragmentation/after-GC situation itself. The developers use these
+modes to understand filesystem fragmentation/after-GC condition well,
+and eventually get some insights to handle them better.
+In “fragment:segment”, f2fs allocates a new segment in ramdom
+position. With this, we can simulate the after-GC condition.
+In “fragment:block”, we can scatter block allocation with
+“max_fragment_chunk” and “max_fragment_hole” sysfs nodes.
+We added some randomness to both chunk and hole size to make
+it close to realistic IO pattern. So, in this mode, f2fs will allocate
+1..&lt;max_fragment_chunk&gt; blocks in a chunk and make a hole in the
+length of 1..&lt;max_fragment_hole&gt; by turns. With this, the newly
+allocated blocks will be scattered throughout the whole partition.
+Note that “fragment:block” implicitly enables “fragment:segment”
+option for more randomness.
+Please, use these options for your experiments and we strongly
+recommend to re-format the filesystem after using these options.</p></td>
 </tr>
-<tr class="row-odd"><td><p>io_bits=%u</p></td>
+<tr class="row-even"><td><p>io_bits=%u</p></td>
 <td><p>Set the bit size of write IO requests. It should be set
 with “mode=lfs”.</p></td>
 </tr>
-<tr class="row-even"><td><p>usrquota</p></td>
+<tr class="row-odd"><td><p>usrquota</p></td>
 <td><p>Enable plain user disk quota accounting.</p></td>
 </tr>
-<tr class="row-odd"><td><p>grpquota</p></td>
+<tr class="row-even"><td><p>grpquota</p></td>
 <td><p>Enable plain group disk quota accounting.</p></td>
 </tr>
-<tr class="row-even"><td><p>prjquota</p></td>
+<tr class="row-odd"><td><p>prjquota</p></td>
 <td><p>Enable plain project quota accounting.</p></td>
 </tr>
-<tr class="row-odd"><td><p>usrjquota=&lt;file&gt;</p></td>
+<tr class="row-even"><td><p>usrjquota=&lt;file&gt;</p></td>
 <td><p>Appoint specified file and type during mount, so that quota</p></td>
 </tr>
-<tr class="row-even"><td><p>grpjquota=&lt;file&gt;</p></td>
+<tr class="row-odd"><td><p>grpjquota=&lt;file&gt;</p></td>
 <td><p>information can be properly updated during recovery flow,</p></td>
 </tr>
-<tr class="row-odd"><td><p>prjjquota=&lt;file&gt;</p></td>
+<tr class="row-even"><td><p>prjjquota=&lt;file&gt;</p></td>
 <td><p>&lt;quota file&gt;: must be in root directory;</p></td>
 </tr>
-<tr class="row-even"><td><p>jqfmt=&lt;quota type&gt;</p></td>
+<tr class="row-odd"><td><p>jqfmt=&lt;quota type&gt;</p></td>
 <td><p>&lt;quota type&gt;: [vfsold,vfsv0,vfsv1].</p></td>
 </tr>
-<tr class="row-odd"><td><p>offusrjquota</p></td>
+<tr class="row-even"><td><p>offusrjquota</p></td>
 <td><p>Turn off user journalled quota.</p></td>
 </tr>
-<tr class="row-even"><td><p>offgrpjquota</p></td>
+<tr class="row-odd"><td><p>offgrpjquota</p></td>
 <td><p>Turn off group journalled quota.</p></td>
 </tr>
-<tr class="row-odd"><td><p>offprjjquota</p></td>
+<tr class="row-even"><td><p>offprjjquota</p></td>
 <td><p>Turn off project journalled quota.</p></td>
 </tr>
-<tr class="row-even"><td><p>quota</p></td>
+<tr class="row-odd"><td><p>quota</p></td>
 <td><p>Enable plain user disk quota accounting.</p></td>
 </tr>
-<tr class="row-odd"><td><p>noquota</p></td>
+<tr class="row-even"><td><p>noquota</p></td>
 <td><p>Disable all plain disk quota option.</p></td>
 </tr>
-<tr class="row-even"><td><p>whint_mode=%s</p></td>
+<tr class="row-odd"><td><p>whint_mode=%s</p></td>
 <td><p>Control which write hints are passed down to block
 layer. This supports “off”, “user-based”, and
 “fs-based”.  In “off” mode (default), f2fs does not pass
@@ -667,11 +688,11 @@ down hints. In “user-based” mode, f2fs tries to pass
 down hints given by users. And in “fs-based” mode, f2fs
 passes down hints with its policy.</p></td>
 </tr>
-<tr class="row-odd"><td><p>alloc_mode=%s</p></td>
+<tr class="row-even"><td><p>alloc_mode=%s</p></td>
 <td><p>Adjust block allocation policy, which supports “reuse”
 and “default”.</p></td>
 </tr>
-<tr class="row-even"><td><p>fsync_mode=%s</p></td>
+<tr class="row-odd"><td><p>fsync_mode=%s</p></td>
 <td><p>Control the policy of fsync. Currently supports “posix”,
 “strict”, and “nobarrier”. In “posix” mode, which is
 default, fsync will follow POSIX semantics and does a
@@ -682,16 +703,16 @@ pass, but the performance will regress. “nobarrier” is
 based on “posix”, but doesn’t issue flush command for
 non-atomic files likewise “nobarrier” mount option.</p></td>
 </tr>
-<tr class="row-odd"><td><p>test_dummy_encryption</p></td>
+<tr class="row-even"><td><p>test_dummy_encryption</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>test_dummy_encryption=%s</p></td>
+<tr class="row-odd"><td><p>test_dummy_encryption=%s</p></td>
 <td><p>Enable dummy encryption, which provides a fake fscrypt
 context. The fake fscrypt context is used by xfstests.
 The argument may be either “v1” or “v2”, in order to
 select the corresponding fscrypt policy version.</p></td>
 </tr>
-<tr class="row-odd"><td><p>checkpoint=%s[:%u[%]]</p></td>
+<tr class="row-even"><td><p>checkpoint=%s[:%u[%]]</p></td>
 <td><p>Set to “disable” to turn off checkpointing. Set to “enable”
 to reenable checkpointing. Is enabled by default. While
 disabled, any unmounting or unexpected shutdowns will cause
@@ -709,7 +730,7 @@ hide up to all remaining free space. The actual space that
 would be unusable can be viewed at /sys/fs/f2fs/&lt;disk&gt;/unusable
 This space is reclaimed once checkpoint=enable.</p></td>
 </tr>
-<tr class="row-even"><td><p>checkpoint_merge</p></td>
+<tr class="row-odd"><td><p>checkpoint_merge</p></td>
 <td><p>When checkpoint is enabled, this can be used to create a kernel
 daemon and make it to merge concurrent checkpoint requests as
 much as possible to eliminate redundant checkpoint issues. Plus,
@@ -721,26 +742,26 @@ to “3”, to give one higher priority than other kernel threads.
 This is the same way to give a I/O priority to the jbd2
 journaling thread of ext4 filesystem.</p></td>
 </tr>
-<tr class="row-odd"><td><p>nocheckpoint_merge</p></td>
+<tr class="row-even"><td><p>nocheckpoint_merge</p></td>
 <td><p>Disable checkpoint merge feature.</p></td>
 </tr>
-<tr class="row-even"><td><p>compress_algorithm=%s</p></td>
+<tr class="row-odd"><td><p>compress_algorithm=%s</p></td>
 <td><p>Control compress algorithm, currently f2fs supports “lzo”,
 “lz4”, “zstd” and “lzo-rle” algorithm.</p></td>
 </tr>
-<tr class="row-odd"><td><p>compress_algorithm=%s:%d</p></td>
+<tr class="row-even"><td><p>compress_algorithm=%s:%d</p></td>
 <td><p>Control compress algorithm and its compress level, now, only
 “lz4” and “zstd” support compress level config.
 algorithm      level range
 lz4            3 - 16
 zstd           1 - 22</p></td>
 </tr>
-<tr class="row-even"><td><p>compress_log_size=%u</p></td>
+<tr class="row-odd"><td><p>compress_log_size=%u</p></td>
 <td><p>Support configuring compress cluster size, the size will
 be 4KB * (1 &lt;&lt; %u), 16KB is minimum size, also it’s
 default size.</p></td>
 </tr>
-<tr class="row-odd"><td><p>compress_extension=%s</p></td>
+<tr class="row-even"><td><p>compress_extension=%s</p></td>
 <td><p>Support adding specified extension, so that f2fs can enable
 compression on those corresponding files, e.g. if all files
 with ‘.ext’ has high compression rate, we can set the ‘.ext’
@@ -750,11 +771,9 @@ For other files, we can still enable compression via ioctl.
 Note that, there is one reserved special extension ‘*’, it
 can be set to enable compression for all files.</p></td>
 </tr>
-<tr class="row-even"><td><p>nocompress_extension=%s</p></td>
-<td><blockquote>
-<div><p>Support adding specified extension, so that f2fs can disable</p>
-</div></blockquote>
-<p>compression on those corresponding files, just contrary to compression extension.
+<tr class="row-odd"><td><p>nocompress_extension=%s</p></td>
+<td><p>Support adding specified extension, so that f2fs can disable
+compression on those corresponding files, just contrary to compression extension.
 If you know exactly which files cannot be compressed, you can use this.
 The same extension name can’t appear in both compress and nocompress
 extension at the same time.
@@ -763,13 +782,12 @@ nocompress extension will be treated as special cases and will not be compressed
 Don’t allow use ‘*’ to specifie all file in nocompress extension.
 After add nocompress_extension, the priority should be:
 dir_flag &lt; comp_extention,nocompress_extension &lt; comp_file_flag,no_comp_file_flag.
-See more in compression sections.</p>
-</td>
+See more in compression sections.</p></td>
 </tr>
-<tr class="row-odd"><td><p>compress_chksum</p></td>
+<tr class="row-even"><td><p>compress_chksum</p></td>
 <td><p>Support verifying chksum of raw data in compressed cluster.</p></td>
 </tr>
-<tr class="row-even"><td><p>compress_mode=%s</p></td>
+<tr class="row-odd"><td><p>compress_mode=%s</p></td>
 <td><p>Control file compression mode. This supports “fs” and “user”
 modes. In “fs” mode (default), f2fs does automatic compression
 on the compression enabled files. In “user” mode, f2fs disables
@@ -778,12 +796,12 @@ choosing the target file and the timing. The user can do manual
 compression/decompression on the compression enabled files using
 ioctls.</p></td>
 </tr>
-<tr class="row-odd"><td><p>compress_cache</p></td>
+<tr class="row-even"><td><p>compress_cache</p></td>
 <td><p>Support to use address space of a filesystem managed inode to
 cache compressed block, in order to improve cache hit ratio of
 random read.</p></td>
 </tr>
-<tr class="row-even"><td><p>inlinecrypt</p></td>
+<tr class="row-odd"><td><p>inlinecrypt</p></td>
 <td><p>When possible, encrypt/decrypt the contents of encrypted
 files using the blk-crypto framework rather than
 filesystem-layer encryption. This allows the use of
@@ -791,11 +809,11 @@ inline encryption hardware. The on-disk format is
 unaffected. For more details, see
 <a class="reference internal" href="../block/inline-encryption.html"><span class="doc">Inline Encryption</span></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p>atgc</p></td>
+<tr class="row-even"><td><p>atgc</p></td>
 <td><p>Enable age-threshold garbage collection, it provides high
 effectiveness and efficiency on background GC.</p></td>
 </tr>
-<tr class="row-even"><td><p>discard_unit=%s</p></td>
+<tr class="row-odd"><td><p>discard_unit=%s</p></td>
 <td><p>Control discard unit, the argument can be “block”, “segment”
 and “section”, issued discard command’s offset/size will be
 aligned to the unit, by default, “discard_unit=block” is set,

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -353,13 +353,22 @@ really happens under the hood.</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">MEMBLOCK_NONE</span></code></dt><dd><p>no special request</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">MEMBLOCK_HOTPLUG</span></code></dt><dd><p>hotpluggable region</p>
+<dt><code class="docutils literal notranslate"><span class="pre">MEMBLOCK_HOTPLUG</span></code></dt><dd><p>memory region indicated in the firmware-provided memory
+map during early boot as hot(un)pluggable system RAM (e.g., memory range
+that might get hotunplugged later). With “movable_node” set on the kernel
+commandline, try keeping this memory region hotunpluggable. Does not apply
+to memblocks added (“hotplugged”) after early boot.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">MEMBLOCK_MIRROR</span></code></dt><dd><p>mirrored region</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">MEMBLOCK_NOMAP</span></code></dt><dd><p>don’t add to kernel direct mapping and treat as
 reserved in the memory map; refer to <a class="reference internal" href="#c.memblock_mark_nomap" title="memblock_mark_nomap"><code class="xref c c-func docutils literal notranslate"><span class="pre">memblock_mark_nomap()</span></code></a> description
 for further details</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">MEMBLOCK_DRIVER_MANAGED</span></code></dt><dd><p>memory region that is always detected and added
+via a driver, and never indicated in the firmware-provided memory map as
+system RAM. This corresponds to IORESOURCE_SYSRAM_DRIVER_MANAGED in the
+kernel resource tree.</p>
 </dd>
 </dl>
 <dl class="c struct">
@@ -996,7 +1005,7 @@ compatible regions are merged) after the addition.</p>
 <p>0 on success, -errno on failure.</p>
 <dl class="c function">
 <dt id="c.memblock_add_node">
-<span class="pre">int</span> <span class="pre">__init_memblock</span> <code class="sig-name descname"><span class="pre">memblock_add_node</span></code><span class="sig-paren">(</span><span class="pre">phys_addr_t</span> <em><span class="pre">base</span></em>, <span class="pre">phys_addr_t</span> <em><span class="pre">size</span></em>, <span class="pre">int</span> <em><span class="pre">nid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memblock_add_node" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">int</span> <span class="pre">__init_memblock</span> <code class="sig-name descname"><span class="pre">memblock_add_node</span></code><span class="sig-paren">(</span><span class="pre">phys_addr_t</span> <em><span class="pre">base</span></em>, <span class="pre">phys_addr_t</span> <em><span class="pre">size</span></em>, <span class="pre">int</span> <em><span class="pre">nid</span></em>, <em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.memblock_flags" title="memblock_flags"><span class="pre">memblock_flags</span></a> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memblock_add_node" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>add new memblock region within a NUMA node</p>
 </dd></dl>
 
@@ -1007,6 +1016,8 @@ compatible regions are merged) after the addition.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">phys_addr_t</span> <span class="pre">size</span></code></dt><dd><p>size of the new region</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">nid</span></code></dt><dd><p>nid of the new region</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">memblock_flags</span> <span class="pre">flags</span></code></dt><dd><p>flags of the new region</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
@@ -1059,8 +1070,8 @@ region inside the range is returned in <strong>*start_rgn</strong> and end in <s
 <p><strong>Return</strong></p>
 <p>0 on success, -errno on failure.</p>
 <dl class="c function">
-<dt id="c.memblock_free_ptr">
-<span class="pre">void</span> <span class="pre">__init_memblock</span> <code class="sig-name descname"><span class="pre">memblock_free_ptr</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">ptr</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memblock_free_ptr" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.memblock_free">
+<span class="pre">void</span> <span class="pre">__init_memblock</span> <code class="sig-name descname"><span class="pre">memblock_free</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">ptr</span></em>, <span class="pre">size_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memblock_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free boot memory allocation</p>
 </dd></dl>
 
@@ -1075,8 +1086,8 @@ region inside the range is returned in <strong>*start_rgn</strong> and end in <s
 <p>Free boot memory block previously allocated by memblock_alloc_xx() API.
 The freeing memory will not be released to the buddy allocator.</p>
 <dl class="c function">
-<dt id="c.memblock_free">
-<span class="pre">int</span> <span class="pre">__init_memblock</span> <code class="sig-name descname"><span class="pre">memblock_free</span></code><span class="sig-paren">(</span><span class="pre">phys_addr_t</span> <em><span class="pre">base</span></em>, <span class="pre">phys_addr_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memblock_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.memblock_phys_free">
+<span class="pre">int</span> <span class="pre">__init_memblock</span> <code class="sig-name descname"><span class="pre">memblock_phys_free</span></code><span class="sig-paren">(</span><span class="pre">phys_addr_t</span> <em><span class="pre">base</span></em>, <span class="pre">phys_addr_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memblock_phys_free" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free boot memory block</p>
 </dd></dl>
 
@@ -1499,8 +1510,8 @@ info), if enabled. This function zeroes the allocated memory.</p>
 <p><strong>Return</strong></p>
 <p>Virtual address of allocated memory block on success, NULL on failure.</p>
 <dl class="c function">
-<dt id="c.__memblock_free_late">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__memblock_free_late</span></code><span class="sig-paren">(</span><span class="pre">phys_addr_t</span> <em><span class="pre">base</span></em>, <span class="pre">phys_addr_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__memblock_free_late" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.memblock_free_late">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">memblock_free_late</span></code><span class="sig-paren">(</span><span class="pre">phys_addr_t</span> <em><span class="pre">base</span></em>, <span class="pre">phys_addr_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.memblock_free_late" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>free pages directly to buddy allocator</p>
 </dd></dl>
 

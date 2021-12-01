@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -325,6 +325,29 @@ requests into DC requests, and DC responses into DRM responses.</p>
 </dd>
 </dl>
 <dl class="c struct">
+<dt id="c.dmub_hpd_work">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">dmub_hpd_work</span></code><a class="headerlink" href="#c.dmub_hpd_work" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Handle time consuming work in low priority outbox IRQ</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct dmub_hpd_work {
+  struct work_struct handle_hpd_work;
+  struct dmub_notification *dmub_notify;
+  struct amdgpu_device *adev;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">handle_hpd_work</span></code></dt><dd><p>Work to be executed in a separate thread to handle hpd_low_irq</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dmub_notify</span></code></dt><dd><p>notification for callback function</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">adev</span></code></dt><dd><p>amdgpu_device pointer</p>
+</dd>
+</dl>
+<dl class="c struct">
 <dt id="c.vblank_control_work">
 <em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">vblank_control_work</span></code><a class="headerlink" href="#c.vblank_control_work" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Work data for vblank control</p>
@@ -419,6 +442,56 @@ in nits.</p>
 </dd>
 </dl>
 <dl class="c struct">
+<dt id="c.hpd_rx_irq_offload_work_queue">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">hpd_rx_irq_offload_work_queue</span></code><a class="headerlink" href="#c.hpd_rx_irq_offload_work_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Work queue to handle hpd_rx_irq offload work</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct hpd_rx_irq_offload_work_queue {
+  struct workqueue_struct *wq;
+  spinlock_t offload_lock;
+  bool is_handling_link_loss;
+  struct amdgpu_dm_connector *aconnector;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">wq</span></code></dt><dd><p>workqueue structure to queue offload work.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">offload_lock</span></code></dt><dd><p>To protect fields of offload work queue.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">is_handling_link_loss</span></code></dt><dd><p>Used to prevent inserting link loss event when
+we’re handling link loss</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">aconnector</span></code></dt><dd><p>The aconnector that this work queue is attached to</p>
+</dd>
+</dl>
+<dl class="c struct">
+<dt id="c.hpd_rx_irq_offload_work">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">hpd_rx_irq_offload_work</span></code><a class="headerlink" href="#c.hpd_rx_irq_offload_work" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>hpd_rx_irq offload work structure</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct hpd_rx_irq_offload_work {
+  struct work_struct work;
+  union hpd_irq_data data;
+  struct hpd_rx_irq_offload_work_queue *offload_wq;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">work</span></code></dt><dd><p>offload work</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">data</span></code></dt><dd><p>reference irq data which is used while handling offload work</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">offload_wq</span></code></dt><dd><p>offload work queue that this work is queued to</p>
+</dd>
+</dl>
+<dl class="c struct">
 <dt id="c.amdgpu_display_manager">
 <em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">amdgpu_display_manager</span></code><a class="headerlink" href="#c.amdgpu_display_manager" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Central amdgpu display manager device</p>
@@ -429,6 +502,8 @@ in nits.</p>
   struct dc *dc;
   struct dmub_srv *dmub_srv;
   struct dmub_notification *dmub_notify;
+  dmub_notify_interrupt_callback_t dmub_callback[AMDGPU_DMUB_NOTIFICATION_MAX];
+  bool dmub_thread_offload[AMDGPU_DMUB_NOTIFICATION_MAX];
   struct dmub_srv_fb_info *dmub_fb_info;
   const struct firmware *dmub_fw;
   struct amdgpu_bo *dmub_bo;
@@ -479,12 +554,14 @@ in nits.</p>
 #if defined(CONFIG_DRM_AMD_SECURE_DISPLAY);
   struct crc_rd_work *crc_rd_wrk;
 #endif;
+  struct hpd_rx_irq_offload_work_queue *hpd_rx_offload_wq;
   struct amdgpu_encoder mst_encoders[AMDGPU_DM_MAX_CRTC];
   bool force_timing_sync;
   bool disable_hpd_irq;
   bool dmcub_trace_event_en;
   struct list_head da_list;
   struct completion dmub_aux_transfer_done;
+  struct workqueue_struct *delayed_hpd_wq;
   u32 brightness[AMDGPU_DM_MAX_NUM_EDP];
 };
 </pre></div>
@@ -496,6 +573,12 @@ in nits.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">dmub_srv</span></code></dt><dd><p>DMUB service, used for controlling the DMUB on hardware
 that supports it. The pointer to the dmub_srv will be
 NULL on hardware that does not support it.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dmub_notify</span></code></dt><dd><p>Notification from DMUB.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dmub_callback</span></code></dt><dd><p>Callback functions to handle notification from DMUB.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dmub_thread_offload</span></code></dt><dd><p>Flag to indicate if callback is offload.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">dmub_fb_info</span></code></dt><dd><p>Framebuffer regions for the DMUB.</p>
 </dd>
@@ -590,6 +673,8 @@ available in FW</p>
 <dt><code class="docutils literal notranslate"><span class="pre">active_vblank_irq_count</span></code></dt><dd><p>number of currently active vblank irqs</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">crc_rd_wrk</span></code></dt><dd><p>Work to be executed in a separate thread to communicate with PSP.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">hpd_rx_offload_wq</span></code></dt><dd><p>Work queue to offload works of hpd_rx_irq</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">mst_encoders</span></code></dt><dd><p>fake encoders used for DP MST.</p>
 </dd>
@@ -954,7 +1039,7 @@ respectively:</p>
 <li><p>Cinema HFR (48 FPS)</p></li>
 <li><p>TV/PAL (50 FPS)</p></li>
 <li><p>Commonly used (60 FPS)</p></li>
-<li><p>Multiples of 24 (48,72,96 FPS)</p></li>
+<li><p>Multiples of 24 (48,72,96,120 FPS)</p></li>
 </ul>
 <p>The list of standards video format is not huge and can be added to the
 connector modeset list beforehand. With that, userspace can leverage

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -179,6 +179,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-eeprom-get">MODULE_EEPROM_GET</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#stats-get">STATS_GET</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#phc-vclocks-get">PHC_VCLOCKS_GET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-get">MODULE_GET</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-set">MODULE_SET</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#request-translation">Request translation</a></li>
 </ul>
 </li>
@@ -255,18 +257,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ppp_generic.html">PPP Generic Driver and Channel Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="proc_net_tcp.html">The proc/net/tcp and proc/net/tcp6 variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="radiotap-headers.html">How to use radiotap headers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#rds-architecture">RDS Architecture</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#socket-interface">Socket Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#rdma-for-rds">RDMA for RDS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#congestion-notifications">Congestion Notifications</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#rds-protocol">RDS Protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#rds-transport-layer">RDS Transport Layer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#rds-kernel-structures">RDS Kernel Structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#connection-management">Connection management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#the-send-path">The send path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#the-recv-path">The recv path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rds.html#multipath-rds-mprds">Multipath RDS (mprds)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rds.html">RDS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="regulatory.html">Linux wireless regulatory documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rxrpc.html">RxRPC Network Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rxrpc.html#socket-options">SOCKET OPTIONS</a></li>
@@ -439,6 +430,10 @@ In the tables below, “bool” denotes NLA_U8 attributes interpreted in this wa
 <p>In the message structure descriptions below, if an attribute name is suffixed
 with “+”, parent nest can contain multiple attributes of the same type. This
 implements an array of entries.</p>
+<p>Attributes that need to be filled-in by device drivers and that are dumped to
+user space based on whether they are valid or not should not use zero as a
+valid value. This avoids the need to explicitly signal the validity of the
+attribute in the device driver API.</p>
 </section>
 <section id="request-header">
 <h2>Request header<a class="headerlink" href="#request-header" title="Permalink to this headline">¶</a></h2>
@@ -663,8 +658,8 @@ according to message purpose:</p>
 <blockquote>
 <div><table class="docutils align-default">
 <colgroup>
-<col style="width: 54%" />
-<col style="width: 46%" />
+<col style="width: 53%" />
+<col style="width: 47%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_STRSET_GET</span></code></p></td>
@@ -765,6 +760,12 @@ according to message purpose:</p>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_PHC_VCLOCKS_GET</span></code></p></td>
 <td><p>get PHC virtual clocks info</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_MODULE_SET</span></code></p></td>
+<td><p>set transceiver module parameters</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_MODULE_GET</span></code></p></td>
+<td><p>get transceiver module parameters</p></td>
 </tr>
 </tbody>
 </table>
@@ -878,6 +879,9 @@ according to message purpose:</p>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_PHC_VCLOCKS_GET_REPLY</span></code></p></td>
 <td><p>PHC virtual clocks info</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_MODULE_GET_REPLY</span></code></p></td>
+<td><p>transceiver module parameters</p></td>
 </tr>
 </tbody>
 </table>
@@ -1371,6 +1375,9 @@ power required from cable or module</p></td>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_LINK_EXT_STATE_OVERHEAT</span></code></p></td>
 <td><p>The module is overheated</p></td>
 </tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_LINK_EXT_STATE_MODULE</span></code></p></td>
+<td><p>Transceiver module issue</p></td>
+</tr>
 </tbody>
 </table>
 </div></blockquote>
@@ -1508,6 +1515,20 @@ analog loss of signal.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_LINK_EXT_SUBSTATE_CI_CABLE_TEST_FAILURE</span></code></p></td>
 <td><p>Cable test failure</p></td>
+</tr>
+</tbody>
+</table>
+<p>Transceiver module issue substates:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 54%" />
+<col style="width: 46%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_LINK_EXT_SUBSTATE_MODULE_CMIS_NOT_READY</span></code></p></td>
+<td><p>The CMIS Module State Machine did not reach
+the ModuleReady state. For example, if the
+module is stuck at ModuleFault state</p></td>
 </tr>
 </tbody>
 </table>
@@ -3432,6 +3453,118 @@ contain the following attributes:</p>
 </table>
 </div></blockquote>
 </section>
+<section id="module-get">
+<h2>MODULE_GET<a class="headerlink" href="#module-get" title="Permalink to this headline">¶</a></h2>
+<p>Gets transceiver module parameters.</p>
+<p>Request contents:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 54%" />
+<col style="width: 9%" />
+<col style="width: 38%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_MODULE_HEADER</span></code></p></td>
+<td><p>nested</p></td>
+<td><p>request header</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Kernel response contents:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 54%" />
+<col style="width: 9%" />
+<col style="width: 37%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_MODULE_HEADER</span></code></p></td>
+<td><p>nested</p></td>
+<td><p>reply header</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_MODULE_POWER_MODE_POLICY</span></code></p></td>
+<td><p>u8</p></td>
+<td><p>power mode policy</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_MODULE_POWER_MODE</span></code></p></td>
+<td><p>u8</p></td>
+<td><p>operational power mode</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_MODULE_POWER_MODE_POLICY</span></code> attribute encodes the
+transceiver module power mode policy enforced by the host. The default policy
+is driver-dependent, but “auto” is the recommended default and it should be
+implemented by new drivers and drivers where conformance to a legacy behavior
+is not critical.</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">ETHTHOOL_A_MODULE_POWER_MODE</span></code> attribute encodes the operational
+power mode policy of the transceiver module. It is only reported when a module
+is plugged-in. Possible values are:</p>
+<dl class="c enum">
+<dt id="c.ethtool_module_power_mode">
+<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">ethtool_module_power_mode</span></code><a class="headerlink" href="#c.ethtool_module_power_mode" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>plug-in module power mode</p>
+</dd></dl>
+
+<p><strong>Constants</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MODULE_POWER_MODE_LOW</span></code></dt><dd><p>Module is in low power mode.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MODULE_POWER_MODE_HIGH</span></code></dt><dd><p>Module is in high power mode.</p>
+</dd>
+</dl>
+</section>
+<section id="module-set">
+<h2>MODULE_SET<a class="headerlink" href="#module-set" title="Permalink to this headline">¶</a></h2>
+<p>Sets transceiver module parameters.</p>
+<p>Request contents:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 54%" />
+<col style="width: 9%" />
+<col style="width: 37%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_MODULE_HEADER</span></code></p></td>
+<td><p>nested</p></td>
+<td><p>request header</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_MODULE_POWER_MODE_POLICY</span></code></p></td>
+<td><p>u8</p></td>
+<td><p>power mode policy</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>When set, the optional <code class="docutils literal notranslate"><span class="pre">ETHTOOL_A_MODULE_POWER_MODE_POLICY</span></code> attribute is used
+to set the transceiver module power policy enforced by the host. Possible
+values are:</p>
+<dl class="c enum">
+<dt id="c.ethtool_module_power_mode_policy">
+<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">ethtool_module_power_mode_policy</span></code><a class="headerlink" href="#c.ethtool_module_power_mode_policy" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>plug-in module power mode policy</p>
+</dd></dl>
+
+<p><strong>Constants</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MODULE_POWER_MODE_POLICY_HIGH</span></code></dt><dd><p>Module is always in high power mode.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MODULE_POWER_MODE_POLICY_AUTO</span></code></dt><dd><p>Module is transitioned by the host
+to high power mode when the first port using it is put administratively
+up and to low power mode when the last port using it is put
+administratively down.</p>
+</dd>
+</dl>
+<p>For SFF-8636 modules, low power mode is forced by the host according to table
+6-10 in revision 2.10a of the specification.</p>
+<p>For CMIS modules, low power mode is forced by the host according to table 6-12
+in revision 5.0 of the specification.</p>
+</section>
 <section id="request-translation">
 <h2>Request translation<a class="headerlink" href="#request-translation" title="Permalink to this headline">¶</a></h2>
 <p>The following table maps ioctl commands to netlink commands providing their
@@ -3705,6 +3838,12 @@ are netlink only.</p>
 </tr>
 <tr class="row-odd"><td><p>n/a</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_PHC_VCLOCKS_GET</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>n/a</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_MODULE_GET</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>n/a</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ETHTOOL_MSG_MODULE_SET</span></code></p></td>
 </tr>
 </tbody>
 </table>

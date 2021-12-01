@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -132,6 +132,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../edid.html">EDID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../efi-stub.html">The EFI Boot Stub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ext4.html">ext4 General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../filesystem-monitoring.html">File system Monitoring with fanotify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nfs/index.html">NFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpio/index.html">gpio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../highuid.html">Notes on the change from 16-bit UIDs to 32-bit UIDs</a></li>
@@ -165,12 +166,15 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Examining Process Page Tables</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#short-descriptions-to-the-page-flags">Short descriptions to the page flags</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#using-pagemap-to-do-something-useful">Using pagemap to do something useful</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exceptions-for-shared-memory">Exceptions for Shared Memory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#other-notes">Other notes</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="soft-dirty.html">Soft-Dirty PTEs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="swap_numa.html">Automatically bind swap device to numa node</a></li>
 <li class="toctree-l3"><a class="reference internal" href="transhuge.html">Transparent Hugepage Support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="userfaultfd.html">Userfaultfd</a></li>
+<li class="toctree-l3"><a class="reference internal" href="zswap.html">zswap</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../module-signing.html">Kernel module signing facility</a></li>
@@ -436,13 +440,14 @@ CONFIG_MEMCG is set.</p></li>
 <section id="short-descriptions-to-the-page-flags">
 <h2>Short descriptions to the page flags<a class="headerlink" href="#short-descriptions-to-the-page-flags" title="Permalink to this headline">¶</a></h2>
 <dl class="simple">
-<dt>0 - LOCKED</dt><dd><p>page is being locked for exclusive access, e.g. by undergoing read/write IO</p>
+<dt>0 - LOCKED</dt><dd><p>The page is being locked for exclusive access, e.g. by undergoing read/write
+IO.</p>
 </dd>
-<dt>7 - SLAB</dt><dd><p>page is managed by the SLAB/SLOB/SLUB/SLQB kernel memory allocator
+<dt>7 - SLAB</dt><dd><p>The page is managed by the SLAB/SLOB/SLUB/SLQB kernel memory allocator.
 When compound page is used, SLUB/SLQB will only set this flag on the head
 page; SLOB will not flag it at all.</p>
 </dd>
-<dt>10 - BUDDY</dt><dd><p>a free memory block managed by the buddy system allocator
+<dt>10 - BUDDY</dt><dd><p>A free memory block managed by the buddy system allocator.
 The buddy system organizes free memory in blocks of various orders.
 An order N block has 2^N physically contiguous pages, with the BUDDY flag
 set for and _only_ for the first page.</p>
@@ -458,66 +463,66 @@ to end users.</p>
 </dd>
 <dt>16 - COMPOUND_TAIL</dt><dd><p>A compound page tail (see description above).</p>
 </dd>
-<dt>17 - HUGE</dt><dd><p>this is an integral part of a HugeTLB page</p>
+<dt>17 - HUGE</dt><dd><p>This is an integral part of a HugeTLB page.</p>
 </dd>
-<dt>19 - HWPOISON</dt><dd><p>hardware detected memory corruption on this page: don’t touch the data!</p>
+<dt>19 - HWPOISON</dt><dd><p>Hardware detected memory corruption on this page: don’t touch the data!</p>
 </dd>
-<dt>20 - NOPAGE</dt><dd><p>no page frame exists at the requested address</p>
+<dt>20 - NOPAGE</dt><dd><p>No page frame exists at the requested address.</p>
 </dd>
-<dt>21 - KSM</dt><dd><p>identical memory pages dynamically shared between one or more processes</p>
+<dt>21 - KSM</dt><dd><p>Identical memory pages dynamically shared between one or more processes.</p>
 </dd>
-<dt>22 - THP</dt><dd><p>contiguous pages which construct transparent hugepages</p>
+<dt>22 - THP</dt><dd><p>Contiguous pages which construct transparent hugepages.</p>
 </dd>
-<dt>23 - OFFLINE</dt><dd><p>page is logically offline</p>
+<dt>23 - OFFLINE</dt><dd><p>The page is logically offline.</p>
 </dd>
-<dt>24 - ZERO_PAGE</dt><dd><p>zero page for pfn_zero or huge_zero page</p>
+<dt>24 - ZERO_PAGE</dt><dd><p>Zero page for pfn_zero or huge_zero page.</p>
 </dd>
-<dt>25 - IDLE</dt><dd><p>page has not been accessed since it was marked idle (see
+<dt>25 - IDLE</dt><dd><p>The page has not been accessed since it was marked idle (see
 <a class="reference internal" href="idle_page_tracking.html#idle-page-tracking"><span class="std std-ref"><a class="reference internal" href="idle_page_tracking.html"><span class="doc">Idle Page Tracking</span></a></span></a>).
 Note that this flag may be stale in case the page was accessed via
 a PTE. To make sure the flag is up-to-date one has to read
 <code class="docutils literal notranslate"><span class="pre">/sys/kernel/mm/page_idle/bitmap</span></code> first.</p>
 </dd>
-<dt>26 - PGTABLE</dt><dd><p>page is in use as a page table</p>
+<dt>26 - PGTABLE</dt><dd><p>The page is in use as a page table.</p>
 </dd>
 </dl>
 <section id="io-related-page-flags">
 <h3>IO related page flags<a class="headerlink" href="#io-related-page-flags" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
-<dt>1 - ERROR</dt><dd><p>IO error occurred</p>
+<dt>1 - ERROR</dt><dd><p>IO error occurred.</p>
 </dd>
-<dt>3 - UPTODATE</dt><dd><p>page has up-to-date data
+<dt>3 - UPTODATE</dt><dd><p>The page has up-to-date data.
 ie. for file backed page: (in-memory data revision &gt;= on-disk one)</p>
 </dd>
-<dt>4 - DIRTY</dt><dd><p>page has been written to, hence contains new data
+<dt>4 - DIRTY</dt><dd><p>The page has been written to, hence contains new data.
 i.e. for file backed page: (in-memory data revision &gt;  on-disk one)</p>
 </dd>
-<dt>8 - WRITEBACK</dt><dd><p>page is being synced to disk</p>
+<dt>8 - WRITEBACK</dt><dd><p>The page is being synced to disk.</p>
 </dd>
 </dl>
 </section>
 <section id="lru-related-page-flags">
 <h3>LRU related page flags<a class="headerlink" href="#lru-related-page-flags" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
-<dt>5 - LRU</dt><dd><p>page is in one of the LRU lists</p>
+<dt>5 - LRU</dt><dd><p>The page is in one of the LRU lists.</p>
 </dd>
-<dt>6 - ACTIVE</dt><dd><p>page is in the active LRU list</p>
+<dt>6 - ACTIVE</dt><dd><p>The page is in the active LRU list.</p>
 </dd>
-<dt>18 - UNEVICTABLE</dt><dd><p>page is in the unevictable (non-)LRU list It is somehow pinned and
+<dt>18 - UNEVICTABLE</dt><dd><p>The page is in the unevictable (non-)LRU list It is somehow pinned and
 not a candidate for LRU page reclaims, e.g. ramfs pages,
-shmctl(SHM_LOCK) and mlock() memory segments</p>
+shmctl(SHM_LOCK) and mlock() memory segments.</p>
 </dd>
-<dt>2 - REFERENCED</dt><dd><p>page has been referenced since last LRU list enqueue/requeue</p>
+<dt>2 - REFERENCED</dt><dd><p>The page has been referenced since last LRU list enqueue/requeue.</p>
 </dd>
-<dt>9 - RECLAIM</dt><dd><p>page will be reclaimed soon after its pageout IO completed</p>
+<dt>9 - RECLAIM</dt><dd><p>The page will be reclaimed soon after its pageout IO completed.</p>
 </dd>
-<dt>11 - MMAP</dt><dd><p>a memory mapped page</p>
+<dt>11 - MMAP</dt><dd><p>A memory mapped page.</p>
 </dd>
-<dt>12 - ANON</dt><dd><p>a memory mapped page that is not part of a file</p>
+<dt>12 - ANON</dt><dd><p>A memory mapped page that is not part of a file.</p>
 </dd>
-<dt>13 - SWAPCACHE</dt><dd><p>page is mapped to swap space, i.e. has an associated swap entry</p>
+<dt>13 - SWAPCACHE</dt><dd><p>The page is mapped to swap space, i.e. has an associated swap entry.</p>
 </dd>
-<dt>14 - SWAPBACKED</dt><dd><p>page is backed by swap/RAM</p>
+<dt>14 - SWAPBACKED</dt><dd><p>The page is backed by swap/RAM.</p>
 </dd>
 </dl>
 <p>The page-types tool in the tools/vm directory can be used to query the
@@ -545,6 +550,23 @@ memory that a process is using that is not shared with any other process,
 you can go through every map in the process, find the PFNs, look those up
 in kpagecount, and tally up the number of pages that are only referenced
 once.</p>
+</section>
+<section id="exceptions-for-shared-memory">
+<h2>Exceptions for Shared Memory<a class="headerlink" href="#exceptions-for-shared-memory" title="Permalink to this headline">¶</a></h2>
+<p>Page table entries for shared pages are cleared when the pages are zapped or
+swapped out. This makes swapped out pages indistinguishable from never-allocated
+ones.</p>
+<p>In kernel space, the swap location can still be retrieved from the page cache.
+However, values stored only on the normal PTE get lost irretrievably when the
+page is swapped out (i.e. SOFT_DIRTY).</p>
+<p>In user space, whether the page is present, swapped or none can be deduced with
+the help of lseek and/or mincore system calls.</p>
+<p>lseek() can differentiate between accessed pages (present or swapped out) and
+holes (none/non-allocated) by specifying the SEEK_DATA flag on the file where
+the pages are backed. For anonymous shared pages, the file can be found in
+<code class="docutils literal notranslate"><span class="pre">/proc/pid/map_files/</span></code>.</p>
+<p>mincore() can differentiate between pages in memory (present, including swap
+cache) and out of memory (swapped out or none/non-allocated).</p>
 </section>
 <section id="other-notes">
 <h2>Other notes<a class="headerlink" href="#other-notes" title="Permalink to this headline">¶</a></h2>

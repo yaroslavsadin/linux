@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -481,7 +481,7 @@ jfs, etc will work too.</p>
 </div>
 <p>debootstrap does not set up the root password, fstab, hostname or
 anything related to networking. It is up to the user to do that.</p>
-<p>Set the root password -t he easiest way to do that is to chroot into the
+<p>Set the root password - the easiest way to do that is to chroot into the
 mounted image:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># chroot /mnt
 # passwd
@@ -497,7 +497,7 @@ will be empty and it needs an entry for the root file system:</p>
 </pre></div>
 </div>
 <p>The image hostname will be set to the same as the host on which you
-are creating it image. It is a good idea to change that to avoid
+are creating its image. It is a good idea to change that to avoid
 “Oh, bummer, I rebooted the wrong machine”.</p>
 <p>UML supports two classes of network devices - the older uml_net ones
 which are scheduled for obsoletion. These are called ethX. It also
@@ -512,7 +512,7 @@ iface eth0 inet dhcp
 
 # vector UML network devices
 auto vec0
-iface eth0 inet dhcp
+iface vec0 inet dhcp
 </pre></div>
 </div>
 <p>We now have a UML image which is nearly ready to run, all we need is a
@@ -528,7 +528,12 @@ directory to the mounted UML filesystem:</p>
 </div>
 <p>If you have compiled your own kernel, you need to use the usual “install
 modules to a location” procedure by running:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># make install MODULES_DIR=/mnt/lib/modules
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># make INSTALL_MOD_PATH=/mnt/lib/modules modules_install
+</pre></div>
+</div>
+<p>This will install modules into /mnt/lib/modules/$(KERNELRELEASE).
+To specify the full module installation path, use:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># make MODLIB=/mnt/lib/modules modules_install
 </pre></div>
 </div>
 <p>At this point the image is ready to be brought up.</p>
@@ -537,7 +542,7 @@ modules to a location” procedure by running:</p>
 <section id="setting-up-uml-networking">
 <h2><a class="toc-backref" href="#id8">Setting Up UML Networking</a><a class="headerlink" href="#setting-up-uml-networking" title="Permalink to this headline">¶</a></h2>
 <p>UML networking is designed to emulate an Ethernet connection. This
-connection may be either a point-to-point (similar to a connection
+connection may be either point-to-point (similar to a connection
 between machines using a back-to-back cable) or a connection to a
 switch. UML supports a wide variety of means to build these
 connections to all of: local machine, remote machine(s), local and
@@ -629,7 +634,7 @@ remote UML and other VM instances.</p>
 approaching 10G on TCP streams.</p></li>
 <li><p>All transports which have multi-packet rx and/or tx can deliver pps
 rates of up to 1Mps or more.</p></li>
-<li><p>All legacy transports are generally limited to ~600-700MBit and 0.05Mps</p></li>
+<li><p>All legacy transports are generally limited to ~600-700MBit and 0.05Mps.</p></li>
 <li><p>GRE and L2TPv3 allow connections to all of: local machine, remote
 machines, remote network devices and remote UML instances.</p></li>
 <li><p>Socket allows connections only between UML instances.</p></li>
@@ -646,7 +651,7 @@ is required to fire an ioctl to setup the tun interface and/or use
 raw sockets where needed.</p>
 <p>This can be achieved by granting the user a particular capability instead
 of running UML as root.  In case of vector transport, a user can add the
-capability <code class="docutils literal notranslate"><span class="pre">CAP_NET_ADMIN</span></code> or <code class="docutils literal notranslate"><span class="pre">CAP_NET_RAW</span></code>, to the uml binary.
+capability <code class="docutils literal notranslate"><span class="pre">CAP_NET_ADMIN</span></code> or <code class="docutils literal notranslate"><span class="pre">CAP_NET_RAW</span></code> to the uml binary.
 Thenceforth, UML can be run with normal user privilges, along with
 full networking.</p>
 <p>For example:</p>
@@ -672,7 +677,7 @@ system call. The default number is 64 and is generally sufficient
 for most applications that need throughput in the 2-4 Gbit range.
 Higher speeds may require larger values.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">mac=XX:XX:XX:XX:XX</span></code> - sets the interface MAC address value.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">gro=[0,1]</span></code> - sets GRO on or off. Enables receive/transmit offloads.
+<li><p><code class="docutils literal notranslate"><span class="pre">gro=[0,1]</span></code> - sets GRO off or on. Enables receive/transmit offloads.
 The effect of this option depends on the host side support in the transport
 which is being configured. In most cases it will enable TCP segmentation and
 RX/TX checksumming offloads. The setting must be identical on the host side
@@ -684,7 +689,7 @@ operate correctly.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">mtu=int</span></code> - sets the interface MTU</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">headroom=int</span></code> - adjusts the default headroom (32 bytes) reserved
 if a packet will need to be re-encapsulated into for instance VXLAN.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">vec=0</span></code> - disable multipacket io and fall back to packet at a
+<li><p><code class="docutils literal notranslate"><span class="pre">vec=0</span></code> - disable multipacket IO and fall back to packet at a
 time mode</p></li>
 </ul>
 </section>
@@ -712,7 +717,7 @@ arguments resolve/parse to.</p></li>
 </div>
 <p>This will connect vec0 to tap0 on the host. Tap0 must already exist (for example
 created using tunctl) and UP.</p>
-<p>tap0 can be configured as a point-to-point interface and given an ip
+<p>tap0 can be configured as a point-to-point interface and given an IP
 address so that UML can talk to the host. Alternatively, it is possible
 to connect UML to a tap interface which is connected to a bridge.</p>
 <p>While tap relies on the vector infrastructure, it is not a true vector
@@ -736,7 +741,7 @@ UML user using tunctl. Example <code class="docutils literal notranslate"><span 
 </div>
 <p>This is an experimental/demo transport which couples tap for transmit
 and a raw socket for receive. The raw socket allows multi-packet
-receive resulting in significantly higher packet rates than normal tap</p>
+receive resulting in significantly higher packet rates than normal tap.</p>
 <p>Privileges required: hybrid requires <code class="docutils literal notranslate"><span class="pre">CAP_NET_RAW</span></code> capability by
 the UML user as well as the requirements for the tap transport.</p>
 </section>
@@ -793,9 +798,9 @@ capability.</p>
 endpoint at host dst_host. <code class="docutils literal notranslate"><span class="pre">GRE</span></code> supports the following additional
 options:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">rx_key=int</span></code> - GRE 32 bit integer key for rx packets, if set,
+<li><p><code class="docutils literal notranslate"><span class="pre">rx_key=int</span></code> - GRE 32-bit integer key for rx packets, if set,
 <code class="docutils literal notranslate"><span class="pre">txkey</span></code> must be set too</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tx_key=int</span></code> - GRE 32 bit integer key for tx packets, if set
+<li><p><code class="docutils literal notranslate"><span class="pre">tx_key=int</span></code> - GRE 32-bit integer key for tx packets, if set
 <code class="docutils literal notranslate"><span class="pre">rx_key</span></code> must be set too</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sequence=[0,1]</span></code> - enable GRE sequence</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pin_sequence=[0,1]</span></code> - pretend that the sequence is always reset
@@ -806,11 +811,11 @@ implementations)</p></li>
 </ul>
 <p>GRE has a number of caveats:</p>
 <ul class="simple">
-<li><p>You can use only one GRE connection per ip address. There is no way to
+<li><p>You can use only one GRE connection per IP address. There is no way to
 multiplex connections as each GRE tunnel is terminated directly on
 the UML instance.</p></li>
 <li><p>The key is not really a security feature. While it was intended as such
-it’s “security” is laughable. It is, however, a useful feature to
+its “security” is laughable. It is, however, a useful feature to
 ensure that the tunnel is not misconfigured.</p></li>
 </ul>
 <p>An example configuration for a Linux host with a local address of
@@ -845,18 +850,18 @@ connect the UML instance to a L2TPv3 endpoint at host $dst_host using
 the L2TPv3 UDP flavour and UDP destination port $dst_port.</p>
 <p>L2TPv3 always requires the following additional options:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">rx_session=int</span></code> - l2tpv3 32 bit integer session for rx packets</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tx_session=int</span></code> - l2tpv3 32 bit integer session for tx packets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rx_session=int</span></code> - l2tpv3 32-bit integer session for rx packets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tx_session=int</span></code> - l2tpv3 32-bit integer session for tx packets</p></li>
 </ul>
 <p>As the tunnel is fixed these are not negotiated and they are
 preconfigured on both ends.</p>
-<p>Additionally, L2TPv3 supports the following optional parameters</p>
+<p>Additionally, L2TPv3 supports the following optional parameters.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">rx_cookie=int</span></code> - l2tpv3 32 bit integer cookie for rx packets - same
+<li><p><code class="docutils literal notranslate"><span class="pre">rx_cookie=int</span></code> - l2tpv3 32-bit integer cookie for rx packets - same
 functionality as GRE key, more to prevent misconfiguration than provide
 actual security</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tx_cookie=int</span></code> - l2tpv3 32 bit integer cookie for tx packets</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">cookie64=[0,1]</span></code> - use 64 bit cookies instead of 32 bit.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tx_cookie=int</span></code> - l2tpv3 32-bit integer cookie for tx packets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cookie64=[0,1]</span></code> - use 64-bit cookies instead of 32-bit.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">counter=[0,1]</span></code> - enable l2tpv3 counter</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pin_counter=[0,1]</span></code> - pretend that the counter is always reset on
 each packet (needed to interoperate with some really broken
@@ -866,12 +871,12 @@ implementations)</p></li>
 </ul>
 <p>L2TPv3 has a number of caveats:</p>
 <ul class="simple">
-<li><p>you can use only one connection per ip address in raw mode. There is
+<li><p>you can use only one connection per IP address in raw mode. There is
 no way to multiplex connections as each L2TPv3 tunnel is terminated
 directly on the UML instance. UDP mode can use different ports for
 this purpose.</p></li>
 </ul>
-<p>Here is an example of how to configure a linux host to connect to UML
+<p>Here is an example of how to configure a Linux host to connect to UML
 via L2TPv3:</p>
 <p><strong>/etc/network/interfaces</strong>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>auto l2tp1
@@ -923,21 +928,21 @@ distribution or a custom built kernel has been installed on the host.</p>
 <p>These add an executable called linux to the system. This is the UML
 kernel. It can be run just like any other executable.
 It will take most normal linux kernel arguments as command line
-arguments.  Additionally, it will need some UML specific arguments
+arguments.  Additionally, it will need some UML-specific arguments
 in order to do something useful.</p>
 <section id="arguments">
 <h3><a class="toc-backref" href="#id21">Arguments</a><a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h3>
 <section id="mandatory-arguments">
 <h4><a class="toc-backref" href="#id22">Mandatory Arguments:</a><a class="headerlink" href="#mandatory-arguments" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">mem=int[K,M,G]</span></code> - amount of memory. By default bytes. It will
+<li><p><code class="docutils literal notranslate"><span class="pre">mem=int[K,M,G]</span></code> - amount of memory. By default in bytes. It will
 also accept K, M or G qualifiers.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ubdX[s,d,c,t]=</span></code> virtual disk specification. This is not really
 mandatory, but it is likely to be needed in nearly all cases so we can
 specify a root file system.
 The simplest possible image specification is the name of the image
 file for the filesystem (created using one of the methods described
-in <a class="reference internal" href="#creating-an-image">Creating an image</a>)</p>
+in <a class="reference internal" href="#creating-an-image">Creating an image</a>).</p>
 <ul>
 <li><p>UBD devices support copy on write (COW). The changes are kept in
 a separate file which can be discarded allowing a rollback to the
@@ -946,13 +951,13 @@ specified as: <code class="docutils literal notranslate"><span class="pre">cow_f
 Example:<code class="docutils literal notranslate"><span class="pre">ubd0=Filesystem.cow,Filesystem.img</span></code></p></li>
 <li><p>UBD devices can be set to use synchronous IO. Any writes are
 immediately flushed to disk. This is done by adding <code class="docutils literal notranslate"><span class="pre">s</span></code> after
-the <code class="docutils literal notranslate"><span class="pre">ubdX</span></code> specification</p></li>
-<li><p>UBD performs some euristics on devices specified as a single
+the <code class="docutils literal notranslate"><span class="pre">ubdX</span></code> specification.</p></li>
+<li><p>UBD performs some heuristics on devices specified as a single
 filename to make sure that a COW file has not been specified as
-the image. To turn them off, use the <code class="docutils literal notranslate"><span class="pre">d</span></code> flag after <code class="docutils literal notranslate"><span class="pre">ubdX</span></code></p></li>
+the image. To turn them off, use the <code class="docutils literal notranslate"><span class="pre">d</span></code> flag after <code class="docutils literal notranslate"><span class="pre">ubdX</span></code>.</p></li>
 <li><p>UBD supports TRIM - asking the Host OS to reclaim any unused
 blocks in the image. To turn it off, specify the <code class="docutils literal notranslate"><span class="pre">t</span></code> flag after
-<code class="docutils literal notranslate"><span class="pre">ubdX</span></code></p></li>
+<code class="docutils literal notranslate"><span class="pre">ubdX</span></code>.</p></li>
 </ul>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">root=</span></code> root device - most likely <code class="docutils literal notranslate"><span class="pre">/dev/ubd0</span></code> (this is a Linux
@@ -963,7 +968,7 @@ filesystem image)</p></li>
 <h4><a class="toc-backref" href="#id23">Important Optional Arguments</a><a class="headerlink" href="#important-optional-arguments" title="Permalink to this headline">¶</a></h4>
 <p>If UML is run as “linux” with no extra arguments, it will try to start an
 xterm for every console configured inside the image (up to 6 in most
-linux distributions). Each console is started inside an
+Linux distributions). Each console is started inside an
 xterm. This makes it nice and easy to use UML on a host with a GUI. It is,
 however, the wrong approach if UML is to be used as a testing harness or run
 in a text-only environment.</p>
@@ -984,14 +989,14 @@ one is input, the second one output.</p>
 <ul class="simple">
 <li><p>The null channel - Discard all input or output. Example <code class="docutils literal notranslate"><span class="pre">con=null</span></code> will set
 all consoles to null by default.</p></li>
-<li><p>The fd channel - use file descriptor numbers for input/out. Example:
+<li><p>The fd channel - use file descriptor numbers for input/output. Example:
 <code class="docutils literal notranslate"><span class="pre">con1=fd:0,fd:1.</span></code></p></li>
-<li><p>The port channel - listen on tcp port number. Example: <code class="docutils literal notranslate"><span class="pre">con1=port:4321</span></code></p></li>
+<li><p>The port channel - listen on TCP port number. Example: <code class="docutils literal notranslate"><span class="pre">con1=port:4321</span></code></p></li>
 <li><p>The pty and pts channels - use system pty/pts.</p></li>
 <li><p>The tty channel - bind to an existing system tty. Example: <code class="docutils literal notranslate"><span class="pre">con1=/dev/tty8</span></code>
 will make UML use the host 8th console (usually unused).</p></li>
 <li><p>The xterm channel - this is the default - bring up an xterm on this channel
-and direct IO to it. Note, that in order for xterm to work, the host must
+and direct IO to it. Note that in order for xterm to work, the host must
 have the UML distribution package installed. This usually contains the
 port-helper and other utilities needed for UML to communicate with the xterm.
 Alternatively, these need to be complied and installed from source. All
@@ -1009,7 +1014,7 @@ presented as ttyS inside UML.</p></li>
  root=/dev/ubda con=null con0=null,fd:2 con1=fd:0,fd:1
 </pre></div>
 </div>
-<p>This will run an instance with <code class="docutils literal notranslate"><span class="pre">2048M</span> <span class="pre">RAM</span></code>, try to use the image file
+<p>This will run an instance with <code class="docutils literal notranslate"><span class="pre">2048M</span> <span class="pre">RAM</span></code> and try to use the image file
 called <code class="docutils literal notranslate"><span class="pre">Filesystem.img</span></code> as root. It will connect to the host using tap0.
 All consoles except <code class="docutils literal notranslate"><span class="pre">con1</span></code> will be disabled and console 1 will
 use standard input/output making it appear in the same terminal it was started.</p>
@@ -1024,7 +1029,7 @@ you can just log in.</p>
 <section id="the-uml-management-console">
 <h3><a class="toc-backref" href="#id26">The UML Management Console</a><a class="headerlink" href="#the-uml-management-console" title="Permalink to this headline">¶</a></h3>
 <p>In addition to managing the image from “the inside” using normal sysadmin tools,
-it is possible to perform a number of low level operations using the UML
+it is possible to perform a number of low-level operations using the UML
 management console. The UML management console is a low-level interface to the
 kernel on a running UML instance, somewhat like the i386 SysRq interface. Since
 there is a full-blown operating system under UML, there is much greater
@@ -1046,7 +1051,7 @@ kernel.  When you boot UML, you’ll see a line like:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mconsole initialized on /home/jdike/.uml/umlNJ32yL/mconsole
 </pre></div>
 </div>
-<p>If you specify a unique machine id one the UML command line, i.e.
+<p>If you specify a unique machine id on the UML command line, i.e.
 <code class="docutils literal notranslate"><span class="pre">umid=debian</span></code>, you’ll see this:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mconsole initialized on /home/jdike/.uml/debian/mconsole
 </pre></div>
@@ -1185,10 +1190,10 @@ be able to cache the shared data using a much smaller amount of memory,
 so UML disk requests will be served from the host’s memory rather than
 its disks.  There is a major caveat in doing this on multisocket NUMA
 machines.  On such hardware, running many UML instances with a shared
-master image and COW changes may caise issues like NMIs from excess of
+master image and COW changes may cause issues like NMIs from excess of
 inter-socket traffic.</p>
-<p>If you are running UML on high end hardware like this, make sure to
-bind UML to a set of logical cpus residing on the same socket using the
+<p>If you are running UML on high-end hardware like this, make sure to
+bind UML to a set of logical CPUs residing on the same socket using the
 <code class="docutils literal notranslate"><span class="pre">taskset</span></code> command or have a look at the “tuning” section.</p>
 <p>To add a copy-on-write layer to an existing block device file, simply
 add the name of the COW file to the appropriate ubd switch:</p>
@@ -1275,7 +1280,7 @@ specify a subdirectory to mount with the -o switch to mount:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># mount none /mnt/home -t hostfs -o /home
 </pre></div>
 </div>
-<p>will mount the hosts’s /home on the virtual machine’s /mnt/home.</p>
+<p>will mount the host’s /home on the virtual machine’s /mnt/home.</p>
 </section>
 <section id="hostfs-as-the-root-filesystem">
 <h4><a class="toc-backref" href="#id46">hostfs as the root filesystem</a><a class="headerlink" href="#hostfs-as-the-root-filesystem" title="Permalink to this headline">¶</a></h4>
@@ -1320,7 +1325,7 @@ number of threads to handle various functions.</p>
 idle, these threads will be migrated to other processors on a SMP host.
 This, unfortunately, will usually result in LOWER performance because of
 all of the cache/memory synchronization traffic between cores. As a
-result, UML will usually benefit from being pinned on a single CPU
+result, UML will usually benefit from being pinned on a single CPU,
 especially on a large system. This can result in performance differences
 of 5 times or higher on some benchmarks.</p>
 <p>Similarly, on large multi-node NUMA systems UML will benefit if all of
@@ -1344,34 +1349,34 @@ TEMP=/mnt/tmpfs-nodeX taskset -cX linux options options options..
 filesystems, devices, virtualization, etc. It provides unrivalled
 opportunities to create and test them without being constrained to
 emulating specific hardware.</p>
-<p>Example - want to try how linux will work with 4096 “proper” network
+<p>Example - want to try how Linux will work with 4096 “proper” network
 devices?</p>
 <p>Not an issue with UML. At the same time, this is something which
 is difficult with other virtualization packages - they are
 constrained by the number of devices allowed on the hardware bus
 they are trying to emulate (for example 16 on a PCI bus in qemu).</p>
 <p>If you have something to contribute such as a patch, a bugfix, a
-new feature, please send it to <code class="docutils literal notranslate"><span class="pre">linux-um&#64;lists.infradead.org</span></code></p>
+new feature, please send it to <code class="docutils literal notranslate"><span class="pre">linux-um&#64;lists.infradead.org</span></code>.</p>
 <p>Please follow all standard Linux patch guidelines such as cc-ing
-relevant maintainers and run <code class="docutils literal notranslate"><span class="pre">./sripts/checkpatch.pl</span></code> on your patch.
+relevant maintainers and run <code class="docutils literal notranslate"><span class="pre">./scripts/checkpatch.pl</span></code> on your patch.
 For more details see <code class="docutils literal notranslate"><span class="pre">Documentation/process/submitting-patches.rst</span></code></p>
 <p>Note - the list does not accept HTML or attachments, all emails must
 be formatted as plain text.</p>
 <p>Developing always goes hand in hand with debugging. First of all,
 you can always run UML under gdb and there will be a whole section
 later on on how to do that. That, however, is not the only way to
-debug a linux kernel. Quite often adding tracing statements and/or
+debug a Linux kernel. Quite often adding tracing statements and/or
 using UML specific approaches such as ptracing the UML kernel process
 are significantly more informative.</p>
 <section id="tracing-uml">
 <h3><a class="toc-backref" href="#id50">Tracing UML</a><a class="headerlink" href="#tracing-uml" title="Permalink to this headline">¶</a></h3>
-<p>When running UML consists of a main kernel thread and a number of
+<p>When running, UML consists of a main kernel thread and a number of
 helper threads. The ones of interest for tracing are NOT the ones
 that are already ptraced by UML as a part of its MMU emulation.</p>
 <p>These are usually the first three threads visible in a ps display.
 The one with the lowest PID number and using most CPU is usually the
 kernel thread. The other threads are the disk
-(ubd) device helper thread and the sigio helper thread.
+(ubd) device helper thread and the SIGIO helper thread.
 Running ptrace on this thread usually results in the following picture:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>host$ strace -p 16566
 --- SIGIO {si_signo=SIGIO, si_code=POLL_IN, si_band=65} ---
@@ -1396,7 +1401,7 @@ clock_nanosleep(CLOCK_MONOTONIC, 0, {tv_sec=1, tv_nsec=0}, NULL) = ? ERESTART_RE
 rt_sigreturn({mask=[PIPE]})             = -1 EINTR (Interrupted system call)
 </pre></div>
 </div>
-<p>This is a typical picture from a mostly idle UML instance</p>
+<p>This is a typical picture from a mostly idle UML instance.</p>
 <ul>
 <li><p>UML interrupt controller uses epoll - this is UML waiting for IO
 interrupts:</p>
@@ -1404,14 +1409,14 @@ interrupts:</p>
 <div><p>epoll_wait(4, [{EPOLLIN, {u32=3721159424, u64=3721159424}}], 64, 0) = 1</p>
 </div></blockquote>
 </li>
-<li><p>The sequence of ptrace calls is part of MMU emulation and runnin the
-UML userspace</p></li>
+<li><p>The sequence of ptrace calls is part of MMU emulation and running the
+UML userspace.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">timer_settime</span></code> is part of the UML high res timer subsystem mapping
-timer requests from inside UML onto the host high resultion timers.</p></li>
+timer requests from inside UML onto the host high resolution timers.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">clock_nanosleep</span></code> is UML going into idle (similar to the way a PC
 will execute an ACPI idle).</p></li>
 </ul>
-<p>As you can see UML will generate quite a bit of output even in idle.The output
+<p>As you can see UML will generate quite a bit of output even in idle. The output
 can be very informative when observing IO. It shows the actual IO calls, their
 arguments and returns values.</p>
 </section>
@@ -1436,12 +1441,12 @@ to in-kernel only and non-UML specific.  The reason for this is that
 in order to really leverage UML, one needs to write a piece of
 userspace code which maps driver concepts onto actual userspace host
 calls.</p>
-<p>This forms the so called “user” portion of the driver. While it can
+<p>This forms the so-called “user” portion of the driver. While it can
 reuse a lot of kernel concepts, it is generally just another piece of
 userspace code. This portion needs some matching “kernel” code which
 resides inside the UML image and which implements the Linux kernel part.</p>
 <p><em>Note: There are very few limitations in the way “kernel” and “user” interact</em>.</p>
-<p>UML does not have a strictly defined kernel to host API. It does not
+<p>UML does not have a strictly defined kernel-to-host API. It does not
 try to emulate a specific architecture or bus. UML’s “kernel” and
 “user” can share memory, code and interact as needed to implement
 whatever design the software developer has in mind. The only
@@ -1449,13 +1454,13 @@ limitations are purely technical. Due to a lot of functions and
 variables having the same names, the developer should be careful
 which includes and libraries they are trying to refer to.</p>
 <p>As a result a lot of userspace code consists of simple wrappers.
-F.e. <code class="docutils literal notranslate"><span class="pre">os_close_file()</span></code> is just a wrapper around <code class="docutils literal notranslate"><span class="pre">close()</span></code>
+E.g. <code class="docutils literal notranslate"><span class="pre">os_close_file()</span></code> is just a wrapper around <code class="docutils literal notranslate"><span class="pre">close()</span></code>
 which ensures that the userspace function close does not clash
 with similarly named function(s) in the kernel part.</p>
 <section id="security-considerations">
 <h4><a class="toc-backref" href="#id53">Security Considerations</a><a class="headerlink" href="#security-considerations" title="Permalink to this headline">¶</a></h4>
 <p>Drivers or any new functionality should default to not
-accepting arbitrary filename, bpf code or other  parameters
+accepting arbitrary filename, bpf code or other parameters
 which can affect the host from inside the UML instance.
 For example, specifying the socket used for IPC communication
 between a driver and the host at the UML command line is OK

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -447,12 +447,12 @@ NULL if none is found.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">output_poll_changed</span></code></dt><dd><p>Callback used by helpers to inform the driver of output configuration
 changes.</p>
-<p>Drivers implementing fbdev emulation with the helpers can call
-drm_fb_helper_hotplug_changed from this hook to inform the fbdev
-helper of output changes.</p>
-<p>FIXME:</p>
-<p>Except that there’s no vtable for device-level helper callbacks
-there’s no reason this is a core function.</p>
+<p>Drivers implementing fbdev emulation use <a class="reference internal" href="drm-kms-helpers.html#c.drm_kms_helper_hotplug_event" title="drm_kms_helper_hotplug_event"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_kms_helper_hotplug_event()</span></code></a>
+to call this hook to inform the fbdev helper of output changes.</p>
+<p>This hook is deprecated, drivers should instead use
+<a class="reference internal" href="drm-kms-helpers.html#c.drm_fbdev_generic_setup" title="drm_fbdev_generic_setup"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_fbdev_generic_setup()</span></code></a> which takes care of any necessary
+hotplug event forwarding already without further involvement by
+the driver.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">mode_valid</span></code></dt><dd><p>Device specific validation of display modes. Can be used to reject
 modes that can never be supported. Only device wide constraints can
@@ -5342,7 +5342,7 @@ and for async plane updates.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Please not that the destination coordinates <strong>crtc_x</strong>, <strong>crtc_y</strong>, <strong>crtc_h</strong> and
+<p>Please note that the destination coordinates <strong>crtc_x</strong>, <strong>crtc_y</strong>, <strong>crtc_h</strong> and
 <strong>crtc_w</strong> and the source coordinates <strong>src_x</strong>, <strong>src_y</strong>, <strong>src_h</strong> and <strong>src_w</strong> are the
 raw coordinates provided by userspace. Drivers should use
 <a class="reference internal" href="drm-kms-helpers.html#c.drm_atomic_helper_check_plane_state" title="drm_atomic_helper_check_plane_state"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_atomic_helper_check_plane_state()</span></code></a> and only use the derived rectangles in
@@ -7782,6 +7782,8 @@ and sample edges.</p>
   struct drm_hdmi_info hdmi;
   bool non_desktop;
   struct drm_monitor_range_info monitor_range;
+  u8 mso_stream_count;
+  u8 mso_pixel_overlap;
 };
 </pre></div>
 </div>
@@ -7840,6 +7842,12 @@ more stuff redundant with <strong>bus_formats</strong>.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">non_desktop</span></code></dt><dd><p>Non desktop display (HMD).</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">monitor_range</span></code></dt><dd><p>Frequency range supported by monitor range descriptor</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mso_stream_count</span></code></dt><dd><p>eDP Multi-SST Operation (MSO) stream count from
+the DisplayID VESA vendor block. 0 for conventional Single-Stream
+Transport (SST), or 2 or 4 MSO streams.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mso_pixel_overlap</span></code></dt><dd><p>eDP MSO segment pixel overlap, 0-8 pixels.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
@@ -8047,6 +8055,7 @@ and the connector bpc limitations obtained from edid.</p>
   int (*atomic_set_property)(struct drm_connector *connector,struct drm_connector_state *state,struct drm_property *property, uint64_t val);
   int (*atomic_get_property)(struct drm_connector *connector,const struct drm_connector_state *state,struct drm_property *property, uint64_t *val);
   void (*atomic_print_state)(struct drm_printer *p, const struct drm_connector_state *state);
+  void (*oob_hotplug_event)(struct drm_connector *connector);
 };
 </pre></div>
 </div>
@@ -8216,6 +8225,9 @@ this optional hook for printing additional driver specific state.</p>
 <p>Do not call this directly, use drm_atomic_connector_print_state()
 instead.</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">oob_hotplug_event</span></code></dt><dd><p>This will get called when a hotplug-event for a drm-connector
+has been received from a source outside the display driver / device.</p>
+</dd>
 </dl>
 <p><strong>Description</strong></p>
 <p>Each CRTC may have one or more connectors attached to it.  The functions
@@ -8306,7 +8318,9 @@ parser.</p>
   struct drm_device *dev;
   struct device *kdev;
   struct device_attribute *attr;
+  struct fwnode_handle *fwnode;
   struct list_head head;
+  struct list_head global_connector_list_entry;
   struct drm_mode_object base;
   char *name;
   struct mutex mutex;
@@ -8374,10 +8388,18 @@ parser.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">attr</span></code></dt><dd><p>sysfs attributes</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">fwnode</span></code></dt><dd><p>associated fwnode supplied by platform firmware</p>
+<p>Drivers can set this to associate a fwnode with a connector, drivers
+are expected to get a reference on the fwnode when setting this.
+<a class="reference internal" href="#c.drm_connector_cleanup" title="drm_connector_cleanup"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_connector_cleanup()</span></code></a> will call fwnode_handle_put() on this.</p>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">head</span></code></dt><dd><p>List of all connectors on a <strong>dev</strong>, linked from
 <a class="reference internal" href="#c.drm_mode_config" title="drm_mode_config"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_mode_config.connector_list</span></code></a>. Protected by
 <a class="reference internal" href="#c.drm_mode_config" title="drm_mode_config"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_mode_config.connector_list_lock</span></code></a>, but please only use
 <a class="reference internal" href="#c.drm_connector_list_iter" title="drm_connector_list_iter"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_connector_list_iter</span></code></a> to walk this list.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">global_connector_list_entry</span></code></dt><dd><p>Connector entry in the global connector-list, used by
+drm_connector_find_by_fwnode().</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">base</span></code></dt><dd><p>base KMS object</p>
 </dd>
@@ -8897,6 +8919,8 @@ called.</p>
 <p><strong>Description</strong></p>
 <p>In contrast to the other drm_get_*_name functions this one here returns a
 const pointer and hence is threadsafe.</p>
+<p><strong>Return</strong></p>
+<p>connector status string</p>
 <dl class="c function">
 <dt id="c.drm_connector_list_iter_begin">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_connector_list_iter_begin</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="pre">drm_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_connector_list_iter" title="drm_connector_list_iter"><span class="pre">drm_connector_list_iter</span></a> <span class="pre">*</span><em><span class="pre">iter</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_connector_list_iter_begin" title="Permalink to this definition">¶</a><br /></dt>
@@ -8926,8 +8950,8 @@ Iteration itself happens using <a class="reference internal" href="#c.drm_connec
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_connector_list_iter</span> <span class="pre">*iter</span></code></dt><dd><p>connector_list iterator</p>
 </dd>
 </dl>
-<p><strong>Description</strong></p>
-<p>Returns the next connector for <strong>iter</strong>, or NULL when the list walk has
+<p><strong>Return</strong></p>
+<p>the next connector for <strong>iter</strong>, or NULL when the list walk has
 completed.</p>
 <dl class="c function">
 <dt id="c.drm_connector_list_iter_end">
@@ -8959,6 +8983,8 @@ list.</p>
 <p><strong>Description</strong></p>
 <p>Note you could abuse this and return something out of bounds, but that
 would be a caller error.  No unscrubbed user data should make it here.</p>
+<p><strong>Return</strong></p>
+<p>string describing an enumerated subpixel property</p>
 <dl class="c function">
 <dt id="c.drm_display_info_set_bus_formats">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_display_info_set_bus_formats</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_display_info" title="drm_display_info"><span class="pre">drm_display_info</span></a> <span class="pre">*</span><em><span class="pre">info</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">u32</span> <span class="pre">*</span><em><span class="pre">formats</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">num_formats</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_display_info_set_bus_formats" title="Permalink to this definition">¶</a><br /></dt>
@@ -8978,6 +9004,8 @@ would be a caller error.  No unscrubbed user data should make it here.</p>
 <p>Store the supported bus formats in display info structure.
 See MEDIA_BUS_FMT_* definitions in include/uapi/linux/media-bus-format.h for
 a full list of available formats.</p>
+<p><strong>Return</strong></p>
+<p>0 on success or a negative error code on failure.</p>
 <dl class="c function">
 <dt id="c.drm_mode_create_dvi_i_properties">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_mode_create_dvi_i_properties</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="pre">drm_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_mode_create_dvi_i_properties" title="Permalink to this definition">¶</a><br /></dt>
@@ -8991,6 +9019,8 @@ a full list of available formats.</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>Called by a driver the first time a DVI-I connector is made.</p>
+<p><strong>Return</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
 <dl class="c function">
 <dt id="c.drm_connector_attach_dp_subconnector_property">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_connector_attach_dp_subconnector_property</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_connector" title="drm_connector"><span class="pre">drm_connector</span></a> <span class="pre">*</span><em><span class="pre">connector</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_connector_attach_dp_subconnector_property" title="Permalink to this definition">¶</a><br /></dt>
@@ -9017,6 +9047,8 @@ a full list of available formats.</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>Called by a driver the first time a HDMI connector is made.</p>
+<p><strong>Return</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
 <dl class="c function">
 <dt id="c.drm_hdmi_avi_infoframe_content_type">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_hdmi_avi_infoframe_content_type</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">hdmi_avi_infoframe</span> <span class="pre">*</span><em><span class="pre">frame</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_connector_state" title="drm_connector_state"><span class="pre">drm_connector_state</span></a> <span class="pre">*</span><em><span class="pre">conn_state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_hdmi_avi_infoframe_content_type" title="Permalink to this definition">¶</a><br /></dt>
@@ -9060,6 +9092,8 @@ Typically used on SDTV and HDMI connectors.</p>
 creates the TV margin properties for a given device. No need to call this
 function for an SDTV connector, it’s already called from
 <a class="reference internal" href="#c.drm_mode_create_tv_properties" title="drm_mode_create_tv_properties"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_mode_create_tv_properties()</span></code></a>.</p>
+<p><strong>Return</strong></p>
+<p>0 on success or a negative error code on failure.</p>
 <dl class="c function">
 <dt id="c.drm_mode_create_tv_properties">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_mode_create_tv_properties</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="pre">drm_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">num_modes</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em class="property"><span class="pre">const</span></em> <em><span class="pre">modes</span></em><span class="pre">[</span><span class="pre">]</span><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_mode_create_tv_properties" title="Permalink to this definition">¶</a><br /></dt>
@@ -9080,6 +9114,8 @@ function for an SDTV connector, it’s already called from
 the TV specific connector properties for a given device.  Caller is
 responsible for allocating a list of format names and passing them to
 this routine.</p>
+<p><strong>Return</strong></p>
+<p>0 on success or a negative error code on failure.</p>
 <dl class="c function">
 <dt id="c.drm_mode_create_scaling_mode_property">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_mode_create_scaling_mode_property</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="pre">drm_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_mode_create_scaling_mode_property" title="Permalink to this definition">¶</a><br /></dt>
@@ -9095,8 +9131,10 @@ this routine.</p>
 <p>Called by a driver the first time it’s needed, must be attached to desired
 connectors.</p>
 <p>Atomic drivers should use <a class="reference internal" href="#c.drm_connector_attach_scaling_mode_property" title="drm_connector_attach_scaling_mode_property"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_connector_attach_scaling_mode_property()</span></code></a>
-instead to correctly assign <a class="reference internal" href="#c.drm_connector_state" title="drm_connector_state"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_connector_state.picture_aspect_ratio</span></code></a>
+instead to correctly assign <a class="reference internal" href="#c.drm_connector_state" title="drm_connector_state"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_connector_state.scaling_mode</span></code></a>
 in the atomic state.</p>
+<p><strong>Return</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
 <dl class="c function">
 <dt id="c.drm_connector_attach_vrr_capable_property">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_connector_attach_vrr_capable_property</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_connector" title="drm_connector"><span class="pre">drm_connector</span></a> <span class="pre">*</span><em><span class="pre">connector</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_connector_attach_vrr_capable_property" title="Permalink to this definition">¶</a><br /></dt>
@@ -9128,7 +9166,7 @@ variable refresh rate capability for a connector.</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>This is used to add support for scaling mode to atomic drivers.
-The scaling mode will be set to <a class="reference internal" href="#c.drm_connector_state" title="drm_connector_state"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_connector_state.picture_aspect_ratio</span></code></a>
+The scaling mode will be set to <a class="reference internal" href="#c.drm_connector_state" title="drm_connector_state"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_connector_state.scaling_mode</span></code></a>
 and can be used from <a class="reference internal" href="drm-kms-helpers.html#c.drm_connector_helper_funcs" title="drm_connector_helper_funcs"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_connector_helper_funcs-&gt;atomic_check</span></code></a> for validation.</p>
 <p>This is the atomic version of <a class="reference internal" href="#c.drm_mode_create_scaling_mode_property" title="drm_mode_create_scaling_mode_property"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_mode_create_scaling_mode_property()</span></code></a>.</p>
 <p><strong>Return</strong></p>
@@ -9210,6 +9248,8 @@ connectors.</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>Create the suggested x/y offset property for connectors.</p>
+<p><strong>Return</strong></p>
+<p>0 on success or a negative error code on failure.</p>
 <dl class="c function">
 <dt id="c.drm_connector_set_path_property">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_connector_set_path_property</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_connector" title="drm_connector"><span class="pre">drm_connector</span></a> <span class="pre">*</span><em><span class="pre">connector</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_connector_set_path_property" title="Permalink to this definition">¶</a><br /></dt>
@@ -9427,6 +9467,24 @@ DRM_MODE_PANEL_ORIENTATION_UNKNOWN, in which case it is a no-op.</p>
 specific (e.g. DMI based) quirks overriding the passed in panel_orientation.</p>
 <p><strong>Return</strong></p>
 <p>Zero on success, negative errno on failure.</p>
+<dl class="c function">
+<dt id="c.drm_connector_oob_hotplug_event">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_connector_oob_hotplug_event</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fwnode_handle</span> <span class="pre">*</span><em><span class="pre">connector_fwnode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_connector_oob_hotplug_event" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Report out-of-band hotplug event to connector</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">fwnode_handle</span> <span class="pre">*connector_fwnode</span></code></dt><dd><p>fwnode_handle to report the event on</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>On some hardware a hotplug event notification may come from outside the display
+driver / device. An example of this is some USB Type-C setups where the hardware
+muxes the DisplayPort data and aux-lines but does not pass the altmode HPD
+status bit to the GPU’s DP HPD pin.</p>
+<p>This function can be used to report these out-of-band events after obtaining
+a drm_connector reference through calling drm_connector_find_by_fwnode().</p>
 <dl class="c function">
 <dt id="c.drm_mode_put_tile_group">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">drm_mode_put_tile_group</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_device" title="drm_device"><span class="pre">drm_device</span></a> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.drm_tile_group" title="drm_tile_group"><span class="pre">drm_tile_group</span></a> <span class="pre">*</span><em><span class="pre">tg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_mode_put_tile_group" title="Permalink to this definition">¶</a><br /></dt>
@@ -10115,6 +10173,7 @@ lists and lookup data structures.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct drm_modeset_acquire_ctx {
   struct ww_acquire_ctx ww_ctx;
   struct drm_modeset_lock *contended;
+  depot_stack_handle_t stack_depot;
   struct list_head locked;
   bool trylock_only;
   bool interruptible;
@@ -11395,6 +11454,7 @@ settings accordingly.</p>
 <dt>Game:</dt><dd><p>Content type is game</p>
 </dd>
 </dl>
+<p>The meaning of each content type is defined in CTA-861-G table 15.</p>
 <p>Drivers can set up this property by calling
 <a class="reference internal" href="#c.drm_connector_attach_content_type_property" title="drm_connector_attach_content_type_property"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_connector_attach_content_type_property()</span></code></a>. Decoding to
 infoframe values is done through <a class="reference internal" href="#c.drm_hdmi_avi_infoframe_content_type" title="drm_hdmi_avi_infoframe_content_type"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_hdmi_avi_infoframe_content_type()</span></code></a>.</p>

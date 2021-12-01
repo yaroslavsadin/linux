@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -1018,24 +1018,6 @@ only applies to radeon and i915 kms drivers, other drivers shouldn’t need to
 use this function.</p>
 <p>Always fails with a return value of -EINVAL.</p>
 <dl class="c function">
-<dt id="c.drm_ioctl_permit">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">drm_ioctl_permit</span></code><span class="sig-paren">(</span><span class="pre">u32</span> <em><span class="pre">flags</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><span class="pre">drm_file</span></a> <span class="pre">*</span><em><span class="pre">file_priv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_ioctl_permit" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Check ioctl permissions against caller</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">u32</span> <span class="pre">flags</span></code></dt><dd><p>ioctl permission flags.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_file</span> <span class="pre">*file_priv</span></code></dt><dd><p>Pointer to <a class="reference internal" href="drm-internals.html#c.drm_file" title="drm_file"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">drm_file</span></code></a> identifying the caller.</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Checks whether the caller is allowed to run an ioctl with the
-indicated permissions.</p>
-<p><strong>Return</strong></p>
-<p>Zero if allowed, -EACCES otherwise.</p>
-<dl class="c function">
 <dt id="c.drm_ioctl">
 <span class="pre">long</span> <code class="sig-name descname"><span class="pre">drm_ioctl</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">file</span> <span class="pre">*</span><em><span class="pre">filp</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">cmd</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.drm_ioctl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>ioctl callback implementation for DRM drivers</p>
@@ -1053,7 +1035,7 @@ indicated permissions.</p>
 <p><strong>Description</strong></p>
 <p>Looks up the ioctl function in the DRM core and the driver dispatch table,
 stored in <a class="reference internal" href="drm-internals.html#c.drm_driver" title="drm_driver"><code class="xref c c-type docutils literal notranslate"><span class="pre">drm_driver.ioctls</span></code></a>. It checks for necessary permission by calling
-<a class="reference internal" href="#c.drm_ioctl_permit" title="drm_ioctl_permit"><code class="xref c c-func docutils literal notranslate"><span class="pre">drm_ioctl_permit()</span></code></a>, and dispatches to the respective function.</p>
+drm_ioctl_permit(), and dispatches to the respective function.</p>
 <p><strong>Return</strong></p>
 <p>Zero on success, negative error code on failure.</p>
 <dl class="c function">
@@ -2118,6 +2100,9 @@ for it to complete.</p>
 </dl>
 <p><strong>Description</strong></p>
 <p>Lease mode resources, creating another drm_master.</p>
+<p>The <strong>object_ids</strong> array must reference at least one CRTC, one connector and
+one plane if <a class="reference internal" href="#c.DRM_CLIENT_CAP_UNIVERSAL_PLANES" title="DRM_CLIENT_CAP_UNIVERSAL_PLANES"><code class="xref c c-type docutils literal notranslate"><span class="pre">DRM_CLIENT_CAP_UNIVERSAL_PLANES</span></code></a> is enabled. Alternatively,
+the lease can be completely empty.</p>
 <dl class="c struct">
 <dt id="c.drm_mode_list_lessees">
 <em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">drm_mode_list_lessees</span></code><a class="headerlink" href="#c.drm_mode_list_lessees" title="Permalink to this definition">¶</a><br /></dt>

@@ -40,7 +40,7 @@
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="IRQs" href="irq/index.html" />
+    <link rel="next" title="为内核对象添加引用计数器（krefs）" href="kref.html" />
     <link rel="prev" title="符号命名空间（Symbol Namespaces）" href="symbol-namespaces.html" /> 
 </head>
 
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -351,7 +351,7 @@ kobjects被用来控制对一个更大的、特定领域的对象的访问。为
 <p>如果你有一个uio_map结构体，找到其嵌入的kobject只是一个使用kobj成员的问题。
 然而，与kobjects一起工作的代码往往会遇到相反的问题：给定一个结构体kobject
 的指针，指向包含结构体的指针是什么？你必须避免使用一些技巧（比如假设
-kobject在结构的开头），相反，你得使用<a class="reference internal" href="../../../driver-api/basics.html#c.container_of" title="container_of"><code class="xref c c-func docutils literal notranslate"><span class="pre">container_of()</span></code></a>宏，其可以在 <code class="docutils literal notranslate"><span class="pre">&lt;linux/kernel.h&gt;</span></code>
+kobject在结构的开头），相反，你得使用container_of()宏，其可以在 <code class="docutils literal notranslate"><span class="pre">&lt;linux/kernel.h&gt;</span></code>
 中找到:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>container_of(ptr, type, member)
 </pre></div>
@@ -364,7 +364,7 @@ kobject在结构的开头），相反，你得使用<a class="reference internal
 <li><p><code class="docutils literal notranslate"><span class="pre">member</span></code> 是 <code class="docutils literal notranslate"><span class="pre">指针</span></code> 所指向的结构体域的名称。</p></li>
 </ul>
 </div></blockquote>
-<p><a class="reference internal" href="../../../driver-api/basics.html#c.container_of" title="container_of"><code class="xref c c-func docutils literal notranslate"><span class="pre">container_of()</span></code></a>的返回值是一个指向相应容器类型的指针。因此，例如，一个嵌入到
+<p>container_of()的返回值是一个指向相应容器类型的指针。因此，例如，一个嵌入到
 uio_map结构 <strong>中</strong> 的kobject结构体的指针kp可以被转换为一个指向 <strong>包含</strong> uio_map
 结构体的指针，方法是:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct uio_map *u_map = container_of(kp, struct uio_map, kobj);
@@ -506,7 +506,7 @@ kobject和属性的实现。</p>
 得到满足，那么代码就是有缺陷的。注意，如果你忘记提供release()方法，内
 核会警告你。不要试图通过提供一个“空”的释放函数来摆脱这个警告。</p>
 <p>如果你的清理函数只需要调用<a class="reference internal" href="../../../core-api/mm-api.html#c.kfree" title="kfree"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree()</span></code></a>，那么你必须创建一个包装函数，该函数
-使用<a class="reference internal" href="../../../driver-api/basics.html#c.container_of" title="container_of"><code class="xref c c-func docutils literal notranslate"><span class="pre">container_of()</span></code></a>来向上造型到正确的类型（如上面的例子所示），然后在整个
+使用container_of()来向上造型到正确的类型（如上面的例子所示），然后在整个
 结构体上调用<a class="reference internal" href="../../../core-api/mm-api.html#c.kfree" title="kfree"><code class="xref c c-func docutils literal notranslate"><span class="pre">kfree()</span></code></a>。</p>
 <p>注意，kobject的名字在release函数中是可用的，但它不能在这个回调中被改
 变。否则，在kobject核心中会出现内存泄漏，这让人很不爽。</p>
@@ -626,7 +626,7 @@ sysfs内务将被正确处理。</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="irq/index.html" class="btn btn-neutral float-right" title="IRQs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kref.html" class="btn btn-neutral float-right" title="为内核对象添加引用计数器（krefs）" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="symbol-namespaces.html" class="btn btn-neutral float-left" title="符号命名空间（Symbol Namespaces）" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

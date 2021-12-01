@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -104,6 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="reproducible-builds.html">Reproducible builds</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">GCC plugin infrastructure</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#files">Files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-to-add-a-new-gcc-plugin">4. How to add a new GCC plugin</a></li>
@@ -297,6 +298,26 @@ GCC plugins.</p>
 </dd>
 </dl>
 </section>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline">¶</a></h2>
+<p>GCC plugins are designed to provide a place to experiment with potential
+compiler features that are neither in GCC nor Clang upstream. Once
+their utility is proven, the goal is to upstream the feature into GCC
+(and Clang), and then to finally remove them from the kernel once the
+feature is available in all supported versions of GCC.</p>
+<p>Specifically, new plugins should implement only features that have no
+upstream compiler support (in either GCC or Clang).</p>
+<p>When a feature exists in Clang but not GCC, effort should be made to
+bring the feature to upstream GCC (rather than just as a kernel-specific
+GCC plugin), so the entire ecosystem can benefit from it.</p>
+<p>Similarly, even if a feature provided by a GCC plugin does <em>not</em> exist
+in Clang, but the feature is proven to be useful, effort should be spent
+to upstream the feature to GCC (and Clang).</p>
+<p>After a feature is available in upstream GCC, the plugin will be made
+unbuildable for the corresponding GCC version (and later). Once all
+kernel-supported versions of GCC provide the feature, the plugin will
+be removed from the kernel.</p>
+</section>
 <section id="files">
 <h2>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h2>
 <p><strong>$(src)/scripts/gcc-plugins</strong></p>
@@ -332,7 +353,6 @@ e.g., on Ubuntu for gcc-10:</p>
 <p>Enable the GCC plugin infrastructure and some plugin(s) you want to use
 in the kernel config:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CONFIG_GCC_PLUGINS=y
-CONFIG_GCC_PLUGIN_CYC_COMPLEXITY=y
 CONFIG_GCC_PLUGIN_LATENT_ENTROPY=y
 ...
 </pre></div>
@@ -349,8 +369,7 @@ the cyclomatic complexity GCC plugin.</p>
 <p>The GCC plugins are in scripts/gcc-plugins/. You need to put plugin source files
 right under scripts/gcc-plugins/. Creating subdirectories is not supported.
 It must be added to scripts/gcc-plugins/Makefile, scripts/Makefile.gcc-plugins
-and a relevant Kconfig file.
-See the cyc_complexity_plugin.c (CONFIG_GCC_PLUGIN_CYC_COMPLEXITY) GCC plugin.</p>
+and a relevant Kconfig file.</p>
 </section>
 </section>
 

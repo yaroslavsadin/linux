@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -538,6 +538,24 @@ which has a HyperTransport capability matching <strong>ht_cap</strong>.</p>
 VSEC ID <strong>cap</strong>. If found, return the capability offset in
 config space; otherwise return 0.</p>
 <dl class="c function">
+<dt id="c.pci_find_dvsec_capability">
+<span class="pre">u16</span> <code class="sig-name descname"><span class="pre">pci_find_dvsec_capability</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pci_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">u16</span> <em><span class="pre">vendor</span></em>, <span class="pre">u16</span> <em><span class="pre">dvsec</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_find_dvsec_capability" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Find DVSEC for vendor</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pci_dev</span> <span class="pre">*dev</span></code></dt><dd><p>PCI device to query</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">u16</span> <span class="pre">vendor</span></code></dt><dd><p>Vendor ID to match for the DVSEC</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">u16</span> <span class="pre">dvsec</span></code></dt><dd><p>Designated Vendor-specific capability ID</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>If DVSEC has Vendor ID <strong>vendor</strong> and DVSEC ID <strong>dvsec</strong> return the capability
+offset in config space; otherwise return 0.</p>
+<dl class="c function">
 <dt id="c.pci_find_parent_resource">
 <em class="property"><span class="pre">struct</span></em> <span class="pre">resource</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">pci_find_parent_resource</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">pci_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">resource</span> <span class="pre">*</span><em><span class="pre">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_find_parent_resource" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>return resource region of parent bus of given region</p>
@@ -607,23 +625,6 @@ wrong version, or device doesn’t support the requested state.
 0 if device already is in the requested state.
 0 if the transition is to D3 but D3 is not supported.
 0 if device’s power state has been successfully changed.</p>
-<dl class="c function">
-<dt id="c.pci_choose_state">
-<span class="pre">pci_power_t</span> <code class="sig-name descname"><span class="pre">pci_choose_state</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pci_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">pm_message_t</span> <em><span class="pre">state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_choose_state" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Choose the power state of a PCI device</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pci_dev</span> <span class="pre">*dev</span></code></dt><dd><p>PCI device to be suspended</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">pm_message_t</span> <span class="pre">state</span></code></dt><dd><p>target sleep state for the whole system. This is the value
-that is passed to suspend() function.</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Returns PCI power state suitable for given device and given system
-message.</p>
 <dl class="c function">
 <dt id="c.pci_save_state">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">pci_save_state</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pci_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_save_state" title="Permalink to this definition">¶</a><br /></dt>
@@ -916,6 +917,21 @@ it can wake up the system and/or is power manageable by the platform
 <p>Return true if the device itself is capable of generating wake-up events
 (through the platform or using the native PCIe PME) or if the device supports
 PME and one of its upstream bridges can generate wake-up events.</p>
+<dl class="c function">
+<dt id="c.pci_choose_state">
+<span class="pre">pci_power_t</span> <code class="sig-name descname"><span class="pre">pci_choose_state</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pci_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em>, <span class="pre">pm_message_t</span> <em><span class="pre">state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_choose_state" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Choose the power state of a PCI device.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">pci_dev</span> <span class="pre">*dev</span></code></dt><dd><p>Target PCI device.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pm_message_t</span> <span class="pre">state</span></code></dt><dd><p>Target state for the whole system.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Returns PCI power state suitable for <strong>dev</strong> and <strong>state</strong>.</p>
 <dl class="c function">
 <dt id="c.pci_d3cold_enable">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">pci_d3cold_enable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">pci_dev</span> <span class="pre">*</span><em><span class="pre">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pci_d3cold_enable" title="Permalink to this definition">¶</a><br /></dt>

@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -410,19 +410,19 @@ memory mapped via mmap() ioctl.</p>
 
 <p><strong>Definition</strong></p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct vb2_mem_ops {
-  void *(*alloc)(struct device *dev, unsigned long attrs,unsigned long size,enum dma_data_direction dma_dir, gfp_t gfp_flags);
+  void *(*alloc)(struct vb2_buffer *vb,struct device *dev, unsigned long size);
   void (*put)(void *buf_priv);
-  struct dma_buf *(*get_dmabuf)(void *buf_priv, unsigned long flags);
-  void *(*get_userptr)(struct device *dev, unsigned long vaddr,unsigned long size, enum dma_data_direction dma_dir);
+  struct dma_buf *(*get_dmabuf)(struct vb2_buffer *vb,void *buf_priv, unsigned long flags);
+  void *(*get_userptr)(struct vb2_buffer *vb,struct device *dev,unsigned long vaddr, unsigned long size);
   void (*put_userptr)(void *buf_priv);
   void (*prepare)(void *buf_priv);
   void (*finish)(void *buf_priv);
-  void *(*attach_dmabuf)(struct device *dev,struct dma_buf *dbuf,unsigned long size, enum dma_data_direction dma_dir);
+  void *(*attach_dmabuf)(struct vb2_buffer *vb,struct device *dev,struct dma_buf *dbuf, unsigned long size);
   void (*detach_dmabuf)(void *buf_priv);
   int (*map_dmabuf)(void *buf_priv);
   void (*unmap_dmabuf)(void *buf_priv);
-  void *(*vaddr)(void *buf_priv);
-  void *(*cookie)(void *buf_priv);
+  void *(*vaddr)(struct vb2_buffer *vb, void *buf_priv);
+  void *(*cookie)(struct vb2_buffer *vb, void *buf_priv);
   unsigned int    (*num_users)(void *buf_priv);
   int (*mmap)(void *buf_priv, struct vm_area_struct *vma);
 };
@@ -434,10 +434,8 @@ memory mapped via mmap() ioctl.</p>
 return ERR_PTR() on failure or a pointer to allocator private,
 per-buffer data on success; the returned private structure
 will then be passed as <strong>buf_priv</strong> argument to other ops in this
-structure. Additional gfp_flags to use when allocating the
-are also passed to this operation. These flags are from the
-gfp_flags field of vb2_queue. The size argument to this function
-shall be <em>page aligned</em>.</p>
+structure. The size argument to this function shall be
+<em>page aligned</em>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">put</span></code></dt><dd><p>inform the allocator that the buffer will no longer be used;
 usually will result in the allocator freeing the buffer (if
@@ -849,6 +847,7 @@ the <a class="reference internal" href="#c.vb2_buffer" title="vb2_buffer"><code 
   unsigned int                    uses_qbuf:1;
   unsigned int                    uses_requests:1;
   unsigned int                    allow_cache_hints:1;
+  unsigned int                    non_coherent_mem:1;
   struct mutex                    *lock;
   void *owner;
   const struct vb2_ops            *ops;
@@ -914,6 +913,9 @@ If this is 1, then you cannot queue buffers directly.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">allow_cache_hints</span></code></dt><dd><p>when set user-space can pass cache management hints in
 order to skip cache flush/invalidation on -&gt;prepare() or/and
 -&gt;finish().</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">non_coherent_mem</span></code></dt><dd><p>when set queue will attempt to allocate buffers using
+non-coherent memory.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">lock</span></code></dt><dd><p>pointer to a mutex that protects the <a class="reference internal" href="#c.vb2_queue" title="vb2_queue"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">vb2_queue</span></code></a>. The
 driver can set this to a mutex to let the v4l2 core serialize
@@ -1094,7 +1096,7 @@ internally by VB2 by an API-specific handler, like <code class="docutils literal
 <p>returns zero on success; an error code otherwise.</p>
 <dl class="c function">
 <dt id="c.vb2_core_reqbufs">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">vb2_core_reqbufs</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.vb2_queue" title="vb2_queue"><span class="pre">vb2_queue</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.vb2_memory" title="vb2_memory"><span class="pre">vb2_memory</span></a> <em><span class="pre">memory</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">count</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.vb2_core_reqbufs" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">vb2_core_reqbufs</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.vb2_queue" title="vb2_queue"><span class="pre">vb2_queue</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.vb2_memory" title="vb2_memory"><span class="pre">vb2_memory</span></a> <em><span class="pre">memory</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">count</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.vb2_core_reqbufs" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Initiate streaming.</p>
 </dd></dl>
 
@@ -1103,6 +1105,9 @@ internally by VB2 by an API-specific handler, like <code class="docutils literal
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">vb2_queue</span> <span class="pre">*q</span></code></dt><dd><p>pointer to <a class="reference internal" href="#c.vb2_queue" title="vb2_queue"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">vb2_queue</span></code></a> with videobuf2 queue.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">vb2_memory</span> <span class="pre">memory</span></code></dt><dd><p>memory type, as defined by <a class="reference internal" href="#c.vb2_memory" title="vb2_memory"><code class="xref c c-type docutils literal notranslate"><span class="pre">enum</span> <span class="pre">vb2_memory</span></code></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">flags</span></code></dt><dd><p>auxiliary queue/buffer management flags. Currently, the only
+used flag is <code class="docutils literal notranslate"><span class="pre">V4L2_MEMORY_FLAG_NON_COHERENT</span></code>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">*count</span></code></dt><dd><p>requested buffer count.</p>
 </dd>
@@ -1128,7 +1133,7 @@ call and the queue is not busy, memory will be reallocated.</p>
 <p>returns zero on success; an error code otherwise.</p>
 <dl class="c function">
 <dt id="c.vb2_core_create_bufs">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">vb2_core_create_bufs</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.vb2_queue" title="vb2_queue"><span class="pre">vb2_queue</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.vb2_memory" title="vb2_memory"><span class="pre">vb2_memory</span></a> <em><span class="pre">memory</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">count</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">requested_planes</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">requested_sizes</span></em><span class="pre">[</span><span class="pre">]</span><span class="sig-paren">)</span><a class="headerlink" href="#c.vb2_core_create_bufs" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">vb2_core_create_bufs</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.vb2_queue" title="vb2_queue"><span class="pre">vb2_queue</span></a> <span class="pre">*</span><em><span class="pre">q</span></em>, <em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.vb2_memory" title="vb2_memory"><span class="pre">vb2_memory</span></a> <em><span class="pre">memory</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">flags</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">count</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">requested_planes</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">requested_sizes</span></em><span class="pre">[</span><span class="pre">]</span><span class="sig-paren">)</span><a class="headerlink" href="#c.vb2_core_create_bufs" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Allocate buffers and any required auxiliary structs</p>
 </dd></dl>
 
@@ -1137,6 +1142,8 @@ call and the queue is not busy, memory will be reallocated.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">vb2_queue</span> <span class="pre">*q</span></code></dt><dd><p>pointer to <a class="reference internal" href="#c.vb2_queue" title="vb2_queue"><code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">vb2_queue</span></code></a> with videobuf2 queue.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">vb2_memory</span> <span class="pre">memory</span></code></dt><dd><p>memory type, as defined by <a class="reference internal" href="#c.vb2_memory" title="vb2_memory"><code class="xref c c-type docutils literal notranslate"><span class="pre">enum</span> <span class="pre">vb2_memory</span></code></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">flags</span></code></dt><dd><p>auxiliary queue/buffer management flags.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">int</span> <span class="pre">*count</span></code></dt><dd><p>requested buffer count.</p>
 </dd>

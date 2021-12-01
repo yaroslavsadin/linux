@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -706,6 +706,70 @@ context.</p>
 not the read request structure as they could be used in other situations where
 there isn’t a read request structure as well, such as writing dirty data to the
 cache.</p>
+<dl class="c function">
+<dt id="c.folio_start_fscache">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_start_fscache</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_start_fscache" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_start_fscache" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Start an fscache write on a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Call this function before writing a folio to a local cache.  Starting a
+second write before the first one finishes is not allowed.</p>
+<dl class="c function">
+<dt id="c.folio_end_fscache">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_end_fscache</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_end_fscache" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_end_fscache" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>End an fscache write on a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Call this function after the folio has been written to the local cache.
+This will wake any sleepers waiting on this folio.</p>
+<dl class="c function">
+<dt id="c.folio_wait_fscache">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_wait_fscache</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_wait_fscache" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_fscache" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Wait for an fscache write on this folio to end.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>If this folio is currently being written to a local cache, wait for
+the write to finish.  Another write may start after this one finishes,
+unless the caller holds the folio lock.</p>
+<dl class="c function">
+<dt id="c.folio_wait_fscache_killable">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">folio_wait_fscache_killable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_wait_fscache_killable" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_fscache_killable" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Wait for an fscache write on this folio to end.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>If this folio is currently being written to a local cache, wait
+for the write to finish or for a fatal signal to be received.
+Another write may start after this one finishes, unless the caller
+holds the folio lock.</p>
+<p><strong>Return</strong></p>
+<ul class="simple">
+<li><p>0 if successful.</p></li>
+<li><p>-EINTR if a fatal signal was encountered.</p></li>
+</ul>
 </section>
 </section>
 </section>

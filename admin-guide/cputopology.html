@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -132,6 +132,7 @@
 <li class="toctree-l2"><a class="reference internal" href="edid.html">EDID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="efi-stub.html">The EFI Boot Stub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ext4.html">ext4 General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filesystem-monitoring.html">File system Monitoring with fanotify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nfs/index.html">NFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpio/index.html">gpio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="highuid.html">Notes on the change from 16-bit UIDs to 32-bit UIDs</a></li>
@@ -333,11 +334,13 @@ where they reflect the cpu and cache hierarchy.</p>
 these macros in include/asm-XXX/topology.h:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#define topology_physical_package_id(cpu)
 #define topology_die_id(cpu)
+#define topology_cluster_id(cpu)
 #define topology_core_id(cpu)
 #define topology_book_id(cpu)
 #define topology_drawer_id(cpu)
 #define topology_sibling_cpumask(cpu)
 #define topology_core_cpumask(cpu)
+#define topology_cluster_cpumask(cpu)
 #define topology_die_cpumask(cpu)
 #define topology_book_cpumask(cpu)
 #define topology_drawer_cpumask(cpu)
@@ -353,9 +356,11 @@ not defined by include/asm-XXX/topology.h:</p>
 <ol class="arabic simple">
 <li><p>topology_physical_package_id: -1</p></li>
 <li><p>topology_die_id: -1</p></li>
+<li><p>topology_cluster_id: -1</p></li>
 <li><p>topology_core_id: 0</p></li>
 <li><p>topology_sibling_cpumask: just the given CPU</p></li>
 <li><p>topology_core_cpumask: just the given CPU</p></li>
+<li><p>topology_cluster_cpumask: just the given CPU</p></li>
 <li><p>topology_die_cpumask: just the given CPU</p></li>
 </ol>
 <p>For architectures that don’t support books (CONFIG_SCHED_BOOK) there are no

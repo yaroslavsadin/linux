@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -359,15 +359,17 @@ detailed in the following 3GPP document:</p>
 modems connected to a physical serial port.</p>
 <section id="how-to-use-it">
 <h2>How to use it<a class="headerlink" href="#how-to-use-it" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li><p>initialize the modem in 0710 mux mode (usually AT+CMUX= command) through
-its serial port. Depending on the modem used, you can pass more or less
-parameters to this command,</p></li>
-<li><p>switch the serial line to using the n_gsm line discipline by using
-TIOCSETD ioctl,</p></li>
-<li><p>configure the mux using GSMIOC_GETCONF / GSMIOC_SETCONF ioctl,</p></li>
-<li><p>obtain base gsmtty number for the used serial port,</p></li>
-</ol>
+<section id="config-initiator">
+<h3>1. config initiator<a class="headerlink" href="#config-initiator" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>1.1 initialize the modem in 0710 mux mode (usually AT+CMUX= command) through</dt><dd><p>its serial port. Depending on the modem used, you can pass more or less
+parameters to this command.</p>
+</dd>
+<dt>1.2 switch the serial line to using the n_gsm line discipline by using</dt><dd><p>TIOCSETD ioctl.</p>
+</dd>
+</dl>
+<p>1.3 configure the mux using GSMIOC_GETCONF / GSMIOC_SETCONF ioctl.
+1.4 obtain base gsmtty number for the used serial port.</p>
 <p>Major parts of the initialization program :
 (a good starting point is util-linux-ng/sys-utils/ldattach.c):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#include &lt;stdio.h&gt;
@@ -418,16 +420,17 @@ TIOCSETD ioctl,</p></li>
       pause();
 </pre></div>
 </div>
-<ol class="arabic" start="5">
-<li><p>use these devices as plain serial ports.</p>
-<p>for example, it’s possible:</p>
+<p>1.5 use these devices as plain serial ports.</p>
+<blockquote>
+<div><p>for example, it’s possible:</p>
 <ul class="simple">
 <li><p>and to use gnokii to send / receive SMS on ttygsm1</p></li>
 <li><p>to use ppp to establish a datalink on ttygsm2</p></li>
 </ul>
-</li>
-<li><p>first close all virtual ports before closing the physical port.</p>
-<p>Note that after closing the physical port the modem is still in multiplexing
+</div></blockquote>
+<p>1.6 first close all virtual ports before closing the physical port.</p>
+<blockquote>
+<div><p>Note that after closing the physical port the modem is still in multiplexing
 mode. This may prevent a successful re-opening of the port later. To avoid
 this situation either reset the modem if your hardware allows that or send
 a disconnect command frame manually before initializing the multiplexing mode
@@ -435,8 +438,55 @@ for the second time. The byte sequence for the disconnect command frame is:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>0xf9, 0x03, 0xef, 0x03, 0xc3, 0x16, 0xf9.
 </pre></div>
 </div>
-</li>
-</ol>
+</div></blockquote>
+</section>
+<section id="config-requester">
+<h3>2. config requester<a class="headerlink" href="#config-requester" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>2.1 receive string “AT+CMUX= command” through its serial port,initialize</dt><dd><p>mux mode config</p>
+</dd>
+<dt>2.2 switch the serial line to using the n_gsm line discipline by using</dt><dd><p>TIOCSETD ioctl.</p>
+</dd>
+</dl>
+<p>2.3 configure the mux using GSMIOC_GETCONF / GSMIOC_SETCONF ioctl.
+2.4 obtain base gsmtty number for the used serial port,</p>
+<blockquote>
+<div><p>#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;linux/gsmmux.h&gt;
+#include &lt;linux/tty.h&gt;
+#define DEFAULT_SPEED B115200
+#define SERIAL_PORT   /dev/ttyS0</p>
+<blockquote>
+<div><p>int ldisc = N_GSM0710;
+struct gsm_config c;
+struct termios configuration;
+uint32_t first;</p>
+<p>/* open the serial port <a href="#id1"><span class="problematic" id="id2">*</span></a>/
+fd = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);</p>
+<p>/* configure the serial port : speed, flow control … <a href="#id3"><span class="problematic" id="id4">*</span></a>/</p>
+<p>/* get serial data and check “AT+CMUX=command” parameter … <a href="#id5"><span class="problematic" id="id6">*</span></a>/</p>
+<p>/* use n_gsm line discipline <a href="#id7"><span class="problematic" id="id8">*</span></a>/
+ioctl(fd, TIOCSETD, &amp;ldisc);</p>
+<p>/* get n_gsm configuration <em>/
+ioctl(fd, GSMIOC_GETCONF, &amp;c);
+/</em> we are requester and need encoding 0 (basic) <em>/
+c.initiator = 0;
+c.encapsulation = 0;
+/</em> our modem defaults to a maximum size of 127 bytes <em>/
+c.mru = 127;
+c.mtu = 127;
+/</em> set the new configuration <em>/
+ioctl(fd, GSMIOC_SETCONF, &amp;c);
+/</em> get first gsmtty device node <a href="#id9"><span class="problematic" id="id10">*</span></a>/
+ioctl(fd, GSMIOC_GETFIRST, &amp;first);
+printf(“first muxed line: /dev/gsmtty%in”, first);</p>
+<p>/* and wait for ever to keep the line discipline enabled <a href="#id11"><span class="problematic" id="id12">*</span></a>/
+daemon(0,0);
+pause();</p>
+</div></blockquote>
+</div></blockquote>
+</section>
 </section>
 <section id="additional-documentation">
 <h2>Additional Documentation<a class="headerlink" href="#additional-documentation" title="Permalink to this headline">¶</a></h2>

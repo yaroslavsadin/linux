@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -537,19 +537,19 @@ performed using the <a class="reference internal" href="v4l2-async.html#c.v4l2_a
 registered this way are stored in a global list of subdevices, ready to be
 picked up by bridge drivers.</p>
 <p>Bridge drivers in turn have to register a notifier object. This is
-performed using the <a class="reference internal" href="v4l2-async.html#c.v4l2_async_notifier_register" title="v4l2_async_notifier_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_notifier_register()</span></code></a> call. To
+performed using the <a class="reference internal" href="v4l2-async.html#c.v4l2_async_nf_register" title="v4l2_async_nf_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_nf_register()</span></code></a> call. To
 unregister the notifier the driver has to call
-<a class="reference internal" href="v4l2-async.html#c.v4l2_async_notifier_unregister" title="v4l2_async_notifier_unregister"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_notifier_unregister()</span></code></a>. The former of the two functions
+<a class="reference internal" href="v4l2-async.html#c.v4l2_async_nf_unregister" title="v4l2_async_nf_unregister"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_nf_unregister()</span></code></a>. The former of the two functions
 takes two arguments: a pointer to struct <a class="reference internal" href="v4l2-device.html#c.v4l2_device" title="v4l2_device"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_device</span></code></a> and a
 pointer to struct <a class="reference internal" href="v4l2-async.html#c.v4l2_async_notifier" title="v4l2_async_notifier"><code class="xref c c-type docutils literal notranslate"><span class="pre">v4l2_async_notifier</span></code></a>.</p>
 <p>Before registering the notifier, bridge drivers must do two things: first, the
-notifier must be initialized using the <a class="reference internal" href="v4l2-async.html#c.v4l2_async_notifier_init" title="v4l2_async_notifier_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_notifier_init()</span></code></a>.
+notifier must be initialized using the <a class="reference internal" href="v4l2-async.html#c.v4l2_async_nf_init" title="v4l2_async_nf_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_nf_init()</span></code></a>.
 Second, bridge drivers can then begin to form a list of subdevice descriptors
 that the bridge device needs for its operation. Several functions are available
 to add subdevice descriptors to a notifier, depending on the type of device and
 the needs of the driver.</p>
-<p><a class="reference internal" href="v4l2-async.html#c.v4l2_async_notifier_add_fwnode_remote_subdev" title="v4l2_async_notifier_add_fwnode_remote_subdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_notifier_add_fwnode_remote_subdev()</span></code></a> and
-<a class="reference internal" href="v4l2-async.html#c.v4l2_async_notifier_add_i2c_subdev" title="v4l2_async_notifier_add_i2c_subdev"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_notifier_add_i2c_subdev()</span></code></a> are for bridge and ISP drivers for
+<p><a class="reference internal" href="v4l2-async.html#c.v4l2_async_nf_add_fwnode_remote" title="v4l2_async_nf_add_fwnode_remote"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_nf_add_fwnode_remote()</span></code></a> and
+<a class="reference internal" href="v4l2-async.html#c.v4l2_async_nf_add_i2c" title="v4l2_async_nf_add_i2c"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_nf_add_i2c()</span></code></a> are for bridge and ISP drivers for
 registering their async sub-devices with the notifier.</p>
 <p><a class="reference internal" href="v4l2-async.html#c.v4l2_async_register_subdev_sensor" title="v4l2_async_register_subdev_sensor"><code class="xref c c-func docutils literal notranslate"><span class="pre">v4l2_async_register_subdev_sensor()</span></code></a> is a helper function for
 sensor drivers registering their own async sub-device, but it also registers a
@@ -569,8 +569,8 @@ async sub-device.</p>
 
 <span class="p">...</span>
 
-<span class="n">my_asd</span> <span class="o">=</span> <span class="n">v4l2_async_notifier_add_fwnode_remote_subdev</span><span class="p">(</span><span class="o">&amp;</span><span class="n">notifier</span><span class="p">,</span> <span class="n">ep</span><span class="p">,</span>
-                                                      <span class="k">struct</span> <span class="nc">my_async_subdev</span><span class="p">);</span>
+<span class="n">my_asd</span> <span class="o">=</span> <span class="n">v4l2_async_nf_add_fwnode_remote</span><span class="p">(</span><span class="o">&amp;</span><span class="n">notifier</span><span class="p">,</span> <span class="n">ep</span><span class="p">,</span>
+                                         <span class="k">struct</span> <span class="nc">my_async_subdev</span><span class="p">);</span>
 <span class="n">fwnode_handle_put</span><span class="p">(</span><span class="n">ep</span><span class="p">);</span>
 
 <span class="k">if</span> <span class="p">(</span><span class="n">IS_ERR</span><span class="p">(</span><span class="n">asd</span><span class="p">))</span>

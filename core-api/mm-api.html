@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -734,7 +734,7 @@ eventually.</p>
 </dl>
 <dl class="c function">
 <dt id="c.krealloc_array">
-<em class="property"><span class="pre">inline</span></em> <span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">krealloc_array</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">p</span></em>, <span class="pre">size_t</span> <em><span class="pre">new_n</span></em>, <span class="pre">size_t</span> <em><span class="pre">new_size</span></em>, <a class="reference internal" href="#c.gfp_t" title="gfp_t"><span class="pre">gfp_t</span></a> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.krealloc_array" title="Permalink to this definition">¶</a><br /></dt>
+<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">krealloc_array</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">p</span></em>, <span class="pre">size_t</span> <em><span class="pre">new_n</span></em>, <span class="pre">size_t</span> <em><span class="pre">new_size</span></em>, <a class="reference internal" href="#c.gfp_t" title="gfp_t"><span class="pre">gfp_t</span></a> <em><span class="pre">flags</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.krealloc_array" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>reallocate memory for an array.</p>
 </dd></dl>
 
@@ -1815,84 +1815,79 @@ This function does not add the page to the LRU.  The caller must do that.</p>
 <p><strong>Return</strong></p>
 <p><code class="docutils literal notranslate"><span class="pre">0</span></code> on success, negative error code otherwise.</p>
 <dl class="c function">
-<dt id="c.add_page_wait_queue">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">add_page_wait_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.add_page_wait_queue" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em>, <span class="pre">wait_queue_entry_t</span> <span class="pre">*</span><em><span class="pre">waiter</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.add_page_wait_queue" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Add an arbitrary waiter to a page’s wait queue</p>
+<dt id="c.folio_add_wait_queue">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_add_wait_queue</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_add_wait_queue" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em>, <span class="pre">wait_queue_entry_t</span> <span class="pre">*</span><em><span class="pre">waiter</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_add_wait_queue" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add an arbitrary waiter to a folio’s wait queue</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>Page defining the wait queue of interest</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>Folio defining the wait queue of interest</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">wait_queue_entry_t</span> <span class="pre">*waiter</span></code></dt><dd><p>Waiter to add to the queue</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Add an arbitrary <strong>waiter</strong> to the wait queue for the nominated <strong>page</strong>.</p>
+<p>Add an arbitrary <strong>waiter</strong> to the wait queue for the nominated <strong>folio</strong>.</p>
 <dl class="c function">
-<dt id="c.unlock_page">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">unlock_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.unlock_page" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.unlock_page" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>unlock a locked page</p>
+<dt id="c.folio_unlock">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_unlock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_unlock" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_unlock" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Unlock a locked folio.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>the page</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Unlocks the page and wakes up sleepers in wait_on_page_locked().
-Also wakes sleepers in wait_on_page_writeback() because the wakeup
-mechanism between PageLocked pages and PageWriteback pages is shared.
-But that’s OK - sleepers in wait_on_page_writeback() just go back to sleep.</p>
-<p>Note that this depends on PG_waiters being the sign bit in the byte
-that contains PG_locked - thus the BUILD_BUG_ON(). That allows us to
-clear the PG_locked bit and test PG_waiters at the same time fairly
-portably (architectures that do LL/SC can test any bit, while x86 can
-test the sign bit).</p>
+<p>Unlocks the folio and wakes up any thread sleeping on the page lock.</p>
+<p><strong>Context</strong></p>
+<p>May be called from interrupt or process context.  May not be
+called from NMI context.</p>
 <dl class="c function">
-<dt id="c.end_page_private_2">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">end_page_private_2</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.end_page_private_2" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.end_page_private_2" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Clear PG_private_2 and release any waiters</p>
+<dt id="c.folio_end_private_2">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_end_private_2</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_end_private_2" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_end_private_2" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clear PG_private_2 and wake any waiters.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>The page</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Clear the PG_private_2 bit on a page and wake up any sleepers waiting for
-this.  The page ref held for PG_private_2 being set is released.</p>
-<p>This is, for example, used when a netfs page is being written to a local
-disk cache, thereby allowing writes to the cache for the same page to be
+<p>Clear the PG_private_2 bit on a folio and wake up any sleepers waiting for
+it.  The folio reference held for PG_private_2 being set is released.</p>
+<p>This is, for example, used when a netfs folio is being written to a local
+disk cache, thereby allowing writes to the cache for the same folio to be
 serialised.</p>
 <dl class="c function">
-<dt id="c.wait_on_page_private_2">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">wait_on_page_private_2</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.wait_on_page_private_2" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.wait_on_page_private_2" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Wait for PG_private_2 to be cleared on a page</p>
+<dt id="c.folio_wait_private_2">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_wait_private_2</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_wait_private_2" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_private_2" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Wait for PG_private_2 to be cleared on a folio.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>The page to wait on</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio to wait on.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Wait for PG_private_2 (aka PG_fscache) to be cleared on a page.</p>
+<p>Wait for PG_private_2 (aka PG_fscache) to be cleared on a folio.</p>
 <dl class="c function">
-<dt id="c.wait_on_page_private_2_killable">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">wait_on_page_private_2_killable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.wait_on_page_private_2_killable" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.wait_on_page_private_2_killable" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Wait for PG_private_2 to be cleared on a page</p>
+<dt id="c.folio_wait_private_2_killable">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">folio_wait_private_2_killable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_wait_private_2_killable" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_private_2_killable" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Wait for PG_private_2 to be cleared on a folio.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>The page to wait on</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio to wait on.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Wait for PG_private_2 (aka PG_fscache) to be cleared on a page or until a
+<p>Wait for PG_private_2 (aka PG_fscache) to be cleared on a folio or until a
 fatal signal is received by the calling task.</p>
 <p><strong>Return</strong></p>
 <ul class="simple">
@@ -1900,25 +1895,25 @@ fatal signal is received by the calling task.</p>
 <li><p>-EINTR if a fatal signal was encountered.</p></li>
 </ul>
 <dl class="c function">
-<dt id="c.end_page_writeback">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">end_page_writeback</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.end_page_writeback" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.end_page_writeback" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>end writeback against a page</p>
+<dt id="c.folio_end_writeback">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_end_writeback</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_end_writeback" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_end_writeback" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>End writeback against a folio.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>the page</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
 </dd>
 </dl>
 <dl class="c function">
-<dt id="c.__lock_page">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__lock_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">page</span> <span class="pre">*</span><em><span class="pre">__page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__lock_page" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>get a lock on the page, assuming we need to sleep to get it</p>
+<dt id="c.__folio_lock">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__folio_lock</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.__folio_lock" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__folio_lock" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get a lock on the folio, assuming we need to sleep to get it.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*__page</span></code></dt><dd><p>the page to lock</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio to lock</p>
 </dd>
 </dl>
 <dl class="c function">
@@ -1976,9 +1971,9 @@ return 5 if called under the rcu_read_lock.</p>
 range specified (in which case ‘index - return &gt;= max_scan’ will be true).
 In the rare case of wrap-around, ULONG_MAX will be returned.</p>
 <dl class="c function">
-<dt id="c.pagecache_get_page">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">page</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">pagecache_get_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <span class="pre">pgoff_t</span> <em><span class="pre">index</span></em>, <span class="pre">int</span> <em><span class="pre">fgp_flags</span></em>, <a class="reference internal" href="#c.gfp_t" title="gfp_t"><span class="pre">gfp_t</span></a> <em><span class="pre">gfp_mask</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.pagecache_get_page" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Find and get a reference to a page.</p>
+<dt id="c.__filemap_get_folio">
+<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">__filemap_get_folio</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <span class="pre">pgoff_t</span> <em><span class="pre">index</span></em>, <span class="pre">int</span> <em><span class="pre">fgp_flags</span></em>, <a class="reference internal" href="#c.gfp_t" title="gfp_t"><span class="pre">gfp_t</span></a> <em><span class="pre">gfp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__filemap_get_folio" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Find and get a reference to a folio.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
@@ -1987,36 +1982,35 @@ In the rare case of wrap-around, ULONG_MAX will be returned.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">pgoff_t</span> <span class="pre">index</span></code></dt><dd><p>The page index.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">fgp_flags</span></code></dt><dd><p><code class="docutils literal notranslate"><span class="pre">FGP</span></code> flags modify how the page is returned.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">fgp_flags</span></code></dt><dd><p><code class="docutils literal notranslate"><span class="pre">FGP</span></code> flags modify how the folio is returned.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">gfp_t</span> <span class="pre">gfp_mask</span></code></dt><dd><p>Memory allocation flags to use if <code class="docutils literal notranslate"><span class="pre">FGP_CREAT</span></code> is specified.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">gfp_t</span> <span class="pre">gfp</span></code></dt><dd><p>Memory allocation flags to use if <code class="docutils literal notranslate"><span class="pre">FGP_CREAT</span></code> is specified.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
 <p>Looks up the page cache entry at <strong>mapping</strong> &amp; <strong>index</strong>.</p>
 <p><strong>fgp_flags</strong> can be zero or more of these flags:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">FGP_ACCESSED</span></code> - The page will be marked accessed.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FGP_LOCK</span></code> - The page is returned locked.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FGP_HEAD</span></code> - If the page is present and a THP, return the head page
-rather than the exact page specified by the index.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FGP_ACCESSED</span></code> - The folio will be marked accessed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FGP_LOCK</span></code> - The folio is returned locked.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">FGP_ENTRY</span></code> - If there is a shadow / swap / DAX entry, return it
-instead of allocating a new page to replace it.</p></li>
+instead of allocating a new folio to replace it.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">FGP_CREAT</span></code> - If no page is present then a new page is allocated using
-<strong>gfp_mask</strong> and added to the page cache and the VM’s LRU list.
+<strong>gfp</strong> and added to the page cache and the VM’s LRU list.
 The page is returned locked and with an increased refcount.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">FGP_FOR_MMAP</span></code> - The caller wants to do its own locking dance if the
 page is already in cache.  If the page was allocated, unlock it before
 returning so the caller can do the same dance.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FGP_WRITE</span></code> - The page will be written</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FGP_NOFS</span></code> - __GFP_FS will get cleared in gfp mask</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">FGP_NOWAIT</span></code> - Don’t get blocked by page lock</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FGP_WRITE</span></code> - The page will be written to by the caller.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FGP_NOFS</span></code> - __GFP_FS will get cleared in gfp.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FGP_NOWAIT</span></code> - Don’t get blocked by page lock.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FGP_STABLE</span></code> - Wait for the folio to be stable (finished writeback)</p></li>
 </ul>
 <p>If <code class="docutils literal notranslate"><span class="pre">FGP_LOCK</span></code> or <code class="docutils literal notranslate"><span class="pre">FGP_CREAT</span></code> are specified then the function may sleep even
 if the <code class="docutils literal notranslate"><span class="pre">GFP</span></code> flags specified for <code class="docutils literal notranslate"><span class="pre">FGP_CREAT</span></code> are atomic.</p>
 <p>If there is a page cache page, it is returned with an increased refcount.</p>
 <p><strong>Return</strong></p>
-<p>The found page or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> otherwise.</p>
+<p>The found folio or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> otherwise.</p>
 <dl class="c function">
 <dt id="c.find_get_pages_contig">
 <span class="pre">unsigned</span> <code class="sig-name descname"><span class="pre">find_get_pages_contig</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <span class="pre">pgoff_t</span> <em><span class="pre">index</span></em>, <span class="pre">unsigned</span> <span class="pre">int</span> <em><span class="pre">nr_pages</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">page</span> <span class="pre">*</span><span class="pre">*</span><em><span class="pre">pages</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.find_get_pages_contig" title="Permalink to this definition">¶</a><br /></dt>
@@ -2359,37 +2353,164 @@ address_space_operation.</p>
 <p><strong>Return</strong></p>
 <p><code class="docutils literal notranslate"><span class="pre">0</span></code> on success, negative error code otherwise</p>
 <dl class="c function">
-<dt id="c.write_one_page">
-<span class="pre">int</span> <code class="sig-name descname"><span class="pre">write_one_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.write_one_page" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_one_page" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>write out a single page and wait on I/O</p>
+<dt id="c.folio_write_one">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">folio_write_one</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_write_one" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_write_one" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>write out a single folio and wait on I/O.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>the page to write</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio to write.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>The page must be locked by the caller and will be unlocked upon return.</p>
+<p>The folio must be locked by the caller and will be unlocked upon return.</p>
 <p>Note that the mapping’s AS_EIO/AS_ENOSPC flags will be cleared when this
 function returns.</p>
 <p><strong>Return</strong></p>
 <p><code class="docutils literal notranslate"><span class="pre">0</span></code> on success, negative error code otherwise</p>
 <dl class="c function">
-<dt id="c.wait_for_stable_page">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">wait_for_stable_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.wait_for_stable_page" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.wait_for_stable_page" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.filemap_dirty_folio">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">filemap_dirty_folio</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.filemap_dirty_folio" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.filemap_dirty_folio" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Mark a folio dirty for filesystems which do not use buffer_heads.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">address_space</span> <span class="pre">*mapping</span></code></dt><dd><p>Address space this folio belongs to.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>Folio to be marked as dirty.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Filesystems which do not use buffer heads should call this function
+from their set_page_dirty address space operation.  It ignores the
+contents of folio_get_private(), so if the filesystem marks individual
+blocks as dirty, the filesystem should handle that itself.</p>
+<p>This is also sometimes used by filesystems which use buffer_heads when
+a single buffer is being dirtied: we want to set the folio dirty in
+that case, but not all the buffers.  This is a “bottom-up” dirtying,
+whereas __set_page_dirty_buffers() is a “top-down” dirtying.</p>
+<p>The caller must ensure this doesn’t race with truncation.  Most will
+simply hold the folio lock, but e.g. zap_pte_range() calls with the
+folio mapped and the pte lock held, which also locks out truncation.</p>
+<dl class="c function">
+<dt id="c.folio_account_redirty">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_account_redirty</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_account_redirty" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_account_redirty" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Manually account for redirtying a page.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio which is being redirtied.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Most filesystems should call <a class="reference internal" href="#c.folio_redirty_for_writepage" title="folio_redirty_for_writepage"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_redirty_for_writepage()</span></code></a> instead
+of this fuction.  If your filesystem is doing writeback outside the
+context of a writeback_control(), it can call this when redirtying
+a folio, to de-account the dirty counters (NR_DIRTIED, WB_DIRTIED,
+tsk-&gt;nr_dirtied), so that they match the written counters (NR_WRITTEN,
+WB_WRITTEN) in long term. The mismatches will lead to systematic errors
+in balanced_dirty_ratelimit and the dirty pages position control.</p>
+<dl class="c function">
+<dt id="c.folio_redirty_for_writepage">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">folio_redirty_for_writepage</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">writeback_control</span> <span class="pre">*</span><em><span class="pre">wbc</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_redirty_for_writepage" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_redirty_for_writepage" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Decline to write a dirty folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">writeback_control</span> <span class="pre">*wbc</span></code></dt><dd><p>The writeback control.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>When a writepage implementation decides that it doesn’t want to write
+<strong>folio</strong> for some reason, it should call this function, unlock <strong>folio</strong> and
+return 0.</p>
+<p><strong>Return</strong></p>
+<p>True if we redirtied the folio.  False if someone else dirtied
+it first.</p>
+<dl class="c function">
+<dt id="c.folio_mark_dirty">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">folio_mark_dirty</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_mark_dirty" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_mark_dirty" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Mark a folio as being modified.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>For folios with a mapping this should be done under the page lock
+for the benefit of asynchronous memory errors who prefer a consistent
+dirty state. This rule can be broken in some special cases,
+but should be better not to.</p>
+<p><strong>Return</strong></p>
+<p>True if the folio was newly dirtied, false if it was already dirty.</p>
+<dl class="c function">
+<dt id="c.folio_wait_writeback">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_wait_writeback</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_wait_writeback" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_writeback" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Wait for a folio to finish writeback.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio to wait for.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>If the folio is currently being written back to storage, wait for the
+I/O to complete.</p>
+<p><strong>Context</strong></p>
+<p>Sleeps.  Must be called in process context and with
+no spinlocks held.  Caller should hold a reference on the folio.
+If the folio is not locked, writeback may start again after writeback
+has finished.</p>
+<dl class="c function">
+<dt id="c.folio_wait_writeback_killable">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">folio_wait_writeback_killable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_wait_writeback_killable" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_writeback_killable" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Wait for a folio to finish writeback.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio to wait for.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>If the folio is currently being written back to storage, wait for the
+I/O to complete or a fatal signal to arrive.</p>
+<p><strong>Context</strong></p>
+<p>Sleeps.  Must be called in process context and with
+no spinlocks held.  Caller should hold a reference on the folio.
+If the folio is not locked, writeback may start again after writeback
+has finished.</p>
+<p><strong>Return</strong></p>
+<p>0 on success, -EINTR if we get a fatal signal while waiting.</p>
+<dl class="c function">
+<dt id="c.folio_wait_stable">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_wait_stable</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_wait_stable" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_wait_stable" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>wait for writeback to finish, if necessary.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>The page to wait on.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio to wait on.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>This function determines if the given page is related to a backing device
-that requires page contents to be held stable during writeback.  If so, then
-it will wait for any pending writeback to complete.</p>
+<p>This function determines if the given folio is related to a backing
+device that requires folio contents to be held stable during writeback.
+If so, then it will wait for any pending writeback to complete.</p>
+<p><strong>Context</strong></p>
+<p>Sleeps.  Must be called in process context and with
+no spinlocks held.  Caller should hold a reference on the folio.
+If the folio is not locked, writeback may start again after writeback
+has finished.</p>
 <dl class="c function">
 <dt id="c.truncate_inode_pages_range">
 <span class="pre">void</span> <code class="sig-name descname"><span class="pre">truncate_inode_pages_range</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <span class="pre">loff_t</span> <em><span class="pre">lstart</span></em>, <span class="pre">loff_t</span> <em><span class="pre">lend</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.truncate_inode_pages_range" title="Permalink to this definition">¶</a><br /></dt>
@@ -2627,37 +2748,106 @@ internal callers also need to know when writeback errors have occurred.</p>
 mapping_set_error to record the error in the mapping so that it can be
 reported when the application calls fsync(2).</p>
 <dl class="c function">
-<dt id="c.attach_page_private">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">attach_page_private</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.attach_page_private" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.attach_page_private" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Attach private data to a page.</p>
+<dt id="c.folio_file_mapping">
+<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">folio_file_mapping</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_file_mapping" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_file_mapping" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Find the mapping this folio belongs to.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>Page to attach data to.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*data</span></code></dt><dd><p>Data to attach to page.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Attaching private data to a page increments the page’s reference count.
-The data must be detached before the page will be freed.</p>
+<p>For folios which are in the page cache, return the mapping that this
+page belongs to.  Folios in the swap cache return the mapping of the
+swap file or swap device where the data is stored.  This is different
+from the mapping returned by <a class="reference internal" href="#c.folio_mapping" title="folio_mapping"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_mapping()</span></code></a>.  The only reason to
+use it is if, like NFS, you return 0 from -&gt;activate_swapfile.</p>
+<p>Do not call this for folios which aren’t in the page cache or swap cache.</p>
 <dl class="c function">
-<dt id="c.detach_page_private">
-<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">detach_page_private</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.detach_page_private" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.detach_page_private" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Detach private data from a page.</p>
+<dt id="c.folio_inode">
+<em class="property"><span class="pre">struct</span></em> <span class="pre">inode</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">folio_inode</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_inode" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_inode" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the host inode for this folio.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>Page to detach data from.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Removes the data that was previously attached to the page and decrements
+<p>For folios which are in the page cache, return the inode that this folio
+belongs to.</p>
+<p>Do not call this for folios which aren’t in the page cache.</p>
+<dl class="c function">
+<dt id="c.folio_attach_private">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_attach_private</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_attach_private" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_attach_private" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Attach private data to a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>Folio to attach data to.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*data</span></code></dt><dd><p>Data to attach to folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Attaching private data to a folio increments the page’s reference count.
+The data must be detached before the folio will be freed.</p>
+<dl class="c function">
+<dt id="c.folio_change_private">
+<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">folio_change_private</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_change_private" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_change_private" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Change private data on a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>Folio to change the data on.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*data</span></code></dt><dd><p>Data to set on the folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Change the private data attached to a folio and return the old
+data.  The page must previously have had data attached and the data
+must be detached before the folio will be freed.</p>
+<p><strong>Return</strong></p>
+<p>Data that was previously attached to the folio.</p>
+<dl class="c function">
+<dt id="c.folio_detach_private">
+<span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">folio_detach_private</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_detach_private" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_detach_private" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Detach private data from a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>Folio to detach data from.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Removes the data that was previously attached to the folio and decrements
 the refcount on the page.</p>
 <p><strong>Return</strong></p>
-<p>Data that was attached to the page.</p>
+<p>Data that was attached to the folio.</p>
+<dl class="c function">
+<dt id="c.filemap_get_folio">
+<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">filemap_get_folio</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <span class="pre">pgoff_t</span> <em><span class="pre">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.filemap_get_folio" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Find and get a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">address_space</span> <span class="pre">*mapping</span></code></dt><dd><p>The address_space to search.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pgoff_t</span> <span class="pre">index</span></code></dt><dd><p>The page index.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Looks up the page cache entry at <strong>mapping</strong> &amp; <strong>index</strong>.  If a folio is
+present, it is returned with an increased refcount.</p>
+<p>Otherwise, <code class="docutils literal notranslate"><span class="pre">NULL</span></code> is returned.</p>
 <dl class="c function">
 <dt id="c.find_get_page">
 <em class="property"><span class="pre">struct</span></em> <span class="pre">page</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">find_get_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <span class="pre">pgoff_t</span> <em><span class="pre">offset</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.find_get_page" title="Permalink to this definition">¶</a><br /></dt>
@@ -2697,28 +2887,6 @@ refcount.</p>
 <p><strong>Return</strong></p>
 <p>A struct page or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if there is no page in the cache for this
 index.</p>
-<dl class="c function">
-<dt id="c.find_lock_head">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">page</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">find_lock_head</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <span class="pre">pgoff_t</span> <em><span class="pre">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.find_lock_head" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Locate, pin and lock a pagecache page.</p>
-</dd></dl>
-
-<p><strong>Parameters</strong></p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">address_space</span> <span class="pre">*mapping</span></code></dt><dd><p>The address_space to search.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">pgoff_t</span> <span class="pre">index</span></code></dt><dd><p>The page index.</p>
-</dd>
-</dl>
-<p><strong>Description</strong></p>
-<p>Looks up the page cache entry at <strong>mapping</strong> &amp; <strong>index</strong>.  If there is a
-page cache page, its head page is returned locked and with an increased
-refcount.</p>
-<p><strong>Context</strong></p>
-<p>May sleep.</p>
-<p><strong>Return</strong></p>
-<p>A struct page which is !PageTail, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if there is no page
-in the cache for this index.</p>
 <dl class="c function">
 <dt id="c.find_or_create_page">
 <em class="property"><span class="pre">struct</span></em> <span class="pre">page</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">find_or_create_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><em><span class="pre">mapping</span></em>, <span class="pre">pgoff_t</span> <em><span class="pre">index</span></em>, <a class="reference internal" href="#c.gfp_t" title="gfp_t"><span class="pre">gfp_t</span></a> <em><span class="pre">gfp_mask</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.find_or_create_page" title="Permalink to this definition">¶</a><br /></dt>
@@ -2765,21 +2933,98 @@ be safe to call while holding the lock for another page.</p>
 <p>Clear __GFP_FS when allocating the page to avoid recursion into the fs
 and deadlock against the caller’s locked page.</p>
 <dl class="c function">
-<dt id="c.set_page_private_2">
-<span class="pre">void</span> <code class="sig-name descname"><span class="pre">set_page_private_2</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.set_page_private_2" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.set_page_private_2" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Set PG_private_2 on a page and take a ref</p>
+<dt id="c.folio_index">
+<span class="pre">pgoff_t</span> <code class="sig-name descname"><span class="pre">folio_index</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_index" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_index" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>File index of a folio.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>The page.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>Set the PG_private_2 flag on a page and take the reference needed for the VM
-to handle its lifetime correctly.  This sets the flag and takes the
-reference unconditionally, so care must be taken not to set the flag again
-if it’s already set.</p>
+<p>For a folio which is either in the page cache or the swap cache,
+return its index within the address_space it belongs to.  If you know
+the page is definitely in the page cache, you can look at the folio’s
+index directly.</p>
+<p><strong>Return</strong></p>
+<p>The index (offset in units of pages) of a folio in its file.</p>
+<dl class="c function">
+<dt id="c.folio_next_index">
+<span class="pre">pgoff_t</span> <code class="sig-name descname"><span class="pre">folio_next_index</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_next_index" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_next_index" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the index of the next folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The current folio.</p>
+</dd>
+</dl>
+<p><strong>Return</strong></p>
+<p>The index of the folio which follows this folio in the file.</p>
+<dl class="c function">
+<dt id="c.folio_file_page">
+<em class="property"><span class="pre">struct</span></em> <span class="pre">page</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">folio_file_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_file_page" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em>, <span class="pre">pgoff_t</span> <em><span class="pre">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_file_page" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The page for a particular index.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio which contains this index.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pgoff_t</span> <span class="pre">index</span></code></dt><dd><p>The index we want to look up.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Sometimes after looking up a folio in the page cache, we need to
+obtain the specific page for an index (eg a page fault).</p>
+<p><strong>Return</strong></p>
+<p>The page containing the file data for this index.</p>
+<dl class="c function">
+<dt id="c.folio_contains">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">folio_contains</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_contains" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em>, <span class="pre">pgoff_t</span> <em><span class="pre">index</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_contains" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Does this folio contain this index?</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pgoff_t</span> <span class="pre">index</span></code></dt><dd><p>The page index within the file.</p>
+</dd>
+</dl>
+<p><strong>Context</strong></p>
+<p>The caller should have the page locked in order to prevent
+(eg) shmem from moving the page between the page cache and swap cache
+and changing its index in the middle of the operation.</p>
+<p><strong>Return</strong></p>
+<p>true or false.</p>
+<dl class="c function">
+<dt id="c.folio_pos">
+<span class="pre">loff_t</span> <code class="sig-name descname"><span class="pre">folio_pos</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_pos" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_pos" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the byte position of this folio in its file.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.folio_file_pos">
+<span class="pre">loff_t</span> <code class="sig-name descname"><span class="pre">folio_file_pos</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_file_pos" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_file_pos" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Returns the byte position of this folio in its file.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This differs from <a class="reference internal" href="#c.folio_pos" title="folio_pos"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_pos()</span></code></a> for folios which belong to a swap file.
+NFS is the only filesystem today which needs to use <a class="reference internal" href="#c.folio_file_pos" title="folio_file_pos"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_file_pos()</span></code></a>.</p>
 <dl class="c struct">
 <dt id="c.readahead_control">
 <em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">readahead_control</span></code><a class="headerlink" href="#c.readahead_control" title="Permalink to this definition">¶</a><br /></dt>
@@ -2863,13 +3108,13 @@ has used up enough of the readahead window that we should start pulling in
 more pages.</p>
 <dl class="c function">
 <dt id="c.readahead_page">
-<em class="property"><span class="pre">struct</span></em> <span class="pre">page</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">readahead_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.readahead_control" title="readahead_control"><span class="pre">readahead_control</span></a> <span class="pre">*</span><em><span class="pre">rac</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.readahead_page" title="Permalink to this definition">¶</a><br /></dt>
+<em class="property"><span class="pre">struct</span></em> <span class="pre">page</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">readahead_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.readahead_control" title="readahead_control"><span class="pre">readahead_control</span></a> <span class="pre">*</span><em><span class="pre">ractl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.readahead_page" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the next page to read.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">readahead_control</span> <span class="pre">*rac</span></code></dt><dd><p>The current readahead request.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">readahead_control</span> <span class="pre">*ractl</span></code></dt><dd><p>The current readahead request.</p>
 </dd>
 </dl>
 <p><strong>Context</strong></p>
@@ -2878,6 +3123,22 @@ should decreases the refcount once the page has been submitted for I/O
 and unlock the page once all I/O to that page has completed.</p>
 <p><strong>Return</strong></p>
 <p>A pointer to the next page, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if we are done.</p>
+<dl class="c function">
+<dt id="c.readahead_folio">
+<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">readahead_folio</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.readahead_control" title="readahead_control"><span class="pre">readahead_control</span></a> <span class="pre">*</span><em><span class="pre">ractl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.readahead_folio" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the next folio to read.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">readahead_control</span> <span class="pre">*ractl</span></code></dt><dd><p>The current readahead request.</p>
+</dd>
+</dl>
+<p><strong>Context</strong></p>
+<p>The folio is locked.  The caller should unlock the folio once
+all I/O to that folio has completed.</p>
+<p><strong>Return</strong></p>
+<p>A pointer to the next folio, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if we are done.</p>
 <dl class="c macro">
 <dt id="c.readahead_page_batch">
 <code class="sig-name descname"><span class="pre">readahead_page_batch</span></code><a class="headerlink" href="#c.readahead_page_batch" title="Permalink to this definition">¶</a><br /></dt>
@@ -2957,6 +3218,22 @@ is complete.</p>
 </dd>
 </dl>
 <dl class="c function">
+<dt id="c.folio_mkwrite_check_truncate">
+<span class="pre">ssize_t</span> <code class="sig-name descname"><span class="pre">folio_mkwrite_check_truncate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_mkwrite_check_truncate" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_mkwrite_check_truncate" title="inode"><span class="pre">inode</span></a> <span class="pre">*</span><em><span class="pre">inode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_mkwrite_check_truncate" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>check if folio was truncated</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>the folio to check</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">inode</span> <span class="pre">*inode</span></code></dt><dd><p>the inode to check the folio against</p>
+</dd>
+</dl>
+<p><strong>Return</strong></p>
+<p>the number of bytes in the folio up to EOF,
+or -EFAULT if the folio was truncated.</p>
+<dl class="c function">
 <dt id="c.page_mkwrite_check_truncate">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">page_mkwrite_check_truncate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.page_mkwrite_check_truncate" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.page_mkwrite_check_truncate" title="inode"><span class="pre">inode</span></a> <span class="pre">*</span><em><span class="pre">inode</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.page_mkwrite_check_truncate" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>check if page was truncated</p>
@@ -2973,25 +3250,25 @@ is complete.</p>
 <p>Returns the number of bytes in the page up to EOF,
 or -EFAULT if the page was truncated.</p>
 <dl class="c function">
-<dt id="c.i_blocks_per_page">
-<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">i_blocks_per_page</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.i_blocks_per_page" title="inode"><span class="pre">inode</span></a> <span class="pre">*</span><em><span class="pre">inode</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.i_blocks_per_page" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.i_blocks_per_page" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>How many blocks fit in this page.</p>
+<dt id="c.i_blocks_per_folio">
+<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">i_blocks_per_folio</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.i_blocks_per_folio" title="inode"><span class="pre">inode</span></a> <span class="pre">*</span><em><span class="pre">inode</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.i_blocks_per_folio" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.i_blocks_per_folio" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>How many blocks fit in this folio.</p>
 </dd></dl>
 
 <p><strong>Parameters</strong></p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">inode</span> <span class="pre">*inode</span></code></dt><dd><p>The inode which contains the blocks.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>The page (head page if the page is a THP).</p>
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>
-<p>If the block size is larger than the size of this page, return zero.</p>
+<p>If the block size is larger than the size of this folio, return zero.</p>
 <p><strong>Context</strong></p>
-<p>The caller should hold a refcount on the page to prevent it
+<p>The caller should hold a refcount on the folio to prevent it
 from being split.</p>
 <p><strong>Return</strong></p>
-<p>The number of filesystem blocks covered by this page.</p>
+<p>The number of filesystem blocks covered by this folio.</p>
 </section>
 <section id="memory-pools">
 <h2>Memory pools<a class="headerlink" href="#memory-pools" title="Permalink to this headline">¶</a></h2>
@@ -4182,6 +4459,59 @@ This is called at get_inode() calls and we can use GFP_KERNEL.</p>
 <p>Convert <strong>pol</strong> into a string.  If <strong>buffer</strong> is too short, truncate the string.
 Recommend a <strong>maxlen</strong> of at least 32 for the longest mode, “interleave”, the
 longest flag, “relative”, and to display at least a few node ids.</p>
+<dl class="c struct">
+<dt id="c.folio">
+<em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">folio</span></code><a class="headerlink" href="#c.folio" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Represents a contiguous set of bytes.</p>
+</dd></dl>
+
+<p><strong>Definition</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct folio {
+  unsigned long flags;
+  struct list_head lru;
+  struct address_space *mapping;
+  pgoff_t index;
+  void *private;
+  atomic_t _mapcount;
+  atomic_t _refcount;
+#ifdef CONFIG_MEMCG;
+  unsigned long memcg_data;
+#endif;
+};
+</pre></div>
+</div>
+<p><strong>Members</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">flags</span></code></dt><dd><p>Identical to the page flags.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">lru</span></code></dt><dd><p>Least Recently Used list; tracks how recently this folio was used.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mapping</span></code></dt><dd><p>The file this page belongs to, or refers to the anon_vma for
+anonymous memory.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">index</span></code></dt><dd><p>Offset within the file, in units of pages.  For anonymous memory,
+this is the index from the beginning of the mmap.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">private</span></code></dt><dd><p>Filesystem per-folio data (see <a class="reference internal" href="#c.folio_attach_private" title="folio_attach_private"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_attach_private()</span></code></a>).
+Used for swp_entry_t if folio_test_swapcache().</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">_mapcount</span></code></dt><dd><p>Do not access this member directly.  Use folio_mapcount() to
+find out how many times this folio is mapped by userspace.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">_refcount</span></code></dt><dd><p>Do not access this member directly.  Use <a class="reference internal" href="#c.folio_ref_count" title="folio_ref_count"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_ref_count()</span></code></a>
+to find how many references there are to this folio.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">memcg_data</span></code></dt><dd><p>Memory Control Group data.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>A folio is a physically, virtually and logically contiguous set
+of bytes.  It is a power-of-two in size, and it is aligned to that
+same power-of-two.  It is at least as large as <code class="docutils literal notranslate"><span class="pre">PAGE_SIZE</span></code>.  If it is
+in the page cache, it is at a file offset which is a multiple of that
+power-of-two.  It may be mapped into userspace at an address which is
+at an arbitrary page offset, but its kernel virtual address is aligned
+to its size.</p>
 <dl class="c type">
 <dt id="c.vm_fault_t">
 <em class="property"><span class="pre">type</span> </em><code class="sig-name descname"><span class="pre">vm_fault_t</span></code><a class="headerlink" href="#c.vm_fault_t" title="Permalink to this definition">¶</a><br /></dt>
@@ -4230,6 +4560,111 @@ in DAX)</p>
 <dt><code class="docutils literal notranslate"><span class="pre">VM_FAULT_HINDEX_MASK</span></code></dt><dd><p>mask HINDEX value</p>
 </dd>
 </dl>
+<dl class="c function">
+<dt id="c.folio_is_file_lru">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">folio_is_file_lru</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_is_file_lru" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_is_file_lru" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Should the folio be on a file LRU or anon LRU?</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio to test.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>We would like to get this info without a page flag, but the state
+needs to survive until the folio is last deleted from the LRU, which
+could be as far down as __page_cache_release.</p>
+<p><strong>Return</strong></p>
+<p>An integer (not a boolean!) used to sort a folio onto the
+right LRU list and to account folios correctly.
+1 if <strong>folio</strong> is a regular filesystem backed page cache folio
+or a lazily freed anonymous folio (e.g. via MADV_FREE).
+0 if <strong>folio</strong> is a normal anonymous folio, a tmpfs folio or otherwise
+ram or swap backed folio.</p>
+<dl class="c function">
+<dt id="c.__folio_clear_lru_flags">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">__folio_clear_lru_flags</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.__folio_clear_lru_flags" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.__folio_clear_lru_flags" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clear page lru flags before releasing a page.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio that was on lru and now has a zero reference.</p>
+</dd>
+</dl>
+<dl class="c function">
+<dt id="c.folio_lru_list">
+<em class="property"><span class="pre">enum</span></em> <span class="pre">lru_list</span> <code class="sig-name descname"><span class="pre">folio_lru_list</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_lru_list" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_lru_list" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Which LRU list should a folio be on?</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio to test.</p>
+</dd>
+</dl>
+<p><strong>Return</strong></p>
+<p>The LRU list a folio should be on, as an index
+into the array of LRU lists.</p>
+<dl class="c macro">
+<dt id="c.page_folio">
+<code class="sig-name descname"><span class="pre">page_folio</span></code><a class="headerlink" href="#c.page_folio" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><code class="docutils literal notranslate"><span class="pre">page_folio</span> <span class="pre">(p)</span></code></p>
+<blockquote>
+<div><p>Converts from page to folio.</p>
+</div></blockquote>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">p</span></code></dt><dd><p>The page.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Every page is part of a folio.  This function cannot be called on a
+NULL pointer.</p>
+<p><strong>Context</strong></p>
+<p>No reference, nor lock is required on <strong>page</strong>.  If the caller
+does not hold a reference, this call may race with a folio split, so
+it should re-check the folio still contains this page after gaining
+a reference on the folio.</p>
+<p><strong>Return</strong></p>
+<p>The folio which contains this page.</p>
+<dl class="c macro">
+<dt id="c.folio_page">
+<code class="sig-name descname"><span class="pre">folio_page</span></code><a class="headerlink" href="#c.folio_page" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p><code class="docutils literal notranslate"><span class="pre">folio_page</span> <span class="pre">(folio,</span> <span class="pre">n)</span></code></p>
+<blockquote>
+<div><p>Return a page from a folio.</p>
+</div></blockquote>
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">n</span></code></dt><dd><p>The page number to return.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p><strong>n</strong> is relative to the start of the folio.  This function does not
+check that the page number lies within <strong>folio</strong>; the caller is presumed
+to have a reference to the page.</p>
+<dl class="c function">
+<dt id="c.page_has_private">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">page_has_private</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.page_has_private" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.page_has_private" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Determine if page has private stuff</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">page</span> <span class="pre">*page</span></code></dt><dd><p>The page to be checked</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>Determine if a page has private stuff, indicating that release routines
+should be invoked upon it.</p>
 <dl class="c enum">
 <dt id="c.fault_flag">
 <em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">fault_flag</span></code><a class="headerlink" href="#c.fault_flag" title="Permalink to this definition">¶</a><br /></dt>
@@ -4303,6 +4738,57 @@ processes that would also want the mmap_lock.</p>
 <p>true if the page fault allows retry and this is the first
 attempt of the fault handling; false otherwise.</p>
 <dl class="c function">
+<dt id="c.folio_order">
+<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">folio_order</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_order" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_order" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The allocation order of a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>A folio is composed of 2^order pages.  See get_order() for the definition
+of order.</p>
+<p><strong>Return</strong></p>
+<p>The order of the folio.</p>
+<dl class="c function">
+<dt id="c.folio_get">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_get" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_get" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Increment the reference count on a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Context</strong></p>
+<p>May be called in any context, as long as you know that
+you have a refcount on the folio.  If you do not already have one,
+<a class="reference internal" href="#c.folio_try_get" title="folio_try_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_try_get()</span></code></a> may be the right interface for you to use.</p>
+<dl class="c function">
+<dt id="c.folio_put">
+<span class="pre">void</span> <code class="sig-name descname"><span class="pre">folio_put</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_put" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_put" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Decrement the reference count on a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>If the folio’s reference count reaches zero, the memory will be
+released back to the page allocator and may be used by another
+allocation immediately.  Do not access the memory or the <a class="reference internal" href="#c.folio" title="folio"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span></code></a>
+after calling <a class="reference internal" href="#c.folio_put" title="folio_put"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_put()</span></code></a> unless you can be sure that it wasn’t the
+last reference.</p>
+<p><strong>Context</strong></p>
+<p>May be called in process or interrupt context, but not in NMI
+context.  May be called while holding a spinlock.</p>
+<dl class="c function">
 <dt id="c.page_maybe_dma_pinned">
 <span class="pre">bool</span> <code class="sig-name descname"><span class="pre">page_maybe_dma_pinned</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.page_maybe_dma_pinned" title="page"><span class="pre">page</span></a> <span class="pre">*</span><em><span class="pre">page</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.page_maybe_dma_pinned" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Report if a page is pinned for DMA.</p>
@@ -4331,6 +4817,93 @@ scheme).</p>
 <p><strong>Return</strong></p>
 <p>True, if it is likely that the page has been “dma-pinned”.
 False, if the page is definitely not dma-pinned.</p>
+<dl class="c function">
+<dt id="c.folio_pfn">
+<span class="pre">unsigned</span> <span class="pre">long</span> <code class="sig-name descname"><span class="pre">folio_pfn</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_pfn" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_pfn" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return the Page Frame Number of a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>A folio may contain multiple pages.  The pages have consecutive
+Page Frame Numbers.</p>
+<p><strong>Return</strong></p>
+<p>The Page Frame Number of the first page in the folio.</p>
+<dl class="c function">
+<dt id="c.folio_nr_pages">
+<span class="pre">long</span> <code class="sig-name descname"><span class="pre">folio_nr_pages</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_nr_pages" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_nr_pages" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The number of pages in the folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Return</strong></p>
+<p>A positive power of two.</p>
+<dl class="c function">
+<dt id="c.folio_next">
+<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_next" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">folio_next</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_next" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_next" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Move to the next physical folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio we’re currently operating on.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>If you have physically contiguous memory which may span more than
+one folio (eg a <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">bio_vec</span></code>), use this function to move from one
+folio to the next.  Do not use it if the memory is only virtually
+contiguous as the folios are almost certainly not adjacent to each
+other.  This is the folio equivalent to writing <code class="docutils literal notranslate"><span class="pre">page++</span></code>.</p>
+<p><strong>Context</strong></p>
+<p>We assume that the folios are refcounted and/or locked at a
+higher level and do not adjust the reference counts.</p>
+<p><strong>Return</strong></p>
+<p>The next <a class="reference internal" href="#c.folio" title="folio"><code class="xref c c-struct docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span></code></a>.</p>
+<dl class="c function">
+<dt id="c.folio_shift">
+<span class="pre">unsigned</span> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">folio_shift</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_shift" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_shift" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The size of the memory described by this folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>A folio represents a number of bytes which is a power-of-two in size.
+This function tells you which power-of-two the folio is.  See also
+<a class="reference internal" href="#c.folio_size" title="folio_size"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_size()</span></code></a> and <a class="reference internal" href="#c.folio_order" title="folio_order"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_order()</span></code></a>.</p>
+<p><strong>Context</strong></p>
+<p>The caller should have a reference on the folio to prevent
+it from being split.  It is not necessary for the folio to be locked.</p>
+<p><strong>Return</strong></p>
+<p>The base-2 logarithm of the size of this folio.</p>
+<dl class="c function">
+<dt id="c.folio_size">
+<span class="pre">size_t</span> <code class="sig-name descname"><span class="pre">folio_size</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_size" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_size" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The number of bytes in a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Context</strong></p>
+<p>The caller should have a reference on the folio to prevent
+it from being split.  It is not necessary for the folio to be locked.</p>
+<p><strong>Return</strong></p>
+<p>The number of bytes in this folio.</p>
 <dl class="c function">
 <dt id="c.find_vma_intersection">
 <em class="property"><span class="pre">struct</span></em> <span class="pre">vm_area_struct</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">find_vma_intersection</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">mm_struct</span> <span class="pre">*</span><em><span class="pre">mm</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">start_addr</span></em>, <span class="pre">unsigned</span> <span class="pre">long</span> <em><span class="pre">end_addr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.find_vma_intersection" title="Permalink to this definition">¶</a><br /></dt>
@@ -4397,6 +4970,77 @@ false otherwise.</p>
 <p><strong>Description</strong></p>
 <p>Check whether F_SEAL_FUTURE_WRITE is set; if so, do proper check/handling on
 the vma flags.  Return 0 if check pass, or &lt;0 for errors.</p>
+<dl class="c function">
+<dt id="c.folio_ref_count">
+<span class="pre">int</span> <code class="sig-name descname"><span class="pre">folio_ref_count</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_ref_count" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_ref_count" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The reference count on this folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>The refcount is usually incremented by calls to <a class="reference internal" href="#c.folio_get" title="folio_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_get()</span></code></a> and
+decremented by calls to <a class="reference internal" href="#c.folio_put" title="folio_put"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_put()</span></code></a>.  Some typical users of the
+folio refcount:</p>
+<ul class="simple">
+<li><p>Each reference from a page table</p></li>
+<li><p>The page cache</p></li>
+<li><p>Filesystem private data</p></li>
+<li><p>The LRU list</p></li>
+<li><p>Pipes</p></li>
+<li><p>Direct IO which references this page in the process address space</p></li>
+</ul>
+<p><strong>Return</strong></p>
+<p>The number of references to this folio.</p>
+<dl class="c function">
+<dt id="c.folio_try_get">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">folio_try_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_try_get" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_try_get" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Attempt to increase the refcount on a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>If you do not already have a reference to a folio, you can attempt to
+get one using this function.  It may fail if, for example, the folio
+has been freed since you found a pointer to it, or it is frozen for
+the purposes of splitting or migration.</p>
+<p><strong>Return</strong></p>
+<p>True if the reference count was successfully incremented.</p>
+<dl class="c function">
+<dt id="c.folio_try_get_rcu">
+<span class="pre">bool</span> <code class="sig-name descname"><span class="pre">folio_try_get_rcu</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_try_get_rcu" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_try_get_rcu" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Attempt to increase the refcount on a folio.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>This is a version of <a class="reference internal" href="#c.folio_try_get" title="folio_try_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_try_get()</span></code></a> optimised for non-SMP kernels.
+If you are still holding the <a class="reference internal" href="kernel-api.html#c.rcu_read_lock" title="rcu_read_lock"><code class="xref c c-func docutils literal notranslate"><span class="pre">rcu_read_lock()</span></code></a> after looking up the
+page and know that the page cannot have its refcount decreased to
+zero in interrupt context, you can use this instead of <a class="reference internal" href="#c.folio_try_get" title="folio_try_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_try_get()</span></code></a>.</p>
+<p>Example users include <a class="reference internal" href="#c.get_user_pages_fast" title="get_user_pages_fast"><code class="xref c c-func docutils literal notranslate"><span class="pre">get_user_pages_fast()</span></code></a> (as pages are not unmapped
+from interrupt context) and the page cache lookups (as pages are not
+truncated from interrupt context).  We also know that pages are not
+frozen in interrupt context for the purposes of splitting or migration.</p>
+<p>You can also use this function if you’re holding a lock that prevents
+pages being frozen &amp; removed; eg the i_pages lock for the page cache
+or the mmap_sem or page table lock for page tables.  In this case,
+it will always succeed, and you could have used a plain <a class="reference internal" href="#c.folio_get" title="folio_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">folio_get()</span></code></a>,
+but it’s sometimes more convenient to have a common function called
+from both locked and RCU-protected contexts.</p>
+<p><strong>Return</strong></p>
+<p>True if the reference count was successfully incremented.</p>
 <dl class="c function">
 <dt id="c.is_highmem">
 <span class="pre">int</span> <code class="sig-name descname"><span class="pre">is_highmem</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.is_highmem" title="zone"><span class="pre">zone</span></a> <span class="pre">*</span><em><span class="pre">zone</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.is_highmem" title="Permalink to this definition">¶</a><br /></dt>
@@ -4555,6 +5199,24 @@ there is actual usable memory at that <strong>pfn</strong>. The struct page may
 represent a hole or an unusable page frame.</p>
 <p><strong>Return</strong></p>
 <p>1 for PFNs that have memory map entries and 0 otherwise</p>
+<dl class="c function">
+<dt id="c.folio_mapping">
+<em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../filesystems/api-summary.html#c.address_space" title="address_space"><span class="pre">address_space</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">folio_mapping</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.folio_mapping" title="folio"><span class="pre">folio</span></a> <span class="pre">*</span><em><span class="pre">folio</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.folio_mapping" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Find the mapping where this folio is stored.</p>
+</dd></dl>
+
+<p><strong>Parameters</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">folio</span> <span class="pre">*folio</span></code></dt><dd><p>The folio.</p>
+</dd>
+</dl>
+<p><strong>Description</strong></p>
+<p>For folios which are in the page cache, return the mapping that this
+page belongs to.  Folios in the swap cache return the swap mapping
+this page is stored in (which is different from the mapping for the
+swap file or swap device where the data is stored).</p>
+<p>You can call this for folios which aren’t in the swap cache or page
+cache and it will return NULL.</p>
 </section>
 </section>
 

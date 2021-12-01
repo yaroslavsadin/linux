@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -473,6 +473,17 @@ i2c_adapter devices which don’t support those I2C operations.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">die_revision</span></code></dt><dd><p>0 - 7, according to manufacturer</p>
 </dd>
 </dl>
+<dl class="c enum">
+<dt id="c.i2c_driver_flags">
+<em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">i2c_driver_flags</span></code><a class="headerlink" href="#c.i2c_driver_flags" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Flags for an I2C device driver</p>
+</dd></dl>
+
+<p><strong>Constants</strong></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">I2C_DRV_ACPI_WAIVE_D0_PROBE</span></code></dt><dd><p>Don’t put the device in D0 state for probe</p>
+</dd>
+</dl>
 <dl class="c struct">
 <dt id="c.i2c_driver">
 <em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">i2c_driver</span></code><a class="headerlink" href="#c.i2c_driver" title="Permalink to this definition">¶</a><br /></dt>
@@ -493,6 +504,7 @@ i2c_adapter devices which don’t support those I2C operations.</p>
   int (*detect)(struct i2c_client *client, struct i2c_board_info *info);
   const unsigned short *address_list;
   struct list_head clients;
+  u32 flags;
 };
 </pre></div>
 </div>
@@ -521,6 +533,8 @@ i2c_adapter devices which don’t support those I2C operations.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">address_list</span></code></dt><dd><p>The I2C addresses to probe (for detect)</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">clients</span></code></dt><dd><p>List of detected clients we created (for i2c-core use only)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">flags</span></code></dt><dd><p>A bitmask of flags defined in <a class="reference internal" href="#c.i2c_driver_flags" title="i2c_driver_flags"><code class="xref c c-type docutils literal notranslate"><span class="pre">enum</span> <span class="pre">i2c_driver_flags</span></code></a></p>
 </dd>
 </dl>
 <p><strong>Description</strong></p>

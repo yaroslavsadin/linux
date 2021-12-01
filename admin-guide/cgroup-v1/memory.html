@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                5.15.0
+                5.16.0-rc1
               </div>
             
           
@@ -165,6 +165,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../edid.html">EDID</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../efi-stub.html">The EFI Boot Stub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ext4.html">ext4 General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../filesystem-monitoring.html">File system Monitoring with fanotify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nfs/index.html">NFS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpio/index.html">gpio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../highuid.html">Notes on the change from 16-bit UIDs to 32-bit UIDs</a></li>
@@ -483,10 +484,8 @@ used.</p></td>
 node</p></td>
 </tr>
 <tr class="row-odd"><td><p>memory.kmem.limit_in_bytes</p></td>
-<td><p>set/show hard limit for kernel memory
-This knob is deprecated and shouldn’t be
-used. It is planned that this be removed in
-the foreseeable future.</p></td>
+<td><p>This knob is deprecated and writing to
+it will return -ENOTSUPP.</p></td>
 </tr>
 <tr class="row-even"><td><p>memory.kmem.usage_in_bytes</p></td>
 <td><p>show current kernel memory allocation</p></td>
@@ -886,10 +885,6 @@ When writing anything to this:</p>
 Though rmdir() offlines memcg, but the memcg may still stay there due to
 charged file caches. Some out-of-use page caches may keep charged until
 memory pressure happens. If you want to avoid that, force_empty will be useful.</p>
-<p>Also, note that when memory.kmem.limit_in_bytes is set the charges due to
-kernel pages will still be seen. This is not considered a failure and the
-write will still return success. In this case, it is expected that
-memory.kmem.usage_in_bytes == memory.usage_in_bytes.</p>
 </div></blockquote>
 </section>
 <section id="stat-file">
