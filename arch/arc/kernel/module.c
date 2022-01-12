@@ -105,6 +105,14 @@ int apply_relocate_add(Elf_Shdr *sechdrs,
 			*((Elf_Addr *) location) = relocation;
 		else if (R_ARC_32_PCREL == relo_type)	/* ( S + A ) - PDATA ) */
 			*((Elf_Addr *) location) = relocation - location;
+#ifdef CONFIG_64BIT
+		else if (R_ARC_64 == relo_type)		/* ( S + A ) */
+			*((Elf_Addr *) location) = relocation;
+		else if (R_ARC_LO32_ME == relo_type)	/* ME ( ( S + A ) & 0xffffffff ) */
+			arc_write_me((unsigned short *)location, relocation & 0xffffffff);
+		else if (R_ARC_HI32_ME == relo_type)	/* ME ( ( S + A ) >> 32 ) */
+			arc_write_me((unsigned short *)location, relocation >> 32);
+#endif
 		else
 			goto relo_err;
 
