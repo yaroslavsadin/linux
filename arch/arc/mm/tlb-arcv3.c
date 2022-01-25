@@ -30,20 +30,34 @@ int arc_mmu_mumbojumbo(int c, char *buf, int len)
 		panic("Bad version of MMUv6 %#x (expected %#x)\n",
 		      mmu6.ver, mmu_version);
 		return 0;
-	} else if (!mmu6.ver) {
-		panic("Only MMU48 supported currently\n");
+	}
+
+	if (mmu6.variant == 0) {
+		lookups = 3;	/* 3 levels */
+		pg_sz_k = 4;	/* 4KB */
+	} else if (mmu6.variant == 1) {
+		lookups = 4;	/* 4 levels */
+		pg_sz_k = 4;	/* 4KB */
+	} else if (mmu6.variant == 2) {
+		lookups = 4;	/* 4 levels */
+		pg_sz_k = 16;	/* 16KB */
+	} else if (mmu6.variant == 3) {
+		lookups = 3;	/* 3 levels */
+		pg_sz_k = 64;	/* 64KB */
+	} else if (mmu6.variant == 4) {
+		lookups = 3;	/* 3 levels */
+		pg_sz_k = 64;	/* 64KB */
+	} else {
+		panic("MMUv6 variant %d is no supported\n", mmu6.variant);
 		return 0;
 	}
 
-	lookups = 4;	/* 4 levels */
-	if (mmu6.variant == 1) {
-		pg_sz_k = 4;	/* 4KB */
-	} else if (mmu6.variant == 2) {
-		pg_sz_k = 16;	/* 16KB */
-	} else {
-		panic("Only MMU48 4K/16K supported currently\n");
+	if (lookups != CONFIG_PGTABLE_LEVELS) {
+		panic("MMUv6 levels (%u) does not match configuration (%d)\n",
+		      lookups, CONFIG_PGTABLE_LEVELS);
 		return 0;
 	}
+
 
 	u_dtlb = 2 << mmu6.u_dtlb;  /* 8, 16 */
 	u_itlb = 2 << mmu6.u_itlb;  /* 4, 8, 16 */
@@ -84,7 +98,15 @@ void __init early_fixmap_init(void)
 
 	addr = FIXADDR_START;
 
+#if defined(CONFIG_ARC_MMU_V6_32)
+	pgd = (pgd_t *) __va(read_aux_reg(ARC_REG_MMU_RTP1));
+#elif defined(CONFIG_ARC_MMU_V6_52)
+	pgd = (pgd_t *) __va(read_aux_64(ARC_REG_MMU_RTP1) << 4);
+#else
 	pgd = (pgd_t *) __va(read_aux_64(ARC_REG_MMU_RTP1));
+#endif
+
+	pgd += pgd_index(addr);
 	if (pgd_none(*pgd) || !pgd_present(*pgd))
 		return;
 
@@ -93,10 +115,8 @@ void __init early_fixmap_init(void)
 		return;
 
 	pud = pud_offset(p4d, addr);
-	if (!pud_none(*pud) || pud_present(*pud))
-		return;
-
-	set_pud(pud, pfn_pud(virt_to_pfn(fixmap_pmd), PAGE_TABLE));
+	if (pud_none(*pud) || !pud_present(*pud))
+		set_pud(pud, pfn_pud(virt_to_pfn(fixmap_pmd), PAGE_TABLE));
 
 	pmd = pmd_offset(pud, addr);
 	if (!pmd_none(*pmd) || pmd_present(*pmd))
@@ -117,7 +137,15 @@ void early_fixmap_shutdown(void)
 
 	addr = FIXADDR_START;
 
+#if defined(CONFIG_ARC_MMU_V6_32)
+	pgd = (pgd_t *) __va(read_aux_reg(ARC_REG_MMU_RTP1));
+#elif defined(CONFIG_ARC_MMU_V6_52)
+	pgd = (pgd_t *) __va(read_aux_64(ARC_REG_MMU_RTP1) << 4);
+#else
 	pgd = (pgd_t *) __va(read_aux_64(ARC_REG_MMU_RTP1));
+#endif
+
+	pgd += pgd_index(addr);
 	if (pgd_none(*pgd) || !pgd_present(*pgd))
 		return;
 
@@ -126,10 +154,8 @@ void early_fixmap_shutdown(void)
 		return;
 
 	pud = pud_offset(p4d, addr);
-	if (!pud_none(*pud) || pud_present(*pud))
-		return;
-
-	set_pud(pud, pfn_pud(virt_to_pfn(fixmap_pmd), PAGE_TABLE));
+	if (pud_none(*pud) || !pud_present(*pud))
+		set_pud(pud, pfn_pud(virt_to_pfn(fixmap_pmd), PAGE_TABLE));
 }
 
 void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
@@ -141,7 +167,7 @@ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
 
 	BUG_ON(idx >= __end_of_fixed_addresses);
 
-	pte = pte_offset_kernel(fixmap_pmd, addr);
+	pte = fixmap_pte + pte_index(addr);
 	if (!pte_none(*pte) || pte_present(*pte))
 		return;
 
@@ -195,6 +221,7 @@ int arc_map_kernel_in_mm(struct mm_struct *mm)
 
 void arc_paging_init(void)
 {
+#if CONFIG_PGTABLE_LEVELS == 4
 	unsigned int idx;
 
 	idx = pgd_index(PAGE_OFFSET);
@@ -204,11 +231,29 @@ void arc_paging_init(void)
 	idx = pud_index(PAGE_OFFSET);
 	swapper_pud[idx] = pfn_pud(virt_to_pfn(swapper_pmd), PAGE_TABLE);
 	ptw_flush(&swapper_pud[idx]);
+#elif CONFIG_PGTABLE_LEVELS == 3
+	unsigned int idx;
+
+	idx = pgd_index(PAGE_OFFSET);
+	swapper_pg_dir[idx] = pfn_pgd(virt_to_pfn(swapper_pmd), PAGE_TABLE);
+	ptw_flush(&swapper_pg_dir[idx]);
+#endif
 
 	arc_map_kernel_in_mm(&init_mm);
 
+#if defined(CONFIG_ARC_MMU_V6_32)
+	write_aux_reg(ARC_REG_MMU_RTP0_LO, 0);
+	write_aux_reg(ARC_REG_MMU_RTP0_HI, 0);
+	write_aux_reg(ARC_REG_MMU_RTP1_LO, __pa(swapper_pg_dir));
+	write_aux_reg(ARC_REG_MMU_RTP1_HI, 0);
+#else
 	write_aux_64(ARC_REG_MMU_RTP0, 0);
+#if defined(CONFIG_ARC_MMU_V6_52)
+	write_aux_64(ARC_REG_MMU_RTP1, __pa(swapper_pg_dir) >> 4);
+#else
 	write_aux_64(ARC_REG_MMU_RTP1, __pa(swapper_pg_dir));
+#endif /* CONFIG_ARC_MMU_V6_52 */
+#endif /* CONFIG_ARC_MMU_V6_32 */
 }
 
 void arc_mmu_init(void)
@@ -229,8 +274,14 @@ void arc_mmu_init(void)
 	memattr.attr[MEMATTR_IDX_UNCACHED] = MEMATTR_UNCACHED;
 	memattr.attr[MEMATTR_IDX_VOLATILE] = MEMATTR_VOLATILE;
 
+#if defined(CONFIG_64BIT)
 	WRITE_AUX64(ARC_REG_MMU_MEM_ATTR, memattr);
+#else
+	unsigned long long tmp = *(unsigned long long *)&memattr;
 
+	write_aux_reg(ARC_REG_MMU_MEM_ATTR_LO, tmp & ~0UL);
+	write_aux_reg(ARC_REG_MMU_MEM_ATTR_HI, tmp >> 32 & ~0UL);
+#endif
 	arc_paging_init();
 
 	write_aux_reg(ARC_REG_MMU_CTRL, 0x7);
@@ -246,14 +297,26 @@ void update_mmu_cache(struct vm_area_struct *vma, unsigned long vaddr_unaligned,
 
 noinline void mmu_setup_asid(struct mm_struct *mm, unsigned long asid)
 {
-#ifdef CONFIG_64BIT
-	unsigned long rtp0 = (asid << 48) | __pa(mm->pgd);
 
-	BUG_ON(__pa(mm->pgd) >> 48);
-	write_aux_64(ARC_REG_MMU_RTP0, rtp0);
-
+#if defined(CONFIG_ARC_MMU_V6_32)
+	write_aux_reg(ARC_REG_MMU_RTP0_LO, __pa(mm->pgd));
+	write_aux_reg(ARC_REG_MMU_RTP0_HI, (asid << 8));
 #else
-#error "Need to implement 2 SR ops"
+	unsigned long rtp0;
+
+#if defined(CONFIG_ARC_MMU_V6_52)
+/*
+ * FIXME: Only 48-bit phy addresses supported for MMUv52 for now.
+ * See arch/arc/include/asm/pgtable-levels.h:276
+ */
+	BUG_ON(__pa(mm->pgd) >> 48);
+	rtp0 = (asid << 48) | (__pa(mm->pgd) >> 4);
+#else
+	BUG_ON(__pa(mm->pgd) >> 48);
+	rtp0 = (asid << 48) | __pa(mm->pgd);
+#endif /* CONFIG_ARC_MMU_V6_52 */
+
+	write_aux_64(ARC_REG_MMU_RTP0, rtp0);
 #endif
 }
 
