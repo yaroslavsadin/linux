@@ -10,8 +10,8 @@ OBJCOPYFLAGS= -O binary -R .note -R .note.gnu.build-id -R .comment -S
 LINUX_ENTRY_VIRT = 0x$(shell $(NM) vmlinux | awk '$$NF == "res_service" {print $$1}')
 
 ifeq ($(CONFIG_64BIT),y)
-LINUX_PAGE_OFFSET = 0x$(shell $(NM) vmlinux | awk '$$NF == "_int_vec_base_lds" {print $$1}')
-LINUX_ENTRY_PHY = $(shell awk 'BEGIN {print ($(LINUX_ENTRY_VIRT) - $(LINUX_PAGE_OFFSET)) + $(CONFIG_LINUX_LINK_BASE)}')
+$(obj)/uImage*: $(obj)/loader
+LINUX_ENTRY_PHY = 0x$(shell $(NM) $(obj)/loader | awk '$$NF == "_entry_point" {print $$1}')
 else
 LINUX_ENTRY_PHY = $(LINUX_ENTRY_VIRT)
 endif
@@ -56,4 +56,4 @@ $(obj)/uImage: $(obj)/uImage.$(suffix-y)
 $(obj)/loader.o: $(src)/loader.S $(obj)/vmlinux.bin
 
 $(obj)/loader: $(obj)/loader.o $(obj)/vmlinux.bin $(obj)/loader.lds FORCE
-	$(Q)$(LD) --defsym=_entry_point=$(LINUX_ENTRY_PHY) -T $(obj)/loader.lds -o $@ $(obj)/loader.o
+	$(Q)$(LD)  --defsym=_entry_point_virt=$(LINUX_ENTRY_VIRT) -T $(obj)/loader.lds -o $@ $(obj)/loader.o

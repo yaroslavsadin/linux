@@ -5,6 +5,8 @@
 OUTPUT_ARCH(arc)
 ENTRY(_entry_point)
 
+_entry_point = (_entry_point_virt - PAGE_OFFSET) + CONFIG_LINUX_LINK_BASE;
+
 SECTIONS
 {
 	. = CONFIG_LINUX_LINK_BASE;
