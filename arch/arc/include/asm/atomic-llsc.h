@@ -3,6 +3,12 @@
 #ifndef _ASM_ARC_ATOMIC_LLSC_H
 #define _ASM_ARC_ATOMIC_LLSC_H
 
+#if defined(CONFIG_ISA_ARCV3)
+#define ATOMIC_CONSTR	"+ATOMC"
+#else
+#define ATOMIC_CONSTR	"+ATO"
+#endif
+
 #define arch_atomic_set(v, i) WRITE_ONCE(((v)->counter), (i))
 
 #define ATOMIC_OP(op, asm_op)					\
@@ -16,7 +22,7 @@ static inline void arch_atomic_##op(int i, atomic_t *v)			\
 	"	scond   %[val], %[ctr]			\n"		\
 	"	bnz     1b				\n"		\
 	: [val]	"=&r"	(val), /* Early clobber to prevent reg reuse */	\
-	  [ctr] "+ATO" (v->counter)				\
+	  [ctr] ATOMIC_CONSTR (v->counter)				\
 	: [i]	"ir"	(i)						\
 	: "cc", "memory");						\
 }									\
@@ -32,7 +38,7 @@ static inline int arch_atomic_##op##_return_relaxed(int i, atomic_t *v)	\
 	"	scond   %[val], %[ctr]			\n"		\
 	"	bnz     1b				\n"		\
 	: [val]	"=&r"	(val),						\
-	  [ctr] "+ATO" (v->counter)				\
+	  [ctr] ATOMIC_CONSTR (v->counter)				\
 	: [i]	"ir"	(i)						\
 	: "cc", "memory");						\
 									\
@@ -54,7 +60,7 @@ static inline int arch_atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
 	"	bnz     1b				\n"		\
 	: [val]	"=&r"	(val),						\
 	  [orig] "=&r" (orig),						\
-	  [ctr] "+ATO" (v->counter)				\
+	  [ctr] ATOMIC_CONSTR (v->counter)				\
 	: [i]	"ir"	(i)						\
 	: "cc", "memory");						\
 									\
