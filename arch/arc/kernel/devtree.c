@@ -32,7 +32,7 @@ static void __init arc_set_early_base_baud(unsigned long dt_root)
 	else if (of_flat_dt_is_compatible(dt_root, "ezchip,arc-nps"))
 		arc_base_baud = 800000000;      /* Fixed 800MHz clk (NPS) */
 	else
-		arc_base_baud = 50000000;	/* Fixed default 50MHz */
+		arc_base_baud = 15000000;	/* Fixed default 15MHz */
 }
 #else
 #define arc_set_early_base_baud(dt_root)
