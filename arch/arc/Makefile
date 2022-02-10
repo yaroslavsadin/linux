@@ -6,14 +6,28 @@
 KBUILD_DEFCONFIG := haps_hs_smp_defconfig
 
 ifeq ($(CROSS_COMPILE),)
-CROSS_COMPILE := $(call cc-cross-prefix, arc-linux- arceb-linux-)
+ifdef CONFIG_ISA_ARCV3
+CROSS_COMPILE := $(call cc-cross-prefix, arc64-elf- arc64-linux-gnu- arc64-linux- arc64-unknown-linux-gnu-)
+ifdef CONFIG_64BIT
+UTS_MACHINE	:= arc64
+else
+UTS_MACHINE	:= arc32
+endif
+else
+CROSS_COMPILE := $(call cc-cross-prefix, arc-elf32- arc-linux- arceb-linux-)
+endif
 endif
 
 tune-mcpu-def-$(CONFIG_ISA_ARCOMPACT)	:= -mcpu=arc700
 tune-mcpu-def-$(CONFIG_ISA_ARCV2)	:= -mcpu=hs38
+#TODO add -mcpu=hs6x when supported by compiler
 
 cflags-y	+= -fno-common -pipe -fno-builtin -D__linux__
+ifndef CONFIG_ISA_ARCV3
 cflags-y	+= -fsection-anchors -mno-sdata -mmedium-calls
+else
+cflags-y	+= -mcmodel=large
+endif
 cflags-y	+= -Wa,-I$(srctree)/arch/arc/include
 
 ifeq ($(CONFIG_ARC_TUNE_MCPU),"")
@@ -41,10 +55,18 @@ LINUXINCLUDE	+=  -include $(srctree)/arch/arc/include/asm/current.h
 cflags-y	+= -ffixed-gp
 endif
 
+ifndef CONFIG_ISA_ARCV3
 cflags-$(CONFIG_ARC_HAS_LLSC)		+= -mlock
 cflags-$(CONFIG_ARC_HAS_SWAPE)		+= -mswape
+endif
 
 cflags-$(CONFIG_ARC_LACKS_ZOL)		+= -fno-branch-count-reg
+
+ifdef CONFIG_ARC_HAS_DIV_REM
+cflags-y				+= -mdiv-rem
+else
+cflags-y				+= -mno-div-rem
+endif
 
 ifdef CONFIG_ISA_ARCV2
 
@@ -58,10 +80,6 @@ ifndef CONFIG_ARC_HAS_LL64
 cflags-y				+= -mno-ll64
 endif
 
-ifndef CONFIG_ARC_HAS_DIV_REM
-cflags-y				+= -mno-div-rem
-endif
-
 endif
 
 cfi := $(call as-instr,.cfi_startproc\n.cfi_endproc,-DARC_DW2_UNWIND_AS_CFI)
@@ -72,8 +90,10 @@ ldflags-$(CONFIG_CPU_BIG_ENDIAN)	+= -EB
 
 LIBGCC	= $(shell $(CC) $(cflags-y) --print-libgcc-file-name)
 
+ifndef CONFIG_ISA_ARCV3
 # Modules with short calls might break for calls into builtin-kernel
 KBUILD_CFLAGS_MODULE	+= -mlong-calls -mno-millicode
+endif
 
 # Finally dump eveything into kernel build system
 KBUILD_CFLAGS	+= $(cflags-y)

@@ -3,6 +3,12 @@
 # Copyright (C) 2004, 2007-2010, 2011-2012 Synopsys, Inc. (www.synopsys.com)
 #
 
-obj-y	:= extable.o ioremap.o dma.o fault.o init.o
-obj-y	+= tlb.o tlbex.o cache.o mmap.o
+obj-y	:= extable.o ioremap.o dma.o fault.o init.o mmap.o
+
+ifdef CONFIG_ARC_MMU_V6
+obj-y	+= tlb-arcv3.o cache-arcv3.o
+else
+obj-y	+= tlb.o tlbex.o cache.o
+endif
+
 obj-$(CONFIG_HIGHMEM)	+= highmem.o
