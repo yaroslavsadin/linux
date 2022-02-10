@@ -17,7 +17,9 @@
 #include <asm/sections.h>
 #include <asm/arcregs.h>
 
-pgd_t swapper_pg_dir[PTRS_PER_PGD] __aligned(PAGE_SIZE);
+pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+pud_t swapper_pud[PTRS_PER_PUD] __page_aligned_bss;
+
 char empty_zero_page[PAGE_SIZE] __aligned(PAGE_SIZE);
 EXPORT_SYMBOL(empty_zero_page);
 

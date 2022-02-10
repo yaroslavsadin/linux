@@ -18,7 +18,6 @@
 #include <linux/sched/mm.h>
 
 #include <asm/tlb.h>
-#include <asm-generic/mm_hooks.h>
 
 /*		ARC ASID Management
  *
@@ -170,5 +169,33 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
  */
 
 #include <asm-generic/mmu_context.h>
+
+/* override mm_hooks.h */
+
+static inline int arch_dup_mmap(struct mm_struct *oldmm,
+				struct mm_struct *mm)
+{
+	return 0;
+}
+
+#ifndef CONFIG_ARC_MMU_V6
+static inline void arch_exit_mmap(struct mm_struct *mm)
+{
+}
+#else
+extern void arch_exit_mmap(struct mm_struct *mm);
+#endif
+
+static inline void arch_unmap(struct mm_struct *mm,
+			unsigned long start, unsigned long end)
+{
+}
+
+static inline bool arch_vma_access_permitted(struct vm_area_struct *vma,
+		bool write, bool execute, bool foreign)
+{
+	/* by default, allow everything */
+	return true;
+}
 
 #endif /* __ASM_ARC_MMU_CONTEXT_H */

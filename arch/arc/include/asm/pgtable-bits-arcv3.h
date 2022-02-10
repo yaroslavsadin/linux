@@ -47,8 +47,6 @@
  */
 
 #define _PAGE_TABLE		(_PAGE_VALID | _PAGE_LINK)
-#define _PAGE_BLOCK		_PAGE_VALID
-
 
 #define MEMATTR_NORMAL		0x69
 #define MEMATTR_UNCACHED	0x01
@@ -73,7 +71,7 @@
 #define _PAGE_RWX	(_PAGE_BASE & ~_PAGE_AP_READONLY  & ~_PAGE_NOTEXEC_U)
 
 /* TBD: kernel is RWX by default, split it to code/data */
-#define _PAGE_KERNEL	(_PAGE_VALID        |			\
+#define _PAGE_KERNEL	(_PAGE_TABLE        |			\
 			 /* writable */				\
 			 _PAGE_NOTEXEC_U    | 	/* exec k */	\
 			 /* AP kernel only  |      global */	\
@@ -83,8 +81,8 @@
 
 #define PAGE_NONE	__pgprot(_PAGE_BASE)	/* TBD */
 #define PAGE_TABLE	__pgprot(_PAGE_TABLE)
-#define PAGE_BLOCK	__pgprot(_PAGE_BLOCK)
 #define PAGE_KERNEL	__pgprot(_PAGE_KERNEL)
+#define PAGE_KERNEL_BLK	__pgprot(_PAGE_KERNEL & ~_PAGE_LINK)
 
 #define PAGE_R		__pgprot(_PAGE_BASE)
 #define PAGE_RW		__pgprot(_PAGE_RW)

@@ -129,6 +129,7 @@
 #define pgd_offset_k(addr)	pgd_offset(&init_mm, addr)
 #define pgd_ERROR(e) \
 	pr_crit("%s:%d: bad pgd %08lx.\n", __FILE__, __LINE__, pgd_val(e))
+#define pfn_pgd(pfn, prot)	__pgd(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
 
 #if CONFIG_PGTABLE_LEVELS > 3
 
@@ -162,6 +163,7 @@
 #define pud_pgtable(pud)	((pmd_t *)(pud_val(pud) & PAGE_MASK))
 #define pud_page(pud)		virt_to_page(pud_pgtable(pud))
 #define set_pud(pudp, pud)	(*(pudp) = pud)
+#define pfn_pud(pfn,prot)	__pud(((pfn) << PAGE_SHIFT) | pgprot_val(prot))
 
 /*
  * 3rd level paging: pmd
