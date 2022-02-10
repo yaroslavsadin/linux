@@ -16,26 +16,31 @@ static struct cpuinfo_arc_mmu {
 
 int arc_mmu_mumbojumbo(int c, char *buf, int len)
 {
+	const unsigned int mmu_version = 0x10;
 	unsigned int lookups, pg_sz_k, ntlb, u_dtlb, u_itlb;
 	char *variant_nm[] = { "MMU32", "MMU48", "MMU52" };
 	struct bcr_mmu_6 mmu6;
-	int n= 0;
+	int n = 0;
 
 	READ_BCR(ARC_REG_MMU_BCR, mmu6);
-	if (!mmu6.ver)
-		return n;
-
-	if (mmu6.variant == 0) {	/* MMUv32 */
-		lookups = 3;
-		pg_sz_k = 4;
+	if (mmu6.ver != mmu_version) {
+		panic("Bad version of MMUv6 %#x (expected %#x)\n",
+		      mmu6.ver, mmu_version);
+		return 0;
+	} else if (!mmu6.ver) {
+		panic("Only MMU48 supported currently\n");
+		return 0;
 	}
+
+	lookups = 4;	/* 4 levels */
+	pg_sz_k = 4;	/* 4KB */
 
 	u_dtlb = 2 << mmu6.u_dtlb;  /* 8, 16 */
 	u_itlb = 2 << mmu6.u_itlb;  /* 4, 8, 16 */
 	ntlb = 256 << mmu6.n_tlb;    /* Fixed 4w */
 
 	n += scnprintf(buf + n, len - n,
-		      "MMU [v%x] \t\t: %s hwalk %d levels, %dk PAGE, JTLB %d uD/I %d/%d\n",
+		      "MMU [v%x]\t: %s hwalk %d levels, %dk PAGE, JTLB %d uD/I %d/%d\n",
 		       mmu6.ver, variant_nm[mmu6.variant], lookups,
 		       pg_sz_k, ntlb, u_dtlb, u_itlb);
 
@@ -46,15 +51,59 @@ int arc_mmu_mumbojumbo(int c, char *buf, int len)
 
 void arc_mmu_init(void)
 {
-	return;
+	struct mmu_ttbc {
+		u32 t0sz:5, t0sh:2, t0c:1, res0:7, a1:1,
+		    t1sz:5, t1sh:2, t1c:1, res1:8;
+	} ttbc;
+
+	struct mmu_mem_attr {
+		u8 attr[8];
+	} memattr;
+
 	if (mmuinfo.pg_sz_k != TO_KB(PAGE_SIZE))
 		panic("MMU pg size != PAGE_SIZE (%luk)\n", TO_KB(PAGE_SIZE));
+
+	arc_paging_init();
+
+	ttbc.t0sz = 16;
+	ttbc.t1sz = 16;	/* Not relevant since kernel linked under 4GB hits T0SZ */
+	ttbc.t0sh = __SHR_INNER;
+	ttbc.t1sh = __SHR_INNER;
+	ttbc.t0c = 1;
+	ttbc.t1c = 1;
+	ttbc.a1 = 0;  /* ASID used is from MMU_RTP0 */
+
+	WRITE_AUX(ARC_REG_MMU_TTBC, ttbc);
+
+	memattr.attr[MEMATTR_IDX_NORMAL] = MEMATTR_NORMAL;
+	memattr.attr[MEMATTR_IDX_UNCACHED] = MEMATTR_UNCACHED;
+	memattr.attr[MEMATTR_IDX_VOLATILE] = MEMATTR_VOLATILE;
+
+	WRITE_AUX64(ARC_REG_MMU_MEM_ATTR, memattr);
+
+	write_aux_64(ARC_REG_MMU_RTP0, __pa(swapper_pg_dir));
+	write_aux_64(ARC_REG_MMU_RTP1, 0);	/* to catch bugs */
+
+	write_aux_reg(ARC_REG_MMU_CTRL, 0x7);
 }
 
 void update_mmu_cache(struct vm_area_struct *vma, unsigned long vaddr_unaligned,
 		      pte_t *ptep)
 {
 
+}
+
+noinline void mmu_setup_asid(struct mm_struct *mm, unsigned long asid)
+{
+#ifdef CONFIG_64BIT
+	unsigned long rtp0 = (asid << 48) | __pa(mm->pgd);
+
+	BUG_ON(__pa(mm->pgd) >> 48);
+	write_aux_64(ARC_REG_MMU_RTP0, rtp0);
+
+#else
+#error "Need to implement 2 SR ops"
+#endif
 }
 
 noinline void local_flush_tlb_all(void)
