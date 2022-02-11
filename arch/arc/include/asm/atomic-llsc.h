@@ -11,14 +11,14 @@ static inline void arch_atomic_##op(int i, atomic_t *v)			\
 	unsigned int val;						\
 									\
 	__asm__ __volatile__(						\
-	"1:	llock   %[val], [%[ctr]]		\n"		\
+	"1:	llock   %[val], %[ctr]			\n"		\
 	"	" #asm_op " %[val], %[val], %[i]	\n"		\
-	"	scond   %[val], [%[ctr]]		\n"		\
+	"	scond   %[val], %[ctr]			\n"		\
 	"	bnz     1b				\n"		\
-	: [val]	"=&r"	(val) /* Early clobber to prevent reg reuse */	\
-	: [ctr]	"r"	(&v->counter), /* Not "m": llock only supports reg direct addr mode */	\
-	  [i]	"ir"	(i)						\
-	: "cc");							\
+	: [val]	"=&r"	(val), /* Early clobber to prevent reg reuse */	\
+	  [ctr] "+ATO" (v->counter)				\
+	: [i]	"ir"	(i)						\
+	: "cc", "memory");						\
 }									\
 
 #define ATOMIC_OP_RETURN(op, asm_op)				\
@@ -27,14 +27,14 @@ static inline int arch_atomic_##op##_return_relaxed(int i, atomic_t *v)	\
 	unsigned int val;						\
 									\
 	__asm__ __volatile__(						\
-	"1:	llock   %[val], [%[ctr]]		\n"		\
+	"1:	llock   %[val], %[ctr]			\n"		\
 	"	" #asm_op " %[val], %[val], %[i]	\n"		\
-	"	scond   %[val], [%[ctr]]		\n"		\
+	"	scond   %[val], %[ctr]			\n"		\
 	"	bnz     1b				\n"		\
-	: [val]	"=&r"	(val)						\
-	: [ctr]	"r"	(&v->counter),					\
-	  [i]	"ir"	(i)						\
-	: "cc");							\
+	: [val]	"=&r"	(val),						\
+	  [ctr] "+ATO" (v->counter)				\
+	: [i]	"ir"	(i)						\
+	: "cc", "memory");						\
 									\
 	return val;							\
 }
@@ -48,15 +48,15 @@ static inline int arch_atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
 	unsigned int val, orig;						\
 									\
 	__asm__ __volatile__(						\
-	"1:	llock   %[orig], [%[ctr]]		\n"		\
+	"1:	llock   %[orig], %[ctr]			\n"		\
 	"	" #asm_op " %[val], %[orig], %[i]	\n"		\
-	"	scond   %[val], [%[ctr]]		\n"		\
+	"	scond   %[val], %[ctr]			\n"		\
 	"	bnz     1b				\n"		\
 	: [val]	"=&r"	(val),						\
-	  [orig] "=&r" (orig)						\
-	: [ctr]	"r"	(&v->counter),					\
-	  [i]	"ir"	(i)						\
-	: "cc");							\
+	  [orig] "=&r" (orig),						\
+	  [ctr] "+ATO" (v->counter)				\
+	: [i]	"ir"	(i)						\
+	: "cc", "memory");						\
 									\
 	return orig;							\
 }
