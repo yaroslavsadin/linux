@@ -9,7 +9,8 @@ on:
   workflow_dispatch:
 
 env:
-  toolchain_url: "https://github.com/foss-for-synopsys-dwc-arc-processors/arc-gnu-toolchain/releases/download/2022.03"
+  toolchain_ver: 2022.03-build002
+  toolchain_url: https://github.com/foss-for-synopsys-dwc-arc-processors/arc-gnu-toolchain/releases/download/$toolchain_ver
 
 jobs:
   build:
@@ -20,9 +21,9 @@ jobs:
           - cpu: hs4x
             toolchain: arc
             defconfig: haps_hs_defconfig
-          # - cpu: hs5x
-          #   toolchain: arc32
-          #   defconfig: haps_hs5x_defconfig
+          - cpu: hs5x
+            toolchain: arc32
+            defconfig: haps_hs5x_defconfig
           - cpu: hs6x
             toolchain: arc64
             defconfig: haps_arc64_defconfig
@@ -56,7 +57,9 @@ jobs:
 
       - name: Download toolchain
         run: |
-          curl -L -o toolchain.tar.gz ${{ env.toolchain_url }}/${{ matrix.targets.toolchain }}-glibc-2022.03.tar.gz
+          echo "Toolchain version:" ${{ env.toolchain_ver }}
+          echo "Toolchain base URL:" ${{ env.toolchain_url }}
+          curl -L -o toolchain.tar.gz ${{ env.toolchain_url }}/${{ matrix.targets.toolchain }}-glibc-${{ env.toolchain_ver }}.tar.gz
           mkdir -p ${{ github.workspace }}/toolchain
           tar -xzf toolchain.tar.gz --strip 1 -C ${{ github.workspace }}/toolchain
 
@@ -92,7 +95,7 @@ jobs:
     runs-on: nsim
     strategy:
       matrix:
-        targets: [hs4x, hs6x]
+        targets: [hs4x, hs5x, hs6x]
       fail-fast: false
 
     steps:
