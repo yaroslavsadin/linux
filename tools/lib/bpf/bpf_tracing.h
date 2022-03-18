@@ -12,6 +12,9 @@
 #elif defined(__TARGET_ARCH_arm)
 	#define bpf_target_arm
 	#define bpf_target_defined
+#elif defined(__TARGET_ARCH_arc)
+	#define bpf_target_arc
+	#define bpf_target_defined
 #elif defined(__TARGET_ARCH_arm64)
 	#define bpf_target_arm64
 	#define bpf_target_defined
@@ -41,6 +44,9 @@
 	#define bpf_target_defined
 #elif defined(__aarch64__)
 	#define bpf_target_arm64
+	#define bpf_target_defined
+#elif defined(__arc__)
+	#define bpf_target_arc
 	#define bpf_target_defined
 #elif defined(__mips__)
 	#define bpf_target_mips
@@ -220,6 +226,21 @@ struct pt_regs;
 #define PT_REGS_RC_CORE(x) BPF_CORE_READ((PT_REGS_ARM64 *)(x), regs[0])
 #define PT_REGS_SP_CORE(x) BPF_CORE_READ((PT_REGS_ARM64 *)(x), sp)
 #define PT_REGS_IP_CORE(x) BPF_CORE_READ((PT_REGS_ARM64 *)(x), pc)
+
+#elif defined(bpf_target_arc)
+
+/* arm64 provides struct user_pt_regs instead of struct pt_regs to userspace */
+#define __PT_REGS_CAST(x) ((const struct user_regs_struct *)(x))
+#define __PT_PARM1_REG scratch.r0
+#define __PT_PARM2_REG scratch.r1
+#define __PT_PARM3_REG scratch.r2
+#define __PT_PARM4_REG scratch.r3
+#define __PT_PARM5_REG scratch.r4
+#define __PT_RET_REG scratch.blink
+#define __PT_FP_REG __unsupported__
+#define __PT_RC_REG scratch.r0
+#define __PT_SP_REG scratch.sp
+#define __PT_IP_REG scratch.ret
 
 #elif defined(bpf_target_mips)
 
