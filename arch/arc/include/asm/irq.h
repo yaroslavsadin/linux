@@ -17,7 +17,7 @@
 /* Platform Independent IRQs */
 #ifdef CONFIG_ISA_ARCV2
 #define IPI_IRQ		19
-#define SOFTIRQ_IRQ	21
+#define SOFTIRQ_IRQ	22
 #define FIRST_EXT_IRQ	24
 #endif
 
