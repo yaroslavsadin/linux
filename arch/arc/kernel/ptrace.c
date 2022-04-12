@@ -11,6 +11,9 @@
 #include <linux/elf.h>
 #include <asm/asm-offsets.h>
 
+#define CREATE_TRACE_POINTS
+#include <trace/events/syscalls.h>
+
 struct pt_regs_offset {
 	const char *name;
 	int offset;
@@ -363,15 +366,27 @@ long arch_ptrace(struct task_struct *child, long request,
 
 asmlinkage int syscall_trace_enter(struct pt_regs *regs)
 {
-	if (tracehook_report_syscall_entry(regs))
-		return -1;
+	if (test_thread_flag(TIF_SYSCALL_TRACE))
+		if (tracehook_report_syscall_entry(regs))
+			return -1;
+
+#ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
+	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+		trace_sys_enter(regs, syscall_get_nr(current, regs));
+#endif
 
 	return regs->r8;
 }
 
 asmlinkage void syscall_trace_exit(struct pt_regs *regs)
 {
-	tracehook_report_syscall_exit(regs, 0);
+	if (test_thread_flag(TIF_SYSCALL_TRACE))
+		tracehook_report_syscall_exit(regs, 0);
+
+#ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
+	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+		trace_sys_exit(regs, regs_return_value(regs));
+#endif
 }
 
 int regs_query_register_offset(const char *name)
