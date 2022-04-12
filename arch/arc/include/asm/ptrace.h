@@ -124,6 +124,8 @@ struct pt_regs {
 	unsigned long status32;
 };
 
+#define MAX_REG_OFFSET offsetof(struct pt_regs, status32)
+
 /* ARCv3 callee regs start from r14; gp is r30 not r26 */
 struct callee_regs {
 	unsigned long r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, r26;

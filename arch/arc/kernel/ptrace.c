@@ -52,7 +52,7 @@ static const struct pt_regs_offset regoffset_table[] = {
 	REG_OFFSET_END,
 };
 
-#else
+#elif defined(CONFIG_ISA_ARCV2)
 
 static const struct pt_regs_offset regoffset_table[] = {
 	REG_OFFSET_NAME(orig_r0),
@@ -95,6 +95,38 @@ static const struct pt_regs_offset regoffset_table[] = {
 	REG_OFFSET_NAME(status32),
 	REG_OFFSET_END,
 };
+
+#else /* CONFIG_ISA_ARCV3 */
+
+static const struct pt_regs_offset regoffset_table[] = {
+	REG_OFFSET_NAME(orig_r0),
+	REG_OFFSET_NAME(r58),
+	REG_OFFSET_NAME(r59),
+	REG_OFFSET_NAME(ecr),
+	REG_OFFSET_NAME(bta),
+	REG_OFFSET_NAME(fp),
+	REG_OFFSET_NAME(gp),
+	REG_OFFSET_NAME(sp),
+	REG_OFFSET_NAME(r0),
+	REG_OFFSET_NAME(r1),
+	REG_OFFSET_NAME(r2),
+	REG_OFFSET_NAME(r3),
+	REG_OFFSET_NAME(r4),
+	REG_OFFSET_NAME(r5),
+	REG_OFFSET_NAME(r6),
+	REG_OFFSET_NAME(r7),
+	REG_OFFSET_NAME(r8),
+	REG_OFFSET_NAME(r9),
+	REG_OFFSET_NAME(r10),
+	REG_OFFSET_NAME(r11),
+	REG_OFFSET_NAME(r12),
+	REG_OFFSET_NAME(r13),
+	REG_OFFSET_NAME(blink),
+	REG_OFFSET_NAME(ret),
+	REG_OFFSET_NAME(status32),
+	REG_OFFSET_END,
+};
+
 #endif
 
 static struct callee_regs *task_callee_regs(struct task_struct *tsk)
