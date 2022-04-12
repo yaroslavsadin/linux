@@ -175,6 +175,7 @@ tracesys_exit:
 	STR  r0, sp, PT_r0
 
 	; POST syscall trace hook
+	MOVR r0, sp				; pt_regs
 	bl  @syscall_trace_exit
 
 	; don't call ret_from_system_call as it saves r0, already done above
