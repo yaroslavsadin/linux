@@ -464,6 +464,14 @@ long __kprobes get_reg(int reg, struct pt_regs *regs,
 
 	if (reg == 26)
 		return regs->gp;
+	if (reg == 30)
+		return regs->r30;
+#ifdef CONFIG_ARC_HAS_ACCL_REGS
+	if (reg == 58)
+		return regs->r58;
+	if (reg == 59)
+		return regs->r59;
+#endif
 
 #else /* CONFIG_ISA_ARCV3 */
 	if (reg <= 13) {
@@ -546,9 +554,20 @@ void __kprobes set_reg(int reg, long val, struct pt_regs *regs,
 	case 28:
 		regs->sp = val;
 		break;
+	case 30:
+		regs->r30 = val;
+		break;
 	case 31:
 		regs->blink = val;
 		break;
+#ifdef CONFIG_ARC_HAS_ACCL_REGS
+	case 58:
+		regs->r58 = val;
+		break;
+	case 59:
+		regs->r59 = val;
+		break;
+#endif
 	default:
 		break;
 	}
