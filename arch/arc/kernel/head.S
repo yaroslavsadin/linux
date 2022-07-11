@@ -20,6 +20,7 @@
 #include <asm/mmu.h>
 #include <asm/dsp-impl.h>
 #include <asm/irqflags.h>
+#include <asm/cluster-regs.h>
 
 #ifndef PUD_SHIFT
 #define PUD_SHIFT PGDIR_SHIFT
@@ -261,7 +262,27 @@
 #endif
 	SRR	r4, [ARC_REG_MMU_RTP1]
 
-	sr	MMU_TTBC, [ARC_REG_MMU_TTBC]
+	; We need to check whether L2$ is presented in the system.
+	mov 	r4, MMU_TTBC
+	lr      r12, [ARC_REG_CLUSTER_BCR]
+	extb    r12, r12
+	breq    r12, 0, 1f		; Cluster doesn't exist
+	lr      r12, [ARC_REG_CLNR_BCR_0]
+	lsr		r12, r12, 29
+	bic	    r12, 1, r12
+	breq    r12, 1, 1f		; SCM doesn't exist
+	lr      r12, [ARC_REG_CLNR_SCM_BCR_0]
+	lsr		r12, r12, 1
+	bic	    r12, 1, r12
+	breq    r12, 0, 2f 		; Shared cache is presented
+1:
+	mov 	r12, MMU_T0C_OFFSET
+	bclr	r4, r4, r12
+	mov 	r12, MMU_T1C_OFFSET
+	bclr	r4, r4, r12
+2:
+	sr	r4, [ARC_REG_MMU_TTBC]
+
 	; MEMATTR_NORMAL is used in PAGE_KERNEL_BLK
 	mov 	r4, MEMATTR_NORMAL
 	ASLR    r12, r4, (8 * MEMATTR_IDX_NORMAL)

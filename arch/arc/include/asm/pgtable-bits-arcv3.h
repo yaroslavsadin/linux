@@ -136,13 +136,16 @@
 #define MMU_TTBC_T1C	1
 #endif
 
+#define		MMU_T0C_OFFSET	7
+#define		MMU_T1C_OFFSET	23
+
 #define MMU_TTBC	(MMU_TTBC_T0SZ | \
 			(MMU_TTBC_T0SH << 5) | \
-			(MMU_TTBC_T0C << 7) | \
+			(MMU_TTBC_T0C << MMU_T0C_OFFSET) | \
 			(MMU_TTBC_A1 << 15) | \
 			(MMU_TTBC_T1SZ << 16) | \
 			(MMU_TTBC_T1SH << 21) | \
-			(MMU_TTBC_T1C << 23))
+			(MMU_TTBC_T1C << MMU_T1C_OFFSET))
 
 #ifndef __ASSEMBLY__
 

@@ -319,7 +319,8 @@ void arc_mmu_init(void)
 	if ((unsigned long)_end - PAGE_OFFSET > PUD_SIZE)
 		panic("kernel doesn't fit in PUD (%lu Mb)\n", TO_MB(PUD_SIZE));
 
-	write_aux_reg(ARC_REG_MMU_TTBC, MMU_TTBC);
+	/* No need to setup ARC_REG_MMU_TTBC again. It is already done in head.S */
+	//write_aux_reg(ARC_REG_MMU_TTBC, MMU_TTBC);
 
 	memattr = MEMATTR_NORMAL << (MEMATTR_IDX_NORMAL * 8);
 	memattr |= MEMATTR_UNCACHED << (MEMATTR_IDX_UNCACHED * 8);
