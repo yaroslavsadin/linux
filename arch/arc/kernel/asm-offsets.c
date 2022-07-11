@@ -11,6 +11,7 @@
 #include <linux/ptrace.h>
 #include <asm/hardirq.h>
 #include <asm/page.h>
+#include <asm/event-log.h>
 
 
 int main(void)
@@ -27,6 +28,7 @@ int main(void)
 	BLANK();
 
 	DEFINE(THREAD_INFO_KSP, offsetof(struct thread_info, ksp));
+	DEFINE(THREAD_INFO_TSK, offsetof(struct thread_info, task));
 	DEFINE(THREAD_INFO_FLAGS, offsetof(struct thread_info, flags));
 	DEFINE(THREAD_INFO_PREEMPT_COUNT,
 	       offsetof(struct thread_info, preempt_count));
@@ -84,5 +86,19 @@ int main(void)
 	DEFINE(SZ_PT_REGS, sizeof(struct pt_regs));
 	DEFINE(REGSZ, sizeof(long));
 
+#ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
+	BLANK();
+	DEFINE(EVLOG_FIELD_CPU, offsetof(timeline_log_t, cpu));
+	DEFINE(EVLOG_FIELD_STATUS, offsetof(timeline_log_t, stat32));
+	DEFINE(EVLOG_FIELD_PC, offsetof(timeline_log_t, pc));
+	DEFINE(EVLOG_FIELD_CAUSE, offsetof(timeline_log_t, cause));
+	DEFINE(EVLOG_FIELD_TASK, offsetof(timeline_log_t, task));
+	DEFINE(EVLOG_FIELD_TIME, offsetof(timeline_log_t, time));
+	DEFINE(EVLOG_FIELD_EVENT_ID, offsetof(timeline_log_t, event));
+	DEFINE(EVLOG_FIELD_SP, offsetof(timeline_log_t, sp));
+	DEFINE(EVLOG_RECORD_SZ, sizeof(timeline_log_t));
+	DEFINE(EVLOG_FIELD_EFA, offsetof(timeline_log_t, efa));
+	DEFINE(EVLOG_FIELD_EXTRA, offsetof(timeline_log_t, extra));
+#endif
 	return 0;
 }

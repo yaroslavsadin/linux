@@ -39,6 +39,7 @@
 #include <asm/arcregs.h>
 #include <asm/cache.h>
 #include <asm/processor.h>
+#include <asm/event-log-asm.h>
 
 #ifdef CONFIG_ISA_ARCOMPACT
 ;-----------------------------------------------------------------
@@ -302,6 +303,7 @@ ENTRY(EV_TLBMissI)
 
 	CONV_PTE_TO_TLB
 	COMMIT_ENTRY_TO_MMU
+	TAKE_SNAP_TLB_REFILL	r0, r1
 	TLBMISS_RESTORE_REGS
 EV_TLBMissI_fast_ret:	; additional label for VDK OS-kit instrumentation
 	rtie
@@ -353,6 +355,7 @@ ENTRY(EV_TLBMissD)
 	CONV_PTE_TO_TLB
 
 	COMMIT_ENTRY_TO_MMU
+	TAKE_SNAP_TLB_REFILL	r0, r1
 	TLBMISS_RESTORE_REGS
 EV_TLBMissD_fast_ret:	; additional label for VDK OS-kit instrumentation
 	rtie

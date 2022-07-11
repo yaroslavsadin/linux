@@ -7,6 +7,7 @@
 #include <asm/cluster.h>
 #include <asm/cacheflush.h>
 #include <asm/setup.h>
+#include <asm/event-log.h>
 
 int l2_enable = IS_ENABLED(CONFIG_ARC_HAS_SCM);
 
@@ -238,18 +239,21 @@ SYSCALL_DEFINE3(cacheflush, unsigned long, start, unsigned long, sz, unsigned lo
 
 void dma_cache_wback_inv(phys_addr_t start, unsigned long sz)
 {
+	take_snap2(SNAP_CACHE_OP_WB_INV, start, sz);
 	__flush_dcache_range(start, start, sz, OP_FLUSH_N_INV);
 }
 EXPORT_SYMBOL(dma_cache_wback_inv);
 
 void dma_cache_inv(phys_addr_t start, unsigned long sz)
 {
+	take_snap2(SNAP_CACHE_OP_INV, start, sz);
 	__flush_dcache_range(start, start, sz, OP_INV);
 }
 EXPORT_SYMBOL(dma_cache_inv);
 
 void dma_cache_wback(phys_addr_t start, unsigned long sz)
 {
+	take_snap2(SNAP_CACHE_OP_WB, start, sz);
 	__flush_dcache_range(start, start, sz, OP_FLUSH);
 }
 EXPORT_SYMBOL(dma_cache_wback);

@@ -8,6 +8,7 @@
 #include <asm/mmu.h>
 #include <asm/setup.h>
 #include <asm/fixmap.h>
+#include <asm/event-log.h>
 
 /* A copy of the ASID from the PID reg is kept in asid_cache */
 DEFINE_PER_CPU(unsigned int, asid_cache) = MM_CTXT_FIRST_CYCLE;
@@ -363,11 +364,14 @@ void arch_exit_mmap(struct mm_struct *mm)
 
 noinline void local_flush_tlb_all(void)
 {
+	//take_snap2(SNAP_TLB_FLUSH, -1, -1);
 	write_aux_reg(ARC_REG_MMU_TLB_CMD, 1);
 }
 
 noinline void local_flush_tlb_mm(struct mm_struct *mm)
 {
+	take_snap2(SNAP_TLB_FLUSH, 0, -1);
+
 	if (arc_debug_tlb_flush_mm_nuke) {
 		local_flush_tlb_all();
 		return;
@@ -397,16 +401,19 @@ noinline void local_flush_tlb_mm(struct mm_struct *mm)
 void local_flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
 			   unsigned long end)
 {
+	take_snap2(SNAP_TLB_FLUSH, start, end);
 	local_flush_tlb_all();
 }
 
 void local_flush_tlb_kernel_range(unsigned long start, unsigned long end)
 {
+	take_snap2(SNAP_TLB_FLUSH, start, end);
 	local_flush_tlb_all();
 }
 
 void local_flush_tlb_page(struct vm_area_struct *vma, unsigned long page)
 {
+	take_snap2(SNAP_TLB_FLUSH, page, 0);
 	local_flush_tlb_all();
 }
 
@@ -441,11 +448,13 @@ static inline void ipi_flush_tlb_kernel_range(void *arg)
 
 void flush_tlb_all(void)
 {
+	take_snap2(SNAP_TLB_FLUSH, -1, -1);
 	on_each_cpu((smp_call_func_t)local_flush_tlb_all, NULL, 1);
 }
 
 void flush_tlb_mm(struct mm_struct *mm)
 {
+	take_snap2(SNAP_TLB_FLUSH, 0, -1);
 	on_each_cpu_mask(mm_cpumask(mm), (smp_call_func_t)local_flush_tlb_mm,
 			 mm, 1);
 }
@@ -456,7 +465,7 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long uaddr)
 		.ta_vma = vma,
 		.ta_start = uaddr
 	};
-
+	take_snap2(SNAP_TLB_FLUSH, uaddr, 0);
 	on_each_cpu_mask(mm_cpumask(vma->vm_mm), ipi_flush_tlb_page, &ta, 1);
 }
 
@@ -468,7 +477,7 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
 		.ta_start = start,
 		.ta_end = end
 	};
-
+	take_snap2(SNAP_TLB_FLUSH, start, end);
 	on_each_cpu_mask(mm_cpumask(vma->vm_mm), ipi_flush_tlb_range, &ta, 1);
 }
 
@@ -478,7 +487,7 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end)
 		.ta_start = start,
 		.ta_end = end
 	};
-
+	take_snap2(SNAP_TLB_FLUSH, start, end);
 	on_each_cpu(ipi_flush_tlb_kernel_range, &ta, 1);
 }
 #endif

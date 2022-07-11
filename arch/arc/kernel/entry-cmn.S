@@ -3,6 +3,7 @@
  * ARCv2/ARCv3 common Low Level Interrupts/Traps/Exceptions Handling
  */
 
+#include <asm/event-log-asm.h>
 
 ;##################### Interrupt Handling ##############################
 
@@ -24,6 +25,8 @@ ENTRY(handle_interrupt)
 	# unless this one returns (or higher prio becomes pending in 2-prio scheme)
 
 	IRQ_DISABLE
+
+	TAKE_SNAP_IRQ  SNAP_INTR_IN
 
 	; icause is banked: one per priority level
 	; so a higher prio interrupt taken here won't clobber prev prio icause
@@ -96,6 +99,9 @@ ENTRY(EV_TLBProtV)
 
 	EXCEPTION_PROLOGUE
 
+	; use ECR to distinguish ITL, DTLB (ld/st), ProtV
+	TAKE_SNAP_EXCP_TLB r10, r11
+
 	bl    do_page_fault
 	b    ret_from_exception
 
@@ -134,6 +140,15 @@ restore_regs:
 
 ;####### Return from Intr #######
 
+#ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
+	TAKE_SNAP_IRQ   SNAP_INTR_OUT
+
+	; reload r0, r11
+	ld	r0, [sp, PT_status32]	; U/K mode at time of entry
+	lr	r10, [AUX_IRQ_ACT]
+	bmsk	r11, r10, 15	; AUX_IRQ_ACT.ACTIVE
+#endif
+
 .Lisr_ret:
 
 debug_marker_l1:
@@ -161,6 +176,11 @@ debug_marker_l1:
 .Lexcept_ret:	; Expects r0 has PT_status32
 
 debug_marker_syscall:
+	TAKE_SNAP_C_FROM_ASM    SNAP_EXCP_OUT
+
+#ifdef CONFIG_ARC_DBG_EVENT_TIMELINE
+	ld	r0, [sp, PT_status32]
+#endif
 	EXCEPTION_EPILOGUE
 	rtie
 

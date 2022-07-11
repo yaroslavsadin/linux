@@ -136,7 +136,7 @@ SECTIONS
 		*(.arcextmap.*)
 	}
 
-#ifndef CONFIG_DEBUG_INFO
+#if !defined(CONFIG_DEBUG_INFO) && !defined(CONFIG_ARC_DBG_EVENT_TIMELINE)
 	/DISCARD/ : { *(.debug_frame) }
 	/DISCARD/ : { *(.debug_aranges) }
 	/DISCARD/ : { *(.debug_pubnames) }

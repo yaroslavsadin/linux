@@ -20,7 +20,7 @@
  *  Branch link register (blink)        r31
  *------------------------------------------------------------------
  */
-
+#include <asm/event-log-asm.h>
 ;################### Special Sys Call Wrappers ##########################
 
 ENTRY(sys_clone_wrapper)
@@ -210,6 +210,8 @@ trap_with_param:
 ENTRY(EV_Trap)
 
 	EXCEPTION_PROLOGUE_KEEP_AE
+
+	TAKE_SNAP_SYSCALL       r11, r12
 
 	LRR  r12, [efa]
 

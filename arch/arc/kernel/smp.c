@@ -26,6 +26,7 @@
 #include <asm/processor.h>
 #include <asm/setup.h>
 #include <asm/mach_desc.h>
+#include <asm/event-log.h>
 
 #ifndef CONFIG_ARC_HAS_LLSC
 arch_spinlock_t smp_atomic_ops_lock = __ARCH_SPIN_LOCK_UNLOCKED;
@@ -252,7 +253,7 @@ static void ipi_send_msg_one(int cpu, enum ipi_msg_type msg)
 {
 	unsigned long __percpu *ipi_data_ptr = per_cpu_ptr(&ipi_data, cpu);
 	unsigned long old, new;
-	unsigned long flags;
+	unsigned long flags, id;
 
 	pr_debug("%d Sending msg [%d] to %d\n", smp_processor_id(), msg, cpu);
 
@@ -275,8 +276,14 @@ static void ipi_send_msg_one(int cpu, enum ipi_msg_type msg)
 	 * IPI handler, because !@old means it has not yet dequeued the msg(s)
 	 * so @new msg can be a free-loader
 	 */
-	if (plat_smp_ops.ipi_send && !old)
+	if (plat_smp_ops.ipi_send && !old) {
+		id = SNAP_IPI_SENT;
 		plat_smp_ops.ipi_send(cpu);
+	} else {
+		id = SNAP_IPI_ELIDE;
+	}
+
+	take_snap2(id, new, old);
 
 	local_irq_restore(flags);
 }
