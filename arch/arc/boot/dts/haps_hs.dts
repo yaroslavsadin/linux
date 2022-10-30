@@ -6,6 +6,9 @@
 
 /include/ "skeleton_hs.dtsi"
 
+#define LINUX_RAM_BASE	0x80000000 /* Set LINUX_RAM_BASE = haps_ddr_base_addr */
+#define LINUX_RAM_SIZE	0x40000000 /* Set LINUX_RAM_SIZE = CONFIG_LINUX_MAP_SIZE */
+
 / {
 	model = "snps,zebu_hs";
 	compatible = "snps,zebu_hs";
@@ -16,7 +19,7 @@
 	memory {
 		device_type = "memory";
 		/* CONFIG_LINUX_RAM_BASE needs to match low mem start */
-		reg = <0x0 0x80000000 0x0 0x40000000	/* 1 GB low mem */
+		reg = <0x0 LINUX_RAM_BASE 0x0 LINUX_RAM_SIZE	/* up to 2 GB low mem */
 		       0x1 0x00000000 0x0 0x40000000>;	/* 1 GB highmem */
 	};
 
