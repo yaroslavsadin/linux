@@ -252,17 +252,18 @@ static int __init arc_map_segment_in_mm(struct mm_struct *mm,
 					pgprot_t prot)
 {
 	unsigned long addr;
-	phys_addr_t phys;
 	pgd_t *pgd;
 	p4d_t *p4d;
 	pud_t *pud;
 	pmd_t *pmd;
+	phys_addr_t phys;
+#if ARC_KERNEL_MAP_CHUNK_SIZE != MMU_BLK_SIZE
 	pte_t *pte;
+#endif
 
-	BUG_ON(start & (PAGE_SIZE-1));
-	BUG_ON(end & (PAGE_SIZE-1));
+	BUG_ON(start & (ARC_KERNEL_MAP_CHUNK_SIZE-1));
+	BUG_ON(end & (ARC_KERNEL_MAP_CHUNK_SIZE-1));
 
-	/* TODO: Use bigger blocks if possible */
 	addr = start;
 	do {
 		pgd = pgd_offset(mm, addr);
@@ -287,12 +288,14 @@ static int __init arc_map_segment_in_mm(struct mm_struct *mm,
 			phys = arc_map_early_alloc_page();
 			pmd_populate_kernel(mm, pmd, __va(phys));
 		}
-
+#if ARC_KERNEL_MAP_CHUNK_SIZE == MMU_BLK_SIZE
+		set_pmd(pmd, pfn_pmd(virt_to_pfn(addr), prot));
+		addr = pmd_addr_end(addr, end);
+#else
 		pte = pte_offset_kernel(pmd, addr);
-
 		set_pte(pte, pfn_pte(virt_to_pfn(addr), prot));
-
 		addr += PAGE_SIZE;
+#endif
 	} while (addr < end);
 
 	return 0;
@@ -307,27 +310,36 @@ int __init arc_map_kernel_in_mm(struct mm_struct *mm)
 	extern char __init_data_begin[];
 	extern char __init_text_end[];
 	extern char __init_data_end[];
+	pgprot_t prot_rw, prot_rwx;
+
+#if ARC_KERNEL_MAP_CHUNK_SIZE == MMU_BLK_SIZE
+		prot_rw = PAGE_KERNEL_BLK_RW;
+		prot_rwx = PAGE_KERNEL_BLK_RWX;
+#else
+		prot_rw = PAGE_KERNEL_RW;
+		prot_rwx  = PAGE_KERNEL_RWX;
+#endif
 
 	arc_map_segment_in_mm(mm,
 			      PAGE_OFFSET,
 			      (unsigned long) __init_data_begin,
-			      PAGE_KERNEL_RWX);
+			      prot_rwx);
 	arc_map_segment_in_mm(mm,
 			      (unsigned long) __init_data_begin,
 			      (unsigned long) __init_data_end,
-			      PAGE_KERNEL_RW);
+			      prot_rw);
 	arc_map_segment_in_mm(mm,
 			      (unsigned long) __init_text_begin,
 			      (unsigned long) __init_text_end,
-			      PAGE_KERNEL_RWX);
+			      prot_rwx);
 	arc_map_segment_in_mm(mm,
 			      (unsigned long) _stext,
 			      (unsigned long) _etext,
-			      PAGE_KERNEL_RWX);
+			      prot_rwx);
 	arc_map_segment_in_mm(mm,
 			      (unsigned long) _sdata,
 			      (unsigned long) _end,
-			      PAGE_KERNEL_RW);
+			      prot_rw);
 
 	return 0;
 }
@@ -336,6 +348,13 @@ int __init arc_map_memory_in_mm(struct mm_struct *mm)
 {
 	u64 i;
 	phys_addr_t start, end;
+	pgprot_t prot_rw;
+
+#if ARC_KERNEL_MAP_CHUNK_SIZE == MMU_BLK_SIZE
+		prot_rw = PAGE_KERNEL_BLK_RW;
+#else
+		prot_rw = PAGE_KERNEL_RW;
+#endif
 
 	/*
 	 * Kernel (__pa(PAGE_OFFSET) to __pa(_end) is already mapped by
@@ -357,7 +376,7 @@ int __init arc_map_memory_in_mm(struct mm_struct *mm)
 		arc_map_segment_in_mm(mm,
 				      (unsigned long)__va(start),
 				      (unsigned long)__va(end),
-				      PAGE_KERNEL_RW);
+				      prot_rw);
 	}
 
 	return 0;

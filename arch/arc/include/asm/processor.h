@@ -96,6 +96,17 @@ extern unsigned long __get_wchan(struct task_struct *p);
 
 #define FIXADDR_START	(PAGE_OFFSET + CONFIG_LINUX_MAP_SIZE)
 
+#if defined(CONFIG_ARC_PAGE_SIZE_4K)
+#define MMU_BLK_SIZE   0x200000
+#elif defined(CONFIG_ARC_PAGE_SIZE_16K)
+#define MMU_BLK_SIZE   0x2000000
+#else
+#define MMU_BLK_SIZE   0x200000
+#endif
+
+/* Kernel mapping size. Set as PAGE_SIZE or MMU block size(MMU_BLK_SIZE) = 2Mb */
+#define ARC_KERNEL_MAP_CHUNK_SIZE		MMU_BLK_SIZE
+
 #elif defined(CONFIG_ARC_MMU_V6_32)
 /*
  * Default System Memory Map on ARC
@@ -116,6 +127,10 @@ extern unsigned long __get_wchan(struct task_struct *p);
 #define VMALLOC_END	(VMALLOC_START + VMALLOC_SIZE)
 
 #define FIXADDR_START	(0xFF000000)
+
+#define MMU_BLK_SIZE	0x200000
+/* Kernel mapping size. Set as PAGE_SIZE or MMU block size(MMU_BLK_SIZE) = 2Mb */
+#define ARC_KERNEL_MAP_CHUNK_SIZE		MMU_BLK_SIZE
 
 #else
 
@@ -143,6 +158,10 @@ extern unsigned long __get_wchan(struct task_struct *p);
 
 #define FIXADDR_START	(PAGE_OFFSET - FIXADDR_SIZE - PKMAP_SIZE)
 #define PKMAP_BASE	(FIXADDR_START + FIXADDR_SIZE)
+
+#define MMU_BLK_SIZE	0x200000
+/* Kernel mapping size. Set as PAGE_SIZE or MMU block size(MMU_BLK_SIZE) = 2Mb */
+#define ARC_KERNEL_MAP_CHUNK_SIZE		MMU_BLK_SIZE
 
 #endif /* CONFIG_ARC_MMU_V6_* */
 

@@ -8,6 +8,13 @@
 #include <asm/page.h>
 #include <asm/thread_info.h>
 
+#ifdef CONFIG_ISA_ARCV3
+#include <asm/processor.h>
+ALIGNMENT = ARC_KERNEL_MAP_CHUNK_SIZE;
+#else
+ALIGNMENT = PAGE_SIZE;
+#endif
+
 OUTPUT_ARCH(arc)
 ENTRY(res_service)
 
@@ -56,7 +63,7 @@ SECTIONS
 	 *	decompress_inflate.c:gunzip( ) -> zlib_inflate_workspace( )
 	 */
 
-	. = ALIGN(PAGE_SIZE);
+	. = ALIGN(ALIGNMENT);
 	__init_begin = .;
 	__init_data_begin = .;
 
@@ -78,14 +85,14 @@ SECTIONS
 
 	PERCPU_SECTION(L1_CACHE_BYTES)
 
-	. = ALIGN(PAGE_SIZE);
+	. = ALIGN(ALIGNMENT);
 	__init_data_end = .;
 	__init_text_begin = .;
 
 	HEAD_TEXT_SECTION
 	INIT_TEXT_SECTION(L1_CACHE_BYTES)
 
-	. = ALIGN(PAGE_SIZE);
+	. = ALIGN(ALIGNMENT);
 	__init_text_end = .;
 	__init_end = .;
 
@@ -103,7 +110,7 @@ SECTIONS
 		*(.gnu.warning)
 	}
 	EXCEPTION_TABLE(L1_CACHE_BYTES)
-	. = ALIGN(PAGE_SIZE);
+	. = ALIGN(ALIGNMENT);
 	_etext = .;
 
 	_sdata = .;
@@ -130,7 +137,7 @@ SECTIONS
 	/DISCARD/ : {	*(.eh_frame) }
 #endif
 
-	. = ALIGN(PAGE_SIZE);
+	. = ALIGN(ALIGNMENT);
 	_end = . ;
 
 	STABS_DEBUG

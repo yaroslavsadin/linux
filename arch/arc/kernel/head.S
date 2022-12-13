@@ -111,6 +111,8 @@
 #define BUILD_PMD_ENTRY BUILD_PAGE_TABLE_ENTRY \pmd, \link_addr, \phy_addr, \cur, \tmp, PTRS_PER_PMD, PMD_SHIFT, PAGE_KERNEL_BLK_RWX
 #define ENTRY_SIZE	PMD_SIZE
 #define ENTRY_LABEL	.Lbuild_pmd_entry\@
+#define NEXT_SIZE      PUD_SIZE
+#define ENTRY_LABEL_NEXT       .Lbuild_pud_entry\@
 
 #elif defined(CONFIG_ARC_MMU_V6_48) && defined(CONFIG_ARC_PAGE_SIZE_64K) || defined(CONFIG_ARC_MMU_V6_52) || defined(CONFIG_ARC_MMU_V6_32)
 
