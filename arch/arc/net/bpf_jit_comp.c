@@ -7,8 +7,15 @@ enum {
 	ARC_R_12, ARC_R_13, ARC_R_14, ARC_R_15, ARC_R_16, ARC_R_17,
 	ARC_R_18, ARC_R_19, ARC_R_20, ARC_R_21, ARC_R_22, ARC_R_23,
 	ARC_R_24, ARC_R_25, ARC_R_GP, ARC_R_FP, ARC_R_SP, ARC_R_ILINK,
-	ARC_R_30, ARC_R_BLINK
+	ARC_R_30, ARC_R_BLINK,
+	ARC_R_IMM = 62
 };
+
+/*
+ * Intermediary register for some operations. Its life span is only during that
+ * specific operation, and no more.
+ */
+#define REG_TEMP ARC_R_20
 
 static const u8 bpf2arc[][2] = {
 	/* Return value from in-kernel function, and exit value from eBPF */
@@ -25,15 +32,14 @@ static const u8 bpf2arc[][2] = {
 	[BPF_REG_7] = {ARC_R_14, ARC_R_15},
 	[BPF_REG_8] = {ARC_R_16, ARC_R_17},
 	[BPF_REG_9] = {ARC_R_18, ARC_R_19},
-	/* Read-only frame pointer to access the eBPF stack */
-	[BPF_REG_FP] = {ARC_R_FP, ARC_R_GP},
+	/* Read-only frame pointer to access the eBPF stack. 32-bit only. */
+	[BPF_REG_FP] = {ARC_R_FP, 0},
 	/* Temporary register for blinding constants */
 	[BPF_REG_AX] = {ARC_R_22, ARC_R_23},
 };
 
 #define REG_LO(r) (bpf2arc[(r)][0])
 #define REG_HI(r) (bpf2arc[(r)][1])
-
 
 /* ZZ defines the size of operation in encodings that it is used. */
 enum {
@@ -80,6 +86,80 @@ enum {
 	INSN_len_imm = 4	/* Length of an extra 32-bit immediate. */
 };
 
+#define IN_S9_RANGE(x)	((x) <= 255 && (x) >= -256)
+
+/*
+ * The 4-byte encoding of "add a, b, c":
+ *
+ * 0010_0bbb 0000_0000 0BBB_cccc ccaa_aaaa
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define ADD_OPCODE	0x20000000
+#define ADD_A(x)	((x) & 0x03f)
+#define ADD_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
+#define ADD_C(x)	(((x) & 0x03f) << 6)
+
+/*
+ * The 4-byte encoding of "xor a, b, c":
+ *
+ * 0010_0bbb 0000_0011 1BBB_cccc ccaa_aaaa
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define XOR_OPCODE	0x20038000
+#define XOR_A(x)	((x) & 0x03f)
+#define XOR_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
+#define XOR_C(x)	(((x) & 0x03f) << 6)
+
+/*
+ * The 4-byte encoding of "mov b, c":
+ *
+ * 0010_0bbb 0000_1010 0BBB_cccc cc00_0000
+ *
+ * b:  BBBbbb		destination register
+ * c:  cccccc		source register
+ */
+#define MOVE_OPCODE	0x200a0000
+#define MOVE_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
+#define MOVE_C(x)	(((x) & 0x03f) << 6)
+
+/*
+ * The 4-byte encoding of "ld[zz][.x][.aa][.di] c, [b,s9]":
+ *
+ * 0001_0bbb ssss_ssss SBBB_daaz zxcc_cccc
+ *
+ * zz:			size mode
+ * aa:			address write back mode
+ * d:			memory access mode
+ * x:			extension mode
+ *
+ * s9: S_ssss_ssss	9-bit signed number
+ * b:  BBBbbb		source reg for address
+ * c:  cccccc		destination register
+ */
+#define LOAD_OPCODE	0x10000000
+#define LOAD_X(x)	((x) << 6)
+#define LOAD_ZZ(x)	((x) << 7)
+#define LOAD_AA(x)	((x) << 9)
+#define LOAD_D(x)	((x) << 11)
+#define LOAD_S9(x)	((((x) & 0x0ff) << 16) | (((x) & 0x100) <<  7))
+#define LOAD_B(x)	((((x) &  0x07) << 24) | (((x) &  0x38) <<  9))
+#define LOAD_C(x)	((x) & 0x03f)
+/* Generic load. */
+#define OP_LD \
+	LOAD_OPCODE | LOAD_D(D_cached) | LOAD_X(X_zero)
+/* 32-bit load. */
+#define OP_LD32 \
+	OP_LD | LOAD_ZZ(ZZ_4_byte)
+/* "pop reg" is merely a "ld.ab reg, [sp, 4]". */
+#define OP_POP \
+	OP_LD32 | LOAD_AA(AA_post) | LOAD_S9(4) | LOAD_B(ARC_R_SP)
+
 /*
  * The 4-byte encoding of "st[zz][.aa][.di] c, [b,s9]":
  *
@@ -97,36 +177,18 @@ enum {
 #define STORE_ZZ(x)	((x) << 1)
 #define STORE_AA(x)	((x) << 3)
 #define STORE_D(x)	((x) << 5)
-#define STORE_S9(x)	((((x) & 0x0ff) << 16) | \
-			 (((x) & 0x100) <<  7))
-#define STORE_B(x)	((((x) & 0x07) << 24) | \
-			 (((x) & 0x38) <<  9))
-#define STORE_C(x)	(((x) & 0x03f) <<  6)
-
-/*
- * The 4-byte encoding of "ld[zz][.x][.aa][.di] c, [b,s9]":
- *
- * 0001_0bbb ssss_ssss SBBB_daaz zxcc_cccc
- *
- * zz:			size mode
- * aa:			address write back mode
- * d:			memory access mode
- * x:			extension mode
- *
- * s9: S_ssss_ssss	9-bit signed number
- * b:  BBBbbb		source reg for address
- * c:  cccccc		source reg to be stored
- */
-#define LOAD_OPCODE	0x10000000
-#define LOAD_X(x)	((x) << 6)
-#define LOAD_ZZ(x)	((x) << 7)
-#define LOAD_AA(x)	((x) << 9)
-#define LOAD_D(x)	((x) << 11)
-#define LOAD_S9(x)	((((x) & 0x0ff) << 16) | \
-			 (((x) & 0x100) <<  7))
-#define LOAD_B(x)	((((x) & 0x07) << 24) | \
-			 (((x) & 0x38) <<  9))
-#define LOAD_C(x)	((x) & 0x03f)
+#define STORE_S9(x)	((((x) & 0x0ff) << 16) | (((x) & 0x100) <<  7))
+#define STORE_B(x)	((((x) &  0x07) << 24) | (((x) &  0x38) <<  9))
+#define STORE_C(x)	(((x) & 0x03f) << 6)
+/* Generic store. */
+#define OP_ST \
+	STORE_OPCODE | STORE_D(D_cached)
+/* 32-bit store. */
+#define OP_ST32 \
+	OP_ST | STORE_ZZ(ZZ_4_byte)
+/* "push reg" is merely a "st.aw reg, [sp, -4]". */
+#define OP_PUSH \
+	OP_ST32 | STORE_AA(AA_pre) | STORE_S9(-4) | STORE_B(ARC_R_SP)
 
 /*
  * TODO: remove me.
@@ -161,6 +223,13 @@ static void dump_bytes(const u8 *buf, u32 len, bool jit)
 		pr_info("\n");
 }
 
+/*
+ * If "emit" is true, the instructions are actually generated. Else, the
+ * generation part will be skipped and only the length of instruction is
+ * returned by the responsible functions.
+ */
+static bool emit = false;
+
 static inline void emit_2_bytes(u8 *buf, u16 bytes)
 {
 	*((u16 *) buf) = bytes;
@@ -172,33 +241,304 @@ static inline void emit_4_bytes(u8 *buf, u32 bytes)
 	emit_2_bytes(buf+2, bytes  & 0xffff);
 }
 
-/* "push reg" is merely a "st.aw reg, [sp, -4]". */
-static u8 emit_push_reg(u8 *buf, u8 reg_num, bool emit)
+static inline u8 bpf_to_arc_size(u8 size)
 {
-	/* The hardcoded bits of a push instruction. */
-	u32 insn = STORE_OPCODE | STORE_ZZ(ZZ_4_byte) | STORE_AA(AA_pre) | \
-		   STORE_D(D_cached) | STORE_S9(-4) | STORE_B(ARC_R_SP);
+	switch (size) {
+	case BPF_B:
+		return ZZ_1_byte;
+	case BPF_H:
+		return ZZ_2_byte;
+	case BPF_W:
+		return ZZ_4_byte;
+	case BPF_DW:
+		return ZZ_8_byte;
+	default:
+		return ZZ_4_byte;
+	}
+}
 
+static u8 arc_add_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
 	if (emit) {
-		insn |= STORE_C(reg_num);
+		u32 insn = ADD_OPCODE | ADD_A(reg_dst) | ADD_B(reg_dst) |
+			   ADD_C(reg_src);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-/* "pop reg" is merely a "ld.ab reg, [sp, 4]". */
-static u8 emit_pop_reg(u8 *buf, u8 reg_num, bool emit)
+static u8 arc_add_i(u8 *buf, u8 reg_dst, s32 imm)
 {
-	/* The hardcoded bits of a pop instruction. */
-	u32 insn = LOAD_OPCODE | LOAD_ZZ(ZZ_4_byte) | LOAD_AA(AA_post) | \
-		   LOAD_D(D_cached) | LOAD_X(X_zero) | LOAD_S9(4) | \
-		   LOAD_B(ARC_R_SP);
-
 	if (emit) {
-		insn |= LOAD_C(reg_num);
+		u32 insn = ADD_OPCODE | ADD_A(reg_dst) | ADD_B(reg_dst) |
+			   ADD_C(ARC_R_IMM);
+		emit_4_bytes(buf                , insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+static u8 arc_xor_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = XOR_OPCODE | XOR_A(reg_dst) | XOR_B(reg_dst) |
+			   XOR_C(reg_src);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
+}
+
+static u8 arc_xor_i(u8 *buf, u8 reg_dst, s32 imm)
+{
+	if (emit) {
+		u32 insn = XOR_OPCODE | XOR_A(reg_dst) | XOR_B(reg_dst) |
+			   XOR_C(ARC_R_IMM);
+		emit_4_bytes(buf                , insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+/* "mov r, 0" in fact is a "xor r, r, r". */
+static u8 arc_mov_0(u8 *buf, u8 reg)
+{
+	if (emit) {
+		u32 insn = XOR_OPCODE | XOR_A(reg) | XOR_B(reg) | XOR_C(reg);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_mov_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = MOVE_OPCODE | MOVE_B(reg_dst) | MOVE_C(reg_src);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_mov_i(u8 *buf, u8 reg_dst, s32 imm)
+{
+	if (emit) {
+		u32 insn = MOVE_OPCODE | MOVE_B(reg_dst) | MOVE_C(ARC_R_IMM);
+		emit_4_bytes(buf                , insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+/* st.as reg_c, [reg_b, off] */
+static u8 arc_st_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
+{
+	if (emit) {
+		u32 insn = OP_ST | STORE_AA(AA_none) | STORE_ZZ(zz) |
+			   STORE_C(reg) | STORE_B(reg_mem) | STORE_S9(off);
+		emit_4_bytes(buf, insn);
+	}
+
+	return INSN_len_normal;
+}
+
+/* "push reg" is merely a "st.aw reg_c, [sp, -4]". */
+static u8 arc_push_r(u8 *buf, u8 reg)
+{
+	if (emit) {
+		u32 insn = OP_PUSH | STORE_C(reg);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+/* ld.aw reg_c, [reg_b, off] */
+static u8 arc_ld_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
+{
+	if (emit) {
+		u32 insn = OP_LD | LOAD_AA(AA_none) | LOAD_ZZ(zz) |
+			   LOAD_C(reg) | LOAD_B(reg_mem) | LOAD_S9(off);
+		emit_4_bytes(buf, insn);
+	}
+
+	return INSN_len_normal;
+}
+
+static u8 arc_pop_r(u8 *buf, u8 reg)
+{
+	if (emit) {
+		u32 insn = OP_LD32 | LOAD_C(reg);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 add_r_32(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	u8 len = 0;
+	len = arc_add_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+	return len;
+}
+
+static u8 add_i_32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	u8 len = 0;
+	len = arc_add_i(buf, REG_LO(reg_dst), imm);
+	return len;
+}
+
+static u8 xor_r_32(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	u8 len = 0;
+	len = arc_xor_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+	return len;
+}
+
+static u8 xor_i_32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	u8 len = 0;
+	len = arc_xor_i(buf, REG_LO(reg_dst), imm);
+	return len;
+}
+
+static u8 mov_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	u8 len = 0;
+
+	if (reg_dst == reg_src)
+		return len;
+
+	len  = arc_mov_r(buf    , REG_LO(reg_dst), REG_LO(reg_src));
+	len += arc_mov_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+
+	return len;
+}
+
+static u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
+{
+	u8 len = 0;
+
+	len  = arc_mov_i(buf    , REG_LO(reg), imm);
+	if (imm >= 0)
+		len += arc_mov_0(buf+len, REG_HI(reg));
+	else
+		len += arc_mov_i(buf+len, REG_HI(reg), -1);
+
+	return len;
+}
+
+static u8 mov_r64_i64(u8 *buf, u8 reg, u32 hi, u32 lo)
+{
+	u8 len = 0;
+
+	len  = arc_mov_i(buf    , REG_LO(reg), lo);
+	len += arc_mov_i(buf+len, REG_HI(reg), hi);
+
+	return len;
+}
+
+static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
+{
+	u8 len = 0;
+	u8 arc_reg_mem = REG_LO(reg_mem);
+
+	/*
+	 * If the offset is too big to fit in s9, emit:
+	 *   mov r20, off
+	 *   add r20, r20, reg
+	 * and make sure that r20 will be the effective address for store.
+	 *   st  r, [r20, 0]
+	 */
+	if (!IN_S9_RANGE(off) ||
+	    (size == BPF_DW && !IN_S9_RANGE(off + 4))) {
+		len  = arc_mov_i(buf    , REG_TEMP, (u32) off);
+		len += arc_add_r(buf+len, REG_TEMP, reg_mem);
+		arc_reg_mem = REG_TEMP;
+		off = 0;
+	}
+
+	if (size == BPF_B || size == BPF_H || size == BPF_W) {
+		u8 zz = bpf_to_arc_size(size);
+		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off, zz);
+	} else if (size == BPF_DW) {
+		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off+0,
+				ZZ_4_byte);
+		len += arc_st_r(buf+len, REG_HI(reg), arc_reg_mem, off+4,
+				ZZ_4_byte);
+	}
+
+	return len;
+}
+
+static u8 push_r(u8 *buf, u8 reg)
+{
+	u8 len;
+
+	len  = arc_push_r(buf    , REG_LO(reg));
+	len += arc_push_r(buf+len, REG_HI(reg));
+
+	return len;
+}
+
+static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
+{
+	u8 len = 0;
+	u8 arc_reg_mem = REG_LO(reg_mem);
+
+	/*
+	 * If the offset is too big to fit in s9, emit:
+	 *   mov r20, off
+	 *   add r20, r20, reg
+	 * and make sure that r20 will be the effective address for load.
+	 *   ld  r, [r20, 0]
+	 */
+	if (!IN_S9_RANGE(off) ||
+	    (size == BPF_DW && !IN_S9_RANGE(off + 4))) {
+		len  = arc_mov_i(buf    , REG_TEMP, (u32) off);
+		len += arc_add_r(buf+len, REG_TEMP, reg_mem);
+		arc_reg_mem = REG_TEMP;
+		off = 0;
+	}
+
+	if (size == BPF_B || size == BPF_H || size == BPF_W) {
+		u8 zz = bpf_to_arc_size(size);
+		len += arc_ld_r(buf+len, REG_LO(reg), arc_reg_mem, off, zz);
+	} else if (size == BPF_DW) {
+		/*
+		 * We are about to issue 2 consecutive loads:
+		 *
+		 *   ld rx, [rb, off+0]
+		 *   ld ry, [rb, off+4]
+		 *
+		 * If "rx" and "rb" are the same registers, then the order
+		 * should change to guarantee that "rb" remains intact
+		 * during these 2 operations:
+		 *
+		 *   ld ry, [rb, off+4]
+		 *   ld rx, [rb, off+0]
+		 */
+		if (REG_LO(reg) != arc_reg_mem) {
+			len += arc_ld_r(buf+len, REG_LO(reg), arc_reg_mem,
+					off+0, ZZ_4_byte);
+			len += arc_ld_r(buf+len, REG_HI(reg), arc_reg_mem,
+					off+4, ZZ_4_byte);
+		} else {
+			len += arc_ld_r(buf+len, REG_HI(reg), arc_reg_mem,
+					off+4, ZZ_4_byte);
+			len += arc_ld_r(buf+len, REG_LO(reg), arc_reg_mem,
+					off+0, ZZ_4_byte);
+		}
+	}
+
+	return len;
+}
+
+static u8 pop_r(u8 *buf, u8 reg)
+{
+	u8 len;
+
+	len  = arc_pop_r(buf    , REG_LO(reg));
+	len += arc_pop_r(buf+len, REG_HI(reg));
+
+	return len;
 }
 
 /*
@@ -303,7 +643,7 @@ static void detect_regs_clobbered(struct jit_context *ctx)
  * If "emit" is true, all the necessary "push"s are generated. Else, it acts
  * as a dry run and only updates the length of would-have-been instructions.
  */
-static int handle_prologue(struct jit_context *ctx, bool emit)
+static int handle_prologue(struct jit_context *ctx)
 {
 	u32 push_mask = ctx->regs_clobbered;
 	u8 *buf = ctx->jit.buf;
@@ -318,8 +658,7 @@ static int handle_prologue(struct jit_context *ctx, bool emit)
 			return -EINVAL;
 		}
 
-		idx += emit_push_reg(buf+idx, REG_LO(reg), emit);
-		idx += emit_push_reg(buf+idx, REG_HI(reg), emit);
+		idx += push_r(buf+idx, reg);
 		push_mask &= ~BIT(reg);
 	}
 
@@ -338,7 +677,7 @@ static int handle_prologue(struct jit_context *ctx, bool emit)
  * supposed to be emitted, it means it should contribute to the calculation of
  * "jit.len", and therefore it begins with that.
  */
-static int handle_epilogue(struct jit_context *ctx, bool emit)
+static int handle_epilogue(struct jit_context *ctx)
 {
 	u32 pop_mask = ctx->regs_clobbered;
 	u8 *buf = ctx->jit.buf;
@@ -353,8 +692,7 @@ static int handle_epilogue(struct jit_context *ctx, bool emit)
 			return -EINVAL;
 		}
 
-		idx += emit_pop_reg(buf+idx, REG_HI(reg), emit);
-		idx += emit_pop_reg(buf+idx, REG_LO(reg), emit);
+		idx += pop_r(buf+idx, reg);
 		pop_mask &= ~BIT(reg);
 	}
 
@@ -368,18 +706,65 @@ static int handle_epilogue(struct jit_context *ctx, bool emit)
 }
 
 /* TODO: fill me in. */
-static int handle_body(struct jit_context *ctx, bool emit)
+static int handle_body(struct jit_context *ctx)
 {
 	const struct bpf_prog *prog = ctx->prog;
+	u8 *buf = ctx->jit.buf;
+	u32 len = ctx->jit.len;
 
 	for (u32 i = 0; i < prog->len; i++) {
 		const struct bpf_insn *insn = &prog->insnsi[i];
+		u8  code = insn->code;
+		u8  dst  = insn->dst_reg;
+		u8  src  = insn->src_reg;
+		s16 off  = insn->off;
+		s32 imm  = insn->imm;
+
 		switch (insn->code) {
-		case BPF_ALU   | BPF_ADD:
-		case BPF_ALU64 | BPF_ADD:
-			//if (BPF_K | BPF_X)
-			//gen_addition();
+		/* dst += src */
+		case BPF_ALU | BPF_ADD | BPF_X:
+			len += add_r_32(buf+len, dst, src);
 			break;
+		/* dst += imm */
+		case BPF_ALU | BPF_ADD | BPF_K:
+			len += add_i_32(buf+len, dst, imm);
+			break;
+		/* dst ^= src */
+		case BPF_ALU | BPF_XOR | BPF_X:
+			len += xor_r_32(buf+len, dst, src);
+			break;
+		/* dst ^= imm */
+		case BPF_ALU | BPF_XOR | BPF_K:
+			len += xor_i_32(buf+len, dst, imm);
+			break;
+		/* dst = src (64-bit) */
+		case BPF_ALU64 | BPF_MOV | BPF_X:
+			len += mov_r(buf+len, dst, src);
+			break;
+		/* dst = imm32 (sign extend to 64-bit) */
+		case BPF_ALU64 | BPF_MOV | BPF_K:
+			len += mov_r64_i32(buf+len, dst, imm);
+			break;
+		/* dst = *(size *)(src + off) */
+		case BPF_LDX | BPF_MEM | BPF_W:
+		case BPF_LDX | BPF_MEM | BPF_H:
+		case BPF_LDX | BPF_MEM | BPF_B:
+		case BPF_LDX | BPF_MEM | BPF_DW:
+			len += load_r(buf+len, dst, src, off, BPF_SIZE(code));
+			break;
+		/* *(size *)(dst + off) = src */
+		case BPF_STX | BPF_MEM | BPF_W:
+		case BPF_STX | BPF_MEM | BPF_H:
+		case BPF_STX | BPF_MEM | BPF_B:
+		case BPF_STX | BPF_MEM | BPF_DW:
+			len += store_r(buf+len, src, dst, off, BPF_SIZE(code));
+			break;
+		/* TODO: add store_i().
+		case BPF_ST | BPF_MEM | BPF_W:
+		case BPF_ST | BPF_MEM | BPF_H:
+		case BPF_ST | BPF_MEM | BPF_B:
+		case BPF_ST | BPF_MEM | BPF_DW:
+		*/
 		case BPF_JMP | BPF_EXIT:
 			/* If the last instruction, epilogue will follow. */
 			if (i == prog->len - 1)
@@ -387,7 +772,7 @@ static int handle_body(struct jit_context *ctx, bool emit)
 			/* TODO: jump to epilogue AND add "break". */
 			fallthrough;
 		default:
-			pr_err("bpf-jit: Can't handle instruction code %u\n",
+			pr_err("bpf-jit: can't handle instruction code %u\n",
 			       insn->code);
 			return -EFAULT;
 		}
@@ -412,19 +797,22 @@ static int jit_prepare(struct jit_context *ctx)
 {
 	int ret;
 
+	/* Dry run. */
+	emit = false;
+
 	/* Get the length of prologue section. */
 	detect_regs_clobbered(ctx);
-	if ((ret = handle_prologue(ctx, false)))
+	if ((ret = handle_prologue(ctx)))
 		return ret;
 
-	if ((ret = handle_body(ctx, false)))
+	if ((ret = handle_body(ctx)))
 		return ret;
 
 	/* Record at which offset prologue may begin. */
 	ctx->epilogue_offset = ctx->jit.len;
 
 	/* Add the epilogue's length as well. */
-	if ((ret = handle_epilogue(ctx, false)))
+	if ((ret = handle_epilogue(ctx)))
 		return ret;
 
 	ctx->jit.buf = kcalloc(ctx->jit.len, sizeof(*ctx->jit.buf),
@@ -448,11 +836,13 @@ static int jit_prepare(struct jit_context *ctx)
  */
 static int jit_compile(struct jit_context *ctx)
 {
-	(void) handle_prologue(ctx, true);
+	emit = true;
 
-	(void) handle_body(ctx, true);
+	(void) handle_prologue(ctx);
 
-	(void) handle_epilogue(ctx, true);
+	(void) handle_body(ctx);
+
+	(void) handle_epilogue(ctx);
 
 	if (ctx->jit.index != ctx->jit.len) {
 		pr_err("bpf-jit: divergence between the passes; "
