@@ -639,15 +639,36 @@ static void detect_regs_clobbered(struct jit_context *ctx)
 	ctx->regs_clobbered = usage;
 }
 
+/* Verify that no instruction will be emitted when there is no buffer. */
+static inline int check_buf(struct jit_context *ctx)
+{
+	if (emit == true) {
+		if (ctx->jit.buf == NULL) {
+			pr_err("bpf-jit: inconsistence state; no "
+			       "buffer to emit instructions.\n");
+			return -EINVAL;
+		} else if (ctx->jit.index > ctx->jit.len) {
+			pr_err("bpf-jit: estimated JIT length is less "
+			       "than the emitted instructions.\n");
+			return -EFAULT;
+		}
+	}
+	return 0;
+}
+
 /*
  * If "emit" is true, all the necessary "push"s are generated. Else, it acts
  * as a dry run and only updates the length of would-have-been instructions.
  */
 static int handle_prologue(struct jit_context *ctx)
 {
+	int ret;
 	u32 push_mask = ctx->regs_clobbered;
 	u8 *buf = ctx->jit.buf;
 	u32 idx = 0;			/* A prologue always starts at 0. */
+
+	if ((ret = check_buf(ctx)))
+	    return ret;
 
 	while (push_mask) {
 		u8 reg = __builtin_ffs(push_mask) - 1;
@@ -679,9 +700,13 @@ static int handle_prologue(struct jit_context *ctx)
  */
 static int handle_epilogue(struct jit_context *ctx)
 {
+	int ret;
 	u32 pop_mask = ctx->regs_clobbered;
 	u8 *buf = ctx->jit.buf;
 	u32 idx = (emit ? ctx->jit.index : ctx->jit.len);
+
+	if ((ret = check_buf(ctx)))
+	    return ret;
 
 	while (pop_mask) {
 		u8 reg = 31 - __builtin_clz(pop_mask);
@@ -708,9 +733,13 @@ static int handle_epilogue(struct jit_context *ctx)
 /* TODO: fill me in. */
 static int handle_body(struct jit_context *ctx)
 {
+	int ret;
 	const struct bpf_prog *prog = ctx->prog;
 	u8 *buf = ctx->jit.buf;
 	u32 len = ctx->jit.len;
+
+	if ((ret = check_buf(ctx)))
+	    return ret;
 
 	for (u32 i = 0; i < prog->len; i++) {
 		const struct bpf_insn *insn = &prog->insnsi[i];
