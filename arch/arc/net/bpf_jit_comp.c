@@ -205,17 +205,17 @@ static void dump_bytes(const u8 *buf, u32 len, bool jit)
 		pr_info("-----------------[  VM   ]-----------------\n");
 
 	for (i = 0, j = 0; i < len; i++) {
-		if (i != len-1) {
-			j += sprintf(line+j, "0x%02x, ", buf[i]);
-		}
-		else {
+		if (i == len-1) {
 			sprintf(line+j, "0x%02x" , buf[i]);
 			pr_info("%s\n", line);
 			break;
 		}
-		if (i % 8 == 7) {
+		else if (i % 8 == 7) {
+			sprintf(line+j, "0x%02x", buf[i]);
 			pr_info("%s\n", line);
 			j = 0;
+		} else {
+			j += sprintf(line+j, "0x%02x, ", buf[i]);
 		}
 	}
 
@@ -364,6 +364,7 @@ static u8 arc_ld_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 	return INSN_len_normal;
 }
 
+/* TODO: the popping encoding seem wrong. double check! */
 static u8 arc_pop_r(u8 *buf, u8 reg)
 {
 	if (emit) {
@@ -670,9 +671,9 @@ static inline int jit_buffer_check(const struct jit_buffer *jbuf)
 static inline void jit_buffer_update(struct jit_buffer *jbuf, u32 n)
 {
 	if (!emit)
-		jbuf->len = n;
+		jbuf->len += n;
 	else
-		jbuf->index = n;
+		jbuf->index += n;
 }
 
 /*
@@ -683,8 +684,8 @@ static int handle_prologue(struct jit_context *ctx)
 {
 	int ret;
 	u32 push_mask = ctx->regs_clobbered;
-	u8 *buf = ctx->jit.buf;
-	u32 idx = 0;			/* A prologue always starts at 0. */
+	u8 *buf = (emit ? ctx->jit.buf : NULL);	/* Prologue starts at buf[0]. */
+	u32 len = 0;
 
 	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
@@ -698,11 +699,11 @@ static int handle_prologue(struct jit_context *ctx)
 			return -EINVAL;
 		}
 
-		idx += push_r64(buf+idx, reg);
+		len += push_r64(buf+len, reg);
 		push_mask &= ~BIT(reg);
 	}
 
-	jit_buffer_update(&ctx->jit, idx);
+	jit_buffer_update(&ctx->jit, len);
 
 	return 0;
 }
@@ -717,11 +718,14 @@ static int handle_epilogue(struct jit_context *ctx)
 {
 	int ret;
 	u32 pop_mask = ctx->regs_clobbered;
-	u8 *buf = ctx->jit.buf;
-	u32 idx = (emit ? ctx->jit.index : ctx->jit.len);
+	u8 *buf = (emit ? ctx->jit.buf + ctx->jit.index : NULL);
+	u32 len = 0;
 
 	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
+
+	/* TODO: Frame pointer analysis (in a separate func() and put in ctx)
+	 * and allocate frame based on that. */
 
 	while (pop_mask) {
 		u8 reg = 31 - __builtin_clz(pop_mask);
@@ -732,101 +736,119 @@ static int handle_epilogue(struct jit_context *ctx)
 			return -EINVAL;
 		}
 
-		idx += pop_r64(buf+idx, reg);
+		len += pop_r64(buf+len, reg);
 		pop_mask &= ~BIT(reg);
 	}
 
-	jit_buffer_update(&ctx->jit, idx);
+	jit_buffer_update(&ctx->jit, len);
 
 	return 0;
 }
 
 /* TODO: fill me in. */
+/*
+ * Handles one eBPF instruction at a time. To make this function faster,
+ * it does not call "jit_buffer_check()". Else, it would call it for every
+ * instruction. As a result, it should not be invoked directly. Only
+ * "handle_body()", that has already executed the verification, may call
+ * this function.
+ */
+static int handle_insn(const struct bpf_insn *insn, bool last_insn,
+		       struct jit_buffer *jbuf)
+{
+	u8  code = insn->code;
+	u8  dst  = insn->dst_reg;
+	u8  src  = insn->src_reg;
+	s16 off  = insn->off;
+	s32 imm  = insn->imm;
+	u8 *buf  = (emit ? jbuf->buf + jbuf->index : NULL);
+	u8  len  = 0;
+
+	switch (code) {
+	/* dst += src (32-bit) */
+	case BPF_ALU | BPF_ADD | BPF_X:
+		len = add_r32(buf, dst, src);
+		break;
+	/* dst += imm (32-bit) */
+	case BPF_ALU | BPF_ADD | BPF_K:
+		len = add_r32_i32(buf, dst, imm);
+		break;
+	/* dst ^= src (32-bit) */
+	case BPF_ALU | BPF_XOR | BPF_X:
+		len = xor_r32(buf, dst, src);
+		break;
+	/* dst ^= imm (32-bit) */
+	case BPF_ALU | BPF_XOR | BPF_K:
+		len = xor_r32_i32(buf, dst, imm);
+		break;
+	/* dst += src (64-bit) */
+	case BPF_ALU64 | BPF_ADD | BPF_X:
+		/* TODO
+		len = add_r64(buf, dst, src); */
+		break;
+	/* dst += imm (64-bit) */
+	case BPF_ALU64 | BPF_ADD | BPF_K:
+		/* TODO
+		len = add_r64_i32(buf, dst, imm); */
+		break;
+	/* dst = src (64-bit) */
+	case BPF_ALU64 | BPF_MOV | BPF_X:
+		len = mov_r64(buf, dst, src);
+		break;
+	/* dst = imm32 (sign extend to 64-bit) */
+	case BPF_ALU64 | BPF_MOV | BPF_K:
+		len = mov_r64_i32(buf, dst, imm);
+		break;
+	/* dst = *(size *)(src + off) */
+	case BPF_LDX | BPF_MEM | BPF_W:
+	case BPF_LDX | BPF_MEM | BPF_H:
+	case BPF_LDX | BPF_MEM | BPF_B:
+	case BPF_LDX | BPF_MEM | BPF_DW:
+		len = load_r(buf, dst, src, off, BPF_SIZE(code));
+		break;
+	/* *(size *)(dst + off) = src */
+	case BPF_STX | BPF_MEM | BPF_W:
+	case BPF_STX | BPF_MEM | BPF_H:
+	case BPF_STX | BPF_MEM | BPF_B:
+	case BPF_STX | BPF_MEM | BPF_DW:
+		len = store_r(buf, src, dst, off, BPF_SIZE(code));
+		break;
+	/* TODO: add store_i().
+	case BPF_ST | BPF_MEM | BPF_W:
+	case BPF_ST | BPF_MEM | BPF_H:
+	case BPF_ST | BPF_MEM | BPF_B:
+	case BPF_ST | BPF_MEM | BPF_DW:
+	*/
+	case BPF_JMP | BPF_EXIT:
+		/* If the last instruction, epilogue will follow. */
+		if (last_insn)
+			break;
+		/* TODO: jump to epilogue AND add "break". */
+		fallthrough;
+	default:
+		pr_err("bpf-jit: can't handle instruction code 0x%02X\n", code);
+		return -ENOTSUPP;
+	}
+
+	jit_buffer_update(jbuf, len);
+
+	return 0;
+}
+
 static int handle_body(struct jit_context *ctx)
 {
 	int ret;
 	const struct bpf_prog *prog = ctx->prog;
-	u8 *buf = ctx->jit.buf;
-	u32 idx = (emit ? ctx->jit.index : ctx->jit.len);
 
 	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
 
 	for (u32 i = 0; i < prog->len; i++) {
-		const struct bpf_insn *insn = &prog->insnsi[i];
-		u8  code = insn->code;
-		u8  dst  = insn->dst_reg;
-		u8  src  = insn->src_reg;
-		s16 off  = insn->off;
-		s32 imm  = insn->imm;
+		bool last = (i == (prog->len - 1) ? true : false);
 
-		switch (insn->code) {
-		/* dst += src */
-		case BPF_ALU | BPF_ADD | BPF_X:
-			idx += add_r32(buf+idx, dst, src);
-			break;
-		/* dst += imm */
-		case BPF_ALU | BPF_ADD | BPF_K:
-			idx += add_r32_i32(buf+idx, dst, imm);
-			break;
-		/* dst ^= src */
-		case BPF_ALU | BPF_XOR | BPF_X:
-			idx += xor_r32(buf+idx, dst, src);
-			break;
-		/* dst ^= imm */
-		case BPF_ALU | BPF_XOR | BPF_K:
-			idx += xor_r32_i32(buf+idx, dst, imm);
-			break;
-		/* dst += src (64-bit) */
-		case BPF_ALU64 | BPF_ADD | BPF_X:
-			idx += add_r64(buf+idx, dst, src);
-			break;
-		/* dst += imm (64-bit) */
-		case BPF_ALU64 | BPF_ADD | BPF_K:
-			idx += add_r64_i32(buf+idx, dst, imm);
-			break;
-		/* dst = src (64-bit) */
-		case BPF_ALU64 | BPF_MOV | BPF_X:
-			idx += mov_r64(buf+idx, dst, src);
-			break;
-		/* dst = imm32 (sign extend to 64-bit) */
-		case BPF_ALU64 | BPF_MOV | BPF_K:
-			idx += mov_r64_i32(buf+idx, dst, imm);
-			break;
-		/* dst = *(size *)(src + off) */
-		case BPF_LDX | BPF_MEM | BPF_W:
-		case BPF_LDX | BPF_MEM | BPF_H:
-		case BPF_LDX | BPF_MEM | BPF_B:
-		case BPF_LDX | BPF_MEM | BPF_DW:
-			idx += load_r(buf+idx, dst, src, off, BPF_SIZE(code));
-			break;
-		/* *(size *)(dst + off) = src */
-		case BPF_STX | BPF_MEM | BPF_W:
-		case BPF_STX | BPF_MEM | BPF_H:
-		case BPF_STX | BPF_MEM | BPF_B:
-		case BPF_STX | BPF_MEM | BPF_DW:
-			idx += store_r(buf+idx, src, dst, off, BPF_SIZE(code));
-			break;
-		/* TODO: add store_i().
-		case BPF_ST | BPF_MEM | BPF_W:
-		case BPF_ST | BPF_MEM | BPF_H:
-		case BPF_ST | BPF_MEM | BPF_B:
-		case BPF_ST | BPF_MEM | BPF_DW:
-		*/
-		case BPF_JMP | BPF_EXIT:
-			/* If the last instruction, epilogue will follow. */
-			if (i == prog->len - 1)
-				break;
-			/* TODO: jump to epilogue AND add "break". */
-			fallthrough;
-		default:
-			pr_err("bpf-jit: can't handle instruction code %u\n",
-			       insn->code);
-			return -ENOTSUPP;
-		}
+		if ((ret = handle_insn(&prog->insnsi[i], last, &ctx->jit)))
+			return ret;
 	}
-
-	jit_buffer_update(&ctx->jit, idx);
 
 	return 0;
 }
@@ -869,6 +891,8 @@ static int jit_prepare(struct jit_context *ctx)
 		return -ENOMEM;
 	}
 
+	/* TODO: j blink */
+
 	return 0;
 }
 
@@ -898,7 +922,7 @@ static int jit_compile(struct jit_context *ctx)
 	}
 
 	/* Debugging */
-	dump_bytes((u8 *) ctx->prog->insns, 4*ctx->prog->len, false);
+	dump_bytes((u8 *) ctx->prog->insns, 8*ctx->prog->len, false);
 	dump_bytes(ctx->jit.buf, ctx->jit.len, true);
 
 	return 0;
