@@ -105,13 +105,13 @@ enum {
 /*
  * The 4-byte encoding of "xor a, b, c":
  *
- * 0010_0bbb 0000_0011 1BBB_cccc ccaa_aaaa
+ * 0010_0bbb 0000_0111 0BBB_cccc ccaa_aaaa
  *
  * a:  aaaaaa		result
  * b:  BBBbbb		the 1st input operand
  * c:  cccccc		the 2nd input operand
  */
-#define XOR_OPCODE	0x20038000
+#define XOR_OPCODE	0x20070000
 #define XOR_A(x)	((x) & 0x03f)
 #define XOR_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
 #define XOR_C(x)	(((x) & 0x03f) << 6)
@@ -257,6 +257,8 @@ static inline u8 bpf_to_arc_size(u8 size)
 	}
 }
 
+/*********************** Encoders ************************/
+
 static u8 arc_add_r(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	if (emit) {
@@ -371,35 +373,37 @@ static u8 arc_pop_r(u8 *buf, u8 reg)
 	return INSN_len_normal;
 }
 
-static u8 add_r_32(u8 *buf, u8 reg_dst, u8 reg_src)
+/*********************** Packers *************************/
+
+static u8 add_r32(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	u8 len = 0;
 	len = arc_add_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
 	return len;
 }
 
-static u8 add_i_32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 add_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
 {
 	u8 len = 0;
 	len = arc_add_i(buf, REG_LO(reg_dst), imm);
 	return len;
 }
 
-static u8 xor_r_32(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 xor_r32(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	u8 len = 0;
 	len = arc_xor_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
 	return len;
 }
 
-static u8 xor_i_32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 xor_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
 {
 	u8 len = 0;
 	len = arc_xor_i(buf, REG_LO(reg_dst), imm);
 	return len;
 }
 
-static u8 mov_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 mov_r64(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	u8 len = 0;
 
@@ -416,7 +420,13 @@ static u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
 {
 	u8 len = 0;
 
-	len  = arc_mov_i(buf    , REG_LO(reg), imm);
+	if (imm == 0) {
+		len  = arc_mov_0(buf    , REG_LO(reg));
+		len += arc_mov_0(buf+len, REG_HI(reg));
+		return len;
+	}
+
+	len = arc_mov_i(buf, REG_LO(reg), imm);
 	if (imm >= 0)
 		len += arc_mov_0(buf+len, REG_HI(reg));
 	else
@@ -468,7 +478,7 @@ static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 	return len;
 }
 
-static u8 push_r(u8 *buf, u8 reg)
+static u8 push_r64(u8 *buf, u8 reg)
 {
 	u8 len;
 
@@ -531,7 +541,7 @@ static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 	return len;
 }
 
-static u8 pop_r(u8 *buf, u8 reg)
+static u8 pop_r64(u8 *buf, u8 reg)
 {
 	u8 len;
 
@@ -640,20 +650,29 @@ static void detect_regs_clobbered(struct jit_context *ctx)
 }
 
 /* Verify that no instruction will be emitted when there is no buffer. */
-static inline int check_buf(struct jit_context *ctx)
+static inline int jit_buffer_check(const struct jit_buffer *jbuf)
 {
 	if (emit == true) {
-		if (ctx->jit.buf == NULL) {
+		if (jbuf->buf == NULL) {
 			pr_err("bpf-jit: inconsistence state; no "
 			       "buffer to emit instructions.\n");
 			return -EINVAL;
-		} else if (ctx->jit.index > ctx->jit.len) {
+		} else if (jbuf->index > jbuf->len) {
 			pr_err("bpf-jit: estimated JIT length is less "
 			       "than the emitted instructions.\n");
 			return -EFAULT;
 		}
 	}
 	return 0;
+}
+
+/* On a dry run (emit=false), "jit.len" is growing gradually. */
+static inline void jit_buffer_update(struct jit_buffer *jbuf, u32 n)
+{
+	if (!emit)
+		jbuf->len = n;
+	else
+		jbuf->index = n;
 }
 
 /*
@@ -667,7 +686,7 @@ static int handle_prologue(struct jit_context *ctx)
 	u8 *buf = ctx->jit.buf;
 	u32 idx = 0;			/* A prologue always starts at 0. */
 
-	if ((ret = check_buf(ctx)))
+	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
 
 	while (push_mask) {
@@ -679,15 +698,11 @@ static int handle_prologue(struct jit_context *ctx)
 			return -EINVAL;
 		}
 
-		idx += push_r(buf+idx, reg);
+		idx += push_r64(buf+idx, reg);
 		push_mask &= ~BIT(reg);
 	}
 
-	/* If no instruction is emitted, only update the total length. */
-	if (!emit)
-		ctx->jit.len = idx;
-	else
-		ctx->jit.index = idx;
+	jit_buffer_update(&ctx->jit, idx);
 
 	return 0;
 }
@@ -705,7 +720,7 @@ static int handle_epilogue(struct jit_context *ctx)
 	u8 *buf = ctx->jit.buf;
 	u32 idx = (emit ? ctx->jit.index : ctx->jit.len);
 
-	if ((ret = check_buf(ctx)))
+	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
 
 	while (pop_mask) {
@@ -717,15 +732,11 @@ static int handle_epilogue(struct jit_context *ctx)
 			return -EINVAL;
 		}
 
-		idx += pop_r(buf+idx, reg);
+		idx += pop_r64(buf+idx, reg);
 		pop_mask &= ~BIT(reg);
 	}
 
-	/* If no instruction is emitted, only update the total length. */
-	if (!emit)
-		ctx->jit.len = idx;
-	else
-		ctx->jit.index = idx;
+	jit_buffer_update(&ctx->jit, idx);
 
 	return 0;
 }
@@ -736,9 +747,9 @@ static int handle_body(struct jit_context *ctx)
 	int ret;
 	const struct bpf_prog *prog = ctx->prog;
 	u8 *buf = ctx->jit.buf;
-	u32 len = ctx->jit.len;
+	u32 idx = (emit ? ctx->jit.index : ctx->jit.len);
 
-	if ((ret = check_buf(ctx)))
+	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
 
 	for (u32 i = 0; i < prog->len; i++) {
@@ -752,41 +763,49 @@ static int handle_body(struct jit_context *ctx)
 		switch (insn->code) {
 		/* dst += src */
 		case BPF_ALU | BPF_ADD | BPF_X:
-			len += add_r_32(buf+len, dst, src);
+			idx += add_r32(buf+idx, dst, src);
 			break;
 		/* dst += imm */
 		case BPF_ALU | BPF_ADD | BPF_K:
-			len += add_i_32(buf+len, dst, imm);
+			idx += add_r32_i32(buf+idx, dst, imm);
 			break;
 		/* dst ^= src */
 		case BPF_ALU | BPF_XOR | BPF_X:
-			len += xor_r_32(buf+len, dst, src);
+			idx += xor_r32(buf+idx, dst, src);
 			break;
 		/* dst ^= imm */
 		case BPF_ALU | BPF_XOR | BPF_K:
-			len += xor_i_32(buf+len, dst, imm);
+			idx += xor_r32_i32(buf+idx, dst, imm);
+			break;
+		/* dst += src (64-bit) */
+		case BPF_ALU64 | BPF_ADD | BPF_X:
+			idx += add_r64(buf+idx, dst, src);
+			break;
+		/* dst += imm (64-bit) */
+		case BPF_ALU64 | BPF_ADD | BPF_K:
+			idx += add_r64_i32(buf+idx, dst, imm);
 			break;
 		/* dst = src (64-bit) */
 		case BPF_ALU64 | BPF_MOV | BPF_X:
-			len += mov_r(buf+len, dst, src);
+			idx += mov_r64(buf+idx, dst, src);
 			break;
 		/* dst = imm32 (sign extend to 64-bit) */
 		case BPF_ALU64 | BPF_MOV | BPF_K:
-			len += mov_r64_i32(buf+len, dst, imm);
+			idx += mov_r64_i32(buf+idx, dst, imm);
 			break;
 		/* dst = *(size *)(src + off) */
 		case BPF_LDX | BPF_MEM | BPF_W:
 		case BPF_LDX | BPF_MEM | BPF_H:
 		case BPF_LDX | BPF_MEM | BPF_B:
 		case BPF_LDX | BPF_MEM | BPF_DW:
-			len += load_r(buf+len, dst, src, off, BPF_SIZE(code));
+			idx += load_r(buf+idx, dst, src, off, BPF_SIZE(code));
 			break;
 		/* *(size *)(dst + off) = src */
 		case BPF_STX | BPF_MEM | BPF_W:
 		case BPF_STX | BPF_MEM | BPF_H:
 		case BPF_STX | BPF_MEM | BPF_B:
 		case BPF_STX | BPF_MEM | BPF_DW:
-			len += store_r(buf+len, src, dst, off, BPF_SIZE(code));
+			idx += store_r(buf+idx, src, dst, off, BPF_SIZE(code));
 			break;
 		/* TODO: add store_i().
 		case BPF_ST | BPF_MEM | BPF_W:
@@ -803,13 +822,11 @@ static int handle_body(struct jit_context *ctx)
 		default:
 			pr_err("bpf-jit: can't handle instruction code %u\n",
 			       insn->code);
-			return -EFAULT;
+			return -ENOTSUPP;
 		}
 	}
 
-	/* Debugging */
-	dump_bytes((u8 *) prog->insns, 4*prog->len, false);
-	dump_bytes(ctx->jit.buf, ctx->jit.len, true);
+	jit_buffer_update(&ctx->jit, idx);
 
 	return 0;
 }
@@ -879,6 +896,10 @@ static int jit_compile(struct jit_context *ctx)
 		       ctx->jit.len, ctx->jit.index);
 		return -EFAULT;
 	}
+
+	/* Debugging */
+	dump_bytes((u8 *) ctx->prog->insns, 4*ctx->prog->len, false);
+	dump_bytes(ctx->jit.buf, ctx->jit.len, true);
 
 	return 0;
 }
