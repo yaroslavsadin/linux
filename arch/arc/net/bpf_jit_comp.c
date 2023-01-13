@@ -33,7 +33,7 @@ static const u8 bpf2arc[][2] = {
 	[BPF_REG_8] = {ARC_R_16, ARC_R_17},
 	[BPF_REG_9] = {ARC_R_18, ARC_R_19},
 	/* Read-only frame pointer to access the eBPF stack. 32-bit only. */
-	[BPF_REG_FP] = {ARC_R_FP, 0},
+	[BPF_REG_FP] = {ARC_R_FP, },
 	/* Temporary register for blinding constants */
 	[BPF_REG_AX] = {ARC_R_22, ARC_R_23},
 };
@@ -364,11 +364,10 @@ static u8 arc_ld_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 	return INSN_len_normal;
 }
 
-/* TODO: the popping encoding seem wrong. double check! */
 static u8 arc_pop_r(u8 *buf, u8 reg)
 {
 	if (emit) {
-		u32 insn = OP_LD32 | LOAD_C(reg);
+		u32 insn = OP_POP | LOAD_C(reg);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -483,6 +482,10 @@ static u8 push_r64(u8 *buf, u8 reg)
 {
 	u8 len;
 
+	/* BPF_REG_FP is mapped to 32-bit "fp" register. */
+	if (reg == BPF_REG_FP)
+		return arc_push_r(buf, REG_LO(reg));
+
 	len  = arc_push_r(buf    , REG_LO(reg));
 	len += arc_push_r(buf+len, REG_HI(reg));
 
@@ -545,6 +548,10 @@ static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 static u8 pop_r64(u8 *buf, u8 reg)
 {
 	u8 len;
+
+	/* BPF_REG_FP is mapped to 32-bit "fp" register. */
+	if (reg == BPF_REG_FP)
+		return arc_pop_r(buf, REG_LO(reg));
 
 	len  = arc_pop_r(buf    , REG_LO(reg));
 	len += arc_pop_r(buf+len, REG_HI(reg));
