@@ -41,6 +41,13 @@ static const u8 bpf2arc[][2] = {
 #define REG_LO(r) (bpf2arc[(r)][0])
 #define REG_HI(r) (bpf2arc[(r)][1])
 
+/* Bytes. */
+enum {
+	INSN_len_short = 2,	/* Short instructions length. */
+	INSN_len_normal = 4,	/* Normal instructions length. */
+	INSN_len_imm = 4	/* Length of an extra 32-bit immediate. */
+};
+
 /* ZZ defines the size of operation in encodings that it is used. */
 enum {
 	ZZ_1_byte = 1,
@@ -79,11 +86,13 @@ enum {
 	X_sign = 1
 };
 
-/* Bytes. */
+/* Condition codes. */
 enum {
-	INSN_len_short = 2,	/* Short instructions length. */
-	INSN_len_normal = 4,	/* Normal instructions length. */
-	INSN_len_imm = 4	/* Length of an extra 32-bit immediate. */
+	CC_always = 0,		/* condition is true all the time. */
+	CC_equal = 1,		/* if status32.z flag is set. */
+	CC_unequal = 2,		/* if status32.z flag is clear. */
+	CC_positive = 3,	/* if status32.n flag is clear. */
+	CC_negative = 4,	/* if status32.n flag is set. */
 };
 
 #define IN_S9_RANGE(x)	((x) <= 255 && (x) >= -256)
@@ -91,16 +100,42 @@ enum {
 /*
  * The 4-byte encoding of "add a, b, c":
  *
- * 0010_0bbb 0000_0000 0BBB_cccc ccaa_aaaa
+ * 0010_0bbb 0000_0000 fBBB_cccc ccaa_aaaa
+ *
+ * f:                   indicates if flags (carry, etc.) should be updated
  *
  * a:  aaaaaa		result
  * b:  BBBbbb		the 1st input operand
  * c:  cccccc		the 2nd input operand
  */
 #define ADD_OPCODE	0x20000000
+#define ADD_F(x)	(((x) & 1) << 15)
 #define ADD_A(x)	((x) & 0x03f)
 #define ADD_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
 #define ADD_C(x)	(((x) & 0x03f) << 6)
+/* Addition with no frills. */
+#define OP_ADD \
+	ADD_OPCODE
+/* Addition with updating the pertinent flags in "status32" register. */
+#define OP_ADD_F \
+	OP_ADD | ADD_F(1)
+
+/*
+ * The 4-byte encoding of "adc a, b, c" (addition with carry):
+ *
+ * 0010_0bbb 0000_0001 0BBB_cccc ccaa_aaaa
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define ADC_OPCODE	0x20010000
+#define ADC_A(x)	((x) & 0x03f)
+#define ADC_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
+#define ADC_C(x)	(((x) & 0x03f) << 6)
+/* Generic ADC operation. */
+#define OP_ADC \
+	ADC_OPCODE
 
 /*
  * The 4-byte encoding of "xor a, b, c":
@@ -191,6 +226,20 @@ enum {
 	OP_ST32 | STORE_AA(AA_pre) | STORE_S9(-4) | STORE_B(ARC_R_SP)
 
 /*
+ * Encoding for (conditional) jump to an address in register:
+ * j a
+ *
+ * 0010_0000 1110_0000 0000_aaaa aa00_0000
+ *
+ * a:  aaaaaa		register holding destination address
+ */
+#define JMP_OPCODE	0x20e00000
+#define JMP_A(x)	(((x) & 0x3f) << 6)
+/* Jump to "branch-and-link" register, which effectively is a "return". */
+#define OP_J_BLINK \
+	JMP_OPCODE | JMP_A(ARC_R_BLINK)
+
+/*
  * TODO: remove me.
  * Dumps bytes in /var/log/messages at KERN_INFO level (4).
  */
@@ -262,7 +311,17 @@ static inline u8 bpf_to_arc_size(u8 size)
 static u8 arc_add_r(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	if (emit) {
-		u32 insn = ADD_OPCODE | ADD_A(reg_dst) | ADD_B(reg_dst) |
+		u32 insn = OP_ADD | ADD_A(reg_dst) | ADD_B(reg_dst) |
+			   ADD_C(reg_src);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_add_f_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = OP_ADD_F | ADD_A(reg_dst) | ADD_B(reg_dst) |
 			   ADD_C(reg_src);
 		emit_4_bytes(buf, insn);
 	}
@@ -272,12 +331,22 @@ static u8 arc_add_r(u8 *buf, u8 reg_dst, u8 reg_src)
 static u8 arc_add_i(u8 *buf, u8 reg_dst, s32 imm)
 {
 	if (emit) {
-		u32 insn = ADD_OPCODE | ADD_A(reg_dst) | ADD_B(reg_dst) |
+		u32 insn = OP_ADD | ADD_A(reg_dst) | ADD_B(reg_dst) |
 			   ADD_C(ARC_R_IMM);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
 	return INSN_len_normal + INSN_len_imm;
+}
+
+static u8 arc_adc_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = OP_ADC | ADC_A(reg_dst) | ADC_B(reg_dst) |
+			   ADC_C(reg_src);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
 }
 
 static u8 arc_xor_r(u8 *buf, u8 reg_dst, u8 reg_src)
@@ -373,42 +442,49 @@ static u8 arc_pop_r(u8 *buf, u8 reg)
 	return INSN_len_normal;
 }
 
+static u8 arc_jmp_return(u8 *buf)
+{
+	if (emit)
+		emit_4_bytes(buf, OP_J_BLINK);
+	return INSN_len_normal;
+}
+
 /*********************** Packers *************************/
 
 static u8 add_r32(u8 *buf, u8 reg_dst, u8 reg_src)
 {
-	u8 len = 0;
-	len = arc_add_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
-	return len;
+	return arc_add_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
 }
 
 static u8 add_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
 {
-	u8 len = 0;
-	len = arc_add_i(buf, REG_LO(reg_dst), imm);
+	return arc_add_i(buf, REG_LO(reg_dst), imm);
+}
+
+static u8 add_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	u8 len;
+	len  = arc_add_f_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+	len += arc_adc_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
 	return len;
 }
 
 static u8 xor_r32(u8 *buf, u8 reg_dst, u8 reg_src)
 {
-	u8 len = 0;
-	len = arc_xor_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
-	return len;
+	return arc_xor_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
 }
 
 static u8 xor_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
 {
-	u8 len = 0;
-	len = arc_xor_i(buf, REG_LO(reg_dst), imm);
-	return len;
+	return arc_xor_i(buf, REG_LO(reg_dst), imm);
 }
 
 static u8 mov_r64(u8 *buf, u8 reg_dst, u8 reg_src)
 {
-	u8 len = 0;
+	u8 len;
 
 	if (reg_dst == reg_src)
-		return len;
+		return 0;
 
 	len  = arc_mov_r(buf    , REG_LO(reg_dst), REG_LO(reg_src));
 	len += arc_mov_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
@@ -437,11 +513,9 @@ static u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
 
 static u8 mov_r64_i64(u8 *buf, u8 reg, u32 hi, u32 lo)
 {
-	u8 len = 0;
-
+	u8 len;
 	len  = arc_mov_i(buf    , REG_LO(reg), lo);
 	len += arc_mov_i(buf+len, REG_HI(reg), hi);
-
 	return len;
 }
 
@@ -501,7 +575,7 @@ static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 	 * If the offset is too big to fit in s9, emit:
 	 *   mov r20, off
 	 *   add r20, r20, reg
-	 * and make sure that r20 will be the effective address for load.
+	 * and make sure that r20 will be the effective address for the "load".
 	 *   ld  r, [r20, 0]
 	 */
 	if (!IN_S9_RANGE(off) ||
@@ -515,6 +589,7 @@ static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 	if (size == BPF_B || size == BPF_H || size == BPF_W) {
 		u8 zz = bpf_to_arc_size(size);
 		len += arc_ld_r(buf+len, REG_LO(reg), arc_reg_mem, off, zz);
+		len += arc_mov_0(buf+len, REG_HI(reg));
 	} else if (size == BPF_DW) {
 		/*
 		 * We are about to issue 2 consecutive loads:
@@ -558,6 +633,13 @@ static u8 pop_r64(u8 *buf, u8 reg)
 
 	return len;
 }
+
+static u8 jump_return(u8 *buf)
+{
+	return arc_jmp_return(buf);
+}
+
+/********************* JIT context ***********************/
 
 /*
  * buf:		Translated instructions end up here.
@@ -747,6 +829,9 @@ static int handle_epilogue(struct jit_context *ctx)
 		pop_mask &= ~BIT(reg);
 	}
 
+	/* At last, issue the "return". */
+	len += jump_return(buf+len);
+
 	jit_buffer_update(&ctx->jit, len);
 
 	return 0;
@@ -790,8 +875,7 @@ static int handle_insn(const struct bpf_insn *insn, bool last_insn,
 		break;
 	/* dst += src (64-bit) */
 	case BPF_ALU64 | BPF_ADD | BPF_X:
-		/* TODO
-		len = add_r64(buf, dst, src); */
+		len = add_r64(buf, dst, src);
 		break;
 	/* dst += imm (64-bit) */
 	case BPF_ALU64 | BPF_ADD | BPF_K:
