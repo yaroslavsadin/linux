@@ -522,6 +522,16 @@ static u8 add_r64(u8 *buf, u8 reg_dst, u8 reg_src)
 	return len;
 }
 
+static u8 mov_r64_i32(u8 *, u8, s32);
+
+static u8 add_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	u8 len;
+	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
+	len += add_r64(buf+len, reg_dst, JIT_REG_TMP);
+	return len;
+}
+
 static u8 sub_r32(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	return arc_sub_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
@@ -563,6 +573,7 @@ static u8 mov_r64(u8 *buf, u8 reg_dst, u8 reg_src)
 	return len;
 }
 
+/* sign extend the 32-bit immediate into 64-bit register pair. */
 static u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
 {
 	u8 len = 0;
@@ -574,7 +585,7 @@ static u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
 	}
 
 	len = arc_mov_i(buf, REG_LO(reg), imm);
-	if (imm >= 0)
+	if (imm > 0)
 		len += arc_mov_0(buf+len, REG_HI(reg));
 	else
 		len += arc_mov_i(buf+len, REG_HI(reg), -1);
@@ -950,8 +961,7 @@ static int handle_insn(const struct bpf_insn *insn, bool last,
 		break;
 	/* dst += imm32 (64-bit) */
 	case BPF_ALU64 | BPF_ADD | BPF_K:
-		/* TODO
-		len = add_r64_i32(buf, dst, imm); */
+		len = add_r64_i32(buf, dst, imm);
 		break;
 	/* dst -= src (64-bit) */
 	case BPF_ALU64 | BPF_SUB | BPF_X:
