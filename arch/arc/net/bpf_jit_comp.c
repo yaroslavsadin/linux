@@ -97,6 +97,11 @@ enum {
 
 #define IN_S9_RANGE(x)	((x) <= 255 && (x) >= -256)
 
+/* Operands in most of the encodings. */
+#define OP_A(x)	((x) & 0x03f)
+#define OP_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
+#define OP_C(x)	(((x) & 0x03f) << 6)
+
 /*
  * The 4-byte encoding of "add a, b, c":
  *
@@ -110,15 +115,9 @@ enum {
  */
 #define ADD_OPCODE	0x20000000
 #define ADD_F(x)	(((x) & 1) << 15)
-#define ADD_A(x)	((x) & 0x03f)
-#define ADD_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
-#define ADD_C(x)	(((x) & 0x03f) << 6)
-/* Addition with no frills. */
-#define OP_ADD \
-	ADD_OPCODE
 /* Addition with updating the pertinent flags in "status32" register. */
-#define OP_ADD_F \
-	OP_ADD | ADD_F(1)
+#define ADD_OPCODE_F \
+	ADD_OPCODE | ADD_F(1)
 
 /*
  * The 4-byte encoding of "adc a, b, c" (addition with carry):
@@ -130,12 +129,6 @@ enum {
  * c:  cccccc		the 2nd input operand
  */
 #define ADC_OPCODE	0x20010000
-#define ADC_A(x)	((x) & 0x03f)
-#define ADC_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
-#define ADC_C(x)	(((x) & 0x03f) << 6)
-/* Generic ADC operation. */
-#define OP_ADC \
-	ADC_OPCODE
 
 /*
  * The 4-byte encoding of "xor a, b, c":
@@ -147,9 +140,6 @@ enum {
  * c:  cccccc		the 2nd input operand
  */
 #define XOR_OPCODE	0x20070000
-#define XOR_A(x)	((x) & 0x03f)
-#define XOR_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
-#define XOR_C(x)	(((x) & 0x03f) << 6)
 
 /*
  * The 4-byte encoding of "mov b, c":
@@ -160,8 +150,6 @@ enum {
  * c:  cccccc		source register
  */
 #define MOVE_OPCODE	0x200a0000
-#define MOVE_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
-#define MOVE_C(x)	(((x) & 0x03f) << 6)
 
 /*
  * The 4-byte encoding of "ld[zz][.x][.aa][.di] c, [b,s9]":
@@ -183,17 +171,14 @@ enum {
 #define LOAD_AA(x)	((x) << 9)
 #define LOAD_D(x)	((x) << 11)
 #define LOAD_S9(x)	((((x) & 0x0ff) << 16) | (((x) & 0x100) <<  7))
-#define LOAD_B(x)	((((x) &  0x07) << 24) | (((x) &  0x38) <<  9))
 #define LOAD_C(x)	((x) & 0x03f)
 /* Generic load. */
-#define OP_LD \
-	LOAD_OPCODE | LOAD_D(D_cached) | LOAD_X(X_zero)
+#define OPC_LD		LOAD_OPCODE | LOAD_D(D_cached) | LOAD_X(X_zero)
 /* 32-bit load. */
-#define OP_LD32 \
-	OP_LD | LOAD_ZZ(ZZ_4_byte)
+#define OPC_LD32	OPC_LD | LOAD_ZZ(ZZ_4_byte)
 /* "pop reg" is merely a "ld.ab reg, [sp, 4]". */
-#define OP_POP \
-	OP_LD32 | LOAD_AA(AA_post) | LOAD_S9(4) | LOAD_B(ARC_R_SP)
+#define OPC_POP		\
+	OPC_LD32 | LOAD_AA(AA_post) | LOAD_S9(4) | OP_B(ARC_R_SP)
 
 /*
  * The 4-byte encoding of "st[zz][.aa][.di] c, [b,s9]":
@@ -213,31 +198,25 @@ enum {
 #define STORE_AA(x)	((x) << 3)
 #define STORE_D(x)	((x) << 5)
 #define STORE_S9(x)	((((x) & 0x0ff) << 16) | (((x) & 0x100) <<  7))
-#define STORE_B(x)	((((x) &  0x07) << 24) | (((x) &  0x38) <<  9))
-#define STORE_C(x)	(((x) & 0x03f) << 6)
 /* Generic store. */
-#define OP_ST \
-	STORE_OPCODE | STORE_D(D_cached)
+#define OPC_ST		STORE_OPCODE | STORE_D(D_cached)
 /* 32-bit store. */
-#define OP_ST32 \
-	OP_ST | STORE_ZZ(ZZ_4_byte)
+#define OPC_ST32	OPC_ST | STORE_ZZ(ZZ_4_byte)
 /* "push reg" is merely a "st.aw reg, [sp, -4]". */
-#define OP_PUSH \
-	OP_ST32 | STORE_AA(AA_pre) | STORE_S9(-4) | STORE_B(ARC_R_SP)
+#define OPC_PUSH	\
+	OPC_ST32 | STORE_AA(AA_pre) | STORE_S9(-4) | OP_B(ARC_R_SP)
 
 /*
  * Encoding for (conditional) jump to an address in register:
- * j a
+ * j reg_c
  *
- * 0010_0000 1110_0000 0000_aaaa aa00_0000
+ * 0010_0000 1110_0000 0000_cccc cc00_0000
  *
- * a:  aaaaaa		register holding destination address
+ * c:  cccccc		register holding destination address
  */
 #define JMP_OPCODE	0x20e00000
-#define JMP_A(x)	(((x) & 0x3f) << 6)
 /* Jump to "branch-and-link" register, which effectively is a "return". */
-#define OP_J_BLINK \
-	JMP_OPCODE | JMP_A(ARC_R_BLINK)
+#define OPC_J_BLINK	JMP_OPCODE | OP_C(ARC_R_BLINK)
 
 /*
  * TODO: remove me.
@@ -311,8 +290,8 @@ static inline u8 bpf_to_arc_size(u8 size)
 static u8 arc_add_r(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	if (emit) {
-		u32 insn = OP_ADD | ADD_A(reg_dst) | ADD_B(reg_dst) |
-			   ADD_C(reg_src);
+		u32 insn = ADD_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(reg_src);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -321,8 +300,8 @@ static u8 arc_add_r(u8 *buf, u8 reg_dst, u8 reg_src)
 static u8 arc_add_f_r(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	if (emit) {
-		u32 insn = OP_ADD_F | ADD_A(reg_dst) | ADD_B(reg_dst) |
-			   ADD_C(reg_src);
+		u32 insn = ADD_OPCODE_F | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(reg_src);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -331,8 +310,8 @@ static u8 arc_add_f_r(u8 *buf, u8 reg_dst, u8 reg_src)
 static u8 arc_add_i(u8 *buf, u8 reg_dst, s32 imm)
 {
 	if (emit) {
-		u32 insn = OP_ADD | ADD_A(reg_dst) | ADD_B(reg_dst) |
-			   ADD_C(ARC_R_IMM);
+		u32 insn = ADD_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(ARC_R_IMM);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -342,8 +321,8 @@ static u8 arc_add_i(u8 *buf, u8 reg_dst, s32 imm)
 static u8 arc_adc_r(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	if (emit) {
-		u32 insn = OP_ADC | ADC_A(reg_dst) | ADC_B(reg_dst) |
-			   ADC_C(reg_src);
+		u32 insn = ADC_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(reg_src);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -352,8 +331,8 @@ static u8 arc_adc_r(u8 *buf, u8 reg_dst, u8 reg_src)
 static u8 arc_xor_r(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	if (emit) {
-		u32 insn = XOR_OPCODE | XOR_A(reg_dst) | XOR_B(reg_dst) |
-			   XOR_C(reg_src);
+		u32 insn = XOR_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(reg_src);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -362,8 +341,8 @@ static u8 arc_xor_r(u8 *buf, u8 reg_dst, u8 reg_src)
 static u8 arc_xor_i(u8 *buf, u8 reg_dst, s32 imm)
 {
 	if (emit) {
-		u32 insn = XOR_OPCODE | XOR_A(reg_dst) | XOR_B(reg_dst) |
-			   XOR_C(ARC_R_IMM);
+		u32 insn = XOR_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(ARC_R_IMM);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -374,7 +353,7 @@ static u8 arc_xor_i(u8 *buf, u8 reg_dst, s32 imm)
 static u8 arc_mov_0(u8 *buf, u8 reg)
 {
 	if (emit) {
-		u32 insn = XOR_OPCODE | XOR_A(reg) | XOR_B(reg) | XOR_C(reg);
+		u32 insn = XOR_OPCODE | OP_A(reg) | OP_B(reg) | OP_C(reg);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -383,7 +362,7 @@ static u8 arc_mov_0(u8 *buf, u8 reg)
 static u8 arc_mov_r(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	if (emit) {
-		u32 insn = MOVE_OPCODE | MOVE_B(reg_dst) | MOVE_C(reg_src);
+		u32 insn = MOVE_OPCODE | OP_B(reg_dst) | OP_C(reg_src);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -392,7 +371,7 @@ static u8 arc_mov_r(u8 *buf, u8 reg_dst, u8 reg_src)
 static u8 arc_mov_i(u8 *buf, u8 reg_dst, s32 imm)
 {
 	if (emit) {
-		u32 insn = MOVE_OPCODE | MOVE_B(reg_dst) | MOVE_C(ARC_R_IMM);
+		u32 insn = MOVE_OPCODE | OP_B(reg_dst) | OP_C(ARC_R_IMM);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -403,8 +382,8 @@ static u8 arc_mov_i(u8 *buf, u8 reg_dst, s32 imm)
 static u8 arc_st_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 {
 	if (emit) {
-		u32 insn = OP_ST | STORE_AA(AA_none) | STORE_ZZ(zz) |
-			   STORE_C(reg) | STORE_B(reg_mem) | STORE_S9(off);
+		u32 insn = OPC_ST | STORE_AA(AA_none) | STORE_ZZ(zz) |
+			   OP_C(reg) | OP_B(reg_mem) | STORE_S9(off);
 		emit_4_bytes(buf, insn);
 	}
 
@@ -415,7 +394,7 @@ static u8 arc_st_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 static u8 arc_push_r(u8 *buf, u8 reg)
 {
 	if (emit) {
-		u32 insn = OP_PUSH | STORE_C(reg);
+		u32 insn = OPC_PUSH | OP_C(reg);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -425,8 +404,8 @@ static u8 arc_push_r(u8 *buf, u8 reg)
 static u8 arc_ld_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 {
 	if (emit) {
-		u32 insn = OP_LD | LOAD_AA(AA_none) | LOAD_ZZ(zz) |
-			   LOAD_C(reg) | LOAD_B(reg_mem) | LOAD_S9(off);
+		u32 insn = OPC_LD | LOAD_AA(AA_none) | LOAD_ZZ(zz) |
+			   LOAD_C(reg) | OP_B(reg_mem) | LOAD_S9(off);
 		emit_4_bytes(buf, insn);
 	}
 
@@ -436,7 +415,7 @@ static u8 arc_ld_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 static u8 arc_pop_r(u8 *buf, u8 reg)
 {
 	if (emit) {
-		u32 insn = OP_POP | LOAD_C(reg);
+		u32 insn = OPC_POP | LOAD_C(reg);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -445,7 +424,7 @@ static u8 arc_pop_r(u8 *buf, u8 reg)
 static u8 arc_jmp_return(u8 *buf)
 {
 	if (emit)
-		emit_4_bytes(buf, OP_J_BLINK);
+		emit_4_bytes(buf, OPC_J_BLINK);
 	return INSN_len_normal;
 }
 
