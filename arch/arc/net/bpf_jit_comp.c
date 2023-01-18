@@ -12,10 +12,13 @@ enum {
 };
 
 /*
- * Intermediary register for some operations. Its life span is only during that
- * specific operation, and no more.
+ * bpf2arc array maps BPF registers to ARC registers. However, that is not
+ * all and in some cases we need an extra temporary register to perform
+ * the operations. This temporary register is added as yet another index
+ * in the bpf2arc array, so it will unfold like the rest of registers into
+ * the final JIT.
  */
-#define REG_TEMP ARC_R_20
+#define JIT_REG_TMP MAX_BPF_JIT_REG
 
 static const u8 bpf2arc[][2] = {
 	/* Return value from in-kernel function, and exit value from eBPF */
@@ -36,6 +39,8 @@ static const u8 bpf2arc[][2] = {
 	[BPF_REG_FP] = {ARC_R_FP, },
 	/* Temporary register for blinding constants */
 	[BPF_REG_AX] = {ARC_R_22, ARC_R_23},
+	/* Temporary registers for internal use */
+	[JIT_REG_TMP] = {ARC_R_20, ARC_R_21},
 };
 
 #define REG_LO(r) (bpf2arc[(r)][0])
@@ -103,7 +108,7 @@ enum {
 #define OP_C(x)	(((x) & 0x03f) << 6)
 
 /*
- * The 4-byte encoding of "add a, b, c":
+ * The 4-byte encoding of "add a,b,c":
  *
  * 0010_0bbb 0000_0000 fBBB_cccc ccaa_aaaa
  *
@@ -116,11 +121,11 @@ enum {
 #define ADD_OPCODE	0x20000000
 #define ADD_F(x)	(((x) & 1) << 15)
 /* Addition with updating the pertinent flags in "status32" register. */
-#define ADD_OPCODE_F \
+#define OPC_ADD_F \
 	ADD_OPCODE | ADD_F(1)
 
 /*
- * The 4-byte encoding of "adc a, b, c" (addition with carry):
+ * The 4-byte encoding of "adc a,b,c" (addition with carry):
  *
  * 0010_0bbb 0000_0001 0BBB_cccc ccaa_aaaa
  *
@@ -131,7 +136,35 @@ enum {
 #define ADC_OPCODE	0x20010000
 
 /*
- * The 4-byte encoding of "xor a, b, c":
+ * The 4-byte encoding of "sub a,b,c":
+ *
+ * 0010_0bbb 0000_0010 fBBB_cccc ccaa_aaaa
+ *
+ * f:                   indicates if flags (carry, etc.) should be updated
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define SUB_OPCODE	0x20020000
+#define SUB_F(x)	(((x) & 1) << 15)
+/* Subtraction with updating the pertinent flags in "status32" register. */
+#define OPC_SUB_F \
+	SUB_OPCODE | SUB_F(1)
+
+/*
+ * The 4-byte encoding of "sbc a,b,c" (subtraction with carry):
+ *
+ * 0010_0bbb 0000_0011 0BBB_cccc ccaa_aaaa
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define SBC_OPCODE	0x20030000
+
+/*
+ * The 4-byte encoding of "xor a,b,c":
  *
  * 0010_0bbb 0000_0111 0BBB_cccc ccaa_aaaa
  *
@@ -142,7 +175,7 @@ enum {
 #define XOR_OPCODE	0x20070000
 
 /*
- * The 4-byte encoding of "mov b, c":
+ * The 4-byte encoding of "mov b,c":
  *
  * 0010_0bbb 0000_1010 0BBB_cccc cc00_0000
  *
@@ -152,7 +185,7 @@ enum {
 #define MOVE_OPCODE	0x200a0000
 
 /*
- * The 4-byte encoding of "ld[zz][.x][.aa][.di] c, [b,s9]":
+ * The 4-byte encoding of "ld[zz][.x][.aa][.di] c,[b,s9]":
  *
  * 0001_0bbb ssss_ssss SBBB_daaz zxcc_cccc
  *
@@ -176,12 +209,12 @@ enum {
 #define OPC_LD		LOAD_OPCODE | LOAD_D(D_cached) | LOAD_X(X_zero)
 /* 32-bit load. */
 #define OPC_LD32	OPC_LD | LOAD_ZZ(ZZ_4_byte)
-/* "pop reg" is merely a "ld.ab reg, [sp, 4]". */
+/* "pop reg" is merely a "ld.ab reg,[sp,4]". */
 #define OPC_POP		\
 	OPC_LD32 | LOAD_AA(AA_post) | LOAD_S9(4) | OP_B(ARC_R_SP)
 
 /*
- * The 4-byte encoding of "st[zz][.aa][.di] c, [b,s9]":
+ * The 4-byte encoding of "st[zz][.aa][.di] c,[b,s9]":
  *
  * 0001_1bbb ssss_ssss SBBB_cccc ccda_azz0
  *
@@ -202,7 +235,7 @@ enum {
 #define OPC_ST		STORE_OPCODE | STORE_D(D_cached)
 /* 32-bit store. */
 #define OPC_ST32	OPC_ST | STORE_ZZ(ZZ_4_byte)
-/* "push reg" is merely a "st.aw reg, [sp, -4]". */
+/* "push reg" is merely a "st.aw reg,[sp,-4]". */
 #define OPC_PUSH	\
 	OPC_ST32 | STORE_AA(AA_pre) | STORE_S9(-4) | OP_B(ARC_R_SP)
 
@@ -300,7 +333,7 @@ static u8 arc_add_r(u8 *buf, u8 reg_dst, u8 reg_src)
 static u8 arc_add_f_r(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	if (emit) {
-		u32 insn = ADD_OPCODE_F | OP_A(reg_dst) | OP_B(reg_dst) |
+		u32 insn = OPC_ADD_F | OP_A(reg_dst) | OP_B(reg_dst) |
 			   OP_C(reg_src);
 		emit_4_bytes(buf, insn);
 	}
@@ -322,6 +355,47 @@ static u8 arc_adc_r(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	if (emit) {
 		u32 insn = ADC_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(reg_src);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_sub_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = SUB_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(reg_src);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_sub_f_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = OPC_SUB_F | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(reg_src);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_sub_i(u8 *buf, u8 reg_dst, s32 imm)
+{
+	if (emit) {
+		u32 insn = SUB_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(ARC_R_IMM);
+		emit_4_bytes(buf                , insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+static u8 arc_sbc_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = SBC_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
 			   OP_C(reg_src);
 		emit_4_bytes(buf, insn);
 	}
@@ -448,6 +522,24 @@ static u8 add_r64(u8 *buf, u8 reg_dst, u8 reg_src)
 	return len;
 }
 
+static u8 sub_r32(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	return arc_sub_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+}
+
+static u8 sub_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	return arc_sub_i(buf, REG_LO(reg_dst), imm);
+}
+
+static u8 sub_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	u8 len;
+	len  = arc_sub_f_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+	len += arc_sbc_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	return len;
+}
+
 static u8 xor_r32(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	return arc_xor_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
@@ -505,16 +597,16 @@ static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 
 	/*
 	 * If the offset is too big to fit in s9, emit:
-	 *   mov r20, off
-	 *   add r20, r20, reg
+	 *   mov r20, reg
+	 *   add r20, r20, off
 	 * and make sure that r20 will be the effective address for store.
 	 *   st  r, [r20, 0]
 	 */
 	if (!IN_S9_RANGE(off) ||
 	    (size == BPF_DW && !IN_S9_RANGE(off + 4))) {
-		len  = arc_mov_i(buf    , REG_TEMP, (u32) off);
-		len += arc_add_r(buf+len, REG_TEMP, reg_mem);
-		arc_reg_mem = REG_TEMP;
+		arc_reg_mem = REG_LO(JIT_REG_TMP);
+		len  = arc_mov_r(buf    , arc_reg_mem, reg_mem);
+		len += arc_add_i(buf+len, arc_reg_mem, (u32) off);
 		off = 0;
 	}
 
@@ -522,7 +614,7 @@ static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 		u8 zz = bpf_to_arc_size(size);
 		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off, zz);
 	} else if (size == BPF_DW) {
-		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off+0,
+		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off,
 				ZZ_4_byte);
 		len += arc_st_r(buf+len, REG_HI(reg), arc_reg_mem, off+4,
 				ZZ_4_byte);
@@ -552,16 +644,16 @@ static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 
 	/*
 	 * If the offset is too big to fit in s9, emit:
-	 *   mov r20, off
-	 *   add r20, r20, reg
+	 *   mov r20, reg
+	 *   add r20, r20, off
 	 * and make sure that r20 will be the effective address for the "load".
 	 *   ld  r, [r20, 0]
 	 */
 	if (!IN_S9_RANGE(off) ||
 	    (size == BPF_DW && !IN_S9_RANGE(off + 4))) {
-		len  = arc_mov_i(buf    , REG_TEMP, (u32) off);
-		len += arc_add_r(buf+len, REG_TEMP, reg_mem);
-		arc_reg_mem = REG_TEMP;
+		arc_reg_mem = REG_LO(JIT_REG_TMP);
+		len  = arc_mov_r(buf    , arc_reg_mem, reg_mem);
+		len += arc_add_i(buf+len, arc_reg_mem, (u32) off);
 		off = 0;
 	}
 
@@ -856,10 +948,19 @@ static int handle_insn(const struct bpf_insn *insn, bool last,
 	case BPF_ALU64 | BPF_ADD | BPF_X:
 		len = add_r64(buf, dst, src);
 		break;
-	/* dst += imm (64-bit) */
+	/* dst += imm32 (64-bit) */
 	case BPF_ALU64 | BPF_ADD | BPF_K:
 		/* TODO
 		len = add_r64_i32(buf, dst, imm); */
+		break;
+	/* dst -= src (64-bit) */
+	case BPF_ALU64 | BPF_SUB | BPF_X:
+		len = sub_r64(buf, dst, src);
+		break;
+	/* dst -= imm32 (64-bit) */
+	case BPF_ALU64 | BPF_SUB | BPF_K:
+		/* TODO
+		len = sub_r64_i32(buf, dst, imm); */
 		break;
 	/* dst = src (64-bit) */
 	case BPF_ALU64 | BPF_MOV | BPF_X:
