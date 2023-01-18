@@ -550,6 +550,14 @@ static u8 sub_r64(u8 *buf, u8 reg_dst, u8 reg_src)
 	return len;
 }
 
+static u8 sub_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	u8 len;
+	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
+	len += sub_r64(buf+len, reg_dst, JIT_REG_TMP);
+	return len;
+}
+
 static u8 xor_r32(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	return arc_xor_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
@@ -558,6 +566,22 @@ static u8 xor_r32(u8 *buf, u8 reg_dst, u8 reg_src)
 static u8 xor_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
 {
 	return arc_xor_i(buf, REG_LO(reg_dst), imm);
+}
+
+static u8 xor_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	u8 len;
+	len  = arc_xor_r(buf    , REG_LO(reg_dst), REG_LO(reg_src));
+	len += arc_xor_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	return len;
+}
+
+static u8 xor_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	u8 len;
+	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
+	len += xor_r64(buf+len, reg_dst, JIT_REG_TMP);
+	return len;
 }
 
 static u8 mov_r64(u8 *buf, u8 reg_dst, u8 reg_src)
@@ -947,6 +971,14 @@ static int handle_insn(const struct bpf_insn *insn, bool last,
 	case BPF_ALU | BPF_ADD | BPF_K:
 		len = add_r32_i32(buf, dst, imm);
 		break;
+	/* dst -= src (32-bit) */
+	case BPF_ALU | BPF_SUB | BPF_X:
+		len = sub_r32(buf, dst, src);
+		break;
+	/* dst -= imm (32-bit) */
+	case BPF_ALU | BPF_SUB | BPF_K:
+		len = sub_r32_i32(buf, dst, imm);
+		break;
 	/* dst ^= src (32-bit) */
 	case BPF_ALU | BPF_XOR | BPF_X:
 		len = xor_r32(buf, dst, src);
@@ -969,8 +1001,11 @@ static int handle_insn(const struct bpf_insn *insn, bool last,
 		break;
 	/* dst -= imm32 (64-bit) */
 	case BPF_ALU64 | BPF_SUB | BPF_K:
-		/* TODO
-		len = sub_r64_i32(buf, dst, imm); */
+		len = sub_r64_i32(buf, dst, imm);
+		break;
+	/* dst ^= imm32 (64-bit) */
+	case BPF_ALU64 | BPF_XOR | BPF_K:
+		len = xor_r64_i32(buf, dst, imm);
 		break;
 	/* dst = src (64-bit) */
 	case BPF_ALU64 | BPF_MOV | BPF_X:
