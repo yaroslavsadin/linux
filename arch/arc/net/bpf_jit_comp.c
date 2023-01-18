@@ -490,7 +490,7 @@ static u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
 	return len;
 }
 
-static u8 mov_r64_i64(u8 *buf, u8 reg, u32 hi, u32 lo)
+static u8 mov_r64_i64(u8 *buf, u8 reg, u32 lo, u32 hi)
 {
 	u8 len;
 	len  = arc_mov_i(buf    , REG_LO(reg), lo);
@@ -824,8 +824,8 @@ static int handle_epilogue(struct jit_context *ctx)
  * "handle_body()", that has already executed the verification, may call
  * this function.
  */
-static int handle_insn(const struct bpf_insn *insn, bool last_insn,
-		       struct jit_buffer *jbuf)
+static int handle_insn(const struct bpf_insn *insn, bool last,
+		       struct jit_buffer *jbuf, u32 *skip)
 {
 	u8  code = insn->code;
 	u8  dst  = insn->dst_reg;
@@ -869,6 +869,17 @@ static int handle_insn(const struct bpf_insn *insn, bool last_insn,
 	case BPF_ALU64 | BPF_MOV | BPF_K:
 		len = mov_r64_i32(buf, dst, imm);
 		break;
+	/* dst = imm64 */
+	case BPF_LD | BPF_DW | BPF_IMM:
+		/* We're about to consume 2 VM instructions. */
+		if (last) {
+			pr_err("bpf-jit: need more data for 64-bit immediate.");
+			return -EINVAL;
+		}
+		len = mov_r64_i64(buf, dst, imm, (insn+1)->imm);
+		/* Tell the loop to skip the next instruction. */
+		*skip = 1;
+		break;
 	/* dst = *(size *)(src + off) */
 	case BPF_LDX | BPF_MEM | BPF_W:
 	case BPF_LDX | BPF_MEM | BPF_H:
@@ -890,8 +901,8 @@ static int handle_insn(const struct bpf_insn *insn, bool last_insn,
 	case BPF_ST | BPF_MEM | BPF_DW:
 	*/
 	case BPF_JMP | BPF_EXIT:
-		/* If the last instruction, epilogue will follow. */
-		if (last_insn)
+		/* If this is the last instruction, epilogue will follow. */
+		if (last)
 			break;
 		/* TODO: jump to epilogue AND add "break". */
 		fallthrough;
@@ -914,10 +925,15 @@ static int handle_body(struct jit_context *ctx)
 	    return ret;
 
 	for (u32 i = 0; i < prog->len; i++) {
+		u32  skip = 0;
 		bool last = (i == (prog->len - 1) ? true : false);
 
-		if ((ret = handle_insn(&prog->insnsi[i], last, &ctx->jit)))
+		ret = handle_insn(&prog->insnsi[i], last, &ctx->jit, &skip);
+		if (ret)
 			return ret;
+
+		/* Skip the next piece if two 64-bit chunks were consumed. */
+		i += skip;
 	}
 
 	return 0;
