@@ -672,6 +672,11 @@ static u8 push_r64(u8 *buf, u8 reg)
 	return len;
 }
 
+static u8 push_blink(u8 *buf)
+{
+	return arc_push_r(buf, ARC_R_BLINK);
+}
+
 static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 {
 	u8 len = 0;
@@ -740,6 +745,36 @@ static u8 pop_r64(u8 *buf, u8 reg)
 	return len;
 }
 
+static u8 pop_blink(u8 *buf)
+{
+	return arc_pop_r(buf, ARC_R_BLINK);
+}
+
+/*
+ * To create a frame, all that is needed is:
+ *
+ *  push fp
+ *  mov  fp, sp
+ *  sub  sp, <frame_size>
+ *
+ * "push fp" is taken care of separately while saving the clobbered registers.
+ * All that remains is copying SP value to FP and shrinking SP's address space
+ * for any possible function call to come.
+ */
+static u8 enter_frame(u8 *buf, u16 size)
+{
+	u8 len;
+	len  = arc_mov_r(buf, ARC_R_FP, ARC_R_SP);
+	len += arc_sub_i(buf+len, ARC_R_SP, size);
+	return len;
+}
+
+/* The value of SP upon entering was copied to FP. */
+static u8 exit_frame(u8 *buf)
+{
+	return arc_mov_r(buf, ARC_R_SP, ARC_R_FP);
+}
+
 static u8 jump_return(u8 *buf)
 {
 	return arc_jmp_return(buf);
@@ -764,10 +799,12 @@ struct jit_buffer
  *
  * prog:		The current eBPF program being handled.
  * orig_prog:		The original eBPF program before any possible change.
- * jit:			The jit buffer and its length.
+ * jit:			The JIT buffer and its length.
  * blinded:		True if "constant blinding" step returned a new "prog".
  * success:		Indicates if the whole JIT went OK.
  * regs_clobbered:	Each bit status determines if that BPF reg is clobbered.
+ * save_blink:		If ARC's "blink" register needs to be saved.
+ * stack_depth:		Derived from FP accesses (fp-4, fp-8, ...).
  * epilogue_offset:	Used by early "return"s in the code to jump here.
  */
 struct jit_context
@@ -777,7 +814,9 @@ struct jit_context
 	struct jit_buffer	jit;
 	bool			blinded;
 	bool			success;
-	u32			regs_clobbered;
+	u16			regs_clobbered;
+	bool			save_blink;
+	u16			stack_depth;
 	u32			epilogue_offset;
 };
 
@@ -791,10 +830,14 @@ static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
 		return PTR_ERR(ctx->prog);
 	ctx->blinded = (ctx->prog == ctx->orig_prog ? false : true);
 
-	ctx->jit.buf   = NULL;
-	ctx->jit.len   = 0;
-	ctx->jit.index = 0;
-	ctx->success   = false;
+	ctx->jit.buf         = NULL;
+	ctx->jit.len         = 0;
+	ctx->jit.index       = 0;
+	ctx->success         = false;
+	ctx->regs_clobbered  = 0;
+	ctx->save_blink      = false;
+	ctx->stack_depth     = 0;
+	ctx->epilogue_offset = 0;
 
 	return 0;
 }
@@ -818,9 +861,11 @@ static void jit_ctx_cleanup(struct jit_context *ctx)
  * registers are clobbered. If yes, the corresponding bit position of that
  * register is set to true.
  */
-static void detect_regs_clobbered(struct jit_context *ctx)
+static void analyze_reg_usage(struct jit_context *ctx)
 {
-	u32 usage = 0;
+	u16 usage = 0;
+	s16 depth = 0;	/* Will be "min()"ed against negative numbers. */
+	bool call_exists = false;
 	size_t i;
 	const struct bpf_insn *insn = ctx->prog->insnsi;
 
@@ -838,11 +883,23 @@ static void detect_regs_clobbered(struct jit_context *ctx)
 		 * Reading the frame pointer register implies that it should
 		 * be saved and reinitialised with the current frame data.
 		 */
-		if (insn[i].src_reg == BPF_REG_FP)
+		if (insn[i].src_reg == BPF_REG_FP) {
 			usage |= BIT(BPF_REG_FP);
+			/* Is FP usage in the form of "*(FP + off) = data"? */
+			if (insn[i].code & (BPF_STX | BPF_MEM)) {
+				/* Then, record the deepest depth. */
+				depth = min(depth, insn[i].off);
+			}
+		}
+
+		/* A "call" indicates that ARC's "blink" reg must be saved. */
+		call_exists |= ((insn[i].code == (BPF_JMP   | BPF_CALL)) ||
+				(insn[i].code == (BPF_JMP32 | BPF_CALL)));
 	}
 
 	ctx->regs_clobbered = usage;
+	ctx->save_blink     = call_exists;
+	ctx->stack_depth    = abs(depth);
 }
 
 /* Verify that no instruction will be emitted when there is no buffer. */
@@ -878,7 +935,7 @@ static inline void jit_buffer_update(struct jit_buffer *jbuf, u32 n)
 static int handle_prologue(struct jit_context *ctx)
 {
 	int ret;
-	u32 push_mask = ctx->regs_clobbered;
+	u16 push_mask = ctx->regs_clobbered;
 	u8 *buf = (emit ? ctx->jit.buf : NULL);	/* Prologue starts at buf[0]. */
 	u32 len = 0;
 
@@ -897,6 +954,12 @@ static int handle_prologue(struct jit_context *ctx)
 		len += push_r64(buf+len, reg);
 		push_mask &= ~BIT(reg);
 	}
+
+	if (ctx->save_blink)
+		len += push_blink(buf+len);
+
+	if (ctx->stack_depth)
+		len += enter_frame(buf+len, ctx->stack_depth);
 
 	jit_buffer_update(&ctx->jit, len);
 
@@ -919,8 +982,11 @@ static int handle_epilogue(struct jit_context *ctx)
 	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
 
-	/* TODO: Frame pointer analysis (in a separate func() and put in ctx)
-	 * and allocate frame based on that. */
+	if (ctx->stack_depth)
+		len += exit_frame(buf+len);
+
+	if (ctx->save_blink)
+		len += pop_blink(buf+len);
 
 	while (pop_mask) {
 		u8 reg = 31 - __builtin_clz(pop_mask);
@@ -1100,30 +1166,27 @@ static int jit_prepare(struct jit_context *ctx)
 	/* Dry run. */
 	emit = false;
 
-	/* Get the length of prologue section. */
-	detect_regs_clobbered(ctx);
+	/* Get the length of prologue section after some register analysis. */
+	analyze_reg_usage(ctx);
 	if ((ret = handle_prologue(ctx)))
 		return ret;
 
 	if ((ret = handle_body(ctx)))
 		return ret;
 
-	/* Record at which offset prologue may begin. */
+	/* Record at which offset epilogue begins. */
 	ctx->epilogue_offset = ctx->jit.len;
 
 	/* Add the epilogue's length as well. */
 	if ((ret = handle_epilogue(ctx)))
 		return ret;
 
-	ctx->jit.buf = kcalloc(ctx->jit.len, sizeof(*ctx->jit.buf),
-			       GFP_KERNEL);
+	ctx->jit.buf = kcalloc(ctx->jit.len, sizeof(*ctx->jit.buf), GFP_KERNEL);
 
 	if (!ctx->jit.buf) {
 		pr_err("bpf-jit: could not allocate memory for translation.\n");
 		return -ENOMEM;
 	}
-
-	/* TODO: j blink */
 
 	return 0;
 }
