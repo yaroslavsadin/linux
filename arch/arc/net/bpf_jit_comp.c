@@ -1287,6 +1287,9 @@ static void jit_finalize(struct jit_context *ctx)
 
 	jit_ctx_cleanup(ctx);
 
+	if (bpf_jit_enable > 1)
+		bpf_jit_dump(ctx->prog->len, ctx->jit.len, 2, ctx->jit.buf);
+
 	/* TODO: Debugging */
 	dump_bytes(ctx->jit.buf, ctx->jit.len, true);
 }
