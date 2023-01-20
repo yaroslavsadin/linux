@@ -800,24 +800,28 @@ struct jit_buffer
  * prog:		The current eBPF program being handled.
  * orig_prog:		The original eBPF program before any possible change.
  * jit:			The JIT buffer and its length.
- * blinded:		True if "constant blinding" step returned a new "prog".
- * success:		Indicates if the whole JIT went OK.
+ * bpf_header:		The JITed program header. "jit.buf" points inside it.
+ * bpf2insn:		Maps BPF insn indices to their translation in jit.buf.
  * regs_clobbered:	Each bit status determines if that BPF reg is clobbered.
  * save_blink:		If ARC's "blink" register needs to be saved.
  * stack_depth:		Derived from FP accesses (fp-4, fp-8, ...).
  * epilogue_offset:	Used by early "return"s in the code to jump here.
+ * blinded:		True if "constant blinding" step returned a new "prog".
+ * success:		Indicates if the whole JIT went OK.
  */
 struct jit_context
 {
-	struct bpf_prog		*prog;
-	struct bpf_prog		*orig_prog;
-	struct jit_buffer	jit;
-	bool			blinded;
-	bool			success;
-	u16			regs_clobbered;
-	bool			save_blink;
-	u16			stack_depth;
-	u32			epilogue_offset;
+	struct bpf_prog			*prog;
+	struct bpf_prog			*orig_prog;
+	struct jit_buffer		jit;
+	struct bpf_binary_header	*bpf_header;
+	u32				*bpf2insn;
+	u16				regs_clobbered;
+	bool				save_blink;
+	u16				stack_depth;
+	u32				epilogue_offset;
+	bool				blinded;
+	bool				success;
 };
 
 static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
@@ -833,15 +837,27 @@ static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
 	ctx->jit.buf         = NULL;
 	ctx->jit.len         = 0;
 	ctx->jit.index       = 0;
-	ctx->success         = false;
+	ctx->bpf_header      = NULL;
+	ctx->bpf2insn        = NULL;
 	ctx->regs_clobbered  = 0;
 	ctx->save_blink      = false;
 	ctx->stack_depth     = 0;
 	ctx->epilogue_offset = 0;
+	ctx->success         = false;
 
 	return 0;
 }
 
+/*
+ * Free memories based on the status of the context.
+ *
+ * A note about "bpf_header": On successful runs, "bpf_header" is
+ * not freed, because "jit.buf", a sub-array of it, is returned as
+ * the "bpf_func". However, "bpf_header" is lost and nothing points
+ * to it. This should not cause a leakage, because apparently
+ * "bpf_header" can be revived by "bpf_jit_binary_hdr()". This is
+ * how "bpf_jit_free()" in "kernel/bpf/core.c" releases the memory.
+ */
 static void jit_ctx_cleanup(struct jit_context *ctx)
 {
 	if (ctx->blinded) {
@@ -852,8 +868,12 @@ static void jit_ctx_cleanup(struct jit_context *ctx)
 			bpf_jit_prog_release_other(ctx->orig_prog, ctx->prog);
 	}
 
-	if (ctx->jit.buf && !ctx->success)
-		kfree(ctx->jit.buf);
+	if (ctx->bpf2insn)
+		kfree(ctx->bpf2insn);
+
+	/* Freeing "bpf_header" is enough. "jit.buf" is a sub-array of it. */
+	if (!ctx->success && ctx->bpf_header)
+		bpf_jit_binary_free(ctx->bpf_header);
 }
 
 /*
@@ -1152,6 +1172,33 @@ static int handle_body(struct jit_context *ctx)
 }
 
 /*
+ * Initialize the memory with "unimp_s" which is the mnemonic for
+ * "unimplemented" instruction and always raises an exception.
+ *
+ * The instruction is 2 bytes. If "size" is odd, there is not much
+ * that can be done about the last byte in "area". Because, the
+ * CPU always fetches instructions in two bytes. Therefore, the
+ * byte beyond the last one is going to accompany it during a
+ * possible fetch. In the most likely case of a little endian
+ * system, that beyond-byte will become the major opcode and
+ * we have no control over its initialisation.
+ */
+static void fill_ill_insn(void *area, unsigned int size)
+{
+	const u16 unimp_s = 0x79e0;
+
+	if (size & 1) {
+		*((u8 *) area + (size - 1)) = 0xff;
+		size -= 1;
+	}
+
+	size >>= 1;
+
+	while (size--)
+		*((u16 *) area + size) = unimp_s;
+}
+
+/*
  * The first pass of the translation without actually emitting any
  * instruction. It helps in getting a forecast on some aspects, such
  * as the length of the whole program or where the epilogue starts.
@@ -1181,9 +1228,12 @@ static int jit_prepare(struct jit_context *ctx)
 	if ((ret = handle_epilogue(ctx)))
 		return ret;
 
-	ctx->jit.buf = kcalloc(ctx->jit.len, sizeof(*ctx->jit.buf), GFP_KERNEL);
-
-	if (!ctx->jit.buf) {
+	/* Allocate essential memory pieces. */
+	ctx->bpf_header = bpf_jit_binary_alloc(ctx->jit.len, &ctx->jit.buf,
+					       INSN_len_normal, fill_ill_insn);
+	ctx->bpf2insn = kcalloc(ctx->prog->len, sizeof(ctx->jit.len),
+				GFP_KERNEL);
+	if (!ctx->bpf_header || !ctx->bpf2insn ) {
 		pr_err("bpf-jit: could not allocate memory for translation.\n");
 		return -ENOMEM;
 	}
@@ -1216,22 +1266,29 @@ static int jit_compile(struct jit_context *ctx)
 		return -EFAULT;
 	}
 
-	/* Debugging */
-	dump_bytes((u8 *) ctx->prog->insns, 8*ctx->prog->len, false);
-	dump_bytes(ctx->jit.buf, ctx->jit.len, true);
-
 	return 0;
 }
 
-/* TODO: fill me in. */
-static int jit_finalize(struct jit_context *ctx)
+/* Calling this function implies a successful JIT. */
+static void jit_finalize(struct jit_context *ctx)
 {
-	/* set the right permissions for jit.buf */
-	/* if ctx->success ... */
-	/*   prog->jited = 1 */
-	/*   prog->jited_len = jit.len */
-	/*   prog->bpf_func = jit.buf */
-	return 0;
+	struct bpf_prog *prog = ctx->prog;
+
+	ctx->success = true;
+
+	/* Mark the JITed memory as R-X and flush the memory. */
+	bpf_jit_binary_lock_ro(ctx->bpf_header);
+	flush_icache_range((unsigned long) ctx->bpf_header,
+			   (unsigned long) (ctx->jit.buf + ctx->jit.len));
+
+	prog->bpf_func = (void *) ctx->jit.buf;
+	prog->jited_len = ctx->jit.len;
+	prog->jited = 1;
+
+	jit_ctx_cleanup(ctx);
+
+	/* TODO: Debugging */
+	dump_bytes(ctx->jit.buf, ctx->jit.len, true);
 }
 
 /*
@@ -1245,6 +1302,9 @@ static int jit_finalize(struct jit_context *ctx)
 struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 {
 	struct jit_context ctx;
+
+	/* TODO: Debugging */
+	dump_bytes((u8 *) prog->insns, 8*prog->len, false);
 
 	/* Bail out if JIT is disabled. */
 	if (!prog->jit_requested)
@@ -1266,12 +1326,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 		return prog;
 	}
 
-	if (jit_finalize(&ctx)) {
-		jit_ctx_cleanup(&ctx);
-		return prog;
-	}
-
-	jit_ctx_cleanup(&ctx);
+	jit_finalize(&ctx);
 
 	return ctx.prog;
 }
