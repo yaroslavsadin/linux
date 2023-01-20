@@ -37,7 +37,7 @@ static const u8 bpf2arc[][2] = {
 	[BPF_REG_9] = {ARC_R_18, ARC_R_19},
 	/* Read-only frame pointer to access the eBPF stack. 32-bit only. */
 	[BPF_REG_FP] = {ARC_R_FP, },
-	/* Temporary register for blinding constants */
+	/* Register for blinding constants */
 	[BPF_REG_AX] = {ARC_R_22, ARC_R_23},
 	/* Temporary registers for internal use */
 	[JIT_REG_TMP] = {ARC_R_20, ARC_R_21},
@@ -1192,10 +1192,7 @@ static void fill_ill_insn(void *area, unsigned int size)
 		size -= 1;
 	}
 
-	size >>= 1;
-
-	while (size--)
-		*((u16 *) area + size) = unimp_s;
+	memset16(area, unimp_s, size >> 1);
 }
 
 /*
