@@ -240,16 +240,26 @@ enum {
 	OPC_ST32 | STORE_AA(AA_pre) | STORE_S9(-4) | OP_B(ARC_R_SP)
 
 /*
- * Encoding for (conditional) jump to an address in register:
+ * Encoding for jump to an address in register:
  * j reg_c
  *
  * 0010_0000 1110_0000 0000_cccc cc00_0000
  *
- * c:  cccccc		register holding destination address
+ * c:  cccccc		register holding the destination address
  */
 #define JMP_OPCODE	0x20e00000
 /* Jump to "branch-and-link" register, which effectively is a "return". */
 #define OPC_J_BLINK	JMP_OPCODE | OP_C(ARC_R_BLINK)
+
+/*
+ * Encoding for jump-and-link to an address in register:
+ * jl reg_c
+ *
+ * 0010_0000 0010_0010 0000_cccc cc00_0000
+ *
+ * c:  cccccc		register holding the destination address
+ */
+#define JL_OPCODE	0x20220000
 
 /*
  * TODO: remove me.
@@ -499,6 +509,15 @@ static u8 arc_jmp_return(u8 *buf)
 {
 	if (emit)
 		emit_4_bytes(buf, OPC_J_BLINK);
+	return INSN_len_normal;
+}
+
+static u8 arc_jl(u8 *buf, u8 reg)
+{
+	if (emit) {
+		u32 insn = JL_OPCODE | OP_C(reg);
+		emit_4_bytes(buf, insn);
+	}
 	return INSN_len_normal;
 }
 
@@ -778,6 +797,18 @@ static u8 exit_frame(u8 *buf)
 static u8 jump_return(u8 *buf)
 {
 	return arc_jmp_return(buf);
+}
+
+/*
+ * Here "addr" is u32, but for arc_mov_i(), it is s32.
+ * The lack of an explicit conversion is OK.
+ */
+static u8 jump_and_link(u8 *buf, u32 addr)
+{
+	u8 len;
+	len  = arc_mov_i(buf, REG_LO(JIT_REG_TMP), addr);
+	len += arc_jl(buf+len, REG_LO(JIT_REG_TMP));
+	return len;
 }
 
 /********************* JIT context ***********************/
