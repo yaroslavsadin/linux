@@ -1048,9 +1048,8 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	u8   src  = insn->src_reg;
 	s16  off  = insn->off;
 	s32  imm  = insn->imm;
-	u8   len  = 0;
 	u8  *buf  = (emit ? ctx->jit.buf + ctx->jit.index : NULL);
-	bool last = (idx == (ctx->prog->len - 1));
+	u8   len  = 0;
 	int  ret  = 0;
 
 	switch (code) {
@@ -1109,7 +1108,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	/* dst = imm64 */
 	case BPF_LD | BPF_DW | BPF_IMM:
 		/* We're about to consume 2 VM instructions. */
-		if (last) {
+		if (idx == (ctx->prog->len - 1)) {
 			pr_err("bpf-jit: need more data for 64-bit immediate.");
 			return -EINVAL;
 		}
@@ -1143,7 +1142,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 
 	case BPF_JMP | BPF_EXIT:
 		/* If this is the last instruction, epilogue will follow. */
-		if (last)
+		if (idx == (ctx->prog->len - 1))
 			break;
 		/* TODO: jump to epilogue AND add "break". */
 		fallthrough;
