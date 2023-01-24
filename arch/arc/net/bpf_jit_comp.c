@@ -1059,6 +1059,11 @@ static int handle_epilogue(struct jit_context *ctx)
 	return 0;
 }
 
+static inline bool is_last_insn(const struct bpf_prog *prog, u32 idx)
+{
+	return (idx == (prog->len - 1));
+}
+
 /*
  * Handles one eBPF instruction at a time. To make this function faster,
  * it does not call "jit_buffer_check()". Else, it would call it for every
@@ -1139,7 +1144,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	/* dst = imm64 */
 	case BPF_LD | BPF_DW | BPF_IMM:
 		/* We're about to consume 2 VM instructions. */
-		if (idx == (ctx->prog->len - 1)) {
+		if (is_last_insn(ctx->prog, idx)) {
 			pr_err("bpf-jit: need more data for 64-bit immediate.");
 			return -EINVAL;
 		}
@@ -1173,7 +1178,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 
 	case BPF_JMP | BPF_EXIT:
 		/* If this is the last instruction, epilogue will follow. */
-		if (idx == (ctx->prog->len - 1))
+		if (is_last_insn(ctx->prog, idx))
 			break;
 		/* TODO: jump to epilogue AND add "break". */
 		fallthrough;
@@ -1301,7 +1306,12 @@ static int jit_compile(struct jit_context *ctx)
 	return 0;
 }
 
-/* Calling this function implies a successful JIT. */
+/*
+ * Calling this function implies a successful JIT. A successful
+ * translation is signaled by setting the right parameters:
+ *
+ * prog->jited=1, prog->jited_len=..., prog->bpf_func=...
+ */
 static void jit_finalize(struct jit_context *ctx)
 {
 	struct bpf_prog *prog = ctx->prog;
@@ -1327,12 +1337,10 @@ static void jit_finalize(struct jit_context *ctx)
 }
 
 /*
- * A successful translation is signaled by setting the right parameters:
- *
- * prog->jited=1, prog->jited_len=..., prog->bpf_func=...
- *
- * And then returning. Any other sort of return is an act of falling back
- * to the interpreter.
+ * This function may be invoked twice for the same stream of BPF
+ * instructions. The "extra pass" happens, when there are "call"s
+ * involved that their addresses are not known during the first
+ * invocation.
  */
 struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 {
