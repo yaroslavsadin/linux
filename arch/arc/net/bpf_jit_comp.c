@@ -644,8 +644,17 @@ static u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
 static u8 mov_r64_i64(u8 *buf, u8 reg, u32 lo, u32 hi)
 {
 	u8 len;
-	len  = arc_mov_i(buf    , REG_LO(reg), lo);
-	len += arc_mov_i(buf+len, REG_HI(reg), hi);
+
+	if (lo)
+		len  = arc_mov_i(buf, REG_LO(reg), lo);
+	else
+		len  = arc_mov_0(buf, REG_LO(reg));
+
+	if (hi)
+		len += arc_mov_i(buf+len, REG_HI(reg), hi);
+	else
+		len += arc_mov_0(buf+len, REG_HI(reg));
+
 	return len;
 }
 
@@ -836,17 +845,35 @@ struct jit_buffer
 };
 
 /*
+ * This is a subset of "struct jit_context" that its information is deemed
+ * necessary for the next extra pass to come.
+ *
+ * bpf_header:	Needed to finally lock the region.
+ * bpf2insn:	Used to find the translation of "call" instructions.
+ *
+ * Things like "jit.buf" and "jit.len" can be retrieved respectively from
+ * "prog->bpf_func" and "prog->jited_len".
+ */
+struct arc_jit_data
+{
+	struct bpf_binary_header *bpf_header;
+	u32                      *bpf2insn;
+};
+
+/*
  * The JIT pertinent context that is used by different functions.
  *
  * prog:		The current eBPF program being handled.
  * orig_prog:		The original eBPF program before any possible change.
  * jit:			The JIT buffer and its length.
  * bpf_header:		The JITed program header. "jit.buf" points inside it.
- * bpf2insn:		Maps BPF insn indices to their translation in jit.buf.
+ * bpf2insn:		Maps BPF insn indices to their counterparts in jit.buf.
+ * jit_data:		A piece of memory to transfer data to the next pass.
  * regs_clobbered:	Each bit status determines if that BPF reg is clobbered.
  * save_blink:		If ARC's "blink" register needs to be saved.
  * stack_depth:		Derived from FP accesses (fp-4, fp-8, ...).
  * epilogue_offset:	Used by early "return"s in the code to jump here.
+ * need_extra_pass:	A forecast if an "extra_pass" will occur.
  * blinded:		True if "constant blinding" step returned a new "prog".
  * success:		Indicates if the whole JIT went OK.
  */
@@ -857,10 +884,12 @@ struct jit_context
 	struct jit_buffer		jit;
 	struct bpf_binary_header	*bpf_header;
 	u32				*bpf2insn;
+	struct arc_jit_data		*jit_data;
 	u16				regs_clobbered;
 	bool				save_blink;
 	u16				stack_depth;
 	u32				epilogue_offset;
+	bool				need_extra_pass;
 	bool				blinded;
 	bool				success;
 };
@@ -884,9 +913,25 @@ static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
 	ctx->save_blink      = false;
 	ctx->stack_depth     = 0;
 	ctx->epilogue_offset = 0;
+	ctx->need_extra_pass = false;
 	ctx->success         = false;
 
 	return 0;
+}
+
+/*
+ * "*mem" should be freed when there is no "extra pass" to come,
+ * or the compilation terminated abruptly. A few of such memory
+ * allocations are: ctx->jit_data and ctx->bpf2insn.
+ */
+static inline void maybe_free(struct jit_context *ctx, void **mem)
+{
+	if (*mem) {
+		if (!ctx->success || !ctx->need_extra_pass) {
+			kfree(*mem);
+			*mem = NULL;
+		}
+	}
 }
 
 /*
@@ -909,12 +954,17 @@ static void jit_ctx_cleanup(struct jit_context *ctx)
 			bpf_jit_prog_release_other(ctx->orig_prog, ctx->prog);
 	}
 
-	if (ctx->bpf2insn)
-		kfree(ctx->bpf2insn);
+	maybe_free(ctx, (void **) &ctx->bpf2insn);
+	maybe_free(ctx, (void **) &ctx->jit_data);
 
 	/* Freeing "bpf_header" is enough. "jit.buf" is a sub-array of it. */
-	if (!ctx->success && ctx->bpf_header)
+	if (!ctx->success && ctx->bpf_header) {
 		bpf_jit_binary_free(ctx->bpf_header);
+		ctx->bpf_header = NULL;
+		ctx->jit.buf    = NULL;
+		ctx->jit.index  = 0;
+		ctx->jit.len    = 0;
+	}
 }
 
 /*
@@ -990,6 +1040,12 @@ static inline void jit_buffer_update(struct jit_buffer *jbuf, u32 n)
 		jbuf->index += n;
 }
 
+/* Based on "emit", determine the address where instructions are emitted. */
+static inline u8 *effective_jit_buf(const struct jit_buffer *jbuf)
+{
+	return (emit ? jbuf->buf + jbuf->index : NULL);
+}
+
 /*
  * If "emit" is true, all the necessary "push"s are generated. Else, it acts
  * as a dry run and only updates the length of would-have-been instructions.
@@ -998,7 +1054,7 @@ static int handle_prologue(struct jit_context *ctx)
 {
 	int ret;
 	u16 push_mask = ctx->regs_clobbered;
-	u8 *buf = (emit ? ctx->jit.buf : NULL);	/* Prologue starts at buf[0]. */
+	u8 *buf = effective_jit_buf(&ctx->jit);
 	u32 len = 0;
 
 	if ((ret = jit_buffer_check(&ctx->jit)))
@@ -1038,7 +1094,7 @@ static int handle_epilogue(struct jit_context *ctx)
 {
 	int ret;
 	u32 pop_mask = ctx->regs_clobbered;
-	u8 *buf = (emit ? ctx->jit.buf + ctx->jit.index : NULL);
+	u8 *buf = effective_jit_buf(&ctx->jit);
 	u32 len = 0;
 
 	if ((ret = jit_buffer_check(&ctx->jit)))
@@ -1071,6 +1127,29 @@ static int handle_epilogue(struct jit_context *ctx)
 	return 0;
 }
 
+/* Try to get the resolved the address and generate the instructions. */
+static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
+		       bool extra_pass, u8 *len)
+{
+	int  ret;
+	bool fixed = false;
+	u64  addr = 0;
+	u8  *buf = effective_jit_buf(&ctx->jit);
+
+	ret = bpf_jit_get_func_addr(ctx->prog, insn, extra_pass, &addr, &fixed);
+	if (ret < 0) {
+		pr_err("bpf-jit: can't get the address for call.");
+		return ret;
+	}
+
+	/* No valuble address retrieved (yet). */
+	if (!fixed && !addr)
+		ctx->need_extra_pass = true;
+
+	*len = jump_and_link(buf, (u32) addr);
+	return 0;
+}
+
 static inline bool is_last_insn(const struct bpf_prog *prog, u32 idx)
 {
 	return (idx == (prog->len - 1));
@@ -1096,7 +1175,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	u8   src  = insn->src_reg;
 	s16  off  = insn->off;
 	s32  imm  = insn->imm;
-	u8  *buf  = (emit ? ctx->jit.buf + ctx->jit.index : NULL);
+	u8  *buf  = effective_jit_buf(&ctx->jit);
 	u8   len  = 0;
 	int  ret  = 0;
 
@@ -1185,7 +1264,14 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ST | BPF_MEM | BPF_DW:
 	*/
 	case BPF_JMP | BPF_CALL:
-		//int ret = bpf_jit_get_func_addr(
+		/*
+		 * If we're here, then "extra_pass" is definitely "false".
+		 * When "extra_pass" is true, it leads to a different code
+		 * execution than here. In that case, "do_extra_pass()"
+		 * takes care of the situation.
+		 */
+		if ((ret = gen_call(ctx, insn, false, &len)) < 0)
+			return ret;
 		break;
 
 	case BPF_JMP | BPF_EXIT:
@@ -1213,10 +1299,22 @@ static int handle_body(struct jit_context *ctx)
 	    return ret;
 
 	for (u32 i = 0; i < prog->len; i++) {
+
+		/*
+		 * Record the mapping for the instructions during the
+		 * dry-run, as "jit.len" grows gradually per instruction.
+		 *
+		 * Doing it this way allows us to have the mapping ready
+		 * for the jump instructions during the real compilation
+		 * phase.
+		 */
+		if (!emit)
+			ctx->bpf2insn[i] = ctx->jit.len;
+
 		if ((ret = handle_insn(ctx, i)) < 0)
 			return ret;
 
-		/* "ret" holds 1 if two 64-bit chuncks were consumed. */
+		/* "ret" holds 1 if two (64-bit) chunks were consumed. */
 		i += ret;
 	}
 
@@ -1247,13 +1345,54 @@ static void fill_ill_insn(void *area, unsigned int size)
 	memset16(area, unimp_s, size >> 1);
 }
 
+/* Piece of memory that can be allocated at the begining of jit_prepare(). */
+static int jit_prepare_early_mem_alloc(struct jit_context *ctx)
+{
+	ctx->bpf2insn = kcalloc(ctx->prog->len, sizeof(ctx->jit.len),
+				GFP_KERNEL);
+
+	if (!ctx->bpf2insn) {
+		pr_err("bpf-jit: could not allocate memory for "
+		       "mapping of the instructions.\n");
+		return -ENOMEM;
+	}
+
+	return 0;
+}
+
 /*
- * The first pass of the translation without actually emitting any
+ * Memory allocations that rely on parameters known at the
+ * end of jit_prepare().
+ */
+static int jit_prepare_final_mem_alloc(struct jit_context *ctx)
+{
+	ctx->bpf_header = bpf_jit_binary_alloc(ctx->jit.len, &ctx->jit.buf,
+					       INSN_len_normal, fill_ill_insn);
+
+	if (!ctx->bpf_header) {
+		pr_err("bpf-jit: could not allocate memory for translation.\n");
+		return -ENOMEM;
+	}
+
+	if (ctx->need_extra_pass) {
+		ctx->jit_data = kzalloc(sizeof(struct arc_jit_data),
+					GFP_KERNEL);
+		if (!ctx->jit_data) {
+			pr_err("bpf-jit: could not allocate memory for "
+			       "the next pass's data.\n");
+			return -ENOMEM;
+		}
+	}
+
+	return 0;
+}
+
+/*
+ * The first phase of the translation without actually emitting any
  * instruction. It helps in getting a forecast on some aspects, such
  * as the length of the whole program or where the epilogue starts.
  *
- * In the end, when the whole length is known, a piece of buffer
- * is allocated.
+ * Whenever the necessary parameters are known, memories are allocated.
  */
 static int jit_prepare(struct jit_context *ctx)
 {
@@ -1261,6 +1400,9 @@ static int jit_prepare(struct jit_context *ctx)
 
 	/* Dry run. */
 	emit = false;
+
+	if ((ret = jit_prepare_early_mem_alloc(ctx)))
+		return ret;
 
 	/* Get the length of prologue section after some register analysis. */
 	analyze_reg_usage(ctx);
@@ -1277,15 +1419,8 @@ static int jit_prepare(struct jit_context *ctx)
 	if ((ret = handle_epilogue(ctx)))
 		return ret;
 
-	/* Allocate essential memory pieces. */
-	ctx->bpf_header = bpf_jit_binary_alloc(ctx->jit.len, &ctx->jit.buf,
-					       INSN_len_normal, fill_ill_insn);
-	ctx->bpf2insn = kcalloc(ctx->prog->len, sizeof(ctx->jit.len),
-				GFP_KERNEL);
-	if (!ctx->bpf_header || !ctx->bpf2insn ) {
-		pr_err("bpf-jit: could not allocate memory for translation.\n");
-		return -ENOMEM;
-	}
+	if ((ret = jit_prepare_final_mem_alloc(ctx)))
+		return ret;
 
 	return 0;
 }
@@ -1309,7 +1444,7 @@ static int jit_compile(struct jit_context *ctx)
 	(void) handle_epilogue(ctx);
 
 	if (ctx->jit.index != ctx->jit.len) {
-		pr_err("bpf-jit: divergence between the passes; "
+		pr_err("bpf-jit: divergence between the phases; "
 		       "%u vs. %u (bytes).\n",
 		       ctx->jit.len, ctx->jit.index);
 		return -EFAULT;
@@ -1328,16 +1463,26 @@ static void jit_finalize(struct jit_context *ctx)
 {
 	struct bpf_prog *prog = ctx->prog;
 
-	ctx->success = true;
-
-	/* Mark the JITed memory as R-X and flush the memory. */
-	bpf_jit_binary_lock_ro(ctx->bpf_header);
-	flush_icache_range((unsigned long) ctx->bpf_header,
-			   (unsigned long) (ctx->jit.buf + ctx->jit.len));
-
-	prog->bpf_func = (void *) ctx->jit.buf;
+	ctx->success    = true;
+	prog->bpf_func  = (void *) ctx->jit.buf;
 	prog->jited_len = ctx->jit.len;
-	prog->jited = 1;
+	prog->jited     = 1;
+
+	/* We're going to need this information for the "do_extra_pass()". */
+	if (ctx->need_extra_pass) {
+		ctx->jit_data->bpf_header = ctx->bpf_header;
+		ctx->jit_data->bpf2insn   = ctx->bpf2insn;
+		prog->aux->jit_data       = (void *) ctx->jit_data;
+	} else {
+		/*
+		 * If things seem finalised, then mark the JITed memory
+		 * as R-X and flush the memory.
+		 */
+		bpf_jit_binary_lock_ro(ctx->bpf_header);
+		flush_icache_range((unsigned long) ctx->bpf_header,
+				   (unsigned long) ctx->jit.buf + ctx->jit.len);
+		prog->aux->jit_data = NULL;
+	}
 
 	jit_ctx_cleanup(ctx);
 
@@ -1348,18 +1493,61 @@ static void jit_finalize(struct jit_context *ctx)
 	dump_bytes(ctx->jit.buf, ctx->jit.len, true);
 }
 
+/* Reuse the previous pass's data. */
+static int jit_resume_context(struct jit_context *ctx)
+{
+	struct arc_jit_data *jdata =
+		(struct arc_jit_data *) ctx->prog->aux->jit_data;
+
+	if (!jdata) {
+		pr_err("bpf-jit: no jit data for the extra pass.");
+		return -EINVAL;
+	}
+
+	ctx->jit.buf    = (u8 *) ctx->prog->bpf_func;
+	ctx->jit.len    = ctx->prog->jited_len;
+	ctx->bpf_header = jdata->bpf_header;
+	ctx->bpf2insn   = (u32 *) jdata->bpf2insn;
+	ctx->jit_data   = jdata;
+
+	return 0;
+}
+
 /*
- * This function may be invoked twice for the same stream of BPF
- * instructions. The "extra pass" happens, when there are "call"s
- * involved that their addresses are not known during the first
- * invocation.
+ * Goes after all of the "call" instructions and gets new "address"es
+ * for them. Then uses this information to re-emit them.
  */
-struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+static int jit_patch_calls(struct jit_context *ctx)
+{
+	const struct bpf_prog *prog = ctx->prog;
+	int ret;
+
+	emit = true;
+	for (u32 i = 0; i < prog->len; i++) {
+		const struct bpf_insn *insn = &prog->insnsi[i];
+		/*
+		 * Adjust "ctx.jit.index", so "handle_call()" can use it
+		 * for its output address.
+		 */
+		ctx->jit.index = ctx->bpf2insn[i];
+
+		if (insn->code == (BPF_JMP | BPF_CALL)) {
+			u8 dummy;
+			if ((ret = gen_call(ctx, insn, true, &dummy)) < 0)
+				return ret;
+		}
+	}
+	return 0;
+}
+
+/*
+ * A normal pass that involves a "dry-run" phase, jit_prepare(),
+ * to get the necessary data for the real compilation phase,
+ * jit_compile().
+ */
+struct bpf_prog *do_normal_pass(struct bpf_prog *prog)
 {
 	struct jit_context ctx;
-
-	/* TODO: Debugging */
-	dump_bytes((u8 *) prog->insns, 8*prog->len, false);
 
 	/* Bail out if JIT is disabled. */
 	if (!prog->jit_requested)
@@ -1384,4 +1572,51 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 	jit_finalize(&ctx);
 
 	return ctx.prog;
+}
+
+/*
+ * If there are multi-function BPF programs that call each other,
+ * their translated addresses are not known all at once. Therefore,
+ * an extra pass is needed to consult the bpf_jit_get_func_addr()
+ * again to get the newly translated addresses in order to resolve
+ * the "call"s.
+ */
+struct bpf_prog *do_extra_pass(struct bpf_prog *prog)
+{
+	struct jit_context ctx;
+
+	if (jit_ctx_init(&ctx, prog)) {
+		jit_ctx_cleanup(&ctx);
+		return prog;
+	}
+
+	if (jit_resume_context(&ctx)) {
+		jit_ctx_cleanup(&ctx);
+		return prog;
+	}
+
+	if (jit_patch_calls(&ctx)) {
+		jit_ctx_cleanup(&ctx);
+		return prog;
+	}
+
+	return ctx.prog;
+}
+
+/*
+ * This function may be invoked twice for the same stream of BPF
+ * instructions. The "extra pass" happens, when there are "call"s
+ * involved that their addresses are not known during the first
+ * invocation.
+ */
+struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+{
+	/* TODO: Debugging */
+	dump_bytes((u8 *) prog->insns, 8*prog->len, false);
+
+	/* Was this program already translated? */
+	if (!prog->jited)
+		return do_normal_pass(prog);
+	else
+		return do_extra_pass(prog);
 }
