@@ -913,8 +913,7 @@ static void analyze_reg_usage(struct jit_context *ctx)
 		}
 
 		/* A "call" indicates that ARC's "blink" reg must be saved. */
-		call_exists |= ((insn[i].code == (BPF_JMP   | BPF_CALL)) ||
-				(insn[i].code == (BPF_JMP32 | BPF_CALL)));
+		call_exists |= (insn[i].code == (BPF_JMP | BPF_CALL));
 	}
 
 	ctx->regs_clobbered = usage;
@@ -1029,24 +1028,30 @@ static int handle_epilogue(struct jit_context *ctx)
 	return 0;
 }
 
-/* TODO: fill me in. */
 /*
  * Handles one eBPF instruction at a time. To make this function faster,
  * it does not call "jit_buffer_check()". Else, it would call it for every
  * instruction. As a result, it should not be invoked directly. Only
  * "handle_body()", that has already executed the verification, may call
  * this function.
+ *
+ * If the "ret" value is negative, something has went wrong. Else,
+ * it mostly holds the value 0 and rarely 1. Number 1 signals
+ * the loop in "handle_body()" to skip the next instruction, because
+ * it has been consumed as part of a 64-bit immediate value.
  */
-static int handle_insn(const struct bpf_insn *insn, bool last,
-		       struct jit_buffer *jbuf, u32 *skip)
+static int handle_insn(struct jit_context *ctx, u32 idx)
 {
-	u8  code = insn->code;
-	u8  dst  = insn->dst_reg;
-	u8  src  = insn->src_reg;
-	s16 off  = insn->off;
-	s32 imm  = insn->imm;
-	u8 *buf  = (emit ? jbuf->buf + jbuf->index : NULL);
-	u8  len  = 0;
+	const struct bpf_insn *insn = &ctx->prog->insnsi[idx];
+	u8   code = insn->code;
+	u8   dst  = insn->dst_reg;
+	u8   src  = insn->src_reg;
+	s16  off  = insn->off;
+	s32  imm  = insn->imm;
+	u8   len  = 0;
+	u8  *buf  = (emit ? ctx->jit.buf + ctx->jit.index : NULL);
+	bool last = (idx == (ctx->prog->len - 1));
+	int  ret  = 0;
 
 	switch (code) {
 	/* dst += src (32-bit) */
@@ -1110,7 +1115,7 @@ static int handle_insn(const struct bpf_insn *insn, bool last,
 		}
 		len = mov_r64_i64(buf, dst, imm, (insn+1)->imm);
 		/* Tell the loop to skip the next instruction. */
-		*skip = 1;
+		ret = 1;
 		break;
 	/* dst = *(size *)(src + off) */
 	case BPF_LDX | BPF_MEM | BPF_W:
@@ -1132,6 +1137,10 @@ static int handle_insn(const struct bpf_insn *insn, bool last,
 	case BPF_ST | BPF_MEM | BPF_B:
 	case BPF_ST | BPF_MEM | BPF_DW:
 	*/
+	case BPF_JMP | BPF_CALL:
+		//int ret = bpf_jit_get_func_addr(
+		break;
+
 	case BPF_JMP | BPF_EXIT:
 		/* If this is the last instruction, epilogue will follow. */
 		if (last)
@@ -1143,9 +1152,9 @@ static int handle_insn(const struct bpf_insn *insn, bool last,
 		return -ENOTSUPP;
 	}
 
-	jit_buffer_update(jbuf, len);
+	jit_buffer_update(&ctx->jit, len);
 
-	return 0;
+	return ret;
 }
 
 static int handle_body(struct jit_context *ctx)
@@ -1157,15 +1166,11 @@ static int handle_body(struct jit_context *ctx)
 	    return ret;
 
 	for (u32 i = 0; i < prog->len; i++) {
-		u32  skip = 0;
-		bool last = (i == (prog->len - 1) ? true : false);
-
-		ret = handle_insn(&prog->insnsi[i], last, &ctx->jit, &skip);
-		if (ret)
+		if ((ret = handle_insn(ctx, i)) < 0)
 			return ret;
 
-		/* Skip the next piece if two 64-bit chunks were consumed. */
-		i += skip;
+		/* "ret" holds 1 if two 64-bit chuncks were consumed. */
+		i += ret;
 	}
 
 	return 0;
