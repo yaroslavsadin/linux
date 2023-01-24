@@ -6,7 +6,7 @@ enum {
 	ARC_R_6 , ARC_R_7 , ARC_R_8 , ARC_R_9 , ARC_R_10, ARC_R_11,
 	ARC_R_12, ARC_R_13, ARC_R_14, ARC_R_15, ARC_R_16, ARC_R_17,
 	ARC_R_18, ARC_R_19, ARC_R_20, ARC_R_21, ARC_R_22, ARC_R_23,
-	ARC_R_24, ARC_R_25, ARC_R_GP, ARC_R_FP, ARC_R_SP, ARC_R_ILINK,
+	ARC_R_24, ARC_R_25, ARC_R_26, ARC_R_FP, ARC_R_SP, ARC_R_ILINK,
 	ARC_R_30, ARC_R_BLINK,
 	ARC_R_IMM = 62
 };
@@ -610,8 +610,13 @@ static u8 mov_r64(u8 *buf, u8 reg_dst, u8 reg_src)
 	if (reg_dst == reg_src)
 		return 0;
 
-	len  = arc_mov_r(buf    , REG_LO(reg_dst), REG_LO(reg_src));
-	len += arc_mov_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	len  = arc_mov_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+
+	if (reg_src != BPF_REG_FP)
+		len += arc_mov_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	/* BPF_REG_FP is mapped to 32-bit "fp" register. */
+	else
+		len += arc_mov_0(buf+len, REG_HI(reg_dst));
 
 	return len;
 }
@@ -800,6 +805,11 @@ static u8 jump_return(u8 *buf)
 }
 
 /*
+ * This translation leads to:
+ *
+ *   mov r20, addr
+ *   jl  r20
+ *
  * Here "addr" is u32, but for arc_mov_i(), it is s32.
  * The lack of an explicit conversion is OK.
  */
@@ -934,10 +944,12 @@ static void analyze_reg_usage(struct jit_context *ctx)
 		 * Reading the frame pointer register implies that it should
 		 * be saved and reinitialised with the current frame data.
 		 */
-		if (insn[i].src_reg == BPF_REG_FP) {
+		if (insn[i].dst_reg == BPF_REG_FP) {
+			const u8 store_mem_mask = 0x67;
+			const u8 code_mask = insn[i].code & store_mem_mask;
 			usage |= BIT(BPF_REG_FP);
 			/* Is FP usage in the form of "*(FP + off) = data"? */
-			if (insn[i].code & (BPF_STX | BPF_MEM)) {
+			if (code_mask == (BPF_STX | BPF_MEM)) {
 				/* Then, record the deepest depth. */
 				depth = min(depth, insn[i].off);
 			}
