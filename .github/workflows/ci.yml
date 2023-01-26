@@ -30,6 +30,9 @@ jobs:
           - cpu: hs5x
             toolchain: arc32-glibc
             defconfig: haps_hs5x_defconfig
+          - cpu: hs5x-hw-atomic64
+            toolchain: arc32-glibc
+            defconfig: haps_hs5x_defconfig
           - cpu: hs6x
             toolchain: arc64-glibc
             defconfig: haps_arc64_defconfig
@@ -95,6 +98,9 @@ jobs:
 
           make ${{ matrix.targets.defconfig }}
 
+          # Select extra options applied for all configurations
+          ./scripts/config --enable CONFIG_ATOMIC64_SELFTEST
+
           # Select rootfs
           case "${{ matrix.targets.cpu }}" in
           arc700*)
@@ -120,6 +126,9 @@ jobs:
           case "${{ matrix.targets.cpu }}" in
           hs4x-pae40)
             ./scripts/config --enable CONFIG_ARC_HAS_PAE40
+            ;;
+          hs5x-hw-atomic64)
+            ./scripts/config --enable CONFIG_ARC_HAS_LL64
             ;;
           hs6x-mmu48-16k)
             ./scripts/config --disable ARC_PAGE_SIZE_4K
@@ -161,7 +170,7 @@ jobs:
     runs-on: nsim
     strategy:
       matrix:
-        targets: [arc700, hs4x, hs4x-pae40, hs5x, hs6x, hs6x-mmu48-16k, hs6x-mmu48-64k, hs6x-mmu52]
+        targets: [arc700, hs4x, hs4x-pae40, hs5x, hs5x-hw-atomic64, hs6x, hs6x-mmu48-16k, hs6x-mmu48-64k, hs6x-mmu52]
       fail-fast: false
 
     steps:
