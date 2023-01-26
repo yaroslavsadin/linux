@@ -454,6 +454,9 @@ static u8 arc_mov_r(u8 *buf, u8 reg_dst, u8 reg_src)
 
 static u8 arc_mov_i(u8 *buf, u8 reg_dst, s32 imm)
 {
+	if (imm == 0)
+		return arc_mov_0(buf, reg_dst);
+
 	if (emit) {
 		u32 insn = MOVE_OPCODE | OP_B(reg_dst) | OP_C(ARC_R_IMM);
 		emit_4_bytes(buf                , insn);
@@ -626,14 +629,8 @@ static u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
 {
 	u8 len = 0;
 
-	if (imm == 0) {
-		len  = arc_mov_0(buf    , REG_LO(reg));
-		len += arc_mov_0(buf+len, REG_HI(reg));
-		return len;
-	}
-
 	len = arc_mov_i(buf, REG_LO(reg), imm);
-	if (imm > 0)
+	if (imm >= 0)
 		len += arc_mov_0(buf+len, REG_HI(reg));
 	else
 		len += arc_mov_i(buf+len, REG_HI(reg), -1);
@@ -645,47 +642,85 @@ static u8 mov_r64_i64(u8 *buf, u8 reg, u32 lo, u32 hi)
 {
 	u8 len;
 
-	if (lo)
-		len  = arc_mov_i(buf, REG_LO(reg), lo);
-	else
-		len  = arc_mov_0(buf, REG_LO(reg));
+	len  = arc_mov_i(buf, REG_LO(reg), lo);
+	len += arc_mov_i(buf+len, REG_HI(reg), hi);
 
-	if (hi)
-		len += arc_mov_i(buf+len, REG_HI(reg), hi);
-	else
-		len += arc_mov_0(buf+len, REG_HI(reg));
+	return len;
+}
+
+/*
+ * If the offset is too big to fit in s9, emit:
+ *   mov r20, reg
+ *   add r20, r20, off
+ * and make sure that r20 will be the effective address for store:
+ *   st  r, [r20, 0]
+ */
+static u8 correct_for_offset(u8 *buf, s16 *off, u8 size,
+			     u8 reg_mem, u8 *arc_reg_mem)
+{
+	u8 len = 0;
+
+	if (!IN_S9_RANGE(*off) ||
+	    (size == BPF_DW && !IN_S9_RANGE(*off + 4))) {
+		*arc_reg_mem = REG_LO(JIT_REG_TMP);
+		len  = arc_mov_r(buf    , *arc_reg_mem, reg_mem);
+		len += arc_add_i(buf+len, *arc_reg_mem, (u32) off);
+		*off = 0;
+	}
 
 	return len;
 }
 
 static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 {
-	u8 len = 0;
 	u8 arc_reg_mem = REG_LO(reg_mem);
+	u8 len;
 
-	/*
-	 * If the offset is too big to fit in s9, emit:
-	 *   mov r20, reg
-	 *   add r20, r20, off
-	 * and make sure that r20 will be the effective address for store.
-	 *   st  r, [r20, 0]
-	 */
-	if (!IN_S9_RANGE(off) ||
-	    (size == BPF_DW && !IN_S9_RANGE(off + 4))) {
-		arc_reg_mem = REG_LO(JIT_REG_TMP);
-		len  = arc_mov_r(buf    , arc_reg_mem, reg_mem);
-		len += arc_add_i(buf+len, arc_reg_mem, (u32) off);
-		off = 0;
-	}
+	len = correct_for_offset(buf, &off, size, reg_mem, &arc_reg_mem);
 
-	if (size == BPF_B || size == BPF_H || size == BPF_W) {
-		u8 zz = bpf_to_arc_size(size);
-		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off, zz);
-	} else if (size == BPF_DW) {
+	if (size == BPF_DW) {
 		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off,
 				ZZ_4_byte);
 		len += arc_st_r(buf+len, REG_HI(reg), arc_reg_mem, off+4,
 				ZZ_4_byte);
+	} else {
+		u8 zz = bpf_to_arc_size(size);
+		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off, zz);
+	}
+
+	return len;
+}
+
+/*
+ * For {8,16,32}-bit stores:
+ *   mov r21, imm
+ *   st  r21, [...]
+ * For 64-bit stores:
+ *   mov r21, imm
+ *   st  r21, [...]
+ *   mov r21, {0,-1}
+ *   st  r21, [...+4]
+ */
+static u8 store_i(u8 *buf, s32 imm, u8 reg_mem, s16 off, u8 size)
+{
+	const u8 arc_reg_src = REG_HI(JIT_REG_TMP);
+	u8 arc_reg_mem = REG_LO(reg_mem);
+	u8 len;
+
+	len = correct_for_offset(buf, &off, size, reg_mem, &arc_reg_mem);
+
+	if (size == BPF_DW) {
+		len += arc_mov_i(buf+len, arc_reg_src, imm);
+		len += arc_st_r(buf+len, arc_reg_src, arc_reg_mem, off,
+				ZZ_4_byte);
+		imm = (imm >= 0 ? 0 : -1);
+		len += arc_mov_i(buf+len, arc_reg_src, imm);
+		len += arc_st_r(buf+len, arc_reg_src, arc_reg_mem, off+4,
+				ZZ_4_byte);
+	} else {
+		u8 zz = bpf_to_arc_size(size);
+		len += arc_mov_i(buf+len, arc_reg_src, imm);
+		len += arc_st_r(buf+len, arc_reg_src, arc_reg_mem, off, zz);
 	}
 
 	return len;
@@ -694,8 +729,7 @@ static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 static u8 push_r64(u8 *buf, u8 reg)
 {
 	u8 len;
-
-	/* BPF_REG_FP is mapped to 32-bit "fp" register. */
+/* BPF_REG_FP is mapped to 32-bit "fp" register. */
 	if (reg == BPF_REG_FP)
 		return arc_push_r(buf, REG_LO(reg));
 
@@ -1257,12 +1291,12 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_STX | BPF_MEM | BPF_DW:
 		len = store_r(buf, src, dst, off, BPF_SIZE(code));
 		break;
-	/* TODO: add store_i().
 	case BPF_ST | BPF_MEM | BPF_W:
 	case BPF_ST | BPF_MEM | BPF_H:
 	case BPF_ST | BPF_MEM | BPF_B:
 	case BPF_ST | BPF_MEM | BPF_DW:
-	*/
+		len = store_i(buf, imm, dst, off, BPF_SIZE(code));
+		break;
 	case BPF_JMP | BPF_CALL:
 		/*
 		 * If we're here, then "extra_pass" is definitely "false".
