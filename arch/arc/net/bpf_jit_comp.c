@@ -175,6 +175,20 @@ enum {
 #define XOR_OPCODE	0x20070000
 
 /*
+ * The 4-byte encoding of "asl a,b,c":
+ *
+ * 0010_1bbb 0i00_0000 0BBB_cccc ccaa_aaaa
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		number to be shifted
+ * c:  cccccc		amount to be shifted
+ * i:			if set, c is considered a 6-bit immediate, else a reg.
+ */
+#define ASL_OPCODE	0x28000000
+#define ASL_I(x)	(((x) & 1) << 22)
+#define OPC_ASLI	ASL_OPCODE | ASL_I(1)
+
+/*
  * The 4-byte encoding of "mov b,c":
  *
  * 0010_0bbb 0000_1010 0BBB_cccc cc00_0000
@@ -703,6 +717,7 @@ static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
  */
 static u8 store_i(u8 *buf, s32 imm, u8 reg_mem, s16 off, u8 size)
 {
+	/* REG_LO(JIT_REG_TMP) might be used by "correct_for_offset()". */
 	const u8 arc_reg_src = REG_HI(JIT_REG_TMP);
 	u8 arc_reg_mem = REG_LO(reg_mem);
 	u8 len;
@@ -729,7 +744,8 @@ static u8 store_i(u8 *buf, s32 imm, u8 reg_mem, s16 off, u8 size)
 static u8 push_r64(u8 *buf, u8 reg)
 {
 	u8 len;
-/* BPF_REG_FP is mapped to 32-bit "fp" register. */
+
+	/* BPF_REG_FP is mapped to 32-bit "fp" register. */
 	if (reg == BPF_REG_FP)
 		return arc_push_r(buf, REG_LO(reg));
 
