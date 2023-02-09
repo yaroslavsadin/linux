@@ -17,19 +17,25 @@ enum {
  * the operations. This temporary register is added as yet another index
  * in the bpf2arc array, so it will unfold like the rest of registers into
  * the final JIT.
+ *
+ * BPF_REG_0 is not mapped to r1r0, because BPF_REG_1 as the first argument
+ * _must_ be mapped to r1r0. BPF_REG_{2,3,4} are mapped to the correct
+ * registers (r2, r3, r4, r5, r6, r7) in terms of calling convention.
+ * r7 is the last argument in the ABI, therefore BPF_REG_5 must be pushed
+ * onto the stack for an in-kernel fucntion call.
  */
 #define JIT_REG_TMP MAX_BPF_JIT_REG
 
 static const u8 bpf2arc[][2] = {
 	/* Return value from in-kernel function, and exit value from eBPF */
-	[BPF_REG_0] = {ARC_R_0 , ARC_R_1},
+	[BPF_REG_0] = {ARC_R_10 , ARC_R_11},
 	/* Arguments from eBPF program to in-kernel function */
-	[BPF_REG_1] = {ARC_R_2 , ARC_R_3},
-	[BPF_REG_2] = {ARC_R_4 , ARC_R_5},
+	[BPF_REG_1] = {ARC_R_0 , ARC_R_1},
+	[BPF_REG_2] = {ARC_R_2 , ARC_R_3},
+	[BPF_REG_3] = {ARC_R_4 , ARC_R_5},
+	[BPF_REG_4] = {ARC_R_6 , ARC_R_7},
 	/* Remaining arguments, to be passed on the stack per O32 ABI */
-	[BPF_REG_3] = {ARC_R_6 , ARC_R_7},
-	[BPF_REG_4] = {ARC_R_8 , ARC_R_9},
-	[BPF_REG_5] = {ARC_R_10, ARC_R_11},
+	[BPF_REG_5] = {ARC_R_8, ARC_R_9},
 	/* Callee-saved registers that in-kernel function will preserve */
 	[BPF_REG_6] = {ARC_R_12, ARC_R_13},
 	[BPF_REG_7] = {ARC_R_14, ARC_R_15},
@@ -45,6 +51,12 @@ static const u8 bpf2arc[][2] = {
 
 #define REG_LO(r) (bpf2arc[(r)][0])
 #define REG_HI(r) (bpf2arc[(r)][1])
+
+/*
+ * To comply with ARCv2 ABI, BPF's arg5 must be put on stack. After which,
+ * the stack needs to be restored by ARG5_SIZE.
+ */
+#define ARG5_SIZE 8
 
 /* Bytes. */
 enum {
@@ -921,7 +933,7 @@ struct arc_jit_data
  * jit_data:		A piece of memory to transfer data to the next pass.
  * regs_clobbered:	Each bit status determines if that BPF reg is clobbered.
  * save_blink:		If ARC's "blink" register needs to be saved.
- * stack_depth:		Derived from FP accesses (fp-4, fp-8, ...).
+ * frame_depth:		Derived from FP accesses (fp-4, fp-8, ...).
  * epilogue_offset:	Used by early "return"s in the code to jump here.
  * need_extra_pass:	A forecast if an "extra_pass" will occur.
  * blinded:		True if "constant blinding" step returned a new "prog".
@@ -937,7 +949,7 @@ struct jit_context
 	struct arc_jit_data		*jit_data;
 	u16				regs_clobbered;
 	bool				save_blink;
-	u16				stack_depth;
+	u16				frame_depth;
 	u32				epilogue_offset;
 	bool				need_extra_pass;
 	bool				blinded;
@@ -961,7 +973,7 @@ static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
 	ctx->bpf2insn        = NULL;
 	ctx->regs_clobbered  = 0;
 	ctx->save_blink      = false;
-	ctx->stack_depth     = 0;
+	ctx->frame_depth     = 0;
 	ctx->epilogue_offset = 0;
 	ctx->need_extra_pass = false;
 	ctx->success         = false;
@@ -1039,16 +1051,15 @@ static void analyze_reg_usage(struct jit_context *ctx)
 			usage |= BIT(BPF_REG_8);
 		else if (insn[i].dst_reg == BPF_REG_9)
 			usage |= BIT(BPF_REG_9);
-
 		/*
 		 * Reading the frame pointer register implies that it should
 		 * be saved and reinitialised with the current frame data.
 		 */
-		if (insn[i].dst_reg == BPF_REG_FP) {
+		else if (insn[i].dst_reg == BPF_REG_FP) {
 			const u8 store_mem_mask = 0x67;
 			const u8 code_mask = insn[i].code & store_mem_mask;
 			usage |= BIT(BPF_REG_FP);
-			/* Is FP usage in the form of "*(FP + off) = data"? */
+			/* Is FP usage in the form of "*(FP + -off) = data"? */
 			if (code_mask == (BPF_STX | BPF_MEM)) {
 				/* Then, record the deepest depth. */
 				depth = min(depth, insn[i].off);
@@ -1061,7 +1072,7 @@ static void analyze_reg_usage(struct jit_context *ctx)
 
 	ctx->regs_clobbered = usage;
 	ctx->save_blink     = call_exists;
-	ctx->stack_depth    = abs(depth);
+	ctx->frame_depth    = abs(depth);
 }
 
 /* Verify that no instruction will be emitted when there is no buffer. */
@@ -1126,8 +1137,8 @@ static int handle_prologue(struct jit_context *ctx)
 	if (ctx->save_blink)
 		len += push_blink(buf+len);
 
-	if (ctx->stack_depth)
-		len += enter_frame(buf+len, ctx->stack_depth);
+	if (ctx->frame_depth)
+		len += enter_frame(buf+len, ctx->frame_depth);
 
 	jit_buffer_update(&ctx->jit, len);
 
@@ -1150,7 +1161,7 @@ static int handle_epilogue(struct jit_context *ctx)
 	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
 
-	if (ctx->stack_depth)
+	if (ctx->frame_depth)
 		len += exit_frame(buf+len);
 
 	if (ctx->save_blink)
@@ -1182,7 +1193,7 @@ static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
 		       bool extra_pass, u8 *len)
 {
 	int  ret;
-	bool fixed = false;
+	bool in_kernel_func, fixed = false;
 	u64  addr = 0;
 	u8  *buf = effective_jit_buf(&ctx->jit);
 
@@ -1191,12 +1202,26 @@ static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
 		pr_err("bpf-jit: can't get the address for call.");
 		return ret;
 	}
+	in_kernel_func = (fixed ? true : false);
 
 	/* No valuble address retrieved (yet). */
 	if (!fixed && !addr)
 		ctx->need_extra_pass = true;
 
-	*len = jump_and_link(buf, (u32) addr);
+	*len = 0;
+	/* In case of an in-kernel function, arg5 is always pushed. */
+	if (in_kernel_func)
+		*len += push_r64(buf+*len, BPF_REG_5);
+
+	*len += jump_and_link(buf+*len, (u32) addr);
+
+	if (in_kernel_func) {
+		*len += arc_add_i(buf+*len, ARC_R_SP, ARG5_SIZE);
+		/* Assigning ABI's return reg to our JIT's return reg. */
+		*len += arc_mov_r(buf+*len, REG_LO(BPF_REG_0), ARC_R_0);
+		*len += arc_mov_r(buf+*len, REG_HI(BPF_REG_0), ARC_R_1);
+	}
+
 	return 0;
 }
 
