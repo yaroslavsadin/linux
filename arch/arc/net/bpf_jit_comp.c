@@ -105,14 +105,23 @@ enum {
 
 /* Condition codes. */
 enum {
-	CC_always = 0,		/* condition is true all the time. */
-	CC_equal = 1,		/* if status32.z flag is set. */
-	CC_unequal = 2,		/* if status32.z flag is clear. */
-	CC_positive = 3,	/* if status32.n flag is clear. */
-	CC_negative = 4,	/* if status32.n flag is set. */
+	CC_always     = 0,	/* condition is true all the time */
+	CC_equal      = 1,	/* if status32.z flag is set */
+	CC_unequal    = 2,	/* if status32.z flag is clear */
+	CC_positive   = 3,	/* if status32.n flag is clear */
+	CC_negative   = 4,	/* if status32.n flag is set */
+	CC_less_u     = 5,	/* less than (unsigned) */
+	CC_less_eq_u  = 14,	/* less than or equal (unsigned) */
+	CC_great_eq_u = 6,	/* greater than or equal (unsigned) */
+	CC_great_u    = 13,	/* greater than (unsigned) */
+	CC_less_s     = 11,	/* less than (signed) */
+	CC_less_eq_s  = 12,	/* less than or equal (signed) */
+	CC_great_eq_s = 10,	/* greater than or equal (signed) */
+	CC_great_s    = 9	/* greater than (signed) */
 };
 
 #define IN_S9_RANGE(x)	((x) <= 255 && (x) >= -256)
+#define IN_S21_RANGE(x)	((x) <= 1048575 && (x) >= -1048576)
 
 /* Operands in most of the encodings. */
 #define OP_A(x)	((x) & 0x03f)
@@ -286,6 +295,23 @@ enum {
  * c:  cccccc		register holding the destination address
  */
 #define JL_OPCODE	0x20220000
+
+/*
+ * Encoding for (conditional) branch to an offset from the current location
+ * that is world aligned: (PC & ~0xffff_fff4) + s21
+ * B[qq] s21
+ *
+ * 0000_0sss ssss_sss0 SSSS_SSSS SS0q_qqqq
+ *
+ * qq:	qqqqq				condtion code
+ * s21:	SSSS SSSS_SSss ssss_ssss	The displacement (21-bit signed)
+ *
+ * The displacement is supposed to be 16-bit (2-byte) aligned. Therefore,
+ * it should be a multiple of 2. Hence, there is a implied '0' bit at its
+ * LSB: S_SSSS SSSS_Ssss ssss_sss0
+ */
+#define B_OPCODE	0x00000000
+#define B_S21(d)	((((d) & 0x7fe) << 16) | (((d) & 0x1ff800) >> 5))
 
 /*
  * TODO: remove me.
@@ -545,6 +571,15 @@ static u8 arc_jl(u8 *buf, u8 reg)
 {
 	if (emit) {
 		u32 insn = JL_OPCODE | OP_C(reg);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_b(u8 *buf, u8 cond, int offset)
+{
+	if (emit) {
+		u32 insn = B_OPCODE | B_S21(offset) | cond;
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -1188,6 +1223,76 @@ static int handle_epilogue(struct jit_context *ctx)
 	return 0;
 }
 
+/*
+ * The "offset" is interpreted as the "number" of BPF instructions
+ * from the _next_ BPF instruction. e.g.:
+ *
+ *  4 means 4 instructions after  the next insn
+ *  0 means 0 instructions after  the next insn -> fall through.
+ * -1 means 1 instruction  before the next insn -> jmp to current insn.
+ *
+ *  Another way to look at this, "offset" is the number of instructions
+ *  that exist between the current instruction and the target instruction.
+ *
+ *  It is worth noting that a "mov r,i64", which is 16-byte long, is
+ *  treated as two instructions long, therefore "offset" needn't be
+ *  treated specially for those. Everything is uniform.
+ *
+ *  Knowing the current BPF instruction and the target BPF instruction,
+ *  we can obtain their JITed memory addresses, namely "jit_curr_addr"
+ *  and "jit_targ_addr". The offset, a.k.a. displacement, for ARC's
+ *  "b" (branch) instruction is the distance from the _current_ instruction
+ *  (PC) to the target instruction. To be precise, it is the distance from
+ *  PCL (PC aLigned) to the target address. PCL is the word-aligned
+ *  copy of PC.
+ */
+static int bpf_offset_to_jit(const struct jit_context *ctx,
+			     u32 idx, s32 *jit_offset)
+{
+	u8 jit_curr_addr, jit_targ_addr, pcl;
+	const s16 bpf_offset = ctx->prog->insnsi[idx].off;
+	const s32 bpf_targ_idx = (idx+1) + bpf_offset;
+
+	if (bpf_targ_idx < 0 || bpf_targ_idx >= ctx->prog->len) {
+		pr_err("bpf-jit: bpf jump label is out of range.");
+		return -EINVAL;
+
+	}
+
+	jit_curr_addr = (u32) (ctx->jit.buf + ctx->bpf2insn[idx]);
+	jit_targ_addr = (u32) (ctx->jit.buf + ctx->bpf2insn[bpf_targ_idx]);
+	pcl           = jit_curr_addr & ~3;
+	*jit_offset   = jit_targ_addr - pcl;
+
+	/* The S21 in "b" (branch) encoding must be 16-bit aligned. */
+	if (*jit_offset & 1) {
+		pr_err("bpf-jit: jit address is not 16-bit aligned.");
+		return -EFAULT;
+	}
+
+	if (!IN_S21_RANGE(*jit_offset)) {
+		pr_err("bpf-jit: jit address is too far to jump to.");
+		return -EFAULT;
+	}
+
+	return 0;
+}
+
+/* TODO: add condition support. */
+static int gen_jmp(struct jit_context *ctx, u32 idx, u8 *len)
+{
+	int ret;
+	s32 displacement;
+	u8  *buf = effective_jit_buf(&ctx->jit);
+
+	/* Get the offset (s21) for jumping to the target of the branch. */
+	ret = bpf_offset_to_jit(ctx, idx, &displacement);
+	if (ret < 0)
+		return ret;
+	*len = arc_b(buf, CC_always, displacement);
+	return 0;
+}
+
 /* Try to get the resolved the address and generate the instructions. */
 static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
 		       bool extra_pass, u8 *len)
@@ -1279,6 +1384,11 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU | BPF_XOR | BPF_K:
 		len = xor_r32_i32(buf, dst, imm);
 		break;
+	/* TODO: fil these with BPF_K and BPF_X */
+	case BPF_ALU | BPF_LSH:
+	case BPF_ALU | BPF_RSH:
+	case BPF_ALU | BPF_ARSH:
+		break;
 	/* dst += src (64-bit) */
 	case BPF_ALU64 | BPF_ADD | BPF_X:
 		len = add_r64(buf, dst, src);
@@ -1295,9 +1405,18 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU64 | BPF_SUB | BPF_K:
 		len = sub_r64_i32(buf, dst, imm);
 		break;
+	/* dst ^= src (64-bit) */
+	case BPF_ALU64 | BPF_XOR | BPF_X:
+		len = xor_r64(buf, dst, src);
+		break;
 	/* dst ^= imm32 (64-bit) */
 	case BPF_ALU64 | BPF_XOR | BPF_K:
 		len = xor_r64_i32(buf, dst, imm);
+		break;
+	/* TODO: fil these with BPF_K and BPF_X */
+	case BPF_ALU64 | BPF_LSH:
+	case BPF_ALU64 | BPF_RSH:
+	case BPF_ALU64 | BPF_ARSH:
 		break;
 	/* dst = src (64-bit) */
 	case BPF_ALU64 | BPF_MOV | BPF_X:
@@ -1337,6 +1456,13 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ST | BPF_MEM | BPF_B:
 	case BPF_ST | BPF_MEM | BPF_DW:
 		len = store_i(buf, imm, dst, off, BPF_SIZE(code));
+		break;
+	case BPF_JMP | BPF_JA:
+		if ((ret = gen_jmp(ctx, idx, &len)) < 0)
+			return ret;
+		break;
+	/* TODO: fill this in. */
+	case BPF_JMP | BPF_JSGE | BPF_X:
 		break;
 	case BPF_JMP | BPF_CALL:
 		/*
