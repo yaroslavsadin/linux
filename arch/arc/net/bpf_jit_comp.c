@@ -8,6 +8,13 @@ enum {
 	ARC_R_18, ARC_R_19, ARC_R_20, ARC_R_21, ARC_R_22, ARC_R_23,
 	ARC_R_24, ARC_R_25, ARC_R_26, ARC_R_FP, ARC_R_SP, ARC_R_ILINK,
 	ARC_R_30, ARC_R_BLINK,
+	/*
+	 * Having ARC_R_IMM encoded as source register means there is an
+	 * immediate that must be interpreted from the next 4 bytes. If
+	 * encoded as the destination register though, it implies that the
+	 * output of the operation is not assigned to any register. This is
+	 * helpful if we only care about updating the CPU status flags.
+	 */
 	ARC_R_IMM = 62
 };
 
@@ -121,12 +128,14 @@ enum {
 };
 
 #define IN_S9_RANGE(x)	((x) <= 255 && (x) >= -256)
+#define IN_S12_RANGE(x)	((x) <= 2047 && (x) >= -2048)
 #define IN_S21_RANGE(x)	((x) <= 1048575 && (x) >= -1048576)
 
 /* Operands in most of the encodings. */
 #define OP_A(x)	((x) & 0x03f)
 #define OP_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
 #define OP_C(x)	(((x) & 0x03f) << 6)
+#define FLAG(x)	(((x) & 1) << 15)
 
 /*
  * The 4-byte encoding of "add a,b,c":
@@ -140,10 +149,9 @@ enum {
  * c:  cccccc		the 2nd input operand
  */
 #define ADD_OPCODE	0x20000000
-#define ADD_F(x)	(((x) & 1) << 15)
 /* Addition with updating the pertinent flags in "status32" register. */
 #define OPC_ADD_F \
-	ADD_OPCODE | ADD_F(1)
+	ADD_OPCODE | FLAG(1)
 
 /*
  * The 4-byte encoding of "adc a,b,c" (addition with carry):
@@ -168,21 +176,49 @@ enum {
  * c:  cccccc		the 2nd input operand
  */
 #define SUB_OPCODE	0x20020000
-#define SUB_F(x)	(((x) & 1) << 15)
 /* Subtraction with updating the pertinent flags in "status32" register. */
 #define OPC_SUB_F \
-	SUB_OPCODE | SUB_F(1)
+	SUB_OPCODE | FLAG(1)
 
 /*
  * The 4-byte encoding of "sbc a,b,c" (subtraction with carry):
  *
- * 0010_0bbb 0000_0011 0BBB_cccc ccaa_aaaa
+ * 0010_0bbb 0000_0011 fBBB_cccc ccaa_aaaa
+ *
+ * f:                   indicates if flags (carry, etc.) should be updated
  *
  * a:  aaaaaa		result
  * b:  BBBbbb		the 1st input operand
  * c:  cccccc		the 2nd input operand
  */
 #define SBC_OPCODE	0x20030000
+#define OPC_SBC_F \
+	SBC_OPCODE | FLAG(1)
+
+/*
+ * The 4-byte encoding of "and a,b,c":
+ *
+ * 0010_0bbb 0000_0100 fBBB_cccc ccaa_aaaa
+ *
+ * f:                   indicates if zero and negative flags should be updated
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define AND_OPCODE	0x20040000
+
+/*
+ * The 4-byte encoding of "tst[qq] b,c":
+ *
+ * 0010_0bbb 1100_1011 1BBB_cccc cc0q_qqqq
+ *
+ * qq:	qqqqq		condtion code
+ *
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define TST_OPCODE	0x20cb8000
 
 /*
  * The 4-byte encoding of "xor a,b,c":
@@ -218,6 +254,17 @@ enum {
  * c:  cccccc		source register
  */
 #define MOVE_OPCODE	0x200a0000
+
+/*
+ * The 4-byte encoding of "mov b,s12" (used for moving small immediates):
+ *
+ * 0010_0bbb 1000_1010 0BBB_ssss ssSS_SSSS
+ *
+ * b:  BBBbbb		destination register
+ * s:  SSSSSSssssss	source immediate (signed)
+ */
+#define MOVI_OPCODE	0x208a0000
+#define MOVI_S12(x)	((((x) & 0xfc0) >> 6) | (((x) & 0x3f) << 6))
 
 /*
  * The 4-byte encoding of "ld[zz][.x][.aa][.di] c,[b,s9]":
@@ -464,6 +511,103 @@ static u8 arc_sbc_r(u8 *buf, u8 reg_dst, u8 reg_src)
 	return INSN_len_normal;
 }
 
+/* Implemented as "sub.f 0,reg_dst,reg_src". */
+static u8 arc_cmp_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = OPC_SUB_F | OP_A(ARC_R_IMM) | OP_B(reg_dst) |
+			   OP_C(reg_src);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+/* Implemented as "sub.f 0,reg_dst,imm". */
+static u8 arc_cmp_i(u8 *buf, u8 reg_dst, s32 imm)
+{
+	if (emit) {
+		u32 insn = OPC_SUB_F | OP_A(ARC_R_IMM) | OP_B(reg_dst) |
+			   OP_C(ARC_R_IMM);
+		emit_4_bytes(buf                , insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+
+/*
+ * Implemented as "sbc.f 0,reg_dst,reg_src".
+ *
+ * This particular "cmp2" version must be only emitted as a follow-up
+ * to a "cmp" version. A chain of these two makes it possible to compare
+ * pair of registers (64-bit).
+ */
+static u8 arc_cmp2_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = OPC_SBC_F | OP_A(ARC_R_IMM) | OP_B(reg_dst) |
+			   OP_C(reg_src);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_and_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = AND_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(reg_src);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_and_i(u8 *buf, u8 reg_dst, s32 imm)
+{
+	if (emit) {
+		u32 insn = XOR_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
+			   OP_C(ARC_R_IMM);
+		emit_4_bytes(buf                , insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+static u8 arc_tst_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = TST_OPCODE | OP_B(reg_dst) | OP_C(reg_src);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_tst_i(u8 *buf, u8 reg_dst, s32 imm)
+{
+	if (emit) {
+		u32 insn = TST_OPCODE | OP_B(reg_dst) | OP_C(ARC_R_IMM);
+		emit_4_bytes(buf                , insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+/*
+ * This particular version, "tst.z ...", is meant to be used after a
+ * "tst" on the low 32-bit of register pairs. If that "tst" is not
+ * zero, then we don't need to test the upper 32-bits lest it sets
+ * the zero flag.
+ */
+static u8 arc_tst_z_r(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	if (emit) {
+		u32 insn = TST_OPCODE | OP_B(reg_dst) | OP_C(reg_src) |
+			   CC_equal;
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
 static u8 arc_xor_r(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	if (emit) {
@@ -485,11 +629,11 @@ static u8 arc_xor_i(u8 *buf, u8 reg_dst, s32 imm)
 	return INSN_len_normal + INSN_len_imm;
 }
 
-/* "mov r, 0" in fact is a "xor r, r, r". */
-static u8 arc_mov_0(u8 *buf, u8 reg)
+/* move an immediate to register with a 4-byte instruction. */
+static u8 arc_movi_r(u8 *buf, u8 reg, s16 imm)
 {
 	if (emit) {
-		u32 insn = XOR_OPCODE | OP_A(reg) | OP_B(reg) | OP_C(reg);
+		u32 insn = MOVI_OPCODE | OP_B(reg) | MOVI_S12(imm);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -506,8 +650,8 @@ static u8 arc_mov_r(u8 *buf, u8 reg_dst, u8 reg_src)
 
 static u8 arc_mov_i(u8 *buf, u8 reg_dst, s32 imm)
 {
-	if (imm == 0)
-		return arc_mov_0(buf, reg_dst);
+	if (IN_S12_RANGE(imm))
+		return arc_movi_r(buf, reg_dst, imm);
 
 	if (emit) {
 		u32 insn = MOVE_OPCODE | OP_B(reg_dst) | OP_C(ARC_R_IMM);
@@ -641,6 +785,94 @@ static u8 sub_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
 	return len;
 }
 
+static u8 cmp_r32(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	u8 len;
+	len = arc_cmp_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+	return len;
+}
+
+static u8 cmp_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	u8 len;
+	len = arc_cmp_i(buf, REG_LO(reg_dst), imm);
+	return len;
+}
+
+static u8 cmp_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	u8 len;
+	len  = arc_cmp_r(buf     , REG_LO(reg_dst), REG_LO(reg_src));
+	len += arc_cmp2_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	return len;
+}
+
+static u8 cmp_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	u8 len;
+	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
+	len += cmp_r64(buf+len, reg_dst, JIT_REG_TMP);
+	return len;
+}
+
+static u8 and_r32(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	return arc_and_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+}
+
+static u8 and_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	return arc_and_i(buf, REG_LO(reg_dst), imm);
+}
+
+static u8 and_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	u8 len;
+	len  = arc_and_r(buf    , REG_LO(reg_dst), REG_LO(reg_src));
+	len += arc_and_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	return len;
+}
+
+static u8 and_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	u8 len;
+	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
+	len += and_r64(buf+len, reg_dst, JIT_REG_TMP);
+	return len;
+}
+
+static u8 tst_r32(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	return arc_tst_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+}
+
+static u8 tst_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	return arc_tst_i(buf, REG_LO(reg_dst), imm);
+}
+
+/*
+ * Check the high 32-bits only if the low 32-bits actually set
+ * the zero flag. Otherwise, we might end up setting the zero
+ * flag by looking into the second half while the first half
+ * was not zero.
+ */
+static u8 tst_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+{
+	u8 len;
+	len  = arc_tst_r(buf      , REG_LO(reg_dst), REG_LO(reg_src));
+	len += arc_tst_z_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	return len;
+}
+
+static u8 tst_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+{
+	u8 len;
+	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
+	len += tst_r64(buf+len, reg_dst, JIT_REG_TMP);
+	return len;
+}
+
 static u8 xor_r32(u8 *buf, u8 reg_dst, u8 reg_src)
 {
 	return arc_xor_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
@@ -680,7 +912,7 @@ static u8 mov_r64(u8 *buf, u8 reg_dst, u8 reg_src)
 		len += arc_mov_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
 	/* BPF_REG_FP is mapped to 32-bit "fp" register. */
 	else
-		len += arc_mov_0(buf+len, REG_HI(reg_dst));
+		len += arc_movi_r(buf+len, REG_HI(reg_dst), 0);
 
 	return len;
 }
@@ -692,9 +924,9 @@ static u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
 
 	len = arc_mov_i(buf, REG_LO(reg), imm);
 	if (imm >= 0)
-		len += arc_mov_0(buf+len, REG_HI(reg));
+		len += arc_movi_r(buf+len, REG_HI(reg), 0);
 	else
-		len += arc_mov_i(buf+len, REG_HI(reg), -1);
+		len += arc_movi_r(buf+len, REG_HI(reg), -1);
 
 	return len;
 }
@@ -830,7 +1062,7 @@ static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 	if (size == BPF_B || size == BPF_H || size == BPF_W) {
 		u8 zz = bpf_to_arc_size(size);
 		len += arc_ld_r(buf+len, REG_LO(reg), arc_reg_mem, off, zz);
-		len += arc_mov_0(buf+len, REG_HI(reg));
+		len += arc_movi_r(buf+len, REG_HI(reg), 0);
 	} else if (size == BPF_DW) {
 		/*
 		 * We are about to issue 2 consecutive loads:
@@ -1223,6 +1455,12 @@ static int handle_epilogue(struct jit_context *ctx)
 	return 0;
 }
 
+static inline s32 get_index_for_insn(const struct jit_context *ctx,
+				     const struct bpf_insn *insn)
+{
+	return (insn - ctx->prog->insnsi);
+}
+
 /*
  * The "offset" is interpreted as the "number" of BPF instructions
  * from the _next_ BPF instruction. e.g.:
@@ -1247,11 +1485,18 @@ static int handle_epilogue(struct jit_context *ctx)
  *  copy of PC.
  */
 static int bpf_offset_to_jit(const struct jit_context *ctx,
-			     u32 idx, s32 *jit_offset)
+			     const struct bpf_insn *insn, u8 advance,
+			     s32 *jit_offset)
 {
-	u8 jit_curr_addr, jit_targ_addr, pcl;
-	const s16 bpf_offset = ctx->prog->insnsi[idx].off;
+	u32 jit_curr_addr, jit_targ_addr, pcl;
+	const s32 idx = get_index_for_insn(ctx, insn);
+	const s16 bpf_offset = insn->off;
 	const s32 bpf_targ_idx = (idx+1) + bpf_offset;
+
+	if (idx < 0 || idx >= ctx->prog->len) {
+		pr_err("bpf-jit: offset calc. -> insn is not in prog.");
+		return -EINVAL;
+	}
 
 	if (bpf_targ_idx < 0 || bpf_targ_idx >= ctx->prog->len) {
 		pr_err("bpf-jit: bpf jump label is out of range.");
@@ -1259,7 +1504,13 @@ static int bpf_offset_to_jit(const struct jit_context *ctx,
 
 	}
 
-	jit_curr_addr = (u32) (ctx->jit.buf + ctx->bpf2insn[idx]);
+	/*
+	 * "len" reflects the number of bytes for possible "check" instructions
+	 * that are emitted. In that case, ARC's "b(ranch)" instruction is not
+	 * emitted at the begenning of "jit.buf + bpf2ins[idx]", but "advance"
+	 * bytes after that.
+	 */
+	jit_curr_addr = (u32) (ctx->jit.buf + ctx->bpf2insn[idx] + advance);
 	jit_targ_addr = (u32) (ctx->jit.buf + ctx->bpf2insn[bpf_targ_idx]);
 	pcl           = jit_curr_addr & ~3;
 	*jit_offset   = jit_targ_addr - pcl;
@@ -1278,18 +1529,100 @@ static int bpf_offset_to_jit(const struct jit_context *ctx,
 	return 0;
 }
 
-/* TODO: add condition support. */
-static int gen_jmp(struct jit_context *ctx, u32 idx, u8 *len)
+/* Used to emit condition checking instructions before a conditional jump. */
+enum OP_TYPES {
+	OP_R32_R32,
+	OP_R32_I32,
+	OP_R64_R64,
+	OP_R64_I32
+};
+
+/* Note: This conversion function does not handle "BPF_JSET". */
+static inline int bpf_cond_to_arc(const u8 op)
 {
-	int ret;
-	s32 displacement;
+	switch (op) {
+	case BPF_JA:	return CC_always;
+	case BPF_JEQ:	return CC_equal;
+	case BPF_JGT:	return CC_great_u;
+	case BPF_JGE:	return CC_great_eq_u;
+	case BPF_JSET:	return CC_unequal;
+	case BPF_JNE:	return CC_unequal;
+	case BPF_JSGT:	return CC_great_s;
+	case BPF_JSGE:	return CC_great_eq_s;
+	case BPF_JLT:	return CC_less_u;
+	case BPF_JLE:	return CC_less_eq_u;
+	case BPF_JSLT:	return CC_less_s;
+	case BPF_JSLE:	return CC_less_eq_s;
+	default:
+	}
+	pr_err("bpf-jit: can't hanlde condition 0x%02X\n", op);
+	return -EINVAL;
+}
+
+/*
+ * - emit "cmp" instructions for conditional jumps other than "jset".
+ * - emit "tst" instructions for "jset" variant.
+ * - emit nothing for unconditional jump "ja".
+ */
+static u8 emit_check_insn(u8 *buf, const struct bpf_insn *insn,
+			  const enum OP_TYPES op_types)
+{
+	const u8  op  = BPF_OP(insn->code);
+	const u8  dst = insn->dst_reg;
+	const u8  src = insn->src_reg;
+	const s32 imm = insn->imm;
+	      u8  len = 0;
+
+	if (op != BPF_JA && op != BPF_JSET) {
+		if (op_types == OP_R32_R32)
+			len = cmp_r32(buf, dst, src);
+		else if (op_types == OP_R32_I32)
+			len = cmp_r32_i32(buf, dst, imm);
+		else if (op_types == OP_R64_R64)
+			len = cmp_r64(buf, dst, src);
+		else if (op_types == OP_R64_I32)
+			len = cmp_r64_i32(buf, dst, imm);
+	} else if (op == BPF_JSET) {
+		if (op_types == OP_R32_R32)
+			len = tst_r32(buf, dst, src);
+		else if (op_types == OP_R32_I32)
+			len = tst_r32_i32(buf, dst, imm);
+		else if (op_types == OP_R64_R64)
+			len = tst_r64(buf, dst, src);
+		else if (op_types == OP_R64_I32)
+			len = tst_r64_i32(buf, dst, imm);
+	}
+
+	return len;
+}
+
+/*
+ * Emit "check" instructions for conditional jumps,
+ * calculate the offset for jump's target address in JIT,
+ * and issue the "branch" instruction with the right "cond".
+ */
+static int gen_jmp(struct jit_context *ctx, const struct bpf_insn *insn,
+		   const enum OP_TYPES op_types, u8 *len)
+{
+	s8  cond;
+	s32 disp = 0;
 	u8  *buf = effective_jit_buf(&ctx->jit);
 
-	/* Get the offset (s21) for jumping to the target of the branch. */
-	ret = bpf_offset_to_jit(ctx, idx, &displacement);
-	if (ret < 0)
-		return ret;
-	*len = arc_b(buf, CC_always, displacement);
+	if ((cond = bpf_cond_to_arc(BPF_OP(insn->code))) < 0)
+		return cond;
+
+	/* The "op_types" range is already verified by "bpf_cond_to_arc()". */
+	*len = emit_check_insn(buf, insn, op_types);
+
+	/* After that ctx->bpf2insn[] is initialised, offsets can be deduced. */
+	if (emit) {
+		int ret = bpf_offset_to_jit(ctx, insn, *len, &disp);
+		if (ret < 0)
+			return ret;
+	}
+
+	*len += arc_b(buf+*len, (u8) cond, disp);
+
 	return 0;
 }
 
@@ -1326,6 +1659,36 @@ static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
 		*len += arc_mov_r(buf+*len, REG_LO(BPF_REG_0), ARC_R_0);
 		*len += arc_mov_r(buf+*len, REG_HI(BPF_REG_0), ARC_R_1);
 	}
+
+	return 0;
+}
+
+/*
+ * Jump to epilogue from the current location (insn). For details on
+ * offset calculation, see the comments of bpf_offset_to_jit().
+ */
+static int gen_jmp_epilogue(struct jit_context *ctx,
+			    const struct bpf_insn *insn, u8 *len)
+{
+	int disp = 0;
+	u8  *buf = effective_jit_buf(&ctx->jit);
+	const s32 idx = get_index_for_insn(ctx, insn);
+
+	if (idx < 0 || idx >= ctx->prog->len) {
+		pr_err("bpf-jit: jmp epilogue -> insn is not in prog.");
+		return -EINVAL;
+	}
+
+	/* Only after the dry-run, ctx->bpf2insn[] holds valid entries. */
+	if (emit)
+		disp = ctx->epilogue_offset - ctx->bpf2insn[idx];
+
+	if (disp & 1 || !IN_S21_RANGE(disp)) {
+		pr_err("bpf-jit: displacement to epilogue is not valid.");
+		return -EFAULT;
+	}
+
+	*len = arc_b(buf, CC_always, disp);
 
 	return 0;
 }
@@ -1376,6 +1739,14 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU | BPF_SUB | BPF_K:
 		len = sub_r32_i32(buf, dst, imm);
 		break;
+	/* dst &= src (32-bit) */
+	case BPF_ALU | BPF_AND | BPF_X:
+		len = and_r32(buf, dst, src);
+		break;
+	/* dst &= imm (32-bit) */
+	case BPF_ALU | BPF_AND | BPF_K:
+		len = and_r32_i32(buf, dst, imm);
+		break;
 	/* dst ^= src (32-bit) */
 	case BPF_ALU | BPF_XOR | BPF_X:
 		len = xor_r32(buf, dst, src);
@@ -1405,6 +1776,14 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU64 | BPF_SUB | BPF_K:
 		len = sub_r64_i32(buf, dst, imm);
 		break;
+	/* dst &= src (64-bit) */
+	case BPF_ALU64 | BPF_AND | BPF_X:
+		len = and_r64(buf, dst, src);
+		break;
+	/* dst &= imm32 (64-bit) */
+	case BPF_ALU64 | BPF_AND | BPF_K:
+		len = and_r64_i32(buf, dst, imm);
+		break;
 	/* dst ^= src (64-bit) */
 	case BPF_ALU64 | BPF_XOR | BPF_X:
 		len = xor_r64(buf, dst, src);
@@ -1413,7 +1792,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU64 | BPF_XOR | BPF_K:
 		len = xor_r64_i32(buf, dst, imm);
 		break;
-	/* TODO: fil these with BPF_K and BPF_X */
+	/* TODO: fill these with BPF_K and BPF_X */
 	case BPF_ALU64 | BPF_LSH:
 	case BPF_ALU64 | BPF_RSH:
 	case BPF_ALU64 | BPF_ARSH:
@@ -1458,11 +1837,61 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		len = store_i(buf, imm, dst, off, BPF_SIZE(code));
 		break;
 	case BPF_JMP | BPF_JA:
-		if ((ret = gen_jmp(ctx, idx, &len)) < 0)
+	case BPF_JMP | BPF_JEQ  | BPF_X:
+	case BPF_JMP | BPF_JGT  | BPF_X:
+	case BPF_JMP | BPF_JGE  | BPF_X:
+	case BPF_JMP | BPF_JSET | BPF_X:
+	case BPF_JMP | BPF_JNE  | BPF_X:
+	case BPF_JMP | BPF_JSGT | BPF_X:
+	case BPF_JMP | BPF_JSGE | BPF_X:
+	case BPF_JMP | BPF_JLT  | BPF_X:
+	case BPF_JMP | BPF_JLE  | BPF_X:
+	case BPF_JMP | BPF_JSLT | BPF_X:
+	case BPF_JMP | BPF_JSLE | BPF_X:
+		if ((ret = gen_jmp(ctx, insn, OP_R64_R64, &len)) < 0)
 			return ret;
 		break;
-	/* TODO: fill this in. */
-	case BPF_JMP | BPF_JSGE | BPF_X:
+	case BPF_JMP | BPF_JEQ  | BPF_K:
+	case BPF_JMP | BPF_JGT  | BPF_K:
+	case BPF_JMP | BPF_JGE  | BPF_K:
+	case BPF_JMP | BPF_JSET | BPF_K:
+	case BPF_JMP | BPF_JNE  | BPF_K:
+	case BPF_JMP | BPF_JSGT | BPF_K:
+	case BPF_JMP | BPF_JSGE | BPF_K:
+	case BPF_JMP | BPF_JLT  | BPF_K:
+	case BPF_JMP | BPF_JLE  | BPF_K:
+	case BPF_JMP | BPF_JSLT | BPF_K:
+	case BPF_JMP | BPF_JSLE | BPF_K:
+		if ((ret = gen_jmp(ctx, insn, OP_R64_I32, &len)) < 0)
+			return ret;
+		break;
+	case BPF_JMP32 | BPF_JEQ  | BPF_X:
+	case BPF_JMP32 | BPF_JGT  | BPF_X:
+	case BPF_JMP32 | BPF_JGE  | BPF_X:
+	case BPF_JMP32 | BPF_JSET | BPF_X:
+	case BPF_JMP32 | BPF_JNE  | BPF_X:
+	case BPF_JMP32 | BPF_JSGT | BPF_X:
+	case BPF_JMP32 | BPF_JSGE | BPF_X:
+	case BPF_JMP32 | BPF_JLT  | BPF_X:
+	case BPF_JMP32 | BPF_JLE  | BPF_X:
+	case BPF_JMP32 | BPF_JSLT | BPF_X:
+	case BPF_JMP32 | BPF_JSLE | BPF_X:
+		if ((ret = gen_jmp(ctx, insn, OP_R32_R32, &len)) < 0)
+			return ret;
+		break;
+	case BPF_JMP32 | BPF_JEQ  | BPF_K:
+	case BPF_JMP32 | BPF_JGT  | BPF_K:
+	case BPF_JMP32 | BPF_JGE  | BPF_K:
+	case BPF_JMP32 | BPF_JSET | BPF_K:
+	case BPF_JMP32 | BPF_JNE  | BPF_K:
+	case BPF_JMP32 | BPF_JSGT | BPF_K:
+	case BPF_JMP32 | BPF_JSGE | BPF_K:
+	case BPF_JMP32 | BPF_JLT  | BPF_K:
+	case BPF_JMP32 | BPF_JLE  | BPF_K:
+	case BPF_JMP32 | BPF_JSLT | BPF_K:
+	case BPF_JMP32 | BPF_JSLE | BPF_K:
+		if ((ret = gen_jmp(ctx, insn, OP_R32_I32, &len)) < 0)
+			return ret;
 		break;
 	case BPF_JMP | BPF_CALL:
 		/*
@@ -1479,8 +1908,9 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		/* If this is the last instruction, epilogue will follow. */
 		if (is_last_insn(ctx->prog, idx))
 			break;
-		/* TODO: jump to epilogue AND add "break". */
-		fallthrough;
+		if ((ret = gen_jmp_epilogue(ctx, insn, &len)) < 0)
+			return ret;
+		break;
 	default:
 		pr_err("bpf-jit: can't handle instruction code 0x%02X\n", code);
 		return -ENOTSUPP;
