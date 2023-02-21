@@ -16,6 +16,10 @@ static struct cpuinfo_arc_cache {
 
 #define ARC_L2_CONFIGURED	(l2_info.sz_k && l2_enable)
 
+void (*__dma_cache_wback_inv)(phys_addr_t start, unsigned long sz);
+void (*__dma_cache_inv)(phys_addr_t start, unsigned long sz);
+void (*__dma_cache_wback)(phys_addr_t start, unsigned long sz);
+
 static int read_decode_cache_bcr_arcv3(int c, char *buf, int len)
 {
 	struct cpuinfo_arc_cache *p_l2 = &l2_info;
@@ -101,14 +105,6 @@ slc_chk:
 	return n;
 }
 
-void __ref arc_cache_init(void)
-{
-	unsigned int __maybe_unused cpu = smp_processor_id();
-
-	if (cpu == 0 && ARC_L2_CONFIGURED)
-		arc_cluster_scm_enable();
-}
-
 #define OP_INV		0x1
 #define OP_FLUSH	0x2
 #define OP_FLUSH_N_INV	0x3
@@ -155,11 +151,13 @@ static void __flush_dcache_range(phys_addr_t paddr, unsigned long vaddr, int len
 {
 #ifdef CONFIG_ARC_HAS_DCACHE
 	unsigned long end;
+	unsigned long flags;
+
+	local_irq_save(flags);
 
 	end = paddr + len + L1_CACHE_BYTES - 1;
 
-        __dc_op_before(op);
-
+    __dc_op_before(op);
 #if defined(CONFIG_64BIT)
         write_aux_64(ARC_REG_DC_ENDR, end);
         write_aux_64(ARC_REG_DC_STARTR, paddr);
@@ -167,9 +165,115 @@ static void __flush_dcache_range(phys_addr_t paddr, unsigned long vaddr, int len
         write_aux_reg(ARC_REG_DC_ENDR, end);
         write_aux_reg(ARC_REG_DC_STARTR, paddr);
 #endif
-
-        __dc_op_after(op);
+    __dc_op_after(op);
+	local_irq_restore(flags);
 #endif
+}
+
+#define scm_op(paddr, sz, op)	scm_op_rgn(paddr, sz, op)
+
+noinline void scm_op_rgn(phys_addr_t paddr, unsigned long sz, const int op)
+{
+	/*
+	 * SCM is shared between all cores and concurrent aux operations from
+	 * multiple cores need to be serialized using a spinlock
+	 * A concurrent operation can be silently ignored and/or the old/new
+	 * operation can remain incomplete forever (lockup in SLC_CTRL_BUSY loop
+	 * below)
+	 */
+	static DEFINE_SPINLOCK(lock);
+	unsigned long flags;
+	unsigned int cmd;
+	phys_addr_t end;
+
+	spin_lock_irqsave(&lock, flags);
+
+	cmd = ARC_CLN_CACHE_CMD_INCR;
+	if (op == OP_INV) {
+		cmd |= ARC_CLN_CACHE_CMD_OP_ADDR_INV;
+	} else if (op == OP_FLUSH) {
+		cmd |= ARC_CLN_CACHE_CMD_OP_ADDR_CLN;
+	} else {
+		cmd |= ARC_CLN_CACHE_CMD_OP_ADDR_CLN_INV;
+	}
+
+	/*
+	 * Lower bits are ignored, no need to clip
+	 * END can't be same as START, so add (l2_info.line_len - 1) to sz
+	 */
+	end = paddr + sz + l2_info.line_len - 1;
+
+	arc_cln_write_reg(ARC_CLN_CACHE_ADDR_LO0, (u32)paddr);
+	arc_cln_write_reg(ARC_CLN_CACHE_ADDR_LO1, (u64)paddr >> 32ULL);
+
+	arc_cln_write_reg(ARC_CLN_CACHE_ADDR_HI0, (u32)end);
+	arc_cln_write_reg(ARC_CLN_CACHE_ADDR_HI1, (u64)end >> 32ULL);
+
+	arc_cln_write_reg(ARC_CLN_CACHE_CMD, cmd);
+	while (arc_cln_read_reg(ARC_CLN_CACHE_STATUS) & ARC_CLN_CACHE_STATUS_BUSY);
+
+	spin_unlock_irqrestore(&lock, flags);
+}
+
+/*
+ * DMA ops for systems with L1 cache only
+ * Make memory coherent with L1 cache by flushing/invalidating L1 lines
+ */
+static void __dma_cache_wback_l1(phys_addr_t start, unsigned long sz)
+{
+	__flush_dcache_range(start, start, sz, OP_FLUSH);
+}
+
+static void __dma_cache_inv_l1(phys_addr_t start, unsigned long sz)
+{
+	__flush_dcache_range(start, start, sz, OP_INV);
+}
+
+static void __dma_cache_wback_inv_l1(phys_addr_t start, unsigned long sz)
+{
+	__flush_dcache_range(start, start, sz, OP_FLUSH_N_INV);
+}
+
+/*
+ * DMA ops for systems with both L1 and L2 caches
+ * Both L1 and L2 lines need to be explicitly flushed/invalidated
+ */
+static void __dma_cache_wback_scm(phys_addr_t start, unsigned long sz)
+{
+	__flush_dcache_range(start, start, sz, OP_FLUSH);
+	scm_op(start, sz, OP_FLUSH);
+}
+
+static void __dma_cache_inv_scm(phys_addr_t start, unsigned long sz)
+{
+	__flush_dcache_range(start, start, sz, OP_INV);
+	scm_op(start, sz, OP_INV);
+}
+
+static void __dma_cache_wback_inv_scm(phys_addr_t start, unsigned long sz)
+{
+	__flush_dcache_range(start, start, sz, OP_FLUSH_N_INV);
+	scm_op(start, sz, OP_FLUSH_N_INV);
+}
+
+void __ref arc_cache_init(void)
+{
+	unsigned int __maybe_unused cpu = smp_processor_id();
+
+	if(cpu != 0)
+		return;
+
+	if (ARC_L2_CONFIGURED) {
+		arc_cluster_scm_enable();
+
+		__dma_cache_wback = __dma_cache_wback_scm;
+		__dma_cache_inv = __dma_cache_inv_scm;
+		__dma_cache_wback_inv = __dma_cache_wback_inv_scm;
+	} else {
+		__dma_cache_wback = __dma_cache_wback_l1;
+		__dma_cache_inv = __dma_cache_inv_l1;
+		__dma_cache_wback_inv = __dma_cache_wback_inv_l1;
+	}
 }
 
 /*
@@ -229,26 +333,91 @@ void __sync_icache_dcache(phys_addr_t paddr, unsigned long vaddr, int len)
 	local_irq_restore(flags);
 }
 
+#ifdef CONFIG_ARC_HAS_ICACHE
+static inline void __ic_entire_inv(void)
+{
+	write_aux_reg(ARC_REG_IC_IVIC, 1);
+	read_aux_reg(ARC_REG_IC_CTRL);	/* blocks */
+}
+#else
+	#define __ic_entire_inv()
+#endif
+
+#ifdef CONFIG_ARC_HAS_DCACHE
+static inline void __dc_entire_op(const int op)
+{
+	int aux;
+
+	__dc_op_before(op);
+
+	if (op & OP_INV)	/* Inv or flush-n-inv use same cmd reg */
+		aux = ARC_REG_DC_IVDC;
+	else
+		aux = ARC_REG_DC_FLSH;
+
+	write_aux_reg(aux, 0x1);
+
+	__dc_op_after(op);
+}
+#else
+	#define __dc_entire_op(op)
+#endif
+
+static void __dma_cache_wback_inv_all_scm(void)
+{
+	static DEFINE_SPINLOCK(lock);
+	unsigned long flags;
+	unsigned int vv;
+
+	if(ARC_L2_CONFIGURED) {
+		spin_lock_irqsave(&lock, flags);
+
+		vv = arc_cln_read_reg(ARC_CLN_CACHE_STATUS);
+		//arc_cln_write_reg(ARC_CLN_CACHE_STATUS, 0); // disable the L2 cache (if enabled)
+		arc_cln_write_reg(ARC_CLN_CACHE_CMD, ARC_CLN_CACHE_CMD_OP_REG_CLN_INV |
+			  ARC_CLN_CACHE_CMD_INCR); // flush + invalidate
+		while (arc_cln_read_reg(ARC_CLN_CACHE_STATUS) &
+	       ARC_CLN_CACHE_STATUS_BUSY)
+			;
+		//arc_cln_write_reg(ARC_CLN_CACHE_STATUS, vv & 0xFFFF0000); // enable the L2 cache
+
+		spin_unlock_irqrestore(&lock, flags);
+	}
+}
+
+noinline void flush_cache_all(void)
+{
+	unsigned long flags;
+
+	local_irq_save(flags);
+	__ic_entire_inv();					// L1I$
+	__dc_entire_op(OP_FLUSH_N_INV);		// L1D$
+	local_irq_restore(flags);
+	__dma_cache_wback_inv_all_scm();	// L2$
+}
+
 SYSCALL_DEFINE3(cacheflush, unsigned long, start, unsigned long, sz, unsigned long, flags)
 {
+	/* TBD: optimize this */
+	flush_cache_all();
 	return 0;
 }
 
 void dma_cache_wback_inv(phys_addr_t start, unsigned long sz)
 {
-	__flush_dcache_range(start, start, sz, OP_FLUSH_N_INV);
+	__dma_cache_wback_inv(start, sz);
 }
 EXPORT_SYMBOL(dma_cache_wback_inv);
 
 void dma_cache_inv(phys_addr_t start, unsigned long sz)
 {
-	__flush_dcache_range(start, start, sz, OP_INV);
+	__dma_cache_inv(start, sz);
 }
 EXPORT_SYMBOL(dma_cache_inv);
 
 void dma_cache_wback(phys_addr_t start, unsigned long sz)
 {
-	__flush_dcache_range(start, start, sz, OP_FLUSH);
+	__dma_cache_wback(start, sz);
 }
 EXPORT_SYMBOL(dma_cache_wback);
 
