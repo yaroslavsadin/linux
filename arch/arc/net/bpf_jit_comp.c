@@ -135,6 +135,9 @@ enum {
 #define OP_A(x)	((x) & 0x03f)
 #define OP_B(x)	((((x) & 0x07) << 24) | (((x) & 0x38) <<  9))
 #define OP_C(x)	(((x) & 0x03f) << 6)
+#define OP_0	(OP_A(ARC_R_IMM))
+#define OP_IMM	(OP_C(ARC_R_IMM))
+#define COND(x)	(OP_A((x) & 31))
 #define FLAG(x)	(((x) & 1) << 15)
 
 /*
@@ -150,8 +153,8 @@ enum {
  */
 #define ADD_OPCODE	0x20000000
 /* Addition with updating the pertinent flags in "status32" register. */
-#define OPC_ADD_F \
-	ADD_OPCODE | FLAG(1)
+#define OPC_ADD_F	ADD_OPCODE | FLAG(1)
+#define OPC_ADDI	ADD_OPCODE | OP_IMM
 
 /*
  * The 4-byte encoding of "adc a,b,c" (addition with carry):
@@ -177,8 +180,8 @@ enum {
  */
 #define SUB_OPCODE	0x20020000
 /* Subtraction with updating the pertinent flags in "status32" register. */
-#define OPC_SUB_F \
-	SUB_OPCODE | FLAG(1)
+#define OPC_SUB_F	SUB_OPCODE | FLAG(1)
+#define OPC_SUBI	SUB_OPCODE | OP_IMM
 
 /*
  * The 4-byte encoding of "sbc a,b,c" (subtraction with carry):
@@ -192,8 +195,17 @@ enum {
  * c:  cccccc		the 2nd input operand
  */
 #define SBC_OPCODE	0x20030000
-#define OPC_SBC_F \
-	SBC_OPCODE | FLAG(1)
+#define OPC_SBC_F	SBC_OPCODE | FLAG(1)
+
+/*
+ * The 4-byte encoding of "abs b,c" (absolute):
+ *
+ * 0010_0bbb 0010_1111 0BBB_cccc cc00_1001
+ *
+ * b:  BBBbbb		result
+ * c:  cccccc		input
+ */
+#define ABS_OPCODE	0x202f0009
 
 /*
  * The 4-byte encoding of "and a,b,c":
@@ -207,9 +219,10 @@ enum {
  * c:  cccccc		the 2nd input operand
  */
 #define AND_OPCODE	0x20040000
+#define OPC_ANDI	AND_OPCODE | OP_IMM
 
 /*
- * The 4-byte encoding of "tst[qq] b,c":
+ * The 4-byte encoding of "tst[.qq] b,c":
  *
  * 0010_0bbb 1100_1011 1BBB_cccc cc0q_qqqq
  *
@@ -219,6 +232,19 @@ enum {
  * c:  cccccc		the 2nd input operand
  */
 #define TST_OPCODE	0x20cb8000
+#define OPC_TSTI	TST_OPCODE | OP_IMM
+
+/*
+ * The 4-byte encoding of "or a,b,c":
+ *
+ * 0010_0bbb 0000_0101 0BBB_cccc ccaa_aaaa
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define OR_OPCODE	0x20050000
+#define OPC_ORI		OR_OPCODE | OP_IMM
 
 /*
  * The 4-byte encoding of "xor a,b,c":
@@ -230,20 +256,51 @@ enum {
  * c:  cccccc		the 2nd input operand
  */
 #define XOR_OPCODE	0x20070000
+#define OPC_XORI	XOR_OPCODE | OP_IMM
 
 /*
- * The 4-byte encoding of "asl a,b,c":
+ * The 4-byte encoding of "asl[.qq] b,b,c" (arithmetic shift left):
  *
- * 0010_1bbb 0i00_0000 0BBB_cccc ccaa_aaaa
+ * 0010_1bbb 1100_0000 0BBB_cccc cciq_qqqq
  *
- * a:  aaaaaa		result
- * b:  BBBbbb		number to be shifted
+ * qq:	qqqqq		condtion code
+ *
+ * b:  BBBbbb		result and the first operand (number to be shifted)
  * c:  cccccc		amount to be shifted
- * i:			if set, c is considered a 6-bit immediate, else a reg.
+ * i:			if set, c is considered a 5-bit immediate, else a reg.
  */
-#define ASL_OPCODE	0x28000000
-#define ASL_I(x)	(((x) & 1) << 22)
+#define ASL_OPCODE	0x28c00000
+#define ASL_I(x)	(((x) & 1) << 5)
+#define ASL_IMM(x)	OP_C((x) & 31)
 #define OPC_ASLI	ASL_OPCODE | ASL_I(1)
+
+/*
+ * The 4-byte encoding of "asr[.qq] b,b,c" (arithmetic shift right):
+ *
+ * 0010_1bbb 1100_0010 0BBB_cccc cci0_0000
+ *
+ * b:  BBBbbb		result and the first operand (number to be shifted)
+ * c:  cccccc		amount to be shifted
+ * i:			if set, c is considered a 5-bit immediate, else a reg.
+ */
+#define ASR_OPCODE	0x28c20000
+#define ASR_I(x)	ASL_I(x)
+#define ASR_IMM(x)	ASL_IMM(x)
+#define OPC_ASRI	ASR_OPCODE | ASR_I(1)
+
+/*
+ * The 4-byte encoding of "lsr[.qq] b,b,c" (logical shift right):
+ *
+ * 0010_1bbb 1100_0001 0BBB_cccc cciq_qqqq
+ *
+ * b:  BBBbbb		result and the first operand (number to be shifted)
+ * c:  cccccc		amount to be shifted
+ * i:			if set, c is considered a 5-bit immediate, else a reg.
+ */
+#define LSR_OPCODE	0x28c10000
+#define LSR_I(x)	ASL_I(x)
+#define LSR_IMM(x)	ASL_IMM(x)
+#define OPC_LSRI	LSR_OPCODE | LSR_I(1)
 
 /*
  * The 4-byte encoding of "mov b,c":
@@ -429,105 +486,97 @@ static inline u8 bpf_to_arc_size(u8 size)
 
 /*********************** Encoders ************************/
 
-static u8 arc_add_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_add_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = ADD_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(reg_src);
+		const u32 insn = ADD_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_add_f_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_add_f_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = OPC_ADD_F | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(reg_src);
+		const u32 insn = OPC_ADD_F | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_add_i(u8 *buf, u8 reg_dst, s32 imm)
+static u8 arc_add_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		u32 insn = ADD_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(ARC_R_IMM);
+		const u32 insn = OPC_ADDI | OP_A(rd) | OP_B(rd);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
 	return INSN_len_normal + INSN_len_imm;
 }
 
-static u8 arc_adc_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_adc_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = ADC_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(reg_src);
+		const u32 insn = ADC_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_sub_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_sub_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = SUB_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(reg_src);
+		const u32 insn = SUB_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_sub_f_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_sub_f_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = OPC_SUB_F | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(reg_src);
+		const u32 insn = OPC_SUB_F | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_sub_i(u8 *buf, u8 reg_dst, s32 imm)
+static u8 arc_sub_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		u32 insn = SUB_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(ARC_R_IMM);
+		const u32 insn = OPC_SUBI | OP_A(rd) | OP_B(rd);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
 	return INSN_len_normal + INSN_len_imm;
 }
 
-static u8 arc_sbc_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_sbc_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = SBC_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(reg_src);
+		const u32 insn = SBC_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-/* Implemented as "sub.f 0,reg_dst,reg_src". */
-static u8 arc_cmp_r(u8 *buf, u8 reg_dst, u8 reg_src)
+/* Implemented as "sub.f 0,rd,rs". */
+static u8 arc_cmp_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = OPC_SUB_F | OP_A(ARC_R_IMM) | OP_B(reg_dst) |
-			   OP_C(reg_src);
+		const u32 insn = OPC_SUB_F | OP_0 | OP_B(rd) |
+				 OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-/* Implemented as "sub.f 0,reg_dst,imm". */
-static u8 arc_cmp_i(u8 *buf, u8 reg_dst, s32 imm)
+/* Implemented as "sub.f 0,rd,imm". */
+static u8 arc_cmp_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		u32 insn = OPC_SUB_F | OP_A(ARC_R_IMM) | OP_B(reg_dst) |
-			   OP_C(ARC_R_IMM);
+		const u32 insn = OPC_SUB_F | OP_0 | OP_B(rd) |
+				 OP_IMM;
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -536,56 +585,63 @@ static u8 arc_cmp_i(u8 *buf, u8 reg_dst, s32 imm)
 
 
 /*
- * Implemented as "sbc.f 0,reg_dst,reg_src".
+ * Implemented as "sbc.f 0,rd,rs".
  *
  * This particular "cmp2" version must be only emitted as a follow-up
  * to a "cmp" version. A chain of these two makes it possible to compare
  * pair of registers (64-bit).
  */
-static u8 arc_cmp2_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_cmp2_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = OPC_SBC_F | OP_A(ARC_R_IMM) | OP_B(reg_dst) |
-			   OP_C(reg_src);
+		const u32 insn = OPC_SBC_F | OP_0 | OP_B(rd) |
+				 OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_and_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_abs_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = AND_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(reg_src);
+		const u32 insn = ABS_OPCODE | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_and_i(u8 *buf, u8 reg_dst, s32 imm)
+static u8 arc_and_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = XOR_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(ARC_R_IMM);
+		const u32 insn = AND_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_and_i(u8 *buf, u8 rd, s32 imm)
+{
+	if (emit) {
+		const u32 insn = AND_OPCODE | OP_A(rd) | OP_B(rd);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
 	return INSN_len_normal + INSN_len_imm;
 }
 
-static u8 arc_tst_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_tst_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = TST_OPCODE | OP_B(reg_dst) | OP_C(reg_src);
+		const u32 insn = TST_OPCODE | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_tst_i(u8 *buf, u8 reg_dst, s32 imm)
+static u8 arc_tst_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		u32 insn = TST_OPCODE | OP_B(reg_dst) | OP_C(ARC_R_IMM);
+		const u32 insn = OPC_TSTI | OP_B(rd);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -598,63 +654,151 @@ static u8 arc_tst_i(u8 *buf, u8 reg_dst, s32 imm)
  * zero, then we don't need to test the upper 32-bits lest it sets
  * the zero flag.
  */
-static u8 arc_tst_z_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_tst_z_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = TST_OPCODE | OP_B(reg_dst) | OP_C(reg_src) |
-			   CC_equal;
+		const u32 insn = TST_OPCODE | OP_B(rd) | OP_C(rs) | CC_equal;
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_xor_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_xor_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = XOR_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(reg_src);
+		const u32 insn = XOR_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_xor_i(u8 *buf, u8 reg_dst, s32 imm)
+static u8 arc_xor_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		u32 insn = XOR_OPCODE | OP_A(reg_dst) | OP_B(reg_dst) |
-			   OP_C(ARC_R_IMM);
+		const u32 insn = XOR_OPCODE | OP_A(rd) | OP_B(rd);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
 	return INSN_len_normal + INSN_len_imm;
 }
 
+static u8 arc_or_r(u8 *buf, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = OR_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_or_i(u8 *buf, u8 rd, s32 imm)
+{
+	if (emit) {
+		const u32 insn = OR_OPCODE | OP_A(rd) | OP_B(rd);
+		emit_4_bytes(buf                , insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+static u8 arc_asl_r(u8 *buf, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = ASL_OPCODE | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_asl_r_cc(u8 *buf, u8 cc, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = ASL_OPCODE | OP_B(rd) | OP_C(rs) | COND(cc);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_asl_i(u8 *buf, u8 rd, u8 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_ASLI | OP_B(rd) | ASL_IMM(imm);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_asr_r(u8 *buf, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = ASR_OPCODE | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_asr_i(u8 *buf, u8 rd, u8 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_ASRI | OP_B(rd) | ASR_IMM(imm);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_lsr_r(u8 *buf, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = LSR_OPCODE | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_lsr_r_cc(u8 *buf, u8 cc, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = LSR_OPCODE | OP_B(rd) | OP_C(rs) | COND(cc);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_lsr_i(u8 *buf, u8 rd, u8 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_LSRI | OP_B(rd) | LSR_IMM(imm);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
 /* move an immediate to register with a 4-byte instruction. */
 static u8 arc_movi_r(u8 *buf, u8 reg, s16 imm)
 {
 	if (emit) {
-		u32 insn = MOVI_OPCODE | OP_B(reg) | MOVI_S12(imm);
+		const u32 insn = MOVI_OPCODE | OP_B(reg) | MOVI_S12(imm);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_mov_r(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 arc_mov_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		u32 insn = MOVE_OPCODE | OP_B(reg_dst) | OP_C(reg_src);
+		const u32 insn = MOVE_OPCODE | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_mov_i(u8 *buf, u8 reg_dst, s32 imm)
+static u8 arc_mov_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (IN_S12_RANGE(imm))
-		return arc_movi_r(buf, reg_dst, imm);
+		return arc_movi_r(buf, rd, imm);
 
 	if (emit) {
-		u32 insn = MOVE_OPCODE | OP_B(reg_dst) | OP_C(ARC_R_IMM);
+		const u32 insn = MOVE_OPCODE | OP_B(rd) | OP_IMM;
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -665,7 +809,7 @@ static u8 arc_mov_i(u8 *buf, u8 reg_dst, s32 imm)
 static u8 arc_st_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 {
 	if (emit) {
-		u32 insn = OPC_ST | STORE_AA(AA_none) | STORE_ZZ(zz) |
+		const u32 insn = OPC_ST | STORE_AA(AA_none) | STORE_ZZ(zz) |
 			   OP_C(reg) | OP_B(reg_mem) | STORE_S9(off);
 		emit_4_bytes(buf, insn);
 	}
@@ -677,7 +821,7 @@ static u8 arc_st_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 static u8 arc_push_r(u8 *buf, u8 reg)
 {
 	if (emit) {
-		u32 insn = OPC_PUSH | OP_C(reg);
+		const u32 insn = OPC_PUSH | OP_C(reg);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -687,7 +831,7 @@ static u8 arc_push_r(u8 *buf, u8 reg)
 static u8 arc_ld_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 {
 	if (emit) {
-		u32 insn = OPC_LD | LOAD_AA(AA_none) | LOAD_ZZ(zz) |
+		const u32 insn = OPC_LD | LOAD_AA(AA_none) | LOAD_ZZ(zz) |
 			   LOAD_C(reg) | OP_B(reg_mem) | LOAD_S9(off);
 		emit_4_bytes(buf, insn);
 	}
@@ -698,7 +842,7 @@ static u8 arc_ld_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 static u8 arc_pop_r(u8 *buf, u8 reg)
 {
 	if (emit) {
-		u32 insn = OPC_POP | LOAD_C(reg);
+		const u32 insn = OPC_POP | LOAD_C(reg);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -714,16 +858,16 @@ static u8 arc_jmp_return(u8 *buf)
 static u8 arc_jl(u8 *buf, u8 reg)
 {
 	if (emit) {
-		u32 insn = JL_OPCODE | OP_C(reg);
+		const u32 insn = JL_OPCODE | OP_C(reg);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_b(u8 *buf, u8 cond, int offset)
+static u8 arc_b(u8 *buf, u8 cc, int offset)
 {
 	if (emit) {
-		u32 insn = B_OPCODE | B_S21(offset) | cond;
+		const u32 insn = B_OPCODE | B_S21(offset) | COND(cc);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -731,124 +875,124 @@ static u8 arc_b(u8 *buf, u8 cond, int offset)
 
 /*********************** Packers *************************/
 
-static u8 add_r32(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 add_r32(u8 *buf, u8 rd, u8 rs)
 {
-	return arc_add_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+	return arc_add_r(buf, REG_LO(rd), REG_LO(rs));
 }
 
-static u8 add_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 add_r32_i32(u8 *buf, u8 rd, s32 imm)
 {
-	return arc_add_i(buf, REG_LO(reg_dst), imm);
+	return arc_add_i(buf, REG_LO(rd), imm);
 }
 
-static u8 add_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 add_r64(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
-	len  = arc_add_f_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
-	len += arc_adc_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	len  = arc_add_f_r(buf, REG_LO(rd), REG_LO(rs));
+	len += arc_adc_r(buf+len, REG_HI(rd), REG_HI(rs));
 	return len;
 }
 
 static u8 mov_r64_i32(u8 *, u8, s32);
 
-static u8 add_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 add_r64_i32(u8 *buf, u8 rd, s32 imm)
 {
 	u8 len;
 	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
-	len += add_r64(buf+len, reg_dst, JIT_REG_TMP);
+	len += add_r64(buf+len, rd, JIT_REG_TMP);
 	return len;
 }
 
-static u8 sub_r32(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 sub_r32(u8 *buf, u8 rd, u8 rs)
 {
-	return arc_sub_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+	return arc_sub_r(buf, REG_LO(rd), REG_LO(rs));
 }
 
-static u8 sub_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 sub_r32_i32(u8 *buf, u8 rd, s32 imm)
 {
-	return arc_sub_i(buf, REG_LO(reg_dst), imm);
+	return arc_sub_i(buf, REG_LO(rd), imm);
 }
 
-static u8 sub_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 sub_r64(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
-	len  = arc_sub_f_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
-	len += arc_sbc_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	len  = arc_sub_f_r(buf, REG_LO(rd), REG_LO(rs));
+	len += arc_sbc_r(buf+len, REG_HI(rd), REG_HI(rs));
 	return len;
 }
 
-static u8 sub_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
-{
-	u8 len;
-	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
-	len += sub_r64(buf+len, reg_dst, JIT_REG_TMP);
-	return len;
-}
-
-static u8 cmp_r32(u8 *buf, u8 reg_dst, u8 reg_src)
-{
-	u8 len;
-	len = arc_cmp_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
-	return len;
-}
-
-static u8 cmp_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
-{
-	u8 len;
-	len = arc_cmp_i(buf, REG_LO(reg_dst), imm);
-	return len;
-}
-
-static u8 cmp_r64(u8 *buf, u8 reg_dst, u8 reg_src)
-{
-	u8 len;
-	len  = arc_cmp_r(buf     , REG_LO(reg_dst), REG_LO(reg_src));
-	len += arc_cmp2_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
-	return len;
-}
-
-static u8 cmp_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 sub_r64_i32(u8 *buf, u8 rd, s32 imm)
 {
 	u8 len;
 	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
-	len += cmp_r64(buf+len, reg_dst, JIT_REG_TMP);
+	len += sub_r64(buf+len, rd, JIT_REG_TMP);
 	return len;
 }
 
-static u8 and_r32(u8 *buf, u8 reg_dst, u8 reg_src)
-{
-	return arc_and_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
-}
-
-static u8 and_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
-{
-	return arc_and_i(buf, REG_LO(reg_dst), imm);
-}
-
-static u8 and_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 cmp_r32(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
-	len  = arc_and_r(buf    , REG_LO(reg_dst), REG_LO(reg_src));
-	len += arc_and_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	len = arc_cmp_r(buf, REG_LO(rd), REG_LO(rs));
 	return len;
 }
 
-static u8 and_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 cmp_r32_i32(u8 *buf, u8 rd, s32 imm)
+{
+	u8 len;
+	len = arc_cmp_i(buf, REG_LO(rd), imm);
+	return len;
+}
+
+static u8 cmp_r64(u8 *buf, u8 rd, u8 rs)
+{
+	u8 len;
+	len  = arc_cmp_r(buf     , REG_LO(rd), REG_LO(rs));
+	len += arc_cmp2_r(buf+len, REG_HI(rd), REG_HI(rs));
+	return len;
+}
+
+static u8 cmp_r64_i32(u8 *buf, u8 rd, s32 imm)
 {
 	u8 len;
 	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
-	len += and_r64(buf+len, reg_dst, JIT_REG_TMP);
+	len += cmp_r64(buf+len, rd, JIT_REG_TMP);
 	return len;
 }
 
-static u8 tst_r32(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 and_r32(u8 *buf, u8 rd, u8 rs)
 {
-	return arc_tst_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+	return arc_and_r(buf, REG_LO(rd), REG_LO(rs));
 }
 
-static u8 tst_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 and_r32_i32(u8 *buf, u8 rd, s32 imm)
 {
-	return arc_tst_i(buf, REG_LO(reg_dst), imm);
+	return arc_and_i(buf, REG_LO(rd), imm);
+}
+
+static u8 and_r64(u8 *buf, u8 rd, u8 rs)
+{
+	u8 len;
+	len  = arc_and_r(buf    , REG_LO(rd), REG_LO(rs));
+	len += arc_and_r(buf+len, REG_HI(rd), REG_HI(rs));
+	return len;
+}
+
+static u8 and_r64_i32(u8 *buf, u8 rd, s32 imm)
+{
+	u8 len;
+	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
+	len += and_r64(buf+len, rd, JIT_REG_TMP);
+	return len;
+}
+
+static u8 tst_r32(u8 *buf, u8 rd, u8 rs)
+{
+	return arc_tst_r(buf, REG_LO(rd), REG_LO(rs));
+}
+
+static u8 tst_r32_i32(u8 *buf, u8 rd, s32 imm)
+{
+	return arc_tst_i(buf, REG_LO(rd), imm);
 }
 
 /*
@@ -857,62 +1001,88 @@ static u8 tst_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
  * flag by looking into the second half while the first half
  * was not zero.
  */
-static u8 tst_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 tst_r64(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
-	len  = arc_tst_r(buf      , REG_LO(reg_dst), REG_LO(reg_src));
-	len += arc_tst_z_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	len  = arc_tst_r(buf      , REG_LO(rd), REG_LO(rs));
+	len += arc_tst_z_r(buf+len, REG_HI(rd), REG_HI(rs));
 	return len;
 }
 
-static u8 tst_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 tst_r64_i32(u8 *buf, u8 rd, s32 imm)
 {
 	u8 len;
 	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
-	len += tst_r64(buf+len, reg_dst, JIT_REG_TMP);
+	len += tst_r64(buf+len, rd, JIT_REG_TMP);
 	return len;
 }
 
-static u8 xor_r32(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 xor_r32(u8 *buf, u8 rd, u8 rs)
 {
-	return arc_xor_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+	return arc_xor_r(buf, REG_LO(rd), REG_LO(rs));
 }
 
-static u8 xor_r32_i32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 xor_r32_i32(u8 *buf, u8 rd, s32 imm)
 {
-	return arc_xor_i(buf, REG_LO(reg_dst), imm);
+	return arc_xor_i(buf, REG_LO(rd), imm);
 }
 
-static u8 xor_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 xor_r64(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
-	len  = arc_xor_r(buf    , REG_LO(reg_dst), REG_LO(reg_src));
-	len += arc_xor_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	len  = arc_xor_r(buf    , REG_LO(rd), REG_LO(rs));
+	len += arc_xor_r(buf+len, REG_HI(rd), REG_HI(rs));
 	return len;
 }
 
-static u8 xor_r64_i32(u8 *buf, u8 reg_dst, s32 imm)
+static u8 xor_r64_i32(u8 *buf, u8 rd, s32 imm)
 {
 	u8 len;
 	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
-	len += xor_r64(buf+len, reg_dst, JIT_REG_TMP);
+	len += xor_r64(buf+len, rd, JIT_REG_TMP);
 	return len;
 }
 
-static u8 mov_r64(u8 *buf, u8 reg_dst, u8 reg_src)
+static u8 or_r32(u8 *buf, u8 rd, u8 rs)
+{
+	return arc_or_r(buf, REG_LO(rd), REG_LO(rs));
+}
+
+static u8 or_r32_i32(u8 *buf, u8 rd, s32 imm)
+{
+	return arc_or_i(buf, REG_LO(rd), imm);
+}
+
+static u8 or_r64(u8 *buf, u8 rd, u8 rs)
+{
+	u8 len;
+	len  = arc_or_r(buf    , REG_LO(rd), REG_LO(rs));
+	len += arc_or_r(buf+len, REG_HI(rd), REG_HI(rs));
+	return len;
+}
+
+static u8 or_r64_i32(u8 *buf, u8 rd, s32 imm)
+{
+	u8 len;
+	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
+	len += or_r64(buf+len, rd, JIT_REG_TMP);
+	return len;
+}
+
+static u8 mov_r64(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
 
-	if (reg_dst == reg_src)
+	if (rd == rs)
 		return 0;
 
-	len  = arc_mov_r(buf, REG_LO(reg_dst), REG_LO(reg_src));
+	len  = arc_mov_r(buf, REG_LO(rd), REG_LO(rs));
 
-	if (reg_src != BPF_REG_FP)
-		len += arc_mov_r(buf+len, REG_HI(reg_dst), REG_HI(reg_src));
+	if (rs != BPF_REG_FP)
+		len += arc_mov_r(buf+len, REG_HI(rd), REG_HI(rs));
 	/* BPF_REG_FP is mapped to 32-bit "fp" register. */
 	else
-		len += arc_movi_r(buf+len, REG_HI(reg_dst), 0);
+		len += arc_movi_r(buf+len, REG_HI(rd), 0);
 
 	return len;
 }
@@ -997,24 +1167,24 @@ static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 static u8 store_i(u8 *buf, s32 imm, u8 reg_mem, s16 off, u8 size)
 {
 	/* REG_LO(JIT_REG_TMP) might be used by "correct_for_offset()". */
-	const u8 arc_reg_src = REG_HI(JIT_REG_TMP);
+	const u8 arc_rs = REG_HI(JIT_REG_TMP);
 	u8 arc_reg_mem = REG_LO(reg_mem);
 	u8 len;
 
 	len = correct_for_offset(buf, &off, size, reg_mem, &arc_reg_mem);
 
 	if (size == BPF_DW) {
-		len += arc_mov_i(buf+len, arc_reg_src, imm);
-		len += arc_st_r(buf+len, arc_reg_src, arc_reg_mem, off,
+		len += arc_mov_i(buf+len, arc_rs, imm);
+		len += arc_st_r(buf+len, arc_rs, arc_reg_mem, off,
 				ZZ_4_byte);
 		imm = (imm >= 0 ? 0 : -1);
-		len += arc_mov_i(buf+len, arc_reg_src, imm);
-		len += arc_st_r(buf+len, arc_reg_src, arc_reg_mem, off+4,
+		len += arc_mov_i(buf+len, arc_rs, imm);
+		len += arc_st_r(buf+len, arc_rs, arc_reg_mem, off+4,
 				ZZ_4_byte);
 	} else {
 		u8 zz = bpf_to_arc_size(size);
-		len += arc_mov_i(buf+len, arc_reg_src, imm);
-		len += arc_st_r(buf+len, arc_reg_src, arc_reg_mem, off, zz);
+		len += arc_mov_i(buf+len, arc_rs, imm);
+		len += arc_st_r(buf+len, arc_rs, arc_reg_mem, off, zz);
 	}
 
 	return len;
@@ -1747,6 +1917,14 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU | BPF_AND | BPF_K:
 		len = and_r32_i32(buf, dst, imm);
 		break;
+	/* dst |= src (32-bit) */
+	case BPF_ALU | BPF_OR | BPF_X:
+		len = or_r32(buf, dst, src);
+		break;
+	/* dst |= imm (32-bit) */
+	case BPF_ALU | BPF_OR | BPF_K:
+		len = or_r32_i32(buf, dst, imm);
+		break;
 	/* dst ^= src (32-bit) */
 	case BPF_ALU | BPF_XOR | BPF_X:
 		len = xor_r32(buf, dst, src);
@@ -1755,7 +1933,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU | BPF_XOR | BPF_K:
 		len = xor_r32_i32(buf, dst, imm);
 		break;
-	/* TODO: fil these with BPF_K and BPF_X */
+	/* TODO: fill these with BPF_K and BPF_X */
 	case BPF_ALU | BPF_LSH:
 	case BPF_ALU | BPF_RSH:
 	case BPF_ALU | BPF_ARSH:
@@ -1783,6 +1961,14 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	/* dst &= imm32 (64-bit) */
 	case BPF_ALU64 | BPF_AND | BPF_K:
 		len = and_r64_i32(buf, dst, imm);
+		break;
+	/* dst |= src (64-bit) */
+	case BPF_ALU64 | BPF_OR | BPF_X:
+		len = or_r64(buf, dst, src);
+		break;
+	/* dst |= imm32 (64-bit) */
+	case BPF_ALU64 | BPF_OR | BPF_K:
+		len = or_r64_i32(buf, dst, imm);
 		break;
 	/* dst ^= src (64-bit) */
 	case BPF_ALU64 | BPF_XOR | BPF_X:
