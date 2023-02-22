@@ -183,6 +183,26 @@ enum {
 #define OPC_SUB_F	SUB_OPCODE | FLAG(1)
 #define OPC_SUBI	SUB_OPCODE | OP_IMM
 
+/* TODO: remove this maybe. */
+/*
+ * The 4-byte encoding of "sub[.f] a,b,u6":
+ *
+ * 0010_0bbb 0i00_0010 fBBB_cccc ccaa_aaaa
+ *
+ * f:                   indicates if flags (carry, etc.) should be updated
+ * i:                   if set, "c" is treated as a 6-bit unsigned.
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define SUB_OPCODE	0x20020000
+#define SUB_I		(1 << 22)
+/* Subtraction with updating the pertinent flags in "status32" register. */
+#define OPC_SUB_F	SUB_OPCODE | FLAG(1)
+#define OPC_SUBI	SUB_OPCODE | OP_IMM
+#define OPC_SUBI_F	OPC_SUB_F | SUB_I
+
 /*
  * The 4-byte encoding of "sbc a,b,c" (subtraction with carry):
  *
@@ -259,48 +279,72 @@ enum {
 #define OPC_XORI	XOR_OPCODE | OP_IMM
 
 /*
+ * The 4-byte encoding of "not b,c":
+ *
+ * 0010_0bbb 0010_1111 0BBB_cccc cc00_1010
+ *
+ * b:  BBBbbb		result
+ * c:  cccccc		input
+ */
+#define NOT_OPCODE	0x202f000a
+
+/*
+ * The 4-byte encoding of "btst b,u6":
+ *
+ * 0010_0bbb 0101_0001 1BBB_uuuu uu00_0000
+ *
+ * b:  BBBbbb		input number to check
+ * u6: uuuuuu		6-bit unsigned number specifying bit position to check
+ */
+#define BTSTU6_OPCODE	0x20518000
+#define BTST_U6(x)	(OP_C((x) & 63))
+
+/*
  * The 4-byte encoding of "asl[.qq] b,b,c" (arithmetic shift left):
  *
- * 0010_1bbb 1100_0000 0BBB_cccc cciq_qqqq
+ * 0010_1bbb 0i00_0000 0BBB_cccc ccaa_aaaa
  *
- * qq:	qqqqq		condtion code
+ * i:			if set, c is considered a 5-bit immediate, else a reg.
  *
  * b:  BBBbbb		result and the first operand (number to be shifted)
  * c:  cccccc		amount to be shifted
- * i:			if set, c is considered a 5-bit immediate, else a reg.
  */
-#define ASL_OPCODE	0x28c00000
-#define ASL_I(x)	(((x) & 1) << 5)
-#define ASL_IMM(x)	OP_C((x) & 31)
-#define OPC_ASLI	ASL_OPCODE | ASL_I(1)
+#define ASL_OPCODE	0x28000000
+#define ASL_I		(1 << 22)
+#define ASLI_U6(x)	OP_C((x) & 31)
+#define OPC_ASLI	ASL_OPCODE | ASL_I
 
 /*
- * The 4-byte encoding of "asr[.qq] b,b,c" (arithmetic shift right):
+ * The 4-byte encoding of "asr a,b,c" (arithmetic shift right):
  *
- * 0010_1bbb 1100_0010 0BBB_cccc cci0_0000
+ * 0010_1bbb 0i00_0010 0BBB_cccc ccaa_aaaa
  *
- * b:  BBBbbb		result and the first operand (number to be shifted)
- * c:  cccccc		amount to be shifted
- * i:			if set, c is considered a 5-bit immediate, else a reg.
+ * i:			if set, c is considered a 6-bit immediate, else a reg.
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		first input:  number to be shifted
+ * c:  cccccc		second input: amount to be shifted
  */
-#define ASR_OPCODE	0x28c20000
-#define ASR_I(x)	ASL_I(x)
-#define ASR_IMM(x)	ASL_IMM(x)
-#define OPC_ASRI	ASR_OPCODE | ASR_I(1)
+#define ASR_OPCODE	0x28020000
+#define ASR_I		ASL_I
+#define ASRI_U6(x)	ASLI_U6(x)
+#define OPC_ASRI	ASR_OPCODE | ASR_I
 
 /*
- * The 4-byte encoding of "lsr[.qq] b,b,c" (logical shift right):
+ * The 4-byte encoding of "lsr a,b,c" (logical shift right):
  *
- * 0010_1bbb 1100_0001 0BBB_cccc cciq_qqqq
+ * 0010_1bbb 0i00_0001 0BBB_cccc ccaa_aaaa
  *
- * b:  BBBbbb		result and the first operand (number to be shifted)
- * c:  cccccc		amount to be shifted
- * i:			if set, c is considered a 5-bit immediate, else a reg.
+ * i:			if set, c is considered a 6-bit immediate, else a reg.
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		first input:  number to be shifted
+ * c:  cccccc		second input: amount to be shifted
  */
-#define LSR_OPCODE	0x28c10000
-#define LSR_I(x)	ASL_I(x)
-#define LSR_IMM(x)	ASL_IMM(x)
-#define OPC_LSRI	LSR_OPCODE | LSR_I(1)
+#define LSR_OPCODE	0x28010000
+#define LSR_I		ASL_I
+#define LSRI_U6(x)	ASLI_U6(x)
+#define OPC_LSRI	LSR_OPCODE | LSR_I
 
 /*
  * The 4-byte encoding of "mov b,c":
@@ -310,7 +354,7 @@ enum {
  * b:  BBBbbb		destination register
  * c:  cccccc		source register
  */
-#define MOVE_OPCODE	0x200a0000
+#define MOV_OPCODE	0x200a0000
 
 /*
  * The 4-byte encoding of "mov b,s12" (used for moving small immediates):
@@ -322,6 +366,23 @@ enum {
  */
 #define MOVI_OPCODE	0x208a0000
 #define MOVI_S12(x)	((((x) & 0xfc0) >> 6) | (((x) & 0x3f) << 6))
+
+/*
+ * The 4-byte encoding of "mov[.qq] b,u6", used for conditional
+ * moving of even smaller immediates:
+ *
+ * 0010_0bbb 1100_1010 0BBB_cccc cciq_qqqq
+ *
+ * qq: qqqqq		condition code
+ * i:			If set, c is considered a 6-bit unsigned number iso reg.
+ *
+ * b:  BBBbbb		destination register
+ * c:  cccccc		source
+ */
+#define MOV_CC_OPCODE	0x20ca0000
+#define OPC_MOV_CC	MOV_CC_OPCODE
+#define MOV_CC_I	(1 << 5)
+#define OPC_MOVU_CC	MOV_CC_OPCODE | MOV_CC_I
 
 /*
  * The 4-byte encoding of "ld[zz][.x][.aa][.di] c,[b,s9]":
@@ -541,6 +602,15 @@ static u8 arc_sub_f_r(u8 *buf, u8 rd, u8 rs)
 	return INSN_len_normal;
 }
 
+static u8 arc_subi_f(u8 *buf, u8 rd, u8 rs, u8 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_SUBI_F | OP_A(rd) | OP_B(rd) | OP_C(imm);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
 static u8 arc_sub_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
@@ -663,6 +733,25 @@ static u8 arc_tst_z_r(u8 *buf, u8 rd, u8 rs)
 	return INSN_len_normal;
 }
 
+static u8 arc_or_r(u8 *buf, u8 rd, u8 rs1, u8 rs2)
+{
+	if (emit) {
+		const u32 insn = OR_OPCODE | OP_A(rd) | OP_B(rs1) | OP_C(rs2);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_or_i(u8 *buf, u8 rd, s32 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_ORI | OP_A(rd) | OP_B(rd);
+		emit_4_bytes(buf                , insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
 static u8 arc_xor_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
@@ -675,99 +764,80 @@ static u8 arc_xor_r(u8 *buf, u8 rd, u8 rs)
 static u8 arc_xor_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		const u32 insn = XOR_OPCODE | OP_A(rd) | OP_B(rd);
+		const u32 insn = OPC_XORI | OP_A(rd) | OP_B(rd);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
 	return INSN_len_normal + INSN_len_imm;
 }
 
-static u8 arc_or_r(u8 *buf, u8 rd, u8 rs)
+static u8 arc_not_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = OR_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = NOT_OPCODE | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_or_i(u8 *buf, u8 rd, s32 imm)
+static u8 arc_btst_i(u8 *buf, u8 rs, u8 imm)
 {
 	if (emit) {
-		const u32 insn = OR_OPCODE | OP_A(rd) | OP_B(rd);
-		emit_4_bytes(buf                , insn);
-		emit_4_bytes(buf+INSN_len_normal, imm);
-	}
-	return INSN_len_normal + INSN_len_imm;
-}
-
-static u8 arc_asl_r(u8 *buf, u8 rd, u8 rs)
-{
-	if (emit) {
-		const u32 insn = ASL_OPCODE | OP_B(rd) | OP_C(rs);
+		const u32 insn = BTSTU6_OPCODE | OP_B(rs) | BTST_U6(imm);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_asl_r_cc(u8 *buf, u8 cc, u8 rd, u8 rs)
+static u8 arc_asl_r(u8 *buf, u8 rd, u8 rs1, u8 rs2)
 {
 	if (emit) {
-		const u32 insn = ASL_OPCODE | OP_B(rd) | OP_C(rs) | COND(cc);
+		const u32 insn = ASL_OPCODE | OP_A(rd) | OP_B(rs1) | OP_C(rs2);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_asl_i(u8 *buf, u8 rd, u8 imm)
+static u8 arc_asli_r(u8 *buf, u8 rd, u8 rs, u8 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_ASLI | OP_B(rd) | ASL_IMM(imm);
+		const u32 insn = OPC_ASLI | OP_A(rd) | OP_B(rs) | ASLI_U6(imm);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_asr_r(u8 *buf, u8 rd, u8 rs)
+static u8 arc_asr_r(u8 *buf, u8 rd, u8 rs1, u8 rs2)
 {
 	if (emit) {
-		const u32 insn = ASR_OPCODE | OP_B(rd) | OP_C(rs);
+		const u32 insn = ASR_OPCODE | OP_A(rd) | OP_B(rs1) | OP_C(rs2);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_asr_i(u8 *buf, u8 rd, u8 imm)
+static u8 arc_asri_r(u8 *buf, u8 rd, u8 rs, u8 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_ASRI | OP_B(rd) | ASR_IMM(imm);
+		const u32 insn = OPC_ASRI | OP_A(rd) | OP_B(rs) | ASRI_U6(imm);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_lsr_r(u8 *buf, u8 rd, u8 rs)
+static u8 arc_lsr_r(u8 *buf, u8 rd, u8 rs1, u8 rs2)
 {
 	if (emit) {
-		const u32 insn = LSR_OPCODE | OP_B(rd) | OP_C(rs);
+		const u32 insn = LSR_OPCODE | OP_A(rd) | OP_B(rs1) | OP_C(rs2);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_lsr_r_cc(u8 *buf, u8 cc, u8 rd, u8 rs)
+static u8 arc_lsri_r(u8 *buf, u8 rd, u8 rs, u8 imm)
 {
 	if (emit) {
-		const u32 insn = LSR_OPCODE | OP_B(rd) | OP_C(rs) | COND(cc);
-		emit_4_bytes(buf, insn);
-	}
-	return INSN_len_normal;
-}
-
-static u8 arc_lsr_i(u8 *buf, u8 rd, u8 imm)
-{
-	if (emit) {
-		const u32 insn = OPC_LSRI | OP_B(rd) | LSR_IMM(imm);
+		const u32 insn = OPC_LSRI | OP_A(rd) | OP_B(rs) | LSRI_U6(imm);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -786,7 +856,7 @@ static u8 arc_movi_r(u8 *buf, u8 reg, s16 imm)
 static u8 arc_mov_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = MOVE_OPCODE | OP_B(rd) | OP_C(rs);
+		const u32 insn = MOV_OPCODE | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -798,11 +868,29 @@ static u8 arc_mov_i(u8 *buf, u8 rd, s32 imm)
 		return arc_movi_r(buf, rd, imm);
 
 	if (emit) {
-		const u32 insn = MOVE_OPCODE | OP_B(rd) | OP_IMM;
+		const u32 insn = MOV_OPCODE | OP_B(rd) | OP_IMM;
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
 	return INSN_len_normal + INSN_len_imm;
+}
+
+static u8 arc_mov_cc_r(u8 *buf, u8 cc, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = OPC_MOV_CC | OP_B(rd) | OP_C(rs) | COND(cc);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_movu_cc_r(u8 *buf, u8 cc, u8 rd, u8 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_MOVU_CC | OP_B(rd) | OP_C(imm) | COND(cc);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
 }
 
 /* st.as reg_c, [reg_b, off] */
@@ -1017,6 +1105,32 @@ static u8 tst_r64_i32(u8 *buf, u8 rd, s32 imm)
 	return len;
 }
 
+static u8 or_r32(u8 *buf, u8 rd, u8 rs)
+{
+	return arc_or_r(buf, REG_LO(rd), REG_LO(rd), REG_LO(rs));
+}
+
+static u8 or_r32_i32(u8 *buf, u8 rd, s32 imm)
+{
+	return arc_or_i(buf, REG_LO(rd), imm);
+}
+
+static u8 or_r64(u8 *buf, u8 rd, u8 rs)
+{
+	u8 len;
+	len  = arc_or_r(buf    , REG_LO(rd), REG_LO(rd), REG_LO(rs));
+	len += arc_or_r(buf+len, REG_HI(rd), REG_HI(rd), REG_HI(rs));
+	return len;
+}
+
+static u8 or_r64_i32(u8 *buf, u8 rd, s32 imm)
+{
+	u8 len;
+	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
+	len += or_r64(buf+len, rd, JIT_REG_TMP);
+	return len;
+}
+
 static u8 xor_r32(u8 *buf, u8 rd, u8 rs)
 {
 	return arc_xor_r(buf, REG_LO(rd), REG_LO(rs));
@@ -1043,29 +1157,185 @@ static u8 xor_r64_i32(u8 *buf, u8 rd, s32 imm)
 	return len;
 }
 
-static u8 or_r32(u8 *buf, u8 rd, u8 rs)
-{
-	return arc_or_r(buf, REG_LO(rd), REG_LO(rs));
-}
-
-static u8 or_r32_i32(u8 *buf, u8 rd, s32 imm)
-{
-	return arc_or_i(buf, REG_LO(rd), imm);
-}
-
-static u8 or_r64(u8 *buf, u8 rd, u8 rs)
+/*
+ * ARC's "asl a,b,c" works like "a = (b << (c & 31))".
+ * Therefore "c >= 32" don't actually produce a zero
+ * result. Because of 64-bit register pairs, it may
+ * be quite common to have values >= 32 for shifting.
+ * We have to correct for it:
+ *
+ * sub.f  0,c,32            # cmp c,32
+ * asl    b,b,c             # normal action
+ * mov.pz b,0               # overwerite with 0 if c >= 32
+ */
+static u8 lsh_r32(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
-	len  = arc_or_r(buf    , REG_LO(rd), REG_LO(rs));
-	len += arc_or_r(buf+len, REG_HI(rd), REG_HI(rs));
+	len  = arc_cmp_i(buf, rs, 32);
+	len += arc_asl_r(buf+len, CC_great_eq_u, rd, rs);
+	len += arc_movu_cc_r(buf+len, CC_less_u, rd, 0);
 	return len;
 }
 
-static u8 or_r64_i32(u8 *buf, u8 rd, s32 imm)
+static u8 lsh_r32_i32(u8 *buf, u8 rd, u8 imm)
 {
+	if (imm < 32)
+		return arc_asli_r(buf, REG_LO(rd), REG_LO(rd), imm);
+	else
+		return arc_movi_r(buf, REG_LO(rd), 0);
+}
+
+/*
+ * algorithm
+ * ---------
+ * if (n <= 32)
+ *   to_hi = lo >> (32-n)   # (32-n) is the negate of "n" in a 5-bit width.
+ *   lo <<= n
+ *   hi <<= n
+ *   hi |= to_hi
+ * else
+ *   hi = lo << (n-32)      # for n>=32, effective n is n&31, therefore
+ *   lo = 0                 # "lo << (n-32)" is the same as "lo << n"
+ *
+ * assembly translation for "LSH B, C"
+ * (heavily influenced by ARC gcc)
+ * -----------------------------------
+ * not    t0, C_lo            # The first 3 lines are almost the same as:
+ * lsr    t1, B_lo, 1         #   neg   t0, C_lo
+ * lsr    t1, t1, t0          #   lsr   t1, B_lo, t0
+ * asl    B_lo, B_lo, C_lo    # with one important difference. In "neg"
+ * asl    B_hi, B_hi, C_lo    # version, when C_lo=0, t1 becomes B_lo while
+ * or     B_hi, B_hi, t1      # it should be 0. The "not" approach instead,
+ * btst   C_lo, 5             # "shift"s t1 once and 31 times, practically
+ * mov.ne B_hi, B_lo          # setting it to 0 when C_lo=0.
+ * mov.ne B_lo, 0
+ *
+ * The behaviour is undefined for n >= 64.
+ */
+static u8 lsh_r64(u8 *buf, u8 rd, u8 rs)
+{
+	const u8 t0   = REG_LO(JIT_REG_TMP);
+	const u8 t1   = REG_HI(JIT_REG_TMP);
+	const u8 C_lo = REG_LO(rs);
+	const u8 B_lo = REG_LO(rd);
+	const u8 B_hi = REG_HI(rd);
 	u8 len;
-	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
-	len += or_r64(buf+len, rd, JIT_REG_TMP);
+
+	len  = arc_not_r(buf, t0, C_lo);
+	len += arc_lsri_r(buf+len, t1, B_lo, 1);
+	len += arc_lsr_r(buf+len, t1, t1, t0);
+	len += arc_asl_r(buf+len, B_lo, B_lo, C_lo);
+	len += arc_asl_r(buf+len, B_hi, B_hi, C_lo);
+	len += arc_or_r(buf+len, B_hi, B_hi, t1);
+	len += arc_btst_i(buf+len, C_lo, 5);
+	len += arc_movu_cc_r(buf+len, CC_unequal, B_hi, B_lo);
+	len += arc_movu_cc_r(buf+len, CC_unequal, B_lo, 0);
+
+	return len;
+}
+
+/*
+ * if (n < 32)
+ *   to_hi = B_lo >> 32-n          # extract upper (32-n) bits
+ *   B_lo <<= n
+ *   B_hi <<=n
+ *   B_hi |= to_hi
+ * else if (n < 64)
+ *   B_hi = B_lo << n-32
+ *   B_lo = 0
+ */
+static u8 lsh_r64_i32(u8 *buf, u8 rd, s32 imm)
+{
+	const u8 t0   = REG_LO(JIT_REG_TMP);
+	const u8 B_lo = REG_LO(rd);
+	const u8 B_hi = REG_HI(rd);
+	const u8 n    = (u8) imm;
+	u8 len = 0;
+
+	if (n == 0) {
+		return 0;
+	} else if (n <= 31) {
+		len  = arc_lsri_r(buf, t0, B_lo, 32 - n);
+		len += arc_asli_r(buf+len, B_lo, B_lo, n);
+		len += arc_asli_r(buf+len, B_hi, B_hi, n);
+		len += arc_or_r(buf+len, B_hi, B_hi, t0);
+	} else if (n <= 63) {
+		len  = arc_asli_r(buf, B_hi, B_lo, n - 32);
+		len += arc_movi_r(buf+len, B_lo, 0);
+	}
+	/* n >= 64 is undefined behaviour. */
+
+	return len;
+}
+
+/*
+ * if (n < 32)
+ *   to_lo = B_lo << 32-n          # lower n bits padded with "32-n" 0s
+ *   B_lo >>=n
+ *   B_hi >>=n
+ *   B_hi |= to_lo
+ * else if (n < 64)
+ *   B_lo = B_hi >> n-32
+ *   B_hi = 0
+ */
+static u8 rsh_r64_i32(u8 *buf, u8 rd, s32 imm)
+{
+	const u8 t0   = REG_LO(JIT_REG_TMP);
+	const u8 B_lo = REG_LO(rd);
+	const u8 B_hi = REG_HI(rd);
+	const u8 n    = (u8) imm;
+	u8 len = 0;
+
+	if (n == 0) {
+		return 0;
+	} else if (n <= 31) {
+		len  = arc_asli_r(buf, t0, B_hi, 32 - n);
+		len += arc_lsri_r(buf+len, B_lo, B_lo, n);
+		len += arc_lsri_r(buf+len, B_hi, B_hi, n);
+		len += arc_or_r(buf+len, B_lo, B_lo, t0);
+	} else if (n <= 63) {
+		len  = arc_lsri_r(buf, B_lo, B_hi, n - 32);
+		len += arc_movi_r(buf+len, B_hi, 0);
+	}
+	/* n >= 64 is undefined behaviour. */
+
+	return len;
+}
+
+/*
+ * if (n < 32)
+ *   to_lo = B_lo << 32-n          # lower n bits padded with "32-n" 0s
+ *   B_lo >>=n
+ *   B_hi s>>=n
+ *   B_hi |= to_lo
+ * else if (n < 64)
+ *   B_lo = B_hi s>> n-32
+ *   B_hi = (b_lo[msb] ? -1 : 0)
+ */
+static u8 arsh_r64_i32(u8 *buf, u8 rd, s32 imm)
+{
+	const u8 t0   = REG_LO(JIT_REG_TMP);
+	const u8 B_lo = REG_LO(rd);
+	const u8 B_hi = REG_HI(rd);
+	const u8 n    = (u8) imm;
+	u8 len = 0;
+
+	if (n == 0) {
+		return 0;
+	} else if (n <= 31) {
+		len  = arc_asli_r(buf, t0, B_hi, 32 - n);
+		len += arc_lsri_r(buf+len, B_lo, B_lo, n);
+		len += arc_asri_r(buf+len, B_hi, B_hi, n);
+		len += arc_or_r(buf+len, B_lo, B_lo, t0);
+	/* TODO: check if this condition can be improved. */
+	} else if (n <= 63) {
+		len  = arc_asri_r(buf, B_lo, B_hi, n - 32);
+		len += arc_movi_r(buf+len, B_hi, -1);
+		len += arc_btst_i(buf+len, B_lo, 31);
+		len += arc_movu_cc_r(buf+len, CC_equal, B_hi, 0);
+	}
+	/* n >= 64 is undefined behaviour. */
+
 	return len;
 }
 
@@ -1118,7 +1388,7 @@ static u8 mov_r64_i64(u8 *buf, u8 reg, u32 lo, u32 hi)
  * and make sure that r20 will be the effective address for store:
  *   st  r, [r20, 0]
  */
-static u8 correct_for_offset(u8 *buf, s16 *off, u8 size,
+static u8 correct_mem_offset(u8 *buf, s16 *off, u8 size,
 			     u8 reg_mem, u8 *arc_reg_mem)
 {
 	u8 len = 0;
@@ -1139,7 +1409,7 @@ static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 	u8 arc_reg_mem = REG_LO(reg_mem);
 	u8 len;
 
-	len = correct_for_offset(buf, &off, size, reg_mem, &arc_reg_mem);
+	len = correct_mem_offset(buf, &off, size, reg_mem, &arc_reg_mem);
 
 	if (size == BPF_DW) {
 		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off,
@@ -1166,12 +1436,12 @@ static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
  */
 static u8 store_i(u8 *buf, s32 imm, u8 reg_mem, s16 off, u8 size)
 {
-	/* REG_LO(JIT_REG_TMP) might be used by "correct_for_offset()". */
+	/* REG_LO(JIT_REG_TMP) might be used by "correct_mem_offset()". */
 	const u8 arc_rs = REG_HI(JIT_REG_TMP);
 	u8 arc_reg_mem = REG_LO(reg_mem);
 	u8 len;
 
-	len = correct_for_offset(buf, &off, size, reg_mem, &arc_reg_mem);
+	len = correct_mem_offset(buf, &off, size, reg_mem, &arc_reg_mem);
 
 	if (size == BPF_DW) {
 		len += arc_mov_i(buf+len, arc_rs, imm);
@@ -1933,8 +2203,15 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU | BPF_XOR | BPF_K:
 		len = xor_r32_i32(buf, dst, imm);
 		break;
+	/* dst <<= src (32-bit) */
+	case BPF_ALU | BPF_LSH | BPF_X:
+		len = lsh_r32(buf, dst, imm);
+		break;
+	/* dst <<= imm (32-bit) */
+	case BPF_ALU | BPF_LSH | BPF_K:
+		len = lsh_r32_i32(buf, dst, imm);
+		break;
 	/* TODO: fill these with BPF_K and BPF_X */
-	case BPF_ALU | BPF_LSH:
 	case BPF_ALU | BPF_RSH:
 	case BPF_ALU | BPF_ARSH:
 		break;
@@ -1978,10 +2255,23 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU64 | BPF_XOR | BPF_K:
 		len = xor_r64_i32(buf, dst, imm);
 		break;
-	/* TODO: fill these with BPF_K and BPF_X */
-	case BPF_ALU64 | BPF_LSH:
-	case BPF_ALU64 | BPF_RSH:
-	case BPF_ALU64 | BPF_ARSH:
+	/* dst <<= src (64-bit) */
+	case BPF_ALU64 | BPF_LSH | BPF_X:
+		len = lsh_r64(buf, dst, src);
+		break;
+	/* dst <<= imm32 (64-bit) */
+	case BPF_ALU64 | BPF_LSH | BPF_K:
+		len = lsh_r64_i32(buf, dst, imm);
+		break;
+	case BPF_ALU64 | BPF_RSH | BPF_K:
+		len = rsh_r64_i32(buf, dst, imm);
+		break;
+	case BPF_ALU64 | BPF_ARSH | BPF_K:
+		len = arsh_r64_i32(buf, dst, imm);
+		break;
+	/* TODO: fill these and move them above BPF_K variants */
+	case BPF_ALU64 | BPF_RSH | BPF_X:
+	case BPF_ALU64 | BPF_ARSH | BPF_X:
 		break;
 	/* dst = src (64-bit) */
 	case BPF_ALU64 | BPF_MOV | BPF_X:
