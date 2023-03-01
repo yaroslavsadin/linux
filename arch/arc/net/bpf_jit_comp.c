@@ -183,26 +183,6 @@ enum {
 #define OPC_SUB_F	SUB_OPCODE | FLAG(1)
 #define OPC_SUBI	SUB_OPCODE | OP_IMM
 
-/* TODO: remove this maybe. */
-/*
- * The 4-byte encoding of "sub[.f] a,b,u6":
- *
- * 0010_0bbb 0i00_0010 fBBB_cccc ccaa_aaaa
- *
- * f:                   indicates if flags (carry, etc.) should be updated
- * i:                   if set, "c" is treated as a 6-bit unsigned.
- *
- * a:  aaaaaa		result
- * b:  BBBbbb		the 1st input operand
- * c:  cccccc		the 2nd input operand
- */
-#define SUB_OPCODE	0x20020000
-#define SUB_I		(1 << 22)
-/* Subtraction with updating the pertinent flags in "status32" register. */
-#define OPC_SUB_F	SUB_OPCODE | FLAG(1)
-#define OPC_SUBI	SUB_OPCODE | OP_IMM
-#define OPC_SUBI_F	OPC_SUB_F | SUB_I
-
 /*
  * The 4-byte encoding of "sbc a,b,c" (subtraction with carry):
  *
@@ -216,16 +196,6 @@ enum {
  */
 #define SBC_OPCODE	0x20030000
 #define OPC_SBC_F	SBC_OPCODE | FLAG(1)
-
-/*
- * The 4-byte encoding of "abs b,c" (absolute):
- *
- * 0010_0bbb 0010_1111 0BBB_cccc cc00_1001
- *
- * b:  BBBbbb		result
- * c:  cccccc		input
- */
-#define ABS_OPCODE	0x202f0009
 
 /*
  * The 4-byte encoding of "and a,b,c":
@@ -602,15 +572,6 @@ static u8 arc_sub_f_r(u8 *buf, u8 rd, u8 rs)
 	return INSN_len_normal;
 }
 
-static u8 arc_subi_f(u8 *buf, u8 rd, u8 rs, u8 imm)
-{
-	if (emit) {
-		const u32 insn = OPC_SUBI_F | OP_A(rd) | OP_B(rd) | OP_C(imm);
-		emit_4_bytes(buf, insn);
-	}
-	return INSN_len_normal;
-}
-
 static u8 arc_sub_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
@@ -666,15 +627,6 @@ static u8 arc_cmp2_r(u8 *buf, u8 rd, u8 rs)
 	if (emit) {
 		const u32 insn = OPC_SBC_F | OP_0 | OP_B(rd) |
 				 OP_C(rs);
-		emit_4_bytes(buf, insn);
-	}
-	return INSN_len_normal;
-}
-
-static u8 arc_abs_r(u8 *buf, u8 rd, u8 rs)
-{
-	if (emit) {
-		const u32 insn = ABS_OPCODE | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -1157,32 +1109,15 @@ static u8 xor_r64_i32(u8 *buf, u8 rd, s32 imm)
 	return len;
 }
 
-/*
- * ARC's "asl a,b,c" works like "a = (b << (c & 31))".
- * Therefore "c >= 32" don't actually produce a zero
- * result. Because of 64-bit register pairs, it may
- * be quite common to have values >= 32 for shifting.
- * We have to correct for it:
- *
- * sub.f  0,c,32            # cmp c,32
- * asl    b,b,c             # normal action
- * mov.pz b,0               # overwerite with 0 if c >= 32
- */
+/* "asl a,b,c" --> "a = (b << (c & 31))". */
 static u8 lsh_r32(u8 *buf, u8 rd, u8 rs)
 {
-	u8 len;
-	len  = arc_cmp_i(buf, rs, 32);
-	len += arc_asl_r(buf+len, CC_great_eq_u, rd, rs);
-	len += arc_movu_cc_r(buf+len, CC_less_u, rd, 0);
-	return len;
+	return arc_asl_r(buf, CC_great_eq_u, rd, rs);
 }
 
 static u8 lsh_r32_i32(u8 *buf, u8 rd, u8 imm)
 {
-	if (imm < 32)
-		return arc_asli_r(buf, REG_LO(rd), REG_LO(rd), imm);
-	else
-		return arc_movi_r(buf, REG_LO(rd), 0);
+	return arc_asli_r(buf, REG_LO(rd), REG_LO(rd), imm);
 }
 
 /*
@@ -1202,7 +1137,7 @@ static u8 lsh_r32_i32(u8 *buf, u8 rd, u8 imm)
  * -----------------------------------
  * not    t0, C_lo            # The first 3 lines are almost the same as:
  * lsr    t1, B_lo, 1         #   neg   t0, C_lo
- * lsr    t1, t1, t0          #   lsr   t1, B_lo, t0
+ * lsr    t1, t1, t0          #   lsr   t1, B_lo, t0   --> t1 is "to_hi"
  * asl    B_lo, B_lo, C_lo    # with one important difference. In "neg"
  * asl    B_hi, B_hi, C_lo    # version, when C_lo=0, t1 becomes B_lo while
  * or     B_hi, B_hi, t1      # it should be 0. The "not" approach instead,
@@ -1236,13 +1171,13 @@ static u8 lsh_r64(u8 *buf, u8 rd, u8 rs)
 
 /*
  * if (n < 32)
- *   to_hi = B_lo >> 32-n          # extract upper (32-n) bits
- *   B_lo <<= n
- *   B_hi <<=n
- *   B_hi |= to_hi
+ *   to_hi = B_lo >> 32-n          # extract upper n bits
+ *   lo <<= n
+ *   hi <<=n
+ *   hi |= to_hi
  * else if (n < 64)
- *   B_hi = B_lo << n-32
- *   B_lo = 0
+ *   hi = lo << n-32
+ *   lo = 0
  */
 static u8 lsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 {
@@ -1268,15 +1203,74 @@ static u8 lsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 	return len;
 }
 
+/* "lsr a,b,c" --> "a = (b >> (c & 31))". */
+static u8 rsh_r32(u8 *buf, u8 rd, u8 rs)
+{
+	return arc_lsr_r(buf, CC_great_eq_u, rd, rs);
+}
+
+static u8 rsh_r32_i32(u8 *buf, u8 rd, u8 imm)
+{
+	return arc_lsri_r(buf, REG_LO(rd), REG_LO(rd), imm);
+}
+
+/*
+ * For better commentary, see lsh_r64().
+ *
+ * algorithm
+ * ---------
+ * if (n <= 32)
+ *   to_lo = hi << (32-n)
+ *   hi >>= n
+ *   lo >>= n
+ *   lo |= to_lo
+ * else
+ *   lo = hi >> (n-32)
+ *   hi = 0
+ *
+ * RSH    B,C
+ * ----------
+ * not    t0, C_lo
+ * asl    t1, B_hi, 1
+ * asl    t1, t1, t0
+ * lsr    B_hi, B_hi, C_lo
+ * lsr    B_lo, B_lo, C_lo
+ * or     B_lo, B_lo, t1
+ * btst   C_lo, 5
+ * mov.ne B_lo, B_hi
+ * mov.ne B_hi, 0
+ */
+static u8 rsh_r64(u8 *buf, u8 rd, u8 rs)
+{
+	const u8 t0   = REG_LO(JIT_REG_TMP);
+	const u8 t1   = REG_HI(JIT_REG_TMP);
+	const u8 C_lo = REG_LO(rs);
+	const u8 B_lo = REG_LO(rd);
+	const u8 B_hi = REG_HI(rd);
+	u8 len;
+
+	len  = arc_not_r(buf, t0, C_lo);
+	len += arc_asli_r(buf+len, t1, B_hi, 1);
+	len += arc_asl_r(buf+len, t1, t1, t0);
+	len += arc_lsr_r(buf+len, B_hi, B_hi, C_lo);
+	len += arc_lsr_r(buf+len, B_lo, B_lo, C_lo);
+	len += arc_or_r(buf+len, B_lo, B_lo, t1);
+	len += arc_btst_i(buf+len, C_lo, 5);
+	len += arc_movu_cc_r(buf+len, CC_unequal, B_lo, B_hi);
+	len += arc_movu_cc_r(buf+len, CC_unequal, B_hi, 0);
+
+	return len;
+}
+
 /*
  * if (n < 32)
- *   to_lo = B_lo << 32-n          # lower n bits padded with "32-n" 0s
- *   B_lo >>=n
- *   B_hi >>=n
- *   B_hi |= to_lo
+ *   to_lo = B_lo << 32-n     # extract lower n bits, right-padded with 32-n 0s
+ *   lo >>=n
+ *   hi >>=n
+ *   hi |= to_lo
  * else if (n < 64)
- *   B_lo = B_hi >> n-32
- *   B_hi = 0
+ *   lo = hi >> n-32
+ *   hi = 0
  */
 static u8 rsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 {
@@ -1302,15 +1296,77 @@ static u8 rsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 	return len;
 }
 
+/* "asr a,b,c" --> "a = (b s>> (c & 31))". */
+static u8 arsh_r32(u8 *buf, u8 rd, u8 rs)
+{
+	return arc_asr_r(buf, CC_great_eq_u, rd, rs);
+}
+
+static u8 arsh_r32_i32(u8 *buf, u8 rd, u8 imm)
+{
+	return arc_asri_r(buf, REG_LO(rd), REG_LO(rd), imm);
+}
+
+/*
+ * For comparison, see rsh_r64().
+ *
+ * algorithm
+ * ---------
+ * if (n <= 32)
+ *   to_lo = hi << (32-n)
+ *   hi s>>= n
+ *   lo  >>= n
+ *   lo |= to_lo
+ * else
+ *   hi_sign = hi s>>31
+ *   lo = hi s>> (n-32)
+ *   hi = hi_sign
+ *
+ * ARSH   B,C
+ * ----------
+ * not    t0, C_lo
+ * asl    t1, B_hi, 1
+ * asl    t1, t1, t0
+ * asr    t0, B_hi, 31        # now, t0 = 0 or -1 based on B_hi's sign
+ * asr    B_hi, B_hi, C_lo
+ * lsr    B_lo, B_lo, C_lo
+ * or     B_lo, B_lo, t1
+ * btst   C_lo, 5
+ * mov.ne B_lo, B_hi
+ * mov.ne B_hi, t0
+ */
+static u8 arsh_r64(u8 *buf, u8 rd, u8 rs)
+{
+	const u8 t0   = REG_LO(JIT_REG_TMP);
+	const u8 t1   = REG_HI(JIT_REG_TMP);
+	const u8 C_lo = REG_LO(rs);
+	const u8 B_lo = REG_LO(rd);
+	const u8 B_hi = REG_HI(rd);
+	u8 len;
+
+	len  = arc_not_r(buf, t0, C_lo);
+	len += arc_asli_r(buf+len, t1, B_hi, 1);
+	len += arc_asl_r(buf+len, t1, t1, t0);
+	len += arc_asri_r(buf+len, t0, B_hi, 31);
+	len += arc_asr_r(buf+len, B_hi, B_hi, C_lo);
+	len += arc_lsr_r(buf+len, B_lo, B_lo, C_lo);
+	len += arc_or_r(buf+len, B_lo, B_lo, t1);
+	len += arc_btst_i(buf+len, C_lo, 5);
+	len += arc_movu_cc_r(buf+len, CC_unequal, B_lo, B_hi);
+	len += arc_mov_cc_r(buf+len, CC_unequal, B_hi, t0);
+
+	return len;
+}
+
 /*
  * if (n < 32)
- *   to_lo = B_lo << 32-n          # lower n bits padded with "32-n" 0s
- *   B_lo >>=n
- *   B_hi s>>=n
- *   B_hi |= to_lo
+ *   to_lo = lo << 32-n     # extract lower n bits, right-padded with 32-n 0s
+ *   lo >>=n
+ *   hi s>>=n
+ *   hi |= to_lo
  * else if (n < 64)
- *   B_lo = B_hi s>> n-32
- *   B_hi = (b_lo[msb] ? -1 : 0)
+ *   lo = hi s>> n-32
+ *   hi = (lo[msb] ? -1 : 0)
  */
 static u8 arsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 {
@@ -1327,7 +1383,6 @@ static u8 arsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 		len += arc_lsri_r(buf+len, B_lo, B_lo, n);
 		len += arc_asri_r(buf+len, B_hi, B_hi, n);
 		len += arc_or_r(buf+len, B_lo, B_lo, t0);
-	/* TODO: check if this condition can be improved. */
 	} else if (n <= 63) {
 		len  = arc_asri_r(buf, B_lo, B_hi, n - 32);
 		len += arc_movi_r(buf+len, B_hi, -1);
@@ -2211,9 +2266,21 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU | BPF_LSH | BPF_K:
 		len = lsh_r32_i32(buf, dst, imm);
 		break;
-	/* TODO: fill these with BPF_K and BPF_X */
-	case BPF_ALU | BPF_RSH:
-	case BPF_ALU | BPF_ARSH:
+	/* dst >>= src (32-bit) [unsigned] */
+	case BPF_ALU | BPF_RSH | BPF_X:
+		len = rsh_r32(buf, dst, imm);
+		break;
+	/* dst >>= imm (32-bit) [unsigned] */
+	case BPF_ALU | BPF_RSH | BPF_K:
+		len = rsh_r32_i32(buf, dst, imm);
+		break;
+	/* dst >>= src (32-bit) [signed] */
+	case BPF_ALU | BPF_ARSH | BPF_X:
+		len = arsh_r32(buf, dst, imm);
+		break;
+	/* dst >>= imm (32-bit) [signed] */
+	case BPF_ALU | BPF_ARSH | BPF_K:
+		len = arsh_r32_i32(buf, dst, imm);
 		break;
 	/* dst += src (64-bit) */
 	case BPF_ALU64 | BPF_ADD | BPF_X:
@@ -2263,15 +2330,21 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU64 | BPF_LSH | BPF_K:
 		len = lsh_r64_i32(buf, dst, imm);
 		break;
+	/* dst >>= src (64-bit) [unsigned] */
+	case BPF_ALU64 | BPF_RSH | BPF_X:
+		len = rsh_r64(buf, dst, src);
+		break;
+	/* dst >>= imm32 (64-bit) [unsigned] */
 	case BPF_ALU64 | BPF_RSH | BPF_K:
 		len = rsh_r64_i32(buf, dst, imm);
 		break;
+	/* dst >>= src (64-bit) [signed] */
+	case BPF_ALU64 | BPF_ARSH | BPF_X:
+		len = arsh_r64(buf, dst, src);
+		break;
+	/* dst >>= imm32 (64-bit) [signed] */
 	case BPF_ALU64 | BPF_ARSH | BPF_K:
 		len = arsh_r64_i32(buf, dst, imm);
-		break;
-	/* TODO: fill these and move them above BPF_K variants */
-	case BPF_ALU64 | BPF_RSH | BPF_X:
-	case BPF_ALU64 | BPF_ARSH | BPF_X:
 		break;
 	/* dst = src (64-bit) */
 	case BPF_ALU64 | BPF_MOV | BPF_X:
