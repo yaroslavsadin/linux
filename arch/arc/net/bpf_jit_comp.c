@@ -1530,6 +1530,18 @@ static u8 arsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 	return len;
 }
 
+static u8 mov_r32(u8 *buf, u8 rd, u8 rs)
+{
+	if (rd == rs)
+		return 0;
+	return arc_mov_r(buf, REG_LO(rd), REG_LO(rs));
+}
+
+static u8 mov_r32_i32(u8 *buf, u8 reg, s32 imm)
+{
+	return arc_mov_i(buf, REG_LO(reg), imm);
+}
+
 static u8 mov_r64(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
@@ -1537,7 +1549,7 @@ static u8 mov_r64(u8 *buf, u8 rd, u8 rs)
 	if (rd == rs)
 		return 0;
 
-	len  = arc_mov_r(buf, REG_LO(rd), REG_LO(rs));
+	len = arc_mov_r(buf, REG_LO(rd), REG_LO(rs));
 
 	if (rs != BPF_REG_FP)
 		len += arc_mov_r(buf+len, REG_HI(rd), REG_HI(rs));
@@ -2425,6 +2437,14 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	/* dst >>= imm (32-bit) [signed] */
 	case BPF_ALU | BPF_ARSH | BPF_K:
 		len = arsh_r32_i32(buf, dst, imm);
+		break;
+	/* dst = src (32-bit) */
+	case BPF_ALU | BPF_MOV | BPF_X:
+		len = mov_r32(buf, dst, src);
+		break;
+	/* dst = imm32 (32-bit) */
+	case BPF_ALU | BPF_MOV | BPF_K:
+		len = mov_r32_i32(buf, dst, imm);
 		break;
 	/* dst += src (64-bit) */
 	case BPF_ALU64 | BPF_ADD | BPF_X:
