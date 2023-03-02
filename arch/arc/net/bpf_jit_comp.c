@@ -198,6 +198,34 @@ enum {
 #define OPC_SBC_F	SBC_OPCODE | FLAG(1)
 
 /*
+ * The 4-byte encoding of "mpy a,b,c".
+ * mpy is the signed 32-bit multiplication with the lower 32-bit
+ * of the product as the result.
+ *
+ * 0010_0bbb 0001_1010 0BBB_cccc ccaa_aaaa
+ *
+ * a:  aaaaaa		result
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define OPC_MPY		0x201a0000
+#define OPC_MPYI	OPC_MPY | OP_IMM
+
+/*
+ * The 4-byte encoding of "mpyd a,b,c".
+ * mpyd is the signed 32-bit multiplication with the lower 32-bit of
+ * the prodcut in register "a" and the higher 32-bit in register "a+1".
+ *
+ * 0010_1bbb 0001_1000 0BBB_cccc ccaa_aaaa
+ *
+ * a:  aaaaaa		64-bit result in registers (R_a+1,R_a)
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand
+ */
+#define OPC_MPYD	0x28180000
+#define OPC_MPYDI	OPC_MPYD | OP_IMM
+
+/*
  * The 4-byte encoding of "and a,b,c":
  *
  * 0010_0bbb 0000_0100 fBBB_cccc ccaa_aaaa
@@ -614,7 +642,6 @@ static u8 arc_cmp_i(u8 *buf, u8 rd, s32 imm)
 	return INSN_len_normal + INSN_len_imm;
 }
 
-
 /*
  * Implemented as "sbc.f 0,rd,rs".
  *
@@ -630,6 +657,44 @@ static u8 arc_cmp2_r(u8 *buf, u8 rd, u8 rs)
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
+}
+
+static u8 arc_mpy_r(u8 *buf, u8 rd, u8 rs1, u8 rs2)
+{
+	if (emit) {
+		const u32 insn = OPC_MPY | OP_A(rd) | OP_B(rs1) | OP_C(rs2);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_mpy_i(u8 *buf, u8 rd, u8 rs, s32 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_MPYI | OP_A(rd) | OP_B(rs);
+		emit_4_bytes(buf, insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+static u8 arc_mpyd_r(u8 *buf, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = OPC_MPYD | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_mpyd_i(u8 *buf, u8 rd, s32 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_MPYDI | OP_A(rd) | OP_B(rd);
+		emit_4_bytes(buf, insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
 }
 
 static u8 arc_and_r(u8 *buf, u8 rd, u8 rs)
@@ -996,6 +1061,68 @@ static u8 cmp_r64_i32(u8 *buf, u8 rd, s32 imm)
 	u8 len;
 	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
 	len += cmp_r64(buf+len, rd, JIT_REG_TMP);
+	return len;
+}
+
+static u8 mul_r32(u8 *buf, u8 rd, u8 rs)
+{
+	return arc_mpy_r(buf, REG_LO(rd), REG_LO(rd), REG_LO(rs));
+}
+
+static u8 mul_r32_i32(u8 *buf, u8 rd, s32 imm)
+{
+	return arc_mpy_i(buf, REG_LO(rd), REG_LO(rd), imm);
+}
+
+/*
+ * MUL B, C
+ * --------
+ * mpy       t0, B_hi, C_lo
+ * mpy       t1, B_lo, C_hi
+ * mpyd    B_lo, B_lo, C_lo
+ * add     B_hi, B_hi,   t0
+ * add     B_hi, B_hi,   t1
+ */
+static u8 mul_r64(u8 *buf, u8 rd, u8 rs)
+{
+	const u8 t0   = REG_LO(JIT_REG_TMP);
+	const u8 t1   = REG_HI(JIT_REG_TMP);
+	const u8 C_lo = REG_LO(rs);
+	const u8 C_hi = REG_LO(rs);
+	const u8 B_lo = REG_LO(rd);
+	const u8 B_hi = REG_HI(rd);
+	u8 len;
+
+	len  = arc_mpy_r(buf, t0, B_hi, C_lo);
+	len += arc_mpy_r(buf+len, t1, B_lo, C_hi);
+	len += arc_mpyd_r(buf+len, B_lo, C_lo);
+	len += arc_add_r(buf+len, B_hi, t0);
+	len += arc_add_r(buf+len, B_hi, t1);
+
+	return len;
+}
+
+/*
+ * MUL B, imm
+ * --------
+ * mpy     t0, B_hi, imm
+ * mpyd  B_lo, B_lo, imm
+ * add   B_hi, B_hi,  t0
+ */
+static u8 mul_r64_i32(u8 *buf, u8 rd, s32 imm)
+{
+	const u8 t0   = REG_LO(JIT_REG_TMP);
+	const u8 B_lo = REG_LO(rd);
+	const u8 B_hi = REG_HI(rd);
+	u8 len;
+
+	if (imm == 1)
+		return 0;
+
+	len  = arc_mpy_i(buf, t0, B_hi, imm);
+	len += arc_mpyd_i(buf+len, B_lo, imm);
+	len += arc_add_r(buf+len, B_hi, t0);
+
 	return len;
 }
 
@@ -2243,6 +2370,14 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU | BPF_SUB | BPF_K:
 		len = sub_r32_i32(buf, dst, imm);
 		break;
+	/* dst *= src (32-bit) */
+	case BPF_ALU | BPF_MUL | BPF_X:
+		len = mul_r32(buf, dst, src);
+		break;
+	/* dst *= imm (32-bit) */
+	case BPF_ALU | BPF_MUL | BPF_K:
+		len = mul_r32_i32(buf, dst, imm);
+		break;
 	/* dst &= src (32-bit) */
 	case BPF_ALU | BPF_AND | BPF_X:
 		len = and_r32(buf, dst, src);
@@ -2306,6 +2441,14 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	/* dst -= imm32 (64-bit) */
 	case BPF_ALU64 | BPF_SUB | BPF_K:
 		len = sub_r64_i32(buf, dst, imm);
+		break;
+	/* dst *= src (64-bit) */
+	case BPF_ALU64 | BPF_MUL | BPF_X:
+		len = mul_r64(buf, dst, src);
+		break;
+	/* dst *= imm32 (64-bit) */
+	case BPF_ALU64 | BPF_MUL | BPF_K:
+		len = mul_r64_i32(buf, dst, imm);
 		break;
 	/* dst &= src (64-bit) */
 	case BPF_ALU64 | BPF_AND | BPF_X:
