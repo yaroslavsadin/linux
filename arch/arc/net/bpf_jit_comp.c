@@ -1088,7 +1088,7 @@ static u8 mul_r64(u8 *buf, u8 rd, u8 rs)
 	const u8 t0   = REG_LO(JIT_REG_TMP);
 	const u8 t1   = REG_HI(JIT_REG_TMP);
 	const u8 C_lo = REG_LO(rs);
-	const u8 C_hi = REG_LO(rs);
+	const u8 C_hi = REG_HI(rs);
 	const u8 B_lo = REG_LO(rd);
 	const u8 B_hi = REG_HI(rd);
 	u8 len;
