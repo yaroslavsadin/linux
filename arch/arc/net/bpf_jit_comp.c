@@ -1138,12 +1138,16 @@ static u8 lsh_r32_i32(u8 *buf, u8 rd, u8 imm)
  * not    t0, C_lo            # The first 3 lines are almost the same as:
  * lsr    t1, B_lo, 1         #   neg   t0, C_lo
  * lsr    t1, t1, t0          #   lsr   t1, B_lo, t0   --> t1 is "to_hi"
- * asl    B_lo, B_lo, C_lo    # with one important difference. In "neg"
- * asl    B_hi, B_hi, C_lo    # version, when C_lo=0, t1 becomes B_lo while
- * or     B_hi, B_hi, t1      # it should be 0. The "not" approach instead,
- * btst   C_lo, 5             # "shift"s t1 once and 31 times, practically
- * mov.ne B_hi, B_lo          # setting it to 0 when C_lo=0.
+ * mov    t0, C_lo            # with one important difference. In "neg"
+ * asl    B_lo, B_lo, C_lo    # version, when C_lo=0, t1 becomes B_lo while
+ * asl    B_hi, B_hi, C_lo    # it should be 0. The "not" approach instead,
+ * or     B_hi, B_hi, t1      # "shift"s t1 once and 31 times, practically
+ * btst   t0, 5               # setting it to 0 when C_lo=0.
+ * mov.ne B_hi, B_lo
  * mov.ne B_lo, 0
+ *
+ * The "mov t0, C_lo" is necessary to cover the cases that C is the same
+ * register as B.
  *
  * The behaviour is undefined for n >= 64.
  */
@@ -1159,10 +1163,11 @@ static u8 lsh_r64(u8 *buf, u8 rd, u8 rs)
 	len  = arc_not_r(buf, t0, C_lo);
 	len += arc_lsri_r(buf+len, t1, B_lo, 1);
 	len += arc_lsr_r(buf+len, t1, t1, t0);
+	len += arc_mov_r(buf+len, t0, C_lo);
 	len += arc_asl_r(buf+len, B_lo, B_lo, C_lo);
 	len += arc_asl_r(buf+len, B_hi, B_hi, C_lo);
 	len += arc_or_r(buf+len, B_hi, B_hi, t1);
-	len += arc_btst_i(buf+len, C_lo, 5);
+	len += arc_btst_i(buf+len, t0, 5);
 	len += arc_movu_cc_r(buf+len, CC_unequal, B_hi, B_lo);
 	len += arc_movu_cc_r(buf+len, CC_unequal, B_lo, 0);
 
@@ -1233,10 +1238,11 @@ static u8 rsh_r32_i32(u8 *buf, u8 rd, u8 imm)
  * not    t0, C_lo
  * asl    t1, B_hi, 1
  * asl    t1, t1, t0
+ * mov    t0, C_lo
  * lsr    B_hi, B_hi, C_lo
  * lsr    B_lo, B_lo, C_lo
  * or     B_lo, B_lo, t1
- * btst   C_lo, 5
+ * btst   t0, 5
  * mov.ne B_lo, B_hi
  * mov.ne B_hi, 0
  */
@@ -1252,10 +1258,11 @@ static u8 rsh_r64(u8 *buf, u8 rd, u8 rs)
 	len  = arc_not_r(buf, t0, C_lo);
 	len += arc_asli_r(buf+len, t1, B_hi, 1);
 	len += arc_asl_r(buf+len, t1, t1, t0);
+	len += arc_mov_r(buf+len, t0, C_lo);
 	len += arc_lsr_r(buf+len, B_hi, B_hi, C_lo);
 	len += arc_lsr_r(buf+len, B_lo, B_lo, C_lo);
 	len += arc_or_r(buf+len, B_lo, B_lo, t1);
-	len += arc_btst_i(buf+len, C_lo, 5);
+	len += arc_btst_i(buf+len, t0, 5);
 	len += arc_movu_cc_r(buf+len, CC_unequal, B_lo, B_hi);
 	len += arc_movu_cc_r(buf+len, CC_unequal, B_hi, 0);
 
@@ -1327,11 +1334,12 @@ static u8 arsh_r32_i32(u8 *buf, u8 rd, u8 imm)
  * not    t0, C_lo
  * asl    t1, B_hi, 1
  * asl    t1, t1, t0
- * asr    t0, B_hi, 31        # now, t0 = 0 or -1 based on B_hi's sign
+ * mov    t0, C_lo
  * asr    B_hi, B_hi, C_lo
  * lsr    B_lo, B_lo, C_lo
  * or     B_lo, B_lo, t1
- * btst   C_lo, 5
+ * btst   t0, 5
+ * asr    t0, B_hi, 31        # now, t0 = 0 or -1 based on B_hi's sign
  * mov.ne B_lo, B_hi
  * mov.ne B_hi, t0
  */
@@ -1347,11 +1355,12 @@ static u8 arsh_r64(u8 *buf, u8 rd, u8 rs)
 	len  = arc_not_r(buf, t0, C_lo);
 	len += arc_asli_r(buf+len, t1, B_hi, 1);
 	len += arc_asl_r(buf+len, t1, t1, t0);
-	len += arc_asri_r(buf+len, t0, B_hi, 31);
+	len += arc_mov_r(buf+len, t0, C_lo);
 	len += arc_asr_r(buf+len, B_hi, B_hi, C_lo);
 	len += arc_lsr_r(buf+len, B_lo, B_lo, C_lo);
 	len += arc_or_r(buf+len, B_lo, B_lo, t1);
-	len += arc_btst_i(buf+len, C_lo, 5);
+	len += arc_btst_i(buf+len, t0, 5);
+	len += arc_asri_r(buf+len, t0, B_hi, 31);
 	len += arc_movu_cc_r(buf+len, CC_unequal, B_lo, B_hi);
 	len += arc_mov_cc_r(buf+len, CC_unequal, B_hi, t0);
 
