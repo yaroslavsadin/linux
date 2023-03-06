@@ -198,6 +198,16 @@ enum {
 #define OPC_SBC_F	SBC_OPCODE | FLAG(1)
 
 /*
+ * The 4-byte encoding of "neg a,b":
+ *
+ * 0010_0bbb 0100_1110 0BBB_0000 00aa_aaaa
+ *
+ * a:  BBBbbb		result
+ * b:  BBBbbb		input
+ */
+#define OPC_NEG		0x204e0000
+
+/*
  * The 4-byte encoding of "mpy a,b,c".
  * mpy is the signed 32-bit multiplication with the lower 32-bit
  * of the product as the result.
@@ -224,6 +234,30 @@ enum {
  */
 #define OPC_MPYD	0x28180000
 #define OPC_MPYDI	OPC_MPYD | OP_IMM
+
+/*
+ * The 4-byte encoding of "div a,b,c":
+ *
+ * 0010_1bbb 0000_0101 0BBB_cccc ccaa_aaaa
+ *
+ * a:  aaaaaa		result (quotient)
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand (divisor)
+ */
+#define OPC_DIVU	0x28050000
+#define OPC_DIVUI	OPC_DIVU | OP_IMM
+
+/*
+ * The 4-byte encoding of "rem a,b,c":
+ *
+ * 0010_1bbb 0000_1001 0BBB_cccc ccaa_aaaa
+ *
+ * a:  aaaaaa		result (remainder)
+ * b:  BBBbbb		the 1st input operand
+ * c:  cccccc		the 2nd input operand (divisor)
+ */
+#define OPC_REMU	0x28090000
+#define OPC_REMUI	OPC_REMU | OP_IMM
 
 /*
  * The 4-byte encoding of "and a,b,c":
@@ -659,6 +693,15 @@ static u8 arc_cmp2_r(u8 *buf, u8 rd, u8 rs)
 	return INSN_len_normal;
 }
 
+static u8 arc_neg_r(u8 *buf, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = OPC_NEG | OP_A(rd) | OP_B(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
 static u8 arc_mpy_r(u8 *buf, u8 rd, u8 rs1, u8 rs2)
 {
 	if (emit) {
@@ -691,6 +734,44 @@ static u8 arc_mpyd_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
 		const u32 insn = OPC_MPYDI | OP_A(rd) | OP_B(rd);
+		emit_4_bytes(buf, insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+static u8 arc_divu_r(u8 *buf, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = OPC_DIVU | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_divu_i(u8 *buf, u8 rd, s32 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_DIVUI | OP_A(rd) | OP_B(rd);
+		emit_4_bytes(buf, insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+static u8 arc_remu_r(u8 *buf, u8 rd, u8 rs)
+{
+	if (emit) {
+		const u32 insn = OPC_REMU | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_remu_i(u8 *buf, u8 rd, s32 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_REMUI | OP_A(rd) | OP_B(rd);
 		emit_4_bytes(buf, insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -1064,6 +1145,21 @@ static u8 cmp_r64_i32(u8 *buf, u8 rd, s32 imm)
 	return len;
 }
 
+static u8 neg_r32(u8 *buf, u8 r)
+{
+	return arc_neg_r(buf, REG_LO(r), REG_LO(r));
+}
+
+/* In a two's complement system, -r is (~r + 1). */
+static u8 neg_r64(u8 *buf, u8 r)
+{
+	u8 len;
+	len  = arc_not_r(buf, REG_LO(r), REG_LO(r));
+	len += arc_not_r(buf+len, REG_HI(r), REG_HI(r));
+	len += add_r64_i32(buf+len, r, 1);
+	return len;
+}
+
 static u8 mul_r32(u8 *buf, u8 rd, u8 rs)
 {
 	return arc_mpy_r(buf, REG_LO(rd), REG_LO(rd), REG_LO(rs));
@@ -1124,6 +1220,26 @@ static u8 mul_r64_i32(u8 *buf, u8 rd, s32 imm)
 	len += arc_add_r(buf+len, B_hi, t0);
 
 	return len;
+}
+
+static u8 div_r32(u8 *buf, u8 rd, u8 rs)
+{
+	return arc_divu_r(buf, REG_LO(rd), REG_LO(rs));
+}
+
+static u8 div_r32_i32(u8 *buf, u8 rd, s32 imm)
+{
+	return arc_divu_i(buf, REG_LO(rd), imm);
+}
+
+static u8 mod_r32(u8 *buf, u8 rd, u8 rs)
+{
+	return arc_remu_r(buf, REG_LO(rd), REG_LO(rs));
+}
+
+static u8 mod_r32_i32(u8 *buf, u8 rd, s32 imm)
+{
+	return arc_remu_i(buf, REG_LO(rd), imm);
 }
 
 static u8 and_r32(u8 *buf, u8 rd, u8 rs)
@@ -2382,6 +2498,10 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU | BPF_SUB | BPF_K:
 		len = sub_r32_i32(buf, dst, imm);
 		break;
+	/* dst = -src (32-bit) */
+	case BPF_ALU | BPF_NEG:
+		len = neg_r32(buf, dst);
+		break;
 	/* dst *= src (32-bit) */
 	case BPF_ALU | BPF_MUL | BPF_X:
 		len = mul_r32(buf, dst, src);
@@ -2389,6 +2509,22 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	/* dst *= imm (32-bit) */
 	case BPF_ALU | BPF_MUL | BPF_K:
 		len = mul_r32_i32(buf, dst, imm);
+		break;
+	/* dst /= src (32-bit) */
+	case BPF_ALU | BPF_DIV | BPF_X:
+		len = div_r32(buf, dst, src);
+		break;
+	/* dst /= imm (32-bit) */
+	case BPF_ALU | BPF_DIV | BPF_K:
+		len = div_r32_i32(buf, dst, imm);
+		break;
+	/* dst %= src (32-bit) */
+	case BPF_ALU | BPF_MOD | BPF_X:
+		len = mod_r32(buf, dst, src);
+		break;
+	/* dst %= imm (32-bit) */
+	case BPF_ALU | BPF_MOD | BPF_K:
+		len = mod_r32_i32(buf, dst, imm);
 		break;
 	/* dst &= src (32-bit) */
 	case BPF_ALU | BPF_AND | BPF_X:
@@ -2461,6 +2597,10 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	/* dst -= imm32 (64-bit) */
 	case BPF_ALU64 | BPF_SUB | BPF_K:
 		len = sub_r64_i32(buf, dst, imm);
+		break;
+	/* dst = -src (64-bit) */
+	case BPF_ALU64 | BPF_NEG:
+		len = neg_r64(buf, dst);
 		break;
 	/* dst *= src (64-bit) */
 	case BPF_ALU64 | BPF_MUL | BPF_X:
