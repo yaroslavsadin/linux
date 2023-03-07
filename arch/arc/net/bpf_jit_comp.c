@@ -379,6 +379,16 @@ enum {
 #define OPC_LSRI	LSR_OPCODE | LSR_I
 
 /*
+ * The 4-byte encoding of "swape b,c":
+ *
+ * 0010_1bbb 0010_1111 0bbb_cccc cc00_1001
+ *
+ * b:  BBBbbb		destination register
+ * c:  cccccc		source register
+ */
+#define OPC_SWAPE	0x282f0009
+
+/*
  * The 4-byte encoding of "mov b,c":
  *
  * 0010_0bbb 0000_1010 0BBB_cccc cc00_0000
@@ -941,7 +951,16 @@ static u8 arc_lsri_r(u8 *buf, u8 rd, u8 rs, u8 imm)
 	return INSN_len_normal;
 }
 
-/* move an immediate to register with a 4-byte instruction. */
+static u8 arc_swape_r(u8 *buf, u8 r)
+{
+	if (emit) {
+		const u32 insn = OPC_SWAPE | OP_B(r) | OP_C(r);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+/* Move an immediate to register with a 4-byte instruction. */
 static u8 arc_movi_r(u8 *buf, u8 reg, s16 imm)
 {
 	if (emit) {
@@ -1644,6 +1663,71 @@ static u8 arsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 	/* n >= 64 is undefined behaviour. */
 
 	return len;
+}
+
+static u8 gen_swap(u8 *buf, u8 rd, u8 size, u8 endian, u8 *len)
+{
+	int ret = 0;
+#ifdef __BIG_ENDIAN
+	const u8 host_endian = BPF_FROM_BE;
+#else
+	const u8 host_endian = BPF_FROM_LE;
+#endif
+	*len = 0;
+
+	/*
+	 * If the same endianness, there's not much to do other
+	 * than zeroing out the upper bytes based on the "size".
+	 */
+	if (host_endian == endian) {
+		switch (size) {
+		case 16:
+			*len += arc_and_i(buf+*len, REG_LO(rd), 0xffff);
+			fallthrough;
+		case 32:
+			*len += arc_movi_r(buf+*len, REG_HI(rd), 0);
+			fallthrough;
+		case 64:
+			break;
+		default:
+			ret = -EINVAL;
+		}
+	} else {
+		switch (size) {
+		case 16:
+			/*
+			 * r = B4B3_B2B1 << 16 --> r = B2B1_0000
+			 * swape(r) is 0000_B1B2
+			 */
+			*len += arc_asli_r(buf+*len, REG_LO(rd), REG_LO(rd),
+					   16);
+			fallthrough;
+		case 32:
+			*len += arc_swape_r(buf+*len, REG_LO(rd));
+			*len += arc_movi_r(buf+*len, REG_HI(rd), 0);
+			break;
+		case 64:
+			/*
+			 * swap "hi" and "lo":
+			 *   hi ^= lo;
+			 *   lo ^= hi;
+			 *   hi ^= lo;
+			 * and then swap the bytes in "hi" and "lo".
+			 */
+			*len += arc_xor_r(buf+*len, REG_HI(rd), REG_LO(rd));
+			*len += arc_xor_r(buf+*len, REG_LO(rd), REG_HI(rd));
+			*len += arc_xor_r(buf+*len, REG_HI(rd), REG_LO(rd));
+			*len += arc_swape_r(buf+*len, REG_LO(rd));
+			*len += arc_swape_r(buf+*len, REG_HI(rd));
+			break;
+		default:
+			ret = -EINVAL;
+		}
+	}
+
+	if (ret != 0)
+		pr_err("bpf-jit: invalid size for swap.\n");
+	return ret;
 }
 
 static u8 mov_r32(u8 *buf, u8 rd, u8 rs)
@@ -2498,7 +2582,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU | BPF_SUB | BPF_K:
 		len = sub_r32_i32(buf, dst, imm);
 		break;
-	/* dst = -src (32-bit) */
+	/* dst = -dst (32-bit) */
 	case BPF_ALU | BPF_NEG:
 		len = neg_r32(buf, dst);
 		break;
@@ -2582,6 +2666,12 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU | BPF_MOV | BPF_K:
 		len = mov_r32_i32(buf, dst, imm);
 		break;
+	/* dst = swap(dst) */
+	case BPF_ALU | BPF_END | BPF_FROM_LE:
+	case BPF_ALU | BPF_END | BPF_FROM_BE:
+		if ((ret = gen_swap(buf, dst, imm, BPF_SRC(code), &len)) < 0)
+			return ret;
+		break;
 	/* dst += src (64-bit) */
 	case BPF_ALU64 | BPF_ADD | BPF_X:
 		len = add_r64(buf, dst, src);
@@ -2598,7 +2688,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	case BPF_ALU64 | BPF_SUB | BPF_K:
 		len = sub_r64_i32(buf, dst, imm);
 		break;
-	/* dst = -src (64-bit) */
+	/* dst = -dst (64-bit) */
 	case BPF_ALU64 | BPF_NEG:
 		len = neg_r64(buf, dst);
 		break;
