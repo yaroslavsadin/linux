@@ -2291,6 +2291,10 @@ static int handle_epilogue(struct jit_context *ctx)
 		pop_mask &= ~BIT(reg);
 	}
 
+	/* Assigning JIT's return reg to ABI's return reg. */
+	len += arc_mov_r(buf+len, ARC_R_0, REG_LO(BPF_REG_0));
+	len += arc_mov_r(buf+len, ARC_R_1, REG_HI(BPF_REG_0));
+
 	/* At last, issue the "return". */
 	len += jump_return(buf+len);
 
@@ -2470,7 +2474,7 @@ static int gen_jmp(struct jit_context *ctx, const struct bpf_insn *insn,
 	return 0;
 }
 
-/* Try to get the resolved the address and generate the instructions. */
+/* Try to get the resolved address and generate the instructions. */
 static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
 		       bool extra_pass, u8 *len)
 {
