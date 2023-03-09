@@ -2081,6 +2081,7 @@ static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
 	ctx->jit.index       = 0;
 	ctx->bpf_header      = NULL;
 	ctx->bpf2insn        = NULL;
+	ctx->jit_data        = NULL;
 	ctx->regs_clobbered  = 0;
 	ctx->save_blink      = false;
 	ctx->frame_depth     = 0;
@@ -3058,7 +3059,7 @@ static void jit_finalize(struct jit_context *ctx)
 	} else {
 		/*
 		 * If things seem finalised, then mark the JITed memory
-		 * as R-X and flush the memory.
+		 * as R-X and flush it.
 		 */
 		bpf_jit_binary_lock_ro(ctx->bpf_header);
 		flush_icache_range((unsigned long) ctx->bpf_header,
