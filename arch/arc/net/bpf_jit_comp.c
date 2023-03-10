@@ -23,26 +23,30 @@ enum {
  * all and in some cases we need an extra temporary register to perform
  * the operations. This temporary register is added as yet another index
  * in the bpf2arc array, so it will unfold like the rest of registers into
- * the final JIT.
+ * the final JIT. The chosen ARC registers for that purpose are r10 and r11.
+ * Since they're not callee-saved registers in ARC's ABI, there is no need
+ * to save them.
  *
  * BPF_REG_0 is not mapped to r1r0, because BPF_REG_1 as the first argument
  * _must_ be mapped to r1r0. BPF_REG_{2,3,4} are mapped to the correct
  * registers (r2, r3, r4, r5, r6, r7) in terms of calling convention.
  * r7 is the last argument in the ABI, therefore BPF_REG_5 must be pushed
- * onto the stack for an in-kernel fucntion call.
+ * onto the stack for an in-kernel function call. Nonetheless, BPF_REG_0,
+ * being very popular in instructions encoding, is mapped to a piar of
+ * scratch registers in ARC, so they don't need to be saved and restored.
  */
 #define JIT_REG_TMP MAX_BPF_JIT_REG
 
 static const u8 bpf2arc[][2] = {
 	/* Return value from in-kernel function, and exit value from eBPF */
-	[BPF_REG_0] = {ARC_R_10 , ARC_R_11},
+	[BPF_REG_0] = {ARC_R_8 , ARC_R_9},
 	/* Arguments from eBPF program to in-kernel function */
 	[BPF_REG_1] = {ARC_R_0 , ARC_R_1},
 	[BPF_REG_2] = {ARC_R_2 , ARC_R_3},
 	[BPF_REG_3] = {ARC_R_4 , ARC_R_5},
 	[BPF_REG_4] = {ARC_R_6 , ARC_R_7},
 	/* Remaining arguments, to be passed on the stack per O32 ABI */
-	[BPF_REG_5] = {ARC_R_8, ARC_R_9},
+	[BPF_REG_5] = {ARC_R_20, ARC_R_21},
 	/* Callee-saved registers that in-kernel function will preserve */
 	[BPF_REG_6] = {ARC_R_12, ARC_R_13},
 	[BPF_REG_7] = {ARC_R_14, ARC_R_15},
@@ -53,7 +57,7 @@ static const u8 bpf2arc[][2] = {
 	/* Register for blinding constants */
 	[BPF_REG_AX] = {ARC_R_22, ARC_R_23},
 	/* Temporary registers for internal use */
-	[JIT_REG_TMP] = {ARC_R_20, ARC_R_21},
+	[JIT_REG_TMP] = {ARC_R_10, ARC_R_11},
 };
 
 #define REG_LO(r) (bpf2arc[(r)][0])
@@ -64,6 +68,9 @@ static const u8 bpf2arc[][2] = {
  * the stack needs to be restored by ARG5_SIZE.
  */
 #define ARG5_SIZE 8
+
+#define ARC_CALLEE_SAVED_REG_FIRST ARC_R_13
+#define ARC_CALLEE_SAVED_REG_LAST  ARC_R_25
 
 /* Bytes. */
 enum {
@@ -127,6 +134,7 @@ enum {
 	CC_great_s    = 9	/* greater than (signed) */
 };
 
+#define IN_U6_RANGE(x)	((x) <= 63 && (x) >= 0)
 #define IN_S9_RANGE(x)	((x) <= 255 && (x) >= -256)
 #define IN_S12_RANGE(x)	((x) <= 2047 && (x) >= -2048)
 #define IN_S21_RANGE(x)	((x) <= 1048575 && (x) >= -1048576)
@@ -151,10 +159,14 @@ enum {
  * b:  BBBbbb		the 1st input operand
  * c:  cccccc		the 2nd input operand
  */
-#define ADD_OPCODE	0x20000000
+#define OPC_ADD		0x20000000
 /* Addition with updating the pertinent flags in "status32" register. */
-#define OPC_ADD_F	ADD_OPCODE | FLAG(1)
-#define OPC_ADDI	ADD_OPCODE | OP_IMM
+#define OPC_ADDF	(OPC_ADD | FLAG(1))
+#define ADDI		(1 << 22)
+#define ADDI_U6(x)	OP_C(x)
+#define OPC_ADDI	(OPC_ADD | ADDI)
+#define OPC_ADDIF	(OPC_ADDI | FLAG(1))
+#define OPC_ADD_I	(OPC_ADD | OP_IMM)
 
 /*
  * The 4-byte encoding of "adc a,b,c" (addition with carry):
@@ -165,7 +177,10 @@ enum {
  * b:  BBBbbb		the 1st input operand
  * c:  cccccc		the 2nd input operand
  */
-#define ADC_OPCODE	0x20010000
+#define OPC_ADC		0x20010000
+#define ADCI		(1 << 22)
+#define ADCI_U6(x)	OP_C(x)
+#define OPC_ADCI	(OPC_ADC | ADCI)
 
 /*
  * The 4-byte encoding of "sub a,b,c":
@@ -178,10 +193,13 @@ enum {
  * b:  BBBbbb		the 1st input operand
  * c:  cccccc		the 2nd input operand
  */
-#define SUB_OPCODE	0x20020000
+#define OPC_SUB		0x20020000
 /* Subtraction with updating the pertinent flags in "status32" register. */
-#define OPC_SUB_F	SUB_OPCODE | FLAG(1)
-#define OPC_SUBI	SUB_OPCODE | OP_IMM
+#define OPC_SUBF	(OPC_SUB | FLAG(1))
+#define SUBI		(1 << 22)
+#define SUBI_U6(x)	OP_C(x)
+#define OPC_SUBI	(OPC_SUB | SUBI)
+#define OPC_SUB_I	(OPC_SUB | OP_IMM)
 
 /*
  * The 4-byte encoding of "sbc a,b,c" (subtraction with carry):
@@ -194,8 +212,8 @@ enum {
  * b:  BBBbbb		the 1st input operand
  * c:  cccccc		the 2nd input operand
  */
-#define SBC_OPCODE	0x20030000
-#define OPC_SBC_F	SBC_OPCODE | FLAG(1)
+#define OPC_SBC		0x20030000
+#define OPC_SBCF	(OPC_SBC | FLAG(1))
 
 /*
  * The 4-byte encoding of "neg a,b":
@@ -344,7 +362,7 @@ enum {
 #define ASL_OPCODE	0x28000000
 #define ASL_I		(1 << 22)
 #define ASLI_U6(x)	OP_C((x) & 31)
-#define OPC_ASLI	ASL_OPCODE | ASL_I
+#define OPC_ASLI	(ASL_OPCODE | ASL_I)
 
 /*
  * The 4-byte encoding of "asr a,b,c" (arithmetic shift right):
@@ -360,7 +378,7 @@ enum {
 #define ASR_OPCODE	0x28020000
 #define ASR_I		ASL_I
 #define ASRI_U6(x)	ASLI_U6(x)
-#define OPC_ASRI	ASR_OPCODE | ASR_I
+#define OPC_ASRI	(ASR_OPCODE | ASR_I)
 
 /*
  * The 4-byte encoding of "lsr a,b,c" (logical shift right):
@@ -592,16 +610,34 @@ static inline u8 bpf_to_arc_size(u8 size)
 static u8 arc_add_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = ADD_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_ADD | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_add_f_r(u8 *buf, u8 rd, u8 rs)
+static u8 arc_addf_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = OPC_ADD_F | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_ADDF | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_addif_r(u8 *buf, u8 rd, u8 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_ADDIF | OP_A(rd) | OP_B(rd) | ADDI_U6(imm);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_addi_r(u8 *buf, u8 rd, u8 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_ADDI | OP_A(rd) | OP_B(rd) | ADDI_U6(imm);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -610,7 +646,7 @@ static u8 arc_add_f_r(u8 *buf, u8 rd, u8 rs)
 static u8 arc_add_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_ADDI | OP_A(rd) | OP_B(rd);
+		const u32 insn = OPC_ADD_I | OP_A(rd) | OP_B(rd);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -620,7 +656,16 @@ static u8 arc_add_i(u8 *buf, u8 rd, s32 imm)
 static u8 arc_adc_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = ADC_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_ADC | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_adci_r(u8 *buf, u8 rd, u8 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_ADCI | OP_A(rd) | OP_B(rd) | ADCI_U6(imm);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -629,16 +674,25 @@ static u8 arc_adc_r(u8 *buf, u8 rd, u8 rs)
 static u8 arc_sub_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = SUB_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_SUB | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_sub_f_r(u8 *buf, u8 rd, u8 rs)
+static u8 arc_subf_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = OPC_SUB_F | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_SUBF | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_subi_r(u8 *buf, u8 rd, u8 imm)
+{
+	if (emit) {
+		const u32 insn = OPC_SUBI | OP_A(rd) | OP_B(rd) | SUBI_U6(imm);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -647,7 +701,7 @@ static u8 arc_sub_f_r(u8 *buf, u8 rd, u8 rs)
 static u8 arc_sub_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_SUBI | OP_A(rd) | OP_B(rd);
+		const u32 insn = OPC_SUB_I | OP_A(rd) | OP_B(rd);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -657,7 +711,7 @@ static u8 arc_sub_i(u8 *buf, u8 rd, s32 imm)
 static u8 arc_sbc_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = SBC_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_SBC | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -667,8 +721,7 @@ static u8 arc_sbc_r(u8 *buf, u8 rd, u8 rs)
 static u8 arc_cmp_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = OPC_SUB_F | OP_0 | OP_B(rd) |
-				 OP_C(rs);
+		const u32 insn = OPC_SUBF | OP_0 | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -678,8 +731,7 @@ static u8 arc_cmp_r(u8 *buf, u8 rd, u8 rs)
 static u8 arc_cmp_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_SUB_F | OP_0 | OP_B(rd) |
-				 OP_IMM;
+		const u32 insn = OPC_SUBF | OP_0 | OP_B(rd) | OP_IMM;
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -696,8 +748,7 @@ static u8 arc_cmp_i(u8 *buf, u8 rd, s32 imm)
 static u8 arc_cmp2_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = OPC_SBC_F | OP_0 | OP_B(rd) |
-				 OP_C(rs);
+		const u32 insn = OPC_SBCF | OP_0 | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -1087,13 +1138,16 @@ static u8 add_r32(u8 *buf, u8 rd, u8 rs)
 
 static u8 add_r32_i32(u8 *buf, u8 rd, s32 imm)
 {
-	return arc_add_i(buf, REG_LO(rd), imm);
+	if (IN_U6_RANGE(imm))
+		return arc_addi_r(buf, REG_LO(rd), imm);
+	else
+		return arc_add_i(buf, REG_LO(rd), imm);
 }
 
 static u8 add_r64(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
-	len  = arc_add_f_r(buf, REG_LO(rd), REG_LO(rs));
+	len  = arc_addf_r(buf, REG_LO(rd), REG_LO(rs));
 	len += arc_adc_r(buf+len, REG_HI(rd), REG_HI(rs));
 	return len;
 }
@@ -1103,8 +1157,13 @@ static u8 mov_r64_i32(u8 *, u8, s32);
 static u8 add_r64_i32(u8 *buf, u8 rd, s32 imm)
 {
 	u8 len;
-	len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
-	len += add_r64(buf+len, rd, JIT_REG_TMP);
+	if (IN_U6_RANGE(imm)) {
+		len  = arc_addif_r(buf, REG_LO(rd), imm);
+		len += arc_adci_r(buf+len, REG_HI(rd), 0);
+	} else {
+		len  = mov_r64_i32(buf, JIT_REG_TMP, imm);
+		len += add_r64(buf+len, rd, JIT_REG_TMP);
+	}
 	return len;
 }
 
@@ -1115,13 +1174,16 @@ static u8 sub_r32(u8 *buf, u8 rd, u8 rs)
 
 static u8 sub_r32_i32(u8 *buf, u8 rd, s32 imm)
 {
-	return arc_sub_i(buf, REG_LO(rd), imm);
+	if (IN_U6_RANGE(imm))
+		return arc_subi_r(buf, REG_LO(rd), imm);
+	else
+		return arc_sub_i(buf, REG_LO(rd), imm);
 }
 
 static u8 sub_r64(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
-	len  = arc_sub_f_r(buf, REG_LO(rd), REG_LO(rs));
+	len  = arc_subf_r(buf, REG_LO(rd), REG_LO(rs));
 	len += arc_sbc_r(buf+len, REG_HI(rd), REG_HI(rs));
 	return len;
 }
@@ -1877,11 +1939,6 @@ static u8 push_r64(u8 *buf, u8 reg)
 	return len;
 }
 
-static u8 push_blink(u8 *buf)
-{
-	return arc_push_r(buf, ARC_R_BLINK);
-}
-
 static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 {
 	u8 len = 0;
@@ -1936,25 +1993,6 @@ static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 	return len;
 }
 
-static u8 pop_r64(u8 *buf, u8 reg)
-{
-	u8 len;
-
-	/* BPF_REG_FP is mapped to 32-bit "fp" register. */
-	if (reg == BPF_REG_FP)
-		return arc_pop_r(buf, REG_LO(reg));
-
-	len  = arc_pop_r(buf    , REG_LO(reg));
-	len += arc_pop_r(buf+len, REG_HI(reg));
-
-	return len;
-}
-
-static u8 pop_blink(u8 *buf)
-{
-	return arc_pop_r(buf, ARC_R_BLINK);
-}
-
 /*
  * To create a frame, all that is needed is:
  *
@@ -1969,8 +2007,11 @@ static u8 pop_blink(u8 *buf)
 static u8 enter_frame(u8 *buf, u16 size)
 {
 	u8 len;
-	len  = arc_mov_r(buf, ARC_R_FP, ARC_R_SP);
-	len += arc_sub_i(buf+len, ARC_R_SP, size);
+	len = arc_mov_r(buf, ARC_R_FP, ARC_R_SP);
+	if (IN_U6_RANGE(size))
+		len += arc_subi_r(buf+len, ARC_R_SP, size);
+	else
+		len += arc_sub_i(buf+len, ARC_R_SP, size);
 	return len;
 }
 
@@ -2040,10 +2081,11 @@ struct arc_jit_data
  * jit:			The JIT buffer and its length.
  * bpf_header:		The JITed program header. "jit.buf" points inside it.
  * bpf2insn:		Maps BPF insn indices to their counterparts in jit.buf.
+ * bpf2insn_valid:	Indicates if "bpf2ins" is populated with the mappings.
  * jit_data:		A piece of memory to transfer data to the next pass.
- * regs_clobbered:	Each bit status determines if that BPF reg is clobbered.
+ * arc_regs_clobbered:	Each bit status determines if that arc reg is clobbered.
  * save_blink:		If ARC's "blink" register needs to be saved.
- * frame_depth:		Derived from FP accesses (fp-4, fp-8, ...).
+ * frame_size:		Derived from FP accesses (fp-4, fp-8, ...).
  * epilogue_offset:	Used by early "return"s in the code to jump here.
  * need_extra_pass:	A forecast if an "extra_pass" will occur.
  * blinded:		True if "constant blinding" step returned a new "prog".
@@ -2056,10 +2098,11 @@ struct jit_context
 	struct jit_buffer		jit;
 	struct bpf_binary_header	*bpf_header;
 	u32				*bpf2insn;
+	bool				bpf2insn_valid;
 	struct arc_jit_data		*jit_data;
-	u16				regs_clobbered;
+	u32				arc_regs_clobbered;
 	bool				save_blink;
-	u16				frame_depth;
+	u16				frame_size;
 	u32				epilogue_offset;
 	bool				need_extra_pass;
 	bool				blinded;
@@ -2076,18 +2119,19 @@ static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
 		return PTR_ERR(ctx->prog);
 	ctx->blinded = (ctx->prog == ctx->orig_prog ? false : true);
 
-	ctx->jit.buf         = NULL;
-	ctx->jit.len         = 0;
-	ctx->jit.index       = 0;
-	ctx->bpf_header      = NULL;
-	ctx->bpf2insn        = NULL;
-	ctx->jit_data        = NULL;
-	ctx->regs_clobbered  = 0;
-	ctx->save_blink      = false;
-	ctx->frame_depth     = 0;
-	ctx->epilogue_offset = 0;
-	ctx->need_extra_pass = false;
-	ctx->success         = false;
+	ctx->jit.buf            = NULL;
+	ctx->jit.len            = 0;
+	ctx->jit.index          = 0;
+	ctx->bpf_header         = NULL;
+	ctx->bpf2insn           = NULL;
+	ctx->bpf2insn_valid     = false;
+	ctx->jit_data           = NULL;
+	ctx->arc_regs_clobbered = 0;
+	ctx->save_blink         = false;
+	ctx->frame_size         = 0;
+	ctx->epilogue_offset    = 0;
+	ctx->need_extra_pass    = false;
+	ctx->success            = false;
 
 	return 0;
 }
@@ -2130,6 +2174,9 @@ static void jit_ctx_cleanup(struct jit_context *ctx)
 	maybe_free(ctx, (void **) &ctx->bpf2insn);
 	maybe_free(ctx, (void **) &ctx->jit_data);
 
+	if (!ctx->bpf2insn)
+		ctx->bpf2insn_valid = false;
+
 	/* Freeing "bpf_header" is enough. "jit.buf" is a sub-array of it. */
 	if (!ctx->success && ctx->bpf_header) {
 		bpf_jit_binary_free(ctx->bpf_header);
@@ -2147,43 +2194,49 @@ static void jit_ctx_cleanup(struct jit_context *ctx)
  */
 static void analyze_reg_usage(struct jit_context *ctx)
 {
-	u16 usage = 0;
-	s16 depth = 0;	/* Will be "min()"ed against negative numbers. */
-	bool call_exists = false;
+	u32 usage = 0;
+	s16 size = 0;	/* Will be "min()"ed against negative numbers. */
 	size_t i;
 	const struct bpf_insn *insn = ctx->prog->insnsi;
 
 	for (i = 0; i < ctx->prog->len; i++) {
-		if (insn[i].dst_reg == BPF_REG_6)
-			usage |= BIT(BPF_REG_6);
-		else if (insn[i].dst_reg == BPF_REG_7)
-			usage |= BIT(BPF_REG_7);
-		else if (insn[i].dst_reg == BPF_REG_8)
-			usage |= BIT(BPF_REG_8);
-		else if (insn[i].dst_reg == BPF_REG_9)
-			usage |= BIT(BPF_REG_9);
+		const u8 bpf_reg = insn[i].dst_reg;
+
+		/* BPF registers that must be saved. */
+		if (bpf_reg >= BPF_REG_6 && bpf_reg <= BPF_REG_9) {
+			usage |= BIT(REG_LO(bpf_reg));
+			usage |= BIT(REG_HI(bpf_reg));
 		/*
 		 * Reading the frame pointer register implies that it should
 		 * be saved and reinitialised with the current frame data.
 		 */
-		else if (insn[i].dst_reg == BPF_REG_FP) {
+		} else if (bpf_reg == BPF_REG_FP) {
 			const u8 store_mem_mask = 0x67;
 			const u8 code_mask = insn[i].code & store_mem_mask;
-			usage |= BIT(BPF_REG_FP);
+			usage |= BIT(REG_LO(BPF_REG_FP));
 			/* Is FP usage in the form of "*(FP + -off) = data"? */
 			if (code_mask == (BPF_STX | BPF_MEM)) {
-				/* Then, record the deepest depth. */
-				depth = min(depth, insn[i].off);
+				/* Then, record the deepest "off"set. */
+				size = min(size, insn[i].off);
 			}
+		/* Could there be some ARC registers that must to be saved? */
+		} else {
+			if (REG_LO(bpf_reg) >= ARC_CALLEE_SAVED_REG_FIRST &&
+			    REG_LO(bpf_reg) <= ARC_CALLEE_SAVED_REG_LAST)
+				usage |= BIT(REG_LO(bpf_reg));
+
+			if (REG_HI(bpf_reg) >= ARC_CALLEE_SAVED_REG_FIRST &&
+			    REG_HI(bpf_reg) <= ARC_CALLEE_SAVED_REG_LAST)
+				usage |= BIT(REG_HI(bpf_reg));
 		}
 
 		/* A "call" indicates that ARC's "blink" reg must be saved. */
-		call_exists |= (insn[i].code == (BPF_JMP | BPF_CALL));
+		if (insn[i].code == (BPF_JMP | BPF_CALL))
+			usage |= BIT(ARC_R_BLINK);
 	}
 
-	ctx->regs_clobbered = usage;
-	ctx->save_blink     = call_exists;
-	ctx->frame_depth    = abs(depth);
+	ctx->arc_regs_clobbered = usage;
+	ctx->frame_size         = abs(size);
 }
 
 /* Verify that no instruction will be emitted when there is no buffer. */
@@ -2225,31 +2278,31 @@ static inline u8 *effective_jit_buf(const struct jit_buffer *jbuf)
 static int handle_prologue(struct jit_context *ctx)
 {
 	int ret;
-	u16 push_mask = ctx->regs_clobbered;
+	u32 gp_regs = 0;
 	u8 *buf = effective_jit_buf(&ctx->jit);
 	u32 len = 0;
 
 	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
 
-	while (push_mask) {
-		u8 reg = __builtin_ffs(push_mask) - 1;
+	/* Deal with blink first. */
+	if (ctx->arc_regs_clobbered & BIT(ARC_R_BLINK))
+		len += arc_push_r(buf+len, ARC_R_BLINK);
 
-		if (reg < BPF_REG_6 || reg > BPF_REG_FP) {
-			pr_err("bpf-jit: invalid register for prologue %u\n",
-			       reg);
-			return -EINVAL;
-		}
+	gp_regs = ctx->arc_regs_clobbered & ~(BIT(ARC_R_BLINK) | BIT(ARC_R_FP));
+	while (gp_regs) {
+		u8 reg = __builtin_ffs(gp_regs) - 1;
 
-		len += push_r64(buf+len, reg);
-		push_mask &= ~BIT(reg);
+		len += arc_push_r(buf+len, reg);
+		gp_regs &= ~BIT(reg);
 	}
 
-	if (ctx->save_blink)
-		len += push_blink(buf+len);
+	/* Deal with fp last. */
+	if (ctx->arc_regs_clobbered & BIT(ARC_R_FP))
+		len += arc_push_r(buf+len, ARC_R_FP);
 
-	if (ctx->frame_depth)
-		len += enter_frame(buf+len, ctx->frame_depth);
+	if (ctx->frame_size)
+		len += enter_frame(buf+len, ctx->frame_size);
 
 	jit_buffer_update(&ctx->jit, len);
 
@@ -2265,31 +2318,31 @@ static int handle_prologue(struct jit_context *ctx)
 static int handle_epilogue(struct jit_context *ctx)
 {
 	int ret;
-	u32 pop_mask = ctx->regs_clobbered;
+	u32 gp_regs = 0;
 	u8 *buf = effective_jit_buf(&ctx->jit);
 	u32 len = 0;
 
 	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
 
-	if (ctx->frame_depth)
+	if (ctx->frame_size)
 		len += exit_frame(buf+len);
 
-	if (ctx->save_blink)
-		len += pop_blink(buf+len);
+	/* Deal with fp first. */
+	if (ctx->arc_regs_clobbered & BIT(ARC_R_FP))
+		len += arc_pop_r(buf+len, ARC_R_FP);
 
-	while (pop_mask) {
-		u8 reg = 31 - __builtin_clz(pop_mask);
+	gp_regs = ctx->arc_regs_clobbered & ~(BIT(ARC_R_BLINK) | BIT(ARC_R_FP));
+	while (gp_regs) {
+		u8 reg = 31 - __builtin_clz(gp_regs);
 
-		if (reg < BPF_REG_6 || reg > BPF_REG_FP) {
-			pr_err("bpf-jit: invalid register for epilogue %u\n",
-			       reg);
-			return -EINVAL;
-		}
-
-		len += pop_r64(buf+len, reg);
-		pop_mask &= ~BIT(reg);
+		len += arc_pop_r(buf+len, reg);
+		gp_regs &= ~BIT(reg);
 	}
+
+	/* Deal with blink last. */
+	if (ctx->arc_regs_clobbered & BIT(ARC_R_BLINK))
+		len += arc_pop_r(buf+len, ARC_R_BLINK);
 
 	/* Assigning JIT's return reg to ABI's return reg. */
 	len += arc_mov_r(buf+len, ARC_R_0, REG_LO(BPF_REG_0));
@@ -2463,7 +2516,7 @@ static int gen_jmp(struct jit_context *ctx, const struct bpf_insn *insn,
 	*len = emit_check_insn(buf, insn, op_types);
 
 	/* After that ctx->bpf2insn[] is initialised, offsets can be deduced. */
-	if (emit) {
+	if (ctx->bpf2insn_valid) {
 		int ret = bpf_offset_to_jit(ctx, insn, *len, &disp);
 		if (ret < 0)
 			return ret;
@@ -2528,7 +2581,7 @@ static int gen_jmp_epilogue(struct jit_context *ctx,
 	}
 
 	/* Only after the dry-run, ctx->bpf2insn[] holds valid entries. */
-	if (emit)
+	if (ctx->bpf2insn_valid)
 		disp = ctx->epilogue_offset - ctx->bpf2insn[idx];
 
 	if (disp & 1 || !IN_S21_RANGE(disp)) {
@@ -2880,22 +2933,23 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 static int handle_body(struct jit_context *ctx)
 {
 	int ret;
+	bool populate_bpf2insn = false;
 	const struct bpf_prog *prog = ctx->prog;
 
 	if ((ret = jit_buffer_check(&ctx->jit)))
 	    return ret;
 
-	for (u32 i = 0; i < prog->len; i++) {
+	/*
+	 * Record the mapping for the instructions during the dry-run.
+	 * Doing it this way allows us to have the mapping ready for
+	 * the jump instructions during the real compilation phase.
+	 */
+	if (!emit)
+		populate_bpf2insn = true;
 
-		/*
-		 * Record the mapping for the instructions during the
-		 * dry-run, as "jit.len" grows gradually per instruction.
-		 *
-		 * Doing it this way allows us to have the mapping ready
-		 * for the jump instructions during the real compilation
-		 * phase.
-		 */
-		if (!emit)
+	for (u32 i = 0; i < prog->len; i++) {
+		/* During the dry-run, jit.len grows gradually per BPF insn. */
+		if (populate_bpf2insn)
 			ctx->bpf2insn[i] = ctx->jit.len;
 
 		if ((ret = handle_insn(ctx, i)) < 0)
@@ -2904,6 +2958,10 @@ static int handle_body(struct jit_context *ctx)
 		/* "ret" holds 1 if two (64-bit) chunks were consumed. */
 		i += ret;
 	}
+
+	/* If bpf2insn had to be populated, then it is done at this point. */
+	if (populate_bpf2insn)
+		ctx->bpf2insn_valid = true;
 
 	return 0;
 }
@@ -3091,11 +3149,12 @@ static int jit_resume_context(struct jit_context *ctx)
 		return -EINVAL;
 	}
 
-	ctx->jit.buf    = (u8 *) ctx->prog->bpf_func;
-	ctx->jit.len    = ctx->prog->jited_len;
-	ctx->bpf_header = jdata->bpf_header;
-	ctx->bpf2insn   = (u32 *) jdata->bpf2insn;
-	ctx->jit_data   = jdata;
+	ctx->jit.buf        = (u8 *) ctx->prog->bpf_func;
+	ctx->jit.len        = ctx->prog->jited_len;
+	ctx->bpf_header     = jdata->bpf_header;
+	ctx->bpf2insn       = (u32 *) jdata->bpf2insn;
+	ctx->bpf2insn_valid = ctx->bpf2insn ? true : false;
+	ctx->jit_data       = jdata;
 
 	return 0;
 }
