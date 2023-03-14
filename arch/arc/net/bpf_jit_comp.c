@@ -2210,6 +2210,10 @@ static void jit_ctx_cleanup(struct jit_context *ctx)
 		ctx->jit.index  = 0;
 		ctx->jit.len    = 0;
 	}
+
+	/* Global vars back to their original state. */
+	emit         = false;
+	zext_thyself = false;
 }
 
 /*
