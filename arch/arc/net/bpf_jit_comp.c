@@ -213,7 +213,19 @@ enum {
  * c:  cccccc		the 2nd input operand
  */
 #define OPC_SBC		0x20030000
-#define OPC_SBCF	(OPC_SBC | FLAG(1))
+
+/*
+ * The 4-byte encoding of "cmp[.qq] b,c":
+ *
+ * 0010_0bbb 1100_1100 1BBB_cccc cc0q_qqqq
+ *
+ * qq:	qqqqq		condtion code
+ *
+ * b:  BBBbbb		the 1st operand
+ * c:  cccccc		the 2nd operand
+ */
+#define OPC_CMP		0x20cc8000
+#define OPC_CMP_I	(OPC_CMP | OP_IMM)
 
 /*
  * The 4-byte encoding of "neg a,b":
@@ -288,8 +300,8 @@ enum {
  * b:  BBBbbb		the 1st input operand
  * c:  cccccc		the 2nd input operand
  */
-#define AND_OPCODE	0x20040000
-#define OPC_ANDI	AND_OPCODE | OP_IMM
+#define OPC_AND		0x20040000
+#define OPC_ANDI	(OPC_AND | OP_IMM)
 
 /*
  * The 4-byte encoding of "tst[.qq] b,c":
@@ -301,8 +313,8 @@ enum {
  * b:  BBBbbb		the 1st input operand
  * c:  cccccc		the 2nd input operand
  */
-#define TST_OPCODE	0x20cb8000
-#define OPC_TSTI	TST_OPCODE | OP_IMM
+#define OPC_TST		0x20cb8000
+#define OPC_TSTI	(OPC_TST | OP_IMM)
 
 /*
  * The 4-byte encoding of "or a,b,c":
@@ -717,21 +729,19 @@ static u8 arc_sbc_r(u8 *buf, u8 rd, u8 rs)
 	return INSN_len_normal;
 }
 
-/* Implemented as "sub.f 0,rd,rs". */
 static u8 arc_cmp_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = OPC_SUBF | OP_0 | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_CMP | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-/* Implemented as "sub.f 0,rd,imm". */
 static u8 arc_cmp_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_SUBF | OP_0 | OP_B(rd) | OP_IMM;
+		const u32 insn = OPC_CMP_I | OP_B(rd);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -739,16 +749,15 @@ static u8 arc_cmp_i(u8 *buf, u8 rd, s32 imm)
 }
 
 /*
- * Implemented as "sbc.f 0,rd,rs".
- *
- * This particular "cmp2" version must be only emitted as a follow-up
- * to a "cmp" version. A chain of these two makes it possible to compare
- * pair of registers (64-bit).
+ * This "cmp.z" variant of compare instruction is used on lower
+ * 32-bits of register pairs after "cmp"ing their upper parts. If the
+ * upper parts are equal (z), then this one will proceed to check the
+ * rest.
  */
-static u8 arc_cmp2_r(u8 *buf, u8 rd, u8 rs)
+static u8 arc_cmpz_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = OPC_SBCF | OP_0 | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_CMP | OP_B(rd) | OP_C(rs) | CC_equal;
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -842,7 +851,7 @@ static u8 arc_remu_i(u8 *buf, u8 rd, s32 imm)
 static u8 arc_and_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = AND_OPCODE | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_AND | OP_A(rd) | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -851,7 +860,7 @@ static u8 arc_and_r(u8 *buf, u8 rd, u8 rs)
 static u8 arc_and_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (emit) {
-		const u32 insn = AND_OPCODE | OP_A(rd) | OP_B(rd);
+		const u32 insn = OPC_ANDI | OP_A(rd) | OP_B(rd);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -861,7 +870,7 @@ static u8 arc_and_i(u8 *buf, u8 rd, s32 imm)
 static u8 arc_tst_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = TST_OPCODE | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_TST | OP_B(rd) | OP_C(rs);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -883,10 +892,10 @@ static u8 arc_tst_i(u8 *buf, u8 rd, s32 imm)
  * zero, then we don't need to test the upper 32-bits lest it sets
  * the zero flag.
  */
-static u8 arc_tst_z_r(u8 *buf, u8 rd, u8 rs)
+static u8 arc_tstz_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
-		const u32 insn = TST_OPCODE | OP_B(rd) | OP_C(rs) | CC_equal;
+		const u32 insn = OPC_TST | OP_B(rd) | OP_C(rs) | CC_equal;
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -1205,16 +1214,18 @@ static u8 cmp_r32(u8 *buf, u8 rd, u8 rs)
 
 static u8 cmp_r32_i32(u8 *buf, u8 rd, s32 imm)
 {
-	u8 len;
-	len = arc_cmp_i(buf, REG_LO(rd), imm);
-	return len;
+	return arc_cmp_i(buf, REG_LO(rd), imm);
 }
 
+/*
+ * Check the higher 32-bit parts first. Only if they're equal,
+ * then move on to the lower parts. Else, the result is known.
+ */
 static u8 cmp_r64(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
-	len  = arc_cmp_r(buf     , REG_LO(rd), REG_LO(rs));
-	len += arc_cmp2_r(buf+len, REG_HI(rd), REG_HI(rs));
+	len  = arc_cmp_r(buf     , REG_HI(rd), REG_HI(rs));
+	len += arc_cmpz_r(buf+len, REG_LO(rd), REG_LO(rs));
 	return len;
 }
 
@@ -1368,8 +1379,8 @@ static u8 tst_r32_i32(u8 *buf, u8 rd, s32 imm)
 static u8 tst_r64(u8 *buf, u8 rd, u8 rs)
 {
 	u8 len;
-	len  = arc_tst_r(buf      , REG_LO(rd), REG_LO(rs));
-	len += arc_tst_z_r(buf+len, REG_HI(rd), REG_HI(rs));
+	len  = arc_tst_r(buf     , REG_LO(rd), REG_LO(rs));
+	len += arc_tstz_r(buf+len, REG_HI(rd), REG_HI(rs));
 	return len;
 }
 
