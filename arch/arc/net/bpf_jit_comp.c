@@ -1140,6 +1140,17 @@ static u8 arc_b(u8 *buf, u8 cc, int offset)
 
 /*********************** Packers *************************/
 
+/* An indicator if zero-extend must be done for the 32-bit operations. */
+bool zext_thyself = false;
+
+static inline u8 zext(u8 *buf, u8 rd)
+{
+	if (zext_thyself && rd != BPF_REG_FP)
+		return arc_movi_r(buf, REG_HI(rd), 0);
+	else
+		return 0;
+}
+
 static u8 add_r32(u8 *buf, u8 rd, u8 rs)
 {
 	return arc_add_r(buf, REG_LO(rd), REG_LO(rs));
@@ -1758,7 +1769,7 @@ static u8 gen_swap(u8 *buf, u8 rd, u8 size, u8 endian, u8 *len)
 			*len += arc_and_i(buf+*len, REG_LO(rd), 0xffff);
 			fallthrough;
 		case 32:
-			*len += arc_movi_r(buf+*len, REG_HI(rd), 0);
+			*len += zext(buf+*len, rd);
 			fallthrough;
 		case 64:
 			break;
@@ -1777,7 +1788,7 @@ static u8 gen_swap(u8 *buf, u8 rd, u8 size, u8 endian, u8 *len)
 			fallthrough;
 		case 32:
 			*len += arc_swape_r(buf+*len, REG_LO(rd));
-			*len += arc_movi_r(buf+*len, REG_HI(rd), 0);
+			*len += zext(buf+*len, rd);
 			break;
 		case 64:
 			/*
@@ -2143,6 +2154,9 @@ static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
 	ctx->epilogue_offset    = 0;
 	ctx->need_extra_pass    = false;
 	ctx->success            = false;
+
+	/* If the verifier doesn't zero-extend, then we have to do it. */
+	zext_thyself = !ctx->prog->aux->verifier_zext;
 
 	return 0;
 }
@@ -2934,6 +2948,16 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	default:
 		pr_err("bpf-jit: can't handle instruction code 0x%02X\n", code);
 		return -ENOTSUPP;
+	}
+
+	if (BPF_CLASS(code) == BPF_ALU) {
+		/*
+		 * Even 64-bit swaps are of type BPF_ALU.  Therefore,
+		 * gen_swap() itself handles calling zext() based on
+		 * its input "size" argument.
+		 */
+		if (BPF_OP(code) != BPF_END)
+			len += zext(buf+len, dst);
 	}
 
 	jit_buffer_update(&ctx->jit, len);
