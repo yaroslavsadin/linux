@@ -12,31 +12,54 @@ enum {
 	 * Having ARC_R_IMM encoded as source register means there is an
 	 * immediate that must be interpreted from the next 4 bytes. If
 	 * encoded as the destination register though, it implies that the
-	 * output of the operation is not assigned to any register. This is
-	 * helpful if we only care about updating the CPU status flags.
+	 * output of the operation is not assigned to any register. The
+	 * latter is helpful if we only care about updating the CPU status
+	 * flags.
 	 */
 	ARC_R_IMM = 62
 };
 
 /*
- * bpf2arc array maps BPF registers to ARC registers. However, that is not
- * all and in some cases we need an extra temporary register to perform
- * the operations. This temporary register is added as yet another index
- * in the bpf2arc array, so it will unfold like the rest of registers into
- * the final JIT. The chosen ARC registers for that purpose are r10 and r11.
- * Since they're not callee-saved registers in ARC's ABI, there is no need
- * to save them.
- *
- * BPF_REG_0 is not mapped to r1r0, because BPF_REG_1 as the first argument
- * _must_ be mapped to r1r0. BPF_REG_{2,3,4} are mapped to the correct
- * registers (r2, r3, r4, r5, r6, r7) in terms of calling convention.
- * r7 is the last argument in the ABI, therefore BPF_REG_5 must be pushed
- * onto the stack for an in-kernel function call. Nonetheless, BPF_REG_0,
- * being very popular in instructions encoding, is mapped to a piar of
- * scratch registers in ARC, so they don't need to be saved and restored.
+ * bpf2arc array maps BPF registers to ARC registers. For the translation
+ * of some BPF instructions, a pair of temporary registers might be required.
+ * This temporary register is added as yet another index in the bpf2arc array,
+ * so it will unfold like the rest of registers into the compiling process.
  */
 #define JIT_REG_TMP MAX_BPF_JIT_REG
 
+/*
+ * Remarks about the rationale behind the chosen mapping:
+ *
+ * - BPF_REG_{1,2,3,4} are the argument registers and must be mapped to
+ *   argument registers in ARCv2 ABI: r0-r7. The r7 registers is the last
+ *   argument register in the ABI. Therefore BPF_REG_5, as the fifth
+ *   argument, must be pushed onto the stack. This is a must for calling
+ *   in-kernel functions.
+ *
+ * - In ARCv2 ABI, the return value is in r0 for 32-bit results and (r1,r0)
+ *   for 64-bit results. However, because they're already used for BPF_REG_1,
+ *   the next available scratch registers, r8 and r9, are the best candidates
+ *   for BPF_REG_0. After a "call" to a(n) (in-kernel) function, the result
+ *   is "mov"ed to these registers. At a BPF_EXIT, their value is "mov"ed to
+ *   (r1,r0).
+ *   It is worth mentioning that scratch registers are the best choice for
+ *   BPF_REG_0, because it is very popular in BPF instruction encoding.
+ *
+ * - JIT_REG_TMP is an artifact needed to translate some BPF instructions.
+ *   Its life span is one single BPF instruction. Since during the
+ *   analyze_reg_usage(), it is not known if temporary registers are used,
+ *   it is mapped to ARC's scratch registers: r10 and r11. Therefore, they
+ *   don't matter in analysing phase and don't need saving.
+ *
+ * - Mapping of callee-saved BPF registers, BPF_REG_{6,7,8,9}, starts from
+ *   (r15,r14) register pair. The (r13,r12) is not a good choice, because
+ *   in ARCv2 ABI, r12 is not a callee-saved register and this can cause
+ *   problem when calling an in-kernel function. Theoretically, the mapping
+ *   could start from (r14,r13), but it is not a conventional ARCv2 register
+ *   pair. To have a future proof design, I opted for this arrangement.
+ *   If/when we decide to add ARCv2 instructions that do use register pairs,
+ *   the mapping (hopefully) doesn't need to be revisited.
+ */
 static const u8 bpf2arc[][2] = {
 	/* Return value from in-kernel function, and exit value from eBPF */
 	[BPF_REG_0] = {ARC_R_8 , ARC_R_9},
@@ -46,18 +69,18 @@ static const u8 bpf2arc[][2] = {
 	[BPF_REG_3] = {ARC_R_4 , ARC_R_5},
 	[BPF_REG_4] = {ARC_R_6 , ARC_R_7},
 	/* Remaining arguments, to be passed on the stack per O32 ABI */
-	[BPF_REG_5] = {ARC_R_20, ARC_R_21},
+	[BPF_REG_5] = {ARC_R_22, ARC_R_23},
 	/* Callee-saved registers that in-kernel function will preserve */
-	[BPF_REG_6] = {ARC_R_12, ARC_R_13},
-	[BPF_REG_7] = {ARC_R_14, ARC_R_15},
-	[BPF_REG_8] = {ARC_R_16, ARC_R_17},
-	[BPF_REG_9] = {ARC_R_18, ARC_R_19},
+	[BPF_REG_6] = {ARC_R_14, ARC_R_15},
+	[BPF_REG_7] = {ARC_R_16, ARC_R_17},
+	[BPF_REG_8] = {ARC_R_18, ARC_R_19},
+	[BPF_REG_9] = {ARC_R_20, ARC_R_21},
 	/* Read-only frame pointer to access the eBPF stack. 32-bit only. */
 	[BPF_REG_FP] = {ARC_R_FP, },
 	/* Register for blinding constants */
-	[BPF_REG_AX] = {ARC_R_22, ARC_R_23},
+	[BPF_REG_AX] = {ARC_R_24, ARC_R_25},
 	/* Temporary registers for internal use */
-	[JIT_REG_TMP] = {ARC_R_10, ARC_R_11},
+	[JIT_REG_TMP] = {ARC_R_10, ARC_R_11}
 };
 
 #define REG_LO(r) (bpf2arc[(r)][0])
@@ -1947,16 +1970,24 @@ static u8 store_i(u8 *buf, s32 imm, u8 reg_mem, s16 off, u8 size)
 	return len;
 }
 
+/*
+ * For the calling convention of a little endian machine, the LO part
+ * must be on top of the stack.
+ */
 static u8 push_r64(u8 *buf, u8 reg)
 {
-	u8 len;
+	u8 len = 0;
 
+#ifdef __LITTLE_ENDIAN
 	/* BPF_REG_FP is mapped to 32-bit "fp" register. */
-	if (reg == BPF_REG_FP)
-		return arc_push_r(buf, REG_LO(reg));
-
-	len  = arc_push_r(buf    , REG_LO(reg));
-	len += arc_push_r(buf+len, REG_HI(reg));
+	if (reg != BPF_REG_FP)
+		len += arc_push_r(buf+len, REG_HI(reg));
+	len += arc_push_r(buf+len, REG_LO(reg));
+#else
+	len += arc_push_r(buf+len, REG_LO(reg));
+	if (reg != BPF_REG_FP)
+		len += arc_push_r(buf+len, REG_HI(reg));
+#endif
 
 	return len;
 }
@@ -2217,9 +2248,12 @@ static void jit_ctx_cleanup(struct jit_context *ctx)
 }
 
 /*
- * Goes through all the instructions and checks if any of the callee-saved
- * registers are clobbered. If yes, the corresponding bit position of that
- * register is set to true.
+ * This function is responsible for deciding which ARC registers must be
+ * saved and restored accross the JIT translation of a BPF function. It
+ * merely looks at "dst" register of BPF instructions and their mappings
+ * to figure this out. Therefore, it is not aware of the semantics of any
+ * instruction. When a register of interest is clobbered, its corresponding
+ * bit position in ctx->arc_regs_clobbered is set to true.
  */
 static void analyze_reg_usage(struct jit_context *ctx)
 {
