@@ -1062,11 +1062,23 @@ static u8 arc_mov_r(u8 *buf, u8 rd, u8 rs)
 	return INSN_len_normal;
 }
 
+/* The emitted code may have different sizes based on "imm". */
 static u8 arc_mov_i(u8 *buf, u8 rd, s32 imm)
 {
 	if (IN_S12_RANGE(imm))
 		return arc_movi_r(buf, rd, imm);
 
+	if (emit) {
+		const u32 insn = MOV_OPCODE | OP_B(rd) | OP_IMM;
+		emit_4_bytes(buf                , insn);
+		emit_4_bytes(buf+INSN_len_normal, imm);
+	}
+	return INSN_len_normal + INSN_len_imm;
+}
+
+/* The emitted code will always have the same size (8). */
+static u8 arc_mov_i_fixed(u8 *buf, u8 rd, s32 imm)
+{
 	if (emit) {
 		const u32 insn = MOV_OPCODE | OP_B(rd) | OP_IMM;
 		emit_4_bytes(buf                , insn);
@@ -1881,12 +1893,40 @@ static u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
 	return len;
 }
 
+/*
+ * This is merely used for translation of "LD R, IMM64" instructions
+ * of the BPF. These sort of instructions are sometimes used for
+ * relocations. If during the normal pass, the relocation value is
+ * not known, the BPF instruction may look something like:
+ *
+ * LD R <- 0x0000_0001_0000_0001
+ *
+ * Which will nicely translate to two 4-byte ARC instructions:
+ *
+ * mov R_lo, 1               # imm is small enough to be s12
+ * mov R_hi, 1               # ditto
+ *
+ * However, during the extra pass, the IMM64 will have changed
+ * to the resolved address and looks something like:
+ *
+ * LD R <- 0x0000_0000_1234_5678
+ *
+ * Now, the translated code will require 12 bytes:
+ *
+ * mov R_lo, 0x12345678      # this is an 8-byte instruction
+ * mov R_hi, 0               # still 4 bytes
+ *
+ * Which in practice will result in overwriting the following
+ * instruction. To avoid such cases, we restrict ourselves to
+ * these sort of size optimizations and will always emit codes
+ * with fixed sizes.
+ */
 static u8 mov_r64_i64(u8 *buf, u8 reg, u32 lo, u32 hi)
 {
 	u8 len;
 
-	len  = arc_mov_i(buf, REG_LO(reg), lo);
-	len += arc_mov_i(buf+len, REG_HI(reg), hi);
+	len  = arc_mov_i_fixed(buf, REG_LO(reg), lo);
+	len += arc_mov_i_fixed(buf+len, REG_HI(reg), hi);
 
 	return len;
 }
@@ -2141,6 +2181,8 @@ struct arc_jit_data
  * frame_size:		Derived from FP accesses (fp-4, fp-8, ...).
  * epilogue_offset:	Used by early "return"s in the code to jump here.
  * need_extra_pass:	A forecast if an "extra_pass" will occur.
+ * is_extra_pass:	Indicates if the current pass is an extra pass.
+ * user_bpf_prog:	True, if VM opcodes come from a real program.
  * blinded:		True if "constant blinding" step returned a new "prog".
  * success:		Indicates if the whole JIT went OK.
  */
@@ -2158,6 +2200,8 @@ struct jit_context
 	u16				frame_size;
 	u32				epilogue_offset;
 	bool				need_extra_pass;
+	bool				is_extra_pass;
+	bool				user_bpf_prog;
 	bool				blinded;
 	bool				success;
 };
@@ -2184,6 +2228,8 @@ static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
 	ctx->frame_size         = 0;
 	ctx->epilogue_offset    = 0;
 	ctx->need_extra_pass    = false;
+	ctx->is_extra_pass	= ctx->prog->jited;
+	ctx->user_bpf_prog	= ctx->prog->is_func;
 	ctx->success            = false;
 
 	/* If the verifier doesn't zero-extend, then we have to do it. */
@@ -2590,16 +2636,30 @@ static int gen_jmp(struct jit_context *ctx, const struct bpf_insn *insn,
 	return 0;
 }
 
+/*
+ * Invocation of this function, conditionally signals the need for
+ * an extra pass. The conditions that must be met are:
+ *
+ * 1. The current pass itself shouldn't be an extra pass.
+ * 2. The stream of bytes being JITed must come from a user program.
+ */
+static inline void set_need_for_extra_pass(struct jit_context *ctx)
+{
+	if (!ctx->is_extra_pass)
+		ctx->need_extra_pass = ctx->user_bpf_prog;
+}
+
 /* Try to get the resolved address and generate the instructions. */
 static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
-		       bool extra_pass, u8 *len)
+		    u8 *len)
 {
 	int  ret;
 	bool in_kernel_func, fixed = false;
 	u64  addr = 0;
 	u8  *buf = effective_jit_buf(&ctx->jit);
 
-	ret = bpf_jit_get_func_addr(ctx->prog, insn, extra_pass, &addr, &fixed);
+	ret = bpf_jit_get_func_addr(ctx->prog, insn, ctx->is_extra_pass, &addr,
+				    &fixed);
 	if (ret < 0) {
 		pr_err("bpf-jit: can't get the address for call.");
 		return ret;
@@ -2608,7 +2668,7 @@ static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
 
 	/* No valuble address retrieved (yet). */
 	if (!fixed && !addr)
-		ctx->need_extra_pass = true;
+		set_need_for_extra_pass(ctx);
 
 	*len = 0;
 	/* In case of an in-kernel function, arg5 is always pushed. */
@@ -2623,6 +2683,35 @@ static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
 		*len += arc_mov_r(buf+*len, REG_LO(BPF_REG_0), ARC_R_0);
 		*len += arc_mov_r(buf+*len, REG_HI(BPF_REG_0), ARC_R_1);
 	}
+
+	return 0;
+}
+
+static inline bool is_last_insn(const struct bpf_prog *prog, u32 idx)
+{
+	return (idx == (prog->len - 1));
+}
+
+/*
+ * Try to generate instructions for loading a 64-bit immediate.
+ * These sort of instructions are usually associated with the 64-bit
+ * relocations: R_BPF_64_64. Therefore, signal the need for an extra
+ * pass if the circumstances are right.
+ */
+static int gen_ld_imm64(struct jit_context *ctx, const struct bpf_insn *insn,
+			u8 *len)
+{
+	const s32 idx = get_index_for_insn(ctx, insn);
+	u8 *buf = effective_jit_buf(&ctx->jit);
+
+	/* We're about to consume 2 VM instructions. */
+	if (is_last_insn(ctx->prog, idx)) {
+		pr_err("bpf-jit: need more data for 64-bit immediate.");
+		return -EINVAL;
+	}
+
+	*len = mov_r64_i64(buf, insn->dst_reg, insn->imm, (insn+1)->imm);
+	set_need_for_extra_pass(ctx);
 
 	return 0;
 }
@@ -2655,11 +2744,6 @@ static int gen_jmp_epilogue(struct jit_context *ctx,
 	*len = arc_b(buf, CC_always, disp);
 
 	return 0;
-}
-
-static inline bool is_last_insn(const struct bpf_prog *prog, u32 idx)
-{
-	return (idx == (prog->len - 1));
 }
 
 /*
@@ -2879,12 +2963,8 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		break;
 	/* dst = imm64 */
 	case BPF_LD | BPF_DW | BPF_IMM:
-		/* We're about to consume 2 VM instructions. */
-		if (is_last_insn(ctx->prog, idx)) {
-			pr_err("bpf-jit: need more data for 64-bit immediate.");
-			return -EINVAL;
-		}
-		len = mov_r64_i64(buf, dst, imm, (insn+1)->imm);
+		if ((ret = gen_ld_imm64(ctx, insn, &len)) < 0)
+			return ret;
 		/* Tell the loop to skip the next instruction. */
 		ret = 1;
 		break;
@@ -2966,13 +3046,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 			return ret;
 		break;
 	case BPF_JMP | BPF_CALL:
-		/*
-		 * If we're here, then "extra_pass" is definitely "false".
-		 * When "extra_pass" is true, it leads to a different code
-		 * execution than here. In that case, "do_extra_pass()"
-		 * takes care of the situation.
-		 */
-		if ((ret = gen_call(ctx, insn, false, &len)) < 0)
+		if ((ret = gen_call(ctx, insn, &len)) < 0)
 			return ret;
 		break;
 
@@ -2990,7 +3064,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 
 	if (BPF_CLASS(code) == BPF_ALU) {
 		/*
-		 * Even 64-bit swaps are of type BPF_ALU.  Therefore,
+		 * Also 64-bit swaps are of type BPF_ALU.  Therefore,
 		 * gen_swap() itself handles calling zext() based on
 		 * its input "size" argument.
 		 */
@@ -3233,27 +3307,42 @@ static int jit_resume_context(struct jit_context *ctx)
 }
 
 /*
- * Goes after all of the "call" instructions and gets new "address"es
- * for them. Then uses this information to re-emit them.
+ * Patch in the new addresses. The instructions of interest are:
+ *
+ * - call
+ * - ld r64, imm64
+ *
+ * For "call"s, it resolves the addresses one more time through the
+ * gen_call().
+ *
+ * For 64-bit immediate loads, it just retranslates them, because the BPF
+ * core in kernel might have changed the value since the normal pass.
  */
-static int jit_patch_calls(struct jit_context *ctx)
+static int jit_patch_relocations(struct jit_context *ctx)
 {
+	const u8 bpf_opc_call = BPF_JMP | BPF_CALL;
+	const u8 bpf_opc_ldi64 = BPF_LD | BPF_DW | BPF_IMM;
 	const struct bpf_prog *prog = ctx->prog;
 	int ret;
 
 	emit = true;
 	for (u32 i = 0; i < prog->len; i++) {
 		const struct bpf_insn *insn = &prog->insnsi[i];
+		u8 dummy;
 		/*
-		 * Adjust "ctx.jit.index", so "handle_call()" can use it
-		 * for its output address.
+		 * Adjust "ctx.jit.index", so "gen_*()" functions below
+		 * can use it for their output addresses.
 		 */
 		ctx->jit.index = ctx->bpf2insn[i];
 
-		if (insn->code == (BPF_JMP | BPF_CALL)) {
-			u8 dummy;
-			if ((ret = gen_call(ctx, insn, true, &dummy)) < 0)
+		if (insn->code == bpf_opc_call) {
+			if ((ret = gen_call(ctx, insn, &dummy)) < 0)
 				return ret;
+		} else if (insn->code == bpf_opc_ldi64) {
+			if ((ret = gen_ld_imm64(ctx, insn, &dummy)) < 0)
+				return ret;
+			/* Skip the next instruction. */
+			++i;
 		}
 	}
 	return 0;
@@ -3314,10 +3403,12 @@ struct bpf_prog *do_extra_pass(struct bpf_prog *prog)
 		return prog;
 	}
 
-	if (jit_patch_calls(&ctx)) {
+	if (jit_patch_relocations(&ctx)) {
 		jit_ctx_cleanup(&ctx);
 		return prog;
 	}
+
+	jit_finalize(&ctx);
 
 	return ctx.prog;
 }
@@ -3338,4 +3429,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 		return do_normal_pass(prog);
 	else
 		return do_extra_pass(prog);
+
+	return prog;
 }
