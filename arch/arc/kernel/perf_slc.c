@@ -403,6 +403,8 @@ static int arc_pmu_slc_device_probe(struct platform_device *pdev)
 		.stop		    = arc_pmu_slc_stop,
 		.read		    = arc_pmu_slc_read,
 		.attr_groups	= arc_pmu->attr_groups,
+//s		.capabilities = PERF_PMU_CAP_NO_EXCLUDE,
+//s		.task_ctx_nr = perf_invalid_context,
 	};
 
 	/*
@@ -411,7 +413,7 @@ static int arc_pmu_slc_device_probe(struct platform_device *pdev)
 	 */
 	arc_pmu->pmu.capabilities |= PERF_PMU_CAP_NO_INTERRUPT | PERF_PMU_CAP_HETEROGENEOUS_CPUS;
 
-	// set all counters to not used event
+	// set all counters as default
 	arc_pmu_slc_pcts_init(arc_pmu->n_counters);
 
 	/*

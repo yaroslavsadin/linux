@@ -31,52 +31,52 @@
 
 struct csm_build {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int res:8, csmecc1:2, csm_sz1:4, mpnum:2, bcycle:2, csmecc:2, csmsz:4, ver:8;
+	u32 res:8, csmecc1:2, csm_sz1:4, mpnum:2, bcycle:2, csmecc:2, csmsz:4, ver:8;
 #else
-	unsigned int ver:8, csmsz:4, csmecc:2, bcycle:2, mpnum:2, csm_sz1:4, csmecc1:2, res:8;
+	u32 ver:8, csmsz:4, csmecc:2, bcycle:2, mpnum:2, csm_sz1:4, csmecc1:2, res:8;
 #endif
 };
 
 struct slc_build {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int res:16, num:8, ver:8;
+	u32 res:16, num:8, ver:8;
 #else
-	unsigned int ver:8, num:8, res:16;
+	u32 ver:8, num:8, res:16;
 #endif
 };
 
 struct slc_aux_cache_config {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int r:2, b:1, pm_num:5, pms:2, tag_time:4, tbank:3, data_time:4, dbank:3, ways:2 \
+	u32 r:2, b:1, pm_num:5, pms:2, tag_time:4, tbank:3, data_time:4, dbank:3, ways:2 \
         lsz:2, cache_sz:4;
 #else
-	unsigned int cache_sz:4, lsz:2, ways:2, dbank:3, data_time:4, tbank:3, tag_time:4, pms:2, \
+	u32 cache_sz:4, lsz:2, ways:2, dbank:3, data_time:4, tbank:3, tag_time:4, pms:2, \
         pm_num:5, b:1, r:2;
 #endif
 };
 
 struct slc_aux_pm_cmd {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int res:15, evt:8, cnum:5, cmd:4;
+	u32 res:15, evt:8, cnum:5, cmd:4;
 #else
-	unsigned int cmd:4, cnum:5, evt:8, res:15;
+	u32 cmd:4, cnum:5, evt:8, res:15;
 #endif
 };
 
 struct slc_aux_pm_event {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int res:23, evt:8, pe:1;
+	u32 res:23, evt:8, pe:1;
 #else
-	unsigned int pe:1, evt:8, res:23;
+	u32 pe:1, evt:8, res:23;
 #endif
 };
 
 struct slc_aux_pm_ovf {
-    unsigned int counter_overflow;
+    u32 counter_overflow;
 };
 
 struct slc_aux_pm_cnt {
-    unsigned int cnt;
+    u32 cnt;
 };
 
 static void arc_perf_event_update(struct perf_event *event,
