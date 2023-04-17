@@ -329,6 +329,27 @@
 	sr	@_int_vec_base_lds, [AUX_INTR_VEC_BASE]
 #endif
 
+	; Program AP0 - Generate Breakpoint on LD/ST access in range 0x8000_0000 - 0x803F_FFFF
+	sr	0x80000000, [0x220]
+	sr	0x003FFFFF, [0x221]
+	sr	0x32, [0x222]
+
+	; Program AP1 - Generate Breakpoint on LD/ST access in range 0x8040_0000 - 0x804F_FFFF
+	sr	0x80400000, [0x223]
+	sr	0x000FFFFF, [0x224]
+	sr	0x32, [0x225]
+
+	; Program AP2 - Generate Breakpoint on instruction fetch in range 0x8000_0000 - 0x803F_FFFF
+	sr	0x80000000, [0x226]
+	sr	0x003FFFFF, [0x227]
+	sr	0x30, [0x228]
+
+	; Program AP3 - Generate Breakpoint on instruction fetch in range 0x8040_0000 - 0x804F_FFFF
+	sr	0x80400000, [0x229]
+	sr	0x000FFFFF, [0x22A]
+	sr	0x30, [0x22B]
+
+
 #ifdef CONFIG_ARC_HWPF
         lr      r5, [ARC_REG_HW_PF_CTRL]
         or      r5, r5, 1
