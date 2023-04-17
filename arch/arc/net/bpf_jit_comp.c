@@ -275,20 +275,6 @@ enum {
 #define OPC_MPYI	OPC_MPY | OP_IMM
 
 /*
- * The 4-byte encoding of "mpyd a,b,c".
- * mpyd is the signed 32-bit multiplication with the lower 32-bit of
- * the prodcut in register "a" and the higher 32-bit in register "a+1".
- *
- * 0010_1bbb 0001_1000 0BBB_cccc ccaa_aaaa
- *
- * a:  aaaaaa		64-bit result in registers (R_a+1,R_a)
- * b:  BBBbbb		the 1st input operand
- * c:  cccccc		the 2nd input operand
- */
-#define OPC_MPYD	0x28180000
-#define OPC_MPYDI	OPC_MPYD | OP_IMM
-
-/*
  * The 4-byte encoding of "mpydu a,b,c".
  * mpydu is the unsigned 32-bit multiplication with the lower 32-bit of
  * the product in register "a" and the higher 32-bit in register "a+1".
@@ -828,25 +814,6 @@ static u8 arc_mpy_i(u8 *buf, u8 rd, u8 rs, s32 imm)
 	return INSN_len_normal + INSN_len_imm;
 }
 
-static u8 arc_mpyd_r(u8 *buf, u8 rd, u8 rs)
-{
-	if (emit) {
-		const u32 insn = OPC_MPYD | OP_A(rd) | OP_B(rd) | OP_C(rs);
-		emit_4_bytes(buf, insn);
-	}
-	return INSN_len_normal;
-}
-
-static u8 arc_mpyd_i(u8 *buf, u8 rd, s32 imm)
-{
-	if (emit) {
-		const u32 insn = OPC_MPYDI | OP_A(rd) | OP_B(rd);
-		emit_4_bytes(buf, insn);
-		emit_4_bytes(buf+INSN_len_normal, imm);
-	}
-	return INSN_len_normal + INSN_len_imm;
-}
-
 static u8 arc_mpydu_r(u8 *buf, u8 rd, u8 rs)
 {
 	if (emit) {
@@ -1371,24 +1338,53 @@ static u8 mul_r64(u8 *buf, u8 rd, u8 rs)
 
 /*
  * MUL B, imm
- * --------
+ * ----------
+ *
+ *  To get a 64-bit result from a signed 64x32 multiplication:
+ *
+ *         B_hi             B_lo   *
+ *         sign             imm
+ *  -----------------------------
+ *  HI(B_lo*imm)     LO(B_lo*imm)  +
+ *     B_hi*imm                    +
+ *     B_lo*sign
+ *  -----------------------------
+ *        res_hi           res_lo
+ *
+ * mpy     t1, B_lo, sign(imm)
  * mpy     t0, B_hi, imm
- * mpyd  B_lo, B_lo, imm
+ * mpydu B_lo, B_lo, imm
  * add   B_hi, B_hi,  t0
+ * add   B_hi, B_hi,  t1
+ *
+ * Note: We can't use signed double multiplication, "mpyd", instead of an
+ * unsigned verstion, "mpydu", and then get rid of the sign adjustments
+ * calculated in "t1". The signed multiplication, "mpyd", will consider
+ * both operands, "B_lo" and "imm", as signed inputs. However, for this
+ * 64x32 multiplication, "B_lo" must be treated as an unsigned number.
  */
 static u8 mul_r64_i32(u8 *buf, u8 rd, s32 imm)
 {
 	const u8 t0   = REG_LO(JIT_REG_TMP);
+	const u8 t1   = REG_HI(JIT_REG_TMP);
 	const u8 B_lo = REG_LO(rd);
 	const u8 B_hi = REG_HI(rd);
-	u8 len;
+	u8 len = 0;
 
 	if (imm == 1)
 		return 0;
 
-	len  = arc_mpy_i(buf, t0, B_hi, imm);
-	len += arc_mpyd_i(buf+len, B_lo, imm);
+	/* Is the sign-extension of the immediate "-1"? */
+	if (imm < 0)
+		len += arc_neg_r(buf+len, t1, B_lo);
+
+	len += arc_mpy_i(buf+len, t0, B_hi, imm);
+	len += arc_mpydu_i(buf+len, B_lo, imm);
 	len += arc_add_r(buf+len, B_hi, t0);
+
+	/* Add the "sign*B_lo" part, if necessary. */
+	if (imm < 0)
+		len += arc_add_r(buf+len, B_hi, t1);
 
 	return len;
 }
