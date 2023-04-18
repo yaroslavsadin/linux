@@ -37,67 +37,67 @@
 
 struct cpct_build {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int res2:8, num_ctrs:8, res1:4, i:2, cs:2, ver:8;
+	u32 res2:8, num_ctrs:8, res1:4, i:2, cs:2, ver:8;
 #else
-	unsigned int ver:8, cs:2, i:2, res1:4, num_ctrs:8, res2:8;
+	u32 ver:8, cs:2, i:2, res1:4, num_ctrs:8, res2:8;
 #endif
 };
 
 struct cpct_cc_num {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int res:17, cc_num:15;
+	u32 res:17, cc_num:15;
 #else
-	unsigned int cc_num:15, res:17;
+	u32 cc_num:15, res:17;
 #endif
 };
 
 #define CPCT_NAME_SZ    (16+1) // +1 zero
 #pragma pack(push, 1)
 union cpct_cc_name{
-    char cc[CPCT_NAME_SZ];
-    unsigned int uu[4];
+    s8 cc[CPCT_NAME_SZ];
+    u32 uu[4];
 };
 #pragma pack(pop)
 
 struct cpct_control {
 #ifdef CONFIG_CPU_BIG_ENDIAN
-	unsigned int res2:14, sn:1, cc:1, res0:15, en:1;
+	u32 res2:14, sn:1, cc:1, res0:15, en:1;
 #else
-	unsigned int en:1, res0:15, cc:1, sn:1, res2:14;
+	u32 en:1, res0:15, cc:1, sn:1, res2:14;
 #endif
 };
 
 struct cpct_int_cntrl {
-    uint32_t int_ctrl;
+    u32 int_ctrl;
 };
 
 struct cpct_int_act {
-    uint32_t int_act;
+    u32 int_act;
 };
 
 struct cpct_n_config {
     union{
         struct{
 #ifdef CONFIG_CPU_BIG_ENDIAN
-            unsigned int lce:1, len:1, res:12, lsn:1, lcc:1, cc_num:16;
+            u32 lce:1, len:1, res:12, lsn:1, lcc:1, cc_num:16;
 #else
-	        unsigned int cc_num:16, lcc:1, lsn:1, res:12, len:1, lce:1;
+	        u32 cc_num:16, lcc:1, lsn:1, res:12, len:1, lce:1;
 #endif
         };
-        unsigned int val;
+        u32 val;
     };
 };
 
 struct cpct_count {
-    uint32_t count;
+    u32 count;
 };
 
 struct cpct_snap {
-    uint32_t snap;
+    u32 snap;
 };
 
 struct cpct_int_count {
-    uint32_t int_cnt;
+    u32 int_cnt;
 };
 
 // Events map
@@ -105,7 +105,7 @@ struct cpct_int_count {
                                         // we need to scan all possible walues up to MAX_CONDITIONS_NUMBER
 
 struct cpct_conditions_entry {
-    unsigned int cc_number;
+    u32 cc_number;
     union cpct_cc_name name;
 };
 

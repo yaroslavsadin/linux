@@ -105,7 +105,7 @@ extern unsigned long __get_wchan(struct task_struct *p);
 #endif
 
 /* Kernel mapping size. Set as PAGE_SIZE or MMU block size(MMU_BLK_SIZE) = 2Mb */
-#define ARC_KERNEL_MAP_CHUNK_SIZE		MMU_BLK_SIZE
+#define ARC_KERNEL_MAP_CHUNK_SIZE		PAGE_SIZE/*MMU_BLK_SIZE*/
 
 #elif defined(CONFIG_ARC_MMU_V6_32)
 /*
@@ -130,7 +130,7 @@ extern unsigned long __get_wchan(struct task_struct *p);
 
 #define MMU_BLK_SIZE	0x200000
 /* Kernel mapping size. Set as PAGE_SIZE or MMU block size(MMU_BLK_SIZE) = 2Mb */
-#define ARC_KERNEL_MAP_CHUNK_SIZE		MMU_BLK_SIZE
+#define ARC_KERNEL_MAP_CHUNK_SIZE		PAGE_SIZE/*MMU_BLK_SIZE*/
 
 #else
 

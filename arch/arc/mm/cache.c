@@ -758,6 +758,7 @@ static void __dma_cache_inv_l1(phys_addr_t start, unsigned long sz)
 
 static void __dma_cache_wback_l1(phys_addr_t start, unsigned long sz)
 {
+	take_snap2(SNAP_CACHE_OP_WB, start, sz);
 	__dc_line_op_k(start, sz, OP_FLUSH);
 }
 

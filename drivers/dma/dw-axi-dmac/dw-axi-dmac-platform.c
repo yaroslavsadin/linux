@@ -1278,7 +1278,7 @@ static struct dma_chan *dw_axi_dma_of_xlate(struct of_phandle_args *dma_spec,
 	return dchan;
 }
 
-static int parse_device_properties(struct axi_dma_chip *chip)
+static int parse_device_properties(struct axi_dma_chip *chip) //+
 {
 	struct device *dev = chip->dev;
 	u32 tmp, carr[DMAC_MAX_CHANNELS];

@@ -2,8 +2,10 @@
 //
 // Linux cluster performance counters support for ARCv3.
 //
-// Copyright (C) 2013-2022 Synopsys, Inc. (www.synopsys.com)
-
+// Copyright (C) 2023 Synopsys, Inc. (www.synopsys.com)
+//
+// Note: use perf with a key "-a" means system-wide collection from all CPUs
+// 			to work with cluster PMU
 
 #include <linux/errno.h>
 #include <linux/interrupt.h>
@@ -11,74 +13,65 @@
 #include <linux/of.h>
 #include <linux/platform_device.h>
 #include <linux/perf_event.h>
+#include <linux/percpu.h>
 #include <asm/arcregs.h>
 #include <asm/stacktrace.h>
-#include <asm/perf_cluster_event.h>
+#include <asm/perf_cluster.h>
 
 
-enum arc_pmu_attr_groups {
-	ARCPMU_ATTR_GR_EVENTS,
-	ARCPMU_ATTR_GR_FORMATS,
-	ARCPMU_NR_ATTR_GR
+struct arc_cluster_cpu {
+	struct perf_event *events[ARC_CLUSTER_PERF_MAX_COUNTERS];
 };
 
 struct arc_cluster_pmu {
-	struct pmu	pmu;
-	unsigned int	irq;
-	int		n_counters;
-	int		n_events;
-	u64		max_period;
-	unsigned long	used_mask[BITS_TO_LONGS(ARC_CLUSTER_PERF_MAX_COUNTERS)];
-
-	struct cpct_conditions_entry	*raw_entry;
-	struct attribute		**attrs;
-	struct perf_pmu_events_attr	*attr;
-	const struct attribute_group	*attr_groups[ARCPMU_NR_ATTR_GR + 1];
+	struct pmu pmu;
+	int irq;
+	int n_counters;
+	int	n_events;
+	u64	max_period;
+	struct cpct_conditions_entry *raw_entry;
+	struct arc_cluster_cpu __percpu *pcpu;
 };
 
 static struct arc_cluster_pmu *arc_cluster_pmu;
-
-static ssize_t arc_pmu_events_sysfs_show(struct device *dev,
-					 struct device_attribute *attr,
-					 char *page)
-{
-	struct perf_pmu_events_attr *pmu_attr;
-
-	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
-	return sprintf(page, "event=0x%04llx\n", pmu_attr->id);
-}
-
-static void arc_cluster_pmu_add_raw_event_attr(int j)
-{
-	arc_cluster_pmu->attr[j].attr.attr.name = arc_cluster_pmu->raw_entry[j].name.cc;
-	arc_cluster_pmu->attr[j].attr.attr.mode = VERIFY_OCTAL_PERMISSIONS(0444);
-	arc_cluster_pmu->attr[j].attr.show = arc_pmu_events_sysfs_show;
-	arc_cluster_pmu->attr[j].id = j;
-	arc_cluster_pmu->attrs[j] = &(arc_cluster_pmu->attr[j].attr.attr);
-}
+static cpumask_t pmu_cpu;
+static struct perf_pmu_events_attr	*attr;
+static struct attribute **event_attrs;
+static DEFINE_SPINLOCK(cln_prot_op_spinlock);
 
 static void arc_cluster_pmu_read_reg(unsigned int reg, void *data)
 {
-    unsigned int val;
+	unsigned long flags;
+	unsigned int val;
+
+	spin_lock_irqsave(&cln_prot_op_spinlock, flags);
     WRITE_AUX(CLNR_ADDR, reg);
     READ_BCR(CLNR_DATA, val);
+	spin_unlock_irqrestore(&cln_prot_op_spinlock, flags);
     *(unsigned int *)data = val;
 }
 
 static void arc_cluster_pmu_write_reg(unsigned int reg, void *data)
 {
+	unsigned long flags;
     unsigned int val = *(unsigned int *)data;
+	
+	spin_lock_irqsave(&cln_prot_op_spinlock, flags);
     WRITE_AUX(CLNR_ADDR, reg);
     WRITE_AUX(CLNR_DATA, val);
+	spin_unlock_irqrestore(&cln_prot_op_spinlock, flags);
 }
 
-/* read counter #idx; note that counter# != event# on ARC! */
+/* read counter #idx; note that counter# != event# on ARC cluster! */
 static u64 arc_cluster_pmu_read_counter(int idx)
 {
     struct cpct_snap snapL, snapH;
 	struct cpct_n_config cfg;
 	u64 result;
 	int number;
+
+	if (WARN_ON_ONCE(idx < 0))
+		return 0;
 
 	/*
 	 * ARC cluster supports making 'snapshots' of the counters, so we don't
@@ -87,7 +80,7 @@ static u64 arc_cluster_pmu_read_counter(int idx)
     number = 8 * idx; // select counter, 0..31
 
 	arc_cluster_pmu_read_reg(SCM_AUX_CPCT_N_CONFIG + number, &cfg);
-    cfg.lsn = 1; // take snapshot
+    cfg.lsn = 1; /* take snapshot */
 	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_N_CONFIG + number, &cfg);
 
 	arc_cluster_pmu_read_reg(SCM_AUX_CPCT_N_SNAPH + number, &snapH);
@@ -104,8 +97,8 @@ static void arc_cluster_perf_event_update(struct perf_event *event,
 	s64 delta = new_raw_count - prev_raw_count;
 
 	/*
-	 * We aren't afraid of hwc->prev_count changing beneath our feet
-	 * because there's no way for us to re-enter this function anytime.
+	 * we aren't afraid of hwc->prev_count changing beneath our feet
+	 * because there's no way for us to re-enter this function anytime
 	 */
 	local64_set(&hwc->prev_count, new_raw_count);
 	local64_add(delta, &event->count);
@@ -115,34 +108,6 @@ static void arc_cluster_perf_event_update(struct perf_event *event,
 static void arc_cluster_pmu_read(struct perf_event *event)
 {
 	arc_cluster_perf_event_update(event, &event->hw, event->hw.idx);
-}
-
-/* initializes hw_perf_event structure if event is supported */
-static int arc_cluster_pmu_event_init(struct perf_event *event)
-{
-	struct hw_perf_event *hwc = &event->hw;
-	struct cpct_n_config cfg;
-
-	if (!is_sampling_event(event)) {
-		hwc->sample_period = arc_cluster_pmu->max_period;
-		hwc->last_period = hwc->sample_period;
-		local64_set(&hwc->period_left, hwc->sample_period);
-	}
-
-	switch (event->attr.type) {
-	case PERF_TYPE_RAW:
-	case PERF_TYPE_MAX:
-		if (event->attr.config >= arc_cluster_pmu->n_events) {
-			return -ENOENT;
-		}
-		cfg.val = 0;
-		cfg.cc_num = arc_cluster_pmu->raw_entry[event->attr.config].cc_number;
-		cfg.lce = 1;
-		hwc->config = cfg.val;
-		return 0;
-	default:
-		return -ENOENT;
-	}
 }
 
 /* starts all counters */
@@ -181,28 +146,44 @@ static void arc_cluster_pmu_disable(struct pmu *pmu)
 	}
 }
 
-static int arc_pmu_event_set_period(struct perf_event *event)
+static void arc_cluster_pmu_event_configure(struct perf_event *event)
 {
-	struct hw_perf_event *hwc = &event->hw;
-	s64 left = local64_read(&hwc->period_left);
-	s64 period = hwc->sample_period;
-	int idx = hwc->idx;
+	struct hw_perf_event *hw = &event->hw;
+	int number;
+	u32 vv;
+
+	if (WARN_ON_ONCE(hw->idx < 0))
+		return;
+
+	vv = 0;
+	number = hw->idx * 8;
+	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_COUNTL + number, &vv);
+	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_COUNTH + number, &vv);
+	local64_set(&hw->prev_count, 0);
+}
+
+static int arc_cluster_pmu_event_set_period(struct perf_event *event)
+{
+	struct hw_perf_event *hw = &event->hw;
+	s64 left = local64_read(&hw->period_left);
+	s64 period = hw->sample_period;
+	int idx = hw->idx;
 	int overflow = 0;
-	u64 value;
+	s64 value;
 	u32 vv;
 	int number;
 
 	if (unlikely(left <= -period)) {
-		/* left underflowed by more than period. */
+		/* left underflowed by more than period */
 		left = period;
-		local64_set(&hwc->period_left, left);
-		hwc->last_period = period;
+		local64_set(&hw->period_left, left);
+		hw->last_period = period;
 		overflow = 1;
 	} else if (unlikely(left <= 0)) {
-		/* left underflowed by less than period. */
+		/* left underflowed by less than period */
 		left += period;
-		local64_set(&hwc->period_left, left);
-		hwc->last_period = period;
+		local64_set(&hw->period_left, left);
+		hw->last_period = period;
 		overflow = 1;
 	}
 
@@ -210,12 +191,12 @@ static int arc_pmu_event_set_period(struct perf_event *event)
 		left = arc_cluster_pmu->max_period;
 
 	value = arc_cluster_pmu->max_period - left;
-	local64_set(&hwc->prev_count, value);
+	local64_set(&hw->prev_count, value);
 
-	/* Select counter */
-	number = 8 * idx; // select counter, 0..31
+	/* select counter, 0..31 */
+	number = 8 * idx;
 
-	/* Write value */
+	/* write value */
 	vv = (u32)value;
 	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_COUNTL + number, &vv);
 	vv = (u32)(value >> 32ULL);
@@ -233,31 +214,37 @@ static int arc_pmu_event_set_period(struct perf_event *event)
  */
 static void arc_cluster_pmu_start(struct perf_event *event, int flags)
 {
-	
 	struct hw_perf_event *hwc = &event->hw;
 	int idx = hwc->idx;
 	int number = 8 * idx;
 	u32 vv;
 
-	if (WARN_ON_ONCE(idx == -1))
+	if (WARN_ON_ONCE(idx < 0))
 		return;
 
-	if (flags & PERF_EF_RELOAD)
+	if (WARN_ON_ONCE(!(hwc->state & PERF_HES_STOPPED)))
+		return;
+
+	if (flags & PERF_EF_RELOAD) {
 		WARN_ON_ONCE(!(hwc->state & PERF_HES_UPTODATE));
+		arc_cluster_pmu_event_configure(event);
+	}
 
 	hwc->state = 0;
 
-	arc_pmu_event_set_period(event);
+	arc_cluster_pmu_event_set_period(event);
 
-	/* Enable interrupt for this counter */
+	/* enable interrupt for this counter */
 	if (is_sampling_event(event)) {
 		arc_cluster_pmu_read_reg(SCM_AUX_CPCT_INT_CTRL, &vv);
 		vv |= BIT(idx);
 		arc_cluster_pmu_write_reg(SCM_AUX_CPCT_INT_CTRL, &vv);
 	}
 
-	/* enable ARC pmu here */
+	/* enable ARC cluster pmu here */
 	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_N_CONFIG + number, &hwc->config);
+
+	perf_event_update_userpage(event);
 }
 
 static void arc_cluster_pmu_stop(struct perf_event *event, int flags)
@@ -265,8 +252,16 @@ static void arc_cluster_pmu_stop(struct perf_event *event, int flags)
 	struct hw_perf_event *hwc = &event->hw;
 	int idx = hwc->idx;
 	u32 vv;
+	int number;
+	struct cpct_n_config cfg;
 
-	/* Disable interrupt for this counter */
+	if (event->hw.state & PERF_HES_STOPPED)
+		return;
+
+	if (WARN_ON_ONCE(idx < 0))
+		return;
+
+	/* disable interrupt for this counter */
 	if (is_sampling_event(event)) {
 		/*
 		 * Reset interrupt flag by writing of 1. This is required
@@ -277,9 +272,13 @@ static void arc_cluster_pmu_stop(struct perf_event *event, int flags)
 		arc_cluster_pmu_write_reg(SCM_AUX_CPCT_INT_ACT, &vv);
 	}
 
-	if (!(event->hw.state & PERF_HES_STOPPED)) {
-		event->hw.state |= PERF_HES_STOPPED;
-	}
+	number = idx * 8;
+	arc_cluster_pmu_read_reg(SCM_AUX_CPCT_N_CONFIG + number, &cfg);
+	cfg.lce = 1;
+	cfg.len = 0;
+	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_N_CONFIG + number, &cfg);
+
+	event->hw.state |= PERF_HES_STOPPED;
 
 	if ((flags & PERF_EF_UPDATE) &&
 	    !(event->hw.state & PERF_HES_UPTODATE)) {
@@ -288,26 +287,39 @@ static void arc_cluster_pmu_stop(struct perf_event *event, int flags)
 	}
 }
 
+static int arc_cluster_pmu_find_free_idx(struct perf_event *event)
+{
+	int ii;
+	struct hw_perf_event *hw;
+	struct arc_cluster_cpu *pcpu = this_cpu_ptr(arc_cluster_pmu->pcpu);
+
+	for (ii = 0; ii < ARC_CLUSTER_PERF_MAX_COUNTERS; ii++) {
+		if (pcpu->events[ii] == NULL) {
+			pcpu->events[ii] = event;
+			hw = &event->hw;
+			hw->idx = ii;
+			return ii;
+		}
+	}
+	return -1;
+}
+
 /* allocate hardware counter and optionally start counting */
 static int arc_cluster_pmu_add(struct perf_event *event, int flags)
 {
-	struct hw_perf_event *hwc = &event->hw;
+	struct hw_perf_event *hw = &event->hw;
 	int idx;
 	int number;
 	u32 vv;
 
-	idx = ffz(arc_cluster_pmu->used_mask[0]);
-	if (idx == arc_cluster_pmu->n_counters) {
+	idx = arc_cluster_pmu_find_free_idx(event);
+	if (WARN_ON_ONCE(idx < 0))
 		return -EAGAIN;
-	}
-
-	__set_bit(idx, arc_cluster_pmu->used_mask);
-	hwc->idx = idx;
 
 	number = idx * 8;
 
 	if (is_sampling_event(event)) {
-		/* Mimic full counter overflow as other arches do */
+		/* mimic full counter overflow as other arches do */
 		vv = (u32)arc_cluster_pmu->max_period;
 		arc_cluster_pmu_write_reg(SCM_AUX_CPCT_INT_CNTL + number, &vv);
 		vv = (u32)(arc_cluster_pmu->max_period >> 32ULL);
@@ -316,14 +328,13 @@ static int arc_cluster_pmu_add(struct perf_event *event, int flags)
 
 	vv = 0;
 	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_N_CONFIG + number, &vv);
-	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_COUNTL + number, &vv);
-	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_COUNTH + number, &vv);
-	local64_set(&hwc->prev_count, 0);
+	arc_cluster_pmu_event_configure(event);
 
-	hwc->state = PERF_HES_UPTODATE | PERF_HES_STOPPED;
+	hw->state = PERF_HES_UPTODATE | PERF_HES_STOPPED;
 	if (flags & PERF_EF_START)
 		arc_cluster_pmu_start(event, PERF_EF_RELOAD);
 
+	/* propagate changes to the userspace mapping */
 	perf_event_update_userpage(event);
 
 	return 0;
@@ -331,60 +342,167 @@ static int arc_cluster_pmu_add(struct perf_event *event, int flags)
 
 static void arc_cluster_pmu_del(struct perf_event *event, int flags)
 {
-	struct hw_perf_event *hwc = &event->hw;
-	int idx = hwc->idx;
-	int number = 8 * idx;
-	unsigned int vv;
+	struct hw_perf_event *hw = &event->hw;
+	int ii;
+	struct arc_cluster_cpu *pcpu = this_cpu_ptr(arc_cluster_pmu->pcpu);
+	struct cpct_n_config cfg;
+
+	if (WARN_ON_ONCE(hw->idx < 0))
+		return;
 
 	arc_cluster_pmu_stop(event, PERF_EF_UPDATE);
-	__clear_bit(event->hw.idx, arc_cluster_pmu->used_mask);
 
-    vv = 0;
-	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_N_CONFIG + number, &vv);
+	cfg.val = 0;
+	cfg.cc_num = 0xFFFF;
+	cfg.lce = 1;
+	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_N_CONFIG + hw->idx * 8, &cfg);
 
+	for (ii = 0; ii < ARC_CLUSTER_PERF_MAX_COUNTERS; ii++) {
+		if (pcpu->events[ii] == event) {
+			pcpu->events[ii] = NULL;
+			break;
+		}
+	}
+
+	if (WARN_ON_ONCE(ii == ARC_CLUSTER_PERF_MAX_COUNTERS))
+		return;
+
+	hw->idx = -1;
+
+	/* propagate changes to the userspace mapping */
 	perf_event_update_userpage(event);
 }
 
-/* Event field occupies the bottom 16 bits of our config field */
-PMU_FORMAT_ATTR(event, "config:0-15");
-static struct attribute *arc_cluster_pmu_format_attrs[] = {
-	&format_attr_event.attr,
-	NULL,
-};
+static irqreturn_t arc_cluster_pmu_intr(int irq, void *dev)
+{
+	struct perf_sample_data data;
+	struct pt_regs *regs;
+	u32 active_ints, vv;
+	int idx;
+	struct arc_cluster_cpu *pcpu = this_cpu_ptr(arc_cluster_pmu->pcpu);
 
-static struct attribute_group arc_cluster_pmu_format_attr_gr = {
-	.name = "format",
-	.attrs = arc_cluster_pmu_format_attrs,
-};
+	arc_cluster_pmu_read_reg(SCM_AUX_CPCT_INT_ACT, &active_ints);
+	if (!active_ints) {
+		return IRQ_HANDLED;
+	}
 
-/*
- * We don't add attrs here as we don't have pre-defined list of perf events.
- * We will generate and add attrs dynamically in probe() after we read HW
- * configuration.
- */
-static struct attribute_group arc_cluster_pmu_events_attr_gr = {
-	.name = "events",
-};
+	arc_cluster_pmu_disable(&arc_cluster_pmu->pmu);
+
+	do {
+		struct perf_event *event;
+		struct hw_perf_event *hw;
+
+		idx = __ffs(active_ints);
+
+		event = pcpu->events[idx];
+		if (WARN_ON_ONCE(event == NULL)) {
+			arc_cluster_pmu_enable(&arc_cluster_pmu->pmu);
+			return IRQ_HANDLED;
+		}
+
+		hw = &event->hw;
+
+		/* reset interrupt flag by writing of 1 */
+		vv = BIT(idx);
+		arc_cluster_pmu_write_reg(SCM_AUX_CPCT_INT_ACT, &vv);
+
+		/*
+		 * On reset of "interrupt active" bit corresponding
+		 * "interrupt enable" bit gets automatically reset as well.
+		 * Now we need to re-enable interrupt for the counter.
+		 */
+		arc_cluster_pmu_read_reg(SCM_AUX_CPCT_INT_CTRL, &vv);
+		vv |= BIT(idx);
+		arc_cluster_pmu_write_reg(SCM_AUX_CPCT_INT_CTRL, &vv);
+
+		WARN_ON_ONCE(hw->idx != idx);
+
+		arc_cluster_perf_event_update(event, &event->hw, event->hw.idx);
+		perf_sample_data_init(&data, 0, hw->last_period);
+		if (arc_cluster_pmu_event_set_period(event)) {
+			regs = get_irq_regs();
+			if (perf_event_overflow(event, &data, regs))
+				arc_cluster_pmu_stop(event, 0);
+		}
+
+		active_ints &= ~BIT(idx);
+	} while (active_ints);
+
+	arc_cluster_pmu_enable(&arc_cluster_pmu->pmu);
+	return IRQ_HANDLED;
+}
+
+static void arc_cluster_cpu_pmu_irq_init(void *data)
+{
+	int irq = *(int *)data;
+	u32 vv;
+
+	if (cpumask_first(&pmu_cpu) != smp_processor_id())
+		return;
+
+	enable_percpu_irq(irq, IRQ_TYPE_NONE);
+
+	/* clear all pending interrupt flags */
+	vv = 0xffffffff;
+	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_INT_ACT, &vv);
+}
+
+/* initializes hw_perf_event structure if event is supported */
+static int arc_cluster_pmu_event_init(struct perf_event *event)
+{
+	struct hw_perf_event *hw = &event->hw;
+	struct cpct_n_config cfg;
+
+	if (WARN_ON_ONCE(event->attr.type != arc_cluster_pmu->pmu.type))
+		return -ENOENT;
+
+	/* per-task mode not supported */
+	if (WARN_ON_ONCE(event->cpu < 0))
+		return -EOPNOTSUPP;
+
+	/* don't allow groups with mixed PMUs, except for s/w events */
+	if (event->group_leader->pmu != event->pmu && !is_software_event(event->group_leader)) {
+		return -EINVAL;
+	}
+
+	if (!is_sampling_event(event)) {
+		hw->sample_period = arc_cluster_pmu->max_period;
+		hw->last_period = hw->sample_period;
+		local64_set(&hw->period_left, hw->sample_period);
+	}
+
+	if (event->attr.config >= arc_cluster_pmu->n_events) {
+		return -ENOENT;
+	}
+
+	cfg.val = 0;
+	cfg.cc_num = arc_cluster_pmu->raw_entry[event->attr.config].cc_number;
+	cfg.lce = 1;
+	hw->config = cfg.val;
+	hw->idx = -1;
+
+	return 0;
+}
 
 static int arc_cluster_pmu_raw_alloc(struct device *dev)
 {
-	arc_cluster_pmu->attr = devm_kmalloc_array(dev, arc_cluster_pmu->n_events + 1,
-		sizeof(*arc_cluster_pmu->attr), GFP_KERNEL | __GFP_ZERO);
-	if (!arc_cluster_pmu->attr)
+	attr = devm_kmalloc_array(dev, arc_cluster_pmu->n_events + 1,
+		sizeof(*attr), GFP_KERNEL | __GFP_ZERO);
+	if (!attr)
 		return -ENOMEM;
 
-	arc_cluster_pmu->attrs = devm_kmalloc_array(dev, arc_cluster_pmu->n_events + 1,
-		sizeof(*arc_cluster_pmu->attrs), GFP_KERNEL | __GFP_ZERO);
-	if (!arc_cluster_pmu->attrs) {
-		devm_kfree(dev, arc_cluster_pmu->attr);
+	event_attrs = devm_kmalloc_array(dev, arc_cluster_pmu->n_events + 1,
+		sizeof(*event_attrs), GFP_KERNEL | __GFP_ZERO);
+	if (!event_attrs) {
+		devm_kfree(dev, attr);
 		return -ENOMEM;
 	}
 
 	arc_cluster_pmu->raw_entry = devm_kmalloc_array(dev, arc_cluster_pmu->n_events,
 		sizeof(*arc_cluster_pmu->raw_entry), GFP_KERNEL | __GFP_ZERO);
 	if (!arc_cluster_pmu->raw_entry) {
-		devm_kfree(dev, arc_cluster_pmu->attr);
-		devm_kfree(dev, arc_cluster_pmu->attrs);
+		devm_kfree(dev, attr);
+		devm_kfree(dev, event_attrs);
 		return -ENOMEM;
 	}
 
@@ -393,8 +511,8 @@ static int arc_cluster_pmu_raw_alloc(struct device *dev)
 
 static void arc_cluster_pmu_raw_free(struct device *dev)
 {
-	devm_kfree(dev, arc_cluster_pmu->attr);
-	devm_kfree(dev, arc_cluster_pmu->attrs);
+	devm_kfree(dev, attr);
+	devm_kfree(dev, event_attrs);
 	devm_kfree(dev, arc_cluster_pmu->raw_entry);
 }
 
@@ -436,7 +554,7 @@ static int arc_cluster_pmu_get_events_number(void)
     name.cc[CPCT_NAME_SZ-1] = 0;
     for (ii = 0; ii < MAX_CONDITIONS_NUMBER; ii++ ) {
         cc_num.cc_num = ii;
-        cc_num.res = 0; // recomended to write with 0
+        cc_num.res = 0; /* recomended to write with 0 */
         arc_cluster_pmu_write_reg(SCM_AUX_CPCT_CC_NUM, &cc_num);
         arc_cluster_pmu_read_reg(SCM_AUX_CPCT_CC_NAME0, &name.uu[0]);
         arc_cluster_pmu_read_reg(SCM_AUX_CPCT_CC_NAME1, &name.uu[1]);
@@ -460,7 +578,7 @@ static int arc_cluster_pmu_fill_events(void)
     name.cc[CPCT_NAME_SZ-1] = 0;
     for (ii = 0; ii < MAX_CONDITIONS_NUMBER; ii++ ) {
         cc_num.cc_num = ii;
-        cc_num.res = 0; // recomended to write with 0
+        cc_num.res = 0; /* recomended to write with 0 */
         arc_cluster_pmu_write_reg(SCM_AUX_CPCT_CC_NUM, &cc_num);
         arc_cluster_pmu_read_reg(SCM_AUX_CPCT_CC_NAME0, &name.uu[0]);
         arc_cluster_pmu_read_reg(SCM_AUX_CPCT_CC_NAME1, &name.uu[1]);
@@ -482,14 +600,113 @@ static int arc_cluster_pmu_fill_events(void)
     return n_actual_conditions;
 }
 
+//------------------------------------------------------------
+/*
+ * We don't add attrs here as we don't have pre-defined list of cluster events.
+ * We will generate and add attrs dynamically in probe() after we read HW
+ * configuration.
+ */
+static struct attribute_group arc_cluster_events_attr_gr = {
+	.name = "events",
+}; 
+//------------------------------------------------------------
+static ssize_t arc_pmu_events_sysfs_show(struct device *dev,
+					 struct device_attribute *attr,
+					 char *page)
+{
+	struct perf_pmu_events_attr *pmu_attr;
+
+	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
+	return sprintf(page, "event=0x%04llx\n", pmu_attr->id);
+}
+
+static void arc_cluster_pmu_add_raw_event_attr(int j)
+{
+	attr[j].attr.attr.name = arc_cluster_pmu->raw_entry[j].name.cc;
+	attr[j].attr.attr.mode = VERIFY_OCTAL_PERMISSIONS(0444);
+	attr[j].attr.show = arc_pmu_events_sysfs_show;
+	attr[j].id = j;
+	event_attrs[j] = &(attr[j].attr.attr);
+}
+//------------------------------------------------------------
+/* event field occupies the bottom 16 bits of our config field */
+PMU_FORMAT_ATTR(event, "config:0-15");
+static struct attribute *arc_cluster_pmu_format_attrs[] = {
+	&format_attr_event.attr,
+	NULL,
+};
+
+static struct attribute_group arc_cluster_format_attr_gr = {
+	.name = "format",
+	.attrs = arc_cluster_pmu_format_attrs,
+};
+//------------------------------------------------------------
+static ssize_t arc_cluster_cpumask_show(struct device *dev,
+				     struct device_attribute *attr, char *buf)
+{
+	return cpumap_print_to_pagebuf(true, buf, &pmu_cpu);
+}
+
+static DEVICE_ATTR(cpumask, S_IRUGO, arc_cluster_cpumask_show, NULL);
+
+static struct attribute *arc_cluster_cpumask_attrs[] = {
+	&dev_attr_cpumask.attr,
+	NULL,
+};
+
+/* perf userspace reads this attribute to determine which cpus to open counters on */
+static struct attribute_group arc_cluster_cpumask_attr_group = {
+	.attrs = arc_cluster_cpumask_attrs,
+};
+//------------------------------------------------------------
+static const struct attribute_group *arc_cluster_attr_groups[] = {
+	&arc_cluster_format_attr_gr,
+	&arc_cluster_cpumask_attr_group,
+	&arc_cluster_events_attr_gr,
+	NULL,
+};
+//------------------------------------------------------------
+static int arc_cluster_pmu_online_cpu(unsigned int cpu)
+{
+	/* select the first online CPU as the designated reader */
+	if (cpumask_empty(&pmu_cpu)) {
+		cpumask_set_cpu(cpu, &pmu_cpu);
+	}
+	return 0;
+}
+
+static int arc_cluster_pmu_offline_cpu(unsigned int cpu)
+{
+	unsigned int target;
+
+	if (!cpumask_test_and_clear_cpu(cpu, &pmu_cpu))
+		return 0;
+
+	if (arc_cluster_pmu->irq >= 0)
+		disable_percpu_irq(arc_cluster_pmu->irq);
+
+	target = cpumask_any_but(cpu_online_mask, cpu);
+	if (target >= nr_cpu_ids)
+		return 0;
+
+	perf_pmu_migrate_context(&arc_cluster_pmu->pmu, cpu, target);
+	cpumask_set_cpu(target, &pmu_cpu);
+	on_each_cpu(arc_cluster_cpu_pmu_irq_init, &arc_cluster_pmu->irq, 1);
+
+	return 0;
+}
+
+//------------------------------------------------------------
 static int arc_cluster_pmu_device_probe(struct platform_device *pdev)
 {
-	int i;
-	int has_interrupts;
+	int ii;
+	int has_interrupts = 0, irq = -1;
 	int counter_size;	/* in bits */
     int ncounters;
     int nevents;
-	unsigned int int_reg;
+	u32 int_reg;
+	struct arc_cluster_cpu __percpu *pcpu;
+	int ret;
 
 #ifndef CONFIG_ISA_ARCV3
 	pr_err("Cluster PMU driver must be used only on ARCv3 platform!\n");
@@ -538,14 +755,18 @@ static int arc_cluster_pmu_device_probe(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
-	/* loop thru all available h/w condition indexes */
-	for (i = 0; i < nevents; i++) {
-		arc_cluster_pmu_add_raw_event_attr(i);
+	pcpu = devm_alloc_percpu(&pdev->dev, struct arc_cluster_cpu);
+	if (!pcpu) {
+		return -ENOMEM;
+	}
+	arc_cluster_pmu->pcpu = pcpu;
+
+	/* loop through all available h/w condition indexes */
+	for (ii = 0; ii < nevents; ii++) {
+		arc_cluster_pmu_add_raw_event_attr(ii);
 	}
 
-	arc_cluster_pmu_events_attr_gr.attrs = arc_cluster_pmu->attrs;
-	arc_cluster_pmu->attr_groups[ARCPMU_ATTR_GR_EVENTS] = &arc_cluster_pmu_events_attr_gr;
-	arc_cluster_pmu->attr_groups[ARCPMU_ATTR_GR_FORMATS] = &arc_cluster_pmu_format_attr_gr;
+	arc_cluster_events_attr_gr.attrs = event_attrs;
 
 	arc_cluster_pmu->pmu = (struct pmu) {
 		.pmu_enable	= arc_cluster_pmu_enable,
@@ -556,18 +777,55 @@ static int arc_cluster_pmu_device_probe(struct platform_device *pdev)
 		.start		= arc_cluster_pmu_start,
 		.stop		= arc_cluster_pmu_stop,
 		.read		= arc_cluster_pmu_read,
-		.attr_groups	= arc_cluster_pmu->attr_groups,
+		.attr_groups = arc_cluster_attr_groups,
+		.capabilities = PERF_PMU_CAP_NO_EXCLUDE,
+		.task_ctx_nr = perf_invalid_context,
 	};
 
-	arc_cluster_pmu->pmu.capabilities |= PERF_PMU_CAP_NO_INTERRUPT | PERF_PMU_CAP_HETEROGENEOUS_CPUS;
-	int_reg = 0;
-	arc_cluster_pmu_write_reg(SCM_AUX_CPCT_INT_CTRL, &int_reg);
+	/* clear cpumask attributes. We will set it in arc_cluster_pmu_online_cpu */
+	cpumask_clear(&pmu_cpu);
+
+	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+					"perf/arc/cluster:online",
+					arc_cluster_pmu_online_cpu, arc_cluster_pmu_offline_cpu);
+	if (ret < 0)
+		return -EINVAL;
+
+	if (has_interrupts) {
+		irq = platform_get_irq(pdev, 0);
+		if (irq >= 0) {
+			int ret;
+
+			arc_cluster_pmu->irq = irq;
+
+			/* intc map function ensures irq_set_percpu_devid() called */
+			ret = request_percpu_irq(irq, arc_cluster_pmu_intr, "ARC cluster perf counters",
+						 arc_cluster_pmu->pcpu);
+
+			if (!ret) {
+				on_each_cpu(arc_cluster_cpu_pmu_irq_init, &irq, 1);
+			} else {
+				arc_cluster_pmu->irq = irq = -1;
+			}
+		} else {
+			arc_cluster_pmu->irq = -1;
+		}
+		int_reg = 0;
+		arc_cluster_pmu_write_reg(SCM_AUX_CPCT_INT_CTRL, &int_reg);
+	}
+
+	if (irq == -1)
+		arc_cluster_pmu->pmu.capabilities |= PERF_PMU_CAP_NO_INTERRUPT;
 
 	/*
 	 * perf parser doesn't really like '-' symbol in events name, so let's
 	 * use '_' in arc pct name as it goes to kernel PMU event prefix.
 	 */
-	return perf_pmu_register(&arc_cluster_pmu->pmu, "arc_cluster_pct", PERF_TYPE_MAX);
+	ret = perf_pmu_register(&arc_cluster_pmu->pmu, "arc_cluster_pct", -1);
+	if(ret)
+		arc_cluster_pmu->pcpu = NULL;
+
+	return ret;
 }
 
 static const struct of_device_id arc_cluster_pmu_match[] = {
@@ -589,4 +847,3 @@ module_platform_driver(arc_cluster_pmu_driver);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("bolsh@synopsys.com");
 MODULE_DESCRIPTION("ARCv3 cluster PMU driver");
-

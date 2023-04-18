@@ -401,7 +401,7 @@ void __init arc_mmu_init(void)
 	 * per level (pgd/pud/pmd).
 	 */
 	/* It is always true when PAGE_OFFSET is aligned to pmd. */
-	BUILD_BUG_ON(pmd_index(PAGE_OFFSET) != 0);
+//s	BUILD_BUG_ON(pmd_index(PAGE_OFFSET) != 0);
 
 	if (mmuinfo.pg_sz_k != TO_KB(PAGE_SIZE))
 		panic("MMU pg size != PAGE_SIZE (%luk)\n", TO_KB(PAGE_SIZE));

@@ -123,6 +123,8 @@ void __init setup_arch_memory(void)
 	memblock_reserve(CONFIG_LINUX_LINK_BASE,
 			 __pa(_end) - CONFIG_LINUX_LINK_BASE);
 
+	memblock_set_bottom_up(true);
+
 #ifdef CONFIG_BLK_DEV_INITRD
 	if (phys_initrd_size) {
 		memblock_reserve(phys_initrd_start, phys_initrd_size);
