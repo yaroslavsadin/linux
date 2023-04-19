@@ -1522,12 +1522,27 @@ static u8 xor_r64_i32(u8 *buf, u8 rd, s32 imm)
 /* "asl a,b,c" --> "a = (b << (c & 31))". */
 static u8 lsh_r32(u8 *buf, u8 rd, u8 rs)
 {
-	return arc_asl_r(buf, CC_great_eq_u, rd, rs);
+	const u8 A_lo = REG_LO(rd);
+	const u8 A_hi = REG_HI(rd);
+	const u8 B_lo = REG_LO(rs);
+	u8 len;
+
+	len  = arc_asl_r(buf, A_lo, A_lo, B_lo);
+	len += arc_mov_i(buf+len, A_hi, 0);
+
+	return len;
 }
 
 static u8 lsh_r32_i32(u8 *buf, u8 rd, u8 imm)
 {
-	return arc_asli_r(buf, REG_LO(rd), REG_LO(rd), imm);
+	const u8 A_lo = REG_LO(rd);
+	const u8 A_hi = REG_HI(rd);
+	u8 len;
+
+	len  = arc_asli_r(buf, A_lo, A_lo, imm);
+	len += arc_mov_i(buf+len, A_hi, 0);
+
+	return len;
 }
 
 /*
@@ -1570,16 +1585,27 @@ static u8 lsh_r64(u8 *buf, u8 rd, u8 rs)
 	const u8 B_hi = REG_HI(rd);
 	u8 len;
 
-	len  = arc_not_r(buf, t0, C_lo);
+	/*
+	 * Perform large 32-bit shift first if necessary.
+	 */
+	len  = arc_btst_i(buf, C_lo, 5);
+	len += arc_mov_r(buf+len, t0, C_lo);
+	len += arc_mov_cc_r(buf+len, CC_unequal, B_hi, B_lo);
+	len += arc_movu_cc_r(buf+len, CC_unequal, B_lo, 0);
+	len += arc_and_i(buf+len, t0, 0x1f);
+
+	/*
+	 * Then shift the remaining bits. Pay attention that we
+	 * always keep C_lo in t0 because source and destination
+	 * may be the same registers thus it may be overwritten.
+	 */
+	len += arc_not_r(buf+len, t0, t0);
 	len += arc_lsri_r(buf+len, t1, B_lo, 1);
 	len += arc_lsr_r(buf+len, t1, t1, t0);
-	len += arc_mov_r(buf+len, t0, C_lo);
-	len += arc_asl_r(buf+len, B_lo, B_lo, C_lo);
-	len += arc_asl_r(buf+len, B_hi, B_hi, C_lo);
+	len += arc_not_r(buf+len, t0, t0);
+	len += arc_asl_r(buf+len, B_lo, B_lo, t0);
+	len += arc_asl_r(buf+len, B_hi, B_hi, t0);
 	len += arc_or_r(buf+len, B_hi, B_hi, t1);
-	len += arc_btst_i(buf+len, t0, 5);
-	len += arc_movu_cc_r(buf+len, CC_unequal, B_hi, B_lo);
-	len += arc_movu_cc_r(buf+len, CC_unequal, B_lo, 0);
 
 	return len;
 }
@@ -1621,12 +1647,27 @@ static u8 lsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 /* "lsr a,b,c" --> "a = (b >> (c & 31))". */
 static u8 rsh_r32(u8 *buf, u8 rd, u8 rs)
 {
-	return arc_lsr_r(buf, CC_great_eq_u, rd, rs);
+	const u8 A_lo = REG_LO(rd);
+	const u8 A_hi = REG_HI(rd);
+	const u8 B_lo = REG_LO(rs);
+	u8 len;
+
+	len  = arc_lsr_r(buf, A_lo, A_lo, B_lo);
+	len += arc_mov_i(buf+len, A_hi, 0);
+
+	return len;
 }
 
 static u8 rsh_r32_i32(u8 *buf, u8 rd, u8 imm)
 {
-	return arc_lsri_r(buf, REG_LO(rd), REG_LO(rd), imm);
+	const u8 A_lo = REG_LO(rd);
+	const u8 A_hi = REG_HI(rd);
+	u8 len;
+
+	len  = arc_lsri_r(buf, A_lo, A_lo, imm);
+	len += arc_mov_i(buf+len, A_hi, 0);
+
+	return len;
 }
 
 /*
@@ -1665,16 +1706,19 @@ static u8 rsh_r64(u8 *buf, u8 rd, u8 rs)
 	const u8 B_hi = REG_HI(rd);
 	u8 len;
 
-	len  = arc_not_r(buf, t0, C_lo);
+	len  = arc_btst_i(buf, C_lo, 5);
+	len += arc_mov_r(buf+len, t0, C_lo);
+	len += arc_mov_cc_r(buf+len, CC_unequal, B_lo, B_hi);
+	len += arc_movu_cc_r(buf+len, CC_unequal, B_hi, 0);
+	len += arc_and_i(buf+len, t0, 0x1f);
+
+	len += arc_not_r(buf+len, t0, t0);
 	len += arc_asli_r(buf+len, t1, B_hi, 1);
 	len += arc_asl_r(buf+len, t1, t1, t0);
-	len += arc_mov_r(buf+len, t0, C_lo);
-	len += arc_lsr_r(buf+len, B_hi, B_hi, C_lo);
-	len += arc_lsr_r(buf+len, B_lo, B_lo, C_lo);
+	len += arc_not_r(buf+len, t0, t0);
+	len += arc_lsr_r(buf+len, B_lo, B_lo, t0);
+	len += arc_lsr_r(buf+len, B_hi, B_hi, t0);
 	len += arc_or_r(buf+len, B_lo, B_lo, t1);
-	len += arc_btst_i(buf+len, t0, 5);
-	len += arc_movu_cc_r(buf+len, CC_unequal, B_lo, B_hi);
-	len += arc_movu_cc_r(buf+len, CC_unequal, B_hi, 0);
 
 	return len;
 }
@@ -1716,12 +1760,27 @@ static u8 rsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 /* "asr a,b,c" --> "a = (b s>> (c & 31))". */
 static u8 arsh_r32(u8 *buf, u8 rd, u8 rs)
 {
-	return arc_asr_r(buf, CC_great_eq_u, rd, rs);
+	const u8 A_lo = REG_LO(rd);
+	const u8 A_hi = REG_HI(rd);
+	const u8 B_lo = REG_LO(rs);
+	u8 len;
+
+	len  = arc_asr_r(buf, A_lo, A_lo, B_lo);
+	len += arc_mov_i(buf+len, A_hi, 0);
+
+	return len;
 }
 
 static u8 arsh_r32_i32(u8 *buf, u8 rd, u8 imm)
 {
-	return arc_asri_r(buf, REG_LO(rd), REG_LO(rd), imm);
+	const u8 A_lo = REG_LO(rd);
+	const u8 A_hi = REG_HI(rd);
+	u8 len;
+
+	len  = arc_asri_r(buf, A_lo, A_lo, imm);
+	len += arc_mov_i(buf+len, A_hi, 0);
+
+	return len;
 }
 
 /*
@@ -1762,17 +1821,20 @@ static u8 arsh_r64(u8 *buf, u8 rd, u8 rs)
 	const u8 B_hi = REG_HI(rd);
 	u8 len;
 
-	len  = arc_not_r(buf, t0, C_lo);
+	len  = arc_btst_i(buf, C_lo, 5);
+	len += arc_mov_r(buf+len, t0, C_lo);
+	len += arc_asri_r(buf+len, t1, B_hi, 31);
+	len += arc_mov_cc_r(buf+len, CC_unequal, B_lo, B_hi);
+	len += arc_mov_cc_r(buf+len, CC_unequal, B_hi, t1);
+	len += arc_and_i(buf+len, t0, 0x1f);
+
+	len += arc_not_r(buf+len, t0, t0);
 	len += arc_asli_r(buf+len, t1, B_hi, 1);
 	len += arc_asl_r(buf+len, t1, t1, t0);
-	len += arc_mov_r(buf+len, t0, C_lo);
-	len += arc_asr_r(buf+len, B_hi, B_hi, C_lo);
-	len += arc_lsr_r(buf+len, B_lo, B_lo, C_lo);
+	len += arc_not_r(buf+len, t0, t0);
+	len += arc_asr_r(buf+len, B_hi, B_hi, t0);
+	len += arc_lsr_r(buf+len, B_lo, B_lo, t0);
 	len += arc_or_r(buf+len, B_lo, B_lo, t1);
-	len += arc_btst_i(buf+len, t0, 5);
-	len += arc_asri_r(buf+len, t0, B_hi, 31);
-	len += arc_movu_cc_r(buf+len, CC_unequal, B_lo, B_hi);
-	len += arc_mov_cc_r(buf+len, CC_unequal, B_hi, t0);
 
 	return len;
 }
@@ -2870,7 +2932,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		break;
 	/* dst <<= src (32-bit) */
 	case BPF_ALU | BPF_LSH | BPF_X:
-		len = lsh_r32(buf, dst, imm);
+		len = lsh_r32(buf, dst, src);
 		break;
 	/* dst <<= imm (32-bit) */
 	case BPF_ALU | BPF_LSH | BPF_K:
@@ -2878,7 +2940,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		break;
 	/* dst >>= src (32-bit) [unsigned] */
 	case BPF_ALU | BPF_RSH | BPF_X:
-		len = rsh_r32(buf, dst, imm);
+		len = rsh_r32(buf, dst, src);
 		break;
 	/* dst >>= imm (32-bit) [unsigned] */
 	case BPF_ALU | BPF_RSH | BPF_K:
@@ -2886,7 +2948,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		break;
 	/* dst >>= src (32-bit) [signed] */
 	case BPF_ALU | BPF_ARSH | BPF_X:
-		len = arsh_r32(buf, dst, imm);
+		len = arsh_r32(buf, dst, src);
 		break;
 	/* dst >>= imm (32-bit) [signed] */
 	case BPF_ALU | BPF_ARSH | BPF_K:
