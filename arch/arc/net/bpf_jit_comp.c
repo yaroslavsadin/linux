@@ -1522,7 +1522,7 @@ static u8 xor_r64_i32(u8 *buf, u8 rd, s32 imm)
 /* "asl a,b,c" --> "a = (b << (c & 31))". */
 static u8 lsh_r32(u8 *buf, u8 rd, u8 rs)
 {
-	return arc_asl_r(buf, CC_great_eq_u, rd, rs);
+	return arc_asl_r(buf, REG_LO(rd), REG_LO(rd), REG_LO(rs));
 }
 
 static u8 lsh_r32_i32(u8 *buf, u8 rd, u8 imm)
@@ -1621,7 +1621,7 @@ static u8 lsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 /* "lsr a,b,c" --> "a = (b >> (c & 31))". */
 static u8 rsh_r32(u8 *buf, u8 rd, u8 rs)
 {
-	return arc_lsr_r(buf, CC_great_eq_u, rd, rs);
+	return arc_lsr_r(buf, REG_LO(rd), REG_LO(rd), REG_LO(rs));
 }
 
 static u8 rsh_r32_i32(u8 *buf, u8 rd, u8 imm)
@@ -1716,7 +1716,7 @@ static u8 rsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 /* "asr a,b,c" --> "a = (b s>> (c & 31))". */
 static u8 arsh_r32(u8 *buf, u8 rd, u8 rs)
 {
-	return arc_asr_r(buf, CC_great_eq_u, rd, rs);
+	return arc_asr_r(buf, REG_LO(rd), REG_LO(rd), REG_LO(rs));
 }
 
 static u8 arsh_r32_i32(u8 *buf, u8 rd, u8 imm)
@@ -2870,7 +2870,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		break;
 	/* dst <<= src (32-bit) */
 	case BPF_ALU | BPF_LSH | BPF_X:
-		len = lsh_r32(buf, dst, imm);
+		len = lsh_r32(buf, dst, src);
 		break;
 	/* dst <<= imm (32-bit) */
 	case BPF_ALU | BPF_LSH | BPF_K:
@@ -2878,7 +2878,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		break;
 	/* dst >>= src (32-bit) [unsigned] */
 	case BPF_ALU | BPF_RSH | BPF_X:
-		len = rsh_r32(buf, dst, imm);
+		len = rsh_r32(buf, dst, src);
 		break;
 	/* dst >>= imm (32-bit) [unsigned] */
 	case BPF_ALU | BPF_RSH | BPF_K:
@@ -2886,7 +2886,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		break;
 	/* dst >>= src (32-bit) [signed] */
 	case BPF_ALU | BPF_ARSH | BPF_X:
-		len = arsh_r32(buf, dst, imm);
+		len = arsh_r32(buf, dst, src);
 		break;
 	/* dst >>= imm (32-bit) [signed] */
 	case BPF_ALU | BPF_ARSH | BPF_K:
