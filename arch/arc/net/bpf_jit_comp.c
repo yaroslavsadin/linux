@@ -2321,7 +2321,8 @@ static void analyze_reg_usage(struct jit_context *ctx)
 			const u8 code_mask = insn[i].code & store_mem_mask;
 			usage |= BIT(REG_LO(BPF_REG_FP));
 			/* Is FP usage in the form of "*(FP + -off) = data"? */
-			if (code_mask == (BPF_STX | BPF_MEM)) {
+			if (code_mask == (BPF_ST  | BPF_MEM) ||
+			    code_mask == (BPF_STX | BPF_MEM)) {
 				/* Then, record the deepest "off"set. */
 				size = min(size, insn[i].off);
 			}
