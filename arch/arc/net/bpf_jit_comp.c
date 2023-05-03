@@ -157,10 +157,11 @@ enum {
 	CC_great_s    = 9	/* greater than (signed) */
 };
 
-#define IN_U6_RANGE(x)	((x) <= 63 && (x) >= 0)
-#define IN_S9_RANGE(x)	((x) <= 255 && (x) >= -256)
-#define IN_S12_RANGE(x)	((x) <= 2047 && (x) >= -2048)
-#define IN_S21_RANGE(x)	((x) <= 1048575 && (x) >= -1048576)
+#define IN_U6_RANGE(x)	((x) <= (0x40      - 1) && (x) >= 0)
+#define IN_S9_RANGE(x)	((x) <= (0x100     - 1) && (x) >= -0x100)
+#define IN_S12_RANGE(x)	((x) <= (0x800     - 1) && (x) >= -0x800)
+#define IN_S21_RANGE(x)	((x) <= (0x100000  - 1) && (x) >= -0x100000)
+#define IN_S25_RANGE(x)	((x) <= (0x1000000 - 1) && (x) >= -0x1000000)
 
 /* Operands in most of the encodings. */
 #define OP_A(x)	((x) & 0x03f)
@@ -558,7 +559,7 @@ enum {
 
 /*
  * Encoding for (conditional) branch to an offset from the current location
- * that is world aligned: (PC & ~0xffff_fff4) + s21
+ * that is word aligned: (PC & ~0xffff_fff4) + s21
  * B[qq] s21
  *
  * 0000_0sss ssss_sss0 SSSS_SSSS SS0q_qqqq
@@ -567,11 +568,27 @@ enum {
  * s21:	SSSS SSSS_SSss ssss_ssss	The displacement (21-bit signed)
  *
  * The displacement is supposed to be 16-bit (2-byte) aligned. Therefore,
- * it should be a multiple of 2. Hence, there is a implied '0' bit at its
+ * it should be a multiple of 2. Hence, there is an implied '0' bit at its
  * LSB: S_SSSS SSSS_Ssss ssss_sss0
  */
-#define B_OPCODE	0x00000000
-#define B_S21(d)	((((d) & 0x7fe) << 16) | (((d) & 0x1ff800) >> 5))
+#define BCC_OPCODE	0x00000000
+#define BCC_S21(d)	((((d) & 0x7fe) << 16) | (((d) & 0x1ff800) >> 5))
+
+/*
+ * Encoding for unconditinal branch to an offset from the current location
+ * that is word aligned: (PC & ~0xffff_fff4) + s25
+ * B s25
+ *
+ * 0000_0sss ssss_sss1 SSSS_SSSS SS00_TTTT
+ *
+ * s25:	TTTT SSSS SSSS_SSss ssss_ssss	The displacement (25-bit signed)
+ *
+ * The displacement is supposed to be 16-bit (2-byte) aligned. Therefore,
+ * it should be a multiple of 2. Hence, there is an implied '0' bit at its
+ * LSB: T TTTS_SSSS SSSS_Ssss ssss_sss0
+ */
+#define B_OPCODE	0x00010000
+#define B_S25(d)	((((d) & 0x1e00000) >> 21) | BCC_S21(d))
 
 /*
  * TODO: remove me.
@@ -1167,10 +1184,19 @@ static u8 arc_jl(u8 *buf, u8 reg)
 	return INSN_len_normal;
 }
 
-static u8 arc_b(u8 *buf, u8 cc, int offset)
+static u8 arc_bcc(u8 *buf, u8 cc, int offset)
 {
 	if (emit) {
-		const u32 insn = B_OPCODE | B_S21(offset) | COND(cc);
+		const u32 insn = BCC_OPCODE | BCC_S21(offset) | COND(cc);
+		emit_4_bytes(buf, insn);
+	}
+	return INSN_len_normal;
+}
+
+static u8 arc_b(u8 *buf, s32 offset)
+{
+	if (emit) {
+		const u32 insn = B_OPCODE | B_S25(offset);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
@@ -2493,8 +2519,10 @@ static inline s32 get_index_for_insn(const struct jit_context *ctx,
  *  copy of PC.
  */
 static int bpf_offset_to_jit(const struct jit_context *ctx,
-			     const struct bpf_insn *insn, u8 advance,
-			     s32 *jit_offset)
+			     const struct bpf_insn *insn,
+			     u8 advance,
+			     s32 *jit_offset,
+			     bool use_far)
 {
 	u32 jit_curr_addr, jit_targ_addr, pcl;
 	const s32 idx = get_index_for_insn(ctx, insn);
@@ -2529,7 +2557,8 @@ static int bpf_offset_to_jit(const struct jit_context *ctx,
 		return -EFAULT;
 	}
 
-	if (!IN_S21_RANGE(*jit_offset)) {
+	if (( use_far && !IN_S25_RANGE(*jit_offset)) ||
+	    (!use_far && !IN_S21_RANGE(*jit_offset))) {
 		pr_err("bpf-jit: jit address is too far to jump to.\n");
 		return -EFAULT;
 	}
@@ -2543,18 +2572,22 @@ static int bpf_offset_to_jit(const struct jit_context *ctx,
  * bpf_offset_to_jit() for details.
  * Note: "s32 = (u32 + s32) - u32" is OK.
  */
-static int jit_offset_to_rel_insn(u32 curr_addr, s32 bytes, s32 *jit_offset)
+static int jit_offset_to_rel_insn(u32 curr_addr,
+				  s32 bytes,
+				  s32 *jit_offset,
+				  bool use_far)
 {
 	const u32 pcl = curr_addr & ~3;
 	*jit_offset = (curr_addr + bytes) - pcl;
 
-	/* The S21 in "b" (branch) encoding must be 16-bit aligned. */
+	/* The offset in "b" (branch) encoding must be 16-bit aligned. */
 	if (*jit_offset & 1) {
 		pr_err("bpf-jit: jit address is not 16-bit aligned.\n");
 		return -EFAULT;
 	}
 
-	if (!IN_S21_RANGE(*jit_offset)) {
+	if (( use_far && !IN_S25_RANGE(*jit_offset)) ||
+	    (!use_far && !IN_S21_RANGE(*jit_offset))) {
 		pr_err("bpf-jit: jit address is too far to jump to.\n");
 		return -EFAULT;
 	}
@@ -2563,12 +2596,17 @@ static int jit_offset_to_rel_insn(u32 curr_addr, s32 bytes, s32 *jit_offset)
 }
 
 /*
- * A (conditional) jump to the instruction that is "insn->off" away.
- * "cond" must be in ARC format (CC_*).
- * "len" holds the growing length of JIT buffer that is not yet committed
- * back to "ctx->jit" buffer. It is necessary for calculating the exact
- * offset of a "b"ranch instruction. See "bpf_offset_to_jit()" comments
- * for more datils.
+ * A branch to the instruction that is "insn->off" away.
+ *
+ * - "cond" must be in ARC format (CC_*). If it happens to be "CC_always",
+ *   then encoding of the condition code can be skipped and a far branch
+ *   can be used. A far branch supports S25 offset while the conditioned
+ *   version supports S21 range.
+ *
+ * - "len" holds the growing length of JIT buffer that is not yet committed
+ *   back to "ctx->jit" buffer. It is necessary for calculating the exact
+ *   offset of a "b"ranch instruction. See "bpf_offset_to_jit()" comments
+ *   for more datils.
  */
 static int gen_branch(struct jit_context *ctx,
 		      const struct bpf_insn *insn,
@@ -2580,12 +2618,16 @@ static int gen_branch(struct jit_context *ctx,
 
 	/* After that ctx->bpf2insn[] is initialised, offsets can be deduced. */
 	if (ctx->bpf2insn_valid) {
-		int ret = bpf_offset_to_jit(ctx, insn, *len, &disp);
+		int ret = bpf_offset_to_jit(ctx, insn, *len, &disp,
+					    cond == CC_always);
 		if (ret < 0)
 			return ret;
 	}
 
-	*len += arc_b(buf+*len, cond, disp);
+	if (cond == CC_always)
+		*len += arc_b(buf+*len, disp);
+	else
+		*len += arc_bcc(buf+*len, cond, disp);
 	return 0;
 }
 
@@ -2885,11 +2927,12 @@ static int gen_jcc_64(struct jit_context *ctx,
 		 */
 		const u32 distance = 2*INSN_len_normal + INSN_len_normal;
 		const u32 jit_curr_addr = (u32) (buf + *len);
-		ret = jit_offset_to_rel_insn(jit_curr_addr, distance, &joff);
+		ret = jit_offset_to_rel_insn(jit_curr_addr, distance, &joff,
+					     c2 == CC_always);
 		if (ret < 0)
 			return ret;
 	}
-	*len += arc_b(buf+*len, c2, joff);
+	*len += arc_bcc(buf+*len, c2, joff);
 
 	*len += arc_cmp_r(buf+*len, REG_LO(rd), REG_LO(rs));
 
@@ -2992,16 +3035,16 @@ static int gen_jmp_epilogue(struct jit_context *ctx,
 		return -EINVAL;
 	}
 
-	/* Only after the dry-run, ctx->bpf2insn[] holds valid entries. */
+	/* Only after the dry-run, ctx->bpf2insn holds meaningful values. */
 	if (ctx->bpf2insn_valid)
 		disp = ctx->epilogue_offset - ctx->bpf2insn[idx];
 
-	if (disp & 1 || !IN_S21_RANGE(disp)) {
-		pr_err("bpf-jit: displacement to epilogue is not valid.\n");
+	if (disp & 1 || !IN_S25_RANGE(disp)) {
+		pr_err("bpf-jit: jmp epilogue -> displacement isn't valid.\n");
 		return -EFAULT;
 	}
 
-	*len = arc_b(buf, CC_always, disp);
+	*len = arc_b(buf, disp);
 
 	return 0;
 }
