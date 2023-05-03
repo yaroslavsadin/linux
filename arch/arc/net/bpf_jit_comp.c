@@ -2502,12 +2502,12 @@ static int bpf_offset_to_jit(const struct jit_context *ctx,
 	const s32 bpf_targ_idx = (idx+1) + bpf_offset;
 
 	if (idx < 0 || idx >= ctx->prog->len) {
-		pr_err("bpf-jit: offset calc. -> insn is not in prog.");
+		pr_err("bpf-jit: offset calc. -> insn is not in prog.\n");
 		return -EINVAL;
 	}
 
 	if (bpf_targ_idx < 0 || bpf_targ_idx >= ctx->prog->len) {
-		pr_err("bpf-jit: bpf jump label is out of range.");
+		pr_err("bpf-jit: bpf jump label is out of range.\n");
 		return -EINVAL;
 
 	}
@@ -2525,12 +2525,12 @@ static int bpf_offset_to_jit(const struct jit_context *ctx,
 
 	/* The S21 in "b" (branch) encoding must be 16-bit aligned. */
 	if (*jit_offset & 1) {
-		pr_err("bpf-jit: jit address is not 16-bit aligned.");
+		pr_err("bpf-jit: jit address is not 16-bit aligned.\n");
 		return -EFAULT;
 	}
 
 	if (!IN_S21_RANGE(*jit_offset)) {
-		pr_err("bpf-jit: jit address is too far to jump to.");
+		pr_err("bpf-jit: jit address is too far to jump to.\n");
 		return -EFAULT;
 	}
 
@@ -2550,12 +2550,12 @@ static int jit_offset_to_rel_insn(u32 curr_addr, s32 bytes, s32 *jit_offset)
 
 	/* The S21 in "b" (branch) encoding must be 16-bit aligned. */
 	if (*jit_offset & 1) {
-		pr_err("bpf-jit: jit address is not 16-bit aligned.");
+		pr_err("bpf-jit: jit address is not 16-bit aligned.\n");
 		return -EFAULT;
 	}
 
 	if (!IN_S21_RANGE(*jit_offset)) {
-		pr_err("bpf-jit: jit address is too far to jump to.");
+		pr_err("bpf-jit: jit address is too far to jump to.\n");
 		return -EFAULT;
 	}
 
@@ -2674,7 +2674,7 @@ static int gen_jcc_32(struct jit_context *ctx,
 			*len = cmp_r32(buf+*len, rd, rs);
 		break;
 	default:
-		pr_err("bpf-jit: can't handle 32-bit condition.");
+		pr_err("bpf-jit: can't handle 32-bit condition.\n");
 		return -EINVAL;
 	}
 
@@ -2921,7 +2921,7 @@ static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
 	ret = bpf_jit_get_func_addr(ctx->prog, insn, ctx->is_extra_pass, &addr,
 				    &fixed);
 	if (ret < 0) {
-		pr_err("bpf-jit: can't get the address for call.");
+		pr_err("bpf-jit: can't get the address for call.\n");
 		return ret;
 	}
 	in_kernel_func = (fixed ? true : false);
@@ -2966,7 +2966,7 @@ static int gen_ld_imm64(struct jit_context *ctx, const struct bpf_insn *insn,
 
 	/* We're about to consume 2 VM instructions. */
 	if (is_last_insn(ctx->prog, idx)) {
-		pr_err("bpf-jit: need more data for 64-bit immediate.");
+		pr_err("bpf-jit: need more data for 64-bit immediate.\n");
 		return -EINVAL;
 	}
 
@@ -2988,7 +2988,7 @@ static int gen_jmp_epilogue(struct jit_context *ctx,
 	const s32 idx = get_index_for_insn(ctx, insn);
 
 	if (idx < 0 || idx >= ctx->prog->len) {
-		pr_err("bpf-jit: jmp epilogue -> insn is not in prog.");
+		pr_err("bpf-jit: jmp epilogue -> insn is not in prog.\n");
 		return -EINVAL;
 	}
 
@@ -2997,7 +2997,7 @@ static int gen_jmp_epilogue(struct jit_context *ctx,
 		disp = ctx->epilogue_offset - ctx->bpf2insn[idx];
 
 	if (disp & 1 || !IN_S21_RANGE(disp)) {
-		pr_err("bpf-jit: displacement to epilogue is not valid.");
+		pr_err("bpf-jit: displacement to epilogue is not valid.\n");
 		return -EFAULT;
 	}
 
@@ -3493,13 +3493,19 @@ static int jit_prepare(struct jit_context *ctx)
  */
 static int jit_compile(struct jit_context *ctx)
 {
+	int ret;
+
+	/* Let there be code. */
 	emit = true;
 
-	(void) handle_prologue(ctx);
+	if ((ret = handle_prologue(ctx)))
+		return ret;
 
-	(void) handle_body(ctx);
+	if ((ret = handle_body(ctx)))
+		return ret;
 
-	(void) handle_epilogue(ctx);
+	if ((ret = handle_epilogue(ctx)))
+		return ret;
 
 	if (ctx->jit.index != ctx->jit.len) {
 		pr_err("bpf-jit: divergence between the phases; "
@@ -3562,7 +3568,7 @@ static int jit_resume_context(struct jit_context *ctx)
 		(struct arc_jit_data *) ctx->prog->aux->jit_data;
 
 	if (!jdata) {
-		pr_err("bpf-jit: no jit data for the extra pass.");
+		pr_err("bpf-jit: no jit data for the extra pass.\n");
 		return -EINVAL;
 	}
 
