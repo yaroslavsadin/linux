@@ -3604,6 +3604,21 @@ static void jit_finalize(struct jit_context *ctx)
 	dump_bytes(ctx->jit.buf, ctx->jit.len, true);
 }
 
+/*
+ * A lenient verification for the existence of JIT context in "prog".
+ * Apparently the JIT internals, namely jit_subprogs() in bpf/verifier.c,
+ * may request for a second compilation although nothing needs to be done.
+ */
+static inline int check_jit_context(const struct bpf_prog *prog)
+{
+	if (prog->aux->jit_data == NULL) {
+		pr_notice("bpf-jit: no jit data for the extra pass.\n");
+		return 1;
+	}
+	else
+		return 0;
+}
+
 /* Reuse the previous pass's data. */
 static int jit_resume_context(struct jit_context *ctx)
 {
@@ -3711,6 +3726,10 @@ struct bpf_prog *do_normal_pass(struct bpf_prog *prog)
 struct bpf_prog *do_extra_pass(struct bpf_prog *prog)
 {
 	struct jit_context ctx;
+
+	/* Skip if there's no context to resume from. */
+	if (check_jit_context(prog))
+		return prog;
 
 	if (jit_ctx_init(&ctx, prog)) {
 		jit_ctx_cleanup(&ctx);
