@@ -1,8 +1,49 @@
 #include <linux/filter.h>
 
 #include "bpf_jit_core.h"
-/* TODO: guard it with ifdef ISA_ARCV2 or something like that. */
+#ifdef CONFIG_ISA_ARCV2
 #include "bpf_jit_arcv2.h"
+#endif
+
+/* Sane initial values for the globals */
+bool emit         = false;
+bool zext_thyself = false;
+
+/*
+ * TODO: remove me.
+ * Dumps bytes in /var/log/messages at KERN_INFO level (4).
+ */
+static void dump_bytes(const u8 *buf, u32 len, bool jit)
+{
+	u8 line[256];
+	size_t i, j;
+
+	if (bpf_jit_enable <= 1)
+		return;
+
+	if (jit)
+		pr_info("-----------------[ jited ]-----------------\n");
+	else
+		pr_info("-----------------[  VM   ]-----------------\n");
+
+	for (i = 0, j = 0; i < len; i++) {
+		if (i == len-1) {
+			sprintf(line+j, "0x%02x" , buf[i]);
+			pr_info("%s\n", line);
+			break;
+		}
+		else if (i % 8 == 7) {
+			sprintf(line+j, "0x%02x", buf[i]);
+			pr_info("%s\n", line);
+			j = 0;
+		} else {
+			j += sprintf(line+j, "0x%02x, ", buf[i]);
+		}
+	}
+
+	if (jit)
+		pr_info("\n");
+}
 
 /********************* JIT context ***********************/
 
@@ -265,19 +306,19 @@ static int handle_prologue(struct jit_context *ctx)
 
 	/* Deal with blink first. */
 	if (ctx->arc_regs_clobbered & BIT(ARC_R_BLINK))
-		len += arc_push_r(buf+len, ARC_R_BLINK);
+		len += push_r(buf+len, ARC_R_BLINK);
 
 	gp_regs = ctx->arc_regs_clobbered & ~(BIT(ARC_R_BLINK) | BIT(ARC_R_FP));
 	while (gp_regs) {
 		u8 reg = __builtin_ffs(gp_regs) - 1;
 
-		len += arc_push_r(buf+len, reg);
+		len += push_r(buf+len, reg);
 		gp_regs &= ~BIT(reg);
 	}
 
 	/* Deal with fp last. */
 	if (ctx->arc_regs_clobbered & BIT(ARC_R_FP))
-		len += arc_push_r(buf+len, ARC_R_FP);
+		len += push_r(buf+len, ARC_R_FP);
 
 	if (ctx->frame_size)
 		len += enter_frame(buf+len, ctx->frame_size);
@@ -308,19 +349,19 @@ static int handle_epilogue(struct jit_context *ctx)
 
 	/* Deal with fp first. */
 	if (ctx->arc_regs_clobbered & BIT(ARC_R_FP))
-		len += arc_pop_r(buf+len, ARC_R_FP);
+		len += pop_r(buf+len, ARC_R_FP);
 
 	gp_regs = ctx->arc_regs_clobbered & ~(BIT(ARC_R_BLINK) | BIT(ARC_R_FP));
 	while (gp_regs) {
 		u8 reg = 31 - __builtin_clz(gp_regs);
 
-		len += arc_pop_r(buf+len, reg);
+		len += pop_r(buf+len, reg);
 		gp_regs &= ~BIT(reg);
 	}
 
 	/* Deal with blink last. */
 	if (ctx->arc_regs_clobbered & BIT(ARC_R_BLINK))
-		len += arc_pop_r(buf+len, ARC_R_BLINK);
+		len += pop_r(buf+len, ARC_R_BLINK);
 
 	/* Assigning JIT's return reg to ABI's return reg. */
 	len += arc_mov_r(buf+len, ARC_R_0, REG_LO(BPF_REG_0));
@@ -858,13 +899,14 @@ static int jit_prepare_early_mem_alloc(struct jit_context *ctx)
 }
 
 /*
- * Memory allocations that rely on parameters known at the
- * end of jit_prepare().
+ * Memory allocations that rely on parameters known at the end of
+ * jit_prepare().
  */
 static int jit_prepare_final_mem_alloc(struct jit_context *ctx)
 {
+	const size_t alignment = sizeof(u32);
 	ctx->bpf_header = bpf_jit_binary_alloc(ctx->jit.len, &ctx->jit.buf,
-					       INSN_len_normal, fill_ill_insn);
+					       alignment, fill_ill_insn);
 
 	if (!ctx->bpf_header) {
 		pr_err("bpf-jit: could not allocate memory for translation.\n");

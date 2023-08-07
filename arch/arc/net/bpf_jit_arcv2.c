@@ -45,7 +45,7 @@
  *   If/when we decide to add ARCv2 instructions that do use register pairs,
  *   the mapping (hopefully) doesn't need to be revisited.
  */
-static const u8 bpf2arc[][2] = {
+const u8 bpf2arc[][2] = {
 	/* Return value from in-kernel function, and exit value from eBPF */
 	[BPF_REG_0] = {ARC_R_8 , ARC_R_9},
 	/* Arguments from eBPF program to in-kernel function */
@@ -68,23 +68,16 @@ static const u8 bpf2arc[][2] = {
 	[JIT_REG_TMP] = {ARC_R_10, ARC_R_11}
 };
 
-#define REG_LO(r) (bpf2arc[(r)][0])
-#define REG_HI(r) (bpf2arc[(r)][1])
-
 /*
  * To comply with ARCv2 ABI, BPF's arg5 must be put on stack. After which,
  * the stack needs to be restored by ARG5_SIZE.
  */
 #define ARG5_SIZE 8
 
-#define ARC_CALLEE_SAVED_REG_FIRST ARC_R_13
-#define ARC_CALLEE_SAVED_REG_LAST  ARC_R_25
-
-/* Bytes. */
+/* Instruction lengths in bytes. */
 enum {
 	INSN_len_short = 2,	/* Short instructions length. */
-	INSN_len_normal = 4,	/* Normal instructions length. */
-	INSN_len_imm = 4	/* Length of an extra 32-bit immediate. */
+	INSN_len_normal = 4	/* Normal instructions length. */
 };
 
 /* ZZ defines the size of operation in encodings that it is used. */
@@ -574,49 +567,6 @@ enum {
  */
 #define B_OPCODE	0x00010000
 #define B_S25(d)	((((d) & 0x1e00000) >> 21) | BCC_S21(d))
-
-/*
- * TODO: remove me.
- * Dumps bytes in /var/log/messages at KERN_INFO level (4).
- */
-static void dump_bytes(const u8 *buf, u32 len, bool jit)
-{
-	u8 line[256];
-	size_t i, j;
-
-	if (bpf_jit_enable <= 1)
-		return;
-
-	if (jit)
-		pr_info("-----------------[ jited ]-----------------\n");
-	else
-		pr_info("-----------------[  VM   ]-----------------\n");
-
-	for (i = 0, j = 0; i < len; i++) {
-		if (i == len-1) {
-			sprintf(line+j, "0x%02x" , buf[i]);
-			pr_info("%s\n", line);
-			break;
-		}
-		else if (i % 8 == 7) {
-			sprintf(line+j, "0x%02x", buf[i]);
-			pr_info("%s\n", line);
-			j = 0;
-		} else {
-			j += sprintf(line+j, "0x%02x, ", buf[i]);
-		}
-	}
-
-	if (jit)
-		pr_info("\n");
-}
-
-/*
- * If "emit" is true, the instructions are actually generated. Else, the
- * generation part will be skipped and only the length of instruction is
- * returned by the responsible functions.
- */
-static bool emit = false;
 
 static inline void emit_2_bytes(u8 *buf, u16 bytes)
 {
@@ -1110,7 +1060,7 @@ static u8 arc_movu_cc_r(u8 *buf, u8 cc, u8 rd, u8 imm)
 	return INSN_len_normal;
 }
 
-/* st.as reg_c, [reg_b, off] */
+/* st reg, [reg_mem, off] */
 static u8 arc_st_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 {
 	if (emit) {
@@ -1122,7 +1072,7 @@ static u8 arc_st_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 	return INSN_len_normal;
 }
 
-/* "push reg" is merely a "st.aw reg_c, [sp, -4]". */
+/* "push reg" is merely a "st.aw reg, [sp, -4]". */
 static u8 arc_push_r(u8 *buf, u8 reg)
 {
 	if (emit) {
@@ -1132,7 +1082,7 @@ static u8 arc_push_r(u8 *buf, u8 reg)
 	return INSN_len_normal;
 }
 
-/* ld.aw reg_c, [reg_b, off] */
+/* ld reg, [reg_mem, off] */
 static u8 arc_ld_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 zz)
 {
 	if (emit) {
@@ -1189,10 +1139,7 @@ static u8 arc_b(u8 *buf, s32 offset)
 
 /*********************** Packers *************************/
 
-/* An indicator if zero-extend must be done for the 32-bit operations. */
-bool zext_thyself = false;
-
-static inline u8 zext(u8 *buf, u8 rd)
+inline u8 zext(u8 *buf, u8 rd)
 {
 	if (zext_thyself && rd != BPF_REG_FP)
 		return arc_movi_r(buf, REG_HI(rd), 0);
@@ -2092,6 +2039,18 @@ static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 	return len;
 }
 
+/* A mere wrapper, so the core doesn't call an arc_*_() function directly. */
+u8 push_r(u8 *buf, u8 reg)
+{
+	return arc_push_r(buf, reg);
+}
+
+/* A mere wrapper, so the core doesn't call an arc_*_() function directly. */
+u8 pop_r(u8 *buf, u8 reg)
+{
+	return arc_pop_r(buf, reg);
+}
+
 /*
  * To create a frame, all that is needed is:
  *
@@ -2103,7 +2062,7 @@ static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
  * All that remains is copying SP value to FP and shrinking SP's address space
  * for any possible function call to come.
  */
-static u8 enter_frame(u8 *buf, u16 size)
+u8 enter_frame(u8 *buf, u16 size)
 {
 	u8 len;
 	len = arc_mov_r(buf, ARC_R_FP, ARC_R_SP);
@@ -2115,7 +2074,7 @@ static u8 enter_frame(u8 *buf, u16 size)
 }
 
 /* The value of SP upon entering was copied to FP. */
-static u8 exit_frame(u8 *buf)
+u8 exit_frame(u8 *buf)
 {
 	return arc_mov_r(buf, ARC_R_SP, ARC_R_FP);
 }

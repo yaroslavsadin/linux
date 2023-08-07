@@ -28,4 +28,11 @@ enum {
 	ARC_R_IMM = 62
 };
 
+#define ARC_CALLEE_SAVED_REG_FIRST ARC_R_13
+#define ARC_CALLEE_SAVED_REG_LAST  ARC_R_25
+
+extern const u8 **bpf2arc;
+#define REG_LO(r) (bpf2arc[(r)][0])
+#define REG_HI(r) (bpf2arc[(r)][1])
+
 #endif /* _BPF_JIT_ARCV2_H */

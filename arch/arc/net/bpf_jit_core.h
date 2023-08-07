@@ -9,7 +9,20 @@
 #ifndef _BPF_JIT_CORE_H
 #define _BPF_JIT_CORE_H
 
+/************* Globals that have effects on code generation ***********/
+/*
+ * If "emit" is true, the instructions are actually generated. Else, the
+ * generation part will be skipped and only the length of instruction is
+ * returned by the responsible functions.
+ */
+extern bool emit;
+
+/* An indicator if zero-extend must be done for the 32-bit operations. */
+extern bool zext_thyself;
+
 /*************** Functions that the backend must provide **************/
+/* Extension for 32-bit operations. */
+extern inline u8 zext(u8 *buf, u8 rd);
 /* Addition */
 extern u8 add_r32(u8 *buf, u8 rd, u8 rs);
 extern u8 add_r32_i32(u8 *buf, u8 rd, s32 imm);
@@ -69,5 +82,10 @@ extern u8 mov_r32(u8 *buf, u8 rd, u8 rs);
 extern u8 mov_r32_i32(u8 *buf, u8 reg, s32 imm);
 extern u8 mov_r64(u8 *buf, u8 rd, u8 rs);
 extern u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm);
+/* Frame related */
+extern u8 push_r(u8 *buf, u8 reg);
+extern u8 pop_r(u8 *buf, u8 reg);
+extern u8 enter_frame(u8 *buf, u16 size);
+extern u8 exit_frame(u8 *buf);
 
 #endif /* _BPF_JIT_CORE_H */
