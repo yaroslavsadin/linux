@@ -82,10 +82,17 @@ extern u8 mov_r32(u8 *buf, u8 rd, u8 rs);
 extern u8 mov_r32_i32(u8 *buf, u8 reg, s32 imm);
 extern u8 mov_r64(u8 *buf, u8 rd, u8 rs);
 extern u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm);
+extern u8 mov_r64_i64(u8 *buf, u8 reg, u32 lo, u32 hi);
+/* Loads and stores */
+extern u8 load_r(u8 *buf, u8 rd, u8 rs, s16 off, u8 size);
+extern u8 store_r(u8 *buf, u8 rd, u8 rs, s16 off, u8 size);
+extern u8 store_i(u8 *buf, s32 imm, u8 rd, s16 off, u8 size);
 /* Frame related */
 extern u8 push_r(u8 *buf, u8 reg);
 extern u8 pop_r(u8 *buf, u8 reg);
-extern u8 enter_frame(u8 *buf, u16 size);
-extern u8 exit_frame(u8 *buf);
+extern u8 frame_enter(u8 *buf, u16 size);
+extern u8 frame_exit(u8 *buf);
+extern u8 frame_assign_return(u8 *buf, u8 rs);
+extern u8 frame_return(u8 *buf);
 
 #endif /* _BPF_JIT_CORE_H */

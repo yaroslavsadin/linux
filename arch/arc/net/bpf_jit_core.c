@@ -321,7 +321,7 @@ static int handle_prologue(struct jit_context *ctx)
 		len += push_r(buf+len, ARC_R_FP);
 
 	if (ctx->frame_size)
-		len += enter_frame(buf+len, ctx->frame_size);
+		len += frame_enter(buf+len, ctx->frame_size);
 
 	jit_buffer_update(&ctx->jit, len);
 
@@ -345,7 +345,7 @@ static int handle_epilogue(struct jit_context *ctx)
 	    return ret;
 
 	if (ctx->frame_size)
-		len += exit_frame(buf+len);
+		len += frame_exit(buf+len);
 
 	/* Deal with fp first. */
 	if (ctx->arc_regs_clobbered & BIT(ARC_R_FP))
@@ -364,11 +364,10 @@ static int handle_epilogue(struct jit_context *ctx)
 		len += pop_r(buf+len, ARC_R_BLINK);
 
 	/* Assigning JIT's return reg to ABI's return reg. */
-	len += arc_mov_r(buf+len, ARC_R_0, REG_LO(BPF_REG_0));
-	len += arc_mov_r(buf+len, ARC_R_1, REG_HI(BPF_REG_0));
+	len += frame_assign_return(buf+len, BPF_REG_0);
 
 	/* At last, issue the "return". */
-	len += jump_return(buf+len);
+	len += frame_return(buf+len);
 
 	jit_buffer_update(&ctx->jit, len);
 
@@ -484,6 +483,48 @@ static int jit_offset_to_rel_insn(u32 curr_addr,
 static inline bool has_imm(const struct bpf_insn *insn)
 {
 	return BPF_SRC(insn->code) == BPF_K;
+}
+
+static inline bool is_last_insn(const struct bpf_prog *prog, u32 idx)
+{
+	return (idx == (prog->len - 1));
+}
+
+/*
+ * Invocation of this function, conditionally signals the need for
+ * an extra pass. The conditions that must be met are:
+ *
+ * 1. The current pass itself shouldn't be an extra pass.
+ * 2. The stream of bytes being JITed must come from a user program.
+ */
+static inline void set_need_for_extra_pass(struct jit_context *ctx)
+{
+	if (!ctx->is_extra_pass)
+		ctx->need_extra_pass = ctx->user_bpf_prog;
+}
+
+/*
+ * Try to generate instructions for loading a 64-bit immediate.
+ * These sort of instructions are usually associated with the 64-bit
+ * relocations: R_BPF_64_64. Therefore, signal the need for an extra
+ * pass if the circumstances are right.
+ */
+static int gen_ld_imm64(struct jit_context *ctx, const struct bpf_insn *insn,
+			u8 *len)
+{
+	const s32 idx = get_index_for_insn(ctx, insn);
+	u8 *buf = effective_jit_buf(&ctx->jit);
+
+	/* We're about to consume 2 VM instructions. */
+	if (is_last_insn(ctx->prog, idx)) {
+		pr_err("bpf-jit: need more data for 64-bit immediate.\n");
+		return -EINVAL;
+	}
+
+	*len = mov_r64_i64(buf, insn->dst_reg, insn->imm, (insn+1)->imm);
+	set_need_for_extra_pass(ctx);
+
+	return 0;
 }
 
 /*

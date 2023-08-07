@@ -8,7 +8,8 @@
  * bpf2arc array maps BPF registers to ARC registers. For the translation
  * of some BPF instructions, a pair of temporary registers might be required.
  * This temporary register is added as yet another index in the bpf2arc array,
- * so it will unfold like the rest of registers into the compiling process.
+ * so it will unfold like the rest of registers during the code generation
+ * process.
  */
 #define JIT_REG_TMP MAX_BPF_JIT_REG
 
@@ -597,129 +598,143 @@ static inline u8 bpf_to_arc_size(u8 size)
 
 /*********************** Encoders ************************/
 
-static u8 arc_add_r(u8 *buf, u8 rd, u8 rs)
+/* add Ra,Ra,Rc */
+static u8 arc_add_r(u8 *buf, u8 ra, u8 rc)
 {
 	if (emit) {
-		const u32 insn = OPC_ADD | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_ADD | OP_A(ra) | OP_B(ra) | OP_C(rc);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_addf_r(u8 *buf, u8 rd, u8 rs)
+/* add.f Ra,Ra,Rc */
+static u8 arc_addf_r(u8 *buf, u8 ra, u8 rc)
 {
 	if (emit) {
-		const u32 insn = OPC_ADDF | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_ADDF | OP_A(ra) | OP_B(ra) | OP_C(rc);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_addif_r(u8 *buf, u8 rd, u8 imm)
+/* add.f Ra,Ra,u6 */
+static u8 arc_addif_r(u8 *buf, u8 ra, u8 u6)
 {
 	if (emit) {
-		const u32 insn = OPC_ADDIF | OP_A(rd) | OP_B(rd) | ADDI_U6(imm);
+		const u32 insn = OPC_ADDIF | OP_A(ra) | OP_B(ra) | ADDI_U6(u6);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_addi_r(u8 *buf, u8 rd, u8 imm)
+/* add Ra,Ra,u6 */
+static u8 arc_addi_r(u8 *buf, u8 ra, u8 u6)
 {
 	if (emit) {
-		const u32 insn = OPC_ADDI | OP_A(rd) | OP_B(rd) | ADDI_U6(imm);
+		const u32 insn = OPC_ADDI | OP_A(ra) | OP_B(ra) | ADDI_U6(u6);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_add_i(u8 *buf, u8 rd, s32 imm)
+/* add Ra,Rb,imm */
+static u8 arc_add_i(u8 *buf, u8 ra, u8 rb, s32 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_ADD_I | OP_A(rd) | OP_B(rd);
+		const u32 insn = OPC_ADD_I | OP_A(ra) | OP_B(rb);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
 	return INSN_len_normal + INSN_len_imm;
 }
 
-static u8 arc_adc_r(u8 *buf, u8 rd, u8 rs)
+/* adc Ra,Ra,Rc */
+static u8 arc_adc_r(u8 *buf, u8 ra, u8 rc)
 {
 	if (emit) {
-		const u32 insn = OPC_ADC | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_ADC | OP_A(ra) | OP_B(ra) | OP_C(rc);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_adci_r(u8 *buf, u8 rd, u8 imm)
+/* adc Ra,Ra,u6 */
+static u8 arc_adci_r(u8 *buf, u8 ra, u8 u6)
 {
 	if (emit) {
-		const u32 insn = OPC_ADCI | OP_A(rd) | OP_B(rd) | ADCI_U6(imm);
+		const u32 insn = OPC_ADCI | OP_A(ra) | OP_B(ra) | ADCI_U6(u6);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_sub_r(u8 *buf, u8 rd, u8 rs)
+/* sub Ra,Ra,Rc */
+static u8 arc_sub_r(u8 *buf, u8 ra, u8 rc)
 {
 	if (emit) {
-		const u32 insn = OPC_SUB | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_SUB | OP_A(ra) | OP_B(ra) | OP_C(rc);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_subf_r(u8 *buf, u8 rd, u8 rs)
+/* sub.f Ra,Ra,Rc */
+static u8 arc_subf_r(u8 *buf, u8 ra, u8 rc)
 {
 	if (emit) {
-		const u32 insn = OPC_SUBF | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_SUBF | OP_A(ra) | OP_B(ra) | OP_C(rc);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_subi_r(u8 *buf, u8 rd, u8 imm)
+/* sub Ra,Ra,u6 */
+static u8 arc_subi_r(u8 *buf, u8 ra, u8 u6)
 {
 	if (emit) {
-		const u32 insn = OPC_SUBI | OP_A(rd) | OP_B(rd) | SUBI_U6(imm);
+		const u32 insn = OPC_SUBI | OP_A(ra) | OP_B(ra) | SUBI_U6(u6);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_sub_i(u8 *buf, u8 rd, s32 imm)
+/* sub Ra,Ra,imm */
+static u8 arc_sub_i(u8 *buf, u8 ra, s32 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_SUB_I | OP_A(rd) | OP_B(rd);
+		const u32 insn = OPC_SUB_I | OP_A(ra) | OP_B(ra);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
 	return INSN_len_normal + INSN_len_imm;
 }
 
-static u8 arc_sbc_r(u8 *buf, u8 rd, u8 rs)
+/* sbc Ra,Ra,Rc */
+static u8 arc_sbc_r(u8 *buf, u8 ra, u8 rc)
 {
 	if (emit) {
-		const u32 insn = OPC_SBC | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_SBC | OP_A(ra) | OP_B(ra) | OP_C(rc);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_cmp_r(u8 *buf, u8 rd, u8 rs)
+/* cmp Rb,Rc */
+static u8 arc_cmp_r(u8 *buf, u8 rb, u8 rc)
 {
 	if (emit) {
-		const u32 insn = OPC_CMP | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_CMP | OP_B(rb) | OP_C(rc);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_cmp_i(u8 *buf, u8 rd, s32 imm)
+/* cmp Rb,imm */
+static u8 arc_cmp_i(u8 *buf, u8 rb, s32 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_CMP_I | OP_B(rd);
+		const u32 insn = OPC_CMP_I | OP_B(rb);
 		emit_4_bytes(buf                , insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -727,61 +742,68 @@ static u8 arc_cmp_i(u8 *buf, u8 rd, s32 imm)
 }
 
 /*
+ * cmp.z Rb,Rc
+ *
  * This "cmp.z" variant of compare instruction is used on lower
  * 32-bits of register pairs after "cmp"ing their upper parts. If the
  * upper parts are equal (z), then this one will proceed to check the
  * rest.
  */
-static u8 arc_cmpz_r(u8 *buf, u8 rd, u8 rs)
+static u8 arc_cmpz_r(u8 *buf, u8 rb, u8 rc)
 {
 	if (emit) {
-		const u32 insn = OPC_CMP | OP_B(rd) | OP_C(rs) | CC_equal;
+		const u32 insn = OPC_CMP | OP_B(rb) | OP_C(rc) | CC_equal;
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_neg_r(u8 *buf, u8 rd, u8 rs)
+/* neg Ra,Rb */
+static u8 arc_neg_r(u8 *buf, u8 ra, u8 rb)
 {
 	if (emit) {
-		const u32 insn = OPC_NEG | OP_A(rd) | OP_B(rs);
+		const u32 insn = OPC_NEG | OP_A(ra) | OP_B(rb);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_mpy_r(u8 *buf, u8 rd, u8 rs1, u8 rs2)
+/* mpy Ra,Rb,Rc */
+static u8 arc_mpy_r(u8 *buf, u8 ra, u8 rb, u8 rc)
 {
 	if (emit) {
-		const u32 insn = OPC_MPY | OP_A(rd) | OP_B(rs1) | OP_C(rs2);
+		const u32 insn = OPC_MPY | OP_A(ra) | OP_B(rb) | OP_C(rc);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_mpy_i(u8 *buf, u8 rd, u8 rs, s32 imm)
+/* mpy Ra,Rb,imm */
+static u8 arc_mpy_i(u8 *buf, u8 ra, u8 rb, s32 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_MPYI | OP_A(rd) | OP_B(rs);
+		const u32 insn = OPC_MPYI | OP_A(ra) | OP_B(rb);
 		emit_4_bytes(buf, insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
 	return INSN_len_normal + INSN_len_imm;
 }
 
-static u8 arc_mpydu_r(u8 *buf, u8 rd, u8 rs)
+/* mpydu Ra,Ra,Rc */
+static u8 arc_mpydu_r(u8 *buf, u8 ra, u8 rc)
 {
 	if (emit) {
-		const u32 insn = OPC_MPYDU | OP_A(rd) | OP_B(rd) | OP_C(rs);
+		const u32 insn = OPC_MPYDU | OP_A(ra) | OP_B(ra) | OP_C(rc);
 		emit_4_bytes(buf, insn);
 	}
 	return INSN_len_normal;
 }
 
-static u8 arc_mpydu_i(u8 *buf, u8 rd, s32 imm)
+/* mpydu Ra,Ra,imm */
+static u8 arc_mpydu_i(u8 *buf, u8 ra, s32 imm)
 {
 	if (emit) {
-		const u32 insn = OPC_MPYDUI | OP_A(rd) | OP_B(rd);
+		const u32 insn = OPC_MPYDUI | OP_A(ra) | OP_B(ra);
 		emit_4_bytes(buf, insn);
 		emit_4_bytes(buf+INSN_len_normal, imm);
 	}
@@ -1157,7 +1179,7 @@ u8 add_r32_i32(u8 *buf, u8 rd, s32 imm)
 	if (IN_U6_RANGE(imm))
 		return arc_addi_r(buf, REG_LO(rd), imm);
 	else
-		return arc_add_i(buf, REG_LO(rd), imm);
+		return arc_add_i(buf, REG_LO(rd), REG_LO(rd), imm);
 }
 
 u8 add_r64(u8 *buf, u8 rd, u8 rs)
@@ -1874,7 +1896,7 @@ u8 mov_r64_i32(u8 *buf, u8 reg, s32 imm)
  * these sort of size optimizations and will always emit codes
  * with fixed sizes.
  */
-static u8 mov_r64_i64(u8 *buf, u8 reg, u32 lo, u32 hi)
+u8 mov_r64_i64(u8 *buf, u8 reg, u32 lo, u32 hi)
 {
 	u8 len;
 
@@ -1886,42 +1908,41 @@ static u8 mov_r64_i64(u8 *buf, u8 reg, u32 lo, u32 hi)
 
 /*
  * If the offset is too big to fit in s9, emit:
- *   mov r20, reg
- *   add r20, r20, off
+ *   add r20, REG_LO(rm), off
  * and make sure that r20 will be the effective address for store:
  *   st  r, [r20, 0]
  */
-static u8 correct_mem_offset(u8 *buf, s16 *off, u8 size,
-			     u8 reg_mem, u8 *arc_reg_mem)
+static u8 adjust_mem_access(u8 *buf, s16 *off, u8 size, u8 rm, u8 *arc_reg_mem)
 {
 	u8 len = 0;
+	*arc_reg_mem = REG_LO(rm);
 
 	if (!IN_S9_RANGE(*off) ||
 	    (size == BPF_DW && !IN_S9_RANGE(*off + 4))) {
+		len += arc_add_i(buf+len,
+				 REG_LO(JIT_REG_TMP), REG_LO(rm), (u32) (*off));
 		*arc_reg_mem = REG_LO(JIT_REG_TMP);
-		len  = arc_mov_r(buf    , *arc_reg_mem, reg_mem);
-		len += arc_add_i(buf+len, *arc_reg_mem, (u32) off);
 		*off = 0;
 	}
 
 	return len;
 }
 
-static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
+/* store rs, [rd, off] */
+u8 store_r(u8 *buf, u8 rs, u8 rd, s16 off, u8 size)
 {
-	u8 arc_reg_mem = REG_LO(reg_mem);
-	u8 len;
+	u8 len, arc_reg_mem;
 
-	len = correct_mem_offset(buf, &off, size, reg_mem, &arc_reg_mem);
+	len = adjust_mem_access(buf, &off, size, rd, &arc_reg_mem);
 
 	if (size == BPF_DW) {
-		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off,
+		len += arc_st_r(buf+len, REG_LO(rs), arc_reg_mem, off,
 				ZZ_4_byte);
-		len += arc_st_r(buf+len, REG_HI(reg), arc_reg_mem, off+4,
+		len += arc_st_r(buf+len, REG_HI(rs), arc_reg_mem, off+4,
 				ZZ_4_byte);
 	} else {
 		u8 zz = bpf_to_arc_size(size);
-		len += arc_st_r(buf+len, REG_LO(reg), arc_reg_mem, off, zz);
+		len += arc_st_r(buf+len, REG_LO(rs), arc_reg_mem, off, zz);
 	}
 
 	return len;
@@ -1937,14 +1958,13 @@ static u8 store_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
  *   mov r21, {0,-1}
  *   st  r21, [...+4]
  */
-static u8 store_i(u8 *buf, s32 imm, u8 reg_mem, s16 off, u8 size)
+u8 store_i(u8 *buf, s32 imm, u8 rd, s16 off, u8 size)
 {
-	/* REG_LO(JIT_REG_TMP) might be used by "correct_mem_offset()". */
+	u8 len, arc_reg_mem;
+	/* REG_LO(JIT_REG_TMP) might be used by "adjust_mem_access()". */
 	const u8 arc_rs = REG_HI(JIT_REG_TMP);
-	u8 arc_reg_mem = REG_LO(reg_mem);
-	u8 len;
 
-	len = correct_mem_offset(buf, &off, size, reg_mem, &arc_reg_mem);
+	len = adjust_mem_access(buf, &off, size, rd, &arc_reg_mem);
 
 	if (size == BPF_DW) {
 		len += arc_mov_i(buf+len, arc_rs, imm);
@@ -1985,30 +2005,17 @@ static u8 push_r64(u8 *buf, u8 reg)
 	return len;
 }
 
-static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
+/* load rd, [rs, off] */
+u8 load_r(u8 *buf, u8 rd, u8 rs, s16 off, u8 size)
 {
-	u8 len = 0;
-	u8 arc_reg_mem = REG_LO(reg_mem);
+	u8 len, arc_reg_mem;
 
-	/*
-	 * If the offset is too big to fit in s9, emit:
-	 *   mov r20, reg
-	 *   add r20, r20, off
-	 * and make sure that r20 will be the effective address for the "load".
-	 *   ld  r, [r20, 0]
-	 */
-	if (!IN_S9_RANGE(off) ||
-	    (size == BPF_DW && !IN_S9_RANGE(off + 4))) {
-		arc_reg_mem = REG_LO(JIT_REG_TMP);
-		len  = arc_mov_r(buf    , arc_reg_mem, reg_mem);
-		len += arc_add_i(buf+len, arc_reg_mem, (u32) off);
-		off = 0;
-	}
+	len = adjust_mem_access(buf, &off, size, rd, &arc_reg_mem);
 
 	if (size == BPF_B || size == BPF_H || size == BPF_W) {
 		u8 zz = bpf_to_arc_size(size);
-		len += arc_ld_r(buf+len, REG_LO(reg), arc_reg_mem, off, zz);
-		len += arc_movi_r(buf+len, REG_HI(reg), 0);
+		len += arc_ld_r(buf+len, REG_LO(rd), arc_reg_mem, off, zz);
+		len += arc_movi_r(buf+len, REG_HI(rd), 0);
 	} else if (size == BPF_DW) {
 		/*
 		 * We are about to issue 2 consecutive loads:
@@ -2023,15 +2030,15 @@ static u8 load_r(u8 *buf, u8 reg, u8 reg_mem, s16 off, u8 size)
 		 *   ld ry, [rb, off+4]
 		 *   ld rx, [rb, off+0]
 		 */
-		if (REG_LO(reg) != arc_reg_mem) {
-			len += arc_ld_r(buf+len, REG_LO(reg), arc_reg_mem,
+		if (REG_LO(rd) != arc_reg_mem) {
+			len += arc_ld_r(buf+len, REG_LO(rd), arc_reg_mem,
 					off+0, ZZ_4_byte);
-			len += arc_ld_r(buf+len, REG_HI(reg), arc_reg_mem,
+			len += arc_ld_r(buf+len, REG_HI(rd), arc_reg_mem,
 					off+4, ZZ_4_byte);
 		} else {
-			len += arc_ld_r(buf+len, REG_HI(reg), arc_reg_mem,
+			len += arc_ld_r(buf+len, REG_HI(rd), arc_reg_mem,
 					off+4, ZZ_4_byte);
-			len += arc_ld_r(buf+len, REG_LO(reg), arc_reg_mem,
+			len += arc_ld_r(buf+len, REG_LO(rd), arc_reg_mem,
 					off+0, ZZ_4_byte);
 		}
 	}
@@ -2062,7 +2069,7 @@ u8 pop_r(u8 *buf, u8 reg)
  * All that remains is copying SP value to FP and shrinking SP's address space
  * for any possible function call to come.
  */
-u8 enter_frame(u8 *buf, u16 size)
+u8 frame_enter(u8 *buf, u16 size)
 {
 	u8 len;
 	len = arc_mov_r(buf, ARC_R_FP, ARC_R_SP);
@@ -2074,12 +2081,26 @@ u8 enter_frame(u8 *buf, u16 size)
 }
 
 /* The value of SP upon entering was copied to FP. */
-u8 exit_frame(u8 *buf)
+u8 frame_exit(u8 *buf)
 {
 	return arc_mov_r(buf, ARC_R_SP, ARC_R_FP);
 }
 
-static u8 jump_return(u8 *buf)
+/*
+ * Move the return value in BPF register "rs", into ARCv2 ABI
+ * return register "r1r0".
+ */
+u8 frame_assign_return(u8 *buf, u8 rs)
+{
+	u8 len = 0;
+
+	len += arc_mov_r(buf+len, ARC_R_0, REG_LO(rs));
+	len += arc_mov_r(buf+len, ARC_R_1, REG_HI(rs));
+
+	return len;
+}
+
+static u8 frame_return(u8 *buf)
 {
 	return arc_jmp_return(buf);
 }
@@ -2440,19 +2461,6 @@ static int gen_jcc_64(struct jit_context *ctx,
 	return gen_branch(ctx, insn, c3, len);
 }
 
-/*
- * Invocation of this function, conditionally signals the need for
- * an extra pass. The conditions that must be met are:
- *
- * 1. The current pass itself shouldn't be an extra pass.
- * 2. The stream of bytes being JITed must come from a user program.
- */
-static inline void set_need_for_extra_pass(struct jit_context *ctx)
-{
-	if (!ctx->is_extra_pass)
-		ctx->need_extra_pass = ctx->user_bpf_prog;
-}
-
 /* Try to get the resolved address and generate the instructions. */
 static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
 		    u8 *len)
@@ -2482,40 +2490,11 @@ static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
 	*len += jump_and_link(buf+*len, (u32) addr);
 
 	if (in_kernel_func) {
-		*len += arc_add_i(buf+*len, ARC_R_SP, ARG5_SIZE);
+		*len += arc_add_i(buf+*len, ARC_R_SP, ARC_R_SP, ARG5_SIZE);
 		/* Assigning ABI's return reg to our JIT's return reg. */
 		*len += arc_mov_r(buf+*len, REG_LO(BPF_REG_0), ARC_R_0);
 		*len += arc_mov_r(buf+*len, REG_HI(BPF_REG_0), ARC_R_1);
 	}
-
-	return 0;
-}
-
-static inline bool is_last_insn(const struct bpf_prog *prog, u32 idx)
-{
-	return (idx == (prog->len - 1));
-}
-
-/*
- * Try to generate instructions for loading a 64-bit immediate.
- * These sort of instructions are usually associated with the 64-bit
- * relocations: R_BPF_64_64. Therefore, signal the need for an extra
- * pass if the circumstances are right.
- */
-static int gen_ld_imm64(struct jit_context *ctx, const struct bpf_insn *insn,
-			u8 *len)
-{
-	const s32 idx = get_index_for_insn(ctx, insn);
-	u8 *buf = effective_jit_buf(&ctx->jit);
-
-	/* We're about to consume 2 VM instructions. */
-	if (is_last_insn(ctx->prog, idx)) {
-		pr_err("bpf-jit: need more data for 64-bit immediate.\n");
-		return -EINVAL;
-	}
-
-	*len = mov_r64_i64(buf, insn->dst_reg, insn->imm, (insn+1)->imm);
-	set_need_for_extra_pass(ctx);
 
 	return 0;
 }
