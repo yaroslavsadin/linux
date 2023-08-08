@@ -503,13 +503,61 @@ static inline void set_need_for_extra_pass(struct jit_context *ctx)
 		ctx->need_extra_pass = ctx->user_bpf_prog;
 }
 
+static int handle_swap(u8 *buf, u8 rd, u8 size, u8 endian, u8 *len)
+{
+	/* Sanity check on the size. */
+	switch (size) {
+	case 16:
+	case 32:
+	case 64:
+		break;
+	default:
+		pr_err("bpf-jit: invalid size for swap.\n");
+		return -EINVAL;
+	}
+
+	*len = gen_swap(buf, rd, size, endian);
+
+	return 0;
+}
+
+/*
+ * Jump to epilogue from the current location (insn). For details on
+ * offset calculation, see the comments of bpf_offset_to_jit().
+ */
+static int handle_jmp_epilogue(struct jit_context *ctx,
+			    const struct bpf_insn *insn, u8 *len)
+{
+	int disp = 0;
+	u8  *buf = effective_jit_buf(&ctx->jit);
+	const s32 idx = get_index_for_insn(ctx, insn);
+
+	if (idx < 0 || idx >= ctx->prog->len) {
+		pr_err("bpf-jit: jmp epilogue -> insn is not in prog.\n");
+		return -EINVAL;
+	}
+
+	/* Only after the dry-run, ctx->bpf2insn holds meaningful values. */
+	if (ctx->bpf2insn_valid)
+		disp = ctx->epilogue_offset - ctx->bpf2insn[idx];
+
+	if (!can_use_for_epilogue_jmp(disp)) {
+		pr_err("bpf-jit: jmp epilogue -> displacement isn't valid.\n");
+		return -EFAULT;
+	}
+
+	*len = jmp_relative(buf, disp);
+
+	return 0;
+}
+
 /*
  * Try to generate instructions for loading a 64-bit immediate.
  * These sort of instructions are usually associated with the 64-bit
  * relocations: R_BPF_64_64. Therefore, signal the need for an extra
  * pass if the circumstances are right.
  */
-static int gen_ld_imm64(struct jit_context *ctx, const struct bpf_insn *insn,
+static int handle_ld_imm64(struct jit_context *ctx, const struct bpf_insn *insn,
 			u8 *len)
 {
 	const s32 idx = get_index_for_insn(ctx, insn);
@@ -523,6 +571,32 @@ static int gen_ld_imm64(struct jit_context *ctx, const struct bpf_insn *insn,
 
 	*len = mov_r64_i64(buf, insn->dst_reg, insn->imm, (insn+1)->imm);
 	set_need_for_extra_pass(ctx);
+
+	return 0;
+}
+
+/* Try to get the resolved address and generate the instructions. */
+static int handle_call(struct jit_context *ctx, const struct bpf_insn *insn,
+		       u8 *len)
+{
+	int  ret;
+	bool in_kernel_func, fixed = false;
+	u64  addr = 0;
+	u8  *buf = effective_jit_buf(&ctx->jit);
+
+	ret = bpf_jit_get_func_addr(ctx->prog, insn, ctx->is_extra_pass, &addr,
+				    &fixed);
+	if (ret < 0) {
+		pr_err("bpf-jit: can't get the address for call.\n");
+		return ret;
+	}
+	in_kernel_func = (fixed ? true : false);
+
+	/* No valuble address retrieved (yet). */
+	if (!fixed && !addr)
+		set_need_for_extra_pass(ctx);
+
+	*len = gen_func_call(buf, addr, in_kernel_func);
 
 	return 0;
 }
@@ -655,7 +729,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 	/* dst = swap(dst) */
 	case BPF_ALU | BPF_END | BPF_FROM_LE:
 	case BPF_ALU | BPF_END | BPF_FROM_BE:
-		if ((ret = gen_swap(buf, dst, imm, BPF_SRC(code), &len)) < 0)
+		if ((ret = handle_swap(buf, dst, imm, BPF_SRC(code), &len)) < 0)
 			return ret;
 		break;
 	/* dst += src (64-bit) */
@@ -744,7 +818,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		break;
 	/* dst = imm64 */
 	case BPF_LD | BPF_DW | BPF_IMM:
-		if ((ret = gen_ld_imm64(ctx, insn, &len)) < 0)
+		if ((ret = handle_ld_imm64(ctx, insn, &len)) < 0)
 			return ret;
 		/* Tell the loop to skip the next instruction. */
 		ret = 1;
@@ -809,14 +883,14 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		break;
 	case BPF_JMP32 | BPF_JEQ  | BPF_X:
 	case BPF_JMP32 | BPF_JEQ  | BPF_K:
+	case BPF_JMP32 | BPF_JNE  | BPF_X:
+	case BPF_JMP32 | BPF_JNE  | BPF_K:
+	case BPF_JMP32 | BPF_JSET | BPF_X:
+	case BPF_JMP32 | BPF_JSET | BPF_K:
 	case BPF_JMP32 | BPF_JGT  | BPF_X:
 	case BPF_JMP32 | BPF_JGT  | BPF_K:
 	case BPF_JMP32 | BPF_JGE  | BPF_X:
 	case BPF_JMP32 | BPF_JGE  | BPF_K:
-	case BPF_JMP32 | BPF_JSET | BPF_X:
-	case BPF_JMP32 | BPF_JSET | BPF_K:
-	case BPF_JMP32 | BPF_JNE  | BPF_X:
-	case BPF_JMP32 | BPF_JNE  | BPF_K:
 	case BPF_JMP32 | BPF_JSGT | BPF_X:
 	case BPF_JMP32 | BPF_JSGT | BPF_K:
 	case BPF_JMP32 | BPF_JSGE | BPF_X:
@@ -833,7 +907,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 			return ret;
 		break;
 	case BPF_JMP | BPF_CALL:
-		if ((ret = gen_call(ctx, insn, &len)) < 0)
+		if ((ret = handle_call(ctx, insn, &len)) < 0)
 			return ret;
 		break;
 
@@ -841,7 +915,7 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 		/* If this is the last instruction, epilogue will follow. */
 		if (is_last_insn(ctx->prog, idx))
 			break;
-		if ((ret = gen_jmp_epilogue(ctx, insn, &len)) < 0)
+		if ((ret = handle_jmp_epilogue(ctx, insn, &len)) < 0)
 			return ret;
 		break;
 	default:
@@ -851,9 +925,9 @@ static int handle_insn(struct jit_context *ctx, u32 idx)
 
 	if (BPF_CLASS(code) == BPF_ALU) {
 		/*
-		 * Also 64-bit swaps are of type BPF_ALU.  Therefore,
-		 * gen_swap() itself handles calling zext() based on
-		 * its input "size" argument.
+		 * Even 64-bit swaps are of type BPF_ALU (and not BPF_ALU64).
+		 * Therefore, the routine responsible for "swap" specifically
+		 * takes care of calling "zext()" based on the input "size".
 		 */
 		if (BPF_OP(code) != BPF_END)
 			len += zext(buf+len, dst);
@@ -1126,7 +1200,7 @@ static int jit_resume_context(struct jit_context *ctx)
  * - ld r64, imm64
  *
  * For "call"s, it resolves the addresses one more time through the
- * gen_call().
+ * handle_call().
  *
  * For 64-bit immediate loads, it just retranslates them, because the BPF
  * core in kernel might have changed the value since the normal pass.
@@ -1149,10 +1223,10 @@ static int jit_patch_relocations(struct jit_context *ctx)
 		ctx->jit.index = ctx->bpf2insn[i];
 
 		if (insn->code == bpf_opc_call) {
-			if ((ret = gen_call(ctx, insn, &dummy)) < 0)
+			if ((ret = handle_call(ctx, insn, &dummy)) < 0)
 				return ret;
 		} else if (insn->code == bpf_opc_ldi64) {
-			if ((ret = gen_ld_imm64(ctx, insn, &dummy)) < 0)
+			if ((ret = handle_ld_imm64(ctx, insn, &dummy)) < 0)
 				return ret;
 			/* Skip the next instruction. */
 			++i;

@@ -1141,6 +1141,11 @@ static u8 arc_jl(u8 *buf, u8 reg)
 	return INSN_len_normal;
 }
 
+/*
+ * Conditional jump to an address that is max 21 bits away (signed).
+ *
+ * b<cc> s21
+ */
 static u8 arc_bcc(u8 *buf, u8 cc, int offset)
 {
 	if (emit) {
@@ -1150,6 +1155,11 @@ static u8 arc_bcc(u8 *buf, u8 cc, int offset)
 	return INSN_len_normal;
 }
 
+/*
+ * Unconditional jump to an address that is max 25 bits away (signed).
+ *
+ * b     s25
+ */
 static u8 arc_b(u8 *buf, s32 offset)
 {
 	if (emit) {
@@ -1755,16 +1765,14 @@ u8 arsh_r64_i32(u8 *buf, u8 rd, s32 imm)
 	return len;
 }
 
-static u8 gen_swap(u8 *buf, u8 rd, u8 size, u8 endian, u8 *len)
+u8 gen_swap(u8 *buf, u8 rd, u8 size, u8 endian)
 {
-	int ret = 0;
+	u8 len = 0;
 #ifdef __BIG_ENDIAN
 	const u8 host_endian = BPF_FROM_BE;
 #else
 	const u8 host_endian = BPF_FROM_LE;
 #endif
-	*len = 0;
-
 	/*
 	 * If the same endianness, there's not much to do other
 	 * than zeroing out the upper bytes based on the "size".
@@ -1772,15 +1780,15 @@ static u8 gen_swap(u8 *buf, u8 rd, u8 size, u8 endian, u8 *len)
 	if (host_endian == endian) {
 		switch (size) {
 		case 16:
-			*len += arc_and_i(buf+*len, REG_LO(rd), 0xffff);
+			len += arc_and_i(buf+len, REG_LO(rd), 0xffff);
 			fallthrough;
 		case 32:
-			*len += zext(buf+*len, rd);
+			len += zext(buf+len, rd);
 			fallthrough;
 		case 64:
 			break;
 		default:
-			ret = -EINVAL;
+			/* The caller must have handled this. */
 		}
 	} else {
 		switch (size) {
@@ -1789,12 +1797,11 @@ static u8 gen_swap(u8 *buf, u8 rd, u8 size, u8 endian, u8 *len)
 			 * r = B4B3_B2B1 << 16 --> r = B2B1_0000
 			 * swape(r) is 0000_B1B2
 			 */
-			*len += arc_asli_r(buf+*len, REG_LO(rd), REG_LO(rd),
-					   16);
+			len += arc_asli_r(buf+len, REG_LO(rd), REG_LO(rd), 16);
 			fallthrough;
 		case 32:
-			*len += arc_swape_r(buf+*len, REG_LO(rd));
-			*len += zext(buf+*len, rd);
+			len += arc_swape_r(buf+len, REG_LO(rd));
+			len += zext(buf+len, rd);
 			break;
 		case 64:
 			/*
@@ -1804,20 +1811,18 @@ static u8 gen_swap(u8 *buf, u8 rd, u8 size, u8 endian, u8 *len)
 			 *   hi ^= lo;
 			 * and then swap the bytes in "hi" and "lo".
 			 */
-			*len += arc_xor_r(buf+*len, REG_HI(rd), REG_LO(rd));
-			*len += arc_xor_r(buf+*len, REG_LO(rd), REG_HI(rd));
-			*len += arc_xor_r(buf+*len, REG_HI(rd), REG_LO(rd));
-			*len += arc_swape_r(buf+*len, REG_LO(rd));
-			*len += arc_swape_r(buf+*len, REG_HI(rd));
+			len += arc_xor_r(buf+len, REG_HI(rd), REG_LO(rd));
+			len += arc_xor_r(buf+len, REG_LO(rd), REG_HI(rd));
+			len += arc_xor_r(buf+len, REG_HI(rd), REG_LO(rd));
+			len += arc_swape_r(buf+len, REG_LO(rd));
+			len += arc_swape_r(buf+len, REG_HI(rd));
 			break;
 		default:
-			ret = -EINVAL;
+			/* The caller must have handled this. */
 		}
 	}
 
-	if (ret != 0)
-		pr_err("bpf-jit: invalid size for swap.\n");
-	return ret;
+	return len;
 }
 
 u8 mov_r32(u8 *buf, u8 rd, u8 rs)
@@ -2100,9 +2105,14 @@ u8 frame_assign_return(u8 *buf, u8 rs)
 	return len;
 }
 
-static u8 frame_return(u8 *buf)
+u8 frame_return(u8 *buf)
 {
 	return arc_jmp_return(buf);
+}
+
+u8 jmp_relative(u8 *buf, int displacement)
+{
+	return arc_b(buf, displacement);
 }
 
 /*
@@ -2198,7 +2208,7 @@ static inline int bpf_cond_to_arc(const u8 op)
  *
  * For others:
  * cmp   r, [r,i]      # compare regr vs. another reg or imm
- * b<cc> @target       # "cc" is deduced from  BPF condition
+ * b<cc> @target       # "cc" is deduced from the BPF condition
  */
 static int gen_jcc_32(struct jit_context *ctx,
 		      const struct bpf_insn *insn,
@@ -2222,6 +2232,8 @@ static int gen_jcc_32(struct jit_context *ctx,
 		else
 			*len = tst_r32(buf+*len, rd, rs);
 		break;
+	case BPF_JEQ:
+	case BPF_JNE:
 	case BPF_JGT:
 	case BPF_JGE:
 	case BPF_JLT:
@@ -2230,8 +2242,6 @@ static int gen_jcc_32(struct jit_context *ctx,
 	case BPF_JSGE:
 	case BPF_JSLT:
 	case BPF_JSLE:
-	case BPF_JEQ:
-	case BPF_JNE:
 		if (has_imm(insn))
 			*len = cmp_r32_i32(buf+*len, rd, insn->imm);
 		else
@@ -2461,70 +2471,42 @@ static int gen_jcc_64(struct jit_context *ctx,
 	return gen_branch(ctx, insn, c3, len);
 }
 
-/* Try to get the resolved address and generate the instructions. */
-static int gen_call(struct jit_context *ctx, const struct bpf_insn *insn,
-		    u8 *len)
+/*
+ * Generate code for functions calls. There can be two types of calls:
+ *
+ * - Calling another BPF function
+ * - Calling an in-kernel function which is compiled by ARC gcc
+ *
+ * In the later case, we must comply to ARCv2 ABI and handle arguments
+ * and return values accordingly.
+ */
+u8 gen_func_call(u8 *buf, u64 func_addr, bool external_func)
 {
-	int  ret;
-	bool in_kernel_func, fixed = false;
-	u64  addr = 0;
-	u8  *buf = effective_jit_buf(&ctx->jit);
+	u8 len = 0;
 
-	ret = bpf_jit_get_func_addr(ctx->prog, insn, ctx->is_extra_pass, &addr,
-				    &fixed);
-	if (ret < 0) {
-		pr_err("bpf-jit: can't get the address for call.\n");
-		return ret;
-	}
-	in_kernel_func = (fixed ? true : false);
+	/*
+	 * In case of an in-kernel function call, always push the 5th
+	 * argument onto the stack, because that's where the ABI dictates
+	 * it should be found. If the callee doesn't really use it, no harm
+	 * is done. The stack is readjusted either way after the call.
+	 */
+	if (external_func)
+		len += push_r64(buf+len, BPF_REG_5);
 
-	/* No valuble address retrieved (yet). */
-	if (!fixed && !addr)
-		set_need_for_extra_pass(ctx);
+	len += jump_and_link(buf+len, (u32) func_addr);
 
-	*len = 0;
-	/* In case of an in-kernel function, arg5 is always pushed. */
-	if (in_kernel_func)
-		*len += push_r64(buf+*len, BPF_REG_5);
-
-	*len += jump_and_link(buf+*len, (u32) addr);
-
-	if (in_kernel_func) {
-		*len += arc_add_i(buf+*len, ARC_R_SP, ARC_R_SP, ARG5_SIZE);
+	if (external_func) {
+		len += arc_add_i(buf+len, ARC_R_SP, ARC_R_SP, ARG5_SIZE);
 		/* Assigning ABI's return reg to our JIT's return reg. */
-		*len += arc_mov_r(buf+*len, REG_LO(BPF_REG_0), ARC_R_0);
-		*len += arc_mov_r(buf+*len, REG_HI(BPF_REG_0), ARC_R_1);
+		len += arc_mov_r(buf+len, REG_LO(BPF_REG_0), ARC_R_0);
+		len += arc_mov_r(buf+len, REG_HI(BPF_REG_0), ARC_R_1);
 	}
 
-	return 0;
+	return len;
 }
 
-/*
- * Jump to epilogue from the current location (insn). For details on
- * offset calculation, see the comments of bpf_offset_to_jit().
- */
-static int gen_jmp_epilogue(struct jit_context *ctx,
-			    const struct bpf_insn *insn, u8 *len)
+bool can_use_for_epilogue_jmp(int displacement)
 {
-	int disp = 0;
-	u8  *buf = effective_jit_buf(&ctx->jit);
-	const s32 idx = get_index_for_insn(ctx, insn);
-
-	if (idx < 0 || idx >= ctx->prog->len) {
-		pr_err("bpf-jit: jmp epilogue -> insn is not in prog.\n");
-		return -EINVAL;
-	}
-
-	/* Only after the dry-run, ctx->bpf2insn holds meaningful values. */
-	if (ctx->bpf2insn_valid)
-		disp = ctx->epilogue_offset - ctx->bpf2insn[idx];
-
-	if (disp & 1 || !IN_S25_RANGE(disp)) {
-		pr_err("bpf-jit: jmp epilogue -> displacement isn't valid.\n");
-		return -EFAULT;
-	}
-
-	*len = arc_b(buf, disp);
-
-	return 0;
+	const bool aligned = ((displacement & 1) == 0);
+	return (aligned && IN_S25_RANGE(displacement));
 }
