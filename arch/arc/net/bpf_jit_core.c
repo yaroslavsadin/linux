@@ -9,41 +9,34 @@
 bool emit         = false;
 bool zext_thyself = false;
 
-/*
- * TODO: remove me.
- * Dumps bytes in /var/log/messages at KERN_INFO level (4).
- */
-static void dump_bytes(const u8 *buf, u32 len, bool jit)
+
+#ifdef ARC_BPF_JIT_DEBUG
+/* Dumps bytes in /var/log/messages at KERN_INFO level (4). */
+static void dump_bytes(const u8 *buf, u32 len, const char *header)
 {
-	u8 line[256];
+	u8 line[64];
 	size_t i, j;
 
-	if (bpf_jit_enable <= 1)
-		return;
-
-	if (jit)
-		pr_info("-----------------[ jited ]-----------------\n");
-	else
-		pr_info("-----------------[  VM   ]-----------------\n");
+	pr_info("-----------------[ %s ]-----------------\n", header);
 
 	for (i = 0, j = 0; i < len; i++) {
+		/* Last input byte? */
 		if (i == len-1) {
-			sprintf(line+j, "0x%02x" , buf[i]);
+			j += scnprintf(line+j, 64-j, "0x%02x" , buf[i]);
 			pr_info("%s\n", line);
 			break;
 		}
+		/* End of line? */
 		else if (i % 8 == 7) {
-			sprintf(line+j, "0x%02x", buf[i]);
+			j += scnprintf(line+j, 64-j, "0x%02x", buf[i]);
 			pr_info("%s\n", line);
 			j = 0;
 		} else {
-			j += sprintf(line+j, "0x%02x, ", buf[i]);
+			j += scnprintf(line+j, 64-j, "0x%02x, ", buf[i]);
 		}
 	}
-
-	if (jit)
-		pr_info("\n");
 }
+#endif /* ARC_BPF_JIT_DEBUG */
 
 /********************* JIT context ***********************/
 
@@ -114,6 +107,42 @@ struct jit_context
 	bool				blinded;
 	bool				success;
 };
+
+/*
+ * If we're in ARC_BPF_JIT_DEBUG mode and the debug level is right, dump the
+ * input BPF stream. "bpf_jit_dump()" is not fully suited for this purpose.
+ */
+static void vm_dump(const struct bpf_prog *prog)
+{
+#ifdef ARC_BPF_JIT_DEBUG
+	if (bpf_jit_enable > 1)
+		dump_bytes((u8 *) prog->insns, 8*prog->len, " VM  ");
+#endif
+}
+
+/*
+ * If the right level of debug is set, dump the bytes. There are 2 variants
+ * of this function:
+ *
+ * 1. Use the standard bpf_jit_dump() which is meant only for JITed code.
+ * 2. Use the dump_bytes() to match its "vm_dump()" instance.
+ */
+static void jit_dump(const struct jit_context *ctx)
+{
+	u8 header[8];
+	const int pass = ctx->is_extra_pass ? 2 : 1;
+
+	if (bpf_jit_enable <= 1 || !ctx->prog->jited)
+		return;
+
+#ifdef ARC_BPF_JIT_DEBUG
+	scnprintf(header, sizeof(header), "JIT:%d", pass);
+	dump_bytes(ctx->jit.buf, ctx->jit.len, header);
+	pr_info("\n");
+#else
+	bpf_jit_dump(ctx->prog->len, ctx->jit.len, pass, ctx->jit.buf);
+#endif
+}
 
 static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
 {
@@ -1145,16 +1174,8 @@ static void jit_finalize(struct jit_context *ctx)
 		/* TODO: bpf_prog_fill_jited_linfo() */
 	}
 
-
 	jit_ctx_cleanup(ctx);
-
-	/* TODO: uncomment me.
-	if (bpf_jit_enable > 1)
-		bpf_jit_dump(ctx->prog->len, ctx->jit.len, 2, ctx->jit.buf);
-	*/
-
-	/* TODO: Debugging */
-	dump_bytes(ctx->jit.buf, ctx->jit.len, true);
+	jit_dump(ctx);
 }
 
 /*
@@ -1312,8 +1333,7 @@ struct bpf_prog *do_extra_pass(struct bpf_prog *prog)
  */
 struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
 {
-	/* TODO: Debugging */
-	dump_bytes((u8 *) prog->insns, 8*prog->len, false);
+	vm_dump(prog);
 
 	/* Was this program already translated? */
 	if (!prog->jited)

@@ -9,6 +9,10 @@
 #ifndef _BPF_JIT_CORE_H
 #define _BPF_JIT_CORE_H
 
+/* Print debug info and assert. */
+/* TODO: comment me out! */
+#define ARC_BPF_JIT_DEBUG
+
 /************* Globals that have effects on code generation ***********/
 /*
  * If "emit" is true, the instructions are actually generated. Else, the
